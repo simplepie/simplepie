@@ -1,0 +1,657 @@
+<html>
+<head>
+<title>SimplePie: Documentation</title>
+
+<style type="text/css">
+body {
+	font-family: Verdana, "Lucida Grande", Arial, Sans, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height:16px;
+	color:#000;
+	margin:15px;
+	padding:0px;
+	width:700px;
+}
+
+a { color:#03f; }
+a:hover { color:#f60; }
+
+h1 {
+	position:relative;
+	font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Sans, Helvetica, sans-serif;
+	font-size:24px;
+	font-weight:bold;
+	padding:0;
+	margin:20px 0 5px 0;
+}
+
+h2 {
+	position:relative;
+	font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Sans, Helvetica, sans-serif;
+	font-size:18px;
+	margin:40px 0px 5px 0px;
+	display:block;
+	color:#fff;
+	background-color:#2F4A76;
+	padding:10px;
+	font-weight:normal;
+	border:1px solid #000;
+	text-shadow: #000 4px 4px 3px;
+}
+
+h2 a {
+	color:#fff;
+	text-decoration:none;
+}
+
+h2 a:hover { color:#fff; }
+
+h3 {
+	position:relative;
+	font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Sans, Helvetica, sans-serif;
+	font-size:15px;
+	margin:25px 0px 5px 0px;
+	display:block;
+	font-weight:bold;
+	border-bottom:1px solid #666;
+	padding:0px 0px 3px 0px;
+}
+
+h4 {
+	position:relative;
+	font-weight:normal;
+	font-style:italic;
+	text-decoration:underline;
+	margin:20px 0px 5px 0px;
+	font-size: 12px;
+}
+
+ol, ul { margin:5px 0px 0px 10px; }
+li { margin:0px 0px 7px 0px; }
+
+p {
+	text-indent:30px;
+	margin:0px;
+	padding:5px 0px 10px 0px;
+}
+
+p.timedate {
+	font-family: Verdana, "Lucida Grande", Arial, Sans, Helvetica, sans-serif;
+	font-size:11px;
+	padding:0px 0px 10px 0px;
+}
+
+p.noindent { text-indent:0px; }
+
+acronym, abbr { 
+	border-bottom:1px dotted #666;
+	cursor: help;
+}
+
+code {
+	font-family:monospace;
+	padding:0 3px;
+	color:#000080;
+	background-color:#e9f5ff;
+}
+
+pre {
+	font-family: Verdana, "Lucida Grande", Arial, Sans, Helvetica, sans-serif;
+	color:#000;
+	background-color:#e9f5ff;
+	border:1px dotted #000080;
+	font-size:11px;
+	line-height:14px;
+	padding:5px;
+	margin:15px 0px;
+}
+
+cite { font-style:italic; }
+
+.quote, blockquote {
+	color:#000;
+	background-color:#f3f3f3;
+	border-top:1px solid #aaa;
+	border-bottom:1px solid #aaa;
+	font-size:11px;
+	line-height:14px;
+	padding:5px 15px;
+	margin:15px 30px;
+}
+
+blockquote p {
+	margin-top:5px;
+	padding:0px;
+}
+
+blockquote p:first-child {
+	margin:0px;
+	padding:0px;
+}
+
+table {
+	font-family: Verdana, "Lucida Grande", Arial, Sans, Helvetica, sans-serif;
+	font-size: 11px;
+	line-height:14px;
+	color:#000;
+	margin:0;
+	padding:0;
+	width:90%;
+}
+
+table tr th {
+	border:1px solid #000;
+	background-color:#2f4a76;
+	color:#fff;
+	font-weight:bold;
+	text-align:center;
+	padding:3px;
+	width:auto;
+	text-shadow: #000 2px 2px 3px;
+}
+
+table tr td {
+	border:1px solid #000;
+	background-color:#fff;
+	color:#000;
+	font-weight:normal;
+	text-align:left;
+	padding:3px;
+}
+
+table tr .hidecell {
+	border:none;
+	background-color:transparent;
+	color:transparent;
+}
+
+</style>
+
+</head>
+<body>
+		<a name="top"></a>
+		<h1>Documentation for SimplePie 0.94</h1>
+		Copyleft &copy; 2004 Ryan Parman<br />
+		<a href="http://www.skyzyx.com/projects/simplepie/">http://www.skyzyx.com/projects/simplepie/</a><br />
+
+		<h2>&raquo;&nbsp;Sections of this Document</h2>
+		<ol>
+			<li><a href="#about">About SimplePie</a></li>
+			<li><a href="#approach">SimplePie's Approach To Feed Parsing</a></li>
+			<li><a href="#requirements">Requirements</a></li>
+			<li><a href="#get">Get The Code</a></li>
+			<li><a href="#setup">Getting Up And Running</a></li>
+			<li><a href="#use">How Do I Use This Thing?</a></li>
+			<li><a href="#current">What It Does And Doesn't</a></li>
+			<li><a href="#issues">Known Bugs/Issues</a></li>
+			<li><a href="#planned">Things To Do</a></li>
+			<li><a href="#version">Version History</a></li>
+			<li><a href="#credit">Credit To Others</a></li>
+			<li><a href="#license">License</a></li>
+		</ol>
+
+
+
+		<h2>&raquo;&nbsp;<a name="about">About SimplePie</a></h2>
+		<p>SimplePie is a very fast and easy-to-use collection of functions for reading RSS and Atom syndication feeds.  SimplePie is written in PHP and doesn't rely on any external files to work.  SimplePie's focus has been two-fold: speed and ease of use.  This project has been very successful on both fronts.</p>
+		<p>SimplePie began as an easy-to-use set of high-level functions for <a href="http://magpierss.sourceforge.net">Magpie RSS</a>, but after the first public beta had poor performance results, SimplePie was re-written from scratch to be as fast as possible while maintaining 100% compatibility with the older functions.</p>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="approach">SimplePie's Approach To Feed Parsing</a></h2>
+		<p>SimplePie takes a very Apple-esque approach to feed parsing.  Coming from the use of MagpieRSS, I decided to create a "feed parser for the rest of us".  One that is easy, logical, and doesn't require too much of a background in PHP to use it.  My background is in JavaScript, so I believe that if you have a handle on JavaScript and can spend an hour learning about some of the nuances of basic PHP, you should be able to implement SimplePie with little or no fuss.</p>
+		<p>There are many feed parsers out there that only support one or two flavors of RSS.  Most still don't even have Atom support yet.  They all go through and create this whole big array, and leave all of the low-level arrays sitting there.  Maybe they'll even throw in some caching while they're at it.  Good for them.</p>
+		<p>When building SimplePie, I wanted to make it as easy as possible for someone to be able to use it.  I looked at a variety of desktop and web-based feed readers to get a feel for the most used and most useful RSS tags, and then I created a collection of functions for those specific purposes.  Going with a Firefox-like mentality, I made sure to support everything that most people would want/need while maintaining the ability to extend it as need be.</p>
+		<p>As Mac OS X is built upon a powerful Unix-based core, SimplePie is built upon a very powerful, yet easy-to-use XML parsing library called XMLize.  XMLize takes a fantastic approach to parsing XML documents in a very simple, logical way.  I was parsing XML documents within 10 minutes of having found it.  This easy-to-use software makes it easy for anyone &mdash; even PHP newbies &mdash; to extend the power of SimplePie.</p>
+		<p>Switching from MagpieRSS to using XMLize at the core allows SimplePie to process RSS and Atom feeds at incredible speeds.  SimplePie is also aware of some common problems in feeds and makes adjustments as necessary.  Does your current feed reader leave you with visible entities or odd question marks?  SimplePie automatically handles some of these common glitches, so that the end user doesn't see anything too wierd when trying to view their favorite feeds.</p>
+		<p>If you're looking for new feed parser software, or even if you're not, give SimplePie a try.  If you're new to PHP, or even if you're not, SimplePie can save you time and stress.  If you're looking for a feed parser that can be easily extended to do more than it currently does out-of-the-box, SimplePie is your answer.</p>
+		<p><strong><a href="#get">Download Now!</a></strong>  File servers are standing by.</p>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="requirements">Requirements</a></h2>
+		<ol>
+			<li>PHP 4 or PHP 5</li>
+			<li>Expat XML Processor (usually built-in to PHP)</li>
+		</ol>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="get">Get The Code</a></h2>
+		<h4>Current Version:</h4>
+		<ul>
+			<li><a href="http://www.skyzyx.com/projects/simplepie/simplepie_0.94.zip">SimplePie 0.94</a> - 23 September 2004.</li>
+		</ul>
+		<h4>Previous Versions:</h4>
+		<ul>
+			<li><a href="http://www.skyzyx.com/projects/simplepie/simplepie_0.93.zip">SimplePie 0.93</a> - 2 September 2004.</li>
+			<li><a href="http://www.skyzyx.com/projects/simplepie/simplepie_0.92.zip">SimplePie 0.92</a> - 29 August 2004.</li>
+			<li><a href="http://www.skyzyx.com/projects/simplepie/simplepie_0.91.zip">SimplePie 0.91</a> - 28 August 2004.</li>
+			<li><a href="http://www.skyzyx.com/projects/simplepie/simplepie_0.9.zip">SimplePie 0.9</a> - 2 August 2004.</li>
+			<li><a href="http://www.skyzyx.com/projects/simplepie/simplepie_0.8.zip">SimplePie 0.8</a> - 20 July 2004.</li>
+		</ul>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="setup">Getting Up And Running</a></h2>
+		<p>SimplePie can be up and running in five oh-so-easy steps.</p>
+		<ol>
+			<li>Upload <code>simplepie.inc</code> to your web host.</li>
+			<li>In the same directory as SimplePie, create a new subdirectory called <code>cache</code>.</li>
+			<li>Change the CHMOD settings of that new folder to <code>777</code>.</li>
+			<li>Include SimplePie in your pages where you want to have RSS/Atom parsing.  <code>require_once(simplepie.inc);</code></li>
+			<li>Use the documentation here and the included sample <code>index.php</code> file as a basis for building your own feed reader (or anything else you need to read RSS feeds for)!</li>
+		</ol>
+		<p>Voila!  You're all set.  Check out the included sample page to see some practical methods for creating an online feed reader.</p>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="use">How Do I Use This Thing?</a></h2>
+		<p>Here is documentation for the various functions in SimplePie.  There is also a sample page bundled in the SimplePie ZIP file.  I'd highly recommend looking over the sample page to discover best practices when using this software.</p>
+
+		<div align="center">
+			<table>
+				<tr class="header">
+					<th>Variables</th>
+					<th>Description</th>
+					<th>Debuted</th>
+				</tr>
+				<tr>
+					<td>$rss</td>
+					<td>Represents the feed's URL.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>$x</td>
+					<td>Represents a location in the item/entry array.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>$http</td>
+					<td>Used only in <code>fix_protocol()</code>, this toggles between returning an <code>http://</code> protocol or a <code>feed://</code> protocol.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>$enable_debug</td>
+					<td>Used only in <code>simplepie()</code>, this toggles the option of dumping the cleaned XML file to the screen.  Defaults to <code>false</code>.</td>
+					<td style="text-align:center;">0.94</td>
+				</tr>
+				<tr>
+					<td>$enable_caching</td>
+					<td>Used only in <code>simplepie()</code>, this toggles whether the XML file is cached.  Defaults to <code>true</code>.</td>
+					<td style="text-align:center;">0.94</td>
+				</tr>
+				<tr>
+					<td>$max_days</td>
+					<td>Used only in <code>simplepie()</code>, this value determines the period of time that a cache file can go unused before getting deleted from the cache directory.  Defaults to 7 days.</td>
+					<td style="text-align:center;">0.94</td>
+				</tr>
+				<tr>
+					<td>$replace_headers</td>
+					<td>Used only in <code>simplepie()</code>, this toggles whether <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, and <code>&lt;h3&gt;</code> get replaced by <code>&lt;h4&gt;</code>.  Defaults to <code>false</code>.</td>
+					<td style="text-align:center;">0.94</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>General Functions</th>
+					<th>Description</th>
+					<th>Debuted</th>
+				</tr>
+				<tr>
+					<td>simplepie("Feed URL", $enable_debug, $enable_cache, $max_days, $replace_headers)</td>
+					<td>Checks that the feed exists, then parses it.  The use of this function is required, and the Feed's URL is required.  All other paramters are optional.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_version($rss)</td>
+					<td>Returns the feed type and version. This will always return a value if the feed is valid.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_feed_url()</td>
+					<td>Returns the "corrected" URL of the feed (with proper <code>http://</code> protocol). No parameters are passed.  This will always return a value if the feed is valid.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_feedproto_url()</td>
+					<td>Returns the "corrected" URL of the feed with the <code>feed://</code> protocol to make subscribing easy.  No parameters are passed. This will always return a value if the feed is valid.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>Feed Functions</th>
+					<th>Description</th>
+					<th>Debuted</th>
+				</tr>
+				<tr>
+					<td>get_feed_title($rss)</td>
+					<td>Returns the title of the feed.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_feed_link($rss)</td>
+					<td>Returns the link of the feed.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_feed_description($rss)</td>
+					<td>Returns the description of the feed.  First it looks for <code>&lt;description&gt;</code>, then <code>&lt;tagline&gt;</code>.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_feed_copyright($rss)</td>
+					<td>Returns the copyright of the feed.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_feed_language($rss)</td>
+					<td>Returns the language of the feed.  First it looks for <code>&lt;language&gt;</code>, then <code>&lt;dc:language&gt;</code>, then <code>&lt;feed xml:lang="???"&gt;</code> (for Atom feeds).  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>Image Functions</th>
+					<th>Description</th>
+					<th>Debuted</th>
+				</tr>
+				<tr>
+					<td>get_image_exist($rss)</td>
+					<td>Returns <code>true</code> or <code>false</code> based on whether the <code>&lt;image&gt;</code> element exists.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_image_title($rss)</td>
+					<td>Returns the title of the image.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_image_url($rss)</td>
+					<td>Returns the URL of the image.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_image_link($rss)</td>
+					<td>Returns the link of the image.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_image_width($rss)</td>
+					<td>Returns the width of the image.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_image_height($rss)</td>
+					<td>Returns the height of the image.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>Item Functions</th>
+					<th>Description</th>
+					<th>Debuted</th>
+				</tr>
+				<tr>
+					<td>get_item_quantity($rss)</td>
+					<td>Returns the number of <code>&lt;item&gt;</code> and <code>&lt;entry&gt;</code> elements.  This is for a for-loop.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_item_title($x,&nbsp;$rss)</td>
+					<td>Returns the title of the item.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_item_permalink($x,&nbsp;$rss)</td>
+					<td>Returns the permalink of the item.  First it looks for <code>&lt;link&gt;</code>, then <code>&lt;guid&gt;</code> (for silly blogs like <a href="http://www.1976design.com/blog/">Dunstan's</a> who don't use <code>&lt;link&gt;</code>).  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_item_description($x,&nbsp;$rss)</td>
+					<td>Returns the description of the item.  First it looks for <code>&lt;description&gt;</code>, then <code>&lt;summary&gt;</code>.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_item_category($x,&nbsp;$rss)</td>
+					<td>Returns the category of the item.  First it looks for <code>&lt;category&gt;</code>, then <code>&lt;dc:subject&gt;</code>.  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_item_author($x,&nbsp;$rss)</td>
+					<td>Returns the description of the item.  First it looks for <code>&lt;dc:creator&gt;</code>, then <code>&lt;author&gt;</code><code>&lt;name&gt;</code> (for Atom), then <code>&lt;author&gt;</code> (for RSS).  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+				<tr>
+					<td>get_item_date($x,&nbsp;$rss)</td>
+					<td>Returns the date of the item.  First it looks for <code>&lt;pubDate&gt;</code>, then <code>&lt;dc:date&gt;</code>, then <code>&lt;modified&gt;</code> (for Atom).  Returns <code>false</code> if no value.</td>
+					<td style="text-align:center;">0.8</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>Variables</th>
+					<th>Description</th>
+					<th>Debuted</th>
+				</tr>
+				<tr>
+					<td>sp_name()</td>
+					<td>Returns the name of the project &mdash; "SimplePie"</td>
+					<td style="text-align:center;">0.92</td>
+				</tr>
+				<tr>
+					<td>sp_version()</td>
+					<td>Returns the version of the project &mdash; "0.92"</td>
+					<td style="text-align:center;">0.92</td>
+				</tr>
+				<tr>
+					<td>sp_url()</td>
+					<td>Returns the project's URL.</td>
+					<td style="text-align:center;">0.92</td>
+				</tr>
+				<tr>
+					<td>sp_build()</td>
+					<td>Returns the date that the project was released on in <code>YYYYMMDD</code> format.</td>
+					<td style="text-align:center;">0.93</td>
+				</tr>
+				<tr>
+					<td>sp_useragent()</td>
+					<td>Returns SimplePie's User Agent string that it sends to web servers.</td>
+					<td style="text-align:center;">0.93</td>
+				</tr>
+				<tr>
+					<td>sp_linkback()</td>
+					<td>Returns the name and version of the project, linked to the project's URL.</td>
+					<td style="text-align:center;">0.92</td>
+				</tr>
+			</table>
+		</div>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="current">What It Does And Doesn't</a></h2>
+		<p>SimplePie is intended to be just that... simple.  I've put together functions for the more common RSS 1.0/2.0/Atom 0.3 tags, so those should be very easy-to-use.  Chances are, if you're wanting to build your own online feed reader, the current functionality has got you covered.</p>
+
+			<h3>What it does do:</h3>
+			<ol>
+				<li><b>Simplicity:</b> It allows you to use a single function to read related parts of feeds.  For example, to dig up the author of the entry, SimplePie will look for <code>&lt;author&gt;</code> (for RSS 1.0 and 2.0), then <code>&lt;dc:creator&gt;</code> (for RSS 1.0), then <code>&lt;author&gt;</code><code>&lt;name&gt;</code> (for Atom 0.3).  All you have to do is worry about calling one function, and SimplePie does the rest according to the respective specifications.</li>
+				<li><b>Caching:</b> Like any good RSS parser, SimplePie will cache feeds for faster reading.  In addition, SimplePie will also go through and delete all cache files that have not been used in 7 days, in order to avoid having too much of your webspace taken up by cache files.</li>
+				<li><b>Auto-Discovery:</b> SimplePie supports the auto-discovery of RSS and Atom feeds.  If you don't know the URL of the feed you want to read, but you do know the website URL... AND that website is set up for auto-discovery, SimplePie will most likely find your wayward feed, and display it for you without even a hiccup.</li>
+				<li><b>Accommodating:</b> It significantly improves the processing of incorrectly formatted feeds by re-writing various parts of the feed while in memory, so that the feed that gets processed more closely resembles valid XML/RSS/RDF/Atom.</li>
+				<li><b>Extensible:</b> Extending SimplePie's abilities to do other things is fairly straight-forward&mdash;especially in adding support for newer syndication formats.  There are plans in the works to test out some sort of extension model.  SimplePie can also be used as part of more complex projects that require XML or RSS parsing.</li>
+				<li><b>Logical:</b> Every function will <code>return</code> a value.  That means that you'll need to <code>echo</code> or <code>print</code> the returned value to the page.  For logic purposes, if the RSS/Atom element exists, the function will return the value.  If not, the function will return <code>false</code>... which makes it easy to do a quick sniff before trying to display your data.
+			<pre>
+$rss = simplepie("http://www.skyzyx.com/rss/skyzyx.xml");
+
+if (get_feed_title($rss)) {
+	echo "The title of this feed is: &lt;b&gt;" .get_feed_title($rss) . "&lt;/b&gt;";
+}</pre></li>
+			<li><b>Flexible:</b> It also supports reading URL's that are in the following formats:
+			<ul>
+				<li><code>http://www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>feed://www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>feed:http://www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>feed://http://www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>feed:www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>www.skyzyx.com/rss/skyzyx.xml</code></li>
+			</ul>
+			Feeds without a protocol are treated as local files (a.k.a. files with a relative URL).  The only exception is if a URL begins with <code>www.</code>, then SimplePie will assume a protocol of <code>http://</code>.</li>
+			</ol>
+
+			<h3>What it doesn't do:</h3>
+			<p>It doesn't support ALL of the various RSS and Atom tags... but it does support the more commonly used ones.  If there are requests to add other specific functions, I may very well add them.  It's also fairly easy to hack them in yourself, if you feel so inclined.</p>
+			<p>Tag parsing is case-sensitive, unfortunately.  Although the specifications dictate how feeds should be formatted, some people just don't pay attention.  Everything is parsed as lowercase, unless it's a tag that is in function-case (<code>&lt;pubDate&gt;</code>), in which both the function-case and lowercase formats are looked for when parsing the feed.  This seems to work with all of the feeds I've tried though.</p>
+			<p>Lastly, it won't make you rich, famous, or beautiful... but it might make some web dev stuff a much happier experience.  =)</p>
+			<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+
+		<h2>&raquo;&nbsp;<a name="issues">Known Bugs/Issues</a></h2>
+		<p>As with all software, there are bound to be some bugs here and there.  This is especially true of software that hasn't even reached v1.0 yet.  These are the issues that I'm already aware of:</p>
+		<ol>
+			<li>Feeds that contain a forward-slash "/" character at any point in the attributes of <code>&lt;description&gt;</code> or <code>&lt;tagline&gt;</code> aren't parsed correctly.  This seems to only affect a few feeds.</li>
+			<li>This version runs a little slower than previous versions because of some of the changes I made for the sake of compatibility.  I'm hoping to be able to figure out how to make the processing faster again.</li>
+		</ol>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+
+		<h2>&raquo;&nbsp;<a name="planned">Things To Do</a></h2>
+		<p>This is usually the spot that I use during development to brainstorm about possible functionality for SimplePie.  This is also where I will list various bugs that I know need fixing.  This project as already moved far, far, far beyond the inital scope, but that's perfectly okay.  Feel free to <a href="http://www.skyzyx.com/projects/simplepie/contact.php">make a suggestion</a>.</p>
+		<ul>
+			<li>Improve the display of dates.  Currently, feeds use a few different formats for posting dates/times.  I want to make these more "human-friendly".</li>
+			<li>Create a new function that can read and display the LastModified data of a file.</li>
+			<li>Possibly add support for the SDF 1.0 (Proposed) Spec.</li>
+			<li>Add some sort of support for completely relative (as opposed to relative-to-the-root) URL's in feeds.</li>
+			<li>Make tag parsing case-insensitive</li>
+			<li>Somehow make available the possibility of choosing which syndication feed to use, if more than one feed is available for auto-discovery.</li>
+			<li>Make available links that can validate feeds (using www.feedvalidator.org)</li>
+			<li>Continue through an extensive testing phase.  I want to test 1000 different feeds with a 95% (or better) success rate before declaring this a version 1.0.</li>
+			<li>Create documentation for utilizing the XMLize core to extend SimplePie.  Perhaps some sort of extension model is in order?  I think a new door has just opened.<ul>
+				<li>Extension module for OPML support?</li>
+				<li>Extension module for FOAF support?</li>
+				<li>Extension module to support various other RSS elements such as <code>&lt;textinput&gt;</code> or something.</li>
+				<li>Find out more about XFN and see if this would apply.</li>
+			</ul></li>
+		</ul>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="version">Version History</a></h2>
+
+			<h4><strong>v0.94</strong> - 23 September 2004:</h4>
+			<ul>
+				<li>Implemented much better code for parsing and displaying non-English characters in feeds.</li>
+				<li>Made significant improvements in parsing not-well-formed RSS feeds by rewriting <code>CDATA</code> sections in feeds.</li>
+				<li>Added support for automatically deleting cache files that have been unused for 7 days (can be changed via a parameter in the <code>simplepie()</code> function).</li>
+				<li>Added <code>application/xml</code> to the auto-discovery list (as this is what Mozilla.org uses).</li>
+				<li>As per Mark Pilgrim's <a href="http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely" title="How to consume RSS safely">suggestions</a> on how to improve the security of RSS, SimplePie now strips out the following tags prior to parsing: <ul>
+					<li><code>&lt;!doctype&gt;</code></li>
+					<li><code>&lt;html&gt;</code></li>
+					<li><code>&lt;body&gt;</code></li>
+					<li><code>&lt;meta&gt;</code></li>
+					<li><code>&lt;style&gt;</code></li>
+					<li><code>&lt;script&gt;</code></li>
+					<li><code>&lt;noscript&gt;</code></li>
+					<li><code>&lt;embed&gt;</code></li>
+					<li><code>&lt;object&gt;</code></li>
+					<li><code>&lt;param&gt;</code></li>
+					<li><code>&lt;blink&gt;</code></li>
+					<li><code>&lt;marquee&gt;</code></li>
+					<li><code>&lt;frameset&gt;</code></li>
+					<li><code>&lt;frame&gt;</code></li>
+					<li><code>&lt;iframe&gt;</code></li>
+					<li><code>&lt;form&gt;</code></li>
+					<li><code>&lt;input&gt;</code></li>
+					<li><code>&lt;font&gt;</code></li></ul>
+				It also takes the time to remove the following attributes from all tags: <ul>
+					<li><code>style</code></li>
+					<li><code>class</code></li>
+					<li><code>id</code></li>
+				</ul></li>
+			</ul>
+			<h4><strong>v0.93</strong> - 2 September 2004:</h4>
+			<ul>
+				<li>Added <code>sp_build()</code> to expose the build date, and <code>sp_useragent()</code> to expose the user agent string.</li>
+				<li>Added the project build date to the user agent string:<br /><code>SimplePie/0.93 (RSS Parser; http://www.skyzyx.com/projects/simplepie/) Build/20040902</code></li>
+				<li>Added a debug toggle in <code>simplepie()</code> that controls whether caching is used.  Defaults to <code>true</code>.</li>
+				<li>Transforms relative-to-the-root URL's (<code>/archives/</code>) into absolute URL's.  Web browsers do this, and now SimplePie does too for links and images in the content.</li>
+				<li>Added support for <code>&lt;content:encoded&gt;</code> in RSS 0.9x/1.0/2.0 feeds.</li>
+				<li>Added support for the auto-discovery of RSS and Atom feeds.  SimplePie will load whichever is the first feed listed (for sites who offer multiple feeds).</li>
+				<li>Changed <code>fix_protocol</code> to allow URL's with no protocol to be handled as absolute URL's provided that they begin with <code>www.</code>.</li>
+				<li>Improved support for certain types of poorly formatted RSS feeds.</li>
+				<li>Local (relative URL) files are no longer cached, since cache files and local files are essentially the same thing.  There's no sense in having two copies of the same file on the same server now, is there?</li>
+			</ul>
+			<h4><strong>v0.92</strong> - 29 August 2004:</h4>
+			<ul>
+				<li>Implemented a simple caching system that refreshes feeds older than 1 hour.  Initial loads are about as fast as v0.91 speeds, while subsequent loads are as fast as v0.9 speeds (100-200 times faster than v0.8).</li>
+				<li>The project name, version, and URL can all be displayed through functions.  This is useful for auto-updating "Powered by ..." messages.</li>
+				<li>Added better support for characters that are not part of the Latin-based alphabet.</li>
+				<li>Added a User Agent: <code>SimplePie/0.92 (RSS Parser; http://www.skyzyx.com/projects/simplepie/)</code></li>
+				<li>Removed functionality where SimplePie wrapped a <code>CDATA</code> section around <code>&lt;title&gt;</code>, <code>&lt;link&gt;</code>, and <code>&lt;description&gt;</code> values.</li>
+				<li>Swaps out certain "smart" characters for their safer ASCII counterparts.  This seems to resolve "<a href="http://www.skyzyx.com/archives/000312.php">The Dunstan Issue</a>".</li>
+				<li>Added a debug toggle in <code>simplepie()</code> that dumps the feed contents to the screen.  Defaults to <code>false</code>.</li>
+			</ul>
+			<h4><strong>v0.91</strong> - 28 August 2004:</h4>
+			<ul>
+				<li>Added support for reading local (relative URL) files.</li>
+				<li>Wraps a <code>CDATA</code> section around <code>&lt;title&gt;</code>, <code>&lt;link&gt;</code>, and <code>&lt;description&gt;</code> values.</li>
+				<li>v0.9 processed feeds so fast that it didn't give itself a chance to completely read the XML file prior to parsing.  This would frequently cause errors to occur.  v0.91 makes a local copy of the feed before trying to parse it, but also slows it down a tad.</li>
+			</ul>
+			<h4><strong>v0.9</strong> - 2 August 2004:</h4>
+			<ul>
+				<li>Re-wrote software from scratch.</li>
+				<li>Dropped dependency on Magpie RSS, and built software around XMLize.</li>
+				<li>Removed all external dependencies (all necessary functions are built-in).</li>
+				<li>Maintained functional backwards compatibility with v0.8.</li>
+				<li>Increased the RSS processing speed by 100 to over 200 times, depending on the power of the hosting server.</li>
+				<li>Slimmed down overall RSS parsing package size by more than 75%.</li>
+				<li>Created online demo to show speed differences between old architechture and new.</li>
+			</ul>
+			<h4><strong>v0.8</strong> - 20 July 2004:</h4>
+			<ul>
+				<li>First public release.</li>
+				<li>Works on top of MagpieRSS.</li>
+				<li>Shortened name from "Simple API for Magpie" to "SimplePie".</li>
+			</ul>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="credit">Credit To Others</a></h2>
+		<p>SimplePie would never have become a reality if it wasn't for the fantastic work of other people.  SimplePie leverages the power of the following software and code:</p>
+		<ul>
+			<li><b><a href="http://www.hansanderson.com/php/xml/">XMLize:</a></b>  This brilliant piece of software handles all of the XML parsing in SimplePie.  Instead of breaking down the XML file into a typical array like everyone else, XMLize has some very well thought-out syntax that makes it easy to read attributes, nodes, and subelements.</li>
+			<li><b>Cached fopen():</b>  I came across this snippet on PHP.net's <code>fopen()</code> page.  It was written by zwiskle[at]vol[dot]at.  It's fast, does exactly what I need it to, and allows SimplePie to run at ultra-fast speeds.</li>
+			<li><b><a href="http://keithdevens.com/weblog/archive/2002/Jun/03/RSSAuto-DiscoveryPHP">RSS Auto-Discovery:</a></b>  Auto-discovery was a major feature that SimplePie was lacking until I came across this.  I hacked in support for discovering Atom and RSS 1.0 feeds, but the rest of the software works brilliantly as-is.</li>
+			<li><b><a href="http://chxo.com/berylium/software/feedsplitter/document-enhanced_xml_f616.html">Entity Handler:</a></b>  This code allows SimplePie to be able to parse raw characters in feeds that really should be in entity form.  This typically helps in the processing of raw smart-quotes as well as foreign language (non-English) feeds.</li>
+			<li><b>Delete old cached files:</b>  I came across this code over at PHP.net that deletes old cache files that have not been used in a week.  It was written by adam[at]roomvoter[dot]com.</li>
+			<li><b>Various Code Snippets:</b>  I pulled several code snippets from examples at PHP.net.  I'm still fairly young in my PHP experience, and this project would not have been possible without those examples.</li>
+			<li><b>Mark IJbema:</b> For helping me with some tricky regular expression syntax.</li>
+		</ul>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<h2>&raquo;&nbsp;<a name="license">License</a></h2>
+		<p>Although I retain ownership over the code, you are hereby licensed to use it in any form you wish.  The SimplePie "credits" must stay in-tact with the library.</p>
+		<p><a href="#top">Back to the Top &raquo;</a></p>
+
+
+
+		<br /><br /><br /><br />
+		<p class="timedate">Updated: 24 September 2004</p>
+
+</body>
+</html>
