@@ -1,0 +1,430 @@
+<html>
+<head>
+<title>SimplePie: Documentation</title>
+
+<style type="text/css">
+body {
+	font-family: Verdana, "Lucida Grande", Arial, Sans, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height:16px;
+	color:#000;
+	margin:15px;
+	padding:0px;
+	width:700px;
+}
+
+a { color:#03f; }
+a:hover { color:#f60; }
+
+h1 {
+	position:relative;
+	font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Sans, Helvetica, sans-serif;
+	font-size:24px;
+	font-weight:bold;
+	padding:0;
+	margin:20px 0 5px 0;
+}
+
+h2 {
+	position:relative;
+	font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Sans, Helvetica, sans-serif;
+	font-size:18px;
+	margin:40px 0px 5px 0px;
+	display:block;
+	color:#fff;
+	background-color:#2F4A76;
+	padding:10px;
+	font-weight:normal;
+	border:1px solid #000;
+}
+
+h2 a {
+	color:#fff;
+	text-decoration:none;
+}
+
+h2 a:hover { color:#fff; }
+
+h3 {
+	position:relative;
+	font-family: "Trebuchet MS", Trebuchet, Verdana, Arial, Sans, Helvetica, sans-serif;
+	font-size:15px;
+	margin:25px 0px 5px 0px;
+	display:block;
+	font-weight:bold;
+	border-bottom:1px solid #666;
+	padding:0px 0px 3px 0px;
+}
+
+h4 {
+	position:relative;
+	font-weight:normal;
+	font-style:italic;
+	text-decoration:underline;
+	margin:20px 0px 5px 0px;
+	font-size: 12px;
+}
+
+ol, ul { margin:5px 0px 0px 10px; }
+li { margin:0px 0px 7px 0px; }
+
+p {
+	text-indent:30px;
+	margin:0px;
+	padding:5px 0px 10px 0px;
+}
+
+p.timedate {
+	font-family: Verdana, "Lucida Grande", Arial, Sans, Helvetica, sans-serif;
+	font-size:11px;
+	padding:0px 0px 10px 0px;
+}
+
+p.noindent { text-indent:0px; }
+
+acronym, abbr { 
+	border-bottom:1px dotted #666;
+	cursor: help;
+}
+
+code {
+	font-family:monospace;
+	padding:0 3px;
+	color:#000080;
+	background-color:#e9f5ff;
+}
+
+pre {
+	font-family: Verdana, "Lucida Grande", Arial, Sans, Helvetica, sans-serif;
+	color:#000;
+	background-color:#e9f5ff;
+	border:1px dotted #000080;
+	font-size:11px;
+	line-height:14px;
+	padding:5px;
+	margin:15px 0px;
+}
+
+cite { font-style:italic; }
+
+.quote, blockquote {
+	color:#000;
+	background-color:#f3f3f3;
+	border-top:1px solid #aaa;
+	border-bottom:1px solid #aaa;
+	font-size:11px;
+	line-height:14px;
+	padding:5px 15px;
+	margin:15px 30px;
+}
+
+blockquote p {
+	margin-top:5px;
+	padding:0px;
+}
+
+blockquote p:first-child {
+	margin:0px;
+	padding:0px;
+}
+
+table {
+	font-family: Verdana, "Lucida Grande", Arial, Sans, Helvetica, sans-serif;
+	font-size: 11px;
+	line-height:14px;
+	color:#000;
+	margin:0;
+	padding:0;
+	width:90%;
+}
+
+table tr.header th {
+	border:1px solid #000;
+	background-color:#2f4a76;
+	color:#fff;
+	font-weight:bold;
+	text-align:center;
+	padding:3px;
+}
+
+table tr td {
+	border:1px solid #000;
+	background-color:#fff;
+	color:#000;
+	font-weight:normal;
+	text-align:left;
+	padding:3px;
+}
+
+</style>
+
+</head>
+<body>
+
+		<h1>Documentation for SimplePie 0.8</h1>
+		Copyleft &copy; 2004 Ryan Parman<br />
+		<a href="http://www.skyzyx.com/projects/simplepie/">http://www.skyzyx.com/projects/simplepie/</a><br />
+
+		<h2>&raquo;&nbsp;Sections of this Document</h2>
+		<ol>
+			<li><a href="#about">About SimplePie</a></li>
+			<li><a href="#current">What It Does, Doesn't, And Won't Do</a></li>
+			<li><a href="#planned">Roadmap</a></li>
+			<li><a href="#requirements">Requirements</a></li>
+			<li><a href="#get">Get The Code</a></li>
+			<li><a href="#use">How Do I Use This Thing?</a></li>
+			<li><a href="#version">Version History</a></li>
+			<li><a href="#license">License</a></li>
+		</ol>
+
+		<h2>&raquo;&nbsp;<a name="about">About SimplePie</a></h2>
+		<p>The name "SimplePie" is short for "Simple API for Magpie".  SimplePie is a collection of easy to use functions that leverage the power of <a href="http://magpierss.sourceforge.net">Magpie RSS</a> to make it super simple to create your very own PHP-based feed reader.</p>
+		<p>Magpie RSS (by <a href="http://www.laughingmeme.org">Kellan Elliott-McCrea</a>) is a very good and very powerful RSS feed parser written in PHP.  Although Magpie is easy to use for those familiar with PHP, it can be a bit daunting to use if you are brand-new to PHP.  This was the case for me when I first started using Magpie.</p>
+		<p>SimplePie also utilizes <a href="http://www.hansanderson.com/php/xml/">XMLize</a> (by <a href="http://www.hansanderson.com">Hans Anderson</a>) to fill in the gaps in Magpie's Atom support.  The more Magpie matures, the less I'll need to rely on XMLize.</p>
+
+		<h2>&raquo;&nbsp;<a name="current">What It Does And Doesn't</a></h2>
+		<p>Because SimplePie does little more than sit on top of your Magpie installation, many of the features and limitations of this software are actually features and limitations of Magpie.  To get up-to-speed on Magpie itself, check out the <a href="http://magpierss.sourceforge.net">website</a>.</p>
+
+			<h3>What it does do:</h3>
+			<p>It works.  Since I've already met my primary goal, the rest is nothing but gravy.  There are a few other things it does though.
+			<p>It does fill in some of the gaps in Magpie's Atom support, namely the <code>language</code> of the feed and the <code>author</code> of each entry (or item).  It also allows you to use a single function to pull together the various parts of feeds.</p>
+			<p>Here's an example: This is the task of reading the title, link, and description/tagline of a given feed using Magpie's native API:</p>
+			<pre>
+$rss_feed = fetch_url("http://www.skyzyx.com/rss/skyzyx.xml");
+
+// Get the title
+if ($rss_feed->channel['title']) {
+	echo  $rss_feed->channel['title'];
+}
+
+// Get the link
+if ($rss_feed->channel['link']) {
+	echo  $rss_feed->channel['link'];
+}
+
+// Get the description
+if ($rss_feed->channel['description']) {
+	echo  $rss_feed->channel['description'];
+}
+else if ($rss_feed->channel['tagline']) {
+	echo $rss_feed->channel['tagline'];
+}</pre>
+		<p>Here's the same task using SimplePie on top of Magpie:</p>
+		<pre>
+$rss = simplepie("http://www.skyzyx.com/rss/skyzyx.xml");
+
+echo get_feed_title($rss);
+echo get_feed_link($rss);
+echo get_feed_description($rss);</pre>
+
+			<p>Every function will <code>return</code> a value.  That means that you'll need to <code>echo</code> or <code>print</code> the returned value to the page.  For logic purposes, if the RSS/Atom element exists, the function will return the value.  If not, the function will return <code>false</code>... which makes it easy to do a quick sniff before trying to display your data.</p>
+			<pre>
+$rss = simplepie("http://www.skyzyx.com/rss/skyzyx.xml");
+
+if (get_feed_title($rss)) {
+	echo "The title of this feed is: &lt;b&gt;" .get_feed_title($rss) . "&lt;/b&gt;";
+}</pre>
+
+			<p>It also supports importing URL's that are in the following formats:</p>
+			<ul>
+				<li><code>http://www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>feed://www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>feed:http://www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>feed://http://www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>feed:www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>www.skyzyx.com/rss/skyzyx.xml</code></li>
+				<li><code>skyzyx.com/rss/skyzyx.xml</code></li>
+			</ul>
+
+			<h3>What it doesn't do:</h3>
+			<p>It doesn't support ALL of the various RSS and Atom tags... it only supports the more commonly used ones.  If there are requests to add other specific functions, I may very well add them.</p>
+			<p>It won't change much after 1.0.  The only reason why SimplePie would change is if Magpie overhauls it's API, adds more thorough support for the Atom spec, or if I simply need it to be able to do more.</p>
+			<p>My plan is that it will always be complementary, but never a replacement to Magpie RSS.  Kellan has some really good software here, and I doubt I could do a better job without several more years experience.  Besides, I've already been working on a <a href="http://www.skyzyx.com/projects/feedparser/">Feed Parser</a> written in JavaScript, and I'd rather not do it again in another language. Whew!</p>
+
+		<h2>&raquo;&nbsp;<a name="planned">Roadmap</a></h2>
+		<p>Here is a list of things I plan to do.  I'm open to suggestions and bug reports.</p>
+		<ul>
+			<li>Make sure caching works for everything pulled in using XMLize.</li>
+			<li>Since this will be used at the core of my upcoming <a href="http://www.skyzyx.com/projects/blogroller/">Blogroller</a> software, it needs to be super easy to use.  More people are looking for super-simple blogroll software than are looking to create their own feed readers.</li>
+		</ul>
+
+		<h2>&raquo;&nbsp;<a name="requirements">Requirements</a></h2>
+		<p>This software was built using PHP 4.3 and Magpie RSS 0.61.  In reality, the PHP requirements are whatever Magpie requires.</p>
+
+		<h2>&raquo;&nbsp;<a name="get">Get The Code</a></h2>
+		<h4>Current Version:</h4>
+		<ul>
+			<li><a href="http://www.skyzyx.com/projects/simplepie/simplepie_0.8.zip">SimplePie 0.8</a> - 20 July 2004.</li>
+		</ul>
+		<h4>Magpie RSS software (requires v0.61+):</h4>
+		<ul>
+			<li><a href="http://sourceforge.net/project/showfiles.php?group_id=55691&package_id=50728">Magpie RSS</a></li>
+		</ul>
+
+		<h2>&raquo;&nbsp;<a name="use">How Do I Use This Thing?</a></h2>
+		<p>Here is documentation for the various functions in SimplePie.  There is also a sample page bundled in the SimplePie ZIP file.  I'd highly recommend looking over the sample page to discover best practices when using this software.</p>
+		<p><strong>Make sure</strong> that <code>simplepie.inc</code> and <code>xmlize.inc</code> are dropped into the same directory as your Magpie RSS installation, otherwise functionality will fail unless you edit the paths in <code>simplepie.inc</code>.</p>
+		<div align="center">
+			<table>
+				<tr class="header">
+					<th>Variables</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>$rss</td>
+					<td>Represents the feed's URL.</td>
+				</tr>
+				<tr>
+					<td>$x</td>
+					<td>Represents a location in the item/entry array.</td>
+				</tr>
+				<tr>
+					<td>$http</td>
+					<td>Used only in <code>fix_protocol()</code>, this toggles between returning an <code>http://</code> protocol or a <code>feed://</code> protocol.</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>General Functions</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>simplepie("Feed URL")</td>
+					<td>Checks for the validity of the feed to that other errors don't occur.  Not required, but recommended if your feed reader will be public.</td>
+				</tr>
+				<tr>
+					<td>get_version($rss)</td>
+					<td>Returns the feed type and version. This will always return a value if the feed is valid (use <code>simplepie()</code> to check validity).</td>
+				</tr>
+				<tr>
+					<td>get_feed_url($rss)</td>
+					<td>Returns the "corrected" URL of the feed (with proper <code>http://</code> protocol). This will always return a value if the feed is valid (use <code>simplepie()</code> to check validity).</td>
+				</tr>
+				<tr>
+					<td>get_feedproto_url($rss)</td>
+					<td>Returns the "corrected" URL of the feed with the <code>feed://</code> protocol to make subscribing easy. This will always return a value if the feed is valid (use <code>simplepie()</code> to check validity).</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>Feed Functions</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>get_feed_title($rss)</td>
+					<td>Returns the title of the feed.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_feed_link($rss)</td>
+					<td>Returns the link of the feed.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_feed_description($rss)</td>
+					<td>Returns the description of the feed.  First it looks for <code>&lt;description&gt;</code>, then <code>&lt;tagline&gt;</code>.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_feed_copyright($rss)</td>
+					<td>Returns the copyright of the feed.</td>
+				</tr>
+				<tr>
+					<td>get_feed_language($rss)</td>
+					<td>Returns the language of the feed.  First it looks for <code>&lt;language&gt;</code>, then <code>&lt;dc:language&gt;</code>, then <code>&lt;feed xml:lang="???"&gt;</code> (for Atom feeds).  Returns <code>false</code> if no value.</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>Image Functions</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>get_image_exist($rss)</td>
+					<td>Returns <code>true</code> or <code>false</code> based on whether the <code>&lt;image&gt;</code> element exists.</td>
+				</tr>
+				<tr>
+					<td>get_image_title($rss)</td>
+					<td>Returns the title of the image.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_image_url($rss)</td>
+					<td>Returns the URL of the image.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_image_link($rss)</td>
+					<td>Returns the link of the image.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_image_width($rss)</td>
+					<td>Returns the width of the image.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_image_height($rss)</td>
+					<td>Returns the height of the image.  Returns <code>false</code> if no value.</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>Item Functions</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>get_item_quantity($rss)</td>
+					<td>Returns the number of <code>&lt;item&gt;</code> and <code>&lt;entry&gt;</code> elements.  This is for a for-loop.</td>
+				</tr>
+				<tr>
+					<td>get_item_title($x,&nbsp;$rss)</td>
+					<td>Returns the title of the item.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_item_permalink($x,&nbsp;$rss)</td>
+					<td>Returns the permalink of the item.  First it looks for <code>&lt;link&gt;</code>, then <code>&lt;guid&gt;</code> (for silly blogs like <a href="http://www.1976design.com/blog/">Dunstan's</a> who don't use <code>&lt;link&gt;</code>).  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_item_description($x,&nbsp;$rss)</td>
+					<td>Returns the description of the item.  First it looks for <code>&lt;description&gt;</code>, then <code>&lt;summary&gt;</code>.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_item_category($x,&nbsp;$rss)</td>
+					<td>Returns the category of the item.  First it looks for <code>&lt;category&gt;</code>, then <code>&lt;dc:subject&gt;</code>.  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_item_author($x,&nbsp;$rss)</td>
+					<td>Returns the description of the item.  First it looks for <code>&lt;dc:creator&gt;</code>, then <code>&lt;author&gt;</code><code>&lt;name&gt;</code> (for Atom), then <code>&lt;author&gt;</code> (for RSS).  Returns <code>false</code> if no value.</td>
+				</tr>
+				<tr>
+					<td>get_item_date($x,&nbsp;$rss)</td>
+					<td>Returns the date of the item.  First it looks for <code>&lt;pubDate&gt;</code>, then <code>&lt;dc:date&gt;</code>, then <code>&lt;modified&gt;</code> (for Atom).  Returns <code>false</code> if no value.</td>
+				</tr>
+
+
+				<tr class="header">
+					<th>Internal Functions</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>get_feed($rss)</td>
+					<td>This function is used internally by SimplePie.  This function loads the feed URL and turns it into a Magpie array.</td>
+				</tr>
+				<tr>
+					<td>get_xmlized_feed($rss)</td>
+					<td>This function is used internally by SimplePie.  This function loads in a feed URL and makes it a PHP-parsable array.</td>
+				</tr>
+				<tr>
+					<td>fix protocol($rss,&nbsp;$http)</td>
+					<td>This function is used internally by SimplePie.  This function can accept a variety of incorrectly formatted URL's and fixes them so that they can be processed by Magpie and XMLize.  This function can also return the URL with the <code>feed://</code> protocol so that is can be easily subscribed to.</td>
+				</tr>
+			</table>
+		</div>
+
+		<h2>&raquo;&nbsp;<a name="version">Version History</a></h2>
+			<h4><strong>v0.8</strong> - 20 July 2004:</h4>
+			<ul>
+				<li>First public release.</li>
+			</ul>
+
+		<h2>&raquo;&nbsp;<a name="license">License</a></h2>
+		<p>Ye old "free to use however" license.  Do with it what you like!</p>
+
+		<p class="timedate">Updated: 20 July 2004</p>
+
+</body>
+</html>
