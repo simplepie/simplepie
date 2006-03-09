@@ -19,6 +19,7 @@ if (!empty($_GET['feed'])) {
 }
 else if (!empty($_GET['i'])) {
 	$feed->display_image($_GET['i']);
+	exit;
 }
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -66,17 +67,17 @@ else if (!empty($_GET['i'])) {
 					<?php echo $feed->get_feed_description(); ?>
 				</div>
 				<p class="subscribe"><strong>Subscribe:</strong> <a href="<?php echo $feed->subscribe_aol(); ?>">My AOL</a>, <a href="<?php echo $feed->subscribe_bloglines(); ?>">Bloglines</a>, <a href="<?php echo $feed->subscribe_google(); ?>">Google Reader</a>, <a href="<?php echo $feed->subscribe_msn(); ?>">My MSN</a>, <a href="<?php echo $feed->subscribe_newsburst(); ?>">Newsburst</a>,<br /><a href="<?php echo $feed->subscribe_newsgator(); ?>">Newsgator</a>, <a href="<?php echo $feed->subscribe_odeo(); ?>">Odeo</a>, <a href="<?php echo $feed->subscribe_pluck(); ?>">Pluck</a>, <a href="<?php echo $feed->subscribe_podnova(); ?>">Podnova</a>, <a href="<?php echo $feed->subscribe_rojo(); ?>">Rojo</a>, <a href="<?php echo $feed->subscribe_yahoo(); ?>">My Yahoo!</a>, <a href="<?php echo $feed->subscribe_feed(); ?>">Desktop Reader</a></p>
-				<?php for ($x = 0; $x < $feed->get_item_quantity(); $x++): ?>
+				<?php foreach($feed->get_items() as $item): ?>
 					<div class="chunk">
-						<h4><?php if ($feed->get_item_permalink($x)) echo '<a href="' . $feed->get_item_permalink($x) . '">'; echo $feed->get_item_title($x); if ($feed->get_item_permalink($x)) echo '</a>'; ?>&nbsp;<span class="footnote"><?php echo $feed->get_item_date($x, 'j M Y'); ?></span></h4>
-						<?php echo $feed->get_item_description($x); ?>
+						<h4><?php if ($item->get_permalink()) echo '<a href="' . $item->get_permalink() . '">'; echo $item->get_title(); if ($item->get_permalink()) echo '</a>'; ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y'); ?></span></h4>
+						<?php echo $item->get_description(); ?>
 						<?php
-						if ($feed->get_item_enclosure($x))
-							echo '<p><a href="' . $feed->get_item_enclosure($x) . '" class="download"><img src="./for_the_demo/mini_podcast.png" alt="Podcast" title="Download the Podcast" border="0" /></a></p>';
+						if ($item->get_enclosure(0))
+							echo '<p><a href="' . $item->get_enclosure(0) . '" class="download"><img src="./for_the_demo/mini_podcast.png" alt="Podcast" title="Download the Podcast" border="0" /></a></p>';
 						?>
-						<p class="footnote">&rarr; <a href="<?php echo $feed->add_to_delicious($x); ?>" title="Add post to del.icio.us">Del.icio.us</a> | <a href="<?php echo $feed->add_to_digg($x); ?>" title="Digg this!">Digg</a> | <a href="<?php echo $feed->add_to_furl($x); ?>" title="Add post to Furl">Furl</a> | <a href="<?php echo $feed->add_to_myweb20($x); ?>" title="Add post to My Web 2.0">My Web 2.0</a> | <a href="<?php echo $feed->add_to_newsvine($x); ?>" title="Add post to Newsvine">Newsvine</a> | <a href="<?php echo $feed->add_to_reddit($x); ?>" title="Add post to Reddit">Reddit</a> | <a href="<?php echo $feed->add_to_spurl($x); ?>" title="Add post to Spurl">Spurl</a> | <a href="<?php echo $feed->search_technorati($x); ?>" title="Who's linking to this post?">Search Technorati</a></p>
+						<p class="footnote">&rarr; <a href="<?php echo $item->add_to_delicious(); ?>" title="Add post to del.icio.us">Del.icio.us</a> | <a href="<?php echo $item->add_to_digg(); ?>" title="Digg this!">Digg</a> | <a href="<?php echo $item->add_to_furl(); ?>" title="Add post to Furl">Furl</a> | <a href="<?php echo $item->add_to_myweb20(); ?>" title="Add post to My Web 2.0">My Web 2.0</a> | <a href="<?php echo $item->add_to_newsvine(); ?>" title="Add post to Newsvine">Newsvine</a> | <a href="<?php echo $item->add_to_reddit(); ?>" title="Add post to Reddit">Reddit</a> | <a href="<?php echo $item->add_to_spurl(); ?>" title="Add post to Spurl">Spurl</a> | <a href="<?php echo $item->search_technorati(); ?>" title="Who's linking to this post?">Search Technorati</a></p>
 					</div>
-				<?php endfor; ?>
+				<?php endforeach; ?>
 				</div>
 			<?php endif; ?>
 		</div>

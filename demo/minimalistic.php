@@ -101,18 +101,18 @@ form#sp_form input.text {
 
 	<div id="sp_results">
 		<?php if ($feed->data): ?>
-			<?php $max = $feed->get_item_quantity(); ?>
-			<p align="center"><span style="background-color:#ffc;">Displaying <?php echo $max; ?> most recent entries.</span></p>
-			<?php for ($x = 0; $x < $max; $x++): ?>
+			<?php $items = $feed->get_items(); ?>
+			<p align="center"><span style="background-color:#ffc;">Displaying <?php echo $feed->get_item_quantity(); ?> most recent entries.</span></p>
+			<?php foreach($items as $item): ?>
 				<div class="chunk" style="padding:0 5px;">
-					<h4><a href="<?php echo $feed->get_item_permalink($x); ?>"><?php echo $feed->get_item_title($x); ?></a> <?php echo $feed->get_item_date($x, 'j M Y'); ?></h4>
-					<?php echo $feed->get_item_description($x); ?>
+					<h4><a href="<?php echo $item->get_permalink(); ?>"><?php echo $item->get_title(); ?></a> <?php echo $item->get_date('j M Y'); ?></h4>
+					<?php echo $item->get_description(); ?>
 					<?php
-					if ($feed->get_item_enclosure($x))
-						echo '<p><a href="' . $feed->get_item_enclosure($x) . '" class="download"><img src="./for_the_demo/mini_podcast.png" alt="Podcast" title="Download the Podcast" border="0" /></a></p>';
+					if ($enclosure = $item->get_enclosure(0))
+						echo '<p><a href="' . $enclosure->get_link() . '" class="download"><img src="./for_the_demo/mini_podcast.png" alt="Podcast" title="Download the Podcast" border="0" /></a></p>';
 					?>
 				</div>
-			<?php endfor; ?>
+			<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
 	</div>
