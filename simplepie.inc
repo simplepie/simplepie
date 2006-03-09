@@ -769,6 +769,7 @@ class SimplePie {
 				{
 					$this->parse_xml_data_array();
 					$this->data['feedinfo']['encoding'] = $this->encoding;
+					usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
 					if ($this->caching && substr($this->rss_url, 0, 7) == 'http://') {
 						if ($this->is_writeable_createable($cache_filename)) {
 							$fp = fopen($cache_filename, 'w');
@@ -1457,167 +1458,169 @@ class SimplePie {
 		}
 		
 		// Items
-		foreach ($this->xmldata['items'] as $num => $item) {
-			// Clear vars
-			$id = null;
-			$title = null;
-			$description = null;
-			$categories = array();
-			$author = array();
-			$date = null;
-			$links = array();
-			$enclosures = array();
-
-			// Title
-			if (!empty($item['title']['data'])) {
-				$title = $this->sanitise($item['title']['data'], $item['title']['attribs']);
-			}
-			
-			// Description
-			if (!empty($item['content']['data'])) {
-				$description = $this->sanitise($item['content']['data'], $item['content']['attribs']);
-			}
-			else if (!empty($item['encoded']['data'])) {
-				$description = $this->sanitise($item['encoded']['data'], $item['encoded']['attribs']);
-			}
-			else if (!empty($item['summary']['data'])) {
-				$description = $this->sanitise($item['summary']['data'], $item['summary']['attribs']);
-			}
-			else if (!empty($item['longdesc']['data'])) {
-				$description = $this->sanitise($item['longdesc']['data'], $item['longdesc']['attribs']);
-			}
-			else if (!empty($item['description']['data'])) {
-				$description = $this->sanitise($item['description']['data'], $item['description']['attribs']);
-			}
-			
-			// Link
-			if (!empty($item['link'])) {
-				foreach ($item['link'] as $link) {
-					if (empty($link['attribs']['REL']) || $link['attribs']['REL'] == 'alternate') {
-						if (empty($link['data'])) {
-							$links[sizeof($links)] = $this->sanitise($link['attribs']['HREF'], $link['attribs']);
-						} else {
-							$links[sizeof($links)] = $this->sanitise($link['data'], $link['attribs']);
-						}
-					} else if ($link['attribs']['REL'] == 'enclosure' && !empty($link['attribs']['HREF'])) {
-						$href = null;
-						$type = null;
-						$length = null;
-						$href = $this->sanitise($link['attribs']['HREF'], $link['attribs']);
-						if (!empty($link['attribs']['TYPE'])) {
-							$type = $this->sanitise($link['attribs']['TYPE'], $link['attribs']);
-						}
-						if (!empty($link['attribs']['LENGTH'])) {
-							$length = $this->sanitise($link['attribs']['LENGTH'], $link['attribs']);
-						}
-						$enclosures[] = new SimplePie_Enclosure($href, $type, $length);
-					}
+		if (!empty($this->xmldata['items'])) {
+			foreach ($this->xmldata['items'] as $num => $item) {
+				// Clear vars
+				$id = null;
+				$title = null;
+				$description = null;
+				$categories = array();
+				$author = array();
+				$date = null;
+				$links = array();
+				$enclosures = array();
+	
+				// Title
+				if (!empty($item['title']['data'])) {
+					$title = $this->sanitise($item['title']['data'], $item['title']['attribs']);
 				}
-			}
-			
-			// Enclosures
-			if (!empty($item['enclosure'])) {
-				foreach ($item['enclosure'] as $enclosure) {
-					if (!empty($enclosure['attribs']['URL'])) {
-						$href = null;
-						$type = null;
-						$length = null;
-						$href = $this->sanitise($enclosure['attribs']['URL'], $enclosure['attribs']);
-						if (!empty($enclosure['attribs']['TYPE'])) {
-							$type = $this->sanitise($enclosure['attribs']['TYPE'], $enclosure['attribs']);
-						}
-						if (!empty($enclosure['attribs']['LENGTH'])) {
-							$length = $this->sanitise($enclosure['attribs']['LENGTH'], $enclosure['attribs']);
-						}
-						$enclosures[] = new SimplePie_Enclosure($href, $type, $length);
-					}
+				
+				// Description
+				if (!empty($item['content']['data'])) {
+					$description = $this->sanitise($item['content']['data'], $item['content']['attribs']);
 				}
-			}
-			
-			// ID
-			if (!empty($item['guid']['data'])) {
-				if (empty($item['guid']['attribs']['ISPERMALINK']) || strtolower($item['guid']['attribs']['ISPERMALINK']) != 'false') {
-					$links[sizeof($links)] = $this->sanitise($item['guid']['data'], $item['guid']['attribs']);
+				else if (!empty($item['encoded']['data'])) {
+					$description = $this->sanitise($item['encoded']['data'], $item['encoded']['attribs']);
 				}
-				$id = $this->sanitise($item['guid']['data'], $item['guid']['attribs']);
-			}
-			else if (!empty($item['id']['data'])) {
-				$id = $this->sanitise($item['id']['data'], $item['id']['attribs']);
-			}
-			
-			// Date
-			if (!empty($item['pubdate']['data'])) {
-				$date = $this->parse_date($this->sanitise($item['pubdate']['data'], $item['pubdate']['attribs']));
-			}
-			else if (!empty($item['date']['data'])) {
-				$date = $this->parse_date($this->sanitise($item['date']['data'], $item['date']['attribs']));
-			}
-			else if (!empty($item['issued']['data'])) {
-				$date = $this->parse_date($this->sanitise($item['issued']['data'], $item['issued']['attribs']));
-			}
-			else if (!empty($item['published']['data'])) {
-				$date = $this->parse_date($this->sanitise($item['published']['data'], $item['published']['attribs']));
-			}
-			else if (!empty($item['modified']['data'])) {
-				$date = $this->parse_date($this->sanitise($item['modified']['data'], $item['modified']['attribs']));
-			}
-			else if (!empty($item['updated']['data'])) {
-				$date = $this->parse_date($this->sanitise($item['updated']['data'], $item['updated']['attribs']));
-			}
-			
-			// Categories
-			if (!empty($item['category'])) {
-				foreach ($item['category'] as $category) {
-					$categories[sizeof($categories)] = $this->sanitise($category['data'], $category['attribs']);
+				else if (!empty($item['summary']['data'])) {
+					$description = $this->sanitise($item['summary']['data'], $item['summary']['attribs']);
 				}
-			}
-			if (!empty($item['subject'])) {
-				foreach ($item['subject'] as $category) {
-					$categories[sizeof($categories)] = $this->sanitise($category['data'], $category['attribs']);
+				else if (!empty($item['longdesc']['data'])) {
+					$description = $this->sanitise($item['longdesc']['data'], $item['longdesc']['attribs']);
 				}
-			}
-			
-			// Author
-			$authors = array();
-			if (!empty($item['creator'])) {
-				foreach($item['creator'] as $creator) {
-					$authors[] = new SimplePie_Author($this->sanitise($creator['data'], $creator['attribs']), null, null);
+				else if (!empty($item['description']['data'])) {
+					$description = $this->sanitise($item['description']['data'], $item['description']['attribs']);
 				}
-			}
-			if (!empty($item['author'])) {
-				foreach($item['author'] as $author) {
-					$name = null;
-					$link = null;
-					$email = null;
-					if (!empty($author['name'])) {
-						$name = $this->sanitise($author['name']['data'], $author['name']['attribs']);
-					}
-					if (!empty($author['url'])) {
-						$link = $this->sanitise($author['url']['data'], $author['url']['attribs']);
-					}
-					else if (!empty($author['uri'])) {
-						$link = $this->sanitise($author['uri']['data'], $author['uri']['attribs']);
-					}
-					else if (!empty($author['homepage'])) {
-						$link = $this->sanitise($author['homepage']['data'], $author['homepage']['attribs']);
-					}
-					if (!empty($author['email'])) {
-						$email = $this->sanitise($author['email']['data'], $author['email']['attribs']);
-					}
-					if (!empty($author['rss'])) {
-						$sane = $this->sanitise($author['rss']['data'], $author['rss']['attribs']);
-						if (preg_match('/(.*)@(.*) \((.*)\)/msiU', $sane, $matches)) {
-							$name = trim($matches[3]);
-							$email = trim("$matches[1]@$matches[2]");
-						} else {
-							$email = $sane;
+				
+				// Link
+				if (!empty($item['link'])) {
+					foreach ($item['link'] as $link) {
+						if (empty($link['attribs']['REL']) || $link['attribs']['REL'] == 'alternate') {
+							if (empty($link['data'])) {
+								$links[sizeof($links)] = $this->sanitise($link['attribs']['HREF'], $link['attribs']);
+							} else {
+								$links[sizeof($links)] = $this->sanitise($link['data'], $link['attribs']);
+							}
+						} else if ($link['attribs']['REL'] == 'enclosure' && !empty($link['attribs']['HREF'])) {
+							$href = null;
+							$type = null;
+							$length = null;
+							$href = $this->sanitise($link['attribs']['HREF'], $link['attribs']);
+							if (!empty($link['attribs']['TYPE'])) {
+								$type = $this->sanitise($link['attribs']['TYPE'], $link['attribs']);
+							}
+							if (!empty($link['attribs']['LENGTH'])) {
+								$length = $this->sanitise($link['attribs']['LENGTH'], $link['attribs']);
+							}
+							$enclosures[] = new SimplePie_Enclosure($href, $type, $length);
 						}
 					}
-					$authors[] = new SimplePie_Author($name, $link, $email);
 				}
-			}
-			$this->data['items'][] = new SimplePie_Item($id, $title, $description, array_unique($categories), array_unique($authors), $date, array_unique($links), array_unique($enclosures));
-		} // End Items
+				
+				// Enclosures
+				if (!empty($item['enclosure'])) {
+					foreach ($item['enclosure'] as $enclosure) {
+						if (!empty($enclosure['attribs']['URL'])) {
+							$href = null;
+							$type = null;
+							$length = null;
+							$href = $this->sanitise($enclosure['attribs']['URL'], $enclosure['attribs']);
+							if (!empty($enclosure['attribs']['TYPE'])) {
+								$type = $this->sanitise($enclosure['attribs']['TYPE'], $enclosure['attribs']);
+							}
+							if (!empty($enclosure['attribs']['LENGTH'])) {
+								$length = $this->sanitise($enclosure['attribs']['LENGTH'], $enclosure['attribs']);
+							}
+							$enclosures[] = new SimplePie_Enclosure($href, $type, $length);
+						}
+					}
+				}
+				
+				// ID
+				if (!empty($item['guid']['data'])) {
+					if (empty($item['guid']['attribs']['ISPERMALINK']) || strtolower($item['guid']['attribs']['ISPERMALINK']) != 'false') {
+						$links[sizeof($links)] = $this->sanitise($item['guid']['data'], $item['guid']['attribs']);
+					}
+					$id = $this->sanitise($item['guid']['data'], $item['guid']['attribs']);
+				}
+				else if (!empty($item['id']['data'])) {
+					$id = $this->sanitise($item['id']['data'], $item['id']['attribs']);
+				}
+				
+				// Date
+				if (!empty($item['pubdate']['data'])) {
+					$date = $this->parse_date($this->sanitise($item['pubdate']['data'], $item['pubdate']['attribs']));
+				}
+				else if (!empty($item['date']['data'])) {
+					$date = $this->parse_date($this->sanitise($item['date']['data'], $item['date']['attribs']));
+				}
+				else if (!empty($item['issued']['data'])) {
+					$date = $this->parse_date($this->sanitise($item['issued']['data'], $item['issued']['attribs']));
+				}
+				else if (!empty($item['published']['data'])) {
+					$date = $this->parse_date($this->sanitise($item['published']['data'], $item['published']['attribs']));
+				}
+				else if (!empty($item['modified']['data'])) {
+					$date = $this->parse_date($this->sanitise($item['modified']['data'], $item['modified']['attribs']));
+				}
+				else if (!empty($item['updated']['data'])) {
+					$date = $this->parse_date($this->sanitise($item['updated']['data'], $item['updated']['attribs']));
+				}
+				
+				// Categories
+				if (!empty($item['category'])) {
+					foreach ($item['category'] as $category) {
+						$categories[sizeof($categories)] = $this->sanitise($category['data'], $category['attribs']);
+					}
+				}
+				if (!empty($item['subject'])) {
+					foreach ($item['subject'] as $category) {
+						$categories[sizeof($categories)] = $this->sanitise($category['data'], $category['attribs']);
+					}
+				}
+				
+				// Author
+				$authors = array();
+				if (!empty($item['creator'])) {
+					foreach($item['creator'] as $creator) {
+						$authors[] = new SimplePie_Author($this->sanitise($creator['data'], $creator['attribs']), null, null);
+					}
+				}
+				if (!empty($item['author'])) {
+					foreach($item['author'] as $author) {
+						$name = null;
+						$link = null;
+						$email = null;
+						if (!empty($author['name'])) {
+							$name = $this->sanitise($author['name']['data'], $author['name']['attribs']);
+						}
+						if (!empty($author['url'])) {
+							$link = $this->sanitise($author['url']['data'], $author['url']['attribs']);
+						}
+						else if (!empty($author['uri'])) {
+							$link = $this->sanitise($author['uri']['data'], $author['uri']['attribs']);
+						}
+						else if (!empty($author['homepage'])) {
+							$link = $this->sanitise($author['homepage']['data'], $author['homepage']['attribs']);
+						}
+						if (!empty($author['email'])) {
+							$email = $this->sanitise($author['email']['data'], $author['email']['attribs']);
+						}
+						if (!empty($author['rss'])) {
+							$sane = $this->sanitise($author['rss']['data'], $author['rss']['attribs']);
+							if (preg_match('/(.*)@(.*) \((.*)\)/msiU', $sane, $matches)) {
+								$name = trim($matches[3]);
+								$email = trim("$matches[1]@$matches[2]");
+							} else {
+								$email = $sane;
+							}
+						}
+						$authors[] = new SimplePie_Author($name, $link, $email);
+					}
+				}
+				$this->data['items'][] = new SimplePie_Item($id, $title, $description, array_unique($categories), array_unique($authors), $date, array_unique($links), array_unique($enclosures));
+			} // End Items
+		}
 		unset($this->xmldata);
 	} // End parse_xml_data_array();
 	
