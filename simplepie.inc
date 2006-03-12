@@ -180,7 +180,7 @@ class SimplePie {
 		// Clear all outdated cache from the server's cache folder
 		$this->clear_cache($this->cache_location, $this->max_minutes);
 
-		if ($this->rss_url) {
+		if (!empty($this->rss_url)) {
 			// Read the XML file for processing.
 			$cache_filename = $this->cache_location . '/' . urlencode($this->rss_url) . '.spc';
 			if ($this->caching && !$this->xml_dump && substr($this->rss_url, 0, 7) == 'http://' && file_exists($cache_filename)) {
@@ -769,7 +769,9 @@ class SimplePie {
 				{
 					$this->parse_xml_data_array();
 					$this->data['feedinfo']['encoding'] = $this->encoding;
-					usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
+					if (!empty($this->data['items'])) {
+						usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
+					}
 					if ($this->caching && substr($this->rss_url, 0, 7) == 'http://') {
 						if ($this->is_writeable_createable($cache_filename)) {
 							$fp = fopen($cache_filename, 'w');
@@ -1698,9 +1700,20 @@ class SimplePie {
 	}
 	
 	function entities_decode($data) {
-		$data = html_entity_decode($data, ENT_QUOTES);
-		return preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $data);
+		return preg_replace_callback('/&(#)?(x)?([0-9a-z]+);/mi', array(&$this, 'do_entites_decode'), $data);
 	}
+	
+	function do_entites_decode($data)
+	{
+		$entity = "&$data[1]$data[2]$data[3];";
+		$entity_html = html_entity_decode($entity, ENT_QUOTES);
+		if ($entity == $entity_html) {
+			return preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $entity);
+		} else {
+			return $entity_html;
+		}
+	}
+		
 	
 	// Escape numeric entities
 	// From a PHP Manual note (on html_entity_decode())
