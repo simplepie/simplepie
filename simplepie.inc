@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 9 March 2006
+Updated: 12 March 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://www.simplepie.org
 
@@ -38,7 +38,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060309';
+	var $build = '20060312';
 	var $url = 'http://www.simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -674,10 +674,10 @@ class SimplePie {
 				}
 				
 				$mp_rss = preg_replace('/<!DOCTYPE(.*)>/siU', '', $mp_rss); // Strip out the DOCTYPE since we don't use it anyways.
+				$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss); // Add an internal attribute to CDATA sections
 
 				// If we're RSS
 				if (preg_match('/<rdf:rdf/i', $mp_rss) || preg_match('/<rss/i', $mp_rss)) {
-					$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss);
 					// <author>
 					$mp_rss = preg_replace("%<autho[^>/]+((\"[^\"]*\")|(\'[^\']*\')|([^>/]*))((\s*)|([^\s]))/>%i", '<author></author>', $mp_rss);
 					$mp_rss = preg_replace('%<author(.|\s)*?>%i', '<author\\0<![CDATA[', $mp_rss);
@@ -1630,7 +1630,7 @@ class SimplePie {
 		if (isset($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom') {
 			if (!empty($attribs['MODE']) && $attribs['MODE'] == 'base64') {
 				$data = base64_decode($data);
-			} elseif (!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')) {
+			} elseif ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')) && (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false')) {
 				$data = $this->entities_decode($data);
 			}
 			if (!empty($attribs['TYPE']) && ($attribs['TYPE'] == 'xhtml' || $attribs['TYPE'] == 'application/xhtml+xml')) {
