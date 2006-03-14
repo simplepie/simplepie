@@ -681,6 +681,8 @@ class SimplePie {
 				if (function_exists('mb_convert_encoding') && $use_mbstring) {
 					$mp_rss = mb_convert_encoding($mp_rss, 'UTF-8', $encoding);
 					$this->encoding = 'UTF-8';
+				} else if ($use_mbstring) {
+					$this->encoding = 'UTF-8';
 				}
 				$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss); // Add an internal attribute to CDATA sections
 
@@ -905,7 +907,7 @@ class SimplePie {
 
 	// Reads the feed's link (URL)
 	function get_feed_link() {
-		return (isset($this->data['info']['link'])) ? $this->data['info']['link'] : false;
+		return (isset($this->data['info']['link'][0])) ? $this->data['info']['link'][0] : false;
 	}
 
 	// Reads the feed's description
@@ -1097,17 +1099,8 @@ class SimplePie {
 		if (preg_match_all('/<link (.*)>/siU', $data, $matches)) {
 			foreach($matches[1] as $match) {
 				if (preg_match('/type=[\'|"]?(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)[\'|"]?/iU', $match, $type)) {
-					if (preg_match('/href=\'(.*)\'/iU', $match, $href)) {
-						$href = $this->absolutize_url($href[1], $this->parsed_url);
-						if ($this->is_feed($href)) {
-							return $href;
-						}
-					} elseif (preg_match('/href="(.*)"/iU', $match, $href)) {
-						$href = $this->absolutize_url($href[1], $this->parsed_url);
-						if ($this->is_feed($href)) {
-							return $href;
-						}
-					} elseif (preg_match('/href=(.*)[ |/|>]/iU', $match, $href)) {
+					$href = $this->get_attribute($match, 'href');
+					if (!empty($href)) {
 						$href = $this->absolutize_url($href[1], $this->parsed_url);
 						if ($this->is_feed($href)) {
 							return $href;
@@ -1149,13 +1142,13 @@ class SimplePie {
 	}
 
 	function get_links($data) {
-		if (preg_match_all('/href=["](.*)["]/iU', $data, $matches)) {
+		if (preg_match_all('/href="(.*)"/iU', $data, $matches)) {
 			$this->parse_links($matches);
 		}
-		if (preg_match_all('/href=[\'](.*)[\']/iU', $data, $matches)) {
+		if (preg_match_all('/href=\'(.*)\'/iU', $data, $matches)) {
 			$this->parse_links($matches);
 		}
-		if (preg_match_all('/href=(.*)[ |>]/iU', $data, $matches)) {
+		if (preg_match_all('/href=(.*)[ |\/|>]/iU', $data, $matches)) {
 			foreach ($matches[1] as $key => $value) {
 				if (substr($value, 0, 1) == '"' || substr($value, 0, 1) == "'") {
 					unset($matches[1][$key]);
@@ -1348,6 +1341,22 @@ class SimplePie {
 			return is_writeable($file);
 		else
 			return is_writeable(dirname($file));
+	}
+
+
+
+
+	/****************************************************
+	GET ATTRIBUTE
+	****************************************************/
+	function get_attribute($data, $attribute_name) {
+		if (preg_match("/$attribute_name='(.*)'/iU", $data, $match)) {
+			return $match[1];
+		} elseif (preg_match("/$attribute_name=\"(.*)\"/iU", $data, $match)) {
+			return $match[1];
+		} elseif (preg_match("/$attribute_name=(.*)[ |\/|>]/iU", $data, $match)) {
+			return $match[1];
+		}
 	}
 
 
