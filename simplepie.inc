@@ -52,7 +52,7 @@ class SimplePie {
 	var $cache_location = './cache';
 	var $replace_headers = false;
 	var $remove_div = true;
-	var $order_by_date = true
+	var $order_by_date = true;
 
 	// RSS Auto-Discovery Variables
 	var $parsed_url;
@@ -1996,7 +1996,8 @@ class SimplePie {
 	}
 
 	function endHandler($parser, $name) {
-		switch ($this->tagName) {
+		$this->tagName = '';
+		switch ($this->strip_ns($name)) {
 			case 'ITEM':
 			case 'ENTRY':
 				$this->insideItem = false;
@@ -2036,7 +2037,6 @@ class SimplePie {
 					$this->linkNumber++;
 				break;
 		}
-		$this->tagName = '';
 	}
 }
 
