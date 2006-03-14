@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 12 March 2006
+Updated: 14 March 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://www.simplepie.org
 
@@ -38,7 +38,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060312';
+	var $build = '20060314';
 	var $url = 'http://www.simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -52,6 +52,7 @@ class SimplePie {
 	var $cache_location = './cache';
 	var $replace_headers = false;
 	var $remove_div = true;
+	var $order_by_date = true
 
 	// RSS Auto-Discovery Variables
 	var $parsed_url;
@@ -82,7 +83,7 @@ class SimplePie {
 	CONSTRUCTOR
 	Initiates a couple of variables
 	****************************************************/
-	function SimplePie($feed_url = null, $enable_xmldump = null, $enable_caching = null, $cache_max_minutes = null, $cache_location = null, $replace_headers = null, $remove_div = null) {
+	function SimplePie($feed_url = null, $enable_xmldump = null, $enable_caching = null, $cache_max_minutes = null, $cache_location = null, $replace_headers = null, $remove_div = null, $order_by_date = null) {
 		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
 		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . ' ' . $this->version . '</a>';
 		
@@ -106,6 +107,9 @@ class SimplePie {
 			
 		if (!is_null($remove_div))
 			$this->remove_div($remove_div);
+			
+		if (!is_null($order_by_date))
+			$this->order_by_date($order_by_date);
 		
 		if (!is_null($feed_url))
 			return $this->init();
@@ -158,6 +162,12 @@ class SimplePie {
 	// Remove outer div in XHTML content within Atom
 	function remove_div($enable) {
 		$this->remove_div = (bool) $enable;
+		return true;
+	}
+	
+	// Order the items by date
+	function order_by_date($enable) {
+		$this->order_by_date = (bool) $enable;
 		return true;
 	}
 
@@ -672,8 +682,6 @@ class SimplePie {
 					$mp_rss = mb_convert_encoding($mp_rss, 'UTF-8', $encoding);
 					$this->encoding = 'UTF-8';
 				}
-				
-				$mp_rss = preg_replace('/<!DOCTYPE(.*)>/siU', '', $mp_rss); // Strip out the DOCTYPE since we don't use it anyways.
 				$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss); // Add an internal attribute to CDATA sections
 
 				// If we're RSS
@@ -769,7 +777,7 @@ class SimplePie {
 				{
 					$this->parse_xml_data_array();
 					$this->data['feedinfo']['encoding'] = $this->encoding;
-					if (!empty($this->data['items'])) {
+					if ($this->order_by_date && !empty($this->data['items'])) {
 						usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
 					}
 					if ($this->caching && substr($this->rss_url, 0, 7) == 'http://') {
@@ -816,7 +824,7 @@ class SimplePie {
 	****************************************************/
 	function get_version() {
 		if (isset($this->data['feedinfo'])) {
-			return (isset($this->data['feedinfo']['version'])) ? $this->data['feedinfo']['type'] . ' ' . $this->data['feedinfo']['version'] : $this->data['feedinfo']['type'];
+			return (isset($this->data['feedinfo']['version'])) ? "$this->data[feedinfo][type] $this->data[feedinfo][version]" : $this->data['feedinfo']['type'];
 		}
 		else return false;
 	}
@@ -829,73 +837,59 @@ class SimplePie {
 	This allows people to subscribe to the feed in various services.
 	****************************************************/
 	function subscribe_url() {
-		if (isset($this->rss_url)) {
-			$temp = $this->fix_protocol($this->rss_url, 1);
-			if (strstr($temp, '../')) {
-				$retVal = substr_replace($temp, '', 0, 3);
-				return $retVal;
-			}
-			else return $temp;
-		}
-		else return false;
+		return (empty($this->rss_url)) ? false : $this->fix_protocol($this->rss_url, 1);
 	}
 
 	function subscribe_feed() {
-		if (isset($this->rss_url)) {
-			return $this->fix_protocol($this->rss_url, 2);
-		}
-		else return false;
+		return (empty($this->rss_url)) ? false : $this->fix_protocol($this->rss_url, 2);
 	}
 
 	function subscribe_podcast() {
-		if (isset($this->rss_url)) {
-			return $this->fix_protocol($this->rss_url, 3);
-		}
-		else return false;
+		return (empty($this->rss_url)) ? false : $this->fix_protocol($this->rss_url, 3);
 	}
 
 	function subscribe_aol() {
-		return 'http://feeds.my.aol.com/add.jsp?url=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://feeds.my.aol.com/add.jsp?url=' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_bloglines() {
-		return 'http://www.bloglines.com/sub/' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://www.bloglines.com/sub/' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_google() {
-		return 'http://fusion.google.com/add?feedurl=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://fusion.google.com/add?feedurl=' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_msn() {
-		return 'http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=' . rawurlencode($this->subscribe_url()) . '&amp;ru=' . rawurlencode($this->get_feed_link());
+		return (empty($this->rss_url)) ? false : 'http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=' . rawurlencode($this->subscribe_url()) . '&amp;ru=' . rawurlencode($this->get_feed_link());
 	}
 
 	function subscribe_newsburst() {
-		return 'http://www.newsburst.com/Source/?add=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://www.newsburst.com/Source/?add=' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_newsgator() {
-		return 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_odeo() {
-		return 'http://www.odeo.com/listen/subscribe?feed=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://www.odeo.com/listen/subscribe?feed=' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_pluck() {
-		return 'http://client.pluck.com/pluckit/prompt.aspx?GCID=C12286x053&amp;a=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://client.pluck.com/pluckit/prompt.aspx?GCID=C12286x053&amp;a=' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_podnova() {
-		return 'http://www.podnova.com/index_your_podcasts.srf?action=add&url=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://www.podnova.com/index_your_podcasts.srf?action=add&url=' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_rojo() {
-		return 'http://www.rojo.com/add-subscription?resource=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://www.rojo.com/add-subscription?resource=' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_yahoo() {
-		return 'http://add.my.yahoo.com/rss?url=' . rawurlencode($this->subscribe_url());
+		return (empty($this->rss_url)) ? false : 'http://add.my.yahoo.com/rss?url=' . rawurlencode($this->subscribe_url());
 	}
 
 
@@ -906,37 +900,27 @@ class SimplePie {
 	****************************************************/
 	// Reads the feed's title
 	function get_feed_title() {
-		if (isset($this->data['info']['title']))
-			return $this->data['info']['title'];
-		else return false;
+		return (isset($this->data['info']['title'])) ? $this->data['info']['title'] : false;
 	}
 
 	// Reads the feed's link (URL)
 	function get_feed_link() {
-		if (isset($this->data['info']['link']))
-			return $this->data['info']['link'];
-		else return false;
+		return (isset($this->data['info']['link'])) ? $this->data['info']['link'] : false;
 	}
 
 	// Reads the feed's description
 	function get_feed_description() {
-		if (isset($this->data['info']['description']))
-			return $this->data['info']['description'];
-		else return false;
+		return (isset($this->data['info']['description'])) ? $this->data['info']['description'] : false;
 	}
 
 	// Reads the feed's copyright information.
 	function get_feed_copyright() {
-		if (isset($this->data['info']['copyright']))
-			return $this->data['info']['copyright'];
-		else return false;
+		return (isset($this->data['info']['copyright'])) ? $this->data['info']['copyright'] : false;
 	}
 
 	// Reads the feed's language
 	function get_feed_language() {
-		if (isset($this->data['info']['language']))
-			return $this->data['info']['language'];
-		else return false;
+		return (isset($this->data['info']['language'])) ? $this->data['info']['language'] : false;
 	}
 
 
@@ -953,9 +937,7 @@ class SimplePie {
 
 	// Get the image title (to be used in alt and/or title)
 	function get_image_title() {
-		if (isset($this->data['info']['image']['title']))
-			return $this->data['info']['image']['title'];
-		else return false;
+		return (isset($this->data['info']['image']['title'])) ? $this->data['info']['image']['title'] : false;
 	}
 
 	// The path to the actual image
@@ -1114,8 +1096,18 @@ class SimplePie {
 	function check_link_elements($data) {
 		if (preg_match_all('/<link (.*)>/siU', $data, $matches)) {
 			foreach($matches[1] as $match) {
-				if (preg_match('/type=[\'|"](application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)[\'|"]/iU', $match, $type)) {
-					if (preg_match('/href=[\'|"](.*)[\'|"]/iU', $match, $href)) {
+				if (preg_match('/type=[\'|"]?(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)[\'|"]?/iU', $match, $type)) {
+					if (preg_match('/href=\'(.*)\'/iU', $match, $href)) {
+						$href = $this->absolutize_url($href[1], $this->parsed_url);
+						if ($this->is_feed($href)) {
+							return $href;
+						}
+					} elseif (preg_match('/href="(.*)"/iU', $match, $href)) {
+						$href = $this->absolutize_url($href[1], $this->parsed_url);
+						if ($this->is_feed($href)) {
+							return $href;
+						}
+					} elseif (preg_match('/href=(.*)[ |/|>]/iU', $match, $href)) {
 						$href = $this->absolutize_url($href[1], $this->parsed_url);
 						if ($this->is_feed($href)) {
 							return $href;
@@ -1141,7 +1133,7 @@ class SimplePie {
 
 	function check_link_body($array) {
 		foreach ($array as $value) {
-			$value2 = parse_url($value);
+			$value2 = @parse_url($value);
 			if (!empty($value2['path'])) {
 				if (strlen(pathinfo($value2['path'], PATHINFO_EXTENSION)) > 0) {
 					$value3 = substr_replace($value, '', strpos($value, $value2['path'])+strpos($value2['path'], pathinfo($value2['path'], PATHINFO_EXTENSION))-1, strlen(pathinfo($value2['path'], PATHINFO_EXTENSION))+1);
@@ -1181,7 +1173,7 @@ class SimplePie {
 	function parse_links($matches) {
 		foreach ($matches[1] as $match) {
 			if (strtolower(substr($match, 0, 11)) != 'javascript:') {
-				$parsed = parse_url($match);
+				$parsed = @parse_url($match);
 				if (!isset($parsed['host']) || $parsed['host'] == $this->parsed_url['host']) {
 					$this->local[] = $this->absolutize_url($match, $this->parsed_url);
 				} else {
@@ -1197,7 +1189,7 @@ class SimplePie {
 		}
 		if (stristr($data, '<html') || stristr($data, '<head') || stristr($data, '<body')) {
 			return false;
-		} else if (stristr($data, '<rss') || stristr($data, '<rdf:rdf') || stristr($data, '<feed')) {
+		} else if (stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?rdf/mi', $data) || preg_match('/<([a-z0-9]+\:)?feed/mi', $data)) {
 			return true;
 		} else {
 			return false;
@@ -1781,7 +1773,7 @@ class SimplePie {
 		$this->tagName = $this->strip_ns($name);
 		$this->attribs = $attribs;
 		$this->is_first = true;
-		switch ($name) {
+		switch ($this->tagName) {
 			case 'ITEM':
 			case 'ENTRY':
 				$this->insideItem = true;
@@ -1820,7 +1812,7 @@ class SimplePie {
 		}
 
 		if (isset($this->xmldata['feedinfo']['type']) && $this->xmldata['feedinfo']['type'] == 'Atom') {
-			switch ($name) {
+			switch ($this->tagName) {
 				case 'AUTHOR':
 					$this->insideAuthor = true;
 					break;
@@ -2004,8 +1996,7 @@ class SimplePie {
 	}
 
 	function endHandler($parser, $name) {
-		$this->tagName = '';
-		switch ($name) {
+		switch ($this->tagName) {
 			case 'ITEM':
 			case 'ENTRY':
 				$this->insideItem = false;
@@ -2045,6 +2036,7 @@ class SimplePie {
 					$this->linkNumber++;
 				break;
 		}
+		$this->tagName = '';
 	}
 }
 
