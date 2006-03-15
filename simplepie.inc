@@ -7,29 +7,28 @@ Simplifies the process of displaying the values of commonly used feed tags.
 Version: 1.0 Beta 2
 Updated: 14 March 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
-http://www.simplepie.org
+http://simplepie.org
 
+*****************************************************
 LICENSE:
-Creative Commons Attribution License 2.5
-http://www.creativecommons.org/licenses/by/2.5/
+GNU Lesser General Public License 2.1
+http://opensource.org/licenses/lgpl-license.php
 
-You are free:
-	- to copy, distribute, display, and perform the work
-	- to make derivative works
-	- to make commercial use of the work
+This library is free software; you can redistribute it and/or modify it under the terms of the 
+GNU Lesser General Public License as published by the Free Software Foundation; either 
+version 2.1 of the License, or (at your option) any later version.
 
-Under the following conditions:
-	- Attribution: You must attribute the work in the manner specified by the author or licensor.
+This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE.  See the GNU Lesser General Public License for more details.
 
-For any reuse or distribution, you must make clear to others the license terms of this work.  Any 
-of these conditions can be waived if you get permission from the copyright holder.  Your fair use 
-and other rights are in no way affected by the above.
+You should have received a copy of the GNU Lesser General Public License along with this 
+library; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, 
+Boston, MA  02110-1301  USA
 
-SPECIFICS OF REQUIRED ATTRIBUTION:
-You can use this software for anything you want, but this entire notice must always remain in place.
-
+*****************************************************
 Please submit all bug reports and feature requests to the SimplePie forums.
-http://support.simplepie.org
+http://simplepie.org/support/
 
 ****************************************************/
 
@@ -854,12 +853,20 @@ class SimplePie {
 		return (empty($this->rss_url)) ? false : 'http://feeds.my.aol.com/add.jsp?url=' . rawurlencode($this->subscribe_url());
 	}
 
+	function subscribe_blinklist() {
+		return (empty($this->rss_url)) ? false : 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=' . rawurlencode($this->subscribe_url()) . '&Title=' . rawurlencode($this->get_feed_link());
+	}
+
 	function subscribe_bloglines() {
 		return (empty($this->rss_url)) ? false : 'http://www.bloglines.com/sub/' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_google() {
 		return (empty($this->rss_url)) ? false : 'http://fusion.google.com/add?feedurl=' . rawurlencode($this->subscribe_url());
+	}
+
+	function subscribe_magnolia() {
+		return (empty($this->rss_url)) ? false : 'http://ma.gnolia.com/bookmarklet/add?url=' . rawurlencode($this->subscribe_url()) . '&amp;title=' . rawurlencode($this->get_feed_link());
 	}
 
 	function subscribe_msn() {
@@ -1275,7 +1282,10 @@ class SimplePie {
 
 	/****************************************************
 	DELETE OUTDATED CACHE FILES
-	Copyright 2004 by "adam at roomvoter dot com". This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at http://www.opencontent.org/openpub/).
+	Copyright 2004 by "adam at roomvoter dot com". This material 
+	may be distributed only subject to the terms and conditions set 
+	forth in the Open Publication License, v1.0 or later (the latest 
+	version is presently available at http://www.opencontent.org/openpub/).
 	This function deletes cache files that have not been used in a hour.
 	****************************************************/
 	function clear_cache($path, $max_minutes=60) {
@@ -1714,11 +1724,17 @@ class SimplePie {
 			return $entity_html;
 		}
 	}
-		
-	
-	// Escape numeric entities
-	// From a PHP Manual note (on html_entity_decode())
-	// Copyright (c) 2005 by "php dot net at c dash ovidiu dot tk", "emilianomartinezluque at yahoo dot com" and "hurricane at cyberworldz dot org". This material may be distributed only subject to the terms and conditions set forth in the Open Publication License, v1.0 or later (the latest version is presently available at http://www.opencontent.org/openpub/).
+
+	/*
+	 * Escape numeric entities
+	 * From a PHP Manual note (on html_entity_decode())
+	 * Copyright (c) 2005 by "php dot net at c dash ovidiu dot tk", 
+	 * "emilianomartinezluque at yahoo dot com" and "hurricane at cyberworldz dot org".
+	 *
+	 * This material may be distributed only subject to the terms and conditions set forth in 
+	 * the Open Publication License, v1.0 or later (the latest version is presently available at 
+	 * http://www.opencontent.org/openpub/).
+	 */
 	function replace_num_entity($ord) {
 		$ord = $ord[1];
 		if (preg_match('/^x([0-9a-f]+)$/i', $ord, $match))
