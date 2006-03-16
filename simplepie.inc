@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 14 March 2006
+Updated: 16 March 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -37,7 +37,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060314';
+	var $build = '20060316';
 	var $url = 'http://www.simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -74,6 +74,8 @@ class SimplePie {
 	var $data = false;
 	var $attribs;
 	var $xmldata;
+	var $feedAttribs;
+	var $itemAttribs;
 
 
 
@@ -750,18 +752,6 @@ class SimplePie {
 				if (function_exists('iconv'))
 					$mp_rss = iconv('UTF-8', 'UTF-8//IGNORE', $mp_rss);
 
-				// Find the domain name of the feed being read.
-				$feed_path = parse_url($this->rss_url);
-				if (isset($feed_path['host'])) {
-					$feed_host = $feed_path['host'];
-
-					// Change certain types of relative URL's into absolute URL's
-					$mp_rss = str_replace('href="/', 'href="http://' . $feed_host . '/', $mp_rss);
-					$mp_rss = str_replace('href=&quot;/', 'href="http://' . $feed_host . '/', $mp_rss);
-					$mp_rss = str_replace('src="/', 'src="http://' . $feed_host . '/', $mp_rss);
-					$mp_rss = str_replace('src=&quot;/', 'src="http://' . $feed_host . '/', $mp_rss);
-				}
-
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
 					header("Content-type: text/xml; charset=" . $this->encoding);
@@ -915,6 +905,11 @@ class SimplePie {
 	// Reads the feed's link (URL)
 	function get_feed_link() {
 		return (isset($this->data['info']['link'][0])) ? $this->data['info']['link'][0] : false;
+	}
+
+	// Reads the feed's link (URL)
+	function get_feed_links($key) {
+		return (isset($this->data['info']['link'][$key])) ? $this->data['info']['link'][$key] : false;
 	}
 
 	// Reads the feed's description
@@ -1107,7 +1102,7 @@ class SimplePie {
 			foreach($matches[1] as $match) {
 				if (preg_match('/type=[\'|"]?(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)[\'|"]?/iU', $match, $type)) {
 					$href = $this->get_attribute($match, 'href');
-					if (!empty($href)) {
+					if (!empty($href[1])) {
 						$href = $this->absolutize_url($href[1], $this->parsed_url);
 						if ($this->is_feed($href)) {
 							return $href;
@@ -1209,7 +1204,7 @@ class SimplePie {
 				if (substr($href_parts['path'], 0, 1) == '/') {
 					$full_url .= $href_parts['path'];
 				} else if (!empty($location['path'])) {
-					$full_url .= dirname($location['path']) . $href_parts['path'];
+					$full_url .= dirname($location['path'] . 'a') . '/' . $href_parts['path'];
 				} else {
 					$full_url .= $href_parts['path'];
 				}
@@ -1228,6 +1223,7 @@ class SimplePie {
 			} else if (!empty($location['fragment'])) {
 				$full_url .= '#' . $location['fragment'];
 			}
+			return $full_url;
 		}
 	}
 
@@ -1361,11 +1357,11 @@ class SimplePie {
 	****************************************************/
 	function get_attribute($data, $attribute_name) {
 		if (preg_match("/$attribute_name='(.*)'/iU", $data, $match)) {
-			return $match[1];
+			return $match;
 		} elseif (preg_match("/$attribute_name=\"(.*)\"/iU", $data, $match)) {
-			return $match[1];
+			return $match;
 		} elseif (preg_match("/$attribute_name=(.*)[ |\/|>]/iU", $data, $match)) {
-			return $match[1];
+			return $match;
 		}
 	}
 
@@ -1406,6 +1402,11 @@ class SimplePie {
 	PARSE XMLDATA
 	****************************************************/
 	function parse_xml_data_array() {
+		// Feed Attributes
+		if (!empty($this->xmldata['feeddata']['attribs'])) {
+			$this->feedAttribs = $this->xmldata['feeddata']['attribs'];
+		}
+		
 		// Feed Info
 		if (isset($this->xmldata['feedinfo']['type'])) {
 			$this->data['feedinfo'] = $this->xmldata['feedinfo'];
@@ -1473,6 +1474,11 @@ class SimplePie {
 		// Items
 		if (!empty($this->xmldata['items'])) {
 			foreach ($this->xmldata['items'] as $num => $item) {
+				// Item Attributes
+				if (!empty($item['attribs'])) {
+					$this->itemAttribs = $item['attribs'];
+				}
+				
 				// Clear vars
 				$id = null;
 				$title = null;
@@ -1638,6 +1644,7 @@ class SimplePie {
 	} // End parse_xml_data_array();
 	
 	function sanitise($data, $attribs) {
+		$this->attribs = $attribs;
 		if (isset($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom') {
 			if (!empty($attribs['MODE']) && $attribs['MODE'] == 'base64') {
 				$data = base64_decode($data);
@@ -1707,7 +1714,54 @@ class SimplePie {
 			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
 		}
 		
+		$data = preg_replace_callback('/<(.+)>/msiU', array(&$this, 'replace_urls'), $data);
+		
 		return $data;
+	}
+	
+	function replace_urls($data) {
+		if (!empty($this->feedAttribs['XML:BASE'])) {
+			$feed_xmlbase = parse_url($this->feedAttribs['XML:BASE']);
+		} else {
+			$feed_xmlbase = $this->parsed_url;
+		}
+		if (!empty($this->itemAttribs['XML:BASE'])) {
+			$item_xmlbase = parse_url($this->absolutize_url($this->itemAttribs['XML:BASE'], $feed_xmlbase));
+		}
+		if (!empty($this->attribs['XML:BASE'])) {
+			if (!empty($item_xmlbase)) {
+				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $item_xmlbase));
+			} else {
+				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $feed_xmlbase));
+			}
+		}
+		if (!empty($attrib_xmlbase)) {
+			$xmlbase = $attrib_xmlbase;
+		} else if (!empty($item_xmlbase)) {
+			$xmlbase = $item_xmlbase;
+		} else {
+			$xmlbase = $feed_xmlbase;
+		}
+		$attributes = array(
+			'background',
+			'href',
+			'src',
+			'longdesc',
+			'usemap',
+			'codebase',
+			'data',
+			'classid',
+			'cite',
+			'action',
+			'profile',
+			'for'
+		);
+		foreach ($attributes as $attribute) {
+			$attrib = $this->get_attribute($data[0], $attribute);
+			$new_tag = str_replace($attrib[1], $this->absolutize_url($attrib[1], $xmlbase), $attrib[0]);
+			$data[0] = str_replace($attrib[0], $new_tag, $data[0]);
+		}
+		return $data[0];
 	}
 	
 	function entities_decode($data) {
@@ -1802,6 +1856,7 @@ class SimplePie {
 			case 'ITEM':
 			case 'ENTRY':
 				$this->insideItem = true;
+				$this->do_add_content($this->xmldata['items'][$this->itemNumber], '');
 				break;
 
 			case 'CHANNEL':
@@ -1825,6 +1880,12 @@ class SimplePie {
 				if (!empty($attribs['VERSION'])) {
 					$this->xmldata['feedinfo']['version'] = trim($attribs['VERSION']);
 				}
+				break;
+				
+			case 'RSS':
+			case 'RDF':
+			case 'FEED':
+				$this->do_add_content($this->xmldata['feeddata'], '');
 				break;
 
 			case 'IMAGE':
@@ -2101,8 +2162,8 @@ class SimplePie_Item
 	}
 
 	// Get the author of the item
-	function get_author($number) {
-		return (empty($this->author[$number])) ? false : $this->author[$number];
+	function get_author($key) {
+		return (empty($this->author[$key])) ? false : $this->author[$key];
 	}
 
 	// Get the author of the item
@@ -2136,8 +2197,8 @@ class SimplePie_Item
 	}
 
 	// Get the enclosure of the item
-	function get_enclosure($number) {
-		return (empty($this->enclosure[$number])) ? false : $this->enclosure[$number];
+	function get_enclosure($key) {
+		return (empty($this->enclosure[$key])) ? false : $this->enclosure[$key];
 	}
 
 	// Get the enclosure of the item
