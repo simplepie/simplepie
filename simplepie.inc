@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 16 March 2006
+Updated: 19 March 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -37,7 +37,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060316';
+	var $build = '20060319';
 	var $url = 'http://www.simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -247,6 +247,7 @@ class SimplePie {
 				// Support everything from http://www.php.net/manual/en/ref.mbstring.php#mbstring.supported-encodings
 				$use_mbstring = false;
 				if (preg_match('/encoding=["](.*)["]/Ui', $mp_rss, $encoding)) {
+					$match = $encoding;
 					switch (strtolower($encoding[1])) {
 
 						// UCS-4
@@ -681,9 +682,11 @@ class SimplePie {
 				// If function is available, convert characters to UTF-8, and overwrite $this->encoding
 				if (function_exists('mb_convert_encoding') && $use_mbstring) {
 					$mp_rss = mb_convert_encoding($mp_rss, 'UTF-8', $encoding);
+					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 					$this->encoding = 'UTF-8';
 				} else if ($use_mbstring) {
 					$this->encoding = 'UTF-8';
+					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 				}
 				$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss); // Add an internal attribute to CDATA sections
 
@@ -1182,9 +1185,7 @@ class SimplePie {
 		if ($is_url) {
 			$data = $this->get_file($data);
 		}
-		if (stristr($data, '<html') || stristr($data, '<head') || stristr($data, '<body')) {
-			return false;
-		} else if (stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?rdf/mi', $data) || preg_match('/<([a-z0-9]+\:)?feed/mi', $data)) {
+		 if (stristr($data, '<rss') || stristr($data, '<rdf:RDF') || preg_match('/<([a-z0-9]+\:)?feed/mi', $data)) {
 			return true;
 		} else {
 			return false;
@@ -1196,7 +1197,11 @@ class SimplePie {
 		if (!empty($href_parts['scheme'])) {
 			return $href;
 		} else {
-			$full_url = $location['scheme'] . '://' . $location['host'];
+			if (isset($location['host'])) {
+				$full_url = $location['scheme'] . '://' . $location['host'];
+			} else {
+				$full_url = '';
+			}
 			if (isset($location['port'])) {
 				$full_url .= ':' . $location['port'];
 			}
@@ -1422,9 +1427,9 @@ class SimplePie {
 			foreach ($this->xmldata['info']['link'] as $num => $link) {
 				if (empty($link['attribs']['REL']) || $link['attribs']['REL'] == 'alternate') {
 					if (empty($link['data'])) {
-						$this->data['info']['link'][$num] = $this->sanitise($link['attribs']['HREF'], $link['attribs']);
+						$this->data['info']['link'][$num] = $this->sanitise($link['attribs']['HREF'], $link['attribs'], true);
 					} else {
-						$this->data['info']['link'][$num] = $this->sanitise($link['data'], $link['attribs']);
+						$this->data['info']['link'][$num] = $this->sanitise($link['data'], $link['attribs'], true);
 					}
 				}
 			}
@@ -1456,13 +1461,13 @@ class SimplePie {
 			$this->data['info']['image']['title'] = $this->sanitise($this->xmldata['info']['image']['title']['data'], $this->xmldata['info']['image']['title']['attribs']);
 		}
 		if (!empty($this->xmldata['info']['image']['url']['data'])) {
-			$this->data['info']['image']['url'] = $this->sanitise($this->xmldata['info']['image']['url']['data'], $this->xmldata['info']['image']['url']['attribs']);
+			$this->data['info']['image']['url'] = $this->sanitise($this->xmldata['info']['image']['url']['data'], $this->xmldata['info']['image']['url']['attribs'], true);
 		}
 		else if (!empty($this->xmldata['info']['logo']['data'])) {
-			$this->data['info']['image']['url'] = $this->sanitise($this->xmldata['info']['logo']['data'], $this->xmldata['info']['logo']['attribs']);
+			$this->data['info']['image']['url'] = $this->sanitise($this->xmldata['info']['logo']['data'], $this->xmldata['info']['logo']['attribs'], true);
 		}
 		if (!empty($this->xmldata['info']['image']['link']['data'])) {
-			$this->data['info']['image']['link'] = $this->sanitise($this->xmldata['info']['image']['link']['data'], $this->xmldata['info']['image']['link']['attribs']);
+			$this->data['info']['image']['link'] = $this->sanitise($this->xmldata['info']['image']['link']['data'], $this->xmldata['info']['image']['link']['attribs'], true);
 		}
 		if (!empty($this->xmldata['info']['image']['width']['data'])) {
 			$this->data['info']['image']['width'] = $this->sanitise($this->xmldata['info']['image']['width']['data'], $this->xmldata['info']['image']['width']['attribs']);
@@ -1516,15 +1521,15 @@ class SimplePie {
 					foreach ($item['link'] as $link) {
 						if (empty($link['attribs']['REL']) || $link['attribs']['REL'] == 'alternate') {
 							if (empty($link['data'])) {
-								$links[sizeof($links)] = $this->sanitise($link['attribs']['HREF'], $link['attribs']);
+								$links[sizeof($links)] = $this->sanitise($link['attribs']['HREF'], $link['attribs'], true);
 							} else {
-								$links[sizeof($links)] = $this->sanitise($link['data'], $link['attribs']);
+								$links[sizeof($links)] = $this->sanitise($link['data'], $link['attribs'], true);
 							}
 						} else if ($link['attribs']['REL'] == 'enclosure' && !empty($link['attribs']['HREF'])) {
 							$href = null;
 							$type = null;
 							$length = null;
-							$href = $this->sanitise($link['attribs']['HREF'], $link['attribs']);
+							$href = $this->sanitise($link['attribs']['HREF'], $link['attribs'], true);
 							if (!empty($link['attribs']['TYPE'])) {
 								$type = $this->sanitise($link['attribs']['TYPE'], $link['attribs']);
 							}
@@ -1543,7 +1548,7 @@ class SimplePie {
 							$href = null;
 							$type = null;
 							$length = null;
-							$href = $this->sanitise($enclosure['attribs']['URL'], $enclosure['attribs']);
+							$href = $this->sanitise($enclosure['attribs']['URL'], $enclosure['attribs'], true);
 							if (!empty($enclosure['attribs']['TYPE'])) {
 								$type = $this->sanitise($enclosure['attribs']['TYPE'], $enclosure['attribs']);
 							}
@@ -1614,13 +1619,13 @@ class SimplePie {
 							$name = $this->sanitise($author['name']['data'], $author['name']['attribs']);
 						}
 						if (!empty($author['url'])) {
-							$link = $this->sanitise($author['url']['data'], $author['url']['attribs']);
+							$link = $this->sanitise($author['url']['data'], $author['url']['attribs'], true);
 						}
 						else if (!empty($author['uri'])) {
-							$link = $this->sanitise($author['uri']['data'], $author['uri']['attribs']);
+							$link = $this->sanitise($author['uri']['data'], $author['uri']['attribs'], true);
 						}
 						else if (!empty($author['homepage'])) {
-							$link = $this->sanitise($author['homepage']['data'], $author['homepage']['attribs']);
+							$link = $this->sanitise($author['homepage']['data'], $author['homepage']['attribs'], true);
 						}
 						if (!empty($author['email'])) {
 							$email = $this->sanitise($author['email']['data'], $author['email']['attribs']);
@@ -1643,7 +1648,7 @@ class SimplePie {
 		unset($this->xmldata);
 	} // End parse_xml_data_array();
 	
-	function sanitise($data, $attribs) {
+	function sanitise($data, $attribs, $is_url = false) {
 		$this->attribs = $attribs;
 		if (isset($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom') {
 			if (!empty($attribs['MODE']) && $attribs['MODE'] == 'base64') {
@@ -1714,12 +1719,16 @@ class SimplePie {
 			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
 		}
 		
-		$data = preg_replace_callback('/<(.+)>/msiU', array(&$this, 'replace_urls'), $data);
+		if ($is_url) {
+			$data = $this->replace_urls($data, true);
+		} else {
+			$data = preg_replace_callback('/<(.+)>/msiU', array(&$this, 'replace_urls'), $data);
+		}
 		
 		return $data;
 	}
 	
-	function replace_urls($data) {
+	function replace_urls($data, $raw_url = false) {
 		if (!empty($this->feedAttribs['XML:BASE'])) {
 			$feed_xmlbase = parse_url($this->feedAttribs['XML:BASE']);
 		} else {
@@ -1742,26 +1751,30 @@ class SimplePie {
 		} else {
 			$xmlbase = $feed_xmlbase;
 		}
-		$attributes = array(
-			'background',
-			'href',
-			'src',
-			'longdesc',
-			'usemap',
-			'codebase',
-			'data',
-			'classid',
-			'cite',
-			'action',
-			'profile',
-			'for'
-		);
-		foreach ($attributes as $attribute) {
-			$attrib = $this->get_attribute($data[0], $attribute);
-			$new_tag = str_replace($attrib[1], $this->absolutize_url($attrib[1], $xmlbase), $attrib[0]);
-			$data[0] = str_replace($attrib[0], $new_tag, $data[0]);
+		if ($raw_url) {
+			return $this->absolutize_url($data, $xmlbase);
+		} else {
+			$attributes = array(
+				'background',
+				'href',
+				'src',
+				'longdesc',
+				'usemap',
+				'codebase',
+				'data',
+				'classid',
+				'cite',
+				'action',
+				'profile',
+				'for'
+			);
+			foreach ($attributes as $attribute) {
+				$attrib = $this->get_attribute($data[0], $attribute);
+				$new_tag = str_replace($attrib[1], $this->absolutize_url($attrib[1], $xmlbase), $attrib[0]);
+				$data[0] = str_replace($attrib[0], $new_tag, $data[0]);
+			}
+			return $data[0];
 		}
-		return $data[0];
 	}
 	
 	function entities_decode($data) {
