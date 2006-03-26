@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 19 March 2006
+Updated: 25 March 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -37,7 +37,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060319';
+	var $build = '20060325';
 	var $url = 'http://www.simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -728,32 +728,8 @@ class SimplePie {
 				$mp_rss = preg_replace('/<\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU', '<![CDATA[', $mp_rss);
 				$mp_rss = preg_replace('/\]\]>[\s]*\]\]>/msiU', ']]>', $mp_rss);
 
-				// Swap out problematic characters.
-				$mp_rss = str_replace('﻿', '', $mp_rss); // UTF-8 BOM
-				$mp_rss = preg_replace("/�|�|–|—/", '--', $mp_rss); // em/en dash
-				$mp_rss = preg_replace("/�|�|’|‘/", "'", $mp_rss); // single-quotes
-				$mp_rss = preg_replace("/�|�|“|”/", '"', $mp_rss); // double-quotes
-				$mp_rss = preg_replace("/�/", '', $mp_rss); // bad character
-
-				// Swap out funky characters with their named entities.
-				// Code is from Feedsplitter at chxo.com
-				$mp_rss = preg_replace(array('/\&([a-z\d\#]+)\;/i',
-					'/\&/',
-					'/\#\|\|([a-z\d\#]+)\|\|\#/i',
-					'/(\=\"\-\/\%\?\!\'\(\)\[\\{\}\ \#\+\,\@_])/e'
-					),
-					array('#||\\1||#',
-					'&amp;',
-					'&\\1;',
-					"'&#'.ord('\\1').';'"
-					),
-					$mp_rss
-				);
-
-				// Get rid of invalid UTF-8 characters
-				// Code is from chregu at blog.bitflux.ch
-				if (function_exists('iconv'))
-					$mp_rss = iconv('UTF-8', 'UTF-8//IGNORE', $mp_rss);
+				// Swap out UTF-8 BOM.
+				$mp_rss = str_replace('﻿', '', $mp_rss);
 
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
