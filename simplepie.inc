@@ -53,6 +53,7 @@ class SimplePie {
 	var $replace_headers = false;
 	var $remove_div = true;
 	var $order_by_date = true;
+	var $strip_ads = false;
 
 	// RSS Auto-Discovery Variables
 	var $parsed_url;
@@ -115,6 +116,10 @@ class SimplePie {
 		
 		if (!is_null($feed_url))
 			return $this->init();
+
+		// $block_image_hotlink
+
+		// $strip_ads
 	}
 
 
@@ -176,6 +181,12 @@ class SimplePie {
 	// Order the items by date
 	function order_by_date($enable) {
 		$this->order_by_date = (bool) $enable;
+		return true;
+	}
+	
+	// Strip out certain well-known ads
+	function strip_ads($enable) {
+		$this->strip_ads = (bool) $enable;
 		return true;
 	}
 
@@ -1069,6 +1080,13 @@ class SimplePie {
 					$mp_rss = preg_replace('/<img(.*)src="/i', '\\0?i=', $mp_rss);
 				}
 
+				// If Bypass Image Hotlink is enabled, rewrite all the image tags.
+				if ($this->strip_ads) {
+					$mp_rss = preg_replace('/(&lt;|<)a(.*)href=(&quot;|")(.*)\\/\/pheedo.com\/(.*).phdo\?s=(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $mp_rss); // Pheedo links (tested with Dooce.com)
+					$mp_rss = preg_replace('/(&lt;|<)a(\w|\s|\=|&quot;|")*href=(&quot;|")http:\/\/ad.doubleclick.net\/(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $mp_rss); // Doubleclick links (tested with InfoWorld.com)
+					$mp_rss = preg_replace('/((&lt;|<)map(\w|\s|\=|"|&quot;)*name=(&quot;|")google_ad_map(\w|\-)*(&quot;|")(&gt;|>).*(&lt;|<)\/map(&gt;|>))((&lt;|<)img usemap=(&quot;|")#google_ad_map(\w|\-)+(&quot;|")(\w|\s|=|&quot;|"|:|\/|\.|\?|&|;|\-)*(&gt;|>))/i', '', $mp_rss); // Google AdSense for Feeds (TUAW). Not quite perfect yet.  It's eating up several TUAW posts at a time.
+				}
+
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
 					header("Content-type: text/xml; charset=" . $this->encoding);
@@ -1319,9 +1337,19 @@ class SimplePie {
 			$url = substr_replace($mp_feed_proto, 'http://', 0, 14);
 		}
 
+		// Swap out feed://https:// for https://-only
+		else if (stristr($mp_feed_proto, 'feed://https://')) {
+			$url = substr_replace($mp_feed_proto, 'https://', 0, 14);
+		}
+
 		// Swap out feed:http:// for http://
 		else if (stristr($mp_feed_proto, 'feed:http://' )) {
 			$url = substr_replace($mp_feed_proto, 'http://', 0, 12);
+		}
+
+		// Swap out feed:https:// for https://
+		else if (stristr($mp_feed_proto, 'feed:https://' )) {
+			$url = substr_replace($mp_feed_proto, 'https://', 0, 12);
 		}
 
 		// Swap out feed:// protocols in favor of http:// protocols
@@ -1334,8 +1362,8 @@ class SimplePie {
 			$url = substr_replace($mp_feed_proto, 'http://', 0, 5);
 		}
 
-		// If it doesn't have http:// in it, and doesn't exist locally, add http://
-		else if (!stristr($mp_feed_proto, 'http://') && !file_exists($mp_feed_proto)) {
+		// If it doesn't have http:// or https:// in it, and doesn't exist locally, add http://
+		else if (!stristr($mp_feed_proto, 'http://') && !stristr($mp_feed_proto, 'https://') && !file_exists($mp_feed_proto)) {
 			$url = "http://$url";
 		}
 

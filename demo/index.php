@@ -8,6 +8,7 @@ include('../simplepie.inc');
 // Parse it
 $feed = new SimplePie();
 $feed->bypass_image_hotlink();
+$feed->strip_ads(true);
 
 if (!empty($_GET['feed'])) {
 	$feed->feed_url($_GET['feed']);
