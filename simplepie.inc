@@ -302,8 +302,6 @@ class SimplePie {
 						case 'us-ascii':
 						case 'ascii':
 							$encoding = 'US-ASCII';
-							$use_iconv = true;
-							$use_mbstring = true;
 							break;
 
 						// BASE64
@@ -512,8 +510,6 @@ class SimplePie {
 						case 'iso-8859-1':
 						case 'iso8859-1':
 							$encoding = 'ISO-8859-1';
-							$use_iconv = true;
-							$use_mbstring = true;
 							break;
 
 						// ISO-8859-2
@@ -1031,7 +1027,7 @@ class SimplePie {
 					$mp_rss = mb_convert_encoding($mp_rss, 'UTF-8', $encoding);
 					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 					$this->encoding = 'UTF-8';
-				} else if ($use_mbstring) {
+				} else if ($use_mbstring || $use_iconv) {
 					$this->encoding = 'UTF-8';
 					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 				}
