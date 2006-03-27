@@ -7,8 +7,11 @@ include('../simplepie.inc');
 
 // Parse it
 $feed = new SimplePie();
+$feed->bypass_image_hotlink();
+
 if (!empty($_GET['feed'])) {
 	$feed->feed_url($_GET['feed']);
+
 	if (isset($_GET['xmldump'])) {
 		$feed->enable_xmldump($_GET['xmldump']);
 	}
@@ -17,10 +20,7 @@ if (!empty($_GET['feed'])) {
 		header('Content-type: text/html; charset=' . $feed->get_encoding());
 	}
 }
-else if (!empty($_GET['i'])) {
-	$feed->display_image($_GET['i']);
-	exit;
-}
+else $feed->init();
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
@@ -94,9 +94,6 @@ else if (!empty($_GET['i'])) {
 
 <script type="text/javascript">
 //<![CDATA[
-
-// Rewrite image URLs to bypass hotlinking protection.
-(function(){ var img = document.getElementsByTagName('img'); var imgLength = img.length; for (var x=0; x<imgLength; x++) { if (img[x].src.substring(0,4) == 'http') { if (img[x].src.indexOf('http://imageads.googleadservices.com') == -1) img[x].src = '?i=' + img[x].src; }}})();
 
 // Load the sIFR font.
 if(typeof sIFR == "function"){

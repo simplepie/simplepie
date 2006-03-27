@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 25 March 2006
+Updated: 26 March 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -37,7 +37,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060325';
+	var $build = '20060326';
 	var $url = 'http://www.simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -49,6 +49,7 @@ class SimplePie {
 	var $caching = true;
 	var $max_minutes = 60;
 	var $cache_location = './cache';
+	var $bypass_image_hotlink;
 	var $replace_headers = false;
 	var $remove_div = true;
 	var $order_by_date = true;
@@ -136,6 +137,12 @@ class SimplePie {
 		return true;
 	}
 
+	// Bypass Image Hotlink
+	function bypass_image_hotlink($getvar='i') {
+		$this->bypass_image_hotlink = (string) $getvar;
+		return true;
+	}
+
 	// Caching
 	function enable_caching($enable) {
 		$this->caching = (bool) $enable;
@@ -175,13 +182,20 @@ class SimplePie {
 
 
 
-
 	/****************************************************
 	MAIN SIMPLEPIE FUNCTION
 	Rewrites the feed so that it actually resembles XML, processes the XML,
 	and builds an array from the feed.
 	****************************************************/
 	function init() {
+
+		// If Bypass Image Hotlink is enabled, send image to the page and quit.
+		if ($this->bypass_image_hotlink) {
+			if (isset($_GET[$this->bypass_image_hotlink]) && !empty($_GET[$this->bypass_image_hotlink])) {
+				$this->display_image($_GET[$this->bypass_image_hotlink]);
+				exit;
+			}
+		}
 
 		// If this is a .Mac Photocast, change it to the real URL.
 		if (stristr($this->rss_url, 'http://photocast.mac.com')) {
@@ -1050,8 +1064,10 @@ class SimplePie {
 				$mp_rss = preg_replace('/<\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU', '<![CDATA[', $mp_rss);
 				$mp_rss = preg_replace('/\]\]>[\s]*\]\]>/msiU', ']]>', $mp_rss);
 
-				// Swap out UTF-8 BOM.
-				$mp_rss = str_replace('﻿', '', $mp_rss);
+				// If Bypass Image Hotlink is enabled, rewrite all the image tags.
+				if ($this->bypass_image_hotlink) {
+					$mp_rss = preg_replace('/<img(.*)src="/i', '\\0?i=', $mp_rss);
+				}
 
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
@@ -1344,7 +1360,7 @@ class SimplePie {
 
 
 	/****************************************************
-	AUTO DISCOVERY
+	ULTRA-LIBERAL FEED LOCATOR
 	Based upon http://diveintomark.org/archives/2002/08/15/ultraliberal_rss_locator
 	This function enables support for RSS auto-discovery.
 	****************************************************/
