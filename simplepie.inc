@@ -11,20 +11,12 @@ http://simplepie.org
 
 *****************************************************
 LICENSE:
-GNU Lesser General Public License 2.1
-http://opensource.org/licenses/lgpl-license.php
 
-This library is free software; you can redistribute it and/or modify it under the terms of the 
-GNU Lesser General Public License as published by the Free Software Foundation; either 
-version 2.1 of the License, or (at your option) any later version.
+You can choose either of the following licenses to use SimplePie under, 
+depending on your needs.
 
-This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-PURPOSE.  See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License along with this 
-library; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, 
-Boston, MA  02110-1301  USA
+GNU Lesser General Public License 2.1 (LGPL)
+http://creativecommons.org/licenses/LGPL/2.1/
 
 *****************************************************
 Please submit all bug reports and feature requests to the SimplePie forums.
@@ -37,8 +29,8 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060326';
-	var $url = 'http://www.simplepie.org/';
+	var $build = '20060402';
+	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
 
@@ -1078,9 +1070,10 @@ class SimplePie {
 
 				// If Bypass Image Hotlink is enabled, rewrite all the image tags.
 				if ($this->strip_ads) {
-					$mp_rss = preg_replace('/(&lt;|<)a(.*)href=(&quot;|")(.*)\\/\/pheedo.com\/(.*).phdo\?s=(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $mp_rss); // Pheedo links (tested with Dooce.com)
+					$mp_rss = preg_replace('/(&lt;|<)a(.*)href=(&quot;|")(.*)\\/\/(www\.)?pheedo.com\/(.*).phdo\?s=(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $mp_rss); // Pheedo links (tested with Dooce.com)
 					$mp_rss = preg_replace('/(&lt;|<)a(\w|\s|\=|&quot;|")*href=(&quot;|")http:\/\/ad.doubleclick.net\/(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $mp_rss); // Doubleclick links (tested with InfoWorld.com)
-					$mp_rss = preg_replace('/((&lt;|<)map(\w|\s|\=|"|&quot;)*name=(&quot;|")google_ad_map(\w|\-)*(&quot;|")(&gt;|>).*(&lt;|<)\/map(&gt;|>))((&lt;|<)img usemap=(&quot;|")#google_ad_map(\w|\-)+(&quot;|")(\w|\s|=|&quot;|"|:|\/|\.|\?|&|;|\-)*(&gt;|>))/i', '', $mp_rss); // Google AdSense for Feeds (TUAW). Not quite perfect yet.  It's eating up several TUAW posts at a time.
+					//$mp_rss = preg_replace('/((&lt;|<)map(\w|\s|\=|"|&quot;)*name=(&quot;|")google_ad_map(\w|\-)*(&quot;|")(&gt;|>).*(&lt;|<)\/map(&gt;|>))((&lt;|<)img usemap=(&quot;|")#google_ad_map(\w|\-)+(&quot;|")(\w|\s|=|&quot;|"|:|\/|\.|\?|&|;|\-)*(&gt;|>))/i', '', $mp_rss); // Google AdSense for Feeds (TUAW). Not quite perfect yet.  It's eating up several TUAW posts at a time.
+					// Feedflare, from Feedburner
 				}
 
 				// If XML Dump is enabled, send feed to the page and quit.

@@ -1,12 +1,19 @@
 ************************************************************
 SIMPLEPIE 1.0 BETA 2
-http://www.simplepie.org
+http://simplepie.org
 
 By Ryan Parman and Geoffrey Sneddon
 A product of Skyzyx Technologies
 
-GNU Lesser General Public License 2.1
-http://opensource.org/licenses/lgpl-license.php
+
+************************************************************
+LICENSE:
+
+You can choose either of the following licenses to use SimplePie under, 
+depending on your needs.
+
+GNU Lesser General Public License 2.1 (LGPL)
+http://creativecommons.org/licenses/LGPL/2.1/
 ************************************************************
 
 
@@ -17,6 +24,8 @@ TO START THE DEMO:
 
 
 ************************************************************
+SUPPORT:
+
 For further setup and install documentation, function references, etc., visit:
 http://simplepie.org/docs/
 
@@ -26,4 +35,3 @@ http://simplepie.org/support/
 For more insight on SimplePie development, visit:
 http://simplepie.org/blog/
 ************************************************************
-
