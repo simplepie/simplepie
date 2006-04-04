@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 26 March 2006
+Updated: 3 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -29,7 +29,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060402';
+	var $build = '20060403';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1321,40 +1321,11 @@ class SimplePie {
 	function fix_protocol($mp_feed_proto, $http = 1) {
 		$url = $mp_feed_proto;
 
-		// Swap out feed://http:// for http://-only
-		if (stristr($mp_feed_proto, 'feed://http://')) {
-			$url = substr_replace($mp_feed_proto, 'http://', 0, 14);
-		}
-
-		// Swap out feed://https:// for https://-only
-		else if (stristr($mp_feed_proto, 'feed://https://')) {
-			$url = substr_replace($mp_feed_proto, 'https://', 0, 14);
-		}
-
-		// Swap out feed:http:// for http://
-		else if (stristr($mp_feed_proto, 'feed:http://' )) {
-			$url = substr_replace($mp_feed_proto, 'http://', 0, 12);
-		}
-
-		// Swap out feed:https:// for https://
-		else if (stristr($mp_feed_proto, 'feed:https://' )) {
-			$url = substr_replace($mp_feed_proto, 'https://', 0, 12);
-		}
-
-		// Swap out feed:// protocols in favor of http:// protocols
-		else if (stristr($mp_feed_proto, 'feed://' )) {
-			$url = substr_replace($mp_feed_proto, 'http://', 0, 7);
-		}
-
-		// Swap out feed:www. for http://www.
-		else if (stristr($mp_feed_proto, 'feed:')) {
-			$url = substr_replace($mp_feed_proto, 'http://', 0, 5);
-		}
-
-		// If it doesn't have http:// or https:// in it, and doesn't exist locally, add http://
-		else if (!stristr($mp_feed_proto, 'http://') && !stristr($mp_feed_proto, 'https://') && !file_exists($mp_feed_proto)) {
-			$url = "http://$url";
-		}
+		$url = preg_replace('/feed:(\/\/)?(http:\/\/)?/i', 'http://', $url);
+		$url = preg_replace('/(feed:)?(\/\/)?https:\/\//i', 'https://', $url);
+		$url = preg_replace('/p(od)?cast:(\/\/)?(http:\/\/)?/i', 'http://', $url);
+		$url = preg_replace('/(p(od)?cast:)?(\/\/)?https:\/\//i', 'https://', $url);
+		if (!stristr($url, 'http://') && !stristr($url, 'https://') && !file_exists($url)) $url = "http://$url";
 
 		if ($http == 1) return $url;
 		else if ($http == 2) {
