@@ -1094,57 +1094,6 @@ class SimplePie {
 					// Feedflare, from Feedburner
 				}
 
-				// Strip out HTML tags that might cause various security problems.
-				// Based on recommendations by Mark Pilgrim at:
-				// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
-				$tags_to_strip = array(
-					'blink',
-					'body',
-					'doctype',
-					'embed',
-					'font',
-					'form',
-					'frame',
-					'frameset',
-					'html',
-					'iframe',
-					'input',
-					'marquee',
-					'meta',
-					'noscript',
-					'object',
-					'param',
-					'script',
-					'style'
-				);
-				if ($this->strip_htmltags) {
-					foreach ($tags_to_strip as $tag) {
-						$mp_rss = preg_replace('/(&lt;|<)(!)?(\/)?'. $tag .'(\s|\w|=|,|-|&quot;|"|\/|\.|:|\?|&)*(&gt;|>)/i', '', $mp_rss);
-					}
-				}
-
-				// Strip out HTML attributes that might cause various security problems.
-				// Based on recommendations by Mark Pilgrim at:
-				// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
-				$attribs_to_strip = array(
-					'class',
-					'id',
-					'style'
-				);
-				if ($this->strip_attributes) {
-					foreach ($attribs_to_strip as $attrib) {
-						$mp_rss = preg_replace('/ '. $attrib .'=("|&quot;|\')?(\s|\w|=|,|-|\/|\.|:|;|\?|&)*("|&quot;|\')?/msiU', '', $mp_rss);
-					}
-				}
-
-				if ($this->replace_headers) {
-					// Replace H1, H2, and H3 tags with the less important H4 tags.
-					// This is because on a site, the more important headers might make sense,
-					// but it most likely doesn't fit in the context of RSS-in-a-webpage.
-					$mp_rss = preg_replace('/<h[1-3]( .*)?>/msiU', '<h4>', $mp_rss);
-					$mp_rss = preg_replace('/<\/h[1-3]>/i', '</h4>', $mp_rss);
-				}
-		
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
 					header("Content-type: text/xml; charset=" . $this->encoding);
@@ -2040,6 +1989,57 @@ class SimplePie {
 			}
 		}
 		$data = trim($data);
+
+		// Strip out HTML tags that might cause various security problems.
+		// Based on recommendations by Mark Pilgrim at:
+		// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
+		$tags_to_strip = array(
+			'blink',
+			'body',
+			'doctype',
+			'embed',
+			'font',
+			'form',
+			'frame',
+			'frameset',
+			'html',
+			'iframe',
+			'input',
+			'marquee',
+			'meta',
+			'noscript',
+			'object',
+			'param',
+			'script',
+			'style'
+		);
+		if ($this->strip_htmltags) {
+			foreach ($tags_to_strip as $tag) {
+				$data = preg_replace('/(&lt;|<)(!)?(\/)?'. $tag .'(\s|\w|=|,|-|&quot;|"|\/|\.|:|\?|&)*(&gt;|>)/i', '', $data);
+			}
+		}
+
+		// Strip out HTML attributes that might cause various security problems.
+		// Based on recommendations by Mark Pilgrim at:
+		// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
+		$attribs_to_strip = array(
+			'class',
+			'id',
+			'style'
+		);
+		if ($this->strip_attributes) {
+			foreach ($attribs_to_strip as $attrib) {
+				$data = preg_replace('/ '. $attrib .'=("|&quot;|\')?(\s|\w|=|,|-|\/|\.|:|;|\?|&)*("|&quot;|\')?/msiU', '', $data);
+			}
+		}
+
+		if ($this->replace_headers) {
+			// Replace H1, H2, and H3 tags with the less important H4 tags.
+			// This is because on a site, the more important headers might make sense,
+			// but it most likely doesn't fit in the context of RSS-in-a-webpage.
+			$data = preg_replace('/<h[1-3]( .*)?>/msiU', '<h4>', $data);
+			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
+		}
 
 		if ($is_url) {
 			$data = $this->replace_urls($data, true);
