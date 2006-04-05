@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 3 April 2006
+Updated: 4 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -29,7 +29,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060403';
+	var $build = '20060404';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -46,8 +46,8 @@ class SimplePie {
 	var $remove_div = true;
 	var $order_by_date = true;
 	var $strip_ads = false;
-	var $strip_htmltags = true;
-	var $strip_attributes = true;
+	var $strip_htmltags = 'blink,body,doctype,embed,font,form,frame,frameset,html,iframe,input,marquee,meta,noscript,object,param,script,style';
+	var $strip_attributes = 'class,id,style';
 
 	// RSS Auto-Discovery Variables
 	var $parsed_url;
@@ -189,14 +189,14 @@ class SimplePie {
 	}
 	
 	// Strip out potentially dangerous tags
-	function strip_htmltags($enable) {
-		$this->strip_htmltags = (bool) $enable;
+	function strip_htmltags($tags) {
+		$this->strip_htmltags = (string) $tags;
 		return true;
 	}
 	
 	// Strip out potentially dangerous attributes
-	function strip_attributes($enable) {
-		$this->strip_attributes = (bool) $enable;
+	function strip_attributes($attrib) {
+		$this->strip_attributes = (string) $attrib;
 		return true;
 	}
 
@@ -1990,53 +1990,27 @@ class SimplePie {
 		}
 		$data = trim($data);
 
-		// Strip out HTML tags that might cause various security problems.
+		// Strip out HTML tags and attributes that might cause various security problems.
 		// Based on recommendations by Mark Pilgrim at:
 		// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
-		$tags_to_strip = array(
-			'blink',
-			'body',
-			'doctype',
-			'embed',
-			'font',
-			'form',
-			'frame',
-			'frameset',
-			'html',
-			'iframe',
-			'input',
-			'marquee',
-			'meta',
-			'noscript',
-			'object',
-			'param',
-			'script',
-			'style'
-		);
 		if ($this->strip_htmltags) {
+			$tags_to_strip = explode(',', $this->strip_htmltags);
 			foreach ($tags_to_strip as $tag) {
-				$data = preg_replace('/(&lt;|<)(!)?(\/)?'. $tag .'(\s|\w|=|,|-|&quot;|"|\/|\.|:|\?|&)*(&gt;|>)/i', '', $data);
+				$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\s|\w|=|,|-|&quot;|"|\/|\.|:|\?|&)*(&gt;|>)/i', '', $data);
 			}
 		}
 
-		// Strip out HTML attributes that might cause various security problems.
-		// Based on recommendations by Mark Pilgrim at:
-		// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
-		$attribs_to_strip = array(
-			'class',
-			'id',
-			'style'
-		);
 		if ($this->strip_attributes) {
+			$attribs_to_strip = explode(',', $this->strip_attributes);
 			foreach ($attribs_to_strip as $attrib) {
-				$data = preg_replace('/ '. $attrib .'=("|&quot;|\')?(\s|\w|=|,|-|\/|\.|:|;|\?|&)*("|&quot;|\')?/msiU', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;|\')?(\s|\w|=|,|-|\/|\.|:|;|\?|&)*("|&quot;|\')?/i', '', $data);
 			}
 		}
 
+		// Replace H1, H2, and H3 tags with the less important H4 tags.
+		// This is because on a site, the more important headers might make sense,
+		// but it most likely doesn't fit in the context of RSS-in-a-webpage.
 		if ($this->replace_headers) {
-			// Replace H1, H2, and H3 tags with the less important H4 tags.
-			// This is because on a site, the more important headers might make sense,
-			// but it most likely doesn't fit in the context of RSS-in-a-webpage.
 			$data = preg_replace('/<h[1-3]( .*)?>/msiU', '<h4>', $data);
 			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
 		}
