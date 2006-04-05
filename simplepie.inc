@@ -1080,6 +1080,7 @@ class SimplePie {
 				// Strip double CDATA escaping...
 				$mp_rss = preg_replace('/<\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU', '<![CDATA[', $mp_rss);
 				$mp_rss = preg_replace('/\]\]>[\s]*\]\]>/msiU', ']]>', $mp_rss);
+				$mp_rss = str_replace(']] spencoded="false">', ']]>', $mp_rss);
 
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
