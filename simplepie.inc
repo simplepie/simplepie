@@ -2594,24 +2594,98 @@ class SimplePie_Enclosure
 	var $link;
 	var $type;
 	var $length;
-	
+
 	// Constructor, used to input the data
 	function SimplePie_Enclosure($link, $type, $length) {
 		$this->link = $link;
 		$this->type = $type;
 		$this->length = $length;
 	}
-	
+
 	function get_link() {
 		return (empty($this->link)) ? false : $this->link;
 	}
-	
+
+	function get_extension() {
+		$file = (empty($this->link)) ? false : $this->link;
+		$ext = explode('.', $file);
+		$ext = $ext[sizeof($ext)-1];
+		$ext = explode('?', $ext);
+		$ext = $ext[0];
+		return strtolower($ext);
+	}
+
 	function get_type() {
 		return (empty($this->type)) ? false : $this->type;
 	}
-	
+
 	function get_length() {
 		return (empty($this->length)) ? false : $this->length;
+	}
+
+	function get_size() {
+		return (empty($this->length)) ? false : round(($this->length/1048576), 2);
+	}
+
+	function embed($placeholder='', $alt='[Download enclosure]', $w='100%', $h='20px', $loop=false) {
+
+		// Fix parameters if null is passed.
+		$w = ($w) ? $w : '100%';
+		$h = ($h) ? $h : '20px';
+		$placeholder = ($placeholder) ? $placeholder : '';
+		$alt = ($alt) ? $alt : '[Download enclosure]';
+		$loop = ($loop) ? $loop : 'false';
+
+		$embed='';
+
+		// QuickTime 7 file types.  Need to test with QuickTime 6.
+		if ($this->type == 'application/x-mpeg' || $this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
+			$embed.='<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" ';
+			$embed.='    type="' . $this->type . '" ';
+			$embed.='    codebase="http://www.apple.com/qtactivex/qtplugin.cab" ';
+			$embed.='    width="' . $w . '" ';
+			$embed.='    height="' . $h . '">';
+			$embed.='<param name="src" value="' . $this->link . '" />';
+			$embed.='<param name="autoplay" value="false" />';
+			$embed.='<param name="controller" value="false" />';
+			$embed.='<param name="loop" value="' . $loop . '" />';
+			$embed.='<embed type="' . $this->type . '" ';
+			$embed.='    href="' . $this->link . '" ';
+			$embed.='    src="' . $placeholder . '"';
+			$embed.='    width="' . $w . '" ';
+			$embed.='    height="' . $h . '" ';
+			$embed.='    autoplay="false" ';
+			$embed.='    target="myself" ';
+			$embed.='    controller="false" ';
+			$embed.='    loop="' . $loop . '" ';
+			$embed.='    pluginspage="http://www.apple.com/quicktime/download/">';
+			$embed.='    <a href="' . $this->link . '">' . $alt . '</a>';
+			$embed.='</embed>';
+			$embed.='</object>';
+		}
+
+		// Windows Media 7.0+ Control.  Not tested.
+		else if ($this->type == 'application/x-mplayer2' || $this->type == 'application/asx' || $this->type == 'audio/x-ms-wma' || $this->type == 'audio/x-ms-wax' || $this->type == 'video/x-ms-asf' || $this->type == 'video/x-ms-asf-plugin' || $this->type == 'video/x-ms-wm' || $this->type == 'video/x-ms-wmv' || $this->type == 'video/x-ms-wvx') {
+			$embed.='<object classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6" ';
+			$embed.='    type="application/x-oleobject" ';
+			$embed.='    codebase="http://www.apple.com/qtactivex/qtplugin.cab" ';
+			$embed.='    width="' . $w . '" ';
+			$embed.='    height="' . $h . '">';
+			$embed.='<param name="url" value="' . $this->link . '">';
+			$embed.='<param name="autoStart" value="false">';
+			$embed.='<param name="stretchToFit" value="true">';
+			$embed.='<embed type="application/x-mplayer2"';
+			$embed.='    pluginspage="http://microsoft.com/windows/mediaplayer/en/download/" ';
+			$embed.='    src="' . $this->link . '" ';
+			$embed.='    autosize="1" ';
+			$embed.='    width="' . $w . '" ';
+			$embed.='    height="' . $h . '" ';
+			$embed.='    autostart="false" ';
+			$embed.='    loop="false">';
+			$embed.='</embed>';
+			$embed.='</object>';
+		}
+		return $embed;
 	}
 }
 

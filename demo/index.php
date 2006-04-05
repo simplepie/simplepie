@@ -42,7 +42,7 @@ else $feed->init();
 
 	<ul id="menu">
 		<!-- Must all be on the same line due to spacing bugs. -->
-		<li id="demo"><a href="index.php">Demo</a>|</li><li><a href="http://support.simplepie.org/categories.php">Bug Reports &amp; Feature Requests</a>|</li><li><a href="http://www.simplepie.org/docs/reference/">Function Reference</a>|</li><li><a href="http://www.simplepie.org/blog/">Weblog</a></li>
+		<li id="demo"><a href="index.php">Demo</a>|</li><li><a href="http://simplepie.org/support/">Bug Reports &amp; Feature Requests</a>|</li><li><a href="http://simplepie.org/docs/reference/">Function Reference</a>|</li><li><a href="http://simplepie.org/blog/">Weblog</a></li>
 	</ul>
 
 
@@ -52,6 +52,7 @@ else $feed->init();
 
 		<div id="" class="chunk">
 			<h2 class="image"><img src="./for_the_demo/copy_get_your_demos_here.gif" alt="Demos!  Get your demos here!  Well, actually there's only one.  But you can do it over and over again." title="Demos!  Get your demos here!  Well, actually there's only one.  But you can do it over and over again." /></h2>
+			<em><?php echo $feed->useragent; ?></em>
 			<form action="" method="get" name="sp_form" id="sp_form">
 				<div id="sp_input">
 					<p><strong>Feed URL:</strong>&nbsp;<input type="text" name="feed" value="<?php if ($feed->subscribe_url()) echo $feed->subscribe_url(); ?>" class="text" id="feed_input" />&nbsp;<input type="submit" value="Read" class="button" /></p>
@@ -73,10 +74,12 @@ else $feed->init();
 						<h4><?php if ($item->get_permalink()) echo '<a href="' . $item->get_permalink() . '">'; echo $item->get_title(); if ($item->get_permalink()) echo '</a>'; ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y'); ?></span></h4>
 						<?php echo $item->get_description(); ?>
 						<?php
-						if ($enclosure = $item->get_enclosure(0);)
-							echo '<p><a href="' . $enclosure->get_link() . '" class="download"><img src="./for_the_demo/mini_podcast.png" alt="Podcast" title="Download the Podcast" border="0" /></a></p>';
+						if ($enclosure = $item->get_enclosure(0)) {
+							echo '<p><a href="' . $enclosure->get_link() . '" class="download"><img src="./for_the_demo/mini_podcast.png" alt="Podcast" title="Download the Podcast (' . $enclosure->get_extension() . '; ' . $enclosure->get_size() . ' MB)" border="0" /></a></p>';
+							echo '<p>' . $enclosure->embed("./for_the_demo/mini_podcast.png") . '</p>';
+						}
 						?>
-						<p class="footnote">&rarr; <a href="<?php echo $item->add_to_delicious(); ?>" title="Add post to del.icio.us">Del.icio.us</a> | <a href="<?php echo $item->add_to_digg(); ?>" title="Digg this!">Digg</a> | <a href="<?php echo $item->add_to_furl(); ?>" title="Add post to Furl">Furl</a> | <a href="<?php echo $item->add_to_myweb20(); ?>" title="Add post to My Web 2.0">My Web 2.0</a> | <a href="<?php echo $item->add_to_newsvine(); ?>" title="Add post to Newsvine">Newsvine</a> | <a href="<?php echo $item->add_to_reddit(); ?>" title="Add post to Reddit">Reddit</a> | <a href="<?php echo $item->add_to_spurl(); ?>" title="Add post to Spurl">Spurl</a> | <a href="<?php echo $item->search_technorati(); ?>" title="Who's linking to this post?">Search Technorati</a></p>
+						<p class="footnote" align="center"><a href="<?php echo $item->add_to_delicious(); ?>" title="Add post to del.icio.us">Del.icio.us</a> | <a href="<?php echo $item->add_to_digg(); ?>" title="Digg this!">Digg</a> | <a href="<?php echo $item->add_to_furl(); ?>" title="Add post to Furl">Furl</a> | <a href="<?php echo $item->add_to_myweb20(); ?>" title="Add post to My Web 2.0">My Web 2.0</a> | <a href="<?php echo $item->add_to_newsvine(); ?>" title="Add post to Newsvine">Newsvine</a> | <a href="<?php echo $item->add_to_reddit(); ?>" title="Add post to Reddit">Reddit</a> | <a href="<?php echo $item->add_to_spurl(); ?>" title="Add post to Spurl">Spurl</a> | <a href="<?php echo $item->search_technorati(); ?>" title="Who's linking to this post?">Technorati</a></p>
 					</div>
 				<?php endforeach; ?>
 				</div>
