@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 4 April 2006
+Updated: 5 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -29,7 +29,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060404';
+	var $build = '20060405';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -41,7 +41,7 @@ class SimplePie {
 	var $caching = true;
 	var $max_minutes = 60;
 	var $cache_location = './cache';
-	var $bypass_image_hotlink;
+	var $bypass_image_hotlink = 'i';
 	var $replace_headers = false;
 	var $remove_div = true;
 	var $order_by_date = true;
@@ -1081,11 +1081,6 @@ class SimplePie {
 				$mp_rss = preg_replace('/<\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU', '<![CDATA[', $mp_rss);
 				$mp_rss = preg_replace('/\]\]>[\s]*\]\]>/msiU', ']]>', $mp_rss);
 
-				// If Bypass Image Hotlink is enabled, rewrite all the image tags.
-				if ($this->bypass_image_hotlink) {
-					$mp_rss = preg_replace('/<img(.*)src="/i', '\\0?i=', $mp_rss);
-				}
-
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
 					header("Content-type: text/xml; charset=" . $this->encoding);
@@ -1988,14 +1983,14 @@ class SimplePie {
 		if ($this->strip_htmltags) {
 			$tags_to_strip = explode(',', $this->strip_htmltags);
 			foreach ($tags_to_strip as $tag) {
-				$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#)*(&gt;|>)/i', '', $data);
+				$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*(&gt;|>)/i', '', $data);
 			}
 		}
 
 		if ($this->strip_attributes) {
 			$attribs_to_strip = explode(',', $this->strip_attributes);
 			foreach ($attribs_to_strip as $attrib) {
-				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;|\')?(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#)*("|&quot;|\')?/i', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;|\')?(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!)*("|&quot;|\')?/i', '', $data);
 			}
 		}
 
@@ -2020,7 +2015,12 @@ class SimplePie {
 		} else {
 			$data = preg_replace_callback('/<(.+)>/msiU', array(&$this, 'replace_urls'), $data);
 		}
-		
+
+		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
+		if ($this->bypass_image_hotlink != false) {
+			$data = preg_replace('/<img(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*src=(&quot;|"|\')?/i', '\\0?i=', $data);
+		}
+
 		return $data;
 	}
 	
