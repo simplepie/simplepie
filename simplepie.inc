@@ -1086,14 +1086,6 @@ class SimplePie {
 					$mp_rss = preg_replace('/<img(.*)src="/i', '\\0?i=', $mp_rss);
 				}
 
-				// If Strip Ads is enabled, strip them.
-				if ($this->strip_ads) {
-					$mp_rss = preg_replace('/(&lt;|<)a(.*)href=(&quot;|")(.*)\\/\/(www\.)?pheedo.com\/(.*).phdo\?s=(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $mp_rss); // Pheedo links (tested with Dooce.com)
-					$mp_rss = preg_replace('/(&lt;|<)a(\w|\s|\=|&quot;|")*href=(&quot;|")http:\/\/ad.doubleclick.net\/(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $mp_rss); // Doubleclick links (tested with InfoWorld.com)
-					//$mp_rss = preg_replace('/((&lt;|<)map(\w|\s|\=|"|&quot;)*name=(&quot;|")google_ad_map(\w|\-)*(&quot;|")(&gt;|>).*(&lt;|<)\/map(&gt;|>))((&lt;|<)img usemap=(&quot;|")#google_ad_map(\w|\-)+(&quot;|")(\w|\s|=|&quot;|"|:|\/|\.|\?|&|;|\-)*(&gt;|>))/i', '', $mp_rss); // Google AdSense for Feeds (TUAW). Not quite perfect yet.  It's eating up several TUAW posts at a time.
-					// Feedflare, from Feedburner
-				}
-
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
 					header("Content-type: text/xml; charset=" . $this->encoding);
@@ -1996,14 +1988,14 @@ class SimplePie {
 		if ($this->strip_htmltags) {
 			$tags_to_strip = explode(',', $this->strip_htmltags);
 			foreach ($tags_to_strip as $tag) {
-				$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\s|\w|=|,|-|&quot;|"|\/|\.|:|\?|&)*(&gt;|>)/i', '', $data);
+				$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#)*(&gt;|>)/i', '', $data);
 			}
 		}
 
 		if ($this->strip_attributes) {
 			$attribs_to_strip = explode(',', $this->strip_attributes);
 			foreach ($attribs_to_strip as $attrib) {
-				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;|\')?(\s|\w|=|,|-|\/|\.|:|;|\?|&)*("|&quot;|\')?/i', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;|\')?(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#)*("|&quot;|\')?/i', '', $data);
 			}
 		}
 
@@ -2013,6 +2005,14 @@ class SimplePie {
 		if ($this->replace_headers) {
 			$data = preg_replace('/<h[1-3]( .*)?>/msiU', '<h4>', $data);
 			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
+		}
+
+		// If Strip Ads is enabled, strip them.
+		if ($this->strip_ads) {
+			$data = preg_replace('/(&lt;|<)a(.*)href=(&quot;|")(.*)\\/\/(www\.)?pheedo.com\/(.*).phdo\?s=(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $data); // Pheedo links (tested with Dooce.com)
+			$data = preg_replace('/(&lt;|<)a(\w|\s|\=|&quot;|")*href=(&quot;|")http:\/\/ad.doubleclick.net\/(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $data); // Doubleclick links (tested with InfoWorld.com)
+			$data = preg_replace('/(&lt;|<)map(\w|\s|=|-|"|\'|&quot;)*name=(&quot;|\'|")google_ad_map(\w|\s|=|-)*(&quot;|\'|")(\w|\s|=|-|"|\'|&quot;)*(^gt;|>)(.*)(&lt;|<)\/map(&gt;|>)(&lt;|<)img(\w|\s|=|-|"|\'|&quot;)*usemap=(&quot;|\'|")#google_ad_map(\w|\s|=|-)*(&quot;|\'|")(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&)*(&gt;|>)/i', '', $data); // Google AdSense for Feeds (tested with tuaw.com).
+			// Feedflare, from Feedburner
 		}
 
 		if ($is_url) {
