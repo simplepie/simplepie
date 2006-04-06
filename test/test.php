@@ -21,6 +21,7 @@ font-size: 10px;
 }
 
 $GLOBALS['passed'] = 0;
+$GLOBALS['unsupported'] = 0;
 $GLOBALS['failed'] = 0;
 $GLOBALS['testnum'] = 0;
 
@@ -151,7 +152,8 @@ do_first_item_title_test('tests/wellformed/atom/entry_title_inline_markup_2.xml'
 
 // Totals
 $pass_percent = round($GLOBALS['passed'] / $GLOBALS['testnum'] * 100, 1);
+$unsupported_percent = round($GLOBALS['unsupported'] / $GLOBALS['testnum'] * 100, 1);
 $fail_percent = round($GLOBALS['failed'] / $GLOBALS['testnum'] * 100, 1);
-echo "\n\n$GLOBALS[testnum] tests, $GLOBALS[passed] passed ($pass_percent%), $GLOBALS[failed] failed ($fail_percent%).\n\n";
+echo "\n\n$GLOBALS[testnum] tests, $GLOBALS[passed] passed ($pass_percent%), $GLOBALS[unsupported] unsupported ($unsupported_percent%), $GLOBALS[failed] failed ($fail_percent%).\n\n";
 
 ?>
