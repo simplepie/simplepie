@@ -75,8 +75,7 @@ else $feed->init();
 						<?php echo $item->get_description(); ?>
 						<?php
 						if ($enclosure = $item->get_enclosure(0)) {
-							echo '<p><a href="' . $enclosure->get_link() . '" class="download"><img src="./for_the_demo/mini_podcast.png" alt="Podcast" title="Download the Podcast (' . $enclosure->get_extension() . '; ' . $enclosure->get_size() . ' MB)" border="0" /></a></p>';
-							echo '<p>' . $enclosure->embed("./for_the_demo/mini_podcast.png") . '</p>';
+							echo '<p>' . $enclosure->embed("audio:./for_the_demo/place_audio.png, video:./for_the_demo/place_video.png, alt:<img src='./for_the_demo/mini_podcast.png' class='download' border='0' title='Download the Podcast (" . $enclosure->get_extension() . "; " . $enclosure->get_size() . " MB)' />, altclass:download") . '</p>';
 						}
 						?>
 						<p class="footnote" align="center"><a href="<?php echo $item->add_to_delicious(); ?>" title="Add post to del.icio.us">Del.icio.us</a> | <a href="<?php echo $item->add_to_digg(); ?>" title="Digg this!">Digg</a> | <a href="<?php echo $item->add_to_furl(); ?>" title="Add post to Furl">Furl</a> | <a href="<?php echo $item->add_to_myweb20(); ?>" title="Add post to My Web 2.0">My Web 2.0</a> | <a href="<?php echo $item->add_to_newsvine(); ?>" title="Add post to Newsvine">Newsvine</a> | <a href="<?php echo $item->add_to_reddit(); ?>" title="Add post to Reddit">Reddit</a> | <a href="<?php echo $item->add_to_spurl(); ?>" title="Add post to Spurl">Spurl</a> | <a href="<?php echo $item->search_technorati(); ?>" title="Who's linking to this post?">Technorati</a></p>

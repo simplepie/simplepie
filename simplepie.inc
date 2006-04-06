@@ -2627,64 +2627,77 @@ class SimplePie_Enclosure
 		return (empty($this->length)) ? false : round(($this->length/1048576), 2);
 	}
 
-	function embed($placeholder='', $alt='[Download enclosure]', $w='100%', $h='20px', $loop=false) {
+	function embed($options) {
 
-		// Fix parameters if null is passed.
-		$w = ($w) ? $w : '100%';
-		$h = ($h) ? $h : '20px';
-		$placeholder = ($placeholder) ? $placeholder : '';
-		$alt = ($alt) ? $alt : '[Download enclosure]';
-		$loop = ($loop) ? $loop : 'false';
-
+		// Set up defaults
+		$audio='';
+		$video='';
+		$alt='';
+		$altclass='';
+		$loop='false';
+		$width='auto';
+		$height='auto';
 		$embed='';
 
+		// Process options and reassign values as necessary
+		$options = explode(',', $options);
+		foreach($options as $option) {
+			$opt = explode(':', trim($option));
+			if ($opt[0] == 'audio') $audio=$opt[1];
+			else if ($opt[0] == 'video') $video=$opt[1];
+			else if ($opt[0] == 'alt') $alt=$opt[1];
+			else if ($opt[0] == 'altclass') $altclass=$opt[1];
+			else if ($opt[0] == 'loop') $loop=$opt[1];
+			else if ($opt[0] == 'width') $width=$opt[1];
+			else if ($opt[0] == 'height') $height=$opt[1];
+		}
+
+		// Process values for 'auto'
+		if ($width == 'auto') {
+			if (stristr($this->type, 'audio/')) $width='100%';
+			else if (stristr($this->type, 'video/')) $width='100%';
+		}
+		if ($height == 'auto') {
+			if (stristr($this->type, 'audio/')) $height='16';
+			else if (stristr($this->type, 'video/')) $height='256';
+		}
+
+		// Set proper placeholder value
+		if (stristr($this->type, 'audio/')) $placeholder=$audio;
+		else if (stristr($this->type, 'video/')) $placeholder=$video;
+
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
-		if ($this->type == 'application/x-mpeg' || $this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
+		if ($this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
 			$embed.='<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" ';
+			$embed.='    style="cursor:hand; cursor:pointer;" ';
 			$embed.='    type="' . $this->type . '" ';
 			$embed.='    codebase="http://www.apple.com/qtactivex/qtplugin.cab" ';
-			$embed.='    width="' . $w . '" ';
-			$embed.='    height="' . $h . '">';
-			$embed.='<param name="src" value="' . $this->link . '" />';
+			$embed.='    width="' . $width . '" ';
+			$embed.='    height="' . $height . '">';
+			$embed.='<param name="href" value="' . $this->link . '" />';
+			$embed.='<param name="src" value="' . $placeholder . '" />';
 			$embed.='<param name="autoplay" value="false" />';
+			$embed.='<param name="target" value="myself" />';
 			$embed.='<param name="controller" value="false" />';
 			$embed.='<param name="loop" value="' . $loop . '" />';
+			$embed.='<param name="scale" value="aspect" />';
 			$embed.='<embed type="' . $this->type . '" ';
+			$embed.='    style="cursor:hand; cursor:pointer;" ';
 			$embed.='    href="' . $this->link . '" ';
 			$embed.='    src="' . $placeholder . '"';
-			$embed.='    width="' . $w . '" ';
-			$embed.='    height="' . $h . '" ';
+			$embed.='    width="' . $width . '" ';
+			$embed.='    height="' . $height . '" ';
 			$embed.='    autoplay="false" ';
 			$embed.='    target="myself" ';
 			$embed.='    controller="false" ';
 			$embed.='    loop="' . $loop . '" ';
+			$embed.='    scale="aspect" ';
 			$embed.='    pluginspage="http://www.apple.com/quicktime/download/">';
-			$embed.='    <a href="' . $this->link . '">' . $alt . '</a>';
 			$embed.='</embed>';
 			$embed.='</object>';
 		}
+		else $embed.='<a href="' . $this->link . '" class="' . $altclass . '">' . $alt . '</a>';
 
-		// Windows Media 7.0+ Control.  Not tested.
-		else if ($this->type == 'application/x-mplayer2' || $this->type == 'application/asx' || $this->type == 'audio/x-ms-wma' || $this->type == 'audio/x-ms-wax' || $this->type == 'video/x-ms-asf' || $this->type == 'video/x-ms-asf-plugin' || $this->type == 'video/x-ms-wm' || $this->type == 'video/x-ms-wmv' || $this->type == 'video/x-ms-wvx') {
-			$embed.='<object classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6" ';
-			$embed.='    type="application/x-oleobject" ';
-			$embed.='    codebase="http://www.apple.com/qtactivex/qtplugin.cab" ';
-			$embed.='    width="' . $w . '" ';
-			$embed.='    height="' . $h . '">';
-			$embed.='<param name="url" value="' . $this->link . '">';
-			$embed.='<param name="autoStart" value="false">';
-			$embed.='<param name="stretchToFit" value="true">';
-			$embed.='<embed type="application/x-mplayer2"';
-			$embed.='    pluginspage="http://microsoft.com/windows/mediaplayer/en/download/" ';
-			$embed.='    src="' . $this->link . '" ';
-			$embed.='    autosize="1" ';
-			$embed.='    width="' . $w . '" ';
-			$embed.='    height="' . $h . '" ';
-			$embed.='    autostart="false" ';
-			$embed.='    loop="false">';
-			$embed.='</embed>';
-			$embed.='</object>';
-		}
 		return $embed;
 	}
 }
