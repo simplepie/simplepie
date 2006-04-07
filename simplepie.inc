@@ -78,7 +78,7 @@ class SimplePie {
 	Initiates a couple of variables
 	****************************************************/
 	function SimplePie($feed_url = null, $enable_xmldump = null, $enable_caching = null, $cache_max_minutes = null, $cache_location = null, $replace_headers = null, $remove_div = null, $order_by_date = null) {
-		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build . ' PHP/' . phpversion();
+		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
 		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . ' ' . $this->version . '</a>';
 		
 		if (!is_null($feed_url))
