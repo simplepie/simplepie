@@ -1,11 +1,7 @@
 <?php
-function supported_php() {
-	if (function_exists('version_compare') && ((version_compare(phpversion(), '4.3.0', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.0.3', '>='))) return true;
-	else return false;
-}
-
-$php_ok = supported_php();
+$php_ok = (function_exists('version_compare') && ((version_compare(phpversion(), '4.3.0', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.0.3', '>=')));
 $curl_ok = extension_loaded('curl');
+$fopen_ok = ini_get('allow_url_fopen');
 $mbstring_ok = extension_loaded('mbstring');
 $iconv_ok = extension_loaded('iconv');
 
@@ -107,9 +103,14 @@ table#chart tr.enabled td {
 	/* Leave this alone */
 }
 
-table#chart tr.disabled td {
+table#chart tr.disabled td, 
+table#chart tr.disabled td a {
 	color:#999;
 	font-style:italic;
+}
+
+table#chart tr.disabled td a {
+	text-decoration:underline;
 }
 
 div.chunk {
@@ -154,17 +155,22 @@ div.chunk {
 						<td><?php echo phpversion(); ?></td>
 					</tr>
 					<tr class="<?php echo ($curl_ok) ? 'enabled' : 'disabled'; ?>">
-						<td>curl</td>
+						<td><a href="http://php.net/curl">curl</a></td>
 						<td>Enabled</td>
 						<td><?php echo ($curl_ok) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
+					<tr class="<?php echo ($fopen_ok) ? 'enabled' : 'disabled'; ?>">
+						<td><a href="http://php.net/manual/en/ref.filesystem.php#ini.allow-url-fopen">allow_url_fopen</a></td>
+						<td>Enabled</td>
+						<td><?php echo ($fopen_ok) ? 'Enabled' : 'Disabled'; ?></td>
+					</tr>
 					<tr class="<?php echo ($mbstring_ok) ? 'enabled' : 'disabled'; ?>">
-						<td>mbstring</td>
+						<td><a href="http://php.net/mbstring">mbstring</a></td>
 						<td>Enabled</td>
 						<td><?php echo ($mbstring_ok) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
 					<tr class="<?php echo ($iconv_ok) ? 'enabled' : 'disabled'; ?>">
-						<td>iconv</td>
+						<td><a href="http://php.net/iconv">iconv</a></td>
 						<td>Enabled</td>
 						<td><?php echo ($iconv_ok) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
@@ -175,13 +181,24 @@ div.chunk {
 		<div class="chunk">
 			<h3>What does this mean?</h3>
 			<ol>
-				<?php if ($php_ok && $mbstring_ok && $iconv_ok && $curl_ok) { ?>
+				<?php if ($php_ok && $mbstring_ok && $iconv_ok && $curl_ok && $fopen_ok) { ?>
 				<li><em>You have everything you need to run SimplePie properly!  Congratulations!</em></li>
 				<?php } else { ?>
 					<?php if ($php_ok) { ?>
 						<li><strong>PHP:</strong> You are running a supported version of PHP.  <em>No problems here.</em></li>
-						<?php if ($curl_ok) { ?>
-							<li><strong>curl:</strong> You have <code>curl</code> installed.  <em>No problems here.</em></li>
+						<?php if ($curl_ok || $fopen_ok) { ?>
+							<?php if ($curl_ok) { ?>
+								<li><strong>curl:</strong> You have <code>curl</code> installed.  <?php if ($fopen_ok) { ?>SimplePie will try this before trying <code>fopen</code>.  <?php } ?><em>No problems here.</em></li>
+							<?php } else { ?>
+								<li><strong>curl:</strong> The <code>curl</code> extension is not available.  <?php if ($fopen_ok) { ?>SimplePie will use <code>fopen</code> instead.<?php } else { ?><em>SimplePie is a no-go at the moment.</em><?php } ?></li>
+							<?php } ?>
+
+							<?php if ($fopen_ok) { ?>
+								<li><strong>allow_url_fopen:</strong> You have <code>allow_url_fopen</code> enabled<?php if ($curl_ok) { ?>, although SimplePie will try <code>curl</code> before trying <code>fopen</code><?php }  ?>.  <em>No problems here.</em></li>
+							<?php } else { ?>
+								<li><strong>allow_url_fopen:</strong> This setting has been disabled.  <?php if ($curl_ok) { ?>SimplePie will use <code>curl</code> instead.<?php } else { ?><em>SimplePie is a no-go at the moment.</em><?php } ?></li>
+							<?php } ?>
+
 							<?php if ($mbstring_ok && $iconv_ok) { ?>
 								<li><strong>mbstring and iconv:</strong> You have both <code>mbstring</code> and <code>iconv</code> installed!  This will allow SimplePie to handle the greatest number of languages.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
 							<?php } else if ($mbstring_ok) { ?>
@@ -192,7 +209,7 @@ div.chunk {
 								<li><strong>mbstring and iconv:</strong> <em>You do not have either of the extensions installed.</em>  This will significantly affect your ability to read non-english feeds, as well as even some english ones.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
 							<?php } ?>
 						<?php } else { ?>
-							<li><strong>curl:</strong> The <code>curl</code> extension is not available.  <em>SimplePie is a no-go at the moment.</em></li>
+							<li><strong>curl and fopen:</strong> The <code>allow_url_fopen</code> setting has been disabled and the <code>curl</code> extension is not available.  I'm not sure how you're supposed to be able to do anything without one of these two available to you.  I think it's time for you to get a new webhost.  <em>SimplePie is a no-go at the moment.</em></li>
 						<?php } ?>
 					<?php } else { ?>
 						<li><strong>PHP:</strong> You are running an unsupported version of PHP.  <em>SimplePie is a no-go at the moment.</em></li>
@@ -202,21 +219,21 @@ div.chunk {
 		</div>
 
 		<div class="chunk">
-			<?php if ($php_ok && $mbstring_ok && $iconv_ok && $curl_ok) { ?>
+			<?php if ($php_ok && ($curl_ok || $fopen_ok) && $mbstring_ok && $iconv_ok) { ?>
 				<h3>Bottom Line: Yes, you can!</h3>
 				<p><em>Your webhost has its act together!</em></p>
 				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/setup.php">following the instructions</a>.  You can find example uses with <a href="/ideas/">SimplePie Ideas</a>.</p>
-			<?php } else if ($php_ok && $curl_ok && !$mbstring_ok && !$iconv_ok) { ?>
+			<?php } else if ($php_ok && ($curl_ok || $fopen_ok) && !$mbstring_ok && !$iconv_ok) { ?>
 				<h3>Bottom Line: Yes, but it's crippled.</h3>
 				<p><em>You're limited to essentially english, spanish, italian, and other western-european languages.</em>  Even then you might still have some problems.  We'd recommend that you stick to publishing specific feeds on your site where you know that they're UTF-8 or ISO-8859-1.</p>
 				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/setup.php">following the instructions</a>.  You can find example uses with <a href="/ideas/">SimplePie Ideas</a>.</p>
-			<?php } else if ($php_ok && $curl_ok && (!$mbstring_ok || !$iconv_ok)) { ?>
+			<?php } else if ($php_ok && ($curl_ok || $fopen_ok) && (!$mbstring_ok || !$iconv_ok)) { ?>
 				<h3>Bottom Line: Yes, you can!</h3>
 				<p><em>For most feeds, it'll run with no problems.</em>  There are certain languages that you'll have a hard time with though.</p>
 				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/setup.php">following the instructions</a>.  You can find example uses with <a href="/ideas/">SimplePie Ideas</a>.</p>
 			<?php } else { ?>
 				<h3>Bottom Line: We're sorry...</h3>
-				<p><em>Your webhost does not support the minimum requirements for SimplePie.</em>  It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the <code>mbstring</code> and <code>iconv</code> extensions.</p>
+				<p><em>Your webhost does not support the minimum requirements for SimplePie.</em>  It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the <code>mbstring</code>, <code>iconv</code>, and <code>curl</code> extensions.</p>
 			<?php } ?>
 		</div>
 
