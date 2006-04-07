@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 5 April 2006
+Updated: 6 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -29,7 +29,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060405';
+	var $build = '20060406';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1024,7 +1024,10 @@ class SimplePie {
 							break;
 					}
 				} else {
-					$encoding = 'UTF-8';
+					$mp_rss = preg_replace ('/<\?xml(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|&|,|#|!)*/i', '\\0 encoding="ISO-8859-1"', $mp_rss);
+					$use_iconv = true;
+					$use_mbstring = true;
+					$encoding = 'ISO-8859-1';
 				}
 				$this->encoding = $encoding;
 
@@ -1033,11 +1036,13 @@ class SimplePie {
 					$mp_rss = iconv($encoding, 'UTF-8//TRANSLIT', $mp_rss);
 					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 					$this->encoding = 'UTF-8';
-				} else if (function_exists('mb_convert_encoding') && $use_mbstring) {
+				}
+				else if (function_exists('mb_convert_encoding') && $use_mbstring) {
 					$mp_rss = mb_convert_encoding($mp_rss, 'UTF-8', $encoding);
 					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 					$this->encoding = 'UTF-8';
-				} else if ($use_mbstring || $use_iconv) {
+				}
+				else if ($use_mbstring || $use_iconv) {
 					$this->encoding = 'UTF-8';
 					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 				}
