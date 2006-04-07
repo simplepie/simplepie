@@ -1025,8 +1025,6 @@ class SimplePie {
 					}
 				} else {
 					$mp_rss = preg_replace ('/<\?xml(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|&|,|#|!)*/i', '\\0 encoding="ISO-8859-1"', $mp_rss);
-					$use_iconv = true;
-					$use_mbstring = true;
 					$encoding = 'ISO-8859-1';
 				}
 				$this->encoding = $encoding;
