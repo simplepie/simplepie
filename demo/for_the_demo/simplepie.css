@@ -2,10 +2,10 @@
 Theme Name: SimplePie
 Theme URI: http://www.simplepie.org
 Description: A simple, yet beautiful theme inspired by (but not stolen from) 37Signals' Backpack and Basecamp websites.
-Version: 1.0 Beta
+Version: 1.0
 Author: Ryan Parman
 Author URI: http://www.skyzyx.com
-Updated: 5 Jan 2006
+Updated: 6 April 2006
 */
 
 
@@ -16,7 +16,9 @@ body {
 	font:12px/18px verdana, sans-serif;
 	letter-spacing:0px;
 	color:#333;
-	background:#fff url(../for_the_demo/top_gradient.gif) repeat-x top left;
+	background:#fff url(top_gradient.gif) repeat-x top left;
+	margin:0;
+	padding:0;
 }
 
 div#site {
@@ -37,6 +39,12 @@ a:hover {
 	padding:0 1px;
 }
 
+div#punwrap a:hover {
+	color:#fff !important;
+	background-color:#333 !important;
+	text-decoration:none !important;
+}
+
 h1#logo {
 	margin:0;
 	padding:0;
@@ -53,6 +61,7 @@ h1#logo a:hover {
 h2.image {
 	margin:0;
 	padding:0;
+	text-align:center;
 }
 
 h3 {
@@ -65,11 +74,6 @@ h4 {
 	margin:20px 0 0 0;
 	padding:0;
 	font-size:14px;
-}
-
-em {
-	font-style:normal;
-	background-color:#ffc;
 }
 
 p {
@@ -99,12 +103,59 @@ code {
 }
 
 pre {
-	font-family:monospace;
+	font-size:12px !important;
+	font-family:monospace !important;
+}
+
+div#site pre {
 	background-color:#f3f3ff;
 	color:#000080;
 	border:1px dotted #000080;
 	overflow:auto;
 	padding:3px 5px;
+}
+
+blockquote {
+	font-size:11px;
+	color:#666;
+	border-left:4px solid #666;
+	margin:10px 0 10px 30px;
+	padding:0 5px 0 10px;
+	background:#f3f3f3 url(background_blockquote.png) repeat top left;
+}
+
+input, select, textarea {
+	font:11px/16px verdana, sans-serif;
+	padding:2px;
+}
+
+input[type=text], select, textarea {
+	background-color:#e9f5ff;
+	border:1px solid #333;
+}
+
+input[type=text]:focus, select:focus, textarea:focus {
+	background-color:#ffe;
+}
+
+table#chart {
+	border-collapse:collapse;
+}
+
+table#chart th {
+	background-color:#eee;
+	padding:2px 3px;
+	border:1px solid #fff;
+}
+
+table#chart td {
+	text-align:center;
+	padding:2px 3px;
+	border:1px solid #eee;
+}
+
+table#chart td.left {
+	text-align:left;
 }
 
 
@@ -113,7 +164,7 @@ NAVIGATION STYLES
 *********************************************/
 ul#menu {
 	display:block;
-	margin:0 0 20px 0;
+	margin:20px 0 0 0;
 	padding:0;
 	color:#aaa;
 	text-align:center;
@@ -133,13 +184,7 @@ ul#menu li a {
 	font-weight:bold;
 }
 
-body#bodyabout ul#menu li#about a, 
-body#bodydemo ul#menu li#demo a, 
-body#bodydownloads ul#menu li#downloads a, 
-body#bodydocs ul#menu li#docs a, 
-body#bodyideas ul#menu li#ideas a, 
-body#bodyblog ul#menu li#blog a, 
-body#bodysupport ul#menu li#support a {
+body#bodydemo ul#menu li#demo a {
 	color:#fff;
 	background-color:#333;
 	text-decoration:none;
@@ -166,38 +211,14 @@ div.chunk {
 	font-style:italic;
 }
 
-a.download, 
-a.download:hover {
-	border:none;
-	background-color:transparent;
-}
-
-p.download {
+p.subscribe {
+	background-color:#f3f3f3;
+	font-size:11px;
 	text-align:center;
 }
 
-p.download a,
-p.download a:hover {
-	display:block;
-	padding:45px 0 0 0;
-	margin:0 auto;
-	width:203px;
-	heig\ht:45px;
-	height:0;
-	overflow:hidden;
-	background:transparent url(/images/button_download.png) no-repeat 0 0;
-}
-
-p.download a {
-	background:transparent url(/images/button_download.png) no-repeat 0 0;
-}
-
-p.download a:hover {
-	background:transparent url(/images/button_download.png) no-repeat 0 -45px;
-}
-
-p.subscribe {
-	background-color:#f3f3f3;
+p.highlight {
+	background-color:#ffc;
 	font-size:11px;
 	text-align:center;
 }
@@ -228,20 +249,6 @@ div.focus {
 	margin:0;
 	padding:10px 20px;
 	background-color:#efe;
-}
-
-
-/*********************************************
-BLOG STYLES
-*********************************************/
-div.prevNext {
-	border-bottom:1px solid #ccc;
-	background-color:#efe;
-}
-
-div.prevNext,
-table td {
-	font-size:11px;
 }
 
 
