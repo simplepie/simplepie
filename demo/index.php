@@ -83,7 +83,7 @@ else $feed->init();
 
 		<div>
 			<p class="footnote">Page processed in <?php $mtime = explode(' ', microtime()); echo round($mtime[0] + $mtime[1] - $starttime, 3); ?> seconds.</p>
-			<p class="footnote"><strong>PHP:</strong> <?php echo phpversion();?>, <strong>mbstring:</strong> <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/"><?php echo (extension_loaded('mbstring')) ? 'enabled' : 'not available' ?></a>, <strong>iconv:</strong> <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/"><?php echo (extension_loaded('iconv')) ? 'enabled' : 'not available' ?></a></p>
+			<p class="footnote">Does your webhost support SimplePie?  Run the <a href="sp_compatibility_test.php">SimplePie Compatibility Test</a>.</p>
 			<p class="footnote"><?php echo $feed->useragent; ?></p>
 			<p class="footnote">SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
 		</div>
