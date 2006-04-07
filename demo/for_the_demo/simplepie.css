@@ -223,6 +223,10 @@ p.highlight {
 	text-align:center;
 }
 
+p.sample_feeds {
+	font:11px/14px verdana, sans-serif;
+}
+
 
 /*********************************************
 DEMO STYLES

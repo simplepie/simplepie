@@ -12,9 +12,6 @@ http://simplepie.org
 *****************************************************
 LICENSE:
 
-You can choose either of the following licenses to use SimplePie under, 
-depending on your needs.
-
 GNU Lesser General Public License 2.1 (LGPL)
 http://creativecommons.org/licenses/LGPL/2.1/
 
@@ -81,7 +78,7 @@ class SimplePie {
 	Initiates a couple of variables
 	****************************************************/
 	function SimplePie($feed_url = null, $enable_xmldump = null, $enable_caching = null, $cache_max_minutes = null, $cache_location = null, $replace_headers = null, $remove_div = null, $order_by_date = null) {
-		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
+		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build . ' PHP/' . phpversion();
 		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . ' ' . $this->version . '</a>';
 		
 		if (!is_null($feed_url))
@@ -283,7 +280,7 @@ class SimplePie {
 				// Support everything from mbstring (http://www.php.net/manual/en/ref.mbstring.php#mbstring.supported-encodings)
 				$use_iconv = false;
 				$use_mbstring = false;
-				if (preg_match('/encoding=["](.*)["]/Ui', $mp_rss, $encoding)) {
+				if (preg_match('/encoding=["|\'](.*)["|\']/Ui', $mp_rss, $encoding)) {
 					$match = $encoding;
 					switch (strtolower($encoding[1])) {
 
