@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 6 April 2006
+Updated: 8 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060406';
+	var $build = '20060408';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -75,46 +75,24 @@ class SimplePie {
 
 	/****************************************************
 	CONSTRUCTOR
-	Initiates a couple of variables
+	Initiates a couple of variables.  Accepts feed_url, cache_location, 
+	and cache_max_minutes.
 	****************************************************/
-	function SimplePie($feed_url = null, $enable_xmldump = null, $enable_caching = null, $cache_max_minutes = null, $cache_location = null, $replace_headers = null, $remove_div = null, $order_by_date = null) {
+	function SimplePie($feed_url = null, $cache_location = null, $cache_max_minutes = null) {
 		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
 		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . ' ' . $this->version . '</a>';
 		
 		if (!is_null($feed_url))
 			$this->feed_url($feed_url);
-			
-		if (!is_null($enable_xmldump))
-			$this->enable_xmldump($enable_xmldump);
-			
-		if (!is_null($enable_caching))
-			$this->enable_caching($enable_caching);
-			
-		if (!is_null($cache_max_minutes))
-			$this->cache_max_minutes($cache_max_minutes);
-			
+
 		if (!is_null($cache_location))
 			$this->cache_location($cache_location);
-			
-		if (!is_null($replace_headers))
-			$this->enable_caching($replace_headers);
-			
-		if (!is_null($remove_div))
-			$this->remove_div($remove_div);
-			
-		if (!is_null($order_by_date))
-			$this->order_by_date($order_by_date);
-		
+
+		if (!is_null($cache_max_minutes))
+			$this->cache_max_minutes($cache_max_minutes);
+
 		if (!is_null($feed_url))
 			return $this->init();
-
-		// $block_image_hotlink
-
-		// $strip_ads
-
-		// $strip_tags
-
-		// $strip_attributes
 	}
 
 
@@ -201,7 +179,7 @@ class SimplePie {
 
 
 	/****************************************************
-	MAIN SIMPLEPIE FUNCTION
+	MAIN INITIALIZATION FUNCTION
 	Rewrites the feed so that it actually resembles XML, processes the XML,
 	and builds an array from the feed.
 	****************************************************/
@@ -1173,20 +1151,12 @@ class SimplePie {
 		return (empty($this->rss_url)) ? false : 'http://feeds.my.aol.com/add.jsp?url=' . rawurlencode($this->subscribe_url());
 	}
 
-	function subscribe_blinklist() {
-		return (empty($this->rss_url)) ? false : 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=' . rawurlencode($this->subscribe_url()) . '&Title=' . rawurlencode($this->get_feed_link());
-	}
-
 	function subscribe_bloglines() {
 		return (empty($this->rss_url)) ? false : 'http://www.bloglines.com/sub/' . rawurlencode($this->subscribe_url());
 	}
 
 	function subscribe_google() {
 		return (empty($this->rss_url)) ? false : 'http://fusion.google.com/add?feedurl=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_magnolia() {
-		return (empty($this->rss_url)) ? false : 'http://ma.gnolia.com/bookmarklet/add?url=' . rawurlencode($this->subscribe_url()) . '&amp;title=' . rawurlencode($this->get_feed_link());
 	}
 
 	function subscribe_msn() {
@@ -2008,7 +1978,7 @@ class SimplePie {
 			$data = preg_replace('/(&lt;|<)a(.*)href=(&quot;|")(.*)\\/\/(www\.)?pheedo.com\/(.*).phdo\?s=(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $data); // Pheedo links (tested with Dooce.com)
 			$data = preg_replace('/(&lt;|<)a(\w|\s|\=|&quot;|")*href=(&quot;|")http:\/\/ad.doubleclick.net\/(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $data); // Doubleclick links (tested with InfoWorld.com)
 			$data = preg_replace('/(&lt;|<)map(\w|\s|=|-|"|\'|&quot;)*name=(&quot;|\'|")google_ad_map(\w|\s|=|-)*(&quot;|\'|")(\w|\s|=|-|"|\'|&quot;)*(^gt;|>)(.*)(&lt;|<)\/map(&gt;|>)(&lt;|<)img(\w|\s|=|-|"|\'|&quot;)*usemap=(&quot;|\'|")#google_ad_map(\w|\s|=|-)*(&quot;|\'|")(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&)*(&gt;|>)/i', '', $data); // Google AdSense for Feeds (tested with tuaw.com).
-			// Feedflare, from Feedburner
+			$data = preg_replace('/(&lt;|<)div(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*(&gt;|>)(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!|~|&lt;|<|&gt;|>)*(&lt;|<)\/div(&gt;|>)/i', '', $data); // Feedflare (from FeedBurner)
 		}
 
 		if ($is_url) {
@@ -2523,6 +2493,10 @@ class SimplePie_Item
 	"ADD TO" LINKS
 	Allows people to easily add news postings to social bookmarking sites.
 	****************************************************/
+	function add_to_blinklist() {
+		return 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=' . rawurlencode($this->get_permalink()) . '&Title=' . rawurlencode($this->get_title());
+	}
+
 	function add_to_delicious() {
 		return 'http://del.icio.us/post/?v=3&amp;url=' . rawurlencode($this->get_permalink()) . '&amp;title=' . rawurlencode($this->get_title());
 	}
@@ -2533,6 +2507,10 @@ class SimplePie_Item
 
 	function add_to_furl() {
 		return 'http://www.furl.net/storeIt.jsp?u=' . rawurlencode($this->get_permalink()) . '&amp;t=' . rawurlencode($this->get_title());
+	}
+
+	function add_to_magnolia() {
+		return 'http://ma.gnolia.com/bookmarklet/add?url=' . rawurlencode($this->get_permalink()) . '&amp;title=' . rawurlencode($this->get_title());
 	}
 
 	function add_to_myweb20() {
