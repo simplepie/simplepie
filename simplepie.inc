@@ -2634,10 +2634,12 @@ class SimplePie_Enclosure
 		if ($width == 'auto') {
 			if (stristr($this->type, 'audio/')) $width='100%';
 			else if (stristr($this->type, 'video/')) $width='100%';
+			else $width='100%';
 		}
 		if ($height == 'auto') {
-			if (stristr($this->type, 'audio/')) $height='16';
-			else if (stristr($this->type, 'video/')) $height='256';
+			if (stristr($this->type, 'audio/')) $height=0;
+			else if (stristr($this->type, 'video/')) $height=240;
+			else $height=256;
 		}
 
 		// Set proper placeholder value
@@ -2646,6 +2648,8 @@ class SimplePie_Enclosure
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
 		if ($this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
+			$height+=16;
+
 			$embed.='<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" ';
 			$embed.='    style="cursor:hand; cursor:pointer;" ';
 			$embed.='    type="' . $this->type . '" ';
@@ -2674,6 +2678,28 @@ class SimplePie_Enclosure
 			$embed.='</embed>';
 			$embed.='</object>';
 		}
+
+		// Flash
+		else if ($this->type == 'application/x-shockwave-flash' || $this->type == 'application/futuresplash') {
+			$embed.='<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"';
+			$embed.='    codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"';
+			$embed.='    width="' . $width . '"';
+			$embed.='    height="' . $height . '">';
+			$embed.='<param name="movie" value="' . $this->link . '">';
+			$embed.='<param name="quality" value="high">';
+			$embed.='<param name="loop" value="' . $loop . '">';
+			$embed.='<embed src="' . $this->link . '" ';
+			$embed.='    pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" ';
+			$embed.='    type="' . $this->type . '" ';
+			$embed.='    quality="high" ';
+			$embed.='    width="' . $width . '" ';
+			$embed.='    height="' . $height . '" ';
+			$embed.='    loop="' . $loop . '">';
+			$embed.='</embed>';
+			$embed.='</object>';
+		}
+
+		// Everything else
 		else $embed.='<a href="' . $this->link . '" class="' . $altclass . '">' . $alt . '</a>';
 
 		return $embed;
