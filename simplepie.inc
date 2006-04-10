@@ -246,7 +246,7 @@ class SimplePie {
 						return $this->init();
 					}
 				} else {
-					trigger_error("No feed found at $this->rss_url", E_USER_WARNING);
+					trigger_error("A feed could not be found at $this->rss_url", E_USER_WARNING);
 					return false;
 				}
 
@@ -2705,5 +2705,34 @@ class SimplePie_Enclosure
 		return $embed;
 	}
 }
+
+
+/****************************************************
+ERROR HANDLING
+Copied from http://php.net/set-error-handler
+****************************************************/
+$SIMPLEPIE_ERRORS=array();
+function handle_errors($errno, $errstr, $errfile, $errline) {
+	global $SIMPLEPIE_ERRORS;
+	switch ($errno) {
+		case E_USER_ERROR:
+			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Error:</b> $errstr";
+			error_log("PHP Error:  $errstr in $errfile on line $errline");
+			break;
+		case E_USER_WARNING:
+			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Warning:</b> $errstr";
+			error_log("PHP Warning:  $errstr in $errfile on line $errline");
+			break;
+		case E_USER_NOTICE:
+			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Notice:</b> $errstr";
+			error_log("PHP Notice:  $errstr in $errfile on line $errline");
+			break;
+		default:
+			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Unknown PHP Error:</b> $errstr";
+			error_log("Unknown PHP Error:  $errstr in $errfile on line $errline");
+			break;
+	}
+}
+$old_error_handler = set_error_handler("handle_errors");
 
 ?>
