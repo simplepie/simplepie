@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 8 April 2006
+Updated: 9 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060408';
+	var $build = '20060409';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -2647,7 +2647,7 @@ class SimplePie_Enclosure
 		else if (stristr($this->type, 'video/')) $placeholder=$video;
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
-		if ($this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
+		if ($this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/m4v' || $this->type == 'video/x-m4v' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
 			$height+=16;
 
 			$embed.='<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" ';

@@ -227,6 +227,13 @@ p.sample_feeds {
 	font:11px/14px verdana, sans-serif;
 }
 
+div.sp_errors {
+	background-color:#eee;
+	padding:5px;
+	text-align:center;
+	font-size:11px;
+}
+
 
 /*********************************************
 DEMO STYLES
