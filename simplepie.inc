@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 9 April 2006
+Updated: 12 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060409';
+	var $build = '20060412';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -2615,6 +2615,7 @@ class SimplePie_Enclosure
 		$loop='false';
 		$width='auto';
 		$height='auto';
+		$bgcolor='#ffffff';
 		$embed='';
 
 		// Process options and reassign values as necessary
@@ -2628,6 +2629,7 @@ class SimplePie_Enclosure
 			else if ($opt[0] == 'loop') $loop=$opt[1];
 			else if ($opt[0] == 'width') $width=$opt[1];
 			else if ($opt[0] == 'height') $height=$opt[1];
+			else if ($opt[0] == 'bgcolor') $bgcolor=$opt[1];
 		}
 
 		// Process values for 'auto'
@@ -2646,14 +2648,43 @@ class SimplePie_Enclosure
 		if (stristr($this->type, 'audio/')) $placeholder=$audio;
 		else if (stristr($this->type, 'video/')) $placeholder=$video;
 
+		// Odeo Feed MP3's
+		if (substr(strtolower($this->link), 0, 15) == 'http://odeo.com') {
+			$embed.='<div align="center">';
+			$embed.='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" ';
+			$embed.='    codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" ';
+			$embed.='    bgcolor="' . $bgcolor . '" ';
+			$embed.='    width="440" ';
+			$embed.='    height="80" ';
+			$embed.='    align="middle">';
+			$embed.='<param name="movie" value="http://odeo.com/flash/audio_player_fullsize.swf" />';
+			$embed.='<param name="allowScriptAccess" value="any" />';
+			$embed.='<param name="quality" value="high">';
+			$embed.='<param name="bgcolor" value="' . $bgcolor . '">';
+			$embed.='<param name="flashvars" value="valid_sample_rate=true&external_url=' . $this->link . '" />';
+			$embed.='<embed src="http://odeo.com/flash/audio_player_fullsize.swf" ';
+			$embed.='    pluginspage="http://www.macromedia.com/go/getflashplayer" ';
+			$embed.='    type="application/x-shockwave-flash" ';
+			$embed.='    quality="high" ';
+			$embed.='    width="440" ';
+			$embed.='    height="80" ';
+			$embed.='    bgcolor="' . $bgcolor . '" ';
+			$embed.='    allowScriptAccess="any" ';
+			$embed.='    flashvars="valid_sample_rate=true&external_url=' . $this->link . '">';
+			$embed.='</embed>';
+			$embed.='</object>';
+			$embed.='</div>';
+		}
+
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
-		if ($this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/m4v' || $this->type == 'video/x-m4v' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
+		else if ($this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/m4v' || $this->type == 'video/x-m4v' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
 			$height+=16;
 
 			$embed.='<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" ';
 			$embed.='    style="cursor:hand; cursor:pointer;" ';
 			$embed.='    type="' . $this->type . '" ';
 			$embed.='    codebase="http://www.apple.com/qtactivex/qtplugin.cab" ';
+			$embed.='    bgcolor="' . $bgcolor . '" ';
 			$embed.='    width="' . $width . '" ';
 			$embed.='    height="' . $height . '">';
 			$embed.='<param name="href" value="' . $this->link . '" />';
@@ -2663,6 +2694,7 @@ class SimplePie_Enclosure
 			$embed.='<param name="controller" value="false" />';
 			$embed.='<param name="loop" value="' . $loop . '" />';
 			$embed.='<param name="scale" value="aspect" />';
+			$embed.='<param name="bgcolor" value="' . $bgcolor . '">';
 			$embed.='<embed type="' . $this->type . '" ';
 			$embed.='    style="cursor:hand; cursor:pointer;" ';
 			$embed.='    href="' . $this->link . '" ';
@@ -2674,6 +2706,7 @@ class SimplePie_Enclosure
 			$embed.='    controller="false" ';
 			$embed.='    loop="' . $loop . '" ';
 			$embed.='    scale="aspect" ';
+			$embed.='    bgcolor="' . $bgcolor . '" ';
 			$embed.='    pluginspage="http://www.apple.com/quicktime/download/">';
 			$embed.='</embed>';
 			$embed.='</object>';
@@ -2683,17 +2716,20 @@ class SimplePie_Enclosure
 		else if ($this->type == 'application/x-shockwave-flash' || $this->type == 'application/futuresplash') {
 			$embed.='<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"';
 			$embed.='    codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"';
+			$embed.='    bgcolor="' . $bgcolor . '" ';
 			$embed.='    width="' . $width . '"';
 			$embed.='    height="' . $height . '">';
 			$embed.='<param name="movie" value="' . $this->link . '">';
 			$embed.='<param name="quality" value="high">';
 			$embed.='<param name="loop" value="' . $loop . '">';
+			$embed.='<param name="bgcolor" value="' . $bgcolor . '">';
 			$embed.='<embed src="' . $this->link . '" ';
 			$embed.='    pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" ';
 			$embed.='    type="' . $this->type . '" ';
 			$embed.='    quality="high" ';
 			$embed.='    width="' . $width . '" ';
 			$embed.='    height="' . $height . '" ';
+			$embed.='    bgcolor="' . $bgcolor . '" ';
 			$embed.='    loop="' . $loop . '">';
 			$embed.='</embed>';
 			$embed.='</object>';
@@ -2712,23 +2748,28 @@ ERROR HANDLING
 Copied from http://php.net/set-error-handler
 ****************************************************/
 $SIMPLEPIE_ERRORS=array();
+$SIMPLEPIE_ERRORS_FULL=array();
 function handle_errors($errno, $errstr, $errfile, $errline) {
 	global $SIMPLEPIE_ERRORS;
 	switch ($errno) {
 		case E_USER_ERROR:
 			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Error:</b> $errstr";
+			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Error:</b> $errstr in $errfile on line $errline";
 			error_log("PHP Error:  $errstr in $errfile on line $errline");
 			break;
 		case E_USER_WARNING:
 			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Warning:</b> $errstr";
+			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Warning:</b> $errstr in $errfile on line $errline";
 			error_log("PHP Warning:  $errstr in $errfile on line $errline");
 			break;
 		case E_USER_NOTICE:
 			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Notice:</b> $errstr";
+			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Notice:</b> $errstr in $errfile on line $errline";
 			error_log("PHP Notice:  $errstr in $errfile on line $errline");
 			break;
 		default:
 			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Unknown PHP Error:</b> $errstr";
+			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Unknown PHP Error:</b> $errstr in $errfile on line $errline";
 			error_log("Unknown PHP Error:  $errstr in $errfile on line $errline");
 			break;
 	}
