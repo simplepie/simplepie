@@ -20,29 +20,12 @@ if (!empty($_GET['feed'])) {
 
 	// Use the URL that was passed to the page in SimplePie
 	$feed->feed_url($_GET['feed']);
-
-	// If we've passed an xmldump variable in the URL, snap into XMLdump mode
-	if (isset($_GET['xmldump'])) {
-		$feed->enable_xmldump($_GET['xmldump']);
-	}
-
-	// Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and 
-	// all that other good stuff.  The feed's information will not be available to SimplePie before 
-	// this is called.
-	$feed->init();
-
-	// Now that we've initialized SimplePie and all of the feed's information is now accessible, 
-	// let's check the post-processed encoding (which may change after mbstring and/or iconv 
-	// get ahold of it), send the proper character encoding for the text in the HTTP headers so 
-	// that the browser handles it properly.
-	if (!headers_sent() && $feed->get_encoding()) {
-		header('Content-type: text/html; charset=' . $feed->get_encoding());
-	}
 }
 
-// Even if we didn't pass a feed, we still want to initialize.  This will allow things like the image 
-// hotlink block bypass to function properly.
-else $feed->init();
+// Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and 
+// all that other good stuff.  The feed's information will not be available to SimplePie before 
+// this is called.
+$feed->init();
 
 // When we end our PHP block, we want to make sure our DOCTYPE is on the top line to make 
 // sure that the browser snaps into Standards Mode.
@@ -55,9 +38,6 @@ else $feed->init();
 <link rel="stylesheet" href="./for_the_demo/simplepie.css" media="screen, projector" />
 <script type="text/javascript" src="./for_the_demo/sifr.js"></script>
 <script type="text/javascript" src="./for_the_demo/sleight.js"></script>
-
-<!-- Let's also set the encoding as a meta tag, for the same reasons as noted above. -->
-<meta http-equiv="Content-Type" content="text/html;charset=<?php echo $feed->get_encoding(); ?>" />
 
 </head>
 

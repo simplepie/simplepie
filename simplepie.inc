@@ -82,17 +82,26 @@ class SimplePie {
 		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
 		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . ' ' . $this->version . '</a>';
 		
-		if (!is_null($feed_url))
+		if (!is_null($feed_url)) {
 			$this->feed_url($feed_url);
+		}
 
-		if (!is_null($cache_location))
+		if (!is_null($cache_location)) {
 			$this->cache_location($cache_location);
+		}
 
-		if (!is_null($cache_max_minutes))
+		if (!is_null($cache_max_minutes)) {
 			$this->cache_max_minutes($cache_max_minutes);
+		}
 
-		if (!is_null($feed_url))
+		if (!is_null($feed_url)) {
 			return $this->init();
+		}
+
+		// If we've passed an xmldump variable in the URL, snap into XMLdump mode
+		if (isset($_GET['xmldump'])) {
+			$this->enable_xmldump($_GET['xmldump']);
+		}
 	}
 
 
@@ -287,6 +296,8 @@ class SimplePie {
 						case 'us-ascii':
 						case 'ascii':
 							$encoding = 'US-ASCII';
+							$use_iconv = true;
+							$use_mbstring = true;
 							break;
 
 						// BASE64
@@ -1065,6 +1076,10 @@ class SimplePie {
 					header("Content-type: text/xml; charset=" . $this->encoding);
 					echo $mp_rss;
 					exit;
+				}
+				// Otherwise, send normal headers.
+				else if (!headers_sent() && $this->get_encoding()) {
+					header('Content-type: text/html; charset=' . $this->get_encoding());
 				}
 
 				$this->xml = xml_parser_create($this->encoding);
@@ -2660,7 +2675,7 @@ class SimplePie_Enclosure
 			$embed.='<param name="movie" value="http://odeo.com/flash/audio_player_fullsize.swf" />';
 			$embed.='<param name="allowScriptAccess" value="any" />';
 			$embed.='<param name="quality" value="high">';
-			$embed.='<param name="bgcolor" value="' . $bgcolor . '">';
+			$embed.='<param name="wmode" value="transparent">';
 			$embed.='<param name="flashvars" value="valid_sample_rate=true&external_url=' . $this->link . '" />';
 			$embed.='<embed src="http://odeo.com/flash/audio_player_fullsize.swf" ';
 			$embed.='    pluginspage="http://www.macromedia.com/go/getflashplayer" ';
@@ -2668,7 +2683,7 @@ class SimplePie_Enclosure
 			$embed.='    quality="high" ';
 			$embed.='    width="440" ';
 			$embed.='    height="80" ';
-			$embed.='    bgcolor="' . $bgcolor . '" ';
+			$embed.='    wmode="transparent" ';
 			$embed.='    allowScriptAccess="any" ';
 			$embed.='    flashvars="valid_sample_rate=true&external_url=' . $this->link . '">';
 			$embed.='</embed>';
@@ -2751,6 +2766,7 @@ $SIMPLEPIE_ERRORS=array();
 $SIMPLEPIE_ERRORS_FULL=array();
 function handle_errors($errno, $errstr, $errfile, $errline) {
 	global $SIMPLEPIE_ERRORS;
+	global $SIMPLEPIE_ERRORS_FULL;
 	switch ($errno) {
 		case E_USER_ERROR:
 			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Error:</b> $errstr";
