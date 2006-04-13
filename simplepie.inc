@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 12 April 2006
+Updated: 13 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060412';
+	var $build = '20060413';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -2650,7 +2650,7 @@ class SimplePie_Enclosure
 		// Process values for 'auto'
 		if ($width == 'auto') {
 			if (stristr($this->type, 'audio/')) $width='100%';
-			else if (stristr($this->type, 'video/')) $width='100%';
+			else if (stristr($this->type, 'video/')) $width='320';
 			else $width='100%';
 		}
 		if ($height == 'auto') {
@@ -2665,7 +2665,6 @@ class SimplePie_Enclosure
 
 		// Odeo Feed MP3's
 		if (substr(strtolower($this->link), 0, 15) == 'http://odeo.com') {
-			$embed.='<div align="center">';
 			$embed.='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" ';
 			$embed.='    codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" ';
 			$embed.='    bgcolor="' . $bgcolor . '" ';
@@ -2688,7 +2687,6 @@ class SimplePie_Enclosure
 			$embed.='    flashvars="valid_sample_rate=true&external_url=' . $this->link . '">';
 			$embed.='</embed>';
 			$embed.='</object>';
-			$embed.='</div>';
 		}
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
@@ -2746,6 +2744,34 @@ class SimplePie_Enclosure
 			$embed.='    height="' . $height . '" ';
 			$embed.='    bgcolor="' . $bgcolor . '" ';
 			$embed.='    loop="' . $loop . '">';
+			$embed.='</embed>';
+			$embed.='</object>';
+		}
+
+		// Windows Media
+		else if ($this->type == 'application/asx' || $this->type == 'application/x-mplayer2' || $this->type == 'audio/x-ms-wma' || $this->type == 'audio/x-ms-wax' || $this->type == 'video/x-ms-asf-plugin' || $this->type == 'video/x-ms-asf' || $this->type == 'video/x-ms-wm' || $this->type == 'video/x-ms-wmv' || $this->type == 'video/x-ms-wvx') {
+			$height+=45;
+
+			$embed.='<object classid="CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95"';
+			$embed.='    type="application/x-oleobject"';
+			$embed.='    width="' . $width . '"';
+			$embed.='    height="' . $height . '"';
+			$embed.='    standby="Loading Windows Media Player...">';
+			$embed.='<param name="FileName" value="' . $this->link . '">';
+			$embed.='<param name="autosize" value="true">';
+			$embed.='<param name="ShowControls" value="true">';
+			$embed.='<param name="ShowStatusBar" value="false">';
+			$embed.='<param name="ShowDisplay" value="false">';
+			$embed.='<param name="autostart" value="false">';
+			$embed.='<embed type="application/x-mplayer2" ';
+			$embed.='    src="' . $this->link . '" ';
+			$embed.='    autosize="1" ';
+			$embed.='    width="' . $width . '" ';
+			$embed.='    height="' . $height . '" ';
+			$embed.='    showcontrols="1" ';
+			$embed.='    showstatusbar="0" ';
+			$embed.='    showdisplay="0" ';
+			$embed.='    autostart="0">';
 			$embed.='</embed>';
 			$embed.='</object>';
 		}
