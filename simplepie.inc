@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 13 April 2006
+Updated: 15 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060413';
+	var $build = '20060415';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -80,7 +80,7 @@ class SimplePie {
 	****************************************************/
 	function SimplePie($feed_url = null, $cache_location = null, $cache_max_minutes = null) {
 		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
-		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . ' ' . $this->version . '</a>';
+		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . '</a>';
 		
 		if (!is_null($feed_url)) {
 			$this->feed_url($feed_url);
