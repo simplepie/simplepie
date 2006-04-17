@@ -27,6 +27,10 @@ if (!empty($_GET['feed'])) {
 // this is called.
 $feed->init();
 
+// We'll make sure that the right content type and character encoding gets set automatically.
+// This function will grab the proper character encoding, as well as set the content type to text/html.
+$feed->handle_content_type();
+
 // When we end our PHP block, we want to make sure our DOCTYPE is on the top line to make 
 // sure that the browser snaps into Standards Mode.
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

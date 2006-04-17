@@ -1077,10 +1077,6 @@ class SimplePie {
 					echo $mp_rss;
 					exit;
 				}
-				// Otherwise, send normal headers.
-				else if (!headers_sent() && $this->get_encoding()) {
-					header('Content-type: text/html; charset=' . $this->get_encoding());
-				}
 
 				$this->xml = xml_parser_create($this->encoding);
 				xml_parser_set_option($this->xml, XML_OPTION_SKIP_WHITE, 1);
@@ -1130,6 +1126,10 @@ class SimplePie {
 		} else return false;
 	}
 
+	function handle_content_type($mime='text/html') {
+		if (!headers_sent() && $this->get_encoding()) header('Content-type: ' . $mime . '; charset=' . $this->get_encoding());
+	}
+
 
 
 
@@ -1138,7 +1138,7 @@ class SimplePie {
 	****************************************************/
 	function get_version() {
 		if (isset($this->data['feedinfo'])) {
-			return (isset($this->data['feedinfo']['version'])) ? "$this->data[feedinfo][type] $this->data[feedinfo][version]" : $this->data['feedinfo']['type'];
+			return (isset($this->data['feedinfo']['version'])) ? $this->data[feedinfo][type] . ' ' . $this->data[feedinfo][version] : $this->data['feedinfo']['type'];
 		}
 		else return false;
 	}
