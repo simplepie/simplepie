@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<title>SimpleScript: Demo</title>
+
+<link rel="stylesheet" href="./for_the_demo/simplepie.css" media="screen, projector" />
+<script type="text/javascript" src="http://script.simplepie.org/simplescript/?feed=http://simplepie.org/blog/feed/&var=sp"></script>
+<script type="text/javascript" src="./for_the_demo/sifr.js"></script>
+<script type="text/javascript" src="./for_the_demo/sleight.js"></script>
+
+<script type="text/javascript">document.write('<meta http-equiv="content-type" content="text/html; charset='+sp.getEncoding+'">');</script>
+
+</head>
+
+<body id="bodydemo">
+
+<ul id="menu">
+	<!-- Must all be on the same line due to spacing bugs. -->
+	<li id="demo"><a href="index.php">Demo</a>|</li><li><a href="http://simplepie.org/support/">Bug Reports &amp; Feature Requests</a>|</li><li><a href="http://simplepie.org/docs/reference/">Function Reference</a>|</li><li><a href="http://simplepie.org/blog/">Weblog</a></li>
+</ul>
+
+<div id="site">
+
+	<div id="content">
+
+		<div id="sp_results">
+
+
+			<!-- As long as the feed has data to work with... -->
+			<div class="chunk focus" align="center">
+
+				<!-- If the feed has a link back to the site that publishes it (which 99% of them do), link the feed's title to it. -->
+				<script type="text/javascript">document.write('<h3 class="header"><a href="'+sp.getFeedLink+'">'+sp.getFeedTitle+'</a></h3>');</script>
+
+				<!-- If the feed has a description, display it. -->
+				<p><script type="text/javascript">document.write(sp.getFeedDescription);</script></p>
+
+			</div>
+
+
+			<!-- Add subscribe links for several different aggregation services -->
+			<p class="subscribe"><strong>Subscribe:</strong> <a href="">My AOL</a>, <a href="">Bloglines</a>, <a href="">Google Reader</a>, <a href="">My MSN</a>, <a href="">Newsburst</a>,<br /><a href="">Newsgator</a>, <a href="">Odeo</a>, <a href="">Pluck</a>, <a href="">Podnova</a>, <a href="">Rojo</a>, <a href="">My Yahoo!</a>, <a href="">Desktop Reader</a></p>
+
+
+			<!-- Let's begin looping through each individual news item in the feed. -->
+			<script type="text/javascript">
+			var DAYS={
+				"long":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+				"short":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+			};
+
+			var MONTHS={
+				"long":["January","February","March","April","May","June","July","August","September","October","November","December"],
+				"short":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+			};
+
+			for (var x=0; x<sp.getItemQuantity; x++) {
+				var d=sp.getItem[x].getDate();
+
+				document.write('<div class="chunk">');
+
+					// If the item has a permalink back to the original post (which 99% of them do), link the item's title to it.
+					document.write('<h4><a href="'+sp.getItem[x].getPermalink+'">'+sp.getItem[x].getTitle+'</a>&nbsp;<span class="footnote">'+d.getDate()+' '+MONTHS.long[d.getMonth()]+' '+d.getFullYear()+'</span></h4>');
+
+					// Display the item's primary content.
+					document.write('<p>'+sp.getItem[x].getDescription+'</p>');
+
+					// Add links to add this post to one of a handful of services.
+					document.write('<p class="footnote" align="center"><a href="" title="Add post to Blinklist">Blinklist</a> | <a href="" title="Add post to del.icio.us">Del.icio.us</a> | <a href="" title="Digg this!">Digg</a> | <a href="" title="Add post to Furl">Furl</a> | <a href="" title="Add post to My Web 2.0">My Web 2.0</a> | <a href="" title="Add post to Newsvine">Newsvine</a> | <a href="" title="Add post to Reddit">Reddit</a> | <a href="" title="Add post to Spurl">Spurl</a> | <a href="" title="Who\'s linking to this post?">Technorati</a></p>');
+
+				document.write('</div>');
+			}
+			</script>
+
+			</div>
+
+		</div>
+
+		<div>
+			<!-- Display the version of SimpleScript being loaded. -->
+			<p class="footnote">Powered by <script type="text/javascript">document.write(sp.linkback);</script>.  SimpleScript is &copy; 2004&ndash;Present, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
+		</div>
+
+	</div>
+
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+
+// Load the sIFR font for the feed's title.
+if(typeof sIFR == "function"){
+	sIFR.replaceElement(named({sSelector:"h3.header", sFlashSrc:"./for_the_demo/yanone-kaffeesatz-bold.swf", sColor:"#000000", sHoverColor:"#666666", sBgColor:"#EEFFEE", sFlashVars:"textalign=center"}));
+};
+
+//]]>
+</script>
+
+</body>
+</html>
