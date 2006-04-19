@@ -67,8 +67,8 @@ class SimplePie {
 	var $data = false;
 	var $attribs;
 	var $xmldata;
-	var $feedAttribs;
-	var $itemAttribs;
+	var $feed_xmlbase;
+	var $item_xmlbase;
 
 
 
@@ -1031,19 +1031,14 @@ class SimplePie {
 					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 				}
 				$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss); // Add an internal attribute to CDATA sections
+				$mp_rss = str_replace(']] spencoded="false">', ']]>', $mp_rss); // Remove it when we're on the end of a CDATA block (therefore making it ill-formed)
 
 				// If we're RSS
 				if (preg_match('/<rdf:rdf/i', $mp_rss) || preg_match('/<rss/i', $mp_rss)) {
-					// <author>
-					$mp_rss = preg_replace("%<autho[^>/]+((\"[^\"]*\")|(\'[^\']*\')|([^>/]*))((\s*)|([^\s]))/>%i", '<author></author>', $mp_rss);
-					$mp_rss = preg_replace('%<author(.|\s)*?>%i', '<author\\0<![CDATA[', $mp_rss);
-					$mp_rss = preg_replace('%<author<author%i', '<author', $mp_rss);
-					$mp_rss = preg_replace('%</author(.|\s)*?>%i', ']]></author>',$mp_rss);
-
-					// <link>
-					$mp_rss = preg_replace('%<link(.|\s)*?>%i', '<link\\0<![CDATA[', $mp_rss);
-					$mp_rss = preg_replace('%<link<link%i', '<link', $mp_rss);
-					$mp_rss = preg_replace('%</link(.|\s)*?>%i', ']]></link>', $mp_rss);
+					$sp_elements = array(
+						'author',
+						'link',
+					);
 				// Or if we're Atom
 				} else {
 					$sp_elements = array(
@@ -1055,21 +1050,17 @@ class SimplePie {
 						'tagline',
 						'title',
 					);
-					foreach ($sp_elements as $sp_element) {
-						$full = $sp_element;
-						$short = substr($full, 0, -1);
-
-						$mp_rss = preg_replace('%<' . $short . "[^>/]+((\"[^\"]*\")|(\'[^\']*\')|([^>/]*))((\s*)?|([^\s]))/>%i", '<' . $full . '></' . $full . '>', $mp_rss);
-						$mp_rss = preg_replace('%<' . $full . '(.|\s)*?>%i', '<' . $full . '\\0<![CDATA[', $mp_rss);
-						$mp_rss = preg_replace('%<' . $full . '<' . $full . '%i', '<' . $full, $mp_rss);
-						$mp_rss = preg_replace('%</' . $full . '(.|\s)*?>%i', ']]></' . $full . '>', $mp_rss);
+				}
+				foreach ($sp_elements as $full) {
+					// The (<\!\[CDATA\[)? never matches any CDATA block, therefore the CDATA gets added, but never replaced
+					$mp_rss = preg_replace("/<$full(.*)>[\s]*(<\!\[CDATA\[)?(.*)(]]>)?[\s]*<\/$full>/msiU", "<$full\\1><![CDATA[\\3]]></$full>", $mp_rss);
+					// The following line is a work-around for the above bug (which MUST be fixed before delcaring the Beta 2 build)
+					$mp_rss = preg_replace("/<$full(.*)><\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU", "<$full\\1><![CDATA[", $mp_rss);
+					// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
+					while (preg_match("/<$full(.*)><!\[CDATA\[(.*)<!\[CDATA\[(.*)\]\]>(.*)\]\]><\/$full>/msiU", $mp_rss)) {
+						$mp_rss = preg_replace_callback("/<($full)(.*)><!\[CDATA\[(.*)<!\[CDATA\[(.*)\]\]>(.*)\]\]><\/$full>/msiU", array(&$this, 'cdata_in_cdata'), $mp_rss);
 					}
 				}
-
-				// Strip double CDATA escaping...
-				$mp_rss = preg_replace('/<\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU', '<![CDATA[', $mp_rss);
-				$mp_rss = preg_replace('/\]\]>[\s]*\]\]>/msiU', ']]>', $mp_rss);
-				$mp_rss = str_replace(']] spencoded="false">', ']]>', $mp_rss);
 
 				// If XML Dump is enabled, send feed to the page and quit.
 				if ($this->xml_dump) {
@@ -1103,8 +1094,8 @@ class SimplePie {
 				else
 				{
 					trigger_error(sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->xml)), xml_get_current_line_number($this->xml), xml_get_current_column_number($this->xml)), E_USER_WARNING);
-					$this->data = array();
 					xml_parser_free($this->xml);
+					$this->data = array();
 					return false;
 				}
 			}
@@ -1688,6 +1679,19 @@ class SimplePie {
 
 
 	/****************************************************
+	CALLBACK FUNCTION TO DEAL WITH CDATA WITHIN CDATA
+	****************************************************/
+	function cdata_in_cdata($match) {
+		$new = "<$match[1]$match[2]><![CDATA[$match[3]";
+		$new .= htmlentities($match[4], ENT_NOQUOTES, $this->encoding);
+		$new .= "$match[5]]]></$match[1]>";
+		return $new;
+	}
+
+
+
+
+	/****************************************************
 	ADD DATA TO XMLDATA
 	****************************************************/
 	function do_add_content(&$array, $data) {
@@ -1704,9 +1708,11 @@ class SimplePie {
 	PARSE XMLDATA
 	****************************************************/
 	function parse_xml_data_array() {
-		// Feed Attributes
-		if (!empty($this->xmldata['feeddata']['attribs'])) {
-			$this->feedAttribs = $this->xmldata['feeddata']['attribs'];
+		// Feed level xml:base
+		if (!empty($this->xmldata['feeddata']['attribs']['XML:BASE'])) {
+			$this->feed_xmlbase = parse_url($this->xmldata['feeddata']['attribs']['XML:BASE']);
+		} else {
+			$this->feed_xmlbase = $this->parsed_url;
 		}
 		
 		// Feed Info
@@ -1776,9 +1782,9 @@ class SimplePie {
 		// Items
 		if (!empty($this->xmldata['items'])) {
 			foreach ($this->xmldata['items'] as $num => $item) {
-				// Item Attributes
-				if (!empty($item['attribs'])) {
-					$this->itemAttribs = $item['attribs'];
+				// Item level xml:base
+				if (!empty($item['attribs']['XML:BASE'])) {
+					$this->item_xmlbase = parse_url($this->absolutize_url($item['attribs']['XML:BASE'], $this->feed_xmlbase));
 				}
 				
 				// Clear vars
@@ -1966,6 +1972,7 @@ class SimplePie {
 			}
 		}
 		$data = trim($data);
+		$data = str_replace(' spencoded="false">', '>', $data);
 
 		// Strip out HTML tags and attributes that might cause various security problems.
 		// Based on recommendations by Mark Pilgrim at:
@@ -1997,7 +2004,7 @@ class SimplePie {
 			$data = preg_replace('/(&lt;|<)a(.*)href=(&quot;|")(.*)\\/\/(www\.)?pheedo.com\/(.*).phdo\?s=(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $data); // Pheedo links (tested with Dooce.com)
 			$data = preg_replace('/(&lt;|<)a(\w|\s|\=|&quot;|")*href=(&quot;|")http:\/\/ad.doubleclick.net\/(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $data); // Doubleclick links (tested with InfoWorld.com)
 			$data = preg_replace('/(&lt;|<)map(\w|\s|=|-|"|\'|&quot;)*name=(&quot;|\'|")google_ad_map(\w|\s|=|-)*(&quot;|\'|")(\w|\s|=|-|"|\'|&quot;)*(^gt;|>)(.*)(&lt;|<)\/map(&gt;|>)(&lt;|<)img(\w|\s|=|-|"|\'|&quot;)*usemap=(&quot;|\'|")#google_ad_map(\w|\s|=|-)*(&quot;|\'|")(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&)*(&gt;|>)/i', '', $data); // Google AdSense for Feeds (tested with tuaw.com).
-			$data = preg_replace('/(&lt;|<)div(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*(&gt;|>)(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!|~|&lt;|<|&gt;|>)*(&lt;|<)\/div(&gt;|>)/i', '', $data); // Feedflare (from FeedBurner)
+			// Feedflare, from Feedburner
 		}
 
 		if ($is_url) {
@@ -2015,27 +2022,19 @@ class SimplePie {
 	}
 	
 	function replace_urls($data, $raw_url = false) {
-		if (!empty($this->feedAttribs['XML:BASE'])) {
-			$feed_xmlbase = parse_url($this->feedAttribs['XML:BASE']);
-		} else {
-			$feed_xmlbase = $this->parsed_url;
-		}
-		if (!empty($this->itemAttribs['XML:BASE'])) {
-			$item_xmlbase = parse_url($this->absolutize_url($this->itemAttribs['XML:BASE'], $feed_xmlbase));
-		}
 		if (!empty($this->attribs['XML:BASE'])) {
-			if (!empty($item_xmlbase)) {
-				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $item_xmlbase));
+			if (!empty($this->item_xmlbase)) {
+				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $this->item_xmlbase));
 			} else {
-				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $feed_xmlbase));
+				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $this->feed_xmlbase));
 			}
 		}
 		if (!empty($attrib_xmlbase)) {
 			$xmlbase = $attrib_xmlbase;
-		} else if (!empty($item_xmlbase)) {
-			$xmlbase = $item_xmlbase;
+		} else if (!empty($this->item_xmlbase)) {
+			$xmlbase = $this->item_xmlbase;
 		} else {
-			$xmlbase = $feed_xmlbase;
+			$xmlbase = $this->feed_xmlbase;
 		}
 		if ($raw_url) {
 			return $this->absolutize_url($data, $xmlbase);
