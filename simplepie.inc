@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 17 April 2006
+Updated: 19 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060417';
+	var $build = '20060419';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1057,9 +1057,7 @@ class SimplePie {
 					// The following line is a work-around for the above bug (which MUST be fixed before delcaring the Beta 2 build)
 					$mp_rss = preg_replace("/<$full(.*)><\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU", "<$full\\1><![CDATA[", $mp_rss);
 					// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
-					while (preg_match("/<$full(.*)><!\[CDATA\[(.*)<!\[CDATA\[(.*)\]\]>(.*)\]\]><\/$full>/msiU", $mp_rss)) {
-						$mp_rss = preg_replace_callback("/<($full)(.*)><!\[CDATA\[(.*)<!\[CDATA\[(.*)\]\]>(.*)\]\]><\/$full>/msiU", array(&$this, 'cdata_in_cdata'), $mp_rss);
-					}
+					$mp_rss = preg_replace_callback("/<($full)(.*)><!\[CDATA\[(.*)\]\]><\/$full>/msiU", array(&$this, 'cdata_in_cdata'), $mp_rss);
 				}
 
 				// If XML Dump is enabled, send feed to the page and quit.
@@ -1682,10 +1680,18 @@ class SimplePie {
 	CALLBACK FUNCTION TO DEAL WITH CDATA WITHIN CDATA
 	****************************************************/
 	function cdata_in_cdata($match) {
-		$new = "<$match[1]$match[2]><![CDATA[$match[3]";
-		$new .= htmlentities($match[4], ENT_NOQUOTES, $this->encoding);
-		$new .= "$match[5]]]></$match[1]>";
-		return $new;
+		$match[3] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[3]);
+		return "<$match[1]$match[2]><![CDATA[$match[3]]]></$match[1]>";
+	}
+
+
+
+
+	/****************************************************
+	CALLBACK FUNCTION TO REALLY DEAL WITH CDATA WITHIN CDATA
+	****************************************************/
+	function real_cdata_in_cdata($match) {
+		return htmlentities($match[1], ENT_NOQUOTES, $this->encoding);
 	}
 
 
