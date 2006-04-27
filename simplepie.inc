@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 19 April 2006
+Updated: 27 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060419';
+	var $build = '20060427';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -45,6 +45,7 @@ class SimplePie {
 	var $strip_ads = false;
 	var $strip_htmltags = 'blink,body,doctype,embed,font,form,frame,frameset,html,iframe,input,marquee,meta,noscript,object,param,script,style';
 	var $strip_attributes = 'class,id,style';
+	var $encode_instead_of_strip = false;
 
 	// RSS Auto-Discovery Variables
 	var $parsed_url;
@@ -173,8 +174,15 @@ class SimplePie {
 	}
 	
 	// Strip out potentially dangerous tags
-	function strip_htmltags($tags) {
+	function strip_htmltags($tags, $encode=false) {
 		$this->strip_htmltags = (string) $tags;
+		$this->encode_instead_of_strip = (bool) $encode;
+		return true;
+	}
+	
+	// Encode dangerous tags instead of stripping them
+	function encode_instead_of_strip($encode=true) {
+		$this->encode_instead_of_strip = (bool) $encode;
 		return true;
 	}
 	
@@ -1986,7 +1994,20 @@ class SimplePie {
 		if ($this->strip_htmltags) {
 			$tags_to_strip = explode(',', $this->strip_htmltags);
 			foreach ($tags_to_strip as $tag) {
-				$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*(&gt;|>)/i', '', $data);
+				if ($this->encode_instead_of_strip) {
+					// For encoded angled brackets (do these first)
+					$data = preg_replace('/&lt;(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*&gt;/i', '&amp;lt;\\0&amp;gt;', $data);
+					$data = str_replace('&amp;lt;&lt;', '&amp;lt;', $data);
+					$data = str_replace('&gt;&amp;gt;', '&amp;gt;', $data);
+
+					// For angled brackets
+					$data = preg_replace('/<(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*>/i', '&lt;\\0&gt;', $data);
+					$data = str_replace('&lt;<', '&lt;', $data);
+					$data = str_replace('>&gt;', '&gt;', $data);
+				}
+				else {
+					$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*(&gt;|>)/i', '', $data);
+				}
 			}
 		}
 
@@ -2818,11 +2839,14 @@ function handle_errors($errno, $errstr, $errfile, $errline) {
 			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Notice:</b> $errstr in $errfile on line $errline";
 			error_log("PHP Notice:  $errstr in $errfile on line $errline");
 			break;
+/*
+		// Problems with this currently.
 		default:
 			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Unknown PHP Error:</b> $errstr";
 			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Unknown PHP Error:</b> $errstr in $errfile on line $errline";
 			error_log("Unknown PHP Error:  $errstr in $errfile on line $errline");
 			break;
+*/
 	}
 }
 $old_error_handler = set_error_handler("handle_errors");
