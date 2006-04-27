@@ -8,6 +8,9 @@ $starttime = $starttime[1] + $starttime[0];
 // Located in the parent directory
 include('../simplepie.inc');
 
+// Use our own error handler
+$old_error_handler = set_error_handler('handle_errors');
+
 // Create a new instance of the SimplePie object
 $feed = new SimplePie();
 
@@ -71,6 +74,7 @@ $feed->handle_content_type();
 
 			<?php
 			// Check to see if there are more than zero errors (i.e. if there are any errors at all)
+			global $SIMPLEPIE_ERRORS;
 			if (sizeof($SIMPLEPIE_ERRORS) > 0) {
 
 				// If so, start a <div> element with a classname so we can style it.

@@ -1082,6 +1082,7 @@ class SimplePie {
 				xml_set_element_handler($this->xml, 'startHandler', 'endHandler');
 				if (xml_parse($this->xml, $mp_rss))
 				{
+					xml_parser_free($this->xml);
 					$this->parse_xml_data_array();
 					$this->data['feedinfo']['encoding'] = $this->encoding;
 					if ($this->order_by_date && !empty($this->data['items'])) {
@@ -2818,11 +2819,11 @@ class SimplePie_Enclosure
 ERROR HANDLING
 Copied from http://php.net/set-error-handler
 ****************************************************/
-$SIMPLEPIE_ERRORS=array();
-$SIMPLEPIE_ERRORS_FULL=array();
 function handle_errors($errno, $errstr, $errfile, $errline) {
 	global $SIMPLEPIE_ERRORS;
 	global $SIMPLEPIE_ERRORS_FULL;
+	$SIMPLEPIE_ERRORS = array();
+	$SIMPLEPIE_ERRORS_FULL = array();
 	switch ($errno) {
 		case E_USER_ERROR:
 			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Error:</b> $errstr";
@@ -2849,6 +2850,5 @@ function handle_errors($errno, $errstr, $errfile, $errline) {
 */
 	}
 }
-$old_error_handler = set_error_handler("handle_errors");
 
 ?>
