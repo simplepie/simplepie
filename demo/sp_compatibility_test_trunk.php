@@ -3,6 +3,7 @@ $php_ok = (function_exists('version_compare') && ((version_compare(phpversion(),
 $curl_ok = extension_loaded('curl');
 $fopen_ok = ini_get('allow_url_fopen');
 $mbstring_ok = extension_loaded('mbstring');
+$iconv_ok = extension_loaded('iconv');
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -168,6 +169,11 @@ div.chunk {
 						<td>Enabled</td>
 						<td><?php echo ($mbstring_ok) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
+					<tr class="<?php echo ($iconv_ok) ? 'enabled' : 'disabled'; ?>">
+						<td><a href="http://php.net/iconv">iconv</a></td>
+						<td>Enabled</td>
+						<td><?php echo ($iconv_ok) ? 'Enabled' : 'Disabled'; ?></td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -175,7 +181,7 @@ div.chunk {
 		<div class="chunk">
 			<h3>What does this mean?</h3>
 			<ol>
-				<?php if ($php_ok && $mbstring_ok && $curl_ok && $fopen_ok) { ?>
+				<?php if ($php_ok && $mbstring_ok && $iconv_ok && $curl_ok && $fopen_ok) { ?>
 				<li><em>You have everything you need to run SimplePie properly!  Congratulations!</em></li>
 				<?php } else { ?>
 					<?php if ($php_ok) { ?>
@@ -193,10 +199,14 @@ div.chunk {
 								<li><strong>allow_url_fopen:</strong> This setting has been disabled.  <?php if ($curl_ok) { ?>SimplePie will use <code>curl</code> instead.<?php } else { ?><em>SimplePie is a no-go at the moment.</em><?php } ?></li>
 							<?php } ?>
 
-							<?php if ($mbstring_ok) { ?>
-								<li><strong>mbstring:</strong> You have <code>mbstring</code> installed!  This will allow SimplePie to handle a large number of languages.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
+							<?php if ($mbstring_ok && $iconv_ok) { ?>
+								<li><strong>mbstring and iconv:</strong> You have both <code>mbstring</code> and <code>iconv</code> installed!  This will allow SimplePie to handle the greatest number of languages.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
+							<?php } else if ($mbstring_ok) { ?>
+								<li><strong>mbstring:</strong> <code>mbstring</code> is installed, but <code>iconv</code> is not.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
+							<?php } else if ($iconv_ok) { ?>
+								<li><strong>iconv:</strong> <code>iconv</code> is installed, but <code>mbstring</code> is not.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
 							<?php } else { ?>
-								<li><strong>mbstring:</strong> <em>You do not have the extension installed.</em>  This will significantly affect your ability to read non-english feeds, as well as even some english ones.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
+								<li><strong>mbstring and iconv:</strong> <em>You do not have either of the extensions installed.</em>  This will significantly affect your ability to read non-english feeds, as well as even some english ones.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
 							<?php } ?>
 						<?php } else { ?>
 							<li><strong>curl and fopen:</strong> The <code>allow_url_fopen</code> setting has been disabled and the <code>curl</code> extension is not available.  I'm not sure how you're supposed to be able to do anything without one of these two available to you.  I think it's time for you to get a new webhost.  <em>SimplePie is a no-go at the moment.</em></li>
@@ -209,13 +219,17 @@ div.chunk {
 		</div>
 
 		<div class="chunk">
-			<?php if ($php_ok && ($curl_ok || $fopen_ok) && $mbstring_ok) { ?>
+			<?php if ($php_ok && ($curl_ok || $fopen_ok) && $mbstring_ok && $iconv_ok) { ?>
 				<h3>Bottom Line: Yes, you can!</h3>
 				<p><em>Your webhost has its act together!</em></p>
 				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/setup.php">following the instructions</a>.  You can find example uses with <a href="/ideas/">SimplePie Ideas</a>.</p>
-			<?php } else if ($php_ok && ($curl_ok || $fopen_ok) && !$mbstring_ok) { ?>
+			<?php } else if ($php_ok && ($curl_ok || $fopen_ok) && !$mbstring_ok && !$iconv_ok) { ?>
 				<h3>Bottom Line: Yes, but it's crippled.</h3>
 				<p><em>You're limited to essentially english, spanish, italian, and other western-european languages.</em>  Even then you might still have some problems.  We'd recommend that you stick to publishing specific feeds on your site where you know that they're UTF-8 or ISO-8859-1.</p>
+				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/setup.php">following the instructions</a>.  You can find example uses with <a href="/ideas/">SimplePie Ideas</a>.</p>
+			<?php } else if ($php_ok && ($curl_ok || $fopen_ok) && (!$mbstring_ok || !$iconv_ok)) { ?>
+				<h3>Bottom Line: Yes, you can!</h3>
+				<p><em>For most feeds, it'll run with no problems.</em>  There are certain languages that you'll have a hard time with though.</p>
 				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/setup.php">following the instructions</a>.  You can find example uses with <a href="/ideas/">SimplePie Ideas</a>.</p>
 			<?php } else { ?>
 				<h3>Bottom Line: We're sorry...</h3>
