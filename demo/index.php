@@ -8,15 +8,14 @@ $starttime = $starttime[1] + $starttime[0];
 // Located in the parent directory
 include('../simplepie.inc');
 
-// Use our own error handler
-$old_error_handler = set_error_handler('handle_errors');
-
 // Create a new instance of the SimplePie object
 $feed = new SimplePie();
 
 // Set these Configuration Options
 $feed->bypass_image_hotlink();
 $feed->strip_ads(true);
+$feed->handle_errors();
+//set_exception_handler('catch_exception');
 
 // Make sure that page is getting passed a URL
 if (!empty($_GET['feed'])) {
@@ -181,3 +180,4 @@ if(typeof sIFR == "function"){
 
 </body>
 </html>
+<?php //echo $intentional_test_error_that_is_outside_of_simplepie; ?>

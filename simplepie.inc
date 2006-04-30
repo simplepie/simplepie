@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 27 April 2006
+Updated: 29 April 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060427';
+	var $build = '20060429';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -46,6 +46,7 @@ class SimplePie {
 	var $strip_htmltags = 'blink,body,doctype,embed,font,form,frame,frameset,html,iframe,input,marquee,meta,noscript,object,param,script,style';
 	var $strip_attributes = 'class,id,style';
 	var $encode_instead_of_strip = false;
+	var $SIMPLEPIE_HANDLE_ERRORS = false;
 
 	// RSS Auto-Discovery Variables
 	var $parsed_url;
@@ -185,10 +186,17 @@ class SimplePie {
 		$this->encode_instead_of_strip = (bool) $encode;
 		return true;
 	}
-	
+
 	// Strip out potentially dangerous attributes
 	function strip_attributes($attrib) {
 		$this->strip_attributes = (string) $attrib;
+		return true;
+	}
+
+	// Enable the error handler for SimplePie
+	function handle_errors($level=3) {
+		global $SIMPLEPIE_HANDLE_ERRORS;
+		$SIMPLEPIE_HANDLE_ERRORS = (int) $level;
 		return true;
 	}
 
@@ -201,6 +209,8 @@ class SimplePie {
 	and builds an array from the feed.
 	****************************************************/
 	function init() {
+		global $SIMPLEPIE_HANDLE_ERRORS;
+		if ($SIMPLEPIE_HANDLE_ERRORS) set_error_handler('catch_error');
 
 		// If Bypass Image Hotlink is enabled, send image to the page and quit.
 		if ($this->bypass_image_hotlink) {
@@ -231,16 +241,20 @@ class SimplePie {
 					$mp_rss = unserialize($data);
 					if (empty($mp_rss)) {
 						$this->caching = false;
+						if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 						return $this->init();
 					} elseif (isset($mp_rss['feed_url'])) {
 						$this->rss_url = $mp_rss['feed_url'];
+						if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 						return $this->init();
 					} else {
 						$this->data = $mp_rss;
+						if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 						return true;
 					}
 				} else {
 					$this->caching = false;
+					if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 					return $this->init();
 				}
 			} else {
@@ -258,12 +272,15 @@ class SimplePie {
 								$fp = fopen($cache_filename, 'w');
 								fwrite($fp, serialize(array('feed_url' => $discovery)));
 								fclose($fp);
-							} else trigger_error("$cache_filename is not writeable", E_USER_WARNING);
+							}
+							else trigger_error("$cache_filename is not writeable", E_USER_WARNING);
 						}
+						if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 						return $this->init();
 					}
 				} else {
 					trigger_error("A feed could not be found at $this->rss_url", E_USER_WARNING);
+					if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 					return false;
 				}
 
@@ -514,6 +531,8 @@ class SimplePie {
 						case 'iso-8859-1':
 						case 'iso8859-1':
 							$encoding = 'ISO-8859-1';
+							$use_iconv = true;
+							$use_mbstring = true;
 							break;
 
 						// ISO-8859-2
@@ -993,7 +1012,7 @@ class SimplePie {
 						case 'windows-1256':
 						case '1256':
 							$encoding = 'Windows-1256';
-							$use_iconv = true;
+							//$use_iconv = true;
 							break;
 
 						// Windows-specific Baltic
@@ -1019,6 +1038,8 @@ class SimplePie {
 					}
 				} else {
 					$mp_rss = preg_replace ('/<\?xml(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|&|,|#|!)*/i', '\\0 encoding="ISO-8859-1"', $mp_rss);
+					$use_iconv = true;
+					$use_mbstring = true;
 					$encoding = 'ISO-8859-1';
 				}
 				$this->encoding = $encoding;
@@ -1096,6 +1117,7 @@ class SimplePie {
 						}
 						else trigger_error("$cache_filename is not writeable", E_USER_WARNING);
 					}
+					if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 					return true;
 				}
 				else
@@ -1103,11 +1125,15 @@ class SimplePie {
 					trigger_error(sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->xml)), xml_get_current_line_number($this->xml), xml_get_current_column_number($this->xml)), E_USER_WARNING);
 					xml_parser_free($this->xml);
 					$this->data = array();
+					if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 					return false;
 				}
 			}
 		}
-		else return false;
+		else {
+			if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
+			return false;
+		}
 	}
 
 
@@ -1286,8 +1312,10 @@ class SimplePie {
 
 	/*  ITEMS */
 	// Get the size of the array of items (for use in a for-loop)
-	function get_item_quantity() {
-		return (isset($this->data['items'])) ? sizeof($this->data['items']) : 0;
+	function get_item_quantity($max=0) {
+		$qty = (isset($this->data['items'])) ? sizeof($this->data['items']) : 0;
+		if ($max != 0) return ($qty > $max) ? $max : $qty;
+		else return $qty;
 	}
 	
 	function get_item($key) {
@@ -2819,36 +2847,53 @@ class SimplePie_Enclosure
 ERROR HANDLING
 Copied from http://php.net/set-error-handler
 ****************************************************/
-function handle_errors($errno, $errstr, $errfile, $errline) {
+$SIMPLEPIE_ERRORS = array();
+$SIMPLEPIE_ERRORS_FULL = array();
+
+function catch_error($errno, $errstr, $errfile, $errline) {
 	global $SIMPLEPIE_ERRORS;
 	global $SIMPLEPIE_ERRORS_FULL;
-	$SIMPLEPIE_ERRORS = array();
-	$SIMPLEPIE_ERRORS_FULL = array();
+	global $SIMPLEPIE_HANDLE_ERRORS;
+
 	switch ($errno) {
 		case E_USER_ERROR:
-			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Error:</b> $errstr";
-			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Error:</b> $errstr in $errfile on line $errline";
-			error_log("PHP Error:  $errstr in $errfile on line $errline");
+			if ($SIMPLEPIE_HANDLE_ERRORS >=1) {
+				$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Error:</b> $errstr";
+				$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Error:</b> $errstr in $errfile on line $errline";
+				error_log("PHP Error:  $errstr in $errfile on line $errline");
+			}
 			break;
 		case E_USER_WARNING:
-			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Warning:</b> $errstr";
-			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Warning:</b> $errstr in $errfile on line $errline";
-			error_log("PHP Warning:  $errstr in $errfile on line $errline");
+			if ($SIMPLEPIE_HANDLE_ERRORS >=2) {
+				$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Warning:</b> $errstr";
+				$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Warning:</b> $errstr in $errfile on line $errline";
+				error_log("PHP Warning:  $errstr in $errfile on line $errline");
+			}
 			break;
 		case E_USER_NOTICE:
-			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Notice:</b> $errstr";
-			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Notice:</b> $errstr in $errfile on line $errline";
-			error_log("PHP Notice:  $errstr in $errfile on line $errline");
+			if ($SIMPLEPIE_HANDLE_ERRORS >=3) {
+				$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Notice:</b> $errstr";
+				$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Notice:</b> $errstr in $errfile on line $errline";
+				error_log("PHP Notice:  $errstr in $errfile on line $errline");
+			}
 			break;
-/*
-		// Problems with this currently.
 		default:
-			$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Unknown PHP Error:</b> $errstr";
-			$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Unknown PHP Error:</b> $errstr in $errfile on line $errline";
-			error_log("Unknown PHP Error:  $errstr in $errfile on line $errline");
+			if ($SIMPLEPIE_HANDLE_ERRORS >=4) {
+				$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Unknown PHP Error:</b> $errstr";
+				$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Unknown PHP Error:</b> $errstr in $errfile on line $errline";
+				error_log("Unknown PHP Error:  $errstr in $errfile on line $errline");
+			}
 			break;
-*/
 	}
+}
+
+function catch_exception($exception) {
+	global $SIMPLEPIE_ERRORS;
+	global $SIMPLEPIE_ERRORS_FULL;
+
+	$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Uncaught Exception:</b> " . $exception->getMessage();
+	$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Uncaught Exception:</b> " . $exception->getMessage();
+	error_log("Uncaught Exception: " . $exception->getMessage());
 }
 
 ?>
