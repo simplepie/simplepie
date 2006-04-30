@@ -9,9 +9,6 @@ A product of Skyzyx Technologies
 ************************************************************
 LICENSE:
 
-You can choose either of the following licenses to use SimplePie under, 
-depending on your needs.
-
 GNU Lesser General Public License 2.1 (LGPL)
 http://creativecommons.org/licenses/LGPL/2.1/
 ************************************************************
