@@ -1012,7 +1012,7 @@ class SimplePie {
 						case 'windows-1256':
 						case '1256':
 							$encoding = 'Windows-1256';
-							//$use_iconv = true;
+							$use_iconv = true;
 							break;
 
 						// Windows-specific Baltic
