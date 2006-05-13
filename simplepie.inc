@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 12 May 2006
+Updated: 13 May 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060512';
+	var $build = '20060513';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1756,6 +1756,9 @@ class SimplePie {
 		// Feed level xml:base
 		if (!empty($this->xmldata['feeddata']['attribs']['XML:BASE'])) {
 			$this->feed_xmlbase = parse_url($this->xmldata['feeddata']['attribs']['XML:BASE']);
+		}
+		else if (substr($this->rss_url, 0, 28) == 'http://feeds.feedburner.com/' && !empty($this->xmldata['info']['link'][0]['data'])) {
+			$this->feed_xmlbase = parse_url($this->xmldata['info']['link'][0]['data']);
 		} else {
 			$this->feed_xmlbase = $this->parsed_url;
 		}
@@ -2581,7 +2584,7 @@ class SimplePie {
 	function startNameSpace($parser, $prefix, $uri = null) {
 		$prefix = strtoupper($prefix);
 		$uri = strtoupper($uri);
-		if ($prefix == 'ATOM' || $uri == 'HTTP://WWW.W3.ORG/2005/ATOM') {
+		if ($prefix == 'ATOM' || $uri == 'HTTP://WWW.W3.ORG/2005/ATOM' || $uri == 'HTTP://PURL.ORG/ATOM/NS#') {
 			$this->namespaces['atom'] = $uri;
 		}
 		else if ($prefix == 'RSS2' || $uri == 'HTTP://BACKEND.USERLAND.COM/RSS2') {
