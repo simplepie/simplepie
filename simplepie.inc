@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 29 April 2006
+Updated: 12 May 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060429';
+	var $build = '20060512';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -46,12 +46,11 @@ class SimplePie {
 	var $strip_htmltags = 'blink,body,doctype,embed,font,form,frame,frameset,html,iframe,input,marquee,meta,noscript,object,param,script,style';
 	var $strip_attributes = 'class,id,style';
 	var $encode_instead_of_strip = false;
-	var $SIMPLEPIE_HANDLE_ERRORS = false;
 
 	// RSS Auto-Discovery Variables
 	var $parsed_url;
-	var $local;
-	var $elsewhere;
+	var $local = array();
+	var $elsewhere = array();
 
 	// XML Parsing Variables
 	var $xml;
@@ -193,13 +192,6 @@ class SimplePie {
 		return true;
 	}
 
-	// Enable the error handler for SimplePie
-	function handle_errors($level=3) {
-		global $SIMPLEPIE_HANDLE_ERRORS;
-		$SIMPLEPIE_HANDLE_ERRORS = (int) $level;
-		return true;
-	}
-
 
 
 
@@ -209,9 +201,6 @@ class SimplePie {
 	and builds an array from the feed.
 	****************************************************/
 	function init() {
-		global $SIMPLEPIE_HANDLE_ERRORS;
-		if ($SIMPLEPIE_HANDLE_ERRORS) set_error_handler('catch_error');
-
 		// If Bypass Image Hotlink is enabled, send image to the page and quit.
 		if ($this->bypass_image_hotlink) {
 			if (isset($_GET[$this->bypass_image_hotlink]) && !empty($_GET[$this->bypass_image_hotlink])) {
@@ -241,20 +230,16 @@ class SimplePie {
 					$mp_rss = unserialize($data);
 					if (empty($mp_rss)) {
 						$this->caching = false;
-						if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 						return $this->init();
-					} elseif (isset($mp_rss['feed_url'])) {
+					} else if (isset($mp_rss['feed_url'])) {
 						$this->rss_url = $mp_rss['feed_url'];
-						if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 						return $this->init();
 					} else {
 						$this->data = $mp_rss;
-						if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 						return true;
 					}
 				} else {
 					$this->caching = false;
-					if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 					return $this->init();
 				}
 			} else {
@@ -275,12 +260,10 @@ class SimplePie {
 							}
 							else trigger_error("$cache_filename is not writeable", E_USER_WARNING);
 						}
-						if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 						return $this->init();
 					}
 				} else {
-					trigger_error("A feed could not be found at $this->rss_url", E_USER_WARNING);
-					if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
+					$this->sp_error("A feed could not be found at $this->rss_url", E_USER_WARNING, __FILE__, __LINE__);
 					return false;
 				}
 
@@ -292,6 +275,7 @@ class SimplePie {
 				// Support everything from mbstring (http://www.php.net/manual/en/ref.mbstring.php#mbstring.supported-encodings)
 				$use_iconv = false;
 				$use_mbstring = false;
+				$utf8_fail = true;
 				if (preg_match('/encoding=["|\'](.*)["|\']/Ui', $mp_rss, $encoding)) {
 					$match = $encoding;
 					switch (strtolower($encoding[1])) {
@@ -323,6 +307,7 @@ class SimplePie {
 							$encoding = 'US-ASCII';
 							$use_iconv = true;
 							$use_mbstring = true;
+							$utf8_fail = false;
 							break;
 
 						// BASE64
@@ -533,6 +518,7 @@ class SimplePie {
 							$encoding = 'ISO-8859-1';
 							$use_iconv = true;
 							$use_mbstring = true;
+							$utf8_fail = false;
 							break;
 
 						// ISO-8859-2
@@ -1037,9 +1023,12 @@ class SimplePie {
 							break;
 					}
 				} else {
-					$mp_rss = preg_replace ('/<\?xml(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|&|,|#|!)*/i', '\\0 encoding="ISO-8859-1"', $mp_rss);
+					$mp_rss = preg_replace ('/<\?xml(.*)( standalone="no")(.*)\?>/msiU', '<?xml\\1\\3?>', $mp_rss, 1);
+					$mp_rss = preg_replace ('/<\?xml(.*)\?>/msiU', '<?xml\\1 encoding="ISO-8859-1"?>', $mp_rss, 1);
+					preg_match('/encoding=["|\'](.*)["|\']/Ui', $mp_rss, $match);
 					$use_iconv = true;
 					$use_mbstring = true;
+					$utf8_fail = false;
 					$encoding = 'ISO-8859-1';
 				}
 				$this->encoding = $encoding;
@@ -1056,8 +1045,10 @@ class SimplePie {
 					$this->encoding = 'UTF-8';
 				}
 				else if ($use_mbstring || $use_iconv) {
-					$this->encoding = 'UTF-8';
-					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
+					if ($utf8_fail) {
+						$this->encoding = 'UTF-8';
+						$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
+					}
 				}
 				$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss); // Add an internal attribute to CDATA sections
 				$mp_rss = str_replace(']] spencoded="false">', ']]>', $mp_rss); // Remove it when we're on the end of a CDATA block (therefore making it ill-formed)
@@ -1083,7 +1074,7 @@ class SimplePie {
 				foreach ($sp_elements as $full) {
 					// The (<\!\[CDATA\[)? never matches any CDATA block, therefore the CDATA gets added, but never replaced
 					$mp_rss = preg_replace("/<$full(.*)>[\s]*(<\!\[CDATA\[)?(.*)(]]>)?[\s]*<\/$full>/msiU", "<$full\\1><![CDATA[\\3]]></$full>", $mp_rss);
-					// The following line is a work-around for the above bug (which MUST be fixed before delcaring the Beta 2 build)
+					// The following line is a work-around for the above bug
 					$mp_rss = preg_replace("/<$full(.*)><\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU", "<$full\\1><![CDATA[", $mp_rss);
 					// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
 					$mp_rss = preg_replace_callback("/<($full)(.*)><!\[CDATA\[(.*)\]\]><\/$full>/msiU", array(&$this, 'cdata_in_cdata'), $mp_rss);
@@ -1096,11 +1087,14 @@ class SimplePie {
 					exit;
 				}
 
-				$this->xml = xml_parser_create($this->encoding);
+				$this->xml = xml_parser_create_ns($this->encoding);
+				$this->namespaces = array('atom' => 'ATOM', 'rss2' => 'RSS', 'rdf' => 'RDF', 'rss1' => 'RSS', 'dc' => 'DC', 'xhtml' => 'XHTML', 'content' => 'CONTENT');
 				xml_parser_set_option($this->xml, XML_OPTION_SKIP_WHITE, 1);
 				xml_set_object($this->xml, $this);
 				xml_set_character_data_handler($this->xml, 'dataHandler');
 				xml_set_element_handler($this->xml, 'startHandler', 'endHandler');
+				xml_set_start_namespace_decl_handler($this->xml, 'startNameSpace');
+				xml_set_end_namespace_decl_handler($this->xml, 'endNameSpace');
 				if (xml_parse($this->xml, $mp_rss))
 				{
 					xml_parser_free($this->xml);
@@ -1117,23 +1111,45 @@ class SimplePie {
 						}
 						else trigger_error("$cache_filename is not writeable", E_USER_WARNING);
 					}
-					if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 					return true;
 				}
 				else
 				{
-					trigger_error(sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->xml)), xml_get_current_line_number($this->xml), xml_get_current_column_number($this->xml)), E_USER_WARNING);
+					$this->sp_error(sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->xml)), xml_get_current_line_number($this->xml), xml_get_current_column_number($this->xml)), E_USER_WARNING, __FILE__, __LINE__);
 					xml_parser_free($this->xml);
 					$this->data = array();
-					if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 					return false;
 				}
 			}
 		}
 		else {
-			if ($SIMPLEPIE_HANDLE_ERRORS) restore_error_handler();
 			return false;
 		}
+	}
+
+
+
+
+	/****************************************************
+	SIMPLEPIE ERROR (internal function)
+	****************************************************/
+	function sp_error($message, $level, $file, $line) {
+		$this->error = $message;
+		switch ($level) {
+			case E_USER_ERROR:
+				$note = 'PHP Error';
+				break;
+			case E_USER_WARNING:
+				$note = 'PHP Warning';
+				break;
+			case E_USER_NOTICE:
+				$note = 'PHP Notice';
+				break;
+			default:
+				$note = 'Unknown Error';
+				break;
+		}
+		error_log("$note: $message in $file on line $line", 0);
 	}
 
 
@@ -1508,7 +1524,10 @@ class SimplePie {
 		if ($is_url) {
 			$data = $this->get_file($data);
 		}
-		 if (stristr($data, '<rss') || stristr($data, '<rdf:RDF') || preg_match('/<([a-z0-9]+\:)?feed/mi', $data)) {
+		if (stristr($data, '<!DOCTYPE HTML')) {
+			return false;
+		}
+		else if (stristr($data, '<rss') || stristr($data, '<rdf:RDF') || preg_match('/<([a-z0-9]+\:)?feed/mi', $data)) {
 			return true;
 		} else {
 			return false;
@@ -1565,8 +1584,7 @@ class SimplePie {
 	****************************************************/
 	function display_image($image_url) {
 		$image = $this->get_file($image_url);
-		$suffix = explode('.', $image_url);
-		$suffix = array_pop($suffix);
+		$suffix = pathinfo($image_url, PATHINFO_EXTENSION);
 
 		switch($suffix) {
 			case 'bmp':
@@ -1599,6 +1617,7 @@ class SimplePie {
 
 		header('Content-type: ' . $mime);
 		echo $image;
+		exit;
 	}
 
 
@@ -1686,28 +1705,11 @@ class SimplePie {
 	function get_attribute($data, $attribute_name) {
 		if (preg_match("/$attribute_name='(.*)'/iU", $data, $match)) {
 			return $match;
-		} elseif (preg_match("/$attribute_name=\"(.*)\"/iU", $data, $match)) {
+		} else if (preg_match("/$attribute_name=\"(.*)\"/iU", $data, $match)) {
 			return $match;
-		} elseif (preg_match("/$attribute_name=(.*)[ |\/|>]/iU", $data, $match)) {
+		} else if (preg_match("/$attribute_name=(.*)[ |\/|>]/iU", $data, $match)) {
 			return $match;
 		}
-	}
-
-
-
-
-	/****************************************************
-	STRIPS NAMESPACES
-	****************************************************/
-	function strip_ns($tag, $is_name = true) {
-		if ($is_name) {
-			$pattern = '/(?:[a-zA-Z]+:)/m';
-			$replacement = '';
-		} else {
-			$pattern = '/<(\/)?(?:[a-zA-Z]+:)/m';
-			$replacement = '<\\1';
-		}
-		return preg_replace($pattern, $replacement, $tag);
 	}
 
 
@@ -1785,6 +1787,9 @@ class SimplePie {
 		if (!empty($this->xmldata['info']['description']['data'])) {
 			$this->data['info']['description'] = $this->sanitise($this->xmldata['info']['description']['data'], $this->xmldata['info']['description']['attribs']);
 		}
+		else if (!empty($this->xmldata['info']['dc:description']['data'])) {
+			$this->data['info']['description'] = $this->sanitise($this->xmldata['info']['dc:description']['data'], $this->xmldata['info']['dc:description']['attribs']);
+		}
 		else if (!empty($this->xmldata['info']['tagline']['data'])) {
 			$this->data['info']['description'] = $this->sanitise($this->xmldata['info']['tagline']['data'], $this->xmldata['info']['tagline']['attribs']);
 		}
@@ -1844,6 +1849,9 @@ class SimplePie {
 				if (!empty($item['title']['data'])) {
 					$title = $this->sanitise($item['title']['data'], $item['title']['attribs']);
 				}
+				else if (!empty($item['dc:title']['data'])) {
+					$title = $this->sanitise($item['dc:title']['data'], $item['dc:title']['attribs']);
+				}
 				
 				// Description
 				if (!empty($item['content']['data'])) {
@@ -1855,11 +1863,14 @@ class SimplePie {
 				else if (!empty($item['summary']['data'])) {
 					$description = $this->sanitise($item['summary']['data'], $item['summary']['attribs']);
 				}
-				else if (!empty($item['longdesc']['data'])) {
-					$description = $this->sanitise($item['longdesc']['data'], $item['longdesc']['attribs']);
-				}
 				else if (!empty($item['description']['data'])) {
 					$description = $this->sanitise($item['description']['data'], $item['description']['attribs']);
+				}
+				else if (!empty($item['dc:description']['data'])) {
+					$description = $this->sanitise($item['dc:description']['data'], $item['dc:description']['attribs']);
+				}
+				else if (!empty($item['longdesc']['data'])) {
+					$description = $this->sanitise($item['longdesc']['data'], $item['longdesc']['attribs']);
 				}
 				
 				// Link
@@ -1921,8 +1932,8 @@ class SimplePie {
 				if (!empty($item['pubdate']['data'])) {
 					$date = $this->parse_date($this->sanitise($item['pubdate']['data'], $item['pubdate']['attribs']));
 				}
-				else if (!empty($item['date']['data'])) {
-					$date = $this->parse_date($this->sanitise($item['date']['data'], $item['date']['attribs']));
+				else if (!empty($item['dc:date']['data'])) {
+					$date = $this->parse_date($this->sanitise($item['date']['dc:data'], $item['dc:date']['attribs']));
 				}
 				else if (!empty($item['issued']['data'])) {
 					$date = $this->parse_date($this->sanitise($item['issued']['data'], $item['issued']['attribs']));
@@ -1999,7 +2010,7 @@ class SimplePie {
 		if (isset($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom') {
 			if (!empty($attribs['MODE']) && $attribs['MODE'] == 'base64') {
 				$data = base64_decode($data);
-			} elseif ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')) && (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false')) {
+			} else if ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')) && (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false')) {
 				$data = $this->entities_decode($data);
 			}
 			if (!empty($attribs['TYPE']) && ($attribs['TYPE'] == 'xhtml' || $attribs['TYPE'] == 'application/xhtml+xml')) {
@@ -2008,6 +2019,7 @@ class SimplePie {
 				} else {
 					$data = preg_replace('/<div( .*)?>/msiU', '<div>', $data, 1);
 				}
+				$data = preg_replace("/<(\/)?$this->xhtml_prefix:/msiU", '<\\1', $data);
 			}
 		} else {
 			if (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false') {
@@ -2203,33 +2215,40 @@ class SimplePie {
 	FUNCTIONS FOR XML_PARSE
 	****************************************************/
 	function startHandler($parser, $name, $attribs) {
-		$this->tagName = $this->strip_ns($name);
+		$this->tagName = $name;
 		$this->attribs = $attribs;
 		$this->is_first = true;
 		switch ($this->tagName) {
 			case 'ITEM':
+			case $this->namespaces['rss2'] . ':ITEM':
+			case $this->namespaces['rss1'] . ':ITEM':
 			case 'ENTRY':
+			case $this->namespaces['atom'] . ':ENTRY':
 				$this->insideItem = true;
 				$this->do_add_content($this->xmldata['items'][$this->itemNumber], '');
 				break;
 
 			case 'CHANNEL':
+			case $this->namespaces['rss2'] . ':CHANNEL':
+			case $this->namespaces['rss1'] . ':CHANNEL':
 				$this->insideChannel = true;
 				break;
 
 			case 'RSS':
+			case $this->namespaces['rss2'] . ':RSS':
 				$this->xmldata['feedinfo']['type'] = 'RSS';
 				if (!empty($attribs['VERSION'])) {
 					$this->xmldata['feedinfo']['version'] = trim($attribs['VERSION']);
 				}
 				break;
 
-			case 'RDF':
+			case $this->namespaces['rdf'] . ':RDF':
 				$this->xmldata['feedinfo']['type'] = 'RSS';
 				$this->xmldata['feedinfo']['version'] = 1;
 				break;
 
 			case 'FEED':
+			case $this->namespaces['atom'] . ':FEED':
 				$this->xmldata['feedinfo']['type'] = 'Atom';
 				if (!empty($attribs['VERSION'])) {
 					$this->xmldata['feedinfo']['version'] = trim($attribs['VERSION']);
@@ -2237,137 +2256,169 @@ class SimplePie {
 				break;
 				
 			case 'RSS':
-			case 'RDF':
+			case $this->namespaces['rss2'] . ':RSS':
+			case $this->namespaces['rdf'] . ':RDF':
 			case 'FEED':
+			case $this->namespaces['atom'] . ':FEED':
 				$this->do_add_content($this->xmldata['feeddata'], '');
 				break;
 
 			case 'IMAGE':
+			case $this->namespaces['rss2'] . ':IMAGE':
+			case $this->namespaces['rss1'] . ':IMAGE':
 				if ($this->insideChannel) $this->insideImage = true;
-				break;
-			
-			case 'ENCLOSURE':
-				$this->do_add_content($this->xmldata['items'][$this->itemNumber]['enclosure'][$this->enclosureNumber], '');
 				break;
 		}
 
 		if (isset($this->xmldata['feedinfo']['type']) && $this->xmldata['feedinfo']['type'] == 'Atom') {
 			switch ($this->tagName) {
 				case 'AUTHOR':
+				case $this->namespaces['atom'] . ':AUTHOR':
 					$this->insideAuthor = true;
-					break;
-				
-				case 'LINK':
-					if ($this->insideItem)
-						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['link'][$this->itemLinkNumber], '');
-					else
-						$this->do_add_content($this->xmldata['info']['link'][$this->linkNumber], '');
 					break;
 			}
 		}
+		$this->dataHandler($this->xml, '');
 	}
 
 	function dataHandler($parser, $data) {
 		if ($this->insideItem) {
 			switch ($this->tagName) {
 				case 'TITLE':
+				case $this->namespaces['rss1'] . ':TITLE':
+				case $this->namespaces['rss2'] . ':TITLE':
+				case $this->namespaces['atom'] . ':TITLE':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['title'], $data);
-				break;
+					break;
+					
+				case $this->namespaces['dc'] . ':TITLE':
+					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['dc:title'], $data);
+					break;
 
 				case 'CONTENT':
+				case $this->namespaces['atom'] . ':CONTENT':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['content'], $data);
-				break;
+					break;
 
-				case 'ENCODED':
+				case $this->namespaces['content'] . ':ENCODED':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['encoded'], $data);
-				break;
+					break;
 
 				case 'SUMMARY':
+				case $this->namespaces['atom'] . ':SUMMARY':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['summary'], $data);
-				break;
+					break;
 
 				case 'LONGDESC':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['longdesc'], $data);
-				break;
+					break;
 
 				case 'DESCRIPTION':
+				case $this->namespaces['rss1'] . ':DESCRIPTION':
+				case $this->namespaces['rss2'] . ':DESCRIPTION':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['description'], $data);
-				break;
+					break;
+
+				case $this->namespaces['dc'] . 'DESCRIPTION':
+					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['dc:description'], $data);
+					break;
 
 				case 'LINK':
+				case $this->namespaces['rss1'] . ':LINK':
+				case $this->namespaces['rss2'] . ':LINK':
+				case $this->namespaces['atom'] . ':LINK':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['link'][$this->itemLinkNumber], $data);
-				break;
+					break;
 
 				case 'GUID':
+				case $this->namespaces['rss1'] . ':GUID':
+				case $this->namespaces['rss2'] . ':GUID':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['guid'], $data);
-				break;
+					break;
 
 				case 'ID':
+				case $this->namespaces['atom'] . ':ID':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['id'], $data);
-				break;
+					break;
 
 				case 'PUBDATE':
+				case $this->namespaces['rss1'] . ':PUBDATE':
+				case $this->namespaces['rss2'] . ':PUBDATE':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['pubdate'], $data);
-				break;
+					break;
 
-				case 'DATE':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['date'], $data);
-				break;
+				case $this->namespaces['dc'] . ':DATE':
+					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['dc:date'], $data);
+					break;
 
 				case 'ISSUED':
+				case $this->namespaces['atom'] . ':ISSUED':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['issued'], $data);
-				break;
+					break;
 
 				case 'PUBLISHED':
+				case $this->namespaces['atom'] . ':PUBLISHED':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['published'], $data);
-				break;
+					break;
 
 				case 'MODIFIED':
+				case $this->namespaces['atom'] . ':MODIFIED':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['modified'], $data);
-				break;
+					break;
 
 				case 'UPDATED':
+				case $this->namespaces['atom'] . ':UPDATED':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['updated'], $data);
-				break;
-
+					break;
+	
 				case 'CATEGORY':
+				case $this->namespaces['rss1'] . ':CATEGORY':
+				case $this->namespaces['rss2'] . ':CATEGORY':
+				case $this->namespaces['atom'] . ':CATEGORY':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['category'][$this->categoryNumber], $data);
-				break;
+					break;
 
-				case 'SUBJECT':
+				case $this->namespaces['dc'] . 'SUBJECT':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['subject'][$this->categoryNumber], $data);
-				break;
+					break;
 
-				case 'CREATOR':
+				case $this->namespaces['dc'] . 'CREATOR':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['creator'][$this->authorNumber], $data);
-				break;
+					break;
 
 				case 'AUTHOR':
+				case $this->namespaces['rss1'] . ':AUTHOR':
+				case $this->namespaces['rss2'] . ':AUTHOR':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['rss'], $data);
-				break;
+					break;
 			}
 
 			if ($this->insideAuthor) {
 				switch ($this->tagName) {
 					case 'NAME':
+					case $this->namespaces['atom'] . ':NAME':
 						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['name'], $data);
-					break;
+						break;
 
 					case 'URL':
+					case $this->namespaces['atom'] . ':URL':
 						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['url'], $data);
-					break;
+						break;
 
 					case 'URI':
+					case $this->namespaces['atom'] . ':URI':
 						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['uri'], $data);
-					break;
+						break;
 
 					case 'HOMEPAGE':
+					case $this->namespaces['atom'] . ':HOMEPAGE':
 						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['homepage'], $data);
-					break;
+						break;
 
 					case 'EMAIL':
+					case $this->namespaces['atom'] . ':EMAIL':
 						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['email'], $data);
-					break;
+						break;
 				}
 			}
 		}
@@ -2375,36 +2426,56 @@ class SimplePie {
 		else if (($this->insideChannel && !$this->insideImage) || (isset($this->xmldata['feedinfo']['type']) && $this->xmldata['feedinfo']['type'] == 'Atom')) {
 			switch ($this->tagName) {
 				case 'TITLE':
+				case $this->namespaces['rss1'] . ':TITLE':
+				case $this->namespaces['rss2'] . ':TITLE':
+				case $this->namespaces['atom'] . ':TITLE':
 					$this->do_add_content($this->xmldata['info']['title'], $data);
-				break;
+					break;
 
 				case 'LINK':
+				case $this->namespaces['rss1'] . ':LINK':
+				case $this->namespaces['rss2'] . ':LINK':
+				case $this->namespaces['atom'] . ':LINK':
 					$this->do_add_content($this->xmldata['info']['link'][$this->linkNumber], $data);
-				break;
+					break;
 
 				case 'DESCRIPTION':
+				case $this->namespaces['rss1'] . ':DESCRIPTION':
+				case $this->namespaces['rss2'] . ':DESCRIPTION':
 					$this->do_add_content($this->xmldata['info']['description'], $data);
-				break;
+					break;
+
+				case $this->namespaces['dc'] . 'DESCRIPTION':
+					$this->do_add_content($this->xmldata['info']['dc:description'], $data);
+					break;
 
 				case 'TAGLINE':
+				case $this->namespaces['atom'] . ':TAGLINE':
 					$this->do_add_content($this->xmldata['info']['tagline'], $data);
-				break;
+					break;
 
 				case 'SUBTITLE':
+				case $this->namespaces['atom'] . ':SUBTITLE':
 					$this->do_add_content($this->xmldata['info']['subtitle'], $data);
-				break;
+					break;
 
 				case 'COPYRIGHT':
+				case $this->namespaces['rss1'] . ':COPYRIGHT':
+				case $this->namespaces['rss2'] . ':COPYRIGHT':
+				case $this->namespaces['atom'] . ':COPYRIGHT':
 					$this->do_add_content($this->xmldata['info']['copyright'], $data);
-				break;
+					break;
 
 				case 'LANGUAGE':
+				case $this->namespaces['rss1'] . ':LANGUAGE':
+				case $this->namespaces['rss2'] . ':LANGUAGE':
 					$this->do_add_content($this->xmldata['info']['language'], $data);
-				break;
+					break;
 				
 				case 'LOGO':
+				case $this->namespaces['atom'] . ':LOGO':
 					$this->do_add_content($this->xmldata['info']['logo'], $data);
-				break;
+					break;
 				
 			}
 		}
@@ -2412,24 +2483,34 @@ class SimplePie {
 		else if ($this->insideChannel && $this->insideImage) {
 			switch ($this->tagName) {
 				case 'TITLE':
+				case $this->namespaces['rss1'] . ':TITLE':
+				case $this->namespaces['rss2'] . ':TITLE':
 					$this->do_add_content($this->xmldata['info']['image']['title'], $data);
-				break;
+					break;
 
 				case 'URL':
+				case $this->namespaces['rss1'] . ':URL':
+				case $this->namespaces['rss2'] . ':URL':
 					$this->do_add_content($this->xmldata['info']['image']['url'], $data);
-				break;
+					break;
 
 				case 'LINK':
+				case $this->namespaces['rss1'] . ':LINK':
+				case $this->namespaces['rss2'] . ':LINK':
 					$this->do_add_content($this->xmldata['info']['image']['link'], $data);
-				break;
+					break;
 
 				case 'WIDTH':
+				case $this->namespaces['rss1'] . ':WIDTH':
+				case $this->namespaces['rss2'] . ':WIDTH':
 					$this->do_add_content($this->xmldata['info']['image']['width'], $data);
-				break;
+					break;
 
 				case 'HEIGHT':
+				case $this->namespaces['rss1'] . ':HEIGHT':
+				case $this->namespaces['rss2'] . ':HEIGHT':
 					$this->do_add_content($this->xmldata['info']['image']['height'], $data);
-				break;
+					break;
 			}
 		}
 		$this->is_first = false;
@@ -2437,45 +2518,117 @@ class SimplePie {
 
 	function endHandler($parser, $name) {
 		$this->tagName = '';
-		switch ($this->strip_ns($name)) {
+		switch ($name) {
 			case 'ITEM':
+			case $this->namespaces['rss1'] . ':ITEM':
+			case $this->namespaces['rss2'] . ':ITEM':
 			case 'ENTRY':
+			case $this->namespaces['atom'] . ':ENTRY':
 				$this->insideItem = false;
 				$this->itemNumber++;
 				$this->authorNumber = 0;
 				$this->categoryNumber = 0;
 				$this->enclosureNumber = 0;
 				$this->itemLinkNumber = 0;
-			break;
+				break;
 
 			case 'CHANNEL':
+			case $this->namespaces['rss1'] . ':CHANNEL':
+			case $this->namespaces['rss2'] . ':CHANNEL':
 				$this->insideChannel = false;
-			break;
+				break;
 
 			case 'IMAGE':
+			case $this->namespaces['rss1'] . ':IMAGE':
+			case $this->namespaces['rss2'] . ':IMAGE':
 				if ($this->insideChannel) $this->insideImage = false;
-			break;
+				break;
 
 			case 'AUTHOR':
+			case $this->namespaces['rss1'] . ':AUTHOR':
+			case $this->namespaces['rss2'] . ':AUTHOR':
+			case $this->namespaces['atom'] . ':AUTHOR':
 				$this->authorNumber++;
 				if ($this->xmldata['feedinfo']['type'] == 'Atom') $this->insideAuthor = false;
-			break;
+				break;
 
 			case 'CATEGORY':
-			case 'SUBJECT':
+			case $this->namespaces['rss1'] . ':CATEGORY':
+			case $this->namespaces['rss2'] . ':CATEGORY':
+			case $this->namespaces['atom'] . ':CATEGORY':
+			case $this->namespaces['dc'] . ':SUBJECT':
 				$this->categoryNumber++;
-			break;
+				break;
 			
 			case 'ENCLOSURE':
+			case $this->namespaces['rss1'] . ':ENCLOSURE':
+			case $this->namespaces['rss2'] . ':ENCLOSURE':
 				$this->enclosureNumber++;
 				break;
 				
 			case 'LINK':
+			case $this->namespaces['rss1'] . ':LINK':
+			case $this->namespaces['rss2'] . ':LINK':
+			case $this->namespaces['atom'] . ':LINK':
 				if ($this->insideItem)
 					$this->itemLinkNumber++;
 				else
 					$this->linkNumber++;
 				break;
+		}
+	}
+	
+	function startNameSpace($parser, $prefix, $uri = null) {
+		$prefix = strtoupper($prefix);
+		$uri = strtoupper($uri);
+		if ($prefix == 'ATOM' || $uri == 'HTTP://WWW.W3.ORG/2005/ATOM') {
+			$this->namespaces['atom'] = $uri;
+		}
+		else if ($prefix == 'RSS2' || $uri == 'HTTP://BACKEND.USERLAND.COM/RSS2') {
+			$this->namespaces['rss2'] = $uri;
+		}
+		else if ($prefix == 'RDF' || $uri == 'HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#') {
+			$this->namespaces['rdf'] = $uri;
+		}
+		else if ($prefix == 'RSS' || $uri == 'HTTP://PURL.ORG/RSS/1.0/') {
+			$this->namespaces['rss1'] = $uri;
+		}
+		else if ($prefix == 'DC' || $uri == 'HTTP://PURL.ORG/DC/ELEMENTS/1.1/') {
+			$this->namespaces['dc'] = $uri;
+		}
+		else if ($prefix == 'XHTML' || $uri == 'HTTP://WWW.W3.ORG/1999/XHTML') {
+			$this->namespaces['xhtml'] = $uri;
+			$this->xhtml_prefix = $prefix;
+		}
+		else if ($prefix == 'CONTENT' || $uri == 'HTTP://PURL.ORG/RSS/1.0/MODULES/CONTENT/') {
+			$this->namespaces['content'] = $uri;
+		}
+	}
+	
+	function endNameSpace($parser, $prefix) {
+		if ($key = array_search(strtoupper($prefix), $this->namespaces)) {
+			if ($key == 'atom') {
+				$this->namespaces['atom'] = 'ATOM';
+			}
+			else if ($key == 'rss2') {
+				$this->namespaces['rss2'] = 'RSS';
+			}
+			else if ($key == 'rdf') {
+				$this->namespaces['rdf'] = 'RDF';
+			}
+			else if ($key == 'rss1') {
+				$this->namespaces['rss1'] = 'RSS';
+			}
+			else if ($key == 'dc') {
+				$this->namespaces['dc'] = 'DC';
+			}
+			else if ($key == 'xhtml') {
+				$this->namespaces['xhtml'] = 'XHTML';
+				$this->xhtml_prefix = 'XHTML';
+			}
+			else if ($key == 'content') {
+				$this->namespaces['content'] = 'CONTENT';
+			}
 		}
 	}
 }
@@ -2567,40 +2720,40 @@ class SimplePie_Item
 	"ADD TO" LINKS
 	Allows people to easily add news postings to social bookmarking sites.
 	****************************************************/
-	function add_to_blinklist() {
-		return 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=' . rawurlencode($this->get_permalink()) . '&Title=' . rawurlencode($this->get_title());
+	function add_to_blinklist($amp = '&amp;') {
+		return "http://www.blinklist.com/index.php?Action=Blink/addblink.php$ampDescription=$ampUrl=" . rawurlencode($this->get_permalink()) . "$ampTitle=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_delicious() {
-		return 'http://del.icio.us/post/?v=3&amp;url=' . rawurlencode($this->get_permalink()) . '&amp;title=' . rawurlencode($this->get_title());
+	function add_to_delicious($amp = '&amp;') {
+		return "http://del.icio.us/post/?v=3$ampurl=" . rawurlencode($this->get_permalink()) . "$amptitle=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_digg() {
-		return 'http://digg.com/submit?phase=2&URL=' . rawurlencode($this->get_permalink());
+	function add_to_digg($amp = '&amp;') {
+		return "http://digg.com/submit?phase=2$ampURL=" . rawurlencode($this->get_permalink());
 	}
 
-	function add_to_furl() {
-		return 'http://www.furl.net/storeIt.jsp?u=' . rawurlencode($this->get_permalink()) . '&amp;t=' . rawurlencode($this->get_title());
+	function add_to_furl($amp = '&amp;') {
+		return "http://www.furl.net/storeIt.jsp?u=" . rawurlencode($this->get_permalink()) . "$ampt=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_magnolia() {
-		return 'http://ma.gnolia.com/bookmarklet/add?url=' . rawurlencode($this->get_permalink()) . '&amp;title=' . rawurlencode($this->get_title());
+	function add_to_magnolia($amp = '&amp;') {
+		return "http://ma.gnolia.com/bookmarklet/add?url=" . rawurlencode($this->get_permalink()) . "$amptitle=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_myweb20() {
-		return 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=' . rawurlencode($this->get_permalink()) . '&amp;t=' . rawurlencode($this->get_title());
+	function add_to_myweb20($amp = '&amp;') {
+		return "http://myweb2.search.yahoo.com/myresults/bookmarklet?u=" . rawurlencode($this->get_permalink()) . "$ampt=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_newsvine() {
-		return 'http://www.newsvine.com/_wine/save?u=' . rawurlencode($this->get_permalink()) . '&amp;h=' . rawurlencode($this->get_title());
+	function add_to_newsvine($amp = '&amp;') {
+		return "http://www.newsvine.com/_wine/save?u=" . rawurlencode($this->get_permalink()) . "$amph=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_reddit() {
-		return 'http://reddit.com/submit?url=' . rawurlencode($this->get_permalink()) . '&amp;title=' . rawurlencode($this->get_title());
+	function add_to_reddit($amp = '&amp;') {
+		return 'http://reddit.com/submit?url=' . rawurlencode($this->get_permalink()) . "$amptitle=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_spurl() {
-		return 'http://www.spurl.net/spurl.php?v=3&amp;url=' . rawurlencode($this->get_permalink()) . '&amp;title=' . rawurlencode($this->get_title());
+	function add_to_spurl($amp = '&amp;') {
+		return "http://www.spurl.net/spurl.php?v=3$ampurl=" . rawurlencode($this->get_permalink()) . "$amptitle=" . rawurlencode($this->get_title());
 	}
 
 
@@ -2659,12 +2812,11 @@ class SimplePie_Enclosure
 	}
 
 	function get_extension() {
-		$file = (empty($this->link)) ? false : $this->link;
-		$ext = explode('.', $file);
-		$ext = $ext[sizeof($ext)-1];
-		$ext = explode('?', $ext);
-		$ext = $ext[0];
-		return strtolower($ext);
+		if (!empty($this->link)) {
+			return pathinfo($this->link, PATHINFO_EXTENSION);
+		} else {
+			return false;
+		}
 	}
 
 	function get_type() {
@@ -2840,60 +2992,6 @@ class SimplePie_Enclosure
 
 		return $embed;
 	}
-}
-
-
-/****************************************************
-ERROR HANDLING
-Copied from http://php.net/set-error-handler
-****************************************************/
-$SIMPLEPIE_ERRORS = array();
-$SIMPLEPIE_ERRORS_FULL = array();
-
-function catch_error($errno, $errstr, $errfile, $errline) {
-	global $SIMPLEPIE_ERRORS;
-	global $SIMPLEPIE_ERRORS_FULL;
-	global $SIMPLEPIE_HANDLE_ERRORS;
-
-	switch ($errno) {
-		case E_USER_ERROR:
-			if ($SIMPLEPIE_HANDLE_ERRORS >=1) {
-				$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Error:</b> $errstr";
-				$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Error:</b> $errstr in $errfile on line $errline";
-				error_log("PHP Error:  $errstr in $errfile on line $errline");
-			}
-			break;
-		case E_USER_WARNING:
-			if ($SIMPLEPIE_HANDLE_ERRORS >=2) {
-				$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Warning:</b> $errstr";
-				$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Warning:</b> $errstr in $errfile on line $errline";
-				error_log("PHP Warning:  $errstr in $errfile on line $errline");
-			}
-			break;
-		case E_USER_NOTICE:
-			if ($SIMPLEPIE_HANDLE_ERRORS >=3) {
-				$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Notice:</b> $errstr";
-				$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Notice:</b> $errstr in $errfile on line $errline";
-				error_log("PHP Notice:  $errstr in $errfile on line $errline");
-			}
-			break;
-		default:
-			if ($SIMPLEPIE_HANDLE_ERRORS >=4) {
-				$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Unknown PHP Error:</b> $errstr";
-				$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Unknown PHP Error:</b> $errstr in $errfile on line $errline";
-				error_log("Unknown PHP Error:  $errstr in $errfile on line $errline");
-			}
-			break;
-	}
-}
-
-function catch_exception($exception) {
-	global $SIMPLEPIE_ERRORS;
-	global $SIMPLEPIE_ERRORS_FULL;
-
-	$SIMPLEPIE_ERRORS[sizeof($SIMPLEPIE_ERRORS)] = "<b>Uncaught Exception:</b> " . $exception->getMessage();
-	$SIMPLEPIE_ERRORS_FULL[sizeof($SIMPLEPIE_ERRORS_FULL)] = "<b>Uncaught Exception:</b> " . $exception->getMessage();
-	error_log("Uncaught Exception: " . $exception->getMessage());
 }
 
 ?>

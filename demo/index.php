@@ -14,8 +14,6 @@ $feed = new SimplePie();
 // Set these Configuration Options
 $feed->bypass_image_hotlink();
 $feed->strip_ads(true);
-$feed->handle_errors();
-//set_exception_handler('catch_exception');
 
 // Make sure that page is getting passed a URL
 if (!empty($_GET['feed'])) {
@@ -73,18 +71,13 @@ $feed->handle_content_type();
 
 			<?php
 			// Check to see if there are more than zero errors (i.e. if there are any errors at all)
-			global $SIMPLEPIE_ERRORS;
-			if (sizeof($SIMPLEPIE_ERRORS) > 0) {
+			if (isset($feed->error)) {
 
 				// If so, start a <div> element with a classname so we can style it.
 				echo '<div class="sp_errors">' . "\r\n";
 
-				// Go through each error...
-				foreach ($SIMPLEPIE_ERRORS as $error) {
-
 					// ... and display it.
-					echo '<p>' . $error . '</p>' . "\r\n";
-				}
+					echo "<p>$feed->error</p>\r\n";
 
 				// Close the <div> element we opened.
 				echo '</div>' . "\r\n";
