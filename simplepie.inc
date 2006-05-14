@@ -2330,6 +2330,12 @@ class SimplePie {
 				case $this->namespaces['atom'] . ':LINK':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['link'][$this->itemLinkNumber], $data);
 					break;
+					
+				case 'ENCLOSURE':
+				case $this->namespaces['rss1'] . ':ENCLOSURE':
+				case $this->namespaces['rss2'] . ':ENCLOSURE':
+					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['enclosure'][$this->enclosureNumber], $data);
+					break;
 
 				case 'GUID':
 				case $this->namespaces['rss1'] . ':GUID':
