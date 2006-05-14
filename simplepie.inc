@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 13 May 2006
+Updated: 14 May 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060513';
+	var $build = '20060514';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1044,11 +1044,9 @@ class SimplePie {
 					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
 					$this->encoding = 'UTF-8';
 				}
-				else if ($use_mbstring || $use_iconv) {
-					if ($utf8_fail) {
+				else if (($use_mbstring || $use_iconv) && $utf8_fail) {
 						$this->encoding = 'UTF-8';
 						$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
-					}
 				}
 				$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss); // Add an internal attribute to CDATA sections
 				$mp_rss = str_replace(']] spencoded="false">', ']]>', $mp_rss); // Remove it when we're on the end of a CDATA block (therefore making it ill-formed)
@@ -1936,7 +1934,7 @@ class SimplePie {
 					$date = $this->parse_date($this->sanitise($item['pubdate']['data'], $item['pubdate']['attribs']));
 				}
 				else if (!empty($item['dc:date']['data'])) {
-					$date = $this->parse_date($this->sanitise($item['date']['dc:data'], $item['dc:date']['attribs']));
+					$date = $this->parse_date($this->sanitise($item['dc:date']['data'], $item['dc:date']['attribs']));
 				}
 				else if (!empty($item['issued']['data'])) {
 					$date = $this->parse_date($this->sanitise($item['issued']['data'], $item['issued']['attribs']));
