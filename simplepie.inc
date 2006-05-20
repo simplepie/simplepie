@@ -70,6 +70,7 @@ class SimplePie {
 	var $xmldata;
 	var $feed_xmlbase;
 	var $item_xmlbase;
+	var $xhtml_prefix;
 
 
 
