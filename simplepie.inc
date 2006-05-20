@@ -2728,40 +2728,40 @@ class SimplePie_Item
 	"ADD TO" LINKS
 	Allows people to easily add news postings to social bookmarking sites.
 	****************************************************/
-	function add_to_blinklist($amp = '&amp;') {
-		return "http://www.blinklist.com/index.php?Action=Blink/addblink.php$ampDescription=$ampUrl=" . rawurlencode($this->get_permalink()) . "$ampTitle=" . rawurlencode($this->get_title());
+	function add_to_blinklist() {
+		return "http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=" . rawurlencode($this->get_permalink()) . "&amp;Title=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_delicious($amp = '&amp;') {
-		return "http://del.icio.us/post/?v=3$ampurl=" . rawurlencode($this->get_permalink()) . "$amptitle=" . rawurlencode($this->get_title());
+	function add_to_delicious() {
+		return "http://del.icio.us/post/?v=3&amp;url=" . rawurlencode($this->get_permalink()) . "&amp;title=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_digg($amp = '&amp;') {
-		return "http://digg.com/submit?phase=2$ampURL=" . rawurlencode($this->get_permalink());
+	function add_to_digg() {
+		return "http://digg.com/submit?phase=2&amp;URL=" . rawurlencode($this->get_permalink());
 	}
 
-	function add_to_furl($amp = '&amp;') {
-		return "http://www.furl.net/storeIt.jsp?u=" . rawurlencode($this->get_permalink()) . "$ampt=" . rawurlencode($this->get_title());
+	function add_to_furl() {
+		return "http://www.furl.net/storeIt.jsp?u=" . rawurlencode($this->get_permalink()) . "&amp;t=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_magnolia($amp = '&amp;') {
-		return "http://ma.gnolia.com/bookmarklet/add?url=" . rawurlencode($this->get_permalink()) . "$amptitle=" . rawurlencode($this->get_title());
+	function add_to_magnolia() {
+		return "http://ma.gnolia.com/bookmarklet/add?url=" . rawurlencode($this->get_permalink()) . "&amp;title=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_myweb20($amp = '&amp;') {
-		return "http://myweb2.search.yahoo.com/myresults/bookmarklet?u=" . rawurlencode($this->get_permalink()) . "$ampt=" . rawurlencode($this->get_title());
+	function add_to_myweb20() {
+		return "http://myweb2.search.yahoo.com/myresults/bookmarklet?u=" . rawurlencode($this->get_permalink()) . "&amp;t=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_newsvine($amp = '&amp;') {
-		return "http://www.newsvine.com/_wine/save?u=" . rawurlencode($this->get_permalink()) . "$amph=" . rawurlencode($this->get_title());
+	function add_to_newsvine() {
+		return "http://www.newsvine.com/_wine/save?u=" . rawurlencode($this->get_permalink()) . "&amp;h=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_reddit($amp = '&amp;') {
-		return 'http://reddit.com/submit?url=' . rawurlencode($this->get_permalink()) . "$amptitle=" . rawurlencode($this->get_title());
+	function add_to_reddit() {
+		return 'http://reddit.com/submit?url=' . rawurlencode($this->get_permalink()) . "&amp;title=" . rawurlencode($this->get_title());
 	}
 
-	function add_to_spurl($amp = '&amp;') {
-		return "http://www.spurl.net/spurl.php?v=3$ampurl=" . rawurlencode($this->get_permalink()) . "$amptitle=" . rawurlencode($this->get_title());
+	function add_to_spurl() {
+		return "http://www.spurl.net/spurl.php?v=3&amp;url=" . rawurlencode($this->get_permalink()) . "&amp;title=" . rawurlencode($this->get_title());
 	}
 
 

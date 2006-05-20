@@ -86,8 +86,54 @@ $feed->handle_content_type();
 
 
 			<!-- Here are some sample feeds. -->
-			<p class="sample_feeds"><strong>Or try one of the following:</strong> <a href="?feed=http://afterdawn.com/news/afterdawn_rss.xml#feed" title="Ripping, Burning, DRM, and the Dark Side of Consumer Electronics Media">Afterdawn</a>, <a href="?feed=http://feeds.feedburner.com/ajaxian#feed" title="AJAX and Scripting News">Ajaxian</a>, <a href="?feed=http://inessential.com/xml/rss.xml#feed" title="Developer of NetNewsWire">Brent Simmons</a>, <a href="?feed=http://www.crazyapplerumors.com/?feed=rss2#feed" title="Hilarity at its best">Crazy Apple Rumors</a>, <a href="?feed=http://del.icio.us/rss/#feed" title="The defacto social bookmarking site">del.icio.us</a>, <a href="?feed=http://digg.com/rss/index.xml#feed" title="Tech news.  Better than Slashdot.">Digg</a>, <a href="?feed=http://www.flickr.com/services/feeds/photos_public.gne?format=rss2#feed" title="Flickr Photos">Flickr</a>, <a href="?feed=http://gvod.blogspot.com/atom.xml#feed" title="Google Video of the Day">GVOD</a>, <a href="?feed=http://mir.aculo.us/xml/rss/feed.xml#feed" title="Weblog for the developer of Scriptaculous">mir.aculo.us</a>, <a href="?feed=http://images.apple.com/trailers/rss/newtrailers.rss#feed" title="Apple's QuickTime movie trailer site">Movie Trailers</a>, <a href="?feed=http://nick.typepad.com/blog/index.rss#feed" title="Developer of TopStyle and FeedDemon">Nick Bradbury</a>, <a href="?feed=http://feeds.feedburner.com/ok-cancel#feed" title="Usability comics and commentary">OK/Cancel</a>, <a href="?feed=http://osnews.com/files/recent.rdf#feed" title="News about every OS ever">OS News</a>, <a href="?feed=http://technorati.com/watchlists/rss.html?wid=29290#feed" title="Technorati watch for SimplePie">Technorati</a>, <a href="?feed=http://thinksecret.com/rss.xml#feed" title="Credible Mac Rumors">Think Secret</a>, <a href="?feed=http://youtube.com/rss/global/recently_added.rss#feed" title="Funny user-submitted videos">You Tube</a>, <a href="?feed=http://zeldman.com/rss/#feed" title="The father of the web standards movement">Zeldman</a>, <a href="" onclick="document.getElementById('more').style.display='block'; return false;"><strong>MORE &raquo;</strong></a></p>
-			<p class="sample_feeds" id="more" style="display:none;"><strong>Test Feeds (hover to see what's tested):</strong> <a href="?feed=http://www.andybudd.com/index.rdf#feed" title="Test: Bypass Image Hotlink Blocking">Andy Budd</a>, <a href="?feed=http://www.ameinfo.com/rss/arabic/1558.xml#feed" title="Test: Windows-1256 Encoding">Arabic Language</a>, <a href="?feed=http://feeds.feedburner.com/AskANinja#feed" title="Test: Embedded Enclosures">Ask a Ninja</a>, <a href="?feed=http://www.atomenabled.org/atom.xml#feed" title="Test: Atom 1.0 Support">AtomEnabled.org</a>, <a href="?feed=http://www.channelfrederator.com/rss#feed" title="Test: Embedded Enclosures">Channel Frederator</a>, <a href="?feed=http://odeo.com/channel/32022/rss#feed" title="Test: Embedded Odeo Player">Dominic Sagolla</a>, <a href="?feed=http://www.dooce.com/atom.xml#feed" title="Test: Ad Stripping">Dooce</a>, <a href="?feed=http://blogs.law.harvard.edu/xml/rss.xml#feed" title="Test: Tag Stripping">Harvard Law</a>, <a href="?feed=http://hagada.org.il/hagada/html/backend.php#feed" title="Test: Window-1255 Encoding">Hebrew Language</a>, <a href="?feed=http://korfball.hu/rss_news.xml#feed" title="ISO-8859-2">Hungarian Language</a>, <a href="?feed=http://www.infoworld.com/rss/news.xml#feed" title="Test: Ad Stripping">InfoWorld</a>, <a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml#feed" title="Test: Tag Stripping">iTunes</a>, <a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf#feed" title="Test: EUC-JP Encoding">Japanese Language</a>, <a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php#feed" title="Test: EUC-KR Encoding">Korean Language</a>, <a href="?feed=http://macnn.com/podcasts/macnn.rss#feed" title="Test: Embedded Enclosures">MacNN</a>, <a href="?feed=http://weblog.philringnalda.com/feed/#feed" title="Test: Atom 1.0 Support">Phil Ringnalda</a>, <a href="?feed=http://photocast.mac.com/turboderek/iPhoto/top-rides/index.rss#feed" title="Test: iPhoto 6 Photocasting">Photocast #1</a>, <a href="?feed=http://photocast.mac.com/turboderek/iPhoto/best-of-the-ladies/index.rss#feed" title="Test: iPhoto 6 Photocasting">Photocast #2</a>, <a href="?feed=http://photocast.mac.com/awalker/iPhoto/christmas-2005/index.rss#feed" title="Test: iPhoto 6 Photocasting">Photocast #3</a>, <a href="?feed=http://www.pariurisportive.com/blog/xmlsrv/rss2.php?blog=2#feed" title="Test: ISO-8859-1 Encoding">Romanian Language</a>, <a href="?feed=http://www.erased.info/rss2.php#feed" title="Test: KOI8-R Encoding">Russian Language</a>, <a href="?feed=http://ubb.frostyplace.com.tw/rdf.php#feed" title="Test: BIG5 Encoding">Taiwanese Language</a>, <a href="?feed=http://www.tbray.org/ongoing/ongoing.atom#feed" title="Test: Atom 1.0 Support">Tim Bray</a>, <a href="?feed=http://tuaw.com/rss.xml#feed" title="Test: Ad Stripping">TUAW</a>, <a href="?feed=http://www.tvgasm.com/atom.xml#feed" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>, <a href="?feed=http://feeds.feedburner.com/web20Show#feed" title="Test: Embedded Enclosures">Web 2.0 Show</a>, <a href="?feed=http://whitecollarruckus.libsyn.com/rss#feed" title="Test: Embedded Enclosures">White Collar Ruckus</a></p>
+			<p class="sample_feeds"><strong>Or try one of the following:</strong> 
+<a href="?feed=http://www.adultswim.com/williams/podcast/tools/xml/video_rss.xml#feed" title="Humor from the people who make [adult swim] cartoons.">adult swim</a>, 
+<a href="?feed=http://afterdawn.com/news/afterdawn_rss.xml#feed" title="Ripping, Burning, DRM, and the Dark Side of Consumer Electronics Media">Afterdawn</a>, 
+<a href="?feed=http://feeds.feedburner.com/ajaxian#feed" title="AJAX and Scripting News">Ajaxian</a>, 
+<a href="?feed=http://www.andybudd.com/index.rdf#feed" title="Test: Bypass Image Hotlink Blocking">Andy Budd</a>, 
+<a href="?feed=http://www.ameinfo.com/rss/arabic/1558.xml#feed" title="Test: Windows-1256 Encoding">Arabic Language</a>, 
+<a href="?feed=http://feeds.feedburner.com/AskANinja#feed" title="Test: Embedded Enclosures">Ask a Ninja</a>, 
+<a href="?feed=http://www.atomenabled.org/atom.xml#feed" title="Test: Atom 1.0 Support">AtomEnabled.org</a>, 
+<a href="?feed=http://inessential.com/xml/rss.xml#feed" title="Developer of NetNewsWire">Brent Simmons</a>, 
+<a href="?feed=http://www.channelfrederator.com/rss#feed" title="Test: Embedded Enclosures">Channel Frederator</a>, 
+<a href="?feed=http://www.crazyapplerumors.com/?feed=rss2#feed" title="Hilarity at its best">Crazy Apple Rumors</a>, 
+<a href="?feed=http://del.icio.us/rss/#feed" title="The defacto social bookmarking site">del.icio.us</a>, 
+<a href="?feed=http://digg.com/rss/index.xml#feed" title="Tech news.  Better than Slashdot.">Digg</a>, 
+<a href="?feed=http://revision3.com/diggnation/feed/small.mov.xml#feed" title="Tech and industry videocast.">Diggnation</a>, 
+<a href="?feed=http://odeo.com/channel/32022/rss#feed" title="Test: Embedded Odeo Player">Dominic Sagolla</a>, 
+<a href="?feed=http://www.dooce.com/atom.xml#feed" title="Test: Ad Stripping">Dooce</a>, 
+<a href="?feed=http://www.flickr.com/services/feeds/photos_public.gne?format=rss2#feed" title="Flickr Photos">Flickr</a>, 
+<a href="?feed=http://gvod.blogspot.com/atom.xml#feed" title="Google Video of the Day">GVOD</a>, 
+<a href="?feed=http://blogs.law.harvard.edu/xml/rss.xml#feed" title="Test: Tag Stripping">Harvard Law</a>, 
+<a href="?feed=http://hagada.org.il/hagada/html/backend.php#feed" title="Test: Window-1255 Encoding">Hebrew Language</a>, 
+<a href="?feed=http://korfball.hu/rss_news.xml#feed" title="ISO-8859-2">Hungarian Language</a>, 
+<a href="?feed=http://www.infoworld.com/rss/news.xml#feed" title="Test: Ad Stripping">InfoWorld</a>, 
+<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml#feed" title="Test: Tag Stripping">iTunes</a>, 
+<a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf#feed" title="Test: EUC-JP Encoding">Japanese Language</a>, 
+<a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php#feed" title="Test: EUC-KR Encoding">Korean Language</a>, 
+<a href="?feed=http://macnn.com/podcasts/macnn.rss#feed" title="Test: Embedded Enclosures">MacNN</a>, 
+<a href="?feed=http://mir.aculo.us/xml/rss/feed.xml#feed" title="Weblog for the developer of Scriptaculous">mir.aculo.us</a>, 
+<a href="?feed=http://images.apple.com/trailers/rss/newtrailers.rss#feed" title="Apple's QuickTime movie trailer site">Movie Trailers</a>, 
+<a href="?feed=http://nick.typepad.com/blog/index.rss#feed" title="Developer of TopStyle and FeedDemon">Nick Bradbury</a>, 
+<a href="?feed=http://feeds.feedburner.com/ok-cancel#feed" title="Usability comics and commentary">OK/Cancel</a>, 
+<a href="?feed=http://osnews.com/files/recent.rdf#feed" title="News about every OS ever">OS News</a>, 
+<a href="?feed=http://weblog.philringnalda.com/feed/#feed" title="Test: Atom 1.0 Support">Phil Ringnalda</a>, 
+<a href="?feed=http://photocast.mac.com/turboderek/iPhoto/top-rides/index.rss#feed" title="Test: iPhoto 6 Photocasting">Photocast #1</a>, 
+<a href="?feed=http://photocast.mac.com/turboderek/iPhoto/best-of-the-ladies/index.rss#feed" title="Test: iPhoto 6 Photocasting">Photocast #2</a>, 
+<a href="?feed=http://photocast.mac.com/awalker/iPhoto/christmas-2005/index.rss#feed" title="Test: iPhoto 6 Photocasting">Photocast #3</a>, 
+<a href="?feed=http://refrederator.com/rss#feed" title="Test: Embedded Enclosures">ReFrederator</a>, 
+<a href="?feed=http://www.pariurisportive.com/blog/xmlsrv/rss2.php?blog=2#feed" title="Test: ISO-8859-1 Encoding">Romanian Language</a>, 
+<a href="?feed=http://www.erased.info/rss2.php#feed" title="Test: KOI8-R Encoding">Russian Language</a>, 
+<a href="?feed=http://ubb.frostyplace.com.tw/rdf.php#feed" title="Test: BIG5 Encoding">Taiwanese Language</a>, 
+<a href="?feed=http://technorati.com/watchlists/rss.html?wid=29290#feed" title="Technorati watch for SimplePie">Technorati</a>, 
+<a href="?feed=http://thinksecret.com/rss.xml#feed" title="Apple Rumors">Think Secret</a>, 
+<a href="?feed=http://www.tbray.org/ongoing/ongoing.atom#feed" title="Test: Atom 1.0 Support">Tim Bray</a>, 
+<a href="?feed=http://tuaw.com/rss.xml#feed" title="Test: Ad Stripping">TUAW</a>, 
+<a href="?feed=http://www.tvgasm.com/atom.xml#feed" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>, 
+<a href="?feed=http://feeds.feedburner.com/web20Show#feed" title="Test: Embedded Enclosures">Web 2.0 Show</a>, 
+<a href="?feed=http://whitecollarruckus.libsyn.com/rss#feed" title="Test: Embedded Enclosures">White Collar Ruckus</a>,
+<a href="?feed=http://youtube.com/rss/global/recently_added.rss#feed" title="Funny user-submitted videos">You Tube</a>, 
+<a href="?feed=http://zeldman.com/rss/#feed" title="The father of the web standards movement">Zeldman</a></p>
 			<a name="feed"></a>
 		</div>
 
@@ -108,7 +154,7 @@ $feed->handle_content_type();
 
 
 				<!-- Add subscribe links for several different aggregation services -->
-				<p class="subscribe"><strong>Subscribe:</strong> <a href="<?php echo $feed->subscribe_aol(); ?>">My AOL</a>, <a href="<?php echo $feed->subscribe_bloglines(); ?>">Bloglines</a>, <a href="<?php echo $feed->subscribe_google(); ?>">Google Reader</a>, <a href="<?php echo $feed->subscribe_msn(); ?>">My MSN</a>, <a href="<?php echo $feed->subscribe_newsburst(); ?>">Newsburst</a>,<br /><a href="<?php echo $feed->subscribe_newsgator(); ?>">Newsgator</a>, <a href="<?php echo $feed->subscribe_odeo(); ?>">Odeo</a>, <a href="<?php echo $feed->subscribe_pluck(); ?>">Pluck</a>, <a href="<?php echo $feed->subscribe_podnova(); ?>">Podnova</a>, <a href="<?php echo $feed->subscribe_rojo(); ?>">Rojo</a>, <a href="<?php echo $feed->subscribe_yahoo(); ?>">My Yahoo!</a>, <a href="<?php echo $feed->subscribe_feed(); ?>">Desktop Reader</a></p>
+				<p class="subscribe"><strong>Subscribe:</strong> <a href="<?php echo $feed->subscribe_bloglines(); ?>">Bloglines</a>, <a href="<?php echo $feed->subscribe_google(); ?>">Google Reader</a>, <a href="<?php echo $feed->subscribe_msn(); ?>">My MSN</a>, <a href="<?php echo $feed->subscribe_netvibes(); ?>">Netvibes</a>, <a href="<?php echo $feed->subscribe_newsburst(); ?>">Newsburst</a><br /><a href="<?php echo $feed->subscribe_newsgator(); ?>">Newsgator</a>, <a href="<?php echo $feed->subscribe_odeo(); ?>">Odeo</a>, <a href="<?php echo $feed->subscribe_pluck(); ?>">Pluck</a>, <a href="<?php echo $feed->subscribe_podnova(); ?>">Podnova</a>, <a href="<?php echo $feed->subscribe_rojo(); ?>">Rojo</a>, <a href="<?php echo $feed->subscribe_yahoo(); ?>">My Yahoo!</a>, <a href="<?php echo $feed->subscribe_feed(); ?>">Desktop Reader</a></p>
 
 
 				<!-- Let's begin looping through each individual news item in the feed. -->
@@ -134,7 +180,7 @@ $feed->handle_content_type();
 						?>
 
 						<!-- Add links to add this post to one of a handful of services. -->
-						<p class="footnote" align="center"><a href="<?php echo $item->add_to_blinklist(); ?>" title="Add post to Blinklist">Blinklist</a> | <a href="<?php echo $item->add_to_delicious(); ?>" title="Add post to del.icio.us">Del.icio.us</a> | <a href="<?php echo $item->add_to_digg(); ?>" title="Digg this!">Digg</a> | <a href="<?php echo $item->add_to_furl(); ?>" title="Add post to Furl">Furl</a> | <a href="<?php echo $item->add_to_myweb20(); ?>" title="Add post to My Web 2.0">My Web 2.0</a> | <a href="<?php echo $item->add_to_newsvine(); ?>" title="Add post to Newsvine">Newsvine</a> | <a href="<?php echo $item->add_to_reddit(); ?>" title="Add post to Reddit">Reddit</a> | <a href="<?php echo $item->add_to_spurl(); ?>" title="Add post to Spurl">Spurl</a> | <a href="<?php echo $item->search_technorati(); ?>" title="Who's linking to this post?">Technorati</a></p>
+						<p class="footnote" align="center"><a href="<?php echo $item->add_to_blinklist(); ?>" title="Add post to Blinklist">Blinklist</a> | <a href="<?php echo $item->add_to_delicious(); ?>" title="Add post to del.icio.us">Del.icio.us</a> | <a href="<?php echo $item->add_to_digg(); ?>" title="Digg this!">Digg</a> | <a href="<?php echo $item->add_to_furl(); ?>" title="Add post to Furl">Furl</a> | <a href="<?php echo $item->add_to_magnolia(); ?>" title="Add post to Ma.gnolia">Ma.gnolia</a> | <a href="<?php echo $item->add_to_newsvine(); ?>" title="Add post to Newsvine">Newsvine</a> | <a href="<?php echo $item->add_to_spurl(); ?>" title="Add post to Spurl">Spurl</a> | <a href="<?php echo $item->search_technorati(); ?>" title="Who's linking to this post?">Technorati</a></p>
 
 					</div>
 
