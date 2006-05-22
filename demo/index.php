@@ -129,7 +129,7 @@ $feed->handle_content_type();
 <a href="?feed=http://refrederator.com/rss#feed" title="Test: Embedded Enclosures">ReFrederator</a>, 
 <a href="?feed=http://www.pariurisportive.com/blog/xmlsrv/rss2.php?blog=2#feed" title="Test: ISO-8859-1 Encoding">Romanian Language</a>, 
 <a href="?feed=http://www.erased.info/rss2.php#feed" title="Test: KOI8-R Encoding">Russian Language</a>, 
-<a href="?feed=http://ubb.frostyplace.com.tw/rdf.php#feed" title="Test: BIG5 Encoding">Taiwanese Language</a>, 
+<a href="?feed=http://www.upsaid.com/isis/index.rdf#feed" title="Test: BIG5 Encoding">Traditional Chinese Language</a>, 
 <a href="?feed=http://technorati.com/watchlists/rss.html?wid=29290#feed" title="Technorati watch for SimplePie">Technorati</a>, 
 <a href="?feed=http://thinksecret.com/rss.xml#feed" title="Apple Rumors">Think Secret</a>, 
 <a href="?feed=http://www.tbray.org/ongoing/ongoing.atom#feed" title="Test: Atom 1.0 Support">Tim Bray</a>, 
