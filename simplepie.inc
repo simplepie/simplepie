@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 14 May 2006
+Updated: 21 May 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060514';
+	var $build = '20060521';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -44,7 +44,7 @@ class SimplePie {
 	var $order_by_date = true;
 	var $strip_ads = false;
 	var $strip_htmltags = 'blink,body,doctype,embed,font,form,frame,frameset,html,iframe,input,marquee,meta,noscript,object,param,script,style';
-	var $strip_attributes = 'class,id,style';
+	var $strip_attributes = 'class,id,style,onclick,onmouseover,onmouseout,onfocus,onblur';
 	var $encode_instead_of_strip = false;
 
 	// RSS Auto-Discovery Variables
@@ -1325,7 +1325,9 @@ class SimplePie {
 
 
 
-	/*  ITEMS */
+	/****************************************************
+	PARSE OUT ITEM-RELATED DATA
+	****************************************************/
 	// Get the size of the array of items (for use in a for-loop)
 	function get_item_quantity($max=0) {
 		$qty = (isset($this->data['items'])) ? sizeof($this->data['items']) : 0;
@@ -1582,7 +1584,7 @@ class SimplePie {
 	into other pages.  This gets around those blocks by spoofing the referrer.
 	****************************************************/
 	function display_image($image_url) {
-		$image = $this->get_file($image_url);
+		$image = $this->get_file(urldecode($image_url));
 		$suffix = pathinfo($image_url, PATHINFO_EXTENSION);
 
 		switch($suffix) {
@@ -1616,6 +1618,7 @@ class SimplePie {
 
 		header('Content-type: ' . $mime);
 		echo $image;
+		//echo $image_url;
 		exit;
 	}
 
@@ -1647,7 +1650,7 @@ class SimplePie {
 
 
 	/****************************************************
-	OPENS A FILE, WITH EITHER FOPEN OR cURL
+	OPENS A FILE, WITH EITHER FOPEN OR CURL
 	****************************************************/
 	function get_file($url) {
 		if (substr($url, 0, 7) == 'http://' && extension_loaded('curl')) {
@@ -2039,17 +2042,17 @@ class SimplePie {
 			foreach ($tags_to_strip as $tag) {
 				if ($this->encode_instead_of_strip) {
 					// For encoded angled brackets (do these first)
-					$data = preg_replace('/&lt;(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*&gt;/i', '&amp;lt;\\0&amp;gt;', $data);
+					$data = preg_replace('/&lt;(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|%|\/|\.|\?|&|,|#|!|\+|\(|\))*&gt;/i', '&amp;lt;\\0&amp;gt;', $data);
 					$data = str_replace('&amp;lt;&lt;', '&amp;lt;', $data);
 					$data = str_replace('&gt;&amp;gt;', '&amp;gt;', $data);
 
 					// For angled brackets
-					$data = preg_replace('/<(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*>/i', '&lt;\\0&gt;', $data);
+					$data = preg_replace('/<(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|%|\/|\.|\?|&|,|#|!|\+|\(|\))*>/i', '&lt;\\0&gt;', $data);
 					$data = str_replace('&lt;<', '&lt;', $data);
 					$data = str_replace('>&gt;', '&gt;', $data);
 				}
 				else {
-					$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*(&gt;|>)/i', '', $data);
+					$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|%|\/|\.|\?|&|,|#|!|\+|\(|\))*(&gt;|>)/i', '', $data);
 				}
 			}
 		}
@@ -2057,7 +2060,7 @@ class SimplePie {
 		if ($this->strip_attributes) {
 			$attribs_to_strip = explode(',', $this->strip_attributes);
 			foreach ($attribs_to_strip as $attrib) {
-				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;|\')?(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!)*("|&quot;|\')?/i', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=(\'|&apos;|"|&quot;)?(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;|<|>|\+|{|})*(\'|&apos;|"|&quot;)?/i', '', $data);
 			}
 		}
 
@@ -2085,6 +2088,7 @@ class SimplePie {
 
 		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
 		if ($this->bypass_image_hotlink != false) {
+			$data = preg_replace_callback('/src=(&quot;|"|\'|&apos;)?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;)*(&quot;|"|\'|&apos;)?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0]))))."\"";'), $data);
 			$data = preg_replace('/<img(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*src=(&quot;|"|\')?/i', '\\0?i=', $data);
 		}
 
