@@ -210,6 +210,140 @@ class SimplePie {
 			}
 		}
 
+		// If Bypass Image Hotlink is enabled, send image to the page and quit.
+		if (isset($_GET['js'])) {
+
+			// JavaScript for the Odeo Player
+			$embed='';
+			$embed.='function embed_odeo(link) {';
+			$embed.='document.writeln(\'';
+			$embed.='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" ';
+			$embed.='    codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" ';
+			$embed.='    width="440" ';
+			$embed.='    height="80" ';
+			$embed.='    align="middle">';
+			$embed.='<param name="movie" value="http://odeo.com/flash/audio_player_fullsize.swf" />';
+			$embed.='<param name="allowScriptAccess" value="any" />';
+			$embed.='<param name="quality" value="high">';
+			$embed.='<param name="wmode" value="transparent">';
+			$embed.='<param name="flashvars" value="valid_sample_rate=true&external_url=\'+link+\'" />';
+			$embed.='<embed src="http://odeo.com/flash/audio_player_fullsize.swf" ';
+			$embed.='    pluginspage="http://www.macromedia.com/go/getflashplayer" ';
+			$embed.='    type="application/x-shockwave-flash" ';
+			$embed.='    quality="high" ';
+			$embed.='    width="440" ';
+			$embed.='    height="80" ';
+			$embed.='    wmode="transparent" ';
+			$embed.='    allowScriptAccess="any" ';
+			$embed.='    flashvars="valid_sample_rate=true&external_url=\'+link+\'">';
+			$embed.='</embed>';
+			$embed.='</object>';
+			$embed.='\');';
+			$embed.='}';
+
+			$embed.="\r\n";
+
+			$embed.='function embed_quicktime(type, bgcolor, width, height, link, placeholder, loop) {';
+			$embed.='document.writeln(\'';
+			$embed.='<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" ';
+			$embed.='    style="cursor:hand; cursor:pointer;" ';
+			$embed.='    type="\'+type+\'" ';
+			$embed.='    codebase="http://www.apple.com/qtactivex/qtplugin.cab" ';
+			$embed.='    bgcolor="\'+bgcolor+\'" ';
+			$embed.='    width="\'+width+\'" ';
+			$embed.='    height="\'+height+\'">';
+			$embed.='<param name="href" value="\'+link+\'" />';
+			$embed.='<param name="src" value="\'+placeholder+\'" />';
+			$embed.='<param name="autoplay" value="false" />';
+			$embed.='<param name="target" value="myself" />';
+			$embed.='<param name="controller" value="false" />';
+			$embed.='<param name="loop" value="\'+loop+\'" />';
+			$embed.='<param name="scale" value="aspect" />';
+			$embed.='<param name="bgcolor" value="\'+bgcolor+\'">';
+			$embed.='<embed type="\'+type+\'" ';
+			$embed.='    style="cursor:hand; cursor:pointer;" ';
+			$embed.='    href="\'+link+\'" ';
+			$embed.='    src="\'+placeholder+\'"';
+			$embed.='    width="\'+width+\'" ';
+			$embed.='    height="\'+height+\'" ';
+			$embed.='    autoplay="false" ';
+			$embed.='    target="myself" ';
+			$embed.='    controller="false" ';
+			$embed.='    loop="\'+loop+\'" ';
+			$embed.='    scale="aspect" ';
+			$embed.='    bgcolor="\'+bgcolor+\'" ';
+			$embed.='    pluginspage="http://www.apple.com/quicktime/download/">';
+			$embed.='</embed>';
+			$embed.='</object>';
+			$embed.='\');';
+			$embed.='}';
+
+			$embed.="\r\n";
+
+			$embed.='function embed_flash(bgcolor, width, height, link, loop, type) {';
+			$embed.='document.writeln(\'';
+			$embed.='<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" ';
+			$embed.='    codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" ';
+			$embed.='    bgcolor="\'+bgcolor+\'" ';
+			$embed.='    width="\'+width+\'" ';
+			$embed.='    height="\'+height+\'">';
+			$embed.='<param name="movie" value="\'+link+\'">';
+			$embed.='<param name="quality" value="high">';
+			$embed.='<param name="loop" value="\'+loop+\'">';
+			$embed.='<param name="bgcolor" value="\'+bgcolor+\'">';
+			$embed.='<embed src="\'+link+\'" ';
+			$embed.='    pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" ';
+			$embed.='    type="\'+type+\'" ';
+			$embed.='    quality="high" ';
+			$embed.='    width="\'+width+\'" ';
+			$embed.='    height="\'+height+\'" ';
+			$embed.='    bgcolor="\'+bgcolor+\'" ';
+			$embed.='    loop="\'+loop+\'">';
+			$embed.='</embed>';
+			$embed.='</object>';
+			$embed.='\');';
+			$embed.='}';
+
+			$embed.="\r\n";
+
+			$embed.='function embed_wmedia(width, height, link) {';
+			$embed.='document.writeln(\'';
+			$embed.='<object classid="CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95"';
+			$embed.='    type="application/x-oleobject"';
+			$embed.='    width="' . $width . '"';
+			$embed.='    height="' . $height . '"';
+			$embed.='    standby="Loading Windows Media Player...">';
+			$embed.='<param name="FileName" value="' . $this->link . '">';
+			$embed.='<param name="autosize" value="true">';
+			$embed.='<param name="ShowControls" value="true">';
+			$embed.='<param name="ShowStatusBar" value="false">';
+			$embed.='<param name="ShowDisplay" value="false">';
+			$embed.='<param name="autostart" value="false">';
+			$embed.='<embed type="application/x-mplayer2" ';
+			$embed.='    src="' . $this->link . '" ';
+			$embed.='    autosize="1" ';
+			$embed.='    width="' . $width . '" ';
+			$embed.='    height="' . $height . '" ';
+			$embed.='    showcontrols="1" ';
+			$embed.='    showstatusbar="0" ';
+			$embed.='    showdisplay="0" ';
+			$embed.='    autostart="0">';
+			$embed.='</embed>';
+			$embed.='</object>';
+			$embed.='\');';
+			$embed.='}';
+
+			$embed.="\r\n";
+
+			// enable gzip compression
+			ob_start ("ob_gzhandler"); 
+			header("Content-type: text/javascript; charset: UTF-8"); 
+			header("Cache-Control: must-revalidate"); 
+			header("Expires: " .  gmdate("D, d M Y H:i:s", time() + 60*60*24) . " GMT");
+			echo $embed;
+			exit;
+		}
+
 		// If this is a .Mac Photocast, change it to the real URL.
 		if (stristr($this->rss_url, 'http://photocast.mac.com')) {
 			$this->rss_url = preg_replace('%http://photocast.mac.com%i', 'http://web.mac.com', $this->rss_url);
@@ -2886,117 +3020,30 @@ class SimplePie_Enclosure
 		if (stristr($this->type, 'audio/')) $placeholder=$audio;
 		else if (stristr($this->type, 'video/')) $placeholder=$video;
 
+		// Make sure the JS library is included
+		// (I know it'll be included multiple times, but I can't think of a better way to do this automatically)
+		$embed.='<script type="text/javascript" src="?js"></script>';
+
 		// Odeo Feed MP3's
 		if (substr(strtolower($this->link), 0, 15) == 'http://odeo.com') {
-			$embed.='<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" ';
-			$embed.='    codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" ';
-			$embed.='    bgcolor="' . $bgcolor . '" ';
-			$embed.='    width="440" ';
-			$embed.='    height="80" ';
-			$embed.='    align="middle">';
-			$embed.='<param name="movie" value="http://odeo.com/flash/audio_player_fullsize.swf" />';
-			$embed.='<param name="allowScriptAccess" value="any" />';
-			$embed.='<param name="quality" value="high">';
-			$embed.='<param name="wmode" value="transparent">';
-			$embed.='<param name="flashvars" value="valid_sample_rate=true&external_url=' . $this->link . '" />';
-			$embed.='<embed src="http://odeo.com/flash/audio_player_fullsize.swf" ';
-			$embed.='    pluginspage="http://www.macromedia.com/go/getflashplayer" ';
-			$embed.='    type="application/x-shockwave-flash" ';
-			$embed.='    quality="high" ';
-			$embed.='    width="440" ';
-			$embed.='    height="80" ';
-			$embed.='    wmode="transparent" ';
-			$embed.='    allowScriptAccess="any" ';
-			$embed.='    flashvars="valid_sample_rate=true&external_url=' . $this->link . '">';
-			$embed.='</embed>';
-			$embed.='</object>';
+			$embed.='<script type="text/javascript">embed_odeo("'.$this->link.'");</script>';
 		}
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
 		else if ($this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp4' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/m4v' || $this->type == 'video/x-m4v' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
 			$height+=16;
-
-			$embed.='<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" ';
-			$embed.='    style="cursor:hand; cursor:pointer;" ';
-			$embed.='    type="' . $this->type . '" ';
-			$embed.='    codebase="http://www.apple.com/qtactivex/qtplugin.cab" ';
-			$embed.='    bgcolor="' . $bgcolor . '" ';
-			$embed.='    width="' . $width . '" ';
-			$embed.='    height="' . $height . '">';
-			$embed.='<param name="href" value="' . $this->link . '" />';
-			$embed.='<param name="src" value="' . $placeholder . '" />';
-			$embed.='<param name="autoplay" value="false" />';
-			$embed.='<param name="target" value="myself" />';
-			$embed.='<param name="controller" value="false" />';
-			$embed.='<param name="loop" value="' . $loop . '" />';
-			$embed.='<param name="scale" value="aspect" />';
-			$embed.='<param name="bgcolor" value="' . $bgcolor . '">';
-			$embed.='<embed type="' . $this->type . '" ';
-			$embed.='    style="cursor:hand; cursor:pointer;" ';
-			$embed.='    href="' . $this->link . '" ';
-			$embed.='    src="' . $placeholder . '"';
-			$embed.='    width="' . $width . '" ';
-			$embed.='    height="' . $height . '" ';
-			$embed.='    autoplay="false" ';
-			$embed.='    target="myself" ';
-			$embed.='    controller="false" ';
-			$embed.='    loop="' . $loop . '" ';
-			$embed.='    scale="aspect" ';
-			$embed.='    bgcolor="' . $bgcolor . '" ';
-			$embed.='    pluginspage="http://www.apple.com/quicktime/download/">';
-			$embed.='</embed>';
-			$embed.='</object>';
+			$embed.='<script type="text/javascript">embed_quicktime("'.$this->type.'", "'.$bgcolor.'", "'.$width.'", "'.$height.'", "'.$this->link.'", "'.$placeholder.'", "'.$loop.'");</script>';
 		}
 
 		// Flash
 		else if ($this->type == 'application/x-shockwave-flash' || $this->type == 'application/futuresplash') {
-			$embed.='<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"';
-			$embed.='    codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"';
-			$embed.='    bgcolor="' . $bgcolor . '" ';
-			$embed.='    width="' . $width . '"';
-			$embed.='    height="' . $height . '">';
-			$embed.='<param name="movie" value="' . $this->link . '">';
-			$embed.='<param name="quality" value="high">';
-			$embed.='<param name="loop" value="' . $loop . '">';
-			$embed.='<param name="bgcolor" value="' . $bgcolor . '">';
-			$embed.='<embed src="' . $this->link . '" ';
-			$embed.='    pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" ';
-			$embed.='    type="' . $this->type . '" ';
-			$embed.='    quality="high" ';
-			$embed.='    width="' . $width . '" ';
-			$embed.='    height="' . $height . '" ';
-			$embed.='    bgcolor="' . $bgcolor . '" ';
-			$embed.='    loop="' . $loop . '">';
-			$embed.='</embed>';
-			$embed.='</object>';
+			$embed.='<script type="text/javascript">embed_flash("'.$bgcolor.'", "'.$width.'", "'.$height.'", "'.$this->link.'", "'.$loop.'", "'.$this->type.'");</script>';
 		}
 
 		// Windows Media
 		else if ($this->type == 'application/asx' || $this->type == 'application/x-mplayer2' || $this->type == 'audio/x-ms-wma' || $this->type == 'audio/x-ms-wax' || $this->type == 'video/x-ms-asf-plugin' || $this->type == 'video/x-ms-asf' || $this->type == 'video/x-ms-wm' || $this->type == 'video/x-ms-wmv' || $this->type == 'video/x-ms-wvx') {
 			$height+=45;
-
-			$embed.='<object classid="CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95"';
-			$embed.='    type="application/x-oleobject"';
-			$embed.='    width="' . $width . '"';
-			$embed.='    height="' . $height . '"';
-			$embed.='    standby="Loading Windows Media Player...">';
-			$embed.='<param name="FileName" value="' . $this->link . '">';
-			$embed.='<param name="autosize" value="true">';
-			$embed.='<param name="ShowControls" value="true">';
-			$embed.='<param name="ShowStatusBar" value="false">';
-			$embed.='<param name="ShowDisplay" value="false">';
-			$embed.='<param name="autostart" value="false">';
-			$embed.='<embed type="application/x-mplayer2" ';
-			$embed.='    src="' . $this->link . '" ';
-			$embed.='    autosize="1" ';
-			$embed.='    width="' . $width . '" ';
-			$embed.='    height="' . $height . '" ';
-			$embed.='    showcontrols="1" ';
-			$embed.='    showstatusbar="0" ';
-			$embed.='    showdisplay="0" ';
-			$embed.='    autostart="0">';
-			$embed.='</embed>';
-			$embed.='</object>';
+			$embed.='<script type="text/javascript">embed_wmedia("'.$width.'", "'.$height.'", "'.$this->link.'");</script>';
 		}
 
 		// Everything else
