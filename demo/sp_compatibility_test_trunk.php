@@ -44,7 +44,7 @@ body {
 	color:#333;
 	margin:0;
 	padding:0;
-	background:#fff url(sp_compatibility_test.php?background) repeat-x top left;
+	background:#fff url(sp_compatibility_test_trunk.php?background) repeat-x top left;
 }
 
 div#site {
