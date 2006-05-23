@@ -54,6 +54,8 @@ $feed->handle_content_type();
 
 <div id="site">
 
+	<h1 id="logo"><img src="./for_the_demo/logo_simplepie_demo.png" alt="SimplePie Demo" title="SimplePie Demo" /></h1>
+
 	<div id="content">
 
 		<div id="" class="chunk">
