@@ -1159,12 +1159,12 @@ class SimplePie {
 					}
 				} else {
 					$mp_rss = preg_replace ('/<\?xml(.*)( standalone="no")(.*)\?>/msiU', '<?xml\\1\\3?>', $mp_rss, 1);
-					$mp_rss = preg_replace ('/<\?xml(.*)\?>/msiU', '<?xml\\1 encoding="ISO-8859-1"?>', $mp_rss, 1);
+					$mp_rss = preg_replace ('/<\?xml(.*)\?>/msiU', '<?xml\\1 encoding="UTF-8"?>', $mp_rss, 1);
 					preg_match('/encoding=["|\'](.*)["|\']/Ui', $mp_rss, $match);
 					$use_iconv = true;
 					$use_mbstring = true;
 					$utf8_fail = false;
-					$encoding = 'ISO-8859-1';
+					$encoding = 'UTF-8';
 				}
 				$this->encoding = $encoding;
 
@@ -1221,7 +1221,7 @@ class SimplePie {
 				}
 
 				$this->xml = xml_parser_create_ns($this->encoding);
-				$this->namespaces = array('atom' => 'ATOM', 'rss2' => 'RSS', 'rdf' => 'RDF', 'rss1' => 'RSS', 'dc' => 'DC', 'xhtml' => 'XHTML', 'content' => 'CONTENT');
+				$this->namespaces = array('xml' => 'HTTP://WWW.W3.ORG/XML/1998/NAMESPACE', 'atom' => 'ATOM', 'rss2' => 'RSS', 'rdf' => 'RDF', 'rss1' => 'RSS', 'dc' => 'DC', 'xhtml' => 'XHTML', 'content' => 'CONTENT');
 				xml_parser_set_option($this->xml, XML_OPTION_SKIP_WHITE, 1);
 				xml_set_object($this->xml, $this);
 				xml_set_character_data_handler($this->xml, 'dataHandler');
@@ -1893,6 +1893,9 @@ class SimplePie {
 		if (!empty($this->xmldata['feeddata']['attribs']['XML:BASE'])) {
 			$this->feed_xmlbase = parse_url($this->xmldata['feeddata']['attribs']['XML:BASE']);
 		}
+		else if (!empty($this->xmldata['feeddata']['attribs'][$this->namespaces['xml'] . ':BASE'])) {
+			$this->feed_xmlbase = parse_url($this->xmldata['feeddata']['attribs'][$this->namespaces['xml'] . ':BASE']);
+		}
 		else if (substr($this->rss_url, 0, 28) == 'http://feeds.feedburner.com/' && !empty($this->xmldata['info']['link'][0]['data'])) {
 			$this->feed_xmlbase = parse_url($this->xmldata['info']['link'][0]['data']);
 		} else {
@@ -1972,6 +1975,9 @@ class SimplePie {
 				// Item level xml:base
 				if (!empty($item['attribs']['XML:BASE'])) {
 					$this->item_xmlbase = parse_url($this->absolutize_url($item['attribs']['XML:BASE'], $this->feed_xmlbase));
+				}
+				else if (!empty($item['attribs'][$this->namespaces['xml'] . ':BASE'])) {
+					$this->item_xmlbase = parse_url($this->absolutize_url($item['attribs'][$this->namespaces['xml'] . ':BASE'], $this->feed_xmlbase));
 				}
 				
 				// Clear vars
@@ -2237,6 +2243,13 @@ class SimplePie {
 				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $this->feed_xmlbase));
 			}
 		}
+		else if (!empty($this->attribs[$this->namespaces['xml'] . ':BASE'])) {
+			if (!empty($this->item_xmlbase)) {
+				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs[$this->namespaces['xml'] . ':BASE'], $this->item_xmlbase));
+			} else {
+				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs[$this->namespaces['xml'] . ':BASE'], $this->feed_xmlbase));
+			}
+		}
 		if (!empty($attrib_xmlbase)) {
 			$xmlbase = $attrib_xmlbase;
 		} else if (!empty($this->item_xmlbase)) {
@@ -2377,6 +2390,7 @@ class SimplePie {
 			case 'RSS':
 			case $this->namespaces['rss2'] . ':RSS':
 				$this->xmldata['feedinfo']['type'] = 'RSS';
+				$this->do_add_content($this->xmldata['feeddata'], '');
 				if (!empty($attribs['VERSION'])) {
 					$this->xmldata['feedinfo']['version'] = trim($attribs['VERSION']);
 				}
@@ -2384,23 +2398,17 @@ class SimplePie {
 
 			case $this->namespaces['rdf'] . ':RDF':
 				$this->xmldata['feedinfo']['type'] = 'RSS';
+				$this->do_add_content($this->xmldata['feeddata'], '');
 				$this->xmldata['feedinfo']['version'] = 1;
 				break;
 
 			case 'FEED':
 			case $this->namespaces['atom'] . ':FEED':
 				$this->xmldata['feedinfo']['type'] = 'Atom';
+				$this->do_add_content($this->xmldata['feeddata'], '');
 				if (!empty($attribs['VERSION'])) {
 					$this->xmldata['feedinfo']['version'] = trim($attribs['VERSION']);
 				}
-				break;
-				
-			case 'RSS':
-			case $this->namespaces['rss2'] . ':RSS':
-			case $this->namespaces['rdf'] . ':RDF':
-			case 'FEED':
-			case $this->namespaces['atom'] . ':FEED':
-				$this->do_add_content($this->xmldata['feeddata'], '');
 				break;
 
 			case 'IMAGE':
