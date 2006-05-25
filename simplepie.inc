@@ -5,7 +5,7 @@ A Simple PHP-Based RSS/Atom Parser
 Simplifies the process of displaying the values of commonly used feed tags.
 
 Version: 1.0 Beta 2
-Updated: 24 May 2006
+Updated: 25 May 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0 Beta 2';
-	var $build = '20060524';
+	var $build = '20060525';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -39,6 +39,7 @@ class SimplePie {
 	var $max_minutes = 60;
 	var $cache_location = './cache';
 	var $bypass_image_hotlink = 'i';
+	var $bypass_image_hotlink_page = false;
 	var $replace_headers = false;
 	var $remove_div = true;
 	var $order_by_date = true;
@@ -129,6 +130,12 @@ class SimplePie {
 	// Bypass Image Hotlink
 	function bypass_image_hotlink($getvar='i') {
 		$this->bypass_image_hotlink = (string) $getvar;
+		return true;
+	}
+
+	// Bypass Image Hotlink Page
+	function bypass_image_hotlink_page($page = false) {
+		$this->bypass_image_hotlink_page = (string) $page;
 		return true;
 	}
 
@@ -2229,7 +2236,11 @@ class SimplePie {
 		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
 		if ($this->bypass_image_hotlink != false) {
 			$data = preg_replace_callback('/src=(&quot;|"|\'|&apos;)?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;)*(&quot;|"|\'|&apos;)?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0]))))."\"";'), $data);
-			$data = preg_replace('/<img(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*src=(&quot;|"|\')?/i', '\\0?i=', $data);
+
+			if ($this->bypass_image_hotlink_page != false) {
+				$data = preg_replace('/<img(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*src=(&quot;|"|\')?/i', '\\0'.$this->bypass_image_hotlink_page.'?i=', $data);
+			}
+			else $data = preg_replace('/<img(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*src=(&quot;|"|\')?/i', '\\0?i=', $data);
 		}
 
 		return $data;
