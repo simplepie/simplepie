@@ -93,7 +93,7 @@ $feed->handle_content_type();
 <a href="?feed=http://afterdawn.com/news/afterdawn_rss.xml#feed" title="Ripping, Burning, DRM, and the Dark Side of Consumer Electronics Media">Afterdawn</a>, 
 <a href="?feed=http://feeds.feedburner.com/ajaxian#feed" title="AJAX and Scripting News">Ajaxian</a>, 
 <a href="?feed=http://www.andybudd.com/index.rdf#feed" title="Test: Bypass Image Hotlink Blocking">Andy Budd</a>, 
-<a href="?feed=http://www.ameinfo.com/rss/arabic/1558.xml#feed" title="Test: Windows-1256 Encoding">Arabic Language</a>, 
+<a href="?feed=http://newsrss.bbc.co.uk/rss/arabic/news/rss.xml#feed" title="Test: Windows-1256 Encoding">Arabic Language</a>, 
 <a href="?feed=http://feeds.feedburner.com/AskANinja#feed" title="Test: Embedded Enclosures">Ask a Ninja</a>, 
 <a href="?feed=http://www.atomenabled.org/atom.xml#feed" title="Test: Atom 1.0 Support">AtomEnabled.org</a>, 
 <a href="?feed=http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml#feed" title="World News">BBC News</a>, 
