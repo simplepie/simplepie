@@ -1,11 +1,11 @@
 <?php
 /****************************************************
-SIMPLE PIE
-A Simple PHP-Based RSS/Atom Parser
-Simplifies the process of displaying the values of commonly used feed tags.
+SIMPLEPIE
+A PHP-Based RSS and Atom Feed Framework
+Takes the hard work out of managing a complete RSS/Atom solution.
 
-Version: 1.0 Beta 2
-Updated: 25 May 2006
+Version: "Razzleberry" (RC1)
+Updated: 26 May 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -25,8 +25,8 @@ class SimplePie {
 
 	// SimplePie Information
 	var $name = 'SimplePie';
-	var $version = '1.0 Beta 2';
-	var $build = '20060525';
+	var $version = 'Razzleberry (RC1)';
+	var $build = '20060526';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1529,7 +1529,7 @@ class SimplePie {
 	/****************************************************
 	ULTRA-LIBERAL FEED LOCATOR
 	Based upon http://diveintomark.org/archives/2002/08/15/ultraliberal_rss_locator
-	This function enables support for RSS auto-discovery.
+	This function enables support for RSS auto-discovery-on-crack.
 	****************************************************/
 	function rss_locator($data, $url) {
 
