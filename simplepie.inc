@@ -2478,7 +2478,7 @@ class SimplePie {
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['description'], $data);
 					break;
 
-				case $this->namespaces['dc'] . 'DESCRIPTION':
+				case $this->namespaces['dc'] . ':DESCRIPTION':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['dc:description'], $data);
 					break;
 
@@ -2543,11 +2543,11 @@ class SimplePie {
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['category'][$this->categoryNumber], $data);
 					break;
 
-				case $this->namespaces['dc'] . 'SUBJECT':
+				case $this->namespaces['dc'] . ':SUBJECT':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['subject'][$this->categoryNumber], $data);
 					break;
 
-				case $this->namespaces['dc'] . 'CREATOR':
+				case $this->namespaces['dc'] . ':CREATOR':
 					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['creator'][$this->authorNumber], $data);
 					break;
 
@@ -2610,7 +2610,7 @@ class SimplePie {
 					$this->do_add_content($this->xmldata['info']['description'], $data);
 					break;
 
-				case $this->namespaces['dc'] . 'DESCRIPTION':
+				case $this->namespaces['dc'] . ':DESCRIPTION':
 					$this->do_add_content($this->xmldata['info']['dc:description'], $data);
 					break;
 
