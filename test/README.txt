@@ -1,0 +1,3 @@
+These tests require the Feed Parser tests. These can be downloaded in the package "feedparser-tests" from <uri:http://sourceforge.net/project/showfiles.php?group_id=112328>. All you have to do is move the entire tests folder to this "test" folder.
+
+Also, if you want to run this from the command line, you'll need to grab the Pear Package Console_Color from <uri:http://pear.php.net/package/Console_Color/download> and move Console_Color/Color.php to this "test" folder (this legally cannot be included here, as the two licenses conflict with one another).

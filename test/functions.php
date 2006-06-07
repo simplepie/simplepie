@@ -1,6 +1,6 @@
 <?php
 
-require_once 'consolecolor.php';
+require_once 'Color.php';
 
 function test_output($file, $result, $expected) {
 	$GLOBALS['testnum']++;
