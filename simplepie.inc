@@ -351,11 +351,6 @@ class SimplePie {
 			exit;
 		}
 
-		// If this is a .Mac Photocast, change it to the real URL.
-		if (stristr($this->rss_url, 'http://photocast.mac.com')) {
-			$this->rss_url = preg_replace('%http://photocast.mac.com%i', 'http://web.mac.com', $this->rss_url);
-		}
-
 		// Clear all outdated cache from the server's cache folder
 		$this->clear_cache($this->cache_location, $this->max_minutes);
 
@@ -1237,11 +1232,21 @@ class SimplePie {
 				xml_set_end_namespace_decl_handler($this->xml, 'endNameSpace');
 				if (xml_parse($this->xml, $mp_rss))
 				{
+					unset($mp_rss);
 					xml_parser_free($this->xml);
 					$this->parse_xml_data_array();
 					$this->data['feedinfo']['encoding'] = $this->encoding;
 					if ($this->order_by_date && !empty($this->data['items'])) {
-						usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
+						$do_sort = true;
+						foreach($this->data['items'] as $item) {
+							if (is_null($item->date)) {
+								$do_sort = false;
+								break;
+							}
+						}
+						if ($do_sort) {
+							usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
+						}
 					}
 					if ($this->caching && substr($this->rss_url, 0, 7) == 'http://') {
 						if ($this->is_writeable_createable($cache_filename)) {
@@ -1497,30 +1502,20 @@ class SimplePie {
 	$http=2, feed://www.domain.com/feed.xml (absolute)
 	$http=3, podcast://www.domain.com/feed.xml (absolute)
 	****************************************************/
-	function fix_protocol($mp_feed_proto, $http = 1) {
-		$url = $mp_feed_proto;
+	function fix_protocol($url, $http = 1) {
+		$url = preg_replace('/^http:\/\/photocast.mac.com/i', 'http://web.mac.com', $url);
+		$url = preg_replace('/^(p(od)?cast|feed)[:]?[\/]*(http(s)?:\/\/)?/i', 'http://', $url);
+		if (!preg_match('/^http(s)?:\/\//i', $url) && !file_exists($url)) $url = "http://$url";
 
-		$url = preg_replace('/feed:(\/\/)?(http:\/\/)?/i', 'http://', $url);
-		$url = preg_replace('/(feed:)?(\/\/)?https:\/\//i', 'https://', $url);
-		$url = preg_replace('/p(od)?cast:(\/\/)?(http:\/\/)?/i', 'http://', $url);
-		$url = preg_replace('/(p(od)?cast:)?(\/\/)?https:\/\//i', 'https://', $url);
-		if (!stristr($url, 'http://') && !stristr($url, 'https://') && !file_exists($url)) $url = "http://$url";
-
-		if ($http == 1) return $url;
-		else if ($http == 2) {
-			if (strstr($url, 'http://')) {
+		if ($http != 1 && strstr($url, 'http://')) {
+			if ($http == 2) {
 				$url = substr_replace($url, 'feed', 0, 4);
-				return $url;
 			}
-			else return $url;
-		}
-		else if ($http == 3) {
-			if (strstr($url, 'http://')) {
+			else if ($http == 3) {
 				$url = substr_replace($url, 'podcast', 0, 4);
-				return $url;
 			}
-			else return $url;
 		}
+		return $url;
 	}
 
 
@@ -1666,10 +1661,7 @@ class SimplePie {
 		if ($is_url) {
 			$data = $this->get_file($data);
 		}
-		if (stristr($data, '<!DOCTYPE HTML')) {
-			return false;
-		}
-		else if (stristr($data, '<rss') || stristr($data, '<rdf:RDF') || preg_match('/<([a-z0-9]+\:)?feed/mi', $data)) {
+		if (((stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $data)) && preg_match('/<([a-z0-9]+\:)?description/mi', $data)) || (preg_match('/<([a-z0-9]+\:)?feed/mi', $data) && preg_match('/<([a-z0-9]+\:)?author/mi', $data))) {
 			return true;
 		} else {
 			return false;
