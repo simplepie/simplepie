@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Razzleberry"
-Updated: 1 June 2006
+Updated: 9 June 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie {
 	// SimplePie Information
 	var $name = 'SimplePie';
 	var $version = '1.0';
-	var $build = '20060601';
+	var $build = '20060609';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
