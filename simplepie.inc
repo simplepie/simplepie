@@ -1163,8 +1163,8 @@ class SimplePie {
 					$mp_rss = preg_replace ('/<\?xml(.*)( standalone="no")(.*)\?>/msiU', '<?xml\\1\\3?>', $mp_rss, 1);
 					$mp_rss = preg_replace ('/<\?xml(.*)\?>/msiU', '<?xml\\1 encoding="UTF-8"?>', $mp_rss, 1);
 					preg_match('/encoding=["|\'](.*)["|\']/Ui', $mp_rss, $match);
-					$use_iconv = true;
-					$use_mbstring = true;
+					$use_iconv = false;
+					$use_mbstring = false;
 					$utf8_fail = false;
 					$encoding = 'UTF-8';
 				}
@@ -1661,7 +1661,7 @@ class SimplePie {
 		if ($is_url) {
 			$data = $this->get_file($data);
 		}
-		if (((stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $data)) && preg_match('/<([a-z0-9]+\:)?description/mi', $data)) || (preg_match('/<([a-z0-9]+\:)?feed/mi', $data) && preg_match('/<([a-z0-9]+\:)?author/mi', $data))) {
+		if (((stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $data)) && (preg_match('/<([a-z0-9]+\:)?channel/mi', $data) || preg_match('/<([a-z0-9]+\:)?item/mi', $data))) || (preg_match('/<([a-z0-9]+\:)?feed/mi', $data) && (preg_match('/<([a-z0-9]+\:)?author/mi', $data) || preg_match('/<([a-z0-9]+\:)?entry/mi', $data)))) {
 			return true;
 		} else {
 			return false;
