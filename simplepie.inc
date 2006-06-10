@@ -25,7 +25,7 @@ class SimplePie {
 
 	// SimplePie Information
 	var $name = 'SimplePie';
-	var $version = '1.0';
+	var $version = 'Razzleberry';
 	var $build = '20060609';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
@@ -1786,7 +1786,7 @@ class SimplePie {
 	OPENS A FILE, WITH EITHER FOPEN OR CURL
 	****************************************************/
 	function get_file($url) {
-		if (substr($url, 0, 7) == 'http://' && extension_loaded('curl')) {
+		if ((substr($url, 0, 7) == 'http://' || substr($url, 0, 8) == 'https://') && extension_loaded('curl')) {
 			$gch = curl_init();
 			curl_setopt ($gch, CURLOPT_URL, $url);
 			curl_setopt ($gch, CURLOPT_HEADER, 0);
@@ -1798,8 +1798,9 @@ class SimplePie {
 			$data = curl_exec ($gch);
 			curl_close ($gch);
 		} else {
-			$old_ua = ini_get('user_agent');
-			ini_set('user_agent', $this->useragent);
+			$old_ua='';
+			if (function_exists('ini_get')) $old_ua = ini_get('user_agent');
+			if (function_exists('ini_set')) ini_set('user_agent', $this->useragent);
 			if ($fp = fopen($url, 'r')) {
 				stream_set_blocking($fp, false);
 				stream_set_timeout($fp, 10);
@@ -1813,7 +1814,7 @@ class SimplePie {
 					return false;
 				fclose($fp);
 			} else return false;
-			ini_set('user_agent', $old_ua);
+			if (function_exists('ini_set')) ini_set('user_agent', $old_ua);
 		}
 		return $data;
 	}
@@ -2199,7 +2200,9 @@ class SimplePie {
 		if ($this->strip_attributes) {
 			$attribs_to_strip = explode(',', $this->strip_attributes);
 			foreach ($attribs_to_strip as $attrib) {
-				$data = preg_replace('/ '. trim($attrib) .'=(\'|&apos;|"|&quot;)?(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;|<|>|\+|{|})*(\'|&apos;|"|&quot;)?/i', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;)(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;|<|>|\+|{|})*("|&quot;)/i', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=(\'|&apos;)(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|"|&quot;|<|>|\+|{|})*(\'|&apos;)/i', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\+|{|})*/i', '', $data);
 			}
 		}
 
@@ -2227,12 +2230,12 @@ class SimplePie {
 
 		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
 		if ($this->bypass_image_hotlink != false) {
-			$data = preg_replace_callback('/src=(&quot;|"|\'|&apos;)?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;)*(&quot;|"|\'|&apos;)?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0]))))."\"";'), $data);
+			$data = preg_replace_callback('/src=(&quot;|"|\'|&apos;)?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|~|%|\+)*(&quot;|"|\'|&apos;)?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\'", "", str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0])))))."\"";'), $data);
 
 			if ($this->bypass_image_hotlink_page != false) {
-				$data = preg_replace('/<img(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*src=(&quot;|"|\')?/i', '\\0'.$this->bypass_image_hotlink_page.'?i=', $data);
+				$data = preg_replace('/<img(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|"|&apos;|&quot;|~|%|\+)*src=(&quot;|")?/i', '\\0'.$this->bypass_image_hotlink_page.'?i=', $data);
 			}
-			else $data = preg_replace('/<img(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&|,|#|!)*src=(&quot;|"|\')?/i', '\\0?i=', $data);
+			else $data = preg_replace('/<img(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|"|&apos;|&quot;|~|%|\+)*src=(&quot;|")?/i', '\\0?i=', $data);
 		}
 
 		return $data;
