@@ -2230,12 +2230,13 @@ class SimplePie {
 
 		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
 		if ($this->bypass_image_hotlink != false) {
-			$data = preg_replace_callback('/src=(&quot;|"|\'|&apos;)?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|~|%|\+)*(&quot;|"|\'|&apos;)?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\'", "", str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0])))))."\"";'), $data);
+			$data = preg_replace_callback('/src=(&quot;|")?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|~|%|\+|@|\'|&apos;)*(&quot;|")?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\'", "", str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0])))))."\"";'), $data);
+			$data = preg_replace_callback('/src=(\'|&apos;)?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|~|%|\+|@)*(\'|&apos;)?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\'", "", str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0])))))."\"";'), $data);
 
 			if ($this->bypass_image_hotlink_page != false) {
-				$data = preg_replace('/<img(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|"|&apos;|&quot;|~|%|\+)*src=(&quot;|")?/i', '\\0'.$this->bypass_image_hotlink_page.'?i=', $data);
+				$data = preg_replace('/<img(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|"|&apos;|&quot;|~|%|\+|@)*src=(&quot;|")?/i', '\\0'.$this->bypass_image_hotlink_page.'?i=', $data);
 			}
-			else $data = preg_replace('/<img(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|"|&apos;|&quot;|~|%|\+)*src=(&quot;|")?/i', '\\0?i=', $data);
+			else $data = preg_replace('/<img(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|"|&apos;|&quot;|~|%|\+|@)*src=(&quot;|")?/i', '\\0?i=', $data);
 		}
 
 		return $data;
