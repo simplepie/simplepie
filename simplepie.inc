@@ -47,6 +47,7 @@ class SimplePie {
 	var $strip_htmltags = 'blink,body,doctype,embed,font,form,frame,frameset,html,iframe,input,marquee,meta,noscript,object,param,script,style';
 	var $strip_attributes = 'class,id,style,onclick,onmouseover,onmouseout,onfocus,onblur';
 	var $encode_instead_of_strip = false;
+	var $enable_idn = false;
 
 	// RSS Auto-Discovery Variables
 	var $parsed_url;
@@ -197,6 +198,12 @@ class SimplePie {
 	// Strip out potentially dangerous attributes
 	function strip_attributes($attrib) {
 		$this->strip_attributes = (string) $attrib;
+		return true;
+	}
+
+	// Enable International Domain Name support
+	function enable_idn($enable=true) {
+		$this->enable_idn = (string) $enable;
 		return true;
 	}
 
@@ -1786,6 +1793,13 @@ class SimplePie {
 	OPENS A FILE, WITH EITHER FOPEN OR CURL
 	****************************************************/
 	function get_file($url) {
+		if (isset($this->enable_idn) && $this->enable_idn) {
+			if (class_exists('idna_convert')) {
+				$IDN = new idna_convert();
+				$url = $IDN->encode($url);
+			}
+		}
+
 		if ((substr($url, 0, 7) == 'http://' || substr($url, 0, 8) == 'https://') && extension_loaded('curl')) {
 			$gch = curl_init();
 			curl_setopt ($gch, CURLOPT_URL, $url);

@@ -6,7 +6,8 @@ $starttime = $starttime[1] + $starttime[0];
 
 // Include SimplePie
 // Located in the parent directory
-include('../simplepie.inc');
+include_once('../simplepie.inc');
+include_once('../idn/idna_convert.class.php');
 
 // Create a new instance of the SimplePie object
 $feed = new SimplePie();
@@ -14,6 +15,7 @@ $feed = new SimplePie();
 // Set these Configuration Options
 $feed->bypass_image_hotlink();
 $feed->strip_ads(true);
+$feed->enable_idn();
 
 // Make sure that page is getting passed a URL
 if (!empty($_GET['feed'])) {
@@ -89,6 +91,7 @@ $feed->handle_content_type();
 
 			<!-- Here are some sample feeds. -->
 			<p class="sample_feeds"><strong>Or try one of the following:</strong> 
+<a href="?feed=http://詹姆斯.com/feed#feed" title="Test: International Domain Name support">詹姆斯.com</a>, 
 <a href="?feed=http://www.adultswim.com/williams/podcast/tools/xml/video_rss.xml#feed" title="Humor from the people who make [adult swim] cartoons.">adult swim</a>, 
 <a href="?feed=http://afterdawn.com/news/afterdawn_rss.xml#feed" title="Ripping, Burning, DRM, and the Dark Side of Consumer Electronics Media">Afterdawn</a>, 
 <a href="?feed=http://feeds.feedburner.com/ajaxian#feed" title="AJAX and Scripting News">Ajaxian</a>, 
