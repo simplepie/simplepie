@@ -15,7 +15,6 @@ $feed = new SimplePie();
 // Set these Configuration Options
 $feed->bypass_image_hotlink();
 $feed->strip_ads(true);
-$feed->enable_idn();
 
 // Make sure that page is getting passed a URL
 if (!empty($_GET['feed'])) {

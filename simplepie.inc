@@ -4,8 +4,8 @@ SIMPLEPIE
 A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
-Version: "Razzleberry"
-Updated: 12 June 2006
+Version: "Lemon Meringue"
+Updated: 9 July 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -21,71 +21,39 @@ http://simplepie.org/support/
 
 ****************************************************/
 
-class SimplePie {
-
-	// SimplePie Information
+class SimplePie
+{
+	// SimplePie Info
 	var $name = 'SimplePie';
-	var $version = 'Razzleberry';
-	var $build = '20060612';
+	var $version = 'Lemon Meringue';
+	var $build = '20060709';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
-
-	// Run-time Variables
+	
+	// Other objects, instances created here so we can set options on them
+	var $sanitize;
+	
+	// Options
 	var $rss_url;
-	var $encoding;
 	var $xml_dump = false;
-	var $caching = true;
+	var $enable_cache = true;
 	var $max_minutes = 60;
 	var $cache_location = './cache';
-	var $bypass_image_hotlink = 'i';
-	var $bypass_image_hotlink_page = false;
-	var $replace_headers = false;
-	var $remove_div = true;
 	var $order_by_date = true;
-	var $strip_ads = false;
-	var $strip_htmltags = 'blink,body,doctype,embed,font,form,frame,frameset,html,iframe,input,marquee,meta,noscript,object,param,script,style';
-	var $strip_attributes = 'class,id,style,onclick,onmouseover,onmouseout,onfocus,onblur';
-	var $encode_instead_of_strip = false;
-	var $enable_idn = false;
-
-	// RSS Auto-Discovery Variables
-	var $parsed_url;
-	var $local = array();
-	var $elsewhere = array();
-
-	// XML Parsing Variables
-	var $xml;
-	var $tagName;
-	var $insideItem;
-	var $insideChannel;
-	var $insideImage;
-	var $insideAuthor;
-	var $itemNumber = 0;
-	var $authorNumber = 0;
-	var $categoryNumber = 0;
-	var $enclosureNumber = 0;
-	var $linkNumber = 0;
-	var $itemLinkNumber = 0;
-	var $data = false;
-	var $attribs;
-	var $xmldata;
-	var $feed_xmlbase;
-	var $item_xmlbase;
-	var $xhtml_prefix;
-
-
-
-
-	/****************************************************
-	CONSTRUCTOR
-	Initiates a couple of variables.  Accepts feed_url, cache_location, 
-	and cache_max_minutes.
-	****************************************************/
-	function SimplePie($feed_url = null, $cache_location = null, $cache_max_minutes = null) {
+	
+	// Misc. variables
+	var $data;
+	
+	function SimplePie($feed_url = null, $cache_location = null, $cache_max_minutes = null)
+	{
 		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
 		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . '</a>';
 		
+		// Other objects, instances created here so we can set options on them
+		$this->sanitize = new SimplePie_Sanitize;
+		
+		// Parse the feed, if we get the data sent directly here
 		if (!is_null($feed_url)) {
 			$this->feed_url($feed_url);
 		}
@@ -98,136 +66,100 @@ class SimplePie {
 			$this->cache_max_minutes($cache_max_minutes);
 		}
 
-		if (!is_null($feed_url)) {
-			return $this->init();
-		}
-
 		// If we've passed an xmldump variable in the URL, snap into XMLdump mode
 		if (isset($_GET['xmldump'])) {
 			$this->enable_xmldump($_GET['xmldump']);
 		}
-	}
 
-
-
-
-	/****************************************************
-	CONFIGURE OPTIONS
-	Set various options (feed URL, XML dump, caching, etc.)
-	****************************************************/
-	// Feed URL
-	function feed_url($url) {
-		$url = $this->fix_protocol($url, 1);
-		$this->rss_url = $url;
-		return true;
-	}
-
-	// XML Dump
-	function enable_xmldump($enable) {
-		$this->xml_dump = (bool) $enable;
-		return true;
-	}
-
-	// Bypass Image Hotlink
-	function bypass_image_hotlink($getvar='i') {
-		$this->bypass_image_hotlink = (string) $getvar;
-		return true;
-	}
-
-	// Bypass Image Hotlink Page
-	function bypass_image_hotlink_page($page = false) {
-		$this->bypass_image_hotlink_page = (string) $page;
-		return true;
-	}
-
-	// Caching
-	function enable_caching($enable) {
-		$this->caching = (bool) $enable;
-		return true;
-	}
-
-	// Cache Timeout
-	function cache_max_minutes($minutes) {
-		$this->max_minutes = (int) $minutes;
-		return true;
-	}
-
-	// Cache Location
-	function cache_location($location) {
-		$this->cache_location = (string) $location;
-		return true;
-	}
-
-	// Replace H1, H2, and H3 tags with the less important H4 tags.
-	function replace_headers($enable) {
-		$this->replace_headers = (bool) $enable;
-		return true;
-	}
-	
-	// Remove outer div in XHTML content within Atom
-	function remove_div($enable) {
-		$this->remove_div = (bool) $enable;
-		return true;
-	}
-	
-	// Order the items by date
-	function order_by_date($enable) {
-		$this->order_by_date = (bool) $enable;
-		return true;
-	}
-	
-	// Strip out certain well-known ads
-	function strip_ads($enable) {
-		$this->strip_ads = (bool) $enable;
-		return true;
-	}
-	
-	// Strip out potentially dangerous tags
-	function strip_htmltags($tags, $encode=false) {
-		$this->strip_htmltags = (string) $tags;
-		$this->encode_instead_of_strip = (bool) $encode;
-		return true;
-	}
-	
-	// Encode dangerous tags instead of stripping them
-	function encode_instead_of_strip($encode=true) {
-		$this->encode_instead_of_strip = (bool) $encode;
-		return true;
-	}
-
-	// Strip out potentially dangerous attributes
-	function strip_attributes($attrib) {
-		$this->strip_attributes = (string) $attrib;
-		return true;
-	}
-
-	// Enable International Domain Name support
-	function enable_idn($enable=true) {
-		$this->enable_idn = (string) $enable;
-		return true;
-	}
-
-
-
-
-	/****************************************************
-	MAIN INITIALIZATION FUNCTION
-	Rewrites the feed so that it actually resembles XML, processes the XML,
-	and builds an array from the feed.
-	****************************************************/
-	function init() {
-		// If Bypass Image Hotlink is enabled, send image to the page and quit.
-		if ($this->bypass_image_hotlink) {
-			if (isset($_GET[$this->bypass_image_hotlink]) && !empty($_GET[$this->bypass_image_hotlink])) {
-				$this->display_image($_GET[$this->bypass_image_hotlink]);
-				exit;
-			}
+		if (!is_null($feed_url)) {
+			return $this->init();
 		}
-
-		// If Bypass Image Hotlink is enabled, send image to the page and quit.
-		if (isset($_GET['js'])) {
-
-			// JavaScript for the Odeo Player
+	}
+	
+	function feed_url($url)
+	{
+		$this->rss_url = SimplePie_Misc::fix_protocol($url, 1);
+	}
+	
+	function enable_xmldump($enable = false)
+	{
+		$this->xml_dump = (bool) $enable;
+	}
+	
+	function enable_caching($enable = true)
+	{
+		$this->enable_cache = (bool) $enable;
+	}
+	
+	function cache_max_minutes($minutes = 60)
+	{
+		$this->max_minutes = (float) $minutes;
+	}
+	
+	function cache_location($location = './cache')
+	{
+		$this->cache_location = (string) $location;
+	}
+	
+	function order_by_date($enable = true)
+	{
+		$this->order_by_date = (bool) $enable;
+	}
+	
+	function bypass_image_hotlink($get = 'i')
+	{
+		$this->sanitize->bypass_image_hotlink($get);
+	}
+	
+	function bypass_image_hotlink_page($page = false)
+	{
+		$this->sanitize->bypass_image_hotlink_page($page);
+	}
+	
+	function replace_headers($enable = false)
+	{
+		$this->sanitize->replace_headers($enable);
+	}
+	
+	function remove_div($enable = true)
+	{
+		$this->sanitize->remove_div($enable);
+	}
+	
+	function strip_ads($enable = true)
+	{
+		$this->sanitize->strip_ads($enable);
+	}
+	
+	function strip_htmltags($tags = array('blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'), $encode = null)
+	{
+		$this->sanitize->strip_htmltags($tags);
+		if (!is_null($encode))
+		{
+			$this->sanitize->encode_instead_of_strip($tags);
+		}
+	}
+	
+	function encode_instead_of_strip($enable = true)
+	{
+		$this->sanitize->encode_instead_of_strip($enable);
+	}
+	
+	function strip_attributes($attribs = array('class', 'id', 'style', 'onclick', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
+	{
+		$this->sanitize->strip_attributes($attribs);
+	}
+	
+	function init()
+	{
+		if ($this->sanitize->bypass_image_hotlink && !empty($_GET[$this->sanitize->bypass_image_hotlink]))
+		{
+			SimplePie_Misc::display_file($_GET[$this->sanitize->bypass_image_hotlink], 10, $this->useragent);
+		}
+		
+		if (isset($_GET['js']))
+		{
+			// Replace with de-horrified heredoc syntax $embed
 			$embed='';
 			$embed.='function embed_odeo(link) {';
 			$embed.='document.writeln(\'';
@@ -348,2598 +280,1208 @@ class SimplePie {
 			$embed.='}';
 
 			$embed.="\r\n";
-
-			// enable gzip compression
-			ob_start ("ob_gzhandler"); 
-			header("Content-type: text/javascript; charset: UTF-8"); 
-			header("Cache-Control: must-revalidate"); 
-			header("Expires: " .  gmdate("D, d M Y H:i:s", time() + 60*60*24) . " GMT");
+			
+			ob_start('ob_gzhandler'); 
+			header('Content-type: text/javascript; charset: UTF-8'); 
+			header('Cache-Control: must-revalidate'); 
+			header('Expires: ' .  gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
 			echo $embed;
 			exit;
 		}
-
-		// Clear all outdated cache from the server's cache folder
-		$this->clear_cache($this->cache_location, $this->max_minutes);
-
-		if (!empty($this->rss_url)) {
-			// Read the XML file for processing.
-			$cache_filename = $this->cache_location . '/' . urlencode($this->rss_url) . '.spc';
-			if ($this->caching && !$this->xml_dump && substr($this->rss_url, 0, 7) == 'http://' && file_exists($cache_filename)) {
-				if ($fp = fopen($cache_filename, 'r')) {
-					$data = '';
-					while (!feof($fp)) {
-						$data .= fread($fp, 2048);
+		
+		if (!empty($this->rss_url))
+		{
+			$this->data = array();
+			if ($this->enable_cache && preg_match('/^http(s)?:\/\//i', $this->rss_url))
+			{
+				$cache = new SimplePie_Cache($this->cache_location, sha1($this->rss_url), 'spc');
+			}
+			else
+			{
+				$cache = false;
+			}
+			if ($cache && !$this->xml_dump)
+			{
+				$this->data = $cache->load();
+				if (!empty($this->data))
+				{
+					if (!empty($this->data['feed_url']))
+					{
+						$this->rss_url = $this->data['feed_url'];
+						return $this->init();
 					}
-					fclose($fp);
-					$mp_rss = unserialize($data);
-					if (empty($mp_rss)) {
-						$this->caching = false;
-						return $this->init();
-					} else if (isset($mp_rss['feed_url'])) {
-						$this->rss_url = $mp_rss['feed_url'];
-						return $this->init();
-					} else {
-						$this->data = $mp_rss;
+					else if ($cache->mtime() + $this->max_minutes * 60 < time())
+					{
+						if (!empty($this->data['last-modified']) || !empty($this->data['etag']))
+						{
+							$headers = array();
+							if (!empty($this->data['last-modified']))
+							{
+								$headers['if-modified-since'] = $this->data['last-modified'];
+							}
+							if (!empty($this->data['etag']))
+							{
+								$headers['if-none-match'] = $this->data['etag'];
+							}
+							$file = new SimplePie_File($this->rss_url, 1, 5, $headers, $this->useragent);
+							if ($file->success)
+							{
+								$headers = $file->headers();
+								if ($headers['status']['code'] == 304)
+								{
+									$cache->touch();
+									return true;
+								}
+							}
+							unset($file);
+						}
+						else
+						{
+							$cache->unlink();
+						}
+					}
+					else
+					{
 						return true;
 					}
-				} else {
-					$this->caching = false;
+				}
+				else
+				{
+					$cache->unlink();
+				}
+			}
+			$this->data = array();
+			if (!isset($file))
+			{
+				$file = new SimplePie_File($this->rss_url, 10, 5, null, $this->useragent);
+			}
+			if (!$file->success)
+			{
+				return false;
+			}
+			
+			if (!SimplePie_Locator::is_feed($file))
+			{
+				$locate = new SimplePie_Locator($file);
+				$feed = $locate->find();
+				if ($feed)
+				{
+					if ($cache && !$cache->save(array('feed_url' => $feed)))
+					{
+						$this->error = "$cache->name is not writeable";
+						SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+					}
+					$this->rss_url = $feed;
 					return $this->init();
 				}
-			} else {
-				// Get the file
-				$mp_rss = $this->get_file($this->rss_url);
-
-				// Check if file is a feed or a webpage
-				// If it's a webpage, auto-discover the feed and re-pass it to init()
-				$discovery = $this->rss_locator($mp_rss, $this->rss_url);
-				if ($discovery) {
-					if ($discovery != $this->rss_url) {
-						$this->rss_url = $discovery;
-						if ($this->caching && substr($this->rss_url, 0, 7) == 'http://') {
-							if ($this->is_writeable_createable($cache_filename)) {
-								$fp = fopen($cache_filename, 'w');
-								fwrite($fp, serialize(array('feed_url' => $discovery)));
-								fclose($fp);
-							}
-							else trigger_error("$cache_filename is not writeable", E_USER_WARNING);
-						}
-						return $this->init();
-					}
-				} else {
-					$this->sp_error("A feed could not be found at $this->rss_url", E_USER_WARNING, __FILE__, __LINE__);
-					return false;
-				}
-
-				// Trim out any whitespace at the beginning or the end of the file
-				$mp_rss = trim($mp_rss);
-
-				// Get encoding
-				// Attempt to support everything from libiconv (http://www.gnu.org/software/libiconv/)
-				// Support everything from mbstring (http://www.php.net/manual/en/ref.mbstring.php#mbstring.supported-encodings)
-				$use_iconv = false;
-				$use_mbstring = false;
-				$utf8_fail = true;
-				if (preg_match('/encoding=["|\'](.*)["|\']/Ui', $mp_rss, $encoding)) {
-					$match = $encoding;
-					switch (strtolower($encoding[1])) {
-
-						// 7bit
-						case '7bit':
-						case '7-bit':
-							$encoding = '7bit';
-							$use_mbstring = true;
-							break;
-
-						// 8bit
-						case '8bit':
-						case '8-bit':
-							$encoding = '8bit';
-							$use_mbstring = true;
-							break;
-
-						// ARMSCII-8
-						case 'armscii-8':
-						case 'armscii':
-							$encoding = 'ARMSCII-8';
-							$use_iconv = true;
-							break;
-
-						// ASCII
-						case 'us-ascii':
-						case 'ascii':
-							$encoding = 'US-ASCII';
-							$use_iconv = true;
-							$use_mbstring = true;
-							$utf8_fail = false;
-							break;
-
-						// BASE64
-						case 'base64':
-						case 'base-64':
-							$encoding = 'BASE64';
-							$use_mbstring = true;
-							break;
-
-						// Big5 - Traditional Chinese, mainly used in Taiwan
-						case 'big5':
-						case '950':
-							$encoding = 'BIG5';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// Big5 with Hong Kong extensions, Traditional Chinese
-						case 'big5-hkscs':
-							$encoding = 'BIG5-HKSCS';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// byte2be
-						case 'byte2be':
-							$encoding = 'byte2be';
-							$use_mbstring = true;
-							break;
-
-						// byte2le
-						case 'byte2le':
-							$encoding = 'byte2le';
-							$use_mbstring = true;
-							break;
-
-						// byte4be
-						case 'byte4be':
-							$encoding = 'byte4be';
-							$use_mbstring = true;
-							break;
-
-						// byte4le
-						case 'byte4le':
-							$encoding = 'byte4le';
-							$use_mbstring = true;
-							break;
-
-						// EUC-CN
-						case 'euc-cn':
-						case 'euccn':
-							$encoding = 'EUC-CN';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// EUC-JISX0213
-						case 'euc-jisx0213':
-						case 'eucjisx0213':
-							$encoding = 'EUC-JISX0213';
-							$use_iconv = true;
-							break;
-
-						// EUC-JP
-						case 'euc-jp':
-						case 'eucjp':
-							$encoding = 'EUC-JP';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// EUCJP-win
-						case 'euc-jp-win':
-						case 'eucjp-win':
-						case 'eucjpwin':
-							$encoding = 'EUCJP-win';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// EUC-KR
-						case 'euc-kr':
-						case 'euckr':
-							$encoding = 'EUC-KR';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// EUC-TW
-						case 'euc-tw':
-						case 'euctw':
-							$encoding = 'EUC-TW';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// GB18030 - Simplified Chinese, national standard character set
-						case 'gb18030-2000':
-						case 'gb18030':
-							$encoding = 'GB18030';
-							$use_iconv = true;
-							break;
-
-						// GB2312 - Simplified Chinese, national standard character set
-						case 'gb2312':
-						case '936':
-							$encoding = 'GB2312';
-							$use_mbstring = true;
-							break;
-
-						// GBK
-						case 'gbk':
-							$encoding = 'GBK';
-							$use_iconv = true;
-							break;
-
-						// Georgian-Academy
-						case 'georgian-academy':
-							$encoding = 'Georgian-Academy';
-							$use_iconv = true;
-							break;
-
-						// Georgian-PS
-						case 'georgian-ps':
-							$encoding = 'Georgian-PS';
-							$use_iconv = true;
-							break;
-
-						// HTML-ENTITIES
-						case 'html-entities':
-						case 'htmlentities':
-							$encoding = 'HTML-ENTITIES';
-							$use_mbstring = true;
-							break;
-
-						// HZ
-						case 'hz':
-							$encoding = 'HZ';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-2022-CN
-						case 'iso-2022-cn':
-						case 'iso2022-cn':
-						case 'iso2022cn':
-							$encoding = 'ISO-2022-CN';
-							$use_iconv = true;
-							break;
-
-						// ISO-2022-CN-EXT
-						case 'iso-2022-cn-ext':
-						case 'iso2022-cn-ext':
-						case 'iso2022cn-ext':
-						case 'iso2022cnext':
-							$encoding = 'ISO-2022-CN';
-							$use_iconv = true;
-							break;
-
-						// ISO-2022-JP
-						case 'iso-2022-jp':
-						case 'iso2022-jp':
-						case 'iso2022jp':
-							$encoding = 'ISO-2022-JP';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-2022-JP-1
-						case 'iso-2022-jp-1':
-						case 'iso2022-jp-1':
-						case 'iso2022jp-1':
-						case 'iso2022jp1':
-							$encoding = 'ISO-2022-JP-1';
-							$use_iconv = true;
-							break;
-
-						// ISO-2022-JP-2
-						case 'iso-2022-jp-2':
-						case 'iso2022-jp-2':
-						case 'iso2022jp-2':
-						case 'iso2022jp2':
-							$encoding = 'ISO-2022-JP-2';
-							$use_iconv = true;
-							break;
-
-						// ISO-2022-JP-3
-						case 'iso-2022-jp-3':
-						case 'iso2022-jp-3':
-						case 'iso2022jp-3':
-						case 'iso2022jp3':
-							$encoding = 'ISO-2022-JP-3';
-							$use_iconv = true;
-							break;
-
-						// ISO-2022-KR
-						case 'iso-2022-kr':
-						case 'iso2022-kr':
-						case 'iso2022kr':
-							$encoding = 'ISO-2022-KR';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-1
-						case 'iso-8859-1':
-						case 'iso8859-1':
-							$encoding = 'ISO-8859-1';
-							$use_iconv = true;
-							$use_mbstring = true;
-							$utf8_fail = false;
-							break;
-
-						// ISO-8859-2
-						case 'iso-8859-2':
-						case 'iso8859-2':
-							$encoding = 'ISO-8859-2';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-3
-						case 'iso-8859-3':
-						case 'iso8859-3':
-							$encoding = 'ISO-8859-3';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-4
-						case 'iso-8859-4':
-						case 'iso8859-4':
-							$encoding = 'ISO-8859-4';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-5
-						case 'iso-8859-5':
-						case 'iso8859-5':
-							$encoding = 'ISO-8859-5';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-6
-						case 'iso-8859-6':
-						case 'iso8859-6':
-							$encoding = 'ISO-8859-6';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-7
-						case 'iso-8859-7':
-						case 'iso8859-7':
-							$encoding = 'ISO-8859-7';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-8
-						case 'iso-8859-8':
-						case 'iso8859-8':
-							$encoding = 'ISO-8859-8';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-9
-						case 'iso-8859-9':
-						case 'iso8859-9':
-							$encoding = 'ISO-8859-9';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-10
-						case 'iso-8859-10':
-						case 'iso8859-10':
-							$encoding = 'ISO-8859-10';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// mbstring/iconv functions don't appear to support 11 & 12
-
-						// ISO-8859-13
-						case 'iso-8859-13':
-						case 'iso8859-13':
-							$encoding = 'ISO-8859-13';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-14
-						case 'iso-8859-14':
-						case 'iso8859-14':
-							$encoding = 'ISO-8859-14';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-15
-						case 'iso-8859-15':
-						case 'iso8859-15':
-							$encoding = 'ISO-8859-15';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// ISO-8859-16
-						case 'iso-8859-16':
-						case 'iso8859-16':
-							$encoding = 'ISO-8859-16';
-							$use_iconv = true;
-							break;
-
-						// JIS
-						case 'jis':
-							$encoding = 'JIS';
-							$use_mbstring = true;
-							break;
-
-						// JOHAB - Korean
-						case 'johab':
-							$encoding = 'JOHAB';
-							$use_iconv = true;
-							break;
-
-						// Russian
-						case 'koi8-r':
-						case 'koi8r':
-							$encoding = 'KOI8-R';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// Turkish
-						case 'koi8-t':
-						case 'koi8t':
-							$encoding = 'KOI8-T';
-							$use_iconv = true;
-							break;
-
-						// Ukrainian
-						case 'koi8-u':
-						case 'koi8u':
-							$encoding = 'KOI8-U';
-							$use_iconv = true;
-							break;
-
-						// Russian+Ukrainian
-						case 'koi8-ru':
-						case 'koi8ru':
-							$encoding = 'KOI8-RU';
-							$use_iconv = true;
-							break;
-
-						// Macintosh (Mac OS Classic)
-						case 'macintosh':
-							$encoding = 'Macintosh';
-							$use_iconv = true;
-							break;
-
-						// MacArabic (Mac OS Classic)
-						case 'macarabic':
-							$encoding = 'MacArabic';
-							$use_iconv = true;
-							break;
-
-						// MacCentralEurope (Mac OS Classic)
-						case 'maccentraleurope':
-							$encoding = 'MacCentralEurope';
-							$use_iconv = true;
-							break;
-
-						// MacCroatian (Mac OS Classic)
-						case 'maccroatian':
-							$encoding = 'MacCroatian';
-							$use_iconv = true;
-							break;
-
-						// MacCyrillic (Mac OS Classic)
-						case 'maccyrillic':
-							$encoding = 'MacCyrillic';
-							$use_iconv = true;
-							break;
-
-						// MacGreek (Mac OS Classic)
-						case 'macgreek':
-							$encoding = 'MacGreek';
-							$use_iconv = true;
-							break;
-
-						// MacHebrew (Mac OS Classic)
-						case 'machebrew':
-							$encoding = 'MacHebrew';
-							$use_iconv = true;
-							break;
-
-						// MacIceland (Mac OS Classic)
-						case 'maciceland':
-							$encoding = 'MacIceland';
-							$use_iconv = true;
-							break;
-
-						// MacRoman (Mac OS Classic)
-						case 'macroman':
-							$encoding = 'MacRoman';
-							$use_iconv = true;
-							break;
-
-						// MacRomania (Mac OS Classic)
-						case 'macromania':
-							$encoding = 'MacRomania';
-							$use_iconv = true;
-							break;
-
-						// MacThai (Mac OS Classic)
-						case 'macthai':
-							$encoding = 'MacThai';
-							$use_iconv = true;
-							break;
-
-						// MacTurkish (Mac OS Classic)
-						case 'macturkish':
-							$encoding = 'MacTurkish';
-							$use_iconv = true;
-							break;
-
-						// MacUkraine (Mac OS Classic)
-						case 'macukraine':
-							$encoding = 'MacUkraine';
-							$use_iconv = true;
-							break;
-
-						// MuleLao-1
-						case 'mulelao-1':
-						case 'mulelao1':
-							$encoding = 'MuleLao-1';
-							$use_iconv = true;
-							break;
-
-						// Shift_JIS
-						case 'shift_jis':
-						case 'sjis':
-						case '932':
-							$encoding = 'Shift_JIS';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// Shift_JISX0213
-						case 'shift-jisx0213':
-						case 'shiftjisx0213':
-							$encoding = 'Shift_JISX0213';
-							$use_iconv = true;
-							break;
-
-						// SJIS-win
-						case 'sjis-win':
-						case 'sjiswin':
-						case 'shift_jis-win':
-							$encoding = 'SJIS-win';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// TCVN - Vietnamese
-						case 'tcvn':
-							$encoding = 'TCVN';
-							$use_iconv = true;
-							break;
-
-						// TDS565 - Turkish
-						case 'tds565':
-							$encoding = 'TDS565';
-							$use_iconv = true;
-							break;
-
-						// TIS-620 Thai
-						case 'tis-620':
-						case 'tis620':
-							$encoding = 'TIS-620';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-2
-						case 'ucs-2':
-						case 'ucs2':
-						case 'utf-16':
-						case 'utf16':
-							$encoding = 'UCS-2';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-2BE
-						case 'ucs-2be':
-						case 'ucs2be':
-						case 'utf-16be':
-						case 'utf16be':
-							$encoding = 'UCS-2BE';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-2LE
-						case 'ucs-2le':
-						case 'ucs2le':
-						case 'utf-16le':
-						case 'utf16le':
-							$encoding = 'UCS-2LE';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-2-INTERNAL
-						case 'ucs-2-internal':
-						case 'ucs2internal':
-							$encoding = 'UCS-2-INTERNAL';
-							$use_iconv = true;
-							break;
-
-						// UCS-4
-						case 'ucs-4':
-						case 'ucs4':
-						case 'utf-32':
-						case 'utf32':
-							$encoding = 'UCS-4';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-4BE
-						case 'ucs-4be':
-						case 'ucs4be':
-						case 'utf-32be':
-						case 'utf32be':
-							$encoding = 'UCS-4BE';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-4LE
-						case 'ucs-4le':
-						case 'ucs4le':
-						case 'utf-32le':
-						case 'utf32le':
-							$encoding = 'UCS-4LE';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-4-INTERNAL
-						case 'ucs-4-internal':
-						case 'ucs4internal':
-							$encoding = 'UCS-4-INTERNAL';
-							$use_iconv = true;
-							break;
-
-						// UCS-16
-						case 'ucs-16':
-						case 'ucs16':
-							$encoding = 'UCS-16';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-16BE
-						case 'ucs-16be':
-						case 'ucs16be':
-							$encoding = 'UCS-16BE';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-16LE
-						case 'ucs-16le':
-						case 'ucs16le':
-							$encoding = 'UCS-16LE';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-32
-						case 'ucs-32':
-						case 'ucs32':
-							$encoding = 'UCS-32';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-32BE
-						case 'ucs-32be':
-						case 'ucs32be':
-							$encoding = 'UCS-32BE';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UCS-32LE
-						case 'ucs-32le':
-						case 'ucs32le':
-							$encoding = 'UCS-32LE';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UTF-7
-						case 'utf-7':
-						case 'utf7':
-							$encoding = 'UTF-7';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// UTF7-IMAP
-						case 'utf-7-imap':
-						case 'utf7-imap':
-						case 'utf7imap':
-							$encoding = 'UTF7-IMAP';
-							$use_mbstring = true;
-							break;
-
-						// VISCII - Vietnamese ASCII
-						case 'viscii':
-							$encoding = 'VISCII';
-							$use_iconv = true;
-							break;
-
-						// Windows-specific Central & Eastern Europe
-						case 'cp1250':
-						case 'windows-1250':
-						case 'win-1250':
-						case '1250':
-							$encoding = 'Windows-1250';
-							$use_iconv = true;
-							break;
-
-						// Windows-specific Cyrillic
-						case 'cp1251':
-						case 'windows-1251':
-						case 'win-1251':
-						case '1251':
-							$encoding = 'Windows-1251';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// Windows-specific Western Europe
-						case 'cp1252':
-						case 'windows-1252':
-						case '1252':
-							$encoding = 'Windows-1252';
-							$use_iconv = true;
-							$use_mbstring = true;
-							break;
-
-						// Windows-specific Greek
-						case 'cp1253':
-						case 'windows-1253':
-						case '1253':
-							$encoding = 'Windows-1253';
-							$use_iconv = true;
-							break;
-
-						// Windows-specific Turkish
-						case 'cp1254':
-						case 'windows-1254':
-						case '1254':
-							$encoding = 'Windows-1254';
-							$use_iconv = true;
-							break;
-
-						// Windows-specific Hebrew
-						case 'cp1255':
-						case 'windows-1255':
-						case '1255':
-							$encoding = 'Windows-1255';
-							$use_iconv = true;
-							break;
-
-						// Windows-specific Arabic
-						case 'cp1256':
-						case 'windows-1256':
-						case '1256':
-							$encoding = 'Windows-1256';
-							$use_iconv = true;
-							break;
-
-						// Windows-specific Baltic
-						case 'cp1257':
-						case 'windows-1257':
-						case '1257':
-							$encoding = 'Windows-1257';
-							$use_iconv = true;
-							break;
-
-						// Windows-specific Vietnamese
-						case 'cp1258':
-						case 'windows-1258':
-						case '1258':
-							$encoding = 'Windows-1258';
-							$use_iconv = true;
-							break;
-
-						// Default to UTF-8
-						default:
-							$encoding = 'UTF-8';
-							break;
-					}
-				} else {
-					$mp_rss = preg_replace ('/<\?xml(.*)( standalone="no")(.*)\?>/msiU', '<?xml\\1\\3?>', $mp_rss, 1);
-					$mp_rss = preg_replace ('/<\?xml(.*)\?>/msiU', '<?xml\\1 encoding="UTF-8"?>', $mp_rss, 1);
-					preg_match('/encoding=["|\'](.*)["|\']/Ui', $mp_rss, $match);
-					$use_iconv = false;
-					$use_mbstring = false;
-					$utf8_fail = false;
-					$encoding = 'UTF-8';
-				}
-				$this->encoding = $encoding;
-
-				// If function is available and able, convert characters to UTF-8, and overwrite $this->encoding
-				if (function_exists('iconv') && $use_iconv && iconv($encoding, 'UTF-8', $mp_rss)) {
-					$mp_rss = iconv($encoding, 'UTF-8//TRANSLIT', $mp_rss);
-					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
-					$this->encoding = 'UTF-8';
-				}
-				else if (function_exists('mb_convert_encoding') && $use_mbstring) {
-					$mp_rss = mb_convert_encoding($mp_rss, 'UTF-8', $encoding);
-					$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
-					$this->encoding = 'UTF-8';
-				}
-				else if (($use_mbstring || $use_iconv) && $utf8_fail) {
-						$this->encoding = 'UTF-8';
-						$mp_rss = str_replace ($match[0], 'encoding="UTF-8"', $mp_rss);
-				}
-				$mp_rss = preg_replace('/<(.*)>[\s]*<\!\[CDATA\[/msiU', '<\\1 spencoded="false"><![CDATA[', $mp_rss); // Add an internal attribute to CDATA sections
-				$mp_rss = str_replace(']] spencoded="false">', ']]>', $mp_rss); // Remove it when we're on the end of a CDATA block (therefore making it ill-formed)
-
-				// If we're RSS
-				if (preg_match('/<rdf:rdf/i', $mp_rss) || preg_match('/<rss/i', $mp_rss)) {
-					$sp_elements = array(
-						'author',
-						'link',
-					);
-				// Or if we're Atom
-				} else {
-					$sp_elements = array(
-						'content',
-						'copyright',
-						'name',
-						'subtitle',
-						'summary',
-						'tagline',
-						'title',
-					);
-				}
-				foreach ($sp_elements as $full) {
-					// The (<\!\[CDATA\[)? never matches any CDATA block, therefore the CDATA gets added, but never replaced
-					$mp_rss = preg_replace("/<$full(.*)>[\s]*(<\!\[CDATA\[)?(.*)(]]>)?[\s]*<\/$full>/msiU", "<$full\\1><![CDATA[\\3]]></$full>", $mp_rss);
-					// The following line is a work-around for the above bug
-					$mp_rss = preg_replace("/<$full(.*)><\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU", "<$full\\1><![CDATA[", $mp_rss);
-					// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
-					$mp_rss = preg_replace_callback("/<($full)(.*)><!\[CDATA\[(.*)\]\]><\/$full>/msiU", array(&$this, 'cdata_in_cdata'), $mp_rss);
-				}
-
-				// If XML Dump is enabled, send feed to the page and quit.
-				if ($this->xml_dump) {
-					header("Content-type: text/xml; charset=" . $this->encoding);
-					echo $mp_rss;
-					exit;
-				}
-
-				$this->xml = xml_parser_create_ns($this->encoding);
-				$this->namespaces = array('xml' => 'HTTP://WWW.W3.ORG/XML/1998/NAMESPACE', 'atom' => 'ATOM', 'rss2' => 'RSS', 'rdf' => 'RDF', 'rss1' => 'RSS', 'dc' => 'DC', 'xhtml' => 'XHTML', 'content' => 'CONTENT');
-				xml_parser_set_option($this->xml, XML_OPTION_SKIP_WHITE, 1);
-				xml_set_object($this->xml, $this);
-				xml_set_character_data_handler($this->xml, 'dataHandler');
-				xml_set_element_handler($this->xml, 'startHandler', 'endHandler');
-				xml_set_start_namespace_decl_handler($this->xml, 'startNameSpace');
-				xml_set_end_namespace_decl_handler($this->xml, 'endNameSpace');
-				if (xml_parse($this->xml, $mp_rss))
-				{
-					unset($mp_rss);
-					xml_parser_free($this->xml);
-					$this->parse_xml_data_array();
-					$this->data['feedinfo']['encoding'] = $this->encoding;
-					if ($this->order_by_date && !empty($this->data['items'])) {
-						$do_sort = true;
-						foreach($this->data['items'] as $item) {
-							if (is_null($item->date)) {
-								$do_sort = false;
-								break;
-							}
-						}
-						if ($do_sort) {
-							usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
-						}
-					}
-					if ($this->caching && substr($this->rss_url, 0, 7) == 'http://') {
-						if ($this->is_writeable_createable($cache_filename)) {
-							$fp = fopen($cache_filename, 'w');
-							fwrite($fp, serialize($this->data));
-							fclose($fp);
-						}
-						else trigger_error("$cache_filename is not writeable", E_USER_WARNING);
-					}
-					return true;
-				}
 				else
 				{
-					$this->sp_error(sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->xml)), xml_get_current_line_number($this->xml), xml_get_current_column_number($this->xml)), E_USER_WARNING, __FILE__, __LINE__);
-					xml_parser_free($this->xml);
-					$this->data = array();
-					return false;
+					$this->error = "A feed could not be found at $this->rss_url";
+					SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
 				}
 			}
+			
+			$headers = $file->headers();
+			$data = trim($file->body());
+			$file->close();
+			unset($file);
+			
+			if (!empty($headers['content-type']) && preg_match('/charset=(.*)/i', $headers['content-type'], $charset))
+			{
+				$encoding = SimplePie_Misc::encoding($charset[1]);
+			}
+			else if (preg_match('/<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding=["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
+			{
+				$encoding = SimplePie_Misc::encoding($encoding[1]);
+			}
+			else
+			{
+				$encoding = SimplePie_Misc::encoding(null);
+			}
+			
+			if (function_exists('iconv') && $encoding['use_iconv'] && iconv($encoding, 'UTF-8//TRANSLIT', $data))
+			{
+				$data = iconv($encoding['encoding'], 'UTF-8//TRANSLIT', $data);
+				$encoding['encoding'] = 'UTF-8';
+			}
+			else if (function_exists('iconv') && $encoding['use_iconv'] && iconv($encoding, 'UTF-8', $data))
+			{
+				$data = iconv($encoding['encoding'], 'UTF-8', $data);
+				$encoding['encoding'] = 'UTF-8';
+			}
+			else if (function_exists('mb_convert_encoding') && $encoding['use_mbstring'])
+			{
+				$data = mb_convert_encoding($data, 'UTF-8', $encoding['encoding']);
+				$encoding['encoding'] = 'UTF-8';
+			}
+			else if ($encoding['encoding'] == 'ISO-8859-1')
+			{
+				$data = utf8_encode($data);
+				$encoding['encoding'] = 'UTF-8';
+			}
+			else
+			{
+				$encoding['encoding'] = 'UTF-8';
+			}
+			
+			$data = new SimplePie_Parser($data, 'UTF-8', $this->xml_dump);
+			if ($this->xml_dump)
+			{
+				header('Content-type: text/xml; charset=UTF-8');
+				echo $data->data;
+				exit;
+			}
+			else if (!$data->error_code)
+			{
+				$this->sanitize->parse_data_array($data->data);
+				unset($data);
+				$this->data['feedinfo'] = $this->sanitize->feedinfo;
+				$this->data['info'] = $this->sanitize->info;
+				$this->data['items'] = $this->sanitize->items;
+				unset($this->sanitize);
+				$this->data['feedinfo']['encoding'] = 'UTF-8';
+				if (!empty($headers['last-modified']))
+				{
+					$this->data['last-modified'] = $headers['last-modified'];
+				}
+				if (!empty($headers['etag']))
+				{
+					$this->data['etag'] = $headers['etag'];
+				}
+				if ($this->order_by_date && !empty($this->data['items']))
+				{
+					$do_sort = true;
+					foreach ($this->data['items'] as $item)
+					{
+						if (!isset($item->date))
+						{
+							$do_sort = false;
+							break;
+						}
+					}
+					if ($do_sort)
+					{
+						usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
+					}
+				}
+				if ($cache && !$cache->save($this->data))
+				{
+					$this->error = "$cache->name is not writeable";
+					SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+				}
+			}
+			else
+			{
+				$this->error = "XML error: $data->error_string at line $data->current_line, column $data->current_column";
+				SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+			}
 		}
-		else {
+	}
+	
+	function get_encoding()
+	{
+		if (!empty($this->data['feedinfo']['encoding']))
+		{
+			return $this->data['feedinfo']['encoding'];
+		}
+		else
+		{
 			return false;
 		}
 	}
-
-
-
-
-	/****************************************************
-	SIMPLEPIE ERROR (internal function)
-	****************************************************/
-	function sp_error($message, $level, $file, $line) {
-		$this->error = $message;
-		switch ($level) {
-			case E_USER_ERROR:
-				$note = 'PHP Error';
-				break;
-			case E_USER_WARNING:
-				$note = 'PHP Warning';
-				break;
-			case E_USER_NOTICE:
-				$note = 'PHP Notice';
-				break;
-			default:
-				$note = 'Unknown Error';
-				break;
+	
+	function handle_content_type($mime='text/html')
+	{
+		if (!headers_sent())
+		{
+			$header = "Content-type: $mime;";
+			if ($this->get_encoding())
+			{
+				$header .= ' charset=' . $this->get_encoding();
+			}
+			header($header);
 		}
-		error_log("$note: $message in $file on line $line", 0);
-	}
-
-
-
-
-	/****************************************************
-	GET FEED ENCODING
-	****************************************************/
-	function get_encoding() {
-		if (isset($this->encoding)) {
-			return $this->encoding;
-		} else if (isset($this->data['feedinfo']['encoding'])) {
-			return $this->data['feedinfo']['encoding'];
-		} else return false;
-	}
-
-	function handle_content_type($mime='text/html') {
-		if (!headers_sent() && $this->get_encoding()) header('Content-type: ' . $mime . '; charset=' . $this->get_encoding());
-	}
-
-
-
-
-	/****************************************************
-	GET FEED VERSION NUMBER
-	****************************************************/
-	function get_version() {
-		if (isset($this->data['feedinfo'])) {
-			return (isset($this->data['feedinfo']['version'])) ? $this->data['feedinfo']['type'] . ' ' . $this->data['feedinfo']['version'] : $this->data['feedinfo']['type'];
-		}
-		else return false;
-	}
-
-
-
-
-	/****************************************************
-	SUBSCRIPTION URLS
-	This allows people to subscribe to the feed in various services.
-	****************************************************/
-	function subscribe_url() {
-		return (empty($this->rss_url)) ? false : $this->fix_protocol($this->rss_url, 1);
-	}
-
-	function subscribe_feed() {
-		return (empty($this->rss_url)) ? false : $this->fix_protocol($this->rss_url, 2);
-	}
-
-	function subscribe_podcast() {
-		return (empty($this->rss_url)) ? false : $this->fix_protocol($this->rss_url, 3);
-	}
-
-	function subscribe_aol() {
-		return (empty($this->rss_url)) ? false : 'http://feeds.my.aol.com/add.jsp?url=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_bloglines() {
-		return (empty($this->rss_url)) ? false : 'http://www.bloglines.com/sub/' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_google() {
-		return (empty($this->rss_url)) ? false : 'http://fusion.google.com/add?feedurl=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_msn() {
-		return (empty($this->rss_url)) ? false : 'http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=' . rawurlencode($this->subscribe_url()) . '&amp;ru=' . rawurlencode($this->get_feed_link());
-	}
-
-	function subscribe_netvibes() {
-		return (empty($this->rss_url)) ? false : 'http://www.netvibes.com/subscribe.php?url=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_newsburst() {
-		return (empty($this->rss_url)) ? false : 'http://www.newsburst.com/Source/?add=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_newsgator() {
-		return (empty($this->rss_url)) ? false : 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_odeo() {
-		return (empty($this->rss_url)) ? false : 'http://www.odeo.com/listen/subscribe?feed=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_pluck() {
-		return (empty($this->rss_url)) ? false : 'http://client.pluck.com/pluckit/prompt.aspx?GCID=C12286x053&amp;a=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_podnova() {
-		return (empty($this->rss_url)) ? false : 'http://www.podnova.com/index_your_podcasts.srf?action=add&url=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_rojo() {
-		return (empty($this->rss_url)) ? false : 'http://www.rojo.com/add-subscription?resource=' . rawurlencode($this->subscribe_url());
-	}
-
-	function subscribe_yahoo() {
-		return (empty($this->rss_url)) ? false : 'http://add.my.yahoo.com/rss?url=' . rawurlencode($this->subscribe_url());
-	}
-
-
-
-
-	/****************************************************
-	PARSE OUT GENERAL FEED-RELATED DATA
-	****************************************************/
-	// Reads the feed's title
-	function get_feed_title() {
-		return (isset($this->data['info']['title'])) ? $this->data['info']['title'] : false;
-	}
-
-	// Reads the feed's link (URL)
-	function get_feed_link() {
-		return (isset($this->data['info']['link'][0])) ? $this->data['info']['link'][0] : false;
-	}
-
-	// Reads the feed's link (URL)
-	function get_feed_links($key) {
-		return (isset($this->data['info']['link'][$key])) ? $this->data['info']['link'][$key] : false;
-	}
-
-	// Reads the feed's description
-	function get_feed_description() {
-		return (isset($this->data['info']['description'])) ? $this->data['info']['description'] : false;
-	}
-
-	// Reads the feed's copyright information.
-	function get_feed_copyright() {
-		return (isset($this->data['info']['copyright'])) ? $this->data['info']['copyright'] : false;
-	}
-
-	// Reads the feed's language
-	function get_feed_language() {
-		return (isset($this->data['info']['language'])) ? $this->data['info']['language'] : false;
-	}
-
-
-
-
-	/****************************************************
-	PARSE OUT IMAGE-RELATED DATA
-	Apparently Atom doesn't have feed images.
-	****************************************************/
-	// Check if an image element exists (returns true/false)
-	function get_image_exist() {
-		return (isset($this->data['info']['image']['url'])) ? true : false;
-	}
-
-	// Get the image title (to be used in alt and/or title)
-	function get_image_title() {
-		return (isset($this->data['info']['image']['title'])) ? $this->data['info']['image']['title'] : false;
-	}
-
-	// The path to the actual image
-	function get_image_url() {
-		return (isset($this->data['info']['image']['url'])) ? $this->data['info']['image']['url'] : false;
-	}
-
-	// The URL that the image is supposed to link to.
-	function get_image_link() {
-		return (isset($this->data['info']['image']['link'])) ? $this->data['info']['image']['link'] : false;
-	}
-
-	// Get the image width
-	function get_image_width() {
-		return (isset($this->data['info']['image']['width'])) ? $this->data['info']['image']['width'] : false;
-	}
-
-	// Get the image height
-	function get_image_height() {
-		return (isset($this->data['info']['image']['height'])) ? $this->data['info']['image']['height'] : false;
-	}
-
-
-
-
-	/****************************************************
-	PARSE OUT ITEM-RELATED DATA
-	****************************************************/
-	// Get the size of the array of items (for use in a for-loop)
-	function get_item_quantity($max=0) {
-		$qty = (isset($this->data['items'])) ? sizeof($this->data['items']) : 0;
-		if ($max != 0) return ($qty > $max) ? $max : $qty;
-		else return $qty;
 	}
 	
-	function get_item($key) {
-		return $this->data['items'][$key];
+	function get_type()
+	{
+		if (!empty($this->data['feedinfo']['type']))
+		{
+			return $this->data['feedinfo']['type'];
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
-	function get_items($start = 0, $end = 0) {
-		return ($end == 0) ? array_slice($this->data['items'], $start) : array_slice($this->data['items'], $start, $end);
-	}
-
-
-
-
-	/****************************************************
-	FIX PROTOCOL
-	Convert feed:// and no-protocol URL's to http://
-	Feed is allowed to have no protocol.  Local files are toggled in init().
-	This is an internal function and is not intended to be used publically.
-
-	$http=1, http://www.domain.com/feed.xml (absolute)
-	$http=2, feed://www.domain.com/feed.xml (absolute)
-	$http=3, podcast://www.domain.com/feed.xml (absolute)
-	****************************************************/
-	function fix_protocol($url, $http = 1) {
-		$url = preg_replace('/^http:\/\/photocast.mac.com/i', 'http://web.mac.com', $url);
-		$url = preg_replace('/^(p(od)?cast|feed)[:]?[\/]*(http(s)?:\/\/)?/i', 'http://', $url);
-		if (!preg_match('/^http(s)?:\/\//i', $url) && !file_exists($url)) $url = "http://$url";
-
-		if ($http != 1 && strstr($url, 'http://')) {
-			if ($http == 2) {
-				$url = substr_replace($url, 'feed', 0, 4);
-			}
-			else if ($http == 3) {
-				$url = substr_replace($url, 'podcast', 0, 4);
-			}
+	function get_version()
+	{
+		if (!empty($this->data['feedinfo']['version']))
+		{
+			return $this->data['feedinfo']['version'];
 		}
-		return $url;
-	}
-
-
-
-
-	/****************************************************
-	ULTRA-LIBERAL FEED LOCATOR
-	Based upon http://diveintomark.org/archives/2002/08/15/ultraliberal_rss_locator
-	This function enables support for RSS auto-discovery-on-crack.
-	****************************************************/
-	function rss_locator($data, $url) {
-
-		$this->url = $url;
-		$this->parsed_url = parse_url($url);
-		if (!isset($this->parsed_url['path'])) {
-			$this->parsed_url['path'] = '/';
+		else
+		{
+			return false;
 		}
-
-		// Check is the URL we're given is a feed
-		if ($this->is_feed($data, false)) {
+	}
+	
+	function subscribe_url()
+	{
+		if (!empty($this->rss_url))
+		{
+			return $this->rss_url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_feed()
+	{
+		if (!empty($this->rss_url))
+		{
+			return SimplePie_Misc::fix_protocol($this->rss_url, 2);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_outlook()
+	{
+		if (!empty($this->rss_url))
+		{
+			return 'outlook' . SimplePie_Misc::fix_protocol($this->rss_url, 2);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_podcast()
+	{
+		if (!empty($this->rss_url))
+		{
+			return SimplePie_Misc::fix_protocol($this->rss_url, 3);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_aol()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://feeds.my.aol.com/add.jsp?url=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_bloglines()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.bloglines.com/sub/' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_eskobo()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.eskobo.com/?AddToMyPage=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_feedfeeds()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.feedfeeds.com/add?feed=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_feedlounge()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://my.feedlounge.com/external/subscribe?url=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_feedster()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.feedster.com/myfeedster.php?action=addrss&amp;confirm=no&amp;rssurl=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_google()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://fusion.google.com/add?feedurl=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_gritwire()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://my.gritwire.com/feeds/addExternalFeed.aspx?FeedUrl=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_msn()
+	{
+		if ($this->subscribe_url())
+		{
+			$url = 'http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=' . rawurlencode($this->subscribe_url());
+			if ($this->get_feed_link())
+			{
+				$url .= '&amp;ru=' . rawurlencode($this->get_feed_link());
+			}
 			return $url;
 		}
-
-		// Feeds pointed to by LINK tags in the header of the page (autodiscovery)
-		$stage1 = $this->check_link_elements($data);
-		if ($stage1) {
-			return $stage1;
-		}
-
-		// Grab all the links in the page, and put them into two arrays (local, and external)
-		if ($this->get_links($data)) {
-
-			// <A> links to feeds on the same server ending in ".rss", ".rdf", ".xml", or ".atom"
-			$stage2 = $this->check_link_extension($this->local);
-			if ($stage2) {
-				return $stage2;
-			}
-
-			// <A> links to feeds on the same server containing "rss", "rdf", "xml", or "atom"
-			$stage3 = $this->check_link_body($this->local);
-			if ($stage3) {
-				return $stage3;
-			}
-
-			// <A> links to feeds on external servers ending in ".rss", ".rdf", ".xml", or ".atom"
-			$stage4 = $this->check_link_extension($this->elsewhere);
-			if ($stage4) {
-				return $stage4;
-			}
-
-			// <A> links to feeds on external servers containing "rss", "rdf", "xml", or "atom"
-			$stage5 = $this->check_link_body($this->elsewhere);
-			if ($stage5) {
-				return $stage5;
-			}
-		}
-
-		return false;
-	}
-
-	function check_link_elements($data) {
-		if (preg_match_all('/<link (.*)>/siU', $data, $matches)) {
-			foreach($matches[1] as $match) {
-				if (preg_match('/type=[\'|"]?(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)[\'|"]?/iU', $match, $type)) {
-					$href = $this->get_attribute($match, 'href');
-					if (!empty($href[1])) {
-						$href = $this->absolutize_url($href[1], $this->parsed_url);
-						if ($this->is_feed($href)) {
-							return $href;
-						}
-					}
-				}
-			}
-		} else return false;
-	}
-
-	function check_link_extension($array) {
-		foreach ($array as $value) {
-			$parsed = @parse_url($value);
-			if (isset($parsed['path'])) {
-				$ext = strtolower(pathinfo($parsed['path'], PATHINFO_EXTENSION));
-				if (($ext == 'rss' || $ext == 'rdf' || $ext == 'xml' || $ext == 'atom') && $this->is_feed($value)) {
-					return $this->absolutize_url($value, $this->parsed_url);
-				}
-			}
-		}
-		return false;
-	}
-
-	function check_link_body($array) {
-		foreach ($array as $value) {
-			$value2 = @parse_url($value);
-			if (!empty($value2['path'])) {
-				if (strlen(pathinfo($value2['path'], PATHINFO_EXTENSION)) > 0) {
-					$value3 = substr_replace($value, '', strpos($value, $value2['path'])+strpos($value2['path'], pathinfo($value2['path'], PATHINFO_EXTENSION))-1, strlen(pathinfo($value2['path'], PATHINFO_EXTENSION))+1);
-				} else {
-					$value3 = $value;
-				}
-				if ((stristr($value3, 'rss') || stristr($value3, 'rdf') || stristr($value3, 'xml') || stristr($value3, 'atom') || stristr($value3, 'feed')) && $this->is_feed($value)) {
-					return $this->absolutize_url($value, $this->parsed_url);
-				}
-			}
-		}
-		return false;
-	}
-
-	function get_links($data) {
-		if (preg_match_all('/href="(.*)"/iU', $data, $matches)) {
-			$this->parse_links($matches);
-		}
-		if (preg_match_all('/href=\'(.*)\'/iU', $data, $matches)) {
-			$this->parse_links($matches);
-		}
-		if (preg_match_all('/href=(.*)[ |\/|>]/iU', $data, $matches)) {
-			foreach ($matches[1] as $key => $value) {
-				if (substr($value, 0, 1) == '"' || substr($value, 0, 1) == "'") {
-					unset($matches[1][$key]);
-				}
-			}
-			$this->parse_links($matches);
-		}
-		if (!empty($this->local) || !empty($this->elsewhere)) {
-			$this->local = array_unique($this->local);
-			$this->elsewhere = array_unique($this->elsewhere);
-			return true;
-		} else return false;
-	}
-
-	function parse_links($matches) {
-		foreach ($matches[1] as $match) {
-			if (strtolower(substr($match, 0, 11)) != 'javascript:') {
-				$parsed = @parse_url($match);
-				if (!isset($parsed['host']) || $parsed['host'] == $this->parsed_url['host']) {
-					$this->local[] = $this->absolutize_url($match, $this->parsed_url);
-				} else {
-					$this->elsewhere[] = $this->absolutize_url($match, $this->parsed_url);
-				}
-			}
-		}
-	}
-
-	function is_feed($data, $is_url = true) {
-		if ($is_url) {
-			$data = $this->get_file($data);
-		}
-		if (((stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $data)) && (preg_match('/<([a-z0-9]+\:)?channel/mi', $data) || preg_match('/<([a-z0-9]+\:)?item/mi', $data))) || (preg_match('/<([a-z0-9]+\:)?feed/mi', $data) && (preg_match('/<([a-z0-9]+\:)?author/mi', $data) || preg_match('/<([a-z0-9]+\:)?entry/mi', $data)))) {
-			return true;
-		} else {
+		else
+		{
 			return false;
 		}
 	}
-
-	function absolutize_url($href, $location) {
-		@$href_parts = parse_url($href);
-		if (!empty($href_parts['scheme'])) {
-			return $href;
-		} else {
-			if (isset($location['host'])) {
-				$full_url = $location['scheme'] . '://' . $location['host'];
-			} else {
-				$full_url = '';
-			}
-			if (isset($location['port'])) {
-				$full_url .= ':' . $location['port'];
-			}
-			if (!empty($href_parts['path'])) {
-				if (substr($href_parts['path'], 0, 1) == '/') {
-					$full_url .= $href_parts['path'];
-				} else if (!empty($location['path'])) {
-					$full_url .= dirname($location['path'] . 'a') . '/' . $href_parts['path'];
-				} else {
-					$full_url .= $href_parts['path'];
-				}
-			} else if (!empty($location['path'])) {
-				$full_url .= $location['path'];
-			} else {
-				$full_url .= '/';
-			}
-			if (!empty($href_parts['query'])) {
-				$full_url .= '?' . $href_parts['query'];
-			} else if (!empty($location['query'])) {
-				$full_url .= '?' . $location['query'];
-			}
-			if (!empty($href_parts['fragment'])) {
-				$full_url .= '#' . $href_parts['fragment'];
-			} else if (!empty($location['fragment'])) {
-				$full_url .= '#' . $location['fragment'];
-			}
-			return $full_url;
-		}
-	}
-
-
-
-
-	/****************************************************
-	DISPLAY IMAGES
-	Some websites have a setting that blocks images from being loaded 
-	into other pages.  This gets around those blocks by spoofing the referrer.
-	****************************************************/
-	function display_image($image_url) {
-		$image = $this->get_file(urldecode($image_url));
-		$suffix = pathinfo($image_url, PATHINFO_EXTENSION);
-
-		switch($suffix) {
-			case 'bmp':
-				$mime='image/bmp';
-				break;
-			case 'gif':
-				$mime='image/gif';
-				break;
-			case 'ico':
-				$mime='image/icon';
-				break;
-			case 'jpe':
-			case 'jpg':
-			case 'jpeg':
-				$mime='image/jpeg';
-				break;
-			case 'jfif':
-				$mime='image/pipeg';
-				break;
-			case 'png':
-				$mime='image/png';
-				break;
-			case 'tif':
-			case 'tiff':
-				$mime='image/tiff';
-				break;
-			default:
-				$mime='image';
-		}
-
-		header('Content-type: ' . $mime);
-		echo $image;
-		//echo $image_url;
-		exit;
-	}
-
-
-
-
-	/****************************************************
-	DELETE OUTDATED CACHE FILES
-	Copyright 2004 by "adam at roomvoter dot com". This material 
-	may be distributed only subject to the terms and conditions set 
-	forth in the Open Publication License, v1.0 or later (the latest 
-	version is presently available at http://www.opencontent.org/openpub/).
-	This function deletes cache files that have not been used in a hour.
-	****************************************************/
-	function clear_cache($path, $max_minutes=60) {
-		if (is_dir($path) ) {
-			$handle = opendir($path);
-			while (false !== ($file = readdir($handle))) {
-				if ($file != '.' && $file != '..' && pathinfo($file, PATHINFO_EXTENSION) == 'spc') {
-					$diff = (time() - filemtime("$path/$file"))/60;
-					if ($diff > $max_minutes) unlink("$path/$file");
-				}
-			}
-			closedir($handle);
-		}
-	}
-
-
-
-
-	/****************************************************
-	OPENS A FILE, WITH EITHER FOPEN OR CURL
-	****************************************************/
-	function get_file($url) {
-		if (isset($this->enable_idn) && $this->enable_idn) {
-			if (class_exists('idna_convert')) {
-				$IDN = new idna_convert();
-				$url = $IDN->encode($url);
-			}
-		}
-
-		if ((substr($url, 0, 7) == 'http://' || substr($url, 0, 8) == 'https://') && extension_loaded('curl')) {
-			$gch = curl_init();
-			curl_setopt ($gch, CURLOPT_URL, $url);
-			curl_setopt ($gch, CURLOPT_HEADER, 0);
-			curl_setopt ($gch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt ($gch, CURLOPT_TIMEOUT, 10);
-			curl_setopt ($gch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt ($gch, CURLOPT_REFERER, $url);
-			curl_setopt ($gch, CURLOPT_USERAGENT, $this->useragent);
-			$data = curl_exec ($gch);
-			curl_close ($gch);
-		} else {
-			$old_ua='';
-			if (function_exists('ini_get')) $old_ua = ini_get('user_agent');
-			if (function_exists('ini_set')) ini_set('user_agent', $this->useragent);
-			if ($fp = fopen($url, 'r')) {
-				stream_set_blocking($fp, false);
-				stream_set_timeout($fp, 10);
-				$status = socket_get_status($fp);
-				$data = '';
-				while (!feof($fp) && !$status['timed_out'])	{
-					$data .= fread($fp, 2048);
-					$status = socket_get_status($fp);
-				}
-				if ($status['timed_out'])
-					return false;
-				fclose($fp);
-			} else return false;
-			if (function_exists('ini_set')) ini_set('user_agent', $old_ua);
-		}
-		return $data;
-	}
-
-
-
-
-	/****************************************************
-	CHECKS IF A FILE IS WRITEABLE, OR CREATEABLE
-	****************************************************/
-	function is_writeable_createable($file) {
-		if (file_exists($file))
-			return is_writeable($file);
-		else
-			return is_writeable(dirname($file));
-	}
-
-
-
-
-	/****************************************************
-	GET ATTRIBUTE
-	****************************************************/
-	function get_attribute($data, $attribute_name) {
-		if (preg_match("/$attribute_name='(.*)'/iU", $data, $match)) {
-			return $match;
-		} else if (preg_match("/$attribute_name=\"(.*)\"/iU", $data, $match)) {
-			return $match;
-		} else if (preg_match("/$attribute_name=(.*)[ |\/|>]/iU", $data, $match)) {
-			return $match;
-		}
-	}
-
-
-
-
-	/****************************************************
-	CALLBACK FUNCTION TO DEAL WITH CDATA WITHIN CDATA
-	****************************************************/
-	function cdata_in_cdata($match) {
-		$match[3] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[3]);
-		return "<$match[1]$match[2]><![CDATA[$match[3]]]></$match[1]>";
-	}
-
-
-
-
-	/****************************************************
-	CALLBACK FUNCTION TO REALLY DEAL WITH CDATA WITHIN CDATA
-	****************************************************/
-	function real_cdata_in_cdata($match) {
-		return htmlentities($match[1], ENT_NOQUOTES, $this->encoding);
-	}
-
-
-
-
-	/****************************************************
-	ADD DATA TO XMLDATA
-	****************************************************/
-	function do_add_content(&$array, $data) {
-		if ($this->is_first) {
-			$array['data'] = $data;
-			$array['attribs'] = $this->attribs;
-		} else $array['data'] .= $data;
-	}
-
-
-
-
-	/****************************************************
-	PARSE XMLDATA
-	****************************************************/
-	function parse_xml_data_array() {
-		// Feed level xml:base
-		if (!empty($this->xmldata['feeddata']['attribs']['XML:BASE'])) {
-			$this->feed_xmlbase = parse_url($this->xmldata['feeddata']['attribs']['XML:BASE']);
-		}
-		else if (!empty($this->xmldata['feeddata']['attribs'][$this->namespaces['xml'] . ':BASE'])) {
-			$this->feed_xmlbase = parse_url($this->xmldata['feeddata']['attribs'][$this->namespaces['xml'] . ':BASE']);
-		}
-		else if (substr($this->rss_url, 0, 28) == 'http://feeds.feedburner.com/' && !empty($this->xmldata['info']['link'][0]['data'])) {
-			$this->feed_xmlbase = parse_url($this->xmldata['info']['link'][0]['data']);
-		} else {
-			$this->feed_xmlbase = $this->parsed_url;
-		}
-		
-		// Feed Info
-		if (isset($this->xmldata['feedinfo']['type'])) {
-			$this->data['feedinfo'] = $this->xmldata['feedinfo'];
-		}
-		
-		// Feed Title
-		if (!empty($this->xmldata['info']['title']['data'])) {
-			$this->data['info']['title'] = $this->sanitise($this->xmldata['info']['title']['data'], $this->xmldata['info']['title']['attribs']);
-		}
-		
-		// Feed Link(s)
-		if (!empty($this->xmldata['info']['link'])) {
-			foreach ($this->xmldata['info']['link'] as $num => $link) {
-				if (empty($link['attribs']['REL']) || $link['attribs']['REL'] == 'alternate') {
-					if (empty($link['data'])) {
-						$this->data['info']['link'][$num] = $this->sanitise($link['attribs']['HREF'], $link['attribs'], true);
-					} else {
-						$this->data['info']['link'][$num] = $this->sanitise($link['data'], $link['attribs'], true);
-					}
-				}
-			}
-		}
-		
-		// Feed Description
-		if (!empty($this->xmldata['info']['description']['data'])) {
-			$this->data['info']['description'] = $this->sanitise($this->xmldata['info']['description']['data'], $this->xmldata['info']['description']['attribs']);
-		}
-		else if (!empty($this->xmldata['info']['dc:description']['data'])) {
-			$this->data['info']['description'] = $this->sanitise($this->xmldata['info']['dc:description']['data'], $this->xmldata['info']['dc:description']['attribs']);
-		}
-		else if (!empty($this->xmldata['info']['tagline']['data'])) {
-			$this->data['info']['description'] = $this->sanitise($this->xmldata['info']['tagline']['data'], $this->xmldata['info']['tagline']['attribs']);
-		}
-		else if (!empty($this->xmldata['info']['subtitle']['data'])) {
-			$this->data['info']['description'] = $this->sanitise($this->xmldata['info']['subtitle']['data'], $this->xmldata['info']['subtitle']['attribs']);
-		}
-		
-		// Feed Language
-		if (!empty($this->xmldata['info']['language']['data'])) {
-			$this->data['info']['language'] = $this->sanitise($this->xmldata['info']['language']['data'], $this->xmldata['info']['language']['attribs']);
-		}
-		
-		// Feed Copyright
-		if (!empty($this->xmldata['info']['copyright']['data'])) {
-			$this->data['info']['copyright'] = $this->sanitise($this->xmldata['info']['copyright']['data'], $this->xmldata['info']['copyright']['attribs']);
-		}
-		
-		// Feed Image
-		if (!empty($this->xmldata['info']['image']['title']['data'])) {
-			$this->data['info']['image']['title'] = $this->sanitise($this->xmldata['info']['image']['title']['data'], $this->xmldata['info']['image']['title']['attribs']);
-		}
-		if (!empty($this->xmldata['info']['image']['url']['data'])) {
-			$this->data['info']['image']['url'] = $this->sanitise($this->xmldata['info']['image']['url']['data'], $this->xmldata['info']['image']['url']['attribs'], true);
-		}
-		else if (!empty($this->xmldata['info']['logo']['data'])) {
-			$this->data['info']['image']['url'] = $this->sanitise($this->xmldata['info']['logo']['data'], $this->xmldata['info']['logo']['attribs'], true);
-		}
-		if (!empty($this->xmldata['info']['image']['link']['data'])) {
-			$this->data['info']['image']['link'] = $this->sanitise($this->xmldata['info']['image']['link']['data'], $this->xmldata['info']['image']['link']['attribs'], true);
-		}
-		if (!empty($this->xmldata['info']['image']['width']['data'])) {
-			$this->data['info']['image']['width'] = $this->sanitise($this->xmldata['info']['image']['width']['data'], $this->xmldata['info']['image']['width']['attribs']);
-		}
-		if (!empty($this->xmldata['info']['image']['height']['data'])) {
-			$this->data['info']['image']['height'] = $this->sanitise($this->xmldata['info']['image']['height']['data'], $this->xmldata['info']['image']['height']['attribs']);
-		}
-		
-		// Items
-		if (!empty($this->xmldata['items'])) {
-			foreach ($this->xmldata['items'] as $num => $item) {
-				// Item level xml:base
-				if (!empty($item['attribs']['XML:BASE'])) {
-					$this->item_xmlbase = parse_url($this->absolutize_url($item['attribs']['XML:BASE'], $this->feed_xmlbase));
-				}
-				else if (!empty($item['attribs'][$this->namespaces['xml'] . ':BASE'])) {
-					$this->item_xmlbase = parse_url($this->absolutize_url($item['attribs'][$this->namespaces['xml'] . ':BASE'], $this->feed_xmlbase));
-				}
-				
-				// Clear vars
-				$id = null;
-				$title = null;
-				$description = null;
-				$categories = array();
-				$author = array();
-				$date = null;
-				$links = array();
-				$enclosures = array();
 	
-				// Title
-				if (!empty($item['title']['data'])) {
-					$title = $this->sanitise($item['title']['data'], $item['title']['attribs']);
-				}
-				else if (!empty($item['dc:title']['data'])) {
-					$title = $this->sanitise($item['dc:title']['data'], $item['dc:title']['attribs']);
-				}
-				
-				// Description
-				if (!empty($item['content']['data'])) {
-					$description = $this->sanitise($item['content']['data'], $item['content']['attribs']);
-				}
-				else if (!empty($item['encoded']['data'])) {
-					$description = $this->sanitise($item['encoded']['data'], $item['encoded']['attribs']);
-				}
-				else if (!empty($item['summary']['data'])) {
-					$description = $this->sanitise($item['summary']['data'], $item['summary']['attribs']);
-				}
-				else if (!empty($item['description']['data'])) {
-					$description = $this->sanitise($item['description']['data'], $item['description']['attribs']);
-				}
-				else if (!empty($item['dc:description']['data'])) {
-					$description = $this->sanitise($item['dc:description']['data'], $item['dc:description']['attribs']);
-				}
-				else if (!empty($item['longdesc']['data'])) {
-					$description = $this->sanitise($item['longdesc']['data'], $item['longdesc']['attribs']);
-				}
-				
-				// Link
-				if (!empty($item['link'])) {
-					foreach ($item['link'] as $link) {
-						if (empty($link['attribs']['REL']) || $link['attribs']['REL'] == 'alternate') {
-							if (empty($link['data'])) {
-								$links[sizeof($links)] = $this->sanitise($link['attribs']['HREF'], $link['attribs'], true);
-							} else {
-								$links[sizeof($links)] = $this->sanitise($link['data'], $link['attribs'], true);
-							}
-						} else if ($link['attribs']['REL'] == 'enclosure' && !empty($link['attribs']['HREF'])) {
-							$href = null;
-							$type = null;
-							$length = null;
-							$href = $this->sanitise($link['attribs']['HREF'], $link['attribs'], true);
-							if (!empty($link['attribs']['TYPE'])) {
-								$type = $this->sanitise($link['attribs']['TYPE'], $link['attribs']);
-							}
-							if (!empty($link['attribs']['LENGTH'])) {
-								$length = $this->sanitise($link['attribs']['LENGTH'], $link['attribs']);
-							}
-							$enclosures[] = new SimplePie_Enclosure($href, $type, $length);
-						}
-					}
-				}
-				
-				// Enclosures
-				if (!empty($item['enclosure'])) {
-					foreach ($item['enclosure'] as $enclosure) {
-						if (!empty($enclosure['attribs']['URL'])) {
-							$href = null;
-							$type = null;
-							$length = null;
-							$href = $this->sanitise($enclosure['attribs']['URL'], $enclosure['attribs'], true);
-							if (!empty($enclosure['attribs']['TYPE'])) {
-								$type = $this->sanitise($enclosure['attribs']['TYPE'], $enclosure['attribs']);
-							}
-							if (!empty($enclosure['attribs']['LENGTH'])) {
-								$length = $this->sanitise($enclosure['attribs']['LENGTH'], $enclosure['attribs']);
-							}
-							$enclosures[] = new SimplePie_Enclosure($href, $type, $length);
-						}
-					}
-				}
-				
-				// ID
-				if (!empty($item['guid']['data'])) {
-					if (empty($item['guid']['attribs']['ISPERMALINK']) || strtolower($item['guid']['attribs']['ISPERMALINK']) != 'false') {
-						$links[sizeof($links)] = $this->sanitise($item['guid']['data'], $item['guid']['attribs']);
-					}
-					$id = $this->sanitise($item['guid']['data'], $item['guid']['attribs']);
-				}
-				else if (!empty($item['id']['data'])) {
-					$id = $this->sanitise($item['id']['data'], $item['id']['attribs']);
-				}
-				
-				// Date
-				if (!empty($item['pubdate']['data'])) {
-					$date = $this->parse_date($this->sanitise($item['pubdate']['data'], $item['pubdate']['attribs']));
-				}
-				else if (!empty($item['dc:date']['data'])) {
-					$date = $this->parse_date($this->sanitise($item['dc:date']['data'], $item['dc:date']['attribs']));
-				}
-				else if (!empty($item['issued']['data'])) {
-					$date = $this->parse_date($this->sanitise($item['issued']['data'], $item['issued']['attribs']));
-				}
-				else if (!empty($item['published']['data'])) {
-					$date = $this->parse_date($this->sanitise($item['published']['data'], $item['published']['attribs']));
-				}
-				else if (!empty($item['modified']['data'])) {
-					$date = $this->parse_date($this->sanitise($item['modified']['data'], $item['modified']['attribs']));
-				}
-				else if (!empty($item['updated']['data'])) {
-					$date = $this->parse_date($this->sanitise($item['updated']['data'], $item['updated']['attribs']));
-				}
-				
-				// Categories
-				if (!empty($item['category'])) {
-					foreach ($item['category'] as $category) {
-						$categories[sizeof($categories)] = $this->sanitise($category['data'], $category['attribs']);
-					}
-				}
-				if (!empty($item['subject'])) {
-					foreach ($item['subject'] as $category) {
-						$categories[sizeof($categories)] = $this->sanitise($category['data'], $category['attribs']);
-					}
-				}
-				
-				// Author
-				$authors = array();
-				if (!empty($item['creator'])) {
-					foreach($item['creator'] as $creator) {
-						$authors[] = new SimplePie_Author($this->sanitise($creator['data'], $creator['attribs']), null, null);
-					}
-				}
-				if (!empty($item['author'])) {
-					foreach($item['author'] as $author) {
-						$name = null;
-						$link = null;
-						$email = null;
-						if (!empty($author['name'])) {
-							$name = $this->sanitise($author['name']['data'], $author['name']['attribs']);
-						}
-						if (!empty($author['url'])) {
-							$link = $this->sanitise($author['url']['data'], $author['url']['attribs'], true);
-						}
-						else if (!empty($author['uri'])) {
-							$link = $this->sanitise($author['uri']['data'], $author['uri']['attribs'], true);
-						}
-						else if (!empty($author['homepage'])) {
-							$link = $this->sanitise($author['homepage']['data'], $author['homepage']['attribs'], true);
-						}
-						if (!empty($author['email'])) {
-							$email = $this->sanitise($author['email']['data'], $author['email']['attribs']);
-						}
-						if (!empty($author['rss'])) {
-							$sane = $this->sanitise($author['rss']['data'], $author['rss']['attribs']);
-							if (preg_match('/(.*)@(.*) \((.*)\)/msiU', $sane, $matches)) {
-								$name = trim($matches[3]);
-								$email = trim("$matches[1]@$matches[2]");
-							} else {
-								$email = $sane;
-							}
-						}
-						$authors[] = new SimplePie_Author($name, $link, $email);
-					}
-				}
-				$this->data['items'][] = new SimplePie_Item($id, $title, $description, array_unique($categories), array_unique($authors), $date, array_unique($links), array_unique($enclosures));
-			} // End Items
-		}
-		unset($this->xmldata);
-	} // End parse_xml_data_array();
-	
-	function sanitise($data, $attribs, $is_url = false) {
-		$this->attribs = $attribs;
-		if (isset($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom') {
-			if (!empty($attribs['MODE']) && $attribs['MODE'] == 'base64') {
-				$data = base64_decode($data);
-			} else if ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')) && (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false')) {
-				$data = $this->entities_decode($data);
-			}
-			if (!empty($attribs['TYPE']) && ($attribs['TYPE'] == 'xhtml' || $attribs['TYPE'] == 'application/xhtml+xml')) {
-				if ($this->remove_div) {
-					$data = preg_replace('/<div( .*)?>/msiU', '', strrev(preg_replace('/>vid\/</i', '', strrev($data), 1)), 1);
-				} else {
-					$data = preg_replace('/<div( .*)?>/msiU', '<div>', $data, 1);
-				}
-				$data = preg_replace("/<(\/)?$this->xhtml_prefix:/msiU", '<\\1', $data);
-			}
-		} else {
-			if (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false') {
-				$data = $this->entities_decode($data);
-			}
-		}
-		$data = trim($data);
-		$data = str_replace(' spencoded="false">', '>', $data);
-
-		// Strip out HTML tags and attributes that might cause various security problems.
-		// Based on recommendations by Mark Pilgrim at:
-		// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
-		if ($this->strip_htmltags) {
-			$tags_to_strip = explode(',', $this->strip_htmltags);
-			foreach ($tags_to_strip as $tag) {
-				if ($this->encode_instead_of_strip) {
-					// For encoded angled brackets (do these first)
-					$data = preg_replace('/&lt;(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|%|\/|\.|\?|&|,|#|!|\+|\(|\))*&gt;/i', '&amp;lt;\\0&amp;gt;', $data);
-					$data = str_replace('&amp;lt;&lt;', '&amp;lt;', $data);
-					$data = str_replace('&gt;&amp;gt;', '&amp;gt;', $data);
-
-					// For angled brackets
-					$data = preg_replace('/<(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|%|\/|\.|\?|&|,|#|!|\+|\(|\))*>/i', '&lt;\\0&gt;', $data);
-					$data = str_replace('&lt;<', '&lt;', $data);
-					$data = str_replace('>&gt;', '&gt;', $data);
-				}
-				else {
-					$data = preg_replace('/(&lt;|<)(!)?(\/)?'. trim($tag) .'(\w|\s|=|-|"|\'|&quot;|:|;|%|\/|\.|\?|&|,|#|!|\+|\(|\))*(&gt;|>)/i', '', $data);
-				}
-			}
-		}
-
-		if ($this->strip_attributes) {
-			$attribs_to_strip = explode(',', $this->strip_attributes);
-			foreach ($attribs_to_strip as $attrib) {
-				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;)(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;|<|>|\+|{|})*("|&quot;)/i', '', $data);
-				$data = preg_replace('/ '. trim($attrib) .'=(\'|&apos;)(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|"|&quot;|<|>|\+|{|})*(\'|&apos;)/i', '', $data);
-				$data = preg_replace('/ '. trim($attrib) .'=(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\+|{|})*/i', '', $data);
-			}
-		}
-
-		// Replace H1, H2, and H3 tags with the less important H4 tags.
-		// This is because on a site, the more important headers might make sense,
-		// but it most likely doesn't fit in the context of RSS-in-a-webpage.
-		if ($this->replace_headers) {
-			$data = preg_replace('/<h[1-3]( .*)?>/msiU', '<h4>', $data);
-			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
-		}
-
-		// If Strip Ads is enabled, strip them.
-		if ($this->strip_ads) {
-			$data = preg_replace('/(&lt;|<)a(.*)href=(&quot;|")(.*)\\/\/(www\.)?pheedo.com\/(.*).phdo\?s=(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $data); // Pheedo links (tested with Dooce.com)
-			$data = preg_replace('/(&lt;|<)a(\w|\s|\=|&quot;|")*href=(&quot;|")http:\/\/ad.doubleclick.net\/(.*)(&gt;|>)(\s*|.*)((&lt;|<).*(&gt;|>)|.*)(\s*|.*)(&lt;|<)\/a(&gt;|>)/i', '', $data); // Doubleclick links (tested with InfoWorld.com)
-			$data = preg_replace('/(&lt;|<)map(\w|\s|=|-|"|\'|&quot;)*name=(&quot;|\'|")google_ad_map(\w|\s|=|-)*(&quot;|\'|")(\w|\s|=|-|"|\'|&quot;)*(^gt;|>)(.*)(&lt;|<)\/map(&gt;|>)(&lt;|<)img(\w|\s|=|-|"|\'|&quot;)*usemap=(&quot;|\'|")#google_ad_map(\w|\s|=|-)*(&quot;|\'|")(\w|\s|=|-|"|\'|&quot;|:|;|\/|\.|\?|&)*(&gt;|>)/i', '', $data); // Google AdSense for Feeds (tested with tuaw.com).
-			// Feedflare, from Feedburner
-		}
-
-		if ($is_url) {
-			$data = $this->replace_urls($data, true);
-		} else {
-			$data = preg_replace_callback('/<(.+)>/msiU', array(&$this, 'replace_urls'), $data);
-		}
-
-		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
-		if ($this->bypass_image_hotlink != false) {
-			$data = preg_replace_callback('/src=(&quot;|")?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|~|%|\+|@|\'|&apos;)*(&quot;|")?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\'", "", str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0])))))."\"";'), $data);
-			$data = preg_replace_callback('/src=(\'|&apos;)?(\w|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|~|%|\+|@)*(\'|&apos;)?/', create_function('$m', 'return "src=\"".rawurlencode(str_replace("\'", "", str_replace("\"", "", str_replace("src=", "", html_entity_decode($m[0])))))."\"";'), $data);
-
-			if ($this->bypass_image_hotlink_page != false) {
-				$data = preg_replace('/<img(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|"|&apos;|&quot;|~|%|\+|@)*src=(&quot;|")?/i', '\\0'.$this->bypass_image_hotlink_page.'?i=', $data);
-			}
-			else $data = preg_replace('/<img(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|"|&apos;|&quot;|~|%|\+|@)*src=(&quot;|")?/i', '\\0?i=', $data);
-		}
-
-		return $data;
-	}
-	
-	function replace_urls($data, $raw_url = false) {
-		if (!empty($this->attribs['XML:BASE'])) {
-			if (!empty($this->item_xmlbase)) {
-				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $this->item_xmlbase));
-			} else {
-				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs['XML:BASE'], $this->feed_xmlbase));
-			}
-		}
-		else if (!empty($this->attribs[$this->namespaces['xml'] . ':BASE'])) {
-			if (!empty($this->item_xmlbase)) {
-				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs[$this->namespaces['xml'] . ':BASE'], $this->item_xmlbase));
-			} else {
-				$attrib_xmlbase = parse_url($this->absolutize_url($this->attribs[$this->namespaces['xml'] . ':BASE'], $this->feed_xmlbase));
-			}
-		}
-		if (!empty($attrib_xmlbase)) {
-			$xmlbase = $attrib_xmlbase;
-		} else if (!empty($this->item_xmlbase)) {
-			$xmlbase = $this->item_xmlbase;
-		} else {
-			$xmlbase = $this->feed_xmlbase;
-		}
-		if ($raw_url) {
-			return $this->absolutize_url($data, $xmlbase);
-		} else {
-			$attributes = array(
-				'background',
-				'href',
-				'src',
-				'longdesc',
-				'usemap',
-				'codebase',
-				'data',
-				'classid',
-				'cite',
-				'action',
-				'profile',
-				'for'
-			);
-			foreach ($attributes as $attribute) {
-				$attrib = $this->get_attribute($data[0], $attribute);
-				$new_tag = str_replace($attrib[1], $this->absolutize_url($attrib[1], $xmlbase), $attrib[0]);
-				$data[0] = str_replace($attrib[0], $new_tag, $data[0]);
-			}
-			return $data[0];
-		}
-	}
-	
-	function entities_decode($data) {
-		return preg_replace_callback('/&(#)?(x)?([0-9a-z]+);/mi', array(&$this, 'do_entites_decode'), $data);
-	}
-	
-	function do_entites_decode($data)
+	function subscribe_netvibes()
 	{
-		$entity = "&$data[1]$data[2]$data[3];";
-		$entity_html = html_entity_decode($entity, ENT_QUOTES);
-		if ($entity == $entity_html) {
-			return preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $entity);
-		} else {
-			return $entity_html;
+		if ($this->subscribe_url())
+		{
+			return 'http://www.netvibes.com/subscribe.php?url=' . rawurlencode($this->subscribe_url());
 		}
-	}
-
-	/*
-	 * Escape numeric entities
-	 * From a PHP Manual note (on html_entity_decode())
-	 * Copyright (c) 2005 by "php dot net at c dash ovidiu dot tk", 
-	 * "emilianomartinezluque at yahoo dot com" and "hurricane at cyberworldz dot org".
-	 *
-	 * This material may be distributed only subject to the terms and conditions set forth in 
-	 * the Open Publication License, v1.0 or later (the latest version is presently available at 
-	 * http://www.opencontent.org/openpub/).
-	 */
-	function replace_num_entity($ord) {
-		$ord = $ord[1];
-		if (preg_match('/^x([0-9a-f]+)$/i', $ord, $match))
-			$ord = hexdec($match[1]);
 		else
-			$ord = intval($ord);
-		$no_bytes = 0;
-		$byte = array();
-		if ($ord < 128)
-			return chr($ord);
-		if ($ord < 2048)
-			$no_bytes = 2;
-		else if ($ord < 65536)
-			$no_bytes = 3;
-		else if ($ord < 1114112)
-			$no_bytes = 4;
-		else return;
-		switch ($no_bytes) {
-			case 2:
-				$prefix = array(31, 192);
-				break;
-				
-			case 3:
-				$prefix = array(15, 224);
-				break;
-				
-			case 4:
-			$prefix = array(7, 240);
-			break;
-		}
-		for ($i=0; $i < $no_bytes; ++$i)
-			$byte[$no_bytes-$i-1] = (($ord & (63 * pow(2,6*$i))) / pow(2,6*$i)) & 63 | 128;
-		$byte[0] = ($byte[0] & $prefix[0]) | $prefix[1];
-		$ret = '';
-		for ($i=0; $i < $no_bytes; ++$i)
-			$ret .= chr($byte[$i]);
-		return $ret;
-	}
-	
-	function parse_date($date) {
-		if (preg_match('/([0-9]{2,4})-([0-9][0-9])-([0-9][0-9])T([0-9][0-9]):([0-9][0-9]):([0-9][0-9])(\.[0-9][0-9])?Z/i', $date, $matches)) {
-			if (isset($matches[7]) && substr($matches[7], 1) >= 50)
-				$matches[6]++;
-			return strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] -0000");
-		} else if (preg_match('/([0-9]{2,4})-([0-9][0-9])-([0-9][0-9])T([0-9][0-9]):([0-9][0-9]):([0-9][0-9])(\.[0-9][0-9])?(\+|-)([0-9][0-9]):([0-9][0-9])/i', $date, $matches)) {
-			if (isset($matches[7]) && substr($matches[7], 1) >= 50)
-				$matches[6]++;
-			return strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] $matches[8]$matches[9]$matches[10]");
-		} else {
-			return strtotime($date);
-		}
-	}
-
-
-
-
-	/****************************************************
-	FUNCTIONS FOR XML_PARSE
-	****************************************************/
-	function startHandler($parser, $name, $attribs) {
-		$this->tagName = $name;
-		$this->attribs = $attribs;
-		$this->is_first = true;
-		switch ($this->tagName) {
-			case 'ITEM':
-			case $this->namespaces['rss2'] . ':ITEM':
-			case $this->namespaces['rss1'] . ':ITEM':
-			case 'ENTRY':
-			case $this->namespaces['atom'] . ':ENTRY':
-				$this->insideItem = true;
-				$this->do_add_content($this->xmldata['items'][$this->itemNumber], '');
-				break;
-
-			case 'CHANNEL':
-			case $this->namespaces['rss2'] . ':CHANNEL':
-			case $this->namespaces['rss1'] . ':CHANNEL':
-				$this->insideChannel = true;
-				break;
-
-			case 'RSS':
-			case $this->namespaces['rss2'] . ':RSS':
-				$this->xmldata['feedinfo']['type'] = 'RSS';
-				$this->do_add_content($this->xmldata['feeddata'], '');
-				if (!empty($attribs['VERSION'])) {
-					$this->xmldata['feedinfo']['version'] = trim($attribs['VERSION']);
-				}
-				break;
-
-			case $this->namespaces['rdf'] . ':RDF':
-				$this->xmldata['feedinfo']['type'] = 'RSS';
-				$this->do_add_content($this->xmldata['feeddata'], '');
-				$this->xmldata['feedinfo']['version'] = 1;
-				break;
-
-			case 'FEED':
-			case $this->namespaces['atom'] . ':FEED':
-				$this->xmldata['feedinfo']['type'] = 'Atom';
-				$this->do_add_content($this->xmldata['feeddata'], '');
-				if (!empty($attribs['VERSION'])) {
-					$this->xmldata['feedinfo']['version'] = trim($attribs['VERSION']);
-				}
-				break;
-
-			case 'IMAGE':
-			case $this->namespaces['rss2'] . ':IMAGE':
-			case $this->namespaces['rss1'] . ':IMAGE':
-				if ($this->insideChannel) $this->insideImage = true;
-				break;
-		}
-
-		if (isset($this->xmldata['feedinfo']['type']) && $this->xmldata['feedinfo']['type'] == 'Atom') {
-			switch ($this->tagName) {
-				case 'AUTHOR':
-				case $this->namespaces['atom'] . ':AUTHOR':
-					$this->insideAuthor = true;
-					break;
-			}
-		}
-		$this->dataHandler($this->xml, '');
-	}
-
-	function dataHandler($parser, $data) {
-		if ($this->insideItem) {
-			switch ($this->tagName) {
-				case 'TITLE':
-				case $this->namespaces['rss1'] . ':TITLE':
-				case $this->namespaces['rss2'] . ':TITLE':
-				case $this->namespaces['atom'] . ':TITLE':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['title'], $data);
-					break;
-					
-				case $this->namespaces['dc'] . ':TITLE':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['dc:title'], $data);
-					break;
-
-				case 'CONTENT':
-				case $this->namespaces['atom'] . ':CONTENT':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['content'], $data);
-					break;
-
-				case $this->namespaces['content'] . ':ENCODED':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['encoded'], $data);
-					break;
-
-				case 'SUMMARY':
-				case $this->namespaces['atom'] . ':SUMMARY':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['summary'], $data);
-					break;
-
-				case 'LONGDESC':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['longdesc'], $data);
-					break;
-
-				case 'DESCRIPTION':
-				case $this->namespaces['rss1'] . ':DESCRIPTION':
-				case $this->namespaces['rss2'] . ':DESCRIPTION':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['description'], $data);
-					break;
-
-				case $this->namespaces['dc'] . ':DESCRIPTION':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['dc:description'], $data);
-					break;
-
-				case 'LINK':
-				case $this->namespaces['rss1'] . ':LINK':
-				case $this->namespaces['rss2'] . ':LINK':
-				case $this->namespaces['atom'] . ':LINK':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['link'][$this->itemLinkNumber], $data);
-					break;
-					
-				case 'ENCLOSURE':
-				case $this->namespaces['rss1'] . ':ENCLOSURE':
-				case $this->namespaces['rss2'] . ':ENCLOSURE':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['enclosure'][$this->enclosureNumber], $data);
-					break;
-
-				case 'GUID':
-				case $this->namespaces['rss1'] . ':GUID':
-				case $this->namespaces['rss2'] . ':GUID':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['guid'], $data);
-					break;
-
-				case 'ID':
-				case $this->namespaces['atom'] . ':ID':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['id'], $data);
-					break;
-
-				case 'PUBDATE':
-				case $this->namespaces['rss1'] . ':PUBDATE':
-				case $this->namespaces['rss2'] . ':PUBDATE':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['pubdate'], $data);
-					break;
-
-				case $this->namespaces['dc'] . ':DATE':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['dc:date'], $data);
-					break;
-
-				case 'ISSUED':
-				case $this->namespaces['atom'] . ':ISSUED':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['issued'], $data);
-					break;
-
-				case 'PUBLISHED':
-				case $this->namespaces['atom'] . ':PUBLISHED':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['published'], $data);
-					break;
-
-				case 'MODIFIED':
-				case $this->namespaces['atom'] . ':MODIFIED':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['modified'], $data);
-					break;
-
-				case 'UPDATED':
-				case $this->namespaces['atom'] . ':UPDATED':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['updated'], $data);
-					break;
-	
-				case 'CATEGORY':
-				case $this->namespaces['rss1'] . ':CATEGORY':
-				case $this->namespaces['rss2'] . ':CATEGORY':
-				case $this->namespaces['atom'] . ':CATEGORY':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['category'][$this->categoryNumber], $data);
-					break;
-
-				case $this->namespaces['dc'] . ':SUBJECT':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['subject'][$this->categoryNumber], $data);
-					break;
-
-				case $this->namespaces['dc'] . ':CREATOR':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['creator'][$this->authorNumber], $data);
-					break;
-
-				case 'AUTHOR':
-				case $this->namespaces['rss1'] . ':AUTHOR':
-				case $this->namespaces['rss2'] . ':AUTHOR':
-					$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['rss'], $data);
-					break;
-			}
-
-			if ($this->insideAuthor) {
-				switch ($this->tagName) {
-					case 'NAME':
-					case $this->namespaces['atom'] . ':NAME':
-						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['name'], $data);
-						break;
-
-					case 'URL':
-					case $this->namespaces['atom'] . ':URL':
-						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['url'], $data);
-						break;
-
-					case 'URI':
-					case $this->namespaces['atom'] . ':URI':
-						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['uri'], $data);
-						break;
-
-					case 'HOMEPAGE':
-					case $this->namespaces['atom'] . ':HOMEPAGE':
-						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['homepage'], $data);
-						break;
-
-					case 'EMAIL':
-					case $this->namespaces['atom'] . ':EMAIL':
-						$this->do_add_content($this->xmldata['items'][$this->itemNumber]['author'][$this->authorNumber]['email'], $data);
-						break;
-				}
-			}
-		}
-
-		else if (($this->insideChannel && !$this->insideImage) || (isset($this->xmldata['feedinfo']['type']) && $this->xmldata['feedinfo']['type'] == 'Atom')) {
-			switch ($this->tagName) {
-				case 'TITLE':
-				case $this->namespaces['rss1'] . ':TITLE':
-				case $this->namespaces['rss2'] . ':TITLE':
-				case $this->namespaces['atom'] . ':TITLE':
-					$this->do_add_content($this->xmldata['info']['title'], $data);
-					break;
-
-				case 'LINK':
-				case $this->namespaces['rss1'] . ':LINK':
-				case $this->namespaces['rss2'] . ':LINK':
-				case $this->namespaces['atom'] . ':LINK':
-					$this->do_add_content($this->xmldata['info']['link'][$this->linkNumber], $data);
-					break;
-
-				case 'DESCRIPTION':
-				case $this->namespaces['rss1'] . ':DESCRIPTION':
-				case $this->namespaces['rss2'] . ':DESCRIPTION':
-					$this->do_add_content($this->xmldata['info']['description'], $data);
-					break;
-
-				case $this->namespaces['dc'] . ':DESCRIPTION':
-					$this->do_add_content($this->xmldata['info']['dc:description'], $data);
-					break;
-
-				case 'TAGLINE':
-				case $this->namespaces['atom'] . ':TAGLINE':
-					$this->do_add_content($this->xmldata['info']['tagline'], $data);
-					break;
-
-				case 'SUBTITLE':
-				case $this->namespaces['atom'] . ':SUBTITLE':
-					$this->do_add_content($this->xmldata['info']['subtitle'], $data);
-					break;
-
-				case 'COPYRIGHT':
-				case $this->namespaces['rss1'] . ':COPYRIGHT':
-				case $this->namespaces['rss2'] . ':COPYRIGHT':
-				case $this->namespaces['atom'] . ':COPYRIGHT':
-					$this->do_add_content($this->xmldata['info']['copyright'], $data);
-					break;
-
-				case 'LANGUAGE':
-				case $this->namespaces['rss1'] . ':LANGUAGE':
-				case $this->namespaces['rss2'] . ':LANGUAGE':
-					$this->do_add_content($this->xmldata['info']['language'], $data);
-					break;
-				
-				case 'LOGO':
-				case $this->namespaces['atom'] . ':LOGO':
-					$this->do_add_content($this->xmldata['info']['logo'], $data);
-					break;
-				
-			}
-		}
-
-		else if ($this->insideChannel && $this->insideImage) {
-			switch ($this->tagName) {
-				case 'TITLE':
-				case $this->namespaces['rss1'] . ':TITLE':
-				case $this->namespaces['rss2'] . ':TITLE':
-					$this->do_add_content($this->xmldata['info']['image']['title'], $data);
-					break;
-
-				case 'URL':
-				case $this->namespaces['rss1'] . ':URL':
-				case $this->namespaces['rss2'] . ':URL':
-					$this->do_add_content($this->xmldata['info']['image']['url'], $data);
-					break;
-
-				case 'LINK':
-				case $this->namespaces['rss1'] . ':LINK':
-				case $this->namespaces['rss2'] . ':LINK':
-					$this->do_add_content($this->xmldata['info']['image']['link'], $data);
-					break;
-
-				case 'WIDTH':
-				case $this->namespaces['rss1'] . ':WIDTH':
-				case $this->namespaces['rss2'] . ':WIDTH':
-					$this->do_add_content($this->xmldata['info']['image']['width'], $data);
-					break;
-
-				case 'HEIGHT':
-				case $this->namespaces['rss1'] . ':HEIGHT':
-				case $this->namespaces['rss2'] . ':HEIGHT':
-					$this->do_add_content($this->xmldata['info']['image']['height'], $data);
-					break;
-			}
-		}
-		$this->is_first = false;
-	}
-
-	function endHandler($parser, $name) {
-		$this->tagName = '';
-		switch ($name) {
-			case 'ITEM':
-			case $this->namespaces['rss1'] . ':ITEM':
-			case $this->namespaces['rss2'] . ':ITEM':
-			case 'ENTRY':
-			case $this->namespaces['atom'] . ':ENTRY':
-				$this->insideItem = false;
-				$this->itemNumber++;
-				$this->authorNumber = 0;
-				$this->categoryNumber = 0;
-				$this->enclosureNumber = 0;
-				$this->itemLinkNumber = 0;
-				break;
-
-			case 'CHANNEL':
-			case $this->namespaces['rss1'] . ':CHANNEL':
-			case $this->namespaces['rss2'] . ':CHANNEL':
-				$this->insideChannel = false;
-				break;
-
-			case 'IMAGE':
-			case $this->namespaces['rss1'] . ':IMAGE':
-			case $this->namespaces['rss2'] . ':IMAGE':
-				if ($this->insideChannel) $this->insideImage = false;
-				break;
-
-			case 'AUTHOR':
-			case $this->namespaces['rss1'] . ':AUTHOR':
-			case $this->namespaces['rss2'] . ':AUTHOR':
-			case $this->namespaces['atom'] . ':AUTHOR':
-				$this->authorNumber++;
-				if ($this->xmldata['feedinfo']['type'] == 'Atom') $this->insideAuthor = false;
-				break;
-
-			case 'CATEGORY':
-			case $this->namespaces['rss1'] . ':CATEGORY':
-			case $this->namespaces['rss2'] . ':CATEGORY':
-			case $this->namespaces['atom'] . ':CATEGORY':
-			case $this->namespaces['dc'] . ':SUBJECT':
-				$this->categoryNumber++;
-				break;
-			
-			case 'ENCLOSURE':
-			case $this->namespaces['rss1'] . ':ENCLOSURE':
-			case $this->namespaces['rss2'] . ':ENCLOSURE':
-				$this->enclosureNumber++;
-				break;
-				
-			case 'LINK':
-			case $this->namespaces['rss1'] . ':LINK':
-			case $this->namespaces['rss2'] . ':LINK':
-			case $this->namespaces['atom'] . ':LINK':
-				if ($this->insideItem)
-					$this->itemLinkNumber++;
-				else
-					$this->linkNumber++;
-				break;
+		{
+			return false;
 		}
 	}
 	
-	function startNameSpace($parser, $prefix, $uri = null) {
-		$prefix = strtoupper($prefix);
-		$uri = strtoupper($uri);
-		if ($prefix == 'ATOM' || $uri == 'HTTP://WWW.W3.ORG/2005/ATOM' || $uri == 'HTTP://PURL.ORG/ATOM/NS#') {
-			$this->namespaces['atom'] = $uri;
+	function subscribe_newsburst()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.newsburst.com/Source/?add=' . rawurlencode($this->subscribe_url());
 		}
-		else if ($prefix == 'RSS2' || $uri == 'HTTP://BACKEND.USERLAND.COM/RSS2') {
-			$this->namespaces['rss2'] = $uri;
-		}
-		else if ($prefix == 'RDF' || $uri == 'HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#') {
-			$this->namespaces['rdf'] = $uri;
-		}
-		else if ($prefix == 'RSS' || $uri == 'HTTP://PURL.ORG/RSS/1.0/') {
-			$this->namespaces['rss1'] = $uri;
-		}
-		else if ($prefix == 'DC' || $uri == 'HTTP://PURL.ORG/DC/ELEMENTS/1.1/') {
-			$this->namespaces['dc'] = $uri;
-		}
-		else if ($prefix == 'XHTML' || $uri == 'HTTP://WWW.W3.ORG/1999/XHTML') {
-			$this->namespaces['xhtml'] = $uri;
-			$this->xhtml_prefix = $prefix;
-		}
-		else if ($prefix == 'CONTENT' || $uri == 'HTTP://PURL.ORG/RSS/1.0/MODULES/CONTENT/') {
-			$this->namespaces['content'] = $uri;
+		else
+		{
+			return false;
 		}
 	}
 	
-	function endNameSpace($parser, $prefix) {
-		if ($key = array_search(strtoupper($prefix), $this->namespaces)) {
-			if ($key == 'atom') {
-				$this->namespaces['atom'] = 'ATOM';
-			}
-			else if ($key == 'rss2') {
-				$this->namespaces['rss2'] = 'RSS';
-			}
-			else if ($key == 'rdf') {
-				$this->namespaces['rdf'] = 'RDF';
-			}
-			else if ($key == 'rss1') {
-				$this->namespaces['rss1'] = 'RSS';
-			}
-			else if ($key == 'dc') {
-				$this->namespaces['dc'] = 'DC';
-			}
-			else if ($key == 'xhtml') {
-				$this->namespaces['xhtml'] = 'XHTML';
-				$this->xhtml_prefix = 'XHTML';
-			}
-			else if ($key == 'content') {
-				$this->namespaces['content'] = 'CONTENT';
-			}
+	function subscribe_newsgator()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_odeo()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.odeo.com/listen/subscribe?feed=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_pluck()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://client.pluck.com/pluckit/prompt.aspx?GCID=C12286x053&amp;a=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_podnova()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.podnova.com/index_your_podcasts.srf?action=add&amp;url=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_rojo()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://www.rojo.com/add-subscription?resource=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function subscribe_yahoo()
+	{
+		if ($this->subscribe_url())
+		{
+			return 'http://add.my.yahoo.com/rss?url=' . rawurlencode($this->subscribe_url());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_feed_title()
+	{
+		if (!empty($this->data['info']['title']))
+		{
+			return $this->data['info']['title'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_feed_link()
+	{
+		if (!empty($this->data['info']['link']['alternate'][0]))
+		{
+			return $this->data['info']['link']['alternate'][0];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_feed_links()
+	{
+		if (!empty($this->data['info']['link']))
+		{
+			return $this->data['info']['link'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_feed_description()
+	{
+		if (!empty($this->data['info']['description']))
+		{
+			return $this->data['info']['description'];
+		}
+		else if (!empty($this->data['info']['dc:description']))
+		{
+			return $this->data['info']['dc:description'];
+		}
+		else if (!empty($this->data['info']['tagline']))
+		{
+			return $this->data['info']['tagline'];
+		}
+		else if (!empty($this->data['info']['subtitle']))
+		{
+			return $this->data['info']['subtitle'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_feed_copyright()
+	{
+		if (!empty($this->data['info']['copyright']))
+		{
+			return $this->data['info']['copyright'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_feed_language()
+	{
+		if (!empty($this->data['info']['language']))
+		{
+			return $this->data['info']['language'];
+		}
+		else if (!empty($this->data['info']['xml:lang']))
+		{
+			return $this->data['info']['xml:lang'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_image_exist()
+	{
+		if (!empty($this->data['info']['image']['url']) || !empty($this->data['info']['image']['logo']))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_image_title()
+	{
+		if (!empty($this->data['info']['image']['title']))
+		{
+			return $this->data['info']['image']['title'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_image_url()
+	{
+		if (!empty($this->data['info']['image']['url']))
+		{
+			return $this->data['info']['image']['url'];
+		}
+		else if (!empty($this->data['info']['image']['logo']))
+		{
+			return $this->data['info']['image']['logo'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_image_link()
+	{
+		if (!empty($this->data['info']['image']['link']))
+		{
+			return $this->data['info']['image']['link'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_image_width()
+	{
+		if (!empty($this->data['info']['image']['width']))
+		{
+			return $this->data['info']['image']['width'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_image_height()
+	{
+		if (!empty($this->data['info']['image']['height']))
+		{
+			return $this->data['info']['image']['height'];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_item_quantity($max = 0)
+	{
+		if (!empty($this->data['items']))
+		{
+			$qty = sizeof($this->data['items']);
+		}
+		else
+		{
+			$qty = 0;
+		}
+		return ($qty > $max) ? $max : $qty;
+	}
+	
+	function get_item($key)
+	{
+		if (!empty($this->data['items'][$key]))
+		{
+			return $this->data['items'][$key];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function get_items($start = 0, $end = 0)
+	{
+		if ($end == 0)
+		{
+			return array_slice($this->data['items'], $start);
+		}
+		else
+		{
+			return array_slice($this->data['items'], $start, $end);
 		}
 	}
 }
 
 class SimplePie_Item
 {
-	function SimplePie_Item($id, $title, $description, $category, $author, $date, $links, $enclosure) {
-		$this->id = $id;
-		$this->title = $title;
-		$this->description = $description;
-		$this->category = $category;
-		$this->author = $author;
-		$this->date = $date;
-		$this->links = $links;
-		$this->enclosure = $enclosure;
+	var $data;
+	
+	function SimplePie_Item($data)
+	{
+		$this->data =& $data;
 	}
 	
-	/****************************************************
-	PARSE OUT ITEM-RELATED DATA
-	****************************************************/
-	// Get the id of the item
-	function get_id() {
-		return (empty($this->id)) ? false : $this->id;
-	}
-	// Get the title of the item
-	function get_title() {
-		return (empty($this->title)) ? false : $this->title;
-	}
-
-	// Get the description of the item
-	function get_description() {
-		return (empty($this->description)) ? false : $this->description;
-	}
-
-	// Get the category of the item
-	function get_category() {
-		return (empty($this->category)) ? false : $this->category;
-	}
-
-	// Get the author of the item
-	function get_author($key) {
-		return (empty($this->author[$key])) ? false : $this->author[$key];
-	}
-
-	// Get the author of the item
-	function get_authors() {
-		return (empty($this->author)) ? false : $this->author;
-	}
-
-	// Get the date of the item
-	// Also, allow users to set the format of how dates are displayed on a webpage.
-	function get_date($date_format = 'j F Y, g:i a') {
-		return (empty($this->date)) ? false : date($date_format, $this->date);
-	}
-
-	// Get the Permalink of the item
-	function get_permalink() {
-		// If there is a link, take it. Fine.
-		if (!empty($this->links[0])) {
-			return $this->links[0];
+	function get_id()
+	{
+		if (!empty($this->data['guid']['data']))
+		{
+			return $this->data['guid']['data'];
 		}
-
-		// If there isn't, check for an enclosure, if that exists, give that.
-		else if ($this->get_enclosure(0)) {
-			return $this->get_enclosure(0);
+		else if (!empty($this->data['id']))
+		{
+			return $this->data['id'];
 		}
-		else return false;
+		else
+		{
+			return false;
+		}
 	}
 	
-	// Get all links
-	function get_links() {
-		return (empty($this->links)) ? false : $this->links;
+	function get_title()
+	{
+		if (!empty($this->data['title']))
+		{
+			return $this->data['title'];
+		}
+		else if (!empty($this->data['dc:title']))
+		{
+			return $this->data['dc:title'];
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	// Get the enclosure of the item
-	function get_enclosure($key) {
-		return (empty($this->enclosure[$key])) ? false : $this->enclosure[$key];
+	
+	function get_description()
+	{
+		if (!empty($this->data['content']))
+		{
+			return $this->data['content'];
+		}
+		else if (!empty($this->data['encoded']))
+		{
+			return $this->data['encoded'];
+		}
+		else if (!empty($this->data['summary']))
+		{
+			return $this->data['summary'];
+		}
+		else if (!empty($this->data['description']))
+		{
+			return $this->data['description'];
+		}
+		else if (!empty($this->data['dc:description']))
+		{
+			return $this->data['dc:description'];
+		}
+		else if (!empty($this->data['longdesc']))
+		{
+			return $this->data['longdesc'];
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	// Get the enclosure of the item
-	function get_enclosures() {
-		return (empty($this->enclosure)) ? false : $this->enclosure;
+	
+	function get_category($key = null)
+	{
+		if (is_null($key))
+		{
+			return $this->get_categories();
+		}
+		else
+		{
+			$categories = $this->get_categories();
+			if (!empty($categories[$key]))
+			{
+				return $categories[$key];
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
-
-
-
-
-	/****************************************************
-	"ADD TO" LINKS
-	Allows people to easily add news postings to social bookmarking sites.
-	****************************************************/
-	function add_to_blinklist() {
-		return "http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=" . rawurlencode($this->get_permalink()) . "&amp;Title=" . rawurlencode($this->get_title());
+	
+	function get_categories()
+	{
+		$categories = array();
+		if (!empty($this->data['category']))
+		{
+			$categories = array_merge($categories, $this->data['category']);
+		}
+		if (!empty($this->data['subject']))
+		{
+			$categories = array_merge($categories, $this->data['subject']);
+		}
+		if (!empty($categories))
+		{
+			return array_unique($categories);
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	function add_to_delicious() {
-		return "http://del.icio.us/post/?v=3&amp;url=" . rawurlencode($this->get_permalink()) . "&amp;title=" . rawurlencode($this->get_title());
+	
+	function get_author($key)
+	{
+		$authors = $this->get_authors();
+		if (!empty($authors[$key]))
+		{
+			return $authors[$key];
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	function add_to_digg() {
-		return "http://digg.com/submit?phase=2&amp;URL=" . rawurlencode($this->get_permalink());
+	
+	function get_authors()
+	{
+		$authors = array();
+		if (!empty($this->data['author']))
+		{
+			$authors = array_merge($authors, $this->data['author']);
+		}
+		if (!empty($this->data['creator']))
+		{
+			$authors = array_merge($authors, $this->data['creator']);
+		}
+		if (!empty($authors))
+		{
+			return array_unique($authors);
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	function add_to_furl() {
-		return "http://www.furl.net/storeIt.jsp?u=" . rawurlencode($this->get_permalink()) . "&amp;t=" . rawurlencode($this->get_title());
+	
+	function get_date($date_format = 'j F Y, g:i a')
+	{
+		if (!empty($this->data['pubdate']))
+		{
+			return date($date_format, $this->data['pubdate']);
+		}
+		else if (!empty($this->data['dc:date']))
+		{
+			return date($date_format, $this->data['dc:date']);
+		}
+		else if (!empty($this->data['issued']))
+		{
+			return date($date_format, $this->data['issued']);
+		}
+		else if (!empty($this->data['published']))
+		{
+			return date($date_format, $this->data['published']);
+		}
+		else if (!empty($this->data['modified']))
+		{
+			return date($date_format, $this->data['modified']);
+		}
+		else if (!empty($this->data['updated']))
+		{
+			return date($date_format, $this->data['updated']);
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	function add_to_magnolia() {
-		return "http://ma.gnolia.com/bookmarklet/add?url=" . rawurlencode($this->get_permalink()) . "&amp;title=" . rawurlencode($this->get_title());
+	
+	function get_permalink()
+	{
+		$link = $this->get_link(0);
+		$enclosure = $this->get_enclosure(0);
+		if (!empty($link))
+		{
+			return $link;
+		}
+		else if (!empty($enclosure))
+		{
+			return $enclosure->get_link();
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	function add_to_myweb20() {
-		return "http://myweb2.search.yahoo.com/myresults/bookmarklet?u=" . rawurlencode($this->get_permalink()) . "&amp;t=" . rawurlencode($this->get_title());
+	
+	function get_link($key, $rel = 'alternative')
+	{
+		$links = $this->get_links($rel);
+		if (!empty($links[$key]))
+		{
+			return $links[$key];
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	function add_to_newsvine() {
-		return "http://www.newsvine.com/_wine/save?u=" . rawurlencode($this->get_permalink()) . "&amp;h=" . rawurlencode($this->get_title());
+	
+	function get_links($rel = 'alternative')
+	{
+		if (!empty($this->data['link'][$rel]))
+		{
+			return $this->data['link'][$rel];
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	function add_to_reddit() {
-		return 'http://reddit.com/submit?url=' . rawurlencode($this->get_permalink()) . "&amp;title=" . rawurlencode($this->get_title());
+	
+	function get_enclosure($key)
+	{
+		$enclosures = $this->get_enclosures();
+		if (!empty($enclosures[$key]))
+		{
+			return $enclosures[$key];
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-	function add_to_spurl() {
-		return "http://www.spurl.net/spurl.php?v=3&amp;url=" . rawurlencode($this->get_permalink()) . "&amp;title=" . rawurlencode($this->get_title());
+	
+	function get_enclosures()
+	{
+		$enclosures = array();
+		$links = $this->get_links('enclosure');
+		if (!empty($this->data['enclosure']))
+		{
+			$enclosures = array_merge($enclosures, $this->data['enclosure']);
+		}
+		if (!empty($links))
+		{
+			$enclosures = array_merge($enclosures, $links);
+		}
+		if (!empty($enclosures))
+		{
+			return array_unique($enclosures);
+		}
+		else
+		{
+			return false;
+		}
 	}
-
-
-
-
-	/****************************************************
-	SEARCHES
-	Metadata searches
-	****************************************************/
-	function search_technorati() {
-		return 'http://www.technorati.com/search/' . rawurlencode($this->get_permalink());
+	
+	function add_to_blinklist()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;Title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_blogmarks()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://blogmarks.net/my/new.php?mini=1&amp;simple=1&amp;url=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_delicious()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://del.icio.us/post/?v=3&amp;url=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_digg()
+	{
+		if ($this->get_permalink())
+		{
+			return 'http://digg.com/submit?phase=2&amp;URL=' . rawurlencode($this->get_permalink());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_furl()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://www.furl.net/storeIt.jsp?u=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;t=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_magnolia()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://ma.gnolia.com/bookmarklet/add?url=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_myweb20()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;t=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_newsvine()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://www.newsvine.com/_wine/save?u=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;h=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_reddit()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://reddit.com/submit?url=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_segnalo()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://segnalo.com/post.html.php?url=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_simpy()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://www.simpy.com/simpy/LinkAdd.do?href=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_smarking()
+	{
+		if ($this->get_permalink())
+		{
+			return 'http://smarking.com/editbookmark/?url=' . rawurlencode($this->get_permalink());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_spurl()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://www.spurl.net/spurl.php?v=3&amp;url=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function add_to_wists()
+	{
+		if ($this->get_permalink())
+		{
+			$url = 'http://wists.com/r.php?c=&amp;r=' . rawurlencode($this->get_permalink());
+			if ($this->get_title())
+			{
+				$url .= '&amp;title=' . rawurlencode($this->get_title());
+			}
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function search_technorati()
+	{
+		if ($this->get_permalink())
+		{
+			return 'http://www.technorati.com/search/' . rawurlencode($this->get_permalink());
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
 
@@ -3079,6 +1621,2770 @@ class SimplePie_Enclosure
 		else $embed.='<a href="' . $this->link . '" class="' . $altclass . '">' . $alt . '</a>';
 
 		return $embed;
+	}
+}
+
+class SimplePie_File
+{
+	var $url;
+	var $useragent;
+	var $success = true;
+	var $headers = array();
+	var $body;
+	var $fp;
+	var $redirects = 0;
+	
+	function SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null)
+	{
+		$this->url = $url;
+		$this->useragent = $useragent;
+		if (preg_match('/^http(s)?:\/\//i', $url))
+		{
+			if (empty($useragent))
+			{
+				$useragent = ini_get('user_agent');
+				$this->useragent = $useragent;
+			}
+			if (!is_array($headers))
+			{
+				$headers = array();
+			}
+			if (extension_loaded('curl'))
+			{
+				$headers2 = array();
+				foreach ($headers as $key => $value)
+				{
+					$headers2[] = "$key: $value";
+				}
+				$fp = curl_init();
+				curl_setopt($fp, CURLOPT_URL, $url);
+				curl_setopt($fp, CURLOPT_HEADER, 1);
+				curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
+				curl_setopt($fp, CURLOPT_REFERER, $url);
+				curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
+				curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
+				curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
+				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+				if (curl_errno($fp))
+				{
+					$this->success = false;
+					return false;
+				}
+				else
+				{
+					list($this->headers, $this->body) = explode("\r\n\r\n", curl_exec($fp), 2);
+					$this->headers = $this->parse_headers($this->headers);
+				}
+			}
+			else
+			{
+				$url_parts = parse_url($url);
+				if (!isset($url_parts['port']))
+				{
+					$url_parts['port'] = 80;
+				}
+				$this->fp = fsockopen($url_parts['host'], $url_parts['port'], $errno, $errstr, $timeout);
+				if (!$this->fp)
+				{
+					$this->success = false;
+					return false;
+				}
+				else
+				{
+					stream_set_timeout($this->fp, $timeout);
+					$get = (isset($url_parts['query'])) ? "$url_parts[path]?$url_parts[query]" : $url_parts['path'];
+					$out = "GET $get HTTP/1.0\r\n";
+					$out .= "Host: $url_parts[host]\r\n";
+					$out .= "User-Agent: $useragent\r\n";
+					if (!empty($url_parts['user']) && !empty($url_parts['pass']))
+					{
+						$out .= "Authorization: Basic " . base64_encode("$url_parts[user]:$url_parts[pass]") . "\r\n";
+					}
+					foreach ($headers as $key => $value)
+					{
+						$out .= "$key: $value\r\n";
+					}
+					$out .= "Connection: Close\r\n\r\n";
+					fwrite($this->fp, $out);
+					
+					$info = stream_get_meta_data($this->fp);
+					$data = '';
+					while (strpos($data, "\r\n\r\n") === false && $info['timed_out'] === false)
+					{
+						$data .= fgets($this->fp, 128);
+						$info = stream_get_meta_data($this->fp);
+					}
+					$this->headers = $this->parse_headers(substr($data, 0, -4));
+					if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
+					{
+						$this->redirects++;
+						return $this->__construct($this->headers['location'], $timeout, $redirects, $headers, $useragent);
+					}
+				}
+			}
+			return $this->headers['status']['code'];
+		}
+		else
+		{
+			if ($this->fp = fopen($url, 'r'))
+			{
+				return true;
+			}
+			else
+			{
+				$this->success = false;
+				return false;
+			}
+		}
+	}
+	
+	function headers()
+	{
+		return $this->headers;
+	}
+	
+	function body()
+	{
+		if (is_null($this->body))
+		{
+			if (is_null($this->fp))
+			{
+				return false;
+			}
+			else
+			{
+				$this->body = '';
+				while (!feof($this->fp))
+				{
+					$this->body .= fread($this->fp, 1024);
+				}
+				$this->close();
+			}
+		}
+		return $this->body;
+	}
+	
+	function close()
+	{
+		if (!is_null($this->fp))
+		{
+			if (fclose($this->fp))
+			{
+				$this->fp = null;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	function parse_headers($headers)
+	{
+		$headers = explode("\r\n", $headers);
+		$status = array_shift($headers);
+		foreach ($headers as $header)
+		{
+			$data = explode(':', $header, 2);
+			$head[strtolower(trim($data[0]))] = trim($data[1]);
+		}
+		if (preg_match('/HTTP\/[0-9\.]+ ([0-9]+) (.*)/i', $status, $matches))
+		{
+			if (isset($head['status']))
+			{
+				unset($head['status']);
+			}
+			$head['status']['code'] = $matches[1];
+			$head['status']['name'] = $matches[2];
+		}
+		return $head;
+	}
+}
+
+class SimplePie_Cache
+{
+	var $location;
+	var $filename;
+	var $extension;
+	var $name;
+	
+	function SimplePie_Cache($location, $filename, $extension)
+	{
+		$this->location = $location;
+		$this->filename = rawurlencode($filename);
+		$this->extension = rawurlencode($extension);
+		$this->name = "$location/$this->filename.$this->extension";
+	}
+	
+	function save(&$data)
+	{
+		if (file_exists($this->name) && is_writeable($this->name) || file_exists($this->location) && is_writeable($this->location))
+		{
+			$fp = fopen($this->name, 'w');
+			if ($fp)
+			{
+				fwrite($fp, serialize($data));
+				fclose($fp);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function load()
+	{
+		if (file_exists($this->name) && is_readable($this->name))
+		{
+			return unserialize(file_get_contents($this->name));
+		}
+		return false;
+	}
+	
+	function atime()
+	{
+		if (file_exists($this->name))
+		{
+			return fileatime($this->name);
+		}
+		return false;
+	}
+	
+	function ctime()
+	{
+		if (file_exists($this->name))
+		{
+			return filectime($this->name);
+		}
+		return false;
+	}
+	
+	function mtime()
+	{
+		if (file_exists($this->name))
+		{
+			return filemtime($this->name);
+		}
+		return false;
+	}
+	
+	function touch()
+	{
+		if (file_exists($this->name))
+		{
+			return touch($this->name);
+		}
+		return false;
+	}
+	
+	function unlink()
+	{
+		if (file_exists($this->name))
+		{
+			return unlink($this->name);
+		}
+		return false;
+	}
+	
+	function clear($expire)
+	{
+		foreach (glob("$this->location/*.$this->extension") as $file)
+		{
+			if (time() - filemtime($file) > $expire)
+			{
+				unlink($file);
+			}
+		}
+	}
+}
+
+class SimplePie_Misc
+{
+	function absolutize_url($href, $location)
+	{
+		$href_parts = @parse_url($href);
+		if (!empty($href_parts['scheme']))
+		{
+			return $href;
+		}
+		else
+		{
+			if (isset($location['host']))
+			{
+				$full_url = $location['scheme'] . '://' . $location['host'];
+			}
+			else
+			{
+				$full_url = '';
+			}
+			if (isset($location['port']))
+			{
+				$full_url .= ':' . $location['port'];
+			}
+			if (!empty($href_parts['path']))
+			{
+				if (substr($href_parts['path'], 0, 1) == '/')
+				{
+					$full_url .= $href_parts['path'];
+				}
+				else if (!empty($location['path']))
+				{
+					$full_url .= dirname($location['path'] . 'a') . '/' . $href_parts['path'];
+				}
+				else
+				{
+					$full_url .= $href_parts['path'];
+				}
+			}
+			else if (!empty($location['path']))
+			{
+				$full_url .= $location['path'];
+			}
+			else
+			{
+				$full_url .= '/';
+			}
+			if (!empty($href_parts['query']))
+			{
+				$full_url .= '?' . $href_parts['query'];
+			}
+			else if (!empty($location['query']))
+			{
+				$full_url .= '?' . $location['query'];
+			}
+			if (!empty($href_parts['fragment']))
+			{
+				$full_url .= '#' . $href_parts['fragment'];
+			}
+			else if (!empty($location['fragment']))
+			{
+				$full_url .= '#' . $location['fragment'];
+			}
+			return $full_url;
+		}
+	}
+	
+	function get_element($realname, $string)
+	{
+		$return = array();
+		$name = preg_quote($realname, '/');
+		preg_match_all("/<($name)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'|(.*)))*)\s*(\/>|>(.*)<\/$name>)/msiU", $string, $matches, PREG_SET_ORDER);
+		for ($i = 0; $i < count($matches); $i++)
+		{
+			$return[$i]['tag'] = $realname;
+			$return[$i]['full'] = $matches[$i][0];
+			if (strlen($matches[$i][9]) == 2)
+			{
+				$return[$i]['self_closing'] = true;
+			}
+			else
+			{
+				$return[$i]['self_closing'] = false;
+				$return[$i]['content'] = $matches[$i][10];
+			}
+			$return[$i]['attribs'] = array();
+			if (!empty($matches[$i][2]))
+			{
+				preg_match_all('/(\w+)\s*=\s*("(.*)"|\'(.*)\'|(\S+))\s/msiU', $matches[$i][2] . ' ', $attribs, PREG_SET_ORDER);
+				for ($j = 0; $j < count($attribs);  $j++)
+				{
+					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = $attribs[$j][count($attribs[$j])-1];
+					$first = substr($attribs[$j][2], 0, 1);
+					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['split'] = ($first == '"' || $first == "'") ? $first : '"';
+				}
+			}
+		}
+		return $return;
+	}
+	
+	function element_implode($element)
+	{
+		$full = "<$element[tag]";
+		foreach ($element['attribs'] as $key => $value)
+		{
+			$key = strtolower($key);
+			$full .= " $key=$value[split]$value[data]$value[split]";
+		}
+		if ($element['self_closing'])
+		{
+			$full .= ' />';
+		}
+		else
+		{
+			$full .= ">$element[content]</$element[tag]>";
+		}
+		return $full;
+	}
+	
+	function error($message, $level, $file, $line)
+	{
+		switch ($level)
+		{
+			case E_USER_ERROR:
+				$note = 'PHP Error';
+				break;
+			case E_USER_WARNING:
+				$note = 'PHP Warning';
+				break;
+			case E_USER_NOTICE:
+				$note = 'PHP Notice';
+				break;
+			default:
+				$note = 'Unknown Error';
+				break;
+		}
+		error_log("$note: $message in $file on line $line", 0);
+		return $message;
+	}
+	
+	function display_file($url, $timeout = 10, $useragent = null)
+	{
+		$file = new SimplePie_File($url, $timeout, 5, null, $useragent);
+		$headers = $file->headers();
+		if ($file->body() !== false)
+		{
+			header('Content-type: ' . $headers['content-type']);
+			echo $file->body();
+			exit;
+		}
+	}
+	
+	/****************************************************
+	FIX PROTOCOL
+	Convert feed:// and no-protocol URL's to http://
+	Feed is allowed to have no protocol.  Local files are toggled in init().
+	This is an internal function and is not intended to be used publically.
+
+	$http=1, http://www.domain.com/feed.xml (absolute)
+	$http=2, feed://www.domain.com/feed.xml (absolute)
+	$http=3, podcast://www.domain.com/feed.xml (absolute)
+	****************************************************/
+	function fix_protocol($url, $http = 1)
+	{
+		$url = preg_replace('/^http:\/\/photocast.mac.com/i', 'http://web.mac.com', $url);
+		$url = preg_replace('/^(p(od)?cast|feed)[:]?[\/]*(http(s)?:\/\/)?/i', 'http://', $url);
+		if (!preg_match('/^http(s)?:\/\//i', $url) && !file_exists($url)) $url = "http://$url";
+
+		if ($http != 1 && strstr($url, 'http://'))
+		{
+			if ($http == 2)
+			{
+				$url = substr_replace($url, 'feed', 0, 4);
+			}
+			else if ($http == 3)
+			{
+				$url = substr_replace($url, 'podcast', 0, 4);
+			}
+		}
+		return $url;
+	}
+	
+	function encoding($encoding)
+	{
+		$return['use_mbstring'] = false;
+		$return['use_iconv'] = false;
+		switch (strtolower($encoding))
+		{
+
+			// 7bit
+			case '7bit':
+			case '7-bit':
+				$return['encoding'] = '7bit';
+				$return['use_mbstring'] = true;
+				break;
+
+			// 8bit
+			case '8bit':
+			case '8-bit':
+				$return['encoding'] = '8bit';
+				$return['use_mbstring'] = true;
+				break;
+
+			// ARMSCII-8
+			case 'armscii-8':
+			case 'armscii':
+				$return['encoding'] = 'ARMSCII-8';
+				$return['use_iconv'] = true;
+				break;
+
+			// ASCII
+			case 'us-ascii':
+			case 'ascii':
+				$return['encoding'] = 'US-ASCII';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// BASE64
+			case 'base64':
+			case 'base-64':
+				$return['encoding'] = 'BASE64';
+				$return['use_mbstring'] = true;
+				break;
+
+			// Big5 - Traditional Chinese, mainly used in Taiwan
+			case 'big5':
+			case '950':
+				$return['encoding'] = 'BIG5';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// Big5 with Hong Kong extensions, Traditional Chinese
+			case 'big5-hkscs':
+				$return['encoding'] = 'BIG5-HKSCS';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// byte2be
+			case 'byte2be':
+				$return['encoding'] = 'byte2be';
+				$return['use_mbstring'] = true;
+				break;
+
+			// byte2le
+			case 'byte2le':
+				$return['encoding'] = 'byte2le';
+				$return['use_mbstring'] = true;
+				break;
+
+			// byte4be
+			case 'byte4be':
+				$return['encoding'] = 'byte4be';
+				$return['use_mbstring'] = true;
+				break;
+
+			// byte4le
+			case 'byte4le':
+				$return['encoding'] = 'byte4le';
+				$return['use_mbstring'] = true;
+				break;
+
+			// EUC-CN
+			case 'euc-cn':
+			case 'euccn':
+				$return['encoding'] = 'EUC-CN';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// EUC-JISX0213
+			case 'euc-jisx0213':
+			case 'eucjisx0213':
+				$return['encoding'] = 'EUC-JISX0213';
+				$return['use_iconv'] = true;
+				break;
+
+			// EUC-JP
+			case 'euc-jp':
+			case 'eucjp':
+				$return['encoding'] = 'EUC-JP';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// EUCJP-win
+			case 'euc-jp-win':
+			case 'eucjp-win':
+			case 'eucjpwin':
+				$return['encoding'] = 'EUCJP-win';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// EUC-KR
+			case 'euc-kr':
+			case 'euckr':
+				$return['encoding'] = 'EUC-KR';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// EUC-TW
+			case 'euc-tw':
+			case 'euctw':
+				$return['encoding'] = 'EUC-TW';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// GB18030 - Simplified Chinese, national standard character set
+			case 'gb18030-2000':
+			case 'gb18030':
+				$return['encoding'] = 'GB18030';
+				$return['use_iconv'] = true;
+				break;
+
+			// GB2312 - Simplified Chinese, national standard character set
+			case 'gb2312':
+			case '936':
+				$return['encoding'] = 'GB2312';
+				$return['use_mbstring'] = true;
+				break;
+
+			// GBK
+			case 'gbk':
+				$return['encoding'] = 'GBK';
+				$return['use_iconv'] = true;
+				break;
+
+			// Georgian-Academy
+			case 'georgian-academy':
+				$return['encoding'] = 'Georgian-Academy';
+				$return['use_iconv'] = true;
+				break;
+
+			// Georgian-PS
+			case 'georgian-ps':
+				$return['encoding'] = 'Georgian-PS';
+				$return['use_iconv'] = true;
+				break;
+
+			// HTML-ENTITIES
+			case 'html-entities':
+			case 'htmlentities':
+				$return['encoding'] = 'HTML-ENTITIES';
+				$return['use_mbstring'] = true;
+				break;
+
+			// HZ
+			case 'hz':
+				$return['encoding'] = 'HZ';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-2022-CN
+			case 'iso-2022-cn':
+			case 'iso2022-cn':
+			case 'iso2022cn':
+				$return['encoding'] = 'ISO-2022-CN';
+				$return['use_iconv'] = true;
+				break;
+
+			// ISO-2022-CN-EXT
+			case 'iso-2022-cn-ext':
+			case 'iso2022-cn-ext':
+			case 'iso2022cn-ext':
+			case 'iso2022cnext':
+				$return['encoding'] = 'ISO-2022-CN';
+				$return['use_iconv'] = true;
+				break;
+
+			// ISO-2022-JP
+			case 'iso-2022-jp':
+			case 'iso2022-jp':
+			case 'iso2022jp':
+				$return['encoding'] = 'ISO-2022-JP';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-2022-JP-1
+			case 'iso-2022-jp-1':
+			case 'iso2022-jp-1':
+			case 'iso2022jp-1':
+			case 'iso2022jp1':
+				$return['encoding'] = 'ISO-2022-JP-1';
+				$return['use_iconv'] = true;
+				break;
+
+			// ISO-2022-JP-2
+			case 'iso-2022-jp-2':
+			case 'iso2022-jp-2':
+			case 'iso2022jp-2':
+			case 'iso2022jp2':
+				$return['encoding'] = 'ISO-2022-JP-2';
+				$return['use_iconv'] = true;
+				break;
+
+			// ISO-2022-JP-3
+			case 'iso-2022-jp-3':
+			case 'iso2022-jp-3':
+			case 'iso2022jp-3':
+			case 'iso2022jp3':
+				$return['encoding'] = 'ISO-2022-JP-3';
+				$return['use_iconv'] = true;
+				break;
+
+			// ISO-2022-KR
+			case 'iso-2022-kr':
+			case 'iso2022-kr':
+			case 'iso2022kr':
+				$return['encoding'] = 'ISO-2022-KR';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-1
+			case 'iso-8859-1':
+			case 'iso8859-1':
+				$return['encoding'] = 'ISO-8859-1';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-2
+			case 'iso-8859-2':
+			case 'iso8859-2':
+				$return['encoding'] = 'ISO-8859-2';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-3
+			case 'iso-8859-3':
+			case 'iso8859-3':
+				$return['encoding'] = 'ISO-8859-3';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-4
+			case 'iso-8859-4':
+			case 'iso8859-4':
+				$return['encoding'] = 'ISO-8859-4';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-5
+			case 'iso-8859-5':
+			case 'iso8859-5':
+				$return['encoding'] = 'ISO-8859-5';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-6
+			case 'iso-8859-6':
+			case 'iso8859-6':
+				$return['encoding'] = 'ISO-8859-6';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-7
+			case 'iso-8859-7':
+			case 'iso8859-7':
+				$return['encoding'] = 'ISO-8859-7';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-8
+			case 'iso-8859-8':
+			case 'iso8859-8':
+				$return['encoding'] = 'ISO-8859-8';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-9
+			case 'iso-8859-9':
+			case 'iso8859-9':
+				$return['encoding'] = 'ISO-8859-9';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-10
+			case 'iso-8859-10':
+			case 'iso8859-10':
+				$return['encoding'] = 'ISO-8859-10';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// mbstring/iconv functions don't appear to support 11 & 12
+
+			// ISO-8859-13
+			case 'iso-8859-13':
+			case 'iso8859-13':
+				$return['encoding'] = 'ISO-8859-13';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-14
+			case 'iso-8859-14':
+			case 'iso8859-14':
+				$return['encoding'] = 'ISO-8859-14';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-15
+			case 'iso-8859-15':
+			case 'iso8859-15':
+				$return['encoding'] = 'ISO-8859-15';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// ISO-8859-16
+			case 'iso-8859-16':
+			case 'iso8859-16':
+				$return['encoding'] = 'ISO-8859-16';
+				$return['use_iconv'] = true;
+				break;
+
+			// JIS
+			case 'jis':
+				$return['encoding'] = 'JIS';
+				$return['use_mbstring'] = true;
+				break;
+
+			// JOHAB - Korean
+			case 'johab':
+				$return['encoding'] = 'JOHAB';
+				$return['use_iconv'] = true;
+				break;
+
+			// Russian
+			case 'koi8-r':
+			case 'koi8r':
+				$return['encoding'] = 'KOI8-R';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// Turkish
+			case 'koi8-t':
+			case 'koi8t':
+				$return['encoding'] = 'KOI8-T';
+				$return['use_iconv'] = true;
+				break;
+
+			// Ukrainian
+			case 'koi8-u':
+			case 'koi8u':
+				$return['encoding'] = 'KOI8-U';
+				$return['use_iconv'] = true;
+				break;
+
+			// Russian+Ukrainian
+			case 'koi8-ru':
+			case 'koi8ru':
+				$return['encoding'] = 'KOI8-RU';
+				$return['use_iconv'] = true;
+				break;
+
+			// Macintosh (Mac OS Classic)
+			case 'macintosh':
+				$return['encoding'] = 'Macintosh';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacArabic (Mac OS Classic)
+			case 'macarabic':
+				$return['encoding'] = 'MacArabic';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacCentralEurope (Mac OS Classic)
+			case 'maccentraleurope':
+				$return['encoding'] = 'MacCentralEurope';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacCroatian (Mac OS Classic)
+			case 'maccroatian':
+				$return['encoding'] = 'MacCroatian';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacCyrillic (Mac OS Classic)
+			case 'maccyrillic':
+				$return['encoding'] = 'MacCyrillic';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacGreek (Mac OS Classic)
+			case 'macgreek':
+				$return['encoding'] = 'MacGreek';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacHebrew (Mac OS Classic)
+			case 'machebrew':
+				$return['encoding'] = 'MacHebrew';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacIceland (Mac OS Classic)
+			case 'maciceland':
+				$return['encoding'] = 'MacIceland';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacRoman (Mac OS Classic)
+			case 'macroman':
+				$return['encoding'] = 'MacRoman';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacRomania (Mac OS Classic)
+			case 'macromania':
+				$return['encoding'] = 'MacRomania';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacThai (Mac OS Classic)
+			case 'macthai':
+				$return['encoding'] = 'MacThai';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacTurkish (Mac OS Classic)
+			case 'macturkish':
+				$return['encoding'] = 'MacTurkish';
+				$return['use_iconv'] = true;
+				break;
+
+			// MacUkraine (Mac OS Classic)
+			case 'macukraine':
+				$return['encoding'] = 'MacUkraine';
+				$return['use_iconv'] = true;
+				break;
+
+			// MuleLao-1
+			case 'mulelao-1':
+			case 'mulelao1':
+				$return['encoding'] = 'MuleLao-1';
+				$return['use_iconv'] = true;
+				break;
+
+			// Shift_JIS
+			case 'shift_jis':
+			case 'sjis':
+			case '932':
+				$return['encoding'] = 'Shift_JIS';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// Shift_JISX0213
+			case 'shift-jisx0213':
+			case 'shiftjisx0213':
+				$return['encoding'] = 'Shift_JISX0213';
+				$return['use_iconv'] = true;
+				break;
+
+			// SJIS-win
+			case 'sjis-win':
+			case 'sjiswin':
+			case 'shift_jis-win':
+				$return['encoding'] = 'SJIS-win';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// TCVN - Vietnamese
+			case 'tcvn':
+				$return['encoding'] = 'TCVN';
+				$return['use_iconv'] = true;
+				break;
+
+			// TDS565 - Turkish
+			case 'tds565':
+				$return['encoding'] = 'TDS565';
+				$return['use_iconv'] = true;
+				break;
+
+			// TIS-620 Thai
+			case 'tis-620':
+			case 'tis620':
+				$return['encoding'] = 'TIS-620';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-2
+			case 'ucs-2':
+			case 'ucs2':
+			case 'utf-16':
+			case 'utf16':
+				$return['encoding'] = 'UCS-2';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-2BE
+			case 'ucs-2be':
+			case 'ucs2be':
+			case 'utf-16be':
+			case 'utf16be':
+				$return['encoding'] = 'UCS-2BE';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-2LE
+			case 'ucs-2le':
+			case 'ucs2le':
+			case 'utf-16le':
+			case 'utf16le':
+				$return['encoding'] = 'UCS-2LE';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-2-INTERNAL
+			case 'ucs-2-internal':
+			case 'ucs2internal':
+				$return['encoding'] = 'UCS-2-INTERNAL';
+				$return['use_iconv'] = true;
+				break;
+
+			// UCS-4
+			case 'ucs-4':
+			case 'ucs4':
+			case 'utf-32':
+			case 'utf32':
+				$return['encoding'] = 'UCS-4';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-4BE
+			case 'ucs-4be':
+			case 'ucs4be':
+			case 'utf-32be':
+			case 'utf32be':
+				$return['encoding'] = 'UCS-4BE';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-4LE
+			case 'ucs-4le':
+			case 'ucs4le':
+			case 'utf-32le':
+			case 'utf32le':
+				$return['encoding'] = 'UCS-4LE';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-4-INTERNAL
+			case 'ucs-4-internal':
+			case 'ucs4internal':
+				$return['encoding'] = 'UCS-4-INTERNAL';
+				$return['use_iconv'] = true;
+				break;
+
+			// UCS-16
+			case 'ucs-16':
+			case 'ucs16':
+				$return['encoding'] = 'UCS-16';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-16BE
+			case 'ucs-16be':
+			case 'ucs16be':
+				$return['encoding'] = 'UCS-16BE';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-16LE
+			case 'ucs-16le':
+			case 'ucs16le':
+				$return['encoding'] = 'UCS-16LE';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-32
+			case 'ucs-32':
+			case 'ucs32':
+				$return['encoding'] = 'UCS-32';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-32BE
+			case 'ucs-32be':
+			case 'ucs32be':
+				$return['encoding'] = 'UCS-32BE';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UCS-32LE
+			case 'ucs-32le':
+			case 'ucs32le':
+				$return['encoding'] = 'UCS-32LE';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UTF-7
+			case 'utf-7':
+			case 'utf7':
+				$return['encoding'] = 'UTF-7';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// UTF7-IMAP
+			case 'utf-7-imap':
+			case 'utf7-imap':
+			case 'utf7imap':
+				$return['encoding'] = 'UTF7-IMAP';
+				$return['use_mbstring'] = true;
+				break;
+
+			// VISCII - Vietnamese ASCII
+			case 'viscii':
+				$return['encoding'] = 'VISCII';
+				$return['use_iconv'] = true;
+				break;
+
+			// Windows-specific Central & Eastern Europe
+			case 'cp1250':
+			case 'windows-1250':
+			case 'win-1250':
+			case '1250':
+				$return['encoding'] = 'Windows-1250';
+				$return['use_iconv'] = true;
+				break;
+
+			// Windows-specific Cyrillic
+			case 'cp1251':
+			case 'windows-1251':
+			case 'win-1251':
+			case '1251':
+				$return['encoding'] = 'Windows-1251';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// Windows-specific Western Europe
+			case 'cp1252':
+			case 'windows-1252':
+			case '1252':
+				$return['encoding'] = 'Windows-1252';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
+				break;
+
+			// Windows-specific Greek
+			case 'cp1253':
+			case 'windows-1253':
+			case '1253':
+				$return['encoding'] = 'Windows-1253';
+				$return['use_iconv'] = true;
+				break;
+
+			// Windows-specific Turkish
+			case 'cp1254':
+			case 'windows-1254':
+			case '1254':
+				$return['encoding'] = 'Windows-1254';
+				$return['use_iconv'] = true;
+				break;
+
+			// Windows-specific Hebrew
+			case 'cp1255':
+			case 'windows-1255':
+			case '1255':
+				$return['encoding'] = 'Windows-1255';
+				$return['use_iconv'] = true;
+				break;
+
+			// Windows-specific Arabic
+			case 'cp1256':
+			case 'windows-1256':
+			case '1256':
+				$return['encoding'] = 'Windows-1256';
+				$return['use_iconv'] = true;
+				break;
+
+			// Windows-specific Baltic
+			case 'cp1257':
+			case 'windows-1257':
+			case '1257':
+				$return['encoding'] = 'Windows-1257';
+				$return['use_iconv'] = true;
+				break;
+
+			// Windows-specific Vietnamese
+			case 'cp1258':
+			case 'windows-1258':
+			case '1258':
+				$return['encoding'] = 'Windows-1258';
+				$return['use_iconv'] = true;
+				break;
+
+			// Default to UTF-8
+			default:
+				$return['encoding'] = 'UTF-8';
+				break;
+		}
+		return $return;
+	}
+}
+
+class SimplePie_Locator
+{
+	var $useragent;
+	var $parsed_url;
+	var $file;
+	var $local;
+	var $elsewhere;
+	
+	function SimplePie_Locator(&$file)
+	{
+		if (!is_a($file, 'SimplePie_File'))
+		{
+			$this->file = new SimplePie_File($file);
+		}
+		else
+		{
+			$this->file =& $file;
+		}
+	}
+		
+	
+	function find()
+	{		
+		if ($this->is_feed($this->file))
+		{
+			return $this->file->url;
+		}
+		
+		$this->useragent = $this->file->useragent;
+		
+		$this->parsed_url = parse_url($this->file->url);
+		if (!isset($this->parsed_url['path']))
+		{
+			$this->parsed_url['path'] = '/';
+		}
+		
+		$autodiscovery = $this->autodiscovery($this->file);
+		if ($autodiscovery)
+		{
+			return $autodiscovery;
+		}
+		
+		if ($this->get_links($this->file))
+		{
+			$extension_local = $this->extension($this->local);
+			if ($extension_local)
+			{
+				return $extension_local;
+			}
+			
+			$body_local = $this->body($this->local);
+			if ($body_local)
+			{
+				return $body_local;
+			}
+			
+			$extension_elsewhere = $this->extension($this->elsewhere);
+			if ($extension_elsewhere)
+			{
+				return $extension_elsewhere;
+			}
+			
+			$body_elsewhere = $this->body($this->elsewhere);
+			if ($body_elsewhere)
+			{
+				return $body_elsewhere;
+			}
+		}
+		return false;
+	}
+	
+	function is_feed(&$file)
+	{
+		if (!is_a($file, 'SimplePie_File'))
+		{
+			$file2 = new SimplePie_File($file, 1, 5, null, $this->useragent);
+			$file2->body();
+			$file2->close();
+		}
+		else
+		{
+			$file2 =& $file;
+		}
+		if (((stristr($file2->body(), '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $file2->body())) && (preg_match('/<([a-z0-9]+\:)?channel/mi', $file2->body()) || preg_match('/<([a-z0-9]+\:)?item/mi', $file2->body()))) || (preg_match('/<([a-z0-9]+\:)?feed/mi', $file2->body()) && (preg_match('/<([a-z0-9]+\:)?author/mi', $file2->body()) || preg_match('/<([a-z0-9]+\:)?entry/mi', $file2->body()))))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	function autodiscovery(&$file)
+	{
+		$links = SimplePie_Misc::get_element('link', $file->body());
+		$done = array();
+		foreach ($links as $link)
+		{
+			if (!empty($link['attribs']['TYPE']['data']) && !empty($link['attribs']['HREF']['data']))
+			{
+				$type = strtolower(trim($link['attribs']['TYPE']['data']));
+				$href = trim($link['attribs']['HREF']['data']);
+				if (!in_array($href, $done) && in_array($type, array('application/rss+xml', 'application/atom+xml', 'application/rdf+xml', 'application/xml+rss', 'application/xml+atom', 'application/xml+rdf', 'application/xml', 'application/x.atom+xml', 'text/xml')))
+				{
+					$feed = $this->is_feed($href);
+					if ($feed)
+					{
+						return $href;
+					}
+				}
+				$done[] = $href;
+			}
+		}
+		return false;
+	}
+	
+	function get_links(&$file)
+	{
+		$links = SimplePie_Misc::get_element('a', $file->body());
+		foreach ($links as $link)
+		{
+			if (!empty($link['attribs']['HREF']['data']))
+			{
+				$href = trim($link['attribs']['HREF']['data']);
+				$parsed = @parse_url($href);
+				if (empty($parsed['scheme']) || $parsed['scheme'] != 'javascript')
+				{
+					if (empty($parsed['host']) || $parsed['host'] == $this->parsed_url['host'])
+					{
+						$this->local[] = SimplePie_Misc::absolutize_url($href, $this->parsed_url);
+					}
+					else
+					{
+						$this->elsewhere[] = SimplePie_Misc::absolutize_url($href, $this->parsed_url);
+					}
+				}
+			}
+		}
+		if (!empty($this->local) || !empty($this->elsewhere))
+		{
+			$this->local = array_unique($this->local);
+			$this->elsewhere = array_unique($this->elsewhere);
+			return true;
+		}
+		return false;
+	}
+	
+	function extension(&$array)
+	{
+		foreach ($array as $key => $value)
+		{
+			$value = SimplePie_Misc::absolutize_url($value, $this->parsed_url);
+			if (in_array(strrchr($value, '.'), array('.rss', '.rdf', '.atom', '.xml')))
+			{
+				if ($this->is_feed($value))
+				{
+					return $value;
+				}
+				else
+				{
+					unset($array[$key]);
+				}
+			}
+		}
+		return false;
+	}
+	
+	function body(&$array)
+	{
+		foreach ($array as $key => $value)
+		{
+			$value = SimplePie_Misc::absolutize_url($value, $this->parsed_url);
+			if (preg_match('/(rss|rdf|atom|xml)/i', $value))
+			{
+				if ($this->is_feed($value))
+				{
+					return $value;
+				}
+				else
+				{
+					unset($array[$key]);
+				}
+			}
+		}
+		return false;
+	}
+}
+
+class SimplePie_Parser
+{	
+	var $encoding;
+	var $data;
+	var $namespaces = array('xml' => 'HTTP://WWW.W3.ORG/XML/1998/NAMESPACE', 'atom' => 'ATOM', 'rss2' => 'RSS', 'rdf' => 'RDF', 'rss1' => 'RSS', 'dc' => 'DC', 'xhtml' => 'XHTML', 'content' => 'CONTENT');
+	var $xml;
+	var $error_code;
+	var $error_string;
+	var $current_line;
+	var $current_column;
+	var $current_byte;
+	var $tag_name;
+	var $inside_item;
+	var $item_number = 0;
+	var $inside_channel;
+	var $author_number= 0;
+	var $category_number = 0;
+	var $enclosure_number = 0;
+	var $link_number = 0;
+	var $item_link_number = 0;
+	var $inside_image;
+	var $attribs;
+	var $is_first;
+	var $inside_author;
+	
+		
+	function SimplePie_Parser($data, $encoding, $return_xml = false)
+	{
+		$this->encoding = $encoding;
+		
+		// Set XML prologue to encoding
+		if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog))
+		{
+			$length = strlen($prolog[0]);
+			$prolog = preg_replace('/\sstandalone=("no"|\'no\')/i', '', $prolog[0]);
+			$prolog = preg_replace('/\sencoding=("(.*)"|\'(.*)\')/msiU', '', $prolog);
+			$prolog = str_replace('?>', " encoding='$encoding'?>", $prolog);
+			$data = substr_replace($data, $prolog, 0, $length);
+		}
+		else
+		{
+			$data = "<?xml encoding='$encoding'?>\n";
+		}
+		
+		// Add an internal attribute to CDATA sections
+		$data = preg_replace_callback('/<(\S+)((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'|(.*)))*)\s*(\/>|><\!\[CDATA\[(.*)<\/\\1>)/msiU', array(&$this, 'spencoded'), $data);
+		
+		// Put some data into CDATA blocks
+		// If we're RSS
+		if ((stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $data)) && (preg_match('/<([a-z0-9]+\:)?channel/mi', $data) || preg_match('/<([a-z0-9]+\:)?item/mi', $data)))
+		{
+			$sp_elements = array(
+				'author',
+				'description',
+				'link',
+				'title',
+			);
+		}
+		// Or if we're Atom
+		else
+		{
+			$sp_elements = array(
+				'content',
+				'copyright',
+				'name',
+				'subtitle',
+				'summary',
+				'tagline',
+				'title',
+			);
+		}
+		foreach ($sp_elements as $full)
+		{
+			// The (<\!\[CDATA\[)? never matches any CDATA block, therefore the CDATA gets added, but never replaced
+			$data = preg_replace("/<$full(.*)>[\s]*(<\!\[CDATA\[)?(.*)(]]>)?[\s]*<\/$full>/msiU", "<$full\\1><![CDATA[\\3]]></$full>", $data);
+			// The following line is a work-around for the above bug
+			$data = preg_replace("/<$full(.*)><\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU", "<$full\\1><![CDATA[", $data);
+		}
+		foreach ($sp_elements as $full)
+		{
+			// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
+			$data = preg_replace_callback("/<($full)(.*)><!\[CDATA\[(.*)\]\]><\/$full>/msiU", array(&$this, 'cdata_in_cdata'), $data);
+		}
+		
+		// Return the XML, if so desired
+		if ($return_xml)
+		{
+			$this->data =& $data;
+			return;
+		}
+		
+		// Create the parser
+		$this->xml = xml_parser_create_ns($encoding);
+		xml_parser_set_option($this->xml, XML_OPTION_SKIP_WHITE, 1);
+		xml_set_object($this->xml, $this);
+		xml_set_character_data_handler($this->xml, 'data_handler');
+		xml_set_element_handler($this->xml, 'start_handler', 'end_handler');
+		xml_set_start_namespace_decl_handler($this->xml, 'start_name_space');
+		xml_set_end_namespace_decl_handler($this->xml, 'end_name_space');
+		
+		// Parse!
+		if (!xml_parse($this->xml, $data))
+		{
+			$this->data = null;
+			$this->error_code = xml_get_error_code($this->xml);
+			$this->error_string = xml_error_string($this->error_code);
+		}
+		$this->current_line = xml_get_current_line_number($this->xml);
+		$this->current_column = xml_get_current_column_number($this->xml);
+		$this->current_byte = xml_get_current_byte_index($this->xml);
+		xml_parser_free($this->xml);
+		return;
+	}
+	
+	function spencoded($match)
+	{
+		if (isset($match[10]))
+		{
+			return "<$match[1]$match[2] spencoded=\"false\">$match[10]</$match[1]>";
+		}
+		return $match[0];
+	}
+
+	function cdata_in_cdata($match)
+	{
+		$match[3] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[3]);
+		return "<$match[1]$match[2]><![CDATA[$match[3]]]></$match[1]>";
+	}
+	
+	function real_cdata_in_cdata($match)
+	{
+		return htmlentities($match[1], ENT_NOQUOTES, $this->encoding);
+	}
+	
+	function do_add_content(&$array, $data)
+	{
+		if ($this->is_first)
+		{
+			$array['data'] = $data;
+			$array['attribs'] = $this->attribs;
+		}
+		else
+		{
+			$array['data'] .= $data;
+		}
+	}
+	
+	function start_handler($parser, $name, $attribs)
+	{
+		$this->tag_name = $name;
+		$this->attribs = $attribs;
+		$this->is_first = true;
+		switch ($this->tag_name)
+		{
+			case 'ITEM':
+			case $this->namespaces['rss2'] . ':ITEM':
+			case $this->namespaces['rss1'] . ':ITEM':
+			case 'ENTRY':
+			case $this->namespaces['atom'] . ':ENTRY':
+				$this->inside_item = true;
+				$this->do_add_content($this->data['items'][$this->item_number], '');
+				break;
+
+			case 'CHANNEL':
+			case $this->namespaces['rss2'] . ':CHANNEL':
+			case $this->namespaces['rss1'] . ':CHANNEL':
+				$this->inside_channel = true;
+				break;
+
+			case 'RSS':
+			case $this->namespaces['rss2'] . ':RSS':
+				$this->data['feedinfo']['type'] = 'RSS';
+				$this->do_add_content($this->data['feeddata'], '');
+				if (!empty($attribs['VERSION']))
+				{
+					$this->data['feedinfo']['version'] = trim($attribs['VERSION']);
+				}
+				break;
+
+			case $this->namespaces['rdf'] . ':RDF':
+				$this->data['feedinfo']['type'] = 'RSS';
+				$this->do_add_content($this->data['feeddata'], '');
+				$this->data['feedinfo']['version'] = 1;
+				break;
+
+			case 'FEED':
+			case $this->namespaces['atom'] . ':FEED':
+				$this->data['feedinfo']['type'] = 'Atom';
+				$this->do_add_content($this->data['feeddata'], '');
+				if (!empty($attribs['VERSION']))
+				{
+					$this->data['feedinfo']['version'] = trim($attribs['VERSION']);
+				}
+				break;
+
+			case 'IMAGE':
+			case $this->namespaces['rss2'] . ':IMAGE':
+			case $this->namespaces['rss1'] . ':IMAGE':
+				if ($this->inside_channel)
+				{
+					$this->inside_image = true;
+				}
+				break;
+		}
+
+		if (!empty($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom' && ($this->tag_name == 'AUTHOR' || $this->tag_name == $this->namespaces['atom'] . ':AUTHOR'))
+		{
+			$this->inside_author = true;
+		}
+		$this->data_handler($this->xml, '');
+	}
+
+	function data_handler($parser, $data)
+	{
+		if ($this->inside_item)
+		{
+			switch ($this->tag_name)
+			{
+				case 'TITLE':
+				case $this->namespaces['rss1'] . ':TITLE':
+				case $this->namespaces['rss2'] . ':TITLE':
+				case $this->namespaces['atom'] . ':TITLE':
+					$this->do_add_content($this->data['items'][$this->item_number]['title'], $data);
+					break;
+					
+				case $this->namespaces['dc'] . ':TITLE':
+					$this->do_add_content($this->data['items'][$this->item_number]['dc:title'], $data);
+					break;
+
+				case 'CONTENT':
+				case $this->namespaces['atom'] . ':CONTENT':
+					$this->do_add_content($this->data['items'][$this->item_number]['content'], $data);
+					break;
+
+				case $this->namespaces['content'] . ':ENCODED':
+					$this->do_add_content($this->data['items'][$this->item_number]['encoded'], $data);
+					break;
+
+				case 'SUMMARY':
+				case $this->namespaces['atom'] . ':SUMMARY':
+					$this->do_add_content($this->data['items'][$this->item_number]['summary'], $data);
+					break;
+
+				case 'LONGDESC':
+					$this->do_add_content($this->data['items'][$this->item_number]['longdesc'], $data);
+					break;
+
+				case 'DESCRIPTION':
+				case $this->namespaces['rss1'] . ':DESCRIPTION':
+				case $this->namespaces['rss2'] . ':DESCRIPTION':
+					$this->do_add_content($this->data['items'][$this->item_number]['description'], $data);
+					break;
+
+				case $this->namespaces['dc'] . ':DESCRIPTION':
+					$this->do_add_content($this->data['items'][$this->item_number]['dc:description'], $data);
+					break;
+
+				case 'LINK':
+				case $this->namespaces['rss1'] . ':LINK':
+				case $this->namespaces['rss2'] . ':LINK':
+				case $this->namespaces['atom'] . ':LINK':
+					$this->do_add_content($this->data['items'][$this->item_number]['link'][$this->item_link_number], $data);
+					break;
+					
+				case 'ENCLOSURE':
+				case $this->namespaces['rss1'] . ':ENCLOSURE':
+				case $this->namespaces['rss2'] . ':ENCLOSURE':
+				case $this->namespaces['atom'] . ':ENCLOSURE':
+					$this->do_add_content($this->data['items'][$this->item_number]['enclosure'][$this->enclosure_number], $data);
+					break;
+
+				case 'GUID':
+				case $this->namespaces['rss1'] . ':GUID':
+				case $this->namespaces['rss2'] . ':GUID':
+					$this->do_add_content($this->data['items'][$this->item_number]['guid'], $data);
+					break;
+
+				case 'ID':
+				case $this->namespaces['atom'] . ':ID':
+					$this->do_add_content($this->data['items'][$this->item_number]['id'], $data);
+					break;
+
+				case 'PUBDATE':
+				case $this->namespaces['rss1'] . ':PUBDATE':
+				case $this->namespaces['rss2'] . ':PUBDATE':
+					$this->do_add_content($this->data['items'][$this->item_number]['pubdate'], $data);
+					break;
+
+				case $this->namespaces['dc'] . ':DATE':
+					$this->do_add_content($this->data['items'][$this->item_number]['dc:date'], $data);
+					break;
+
+				case 'ISSUED':
+				case $this->namespaces['atom'] . ':ISSUED':
+					$this->do_add_content($this->data['items'][$this->item_number]['issued'], $data);
+					break;
+
+				case 'PUBLISHED':
+				case $this->namespaces['atom'] . ':PUBLISHED':
+					$this->do_add_content($this->data['items'][$this->item_number]['published'], $data);
+					break;
+
+				case 'MODIFIED':
+				case $this->namespaces['atom'] . ':MODIFIED':
+					$this->do_add_content($this->data['items'][$this->item_number]['modified'], $data);
+					break;
+
+				case 'UPDATED':
+				case $this->namespaces['atom'] . ':UPDATED':
+					$this->do_add_content($this->data['items'][$this->item_number]['updated'], $data);
+					break;
+	
+				case 'CATEGORY':
+				case $this->namespaces['rss1'] . ':CATEGORY':
+				case $this->namespaces['rss2'] . ':CATEGORY':
+				case $this->namespaces['atom'] . ':CATEGORY':
+					$this->do_add_content($this->data['items'][$this->item_number]['category'][$this->category_number], $data);
+					break;
+
+				case $this->namespaces['dc'] . ':SUBJECT':
+					$this->do_add_content($this->data['items'][$this->item_number]['subject'][$this->category_number], $data);
+					break;
+
+				case $this->namespaces['dc'] . ':CREATOR':
+					$this->do_add_content($this->data['items'][$this->item_number]['creator'][$this->author_number], $data);
+					break;
+
+				case 'AUTHOR':
+				case $this->namespaces['rss1'] . ':AUTHOR':
+				case $this->namespaces['rss2'] . ':AUTHOR':
+					$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['rss'], $data);
+					break;
+			}
+
+			if ($this->inside_author)
+			{
+				switch ($this->tag_name)
+				{
+					case 'NAME':
+					case $this->namespaces['atom'] . ':NAME':
+						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['name'], $data);
+						break;
+
+					case 'URL':
+					case $this->namespaces['atom'] . ':URL':
+						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['url'], $data);
+						break;
+
+					case 'URI':
+					case $this->namespaces['atom'] . ':URI':
+						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['uri'], $data);
+						break;
+
+					case 'HOMEPAGE':
+					case $this->namespaces['atom'] . ':HOMEPAGE':
+						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['homepage'], $data);
+						break;
+
+					case 'EMAIL':
+					case $this->namespaces['atom'] . ':EMAIL':
+						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['email'], $data);
+						break;
+				}
+			}
+		}
+
+		else if (($this->inside_channel && !$this->inside_image) || (isset($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom'))
+		{
+			switch ($this->tag_name)
+			{
+				case 'TITLE':
+				case $this->namespaces['rss1'] . ':TITLE':
+				case $this->namespaces['rss2'] . ':TITLE':
+				case $this->namespaces['atom'] . ':TITLE':
+					$this->do_add_content($this->data['info']['title'], $data);
+					break;
+
+				case 'LINK':
+				case $this->namespaces['rss1'] . ':LINK':
+				case $this->namespaces['rss2'] . ':LINK':
+				case $this->namespaces['atom'] . ':LINK':
+					$this->do_add_content($this->data['info']['link'][$this->link_number], $data);
+					break;
+
+				case 'DESCRIPTION':
+				case $this->namespaces['rss1'] . ':DESCRIPTION':
+				case $this->namespaces['rss2'] . ':DESCRIPTION':
+					$this->do_add_content($this->data['info']['description'], $data);
+					break;
+
+				case $this->namespaces['dc'] . ':DESCRIPTION':
+					$this->do_add_content($this->data['info']['dc:description'], $data);
+					break;
+
+				case 'TAGLINE':
+				case $this->namespaces['atom'] . ':TAGLINE':
+					$this->do_add_content($this->data['info']['tagline'], $data);
+					break;
+
+				case 'SUBTITLE':
+				case $this->namespaces['atom'] . ':SUBTITLE':
+					$this->do_add_content($this->data['info']['subtitle'], $data);
+					break;
+
+				case 'COPYRIGHT':
+				case $this->namespaces['rss1'] . ':COPYRIGHT':
+				case $this->namespaces['rss2'] . ':COPYRIGHT':
+				case $this->namespaces['atom'] . ':COPYRIGHT':
+					$this->do_add_content($this->data['info']['copyright'], $data);
+					break;
+
+				case 'LANGUAGE':
+				case $this->namespaces['rss1'] . ':LANGUAGE':
+				case $this->namespaces['rss2'] . ':LANGUAGE':
+					$this->do_add_content($this->data['info']['language'], $data);
+					break;
+				
+				case 'LOGO':
+				case $this->namespaces['atom'] . ':LOGO':
+					$this->do_add_content($this->data['info']['logo'], $data);
+					break;
+				
+			}
+		}
+
+		else if ($this->inside_channel && $this->inside_image)
+		{
+			switch ($this->tag_name)
+			{
+				case 'TITLE':
+				case $this->namespaces['rss1'] . ':TITLE':
+				case $this->namespaces['rss2'] . ':TITLE':
+					$this->do_add_content($this->data['info']['image']['title'], $data);
+					break;
+
+				case 'URL':
+				case $this->namespaces['rss1'] . ':URL':
+				case $this->namespaces['rss2'] . ':URL':
+					$this->do_add_content($this->data['info']['image']['url'], $data);
+					break;
+
+				case 'LINK':
+				case $this->namespaces['rss1'] . ':LINK':
+				case $this->namespaces['rss2'] . ':LINK':
+					$this->do_add_content($this->data['info']['image']['link'], $data);
+					break;
+
+				case 'WIDTH':
+				case $this->namespaces['rss1'] . ':WIDTH':
+				case $this->namespaces['rss2'] . ':WIDTH':
+					$this->do_add_content($this->data['info']['image']['width'], $data);
+					break;
+
+				case 'HEIGHT':
+				case $this->namespaces['rss1'] . ':HEIGHT':
+				case $this->namespaces['rss2'] . ':HEIGHT':
+					$this->do_add_content($this->data['info']['image']['height'], $data);
+					break;
+			}
+		}
+		$this->is_first = false;
+	}
+
+	function end_handler($parser, $name)
+	{
+		$this->tag_name = '';
+		switch ($name)
+		{
+			case 'ITEM':
+			case $this->namespaces['rss1'] . ':ITEM':
+			case $this->namespaces['rss2'] . ':ITEM':
+			case 'ENTRY':
+			case $this->namespaces['atom'] . ':ENTRY':
+				$this->inside_item = false;
+				$this->item_number++;
+				$this->author_number = 0;
+				$this->category_number = 0;
+				$this->enclosure_number = 0;
+				$this->item_link_number = 0;
+				break;
+
+			case 'CHANNEL':
+			case $this->namespaces['rss1'] . ':CHANNEL':
+			case $this->namespaces['rss2'] . ':CHANNEL':
+				$this->inside_channel = false;
+				break;
+
+			case 'IMAGE':
+			case $this->namespaces['rss1'] . ':IMAGE':
+			case $this->namespaces['rss2'] . ':IMAGE':
+				$this->inside_image = false;
+				break;
+
+			case 'AUTHOR':
+			case $this->namespaces['rss1'] . ':AUTHOR':
+			case $this->namespaces['rss2'] . ':AUTHOR':
+			case $this->namespaces['atom'] . ':AUTHOR':
+				$this->author_number++;
+				$this->inside_author = false;
+				break;
+
+			case 'CATEGORY':
+			case $this->namespaces['rss1'] . ':CATEGORY':
+			case $this->namespaces['rss2'] . ':CATEGORY':
+			case $this->namespaces['atom'] . ':CATEGORY':
+			case $this->namespaces['dc'] . ':SUBJECT':
+				$this->category_number++;
+				break;
+			
+			case 'ENCLOSURE':
+			case $this->namespaces['rss1'] . ':ENCLOSURE':
+			case $this->namespaces['rss2'] . ':ENCLOSURE':
+				$this->enclosure_number++;
+				break;
+				
+			case 'LINK':
+			case $this->namespaces['rss1'] . ':LINK':
+			case $this->namespaces['rss2'] . ':LINK':
+			case $this->namespaces['atom'] . ':LINK':
+				if ($this->inside_item)
+				{
+					$this->item_link_number++;
+				}
+				else
+				{
+					$this->link_number++;
+				}
+				break;
+		}
+	}
+	
+	function start_name_space($parser, $prefix, $uri = null)
+	{
+		$prefix = strtoupper($prefix);
+		$uri = strtoupper($uri);
+		if ($prefix == 'ATOM' || $uri == 'HTTP://WWW.W3.ORG/2005/ATOM' || $uri == 'HTTP://PURL.ORG/ATOM/NS#')
+		{
+			$this->namespaces['atom'] = $uri;
+		}
+		else if ($prefix == 'RSS2' || $uri == 'HTTP://BACKEND.USERLAND.COM/RSS2')
+		{
+			$this->namespaces['rss2'] = $uri;
+		}
+		else if ($prefix == 'RDF' || $uri == 'HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#')
+		{
+			$this->namespaces['rdf'] = $uri;
+		}
+		else if ($prefix == 'RSS' || $uri == 'HTTP://PURL.ORG/RSS/1.0/' || $uri == 'HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/')
+		{
+			$this->namespaces['rss1'] = $uri;
+		}
+		else if ($prefix == 'DC' || $uri == 'HTTP://PURL.ORG/DC/ELEMENTS/1.1/')
+		{
+			$this->namespaces['dc'] = $uri;
+		}
+		else if ($prefix == 'XHTML' || $uri == 'HTTP://WWW.W3.ORG/1999/XHTML')
+		{
+			$this->namespaces['xhtml'] = $uri;
+			$this->xhtml_prefix = $prefix;
+		}
+		else if ($prefix == 'CONTENT' || $uri == 'HTTP://PURL.ORG/RSS/1.0/MODULES/CONTENT/')
+		{
+			$this->namespaces['content'] = $uri;
+		}
+	}
+	
+	function end_name_space($parser, $prefix)
+	{
+		if ($key = array_search(strtoupper($prefix), $this->namespaces))
+		{
+			if ($key == 'atom')
+			{
+				$this->namespaces['atom'] = 'ATOM';
+			}
+			else if ($key == 'rss2')
+			{
+				$this->namespaces['rss2'] = 'RSS';
+			}
+			else if ($key == 'rdf')
+			{
+				$this->namespaces['rdf'] = 'RDF';
+			}
+			else if ($key == 'rss1')
+			{
+				$this->namespaces['rss1'] = 'RSS';
+			}
+			else if ($key == 'dc')
+			{
+				$this->namespaces['dc'] = 'DC';
+			}
+			else if ($key == 'xhtml')
+			{
+				$this->namespaces['xhtml'] = 'XHTML';
+				$this->xhtml_prefix = 'XHTML';
+			}
+			else if ($key == 'content')
+			{
+				$this->namespaces['content'] = 'CONTENT';
+			}
+		}
+	}
+}
+
+class SimplePie_Sanitize
+{
+	// Private vars
+	var $feedinfo;
+	var $info;
+	var $items;
+	var $feed_xmlbase;
+	var $item_xmlbase;
+	var $attribs;
+	
+	// Options
+	var $remove_div = true;
+	var $strip_ads = true;
+	var $replace_headers = false;
+	var $bypass_image_hotlink = 'i';
+	var $bypass_image_hotlink_page = false;
+	var $strip_htmltags = array('blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
+	var $encode_instead_of_strip = false;
+	var $strip_attributes = array('class', 'id', 'style', 'onclick', 'onmouseover', 'onmouseout', 'onfocus', 'onblur');
+	
+	function remove_div($enable = true)
+	{
+		$this->remove_div = (bool) $enable;
+	}
+	
+	function strip_ads($enable = true)
+	{
+		$this->strip_ads = (bool) $enable;
+	}
+	
+	function replace_headers($enable = false)
+	{
+		$this->enable_headers = (bool) $enable;
+	}
+	
+	function bypass_image_hotlink($get = 'i')
+	{
+		if ($get)
+		{
+			$this->bypass_image_hotlink = (string) $get;
+		}
+		else
+		{
+			$this->bypass_image_hotlink = false;
+		}
+	}
+	
+	function bypass_image_hotlink_page($page = false)
+	{
+		if ($page)
+		{
+			$this->bypass_image_hotlink_page = (string) $page;
+		}
+		else
+		{
+			$this->bypass_image_hotlink_page = false;
+		}
+	}
+	
+	function strip_htmltags($tags = array('blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'))
+	{
+		if ($tags)
+		{
+			if (is_array($tags))
+			{
+				$this->strip_htmltags = $tags;
+			}
+			else
+			{
+				$this->strip_htmltags = explode(',', $tags);
+			}
+		}
+		else
+		{
+			$this->strip_htmltags = false;
+		}
+	}
+	
+	function encode_instead_of_strip($enable = false)
+	{
+		$this->encode_instead_of_strip = (bool) $enable;
+	}
+	
+	function strip_attributes($attribs = array('class', 'id', 'style', 'onclick', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
+	{
+		if ($attribs)
+		{
+			if (is_array($attribs))
+			{
+				$this->strip_attributes = $attribs;
+			}
+			else
+			{
+				$this->strip_attributes = explode(',', $attribs);
+			}
+		}
+		else
+		{
+			$this->strip_attributes = false;
+		}
+	}
+	
+	function parse_data_array(&$data)
+	{		
+		// Feed Info (Type and Version)
+		if (!empty($data['feedinfo']['type']))
+		{
+			$this->feedinfo = $data['feedinfo'];
+		}
+		
+		// Feed level xml:base
+		if (!empty($data['feeddata']['attribs']['XML:BASE']))
+		{
+			$this->feed_xmlbase = parse_url($data['feeddata']['attribs']['XML:BASE']);
+		}
+		else if (!empty($data['feeddata']['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE']))
+		{
+			$this->feed_xmlbase = parse_url($data['feeddata']['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE']);
+		}
+		
+		// Feed link(s)
+		if (!empty($data['info']['link']))
+		{
+			foreach ($data['info']['link'] as $link)
+			{
+				if (empty($link['attribs']['REL']))
+				{
+					$rel = 'alternate';
+				}
+				else
+				{
+					$rel = strtolower($link['attribs']['REL']);
+				}
+				if ($rel == 'enclosure')
+				{
+					$href = null;
+					$type = null;
+					$length = null;
+					if (!empty($link['data']))
+					{
+						$href = $this->sanitize($link['data'], $link['attribs'], true);
+					}
+					else if (!empty($link['attribs']['HREF']))
+					{
+						$href = $this->sanitize($link['attribs']['HREF'], $link['attribs'], true);
+					}
+					if (!empty($link['attribs']['TYPE'])) {
+						$type = $this->sanitize($link['attribs']['TYPE'], $link['attribs']);
+					}
+					if (!empty($link['attribs']['LENGTH'])) {
+						$length = $this->sanitize($link['attribs']['LENGTH'], $link['attribs']);
+					}
+					$this->info['link']['enclosure'][] = new SimplePie_Enclosure($href, $type, $length);
+				}
+				else
+				{
+					if (!empty($link['data']))
+					{
+						$this->info['link'][$rel][] = $this->sanitize($link['data'], $link['attribs'], true);
+					}
+					else if (!empty($link['attribs']['HREF']))
+					{
+						$this->info['link'][$rel][] = $this->sanitize($link['attribs']['HREF'], $link['attribs'], true);
+					}
+				}
+			}
+		}
+		
+		// Use the first alternate link if we don't have any feed xml:base
+		if (empty($this->feed_xmlbase) && !empty($this->info['link']['alternate'][0]))
+		{
+			$this->feed_xmlbase = parse_url($this->info['link']['alternate'][0]);
+		}
+		
+		// Feed Title
+		if (!empty($data['info']['title']['data']))
+		{
+			$this->info['title'] = $this->sanitize($data['info']['title']['data'], $data['info']['title']['attribs']);
+		}
+		
+		// Feed Descriptions
+		if (!empty($data['info']['description']['data']))
+		{
+			$this->info['description'] = $this->sanitize($data['info']['description']['data'], $data['info']['description']['attribs']);
+		}
+		if (!empty($data['info']['dc:description']['data']))
+		{
+			$this->info['dc:description'] = $this->sanitize($data['info']['dc:description']['data'], $data['info']['dc:description']['attribs']);
+		}
+		if (!empty($data['info']['tagline']['data']))
+		{
+			$this->info['tagline'] = $this->sanitize($data['info']['tagline']['data'], $data['info']['tagline']['attribs']);
+		}
+		if (!empty($data['info']['subtitle']['data']))
+		{
+			$this->info['subtitle'] = $this->sanitize($data['info']['subtitle']['data'], $data['info']['subtitle']['attribs']);
+		}
+		
+		// Feed Language
+		if (!empty($data['info']['language']['data']))
+		{
+			$this->info['language'] = $this->sanitize($data['info']['language']['data'], $data['info']['language']['attribs']);
+		}
+		if (!empty($data['feeddata']['attribs']['XML:LANG']))
+		{
+			$this->info['xml:lang'] = $this->sanitize($data['feeddata']['attribs']['XML:LANG'], null);
+		}
+		else if (!empty($data['feeddata']['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:LANG']))
+		{
+			$this->info['xml:lang'] = $this->sanitize($data['feeddata']['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:LANG'], null);
+		}
+		
+		// Feed Copyright
+		if (!empty($data['info']['copyright']['data']))
+		{
+			$this->info['copyright'] = $this->sanitize($data['info']['copyright']['data'], $data['info']['copyright']['attribs']);
+		}
+		
+		// Feed Image
+		if (!empty($data['info']['image']['title']['data']))
+		{
+			$this->info['image']['title'] = $this->sanitize($data['info']['image']['title']['data'], $data['info']['image']['title']['attribs']);
+		}
+		if (!empty($data['info']['image']['url']['data']))
+		{
+			$this->info['image']['url'] = $this->sanitize($data['info']['image']['url']['data'], $data['info']['image']['url']['attribs'], true);
+		}
+		if (!empty($data['info']['logo']['data']))
+		{
+			$this->info['image']['logo'] = $this->sanitize($data['info']['logo']['data'], $data['info']['logo']['attribs'], true);
+		}
+		if (!empty($data['info']['image']['link']['data']))
+		{
+			$this->info['image']['link'] = $this->sanitize($data['info']['image']['link']['data'], $data['info']['image']['link']['attribs'], true);
+		}
+		if (!empty($data['info']['image']['width']['data']))
+		{
+			$this->info['image']['width'] = $this->sanitize($data['info']['image']['width']['data'], $data['info']['image']['width']['attribs']);
+		}
+		if (!empty($data['info']['image']['height']['data']))
+		{
+			$this->info['image']['height'] = $this->sanitize($data['info']['image']['height']['data'], $data['info']['image']['height']['attribs']);
+		}
+		
+		// Items
+		if (!empty($data['items']))
+		{
+			foreach ($data['items'] as $key => $item)
+			{
+				$newitem = null;
+				
+				// Item level xml:base
+				if (!empty($item['attribs']['XML:BASE']))
+				{
+					$this->item_xmlbase = parse_url(SimplePie_Misc::absolutize_url($item['attribs']['XML:BASE'], $this->feed_xmlbase));
+				}
+				else if (!empty($item['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE']))
+				{
+					$this->item_xmlbase = parse_url(SimplePie_Misc::absolutize_url($item['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE'], $this->feed_xmlbase));
+				}
+				else
+				{
+					$this->item_xmlbase = null;
+				}
+	
+				// Title
+				if (!empty($item['title']['data'])) {
+					$newitem['title'] = $this->sanitize($item['title']['data'], $item['title']['attribs']);
+				}
+				if (!empty($item['dc:title']['data']))
+				{
+					$newitem['dc:title'] = $this->sanitize($item['dc:title']['data'], $item['dc:title']['attribs']);
+				}
+				
+				// Description
+				if (!empty($item['content']['data']))
+				{
+					$newitem['content'] = $this->sanitize($item['content']['data'], $item['content']['attribs']);
+				}
+				if (!empty($item['encoded']['data']))
+				{
+					$newitem['encoded'] = $this->sanitize($item['encoded']['data'], $item['encoded']['attribs']);
+				}
+				if (!empty($item['summary']['data']))
+				{
+					$newitem['summary'] = $this->sanitize($item['summary']['data'], $item['summary']['attribs']);
+				}
+				if (!empty($item['description']['data']))
+				{
+					$newitem['description'] = $this->sanitize($item['description']['data'], $item['description']['attribs']);
+				}
+				if (!empty($item['dc:description']['data']))
+				{
+					$newitem['dc:description'] = $this->sanitize($item['dc:description']['data'], $item['dc:description']['attribs']);
+				}
+				if (!empty($item['longdesc']['data']))
+				{
+					$newitem['longdesc'] = $this->sanitize($item['longdesc']['data'], $item['longdesc']['attribs']);
+				}
+		
+				// Link(s)
+				if (!empty($item['link']))
+				{
+					foreach ($item['link'] as $link)
+					{
+						if (empty($link['attribs']['REL']))
+						{
+							$rel = 'alternate';
+						}
+						else
+						{
+							$rel = strtolower($link['attribs']['REL']);
+						}
+						if ($rel == 'enclosure')
+						{
+							$href = null;
+							$type = null;
+							$length = null;
+							if (!empty($link['data']))
+							{
+								$href = $this->sanitize($link['data'], $link['attribs'], true);
+							}
+							else if (!empty($link['attribs']['HREF']))
+							{
+								$href = $this->sanitize($link['attribs']['HREF'], $link['attribs'], true);
+							}
+							if (!empty($link['attribs']['TYPE'])) {
+								$type = $this->sanitize($link['attribs']['TYPE'], $link['attribs']);
+							}
+							if (!empty($link['attribs']['LENGTH'])) {
+								$length = $this->sanitize($link['attribs']['LENGTH'], $link['attribs']);
+							}
+							if (!empty($href))
+							{
+								$newitem['link'][$rel][] = new SimplePie_Enclosure($href, $type, $length);
+							}
+						}
+						else
+						{
+							if (!empty($link['data']))
+							{
+								$newitem['link'][$rel][] = $this->sanitize($link['data'], $link['attribs'], true);
+							}
+							else if (!empty($link['attribs']['HREF']))
+							{
+								$newitem['link'][$rel][] = $this->sanitize($link['attribs']['HREF'], $link['attribs'], true);
+							}
+						}
+					}
+				}
+				
+				// Enclosure(s)
+				if (!empty($item['enclosure']))
+				{
+					foreach ($item['enclosure'] as $enclosure)
+					{
+						if (!empty($enclosure['attribs']['URL']))
+						{
+							$type = null;
+							$length = null;
+							$href = $this->sanitize($enclosure['attribs']['URL'], $enclosure['attribs'], true);
+							if (!empty($enclosure['attribs']['TYPE']))
+							{
+								$type = $this->sanitize($enclosure['attribs']['TYPE'], $enclosure['attribs']);
+							}
+							if (!empty($enclosure['attribs']['LENGTH']))
+							{
+								$length = $this->sanitize($enclosure['attribs']['LENGTH'], $enclosure['attribs']);
+							}
+							$newitem['enclosures'][] = new SimplePie_Enclosure($href, $type, $length);
+						}
+					}
+				}
+				
+				// ID
+				if (!empty($item['guid']['data']))
+				{
+					if (!empty($item['guid']['attribs']['ISPERMALINK']) && strtolower($item['guid']['attribs']['ISPERMALINK']) == 'false')
+					{
+						$newitem['guid']['permalink'] = false;
+					}
+					else
+					{
+						$newitem['guid']['permalink'] = true;
+					}
+					$newitem['guid']['data'] = $this->sanitize($item['guid']['data'], $item['guid']['attribs']);
+				}
+				if (!empty($item['id']['data']))
+				{
+					$newitem['id'] = $this->sanitize($item['id']['data'], $item['id']['attribs']);
+				}
+				
+				// Date
+				if (!empty($item['pubdate']['data']))
+				{
+					$newitem['pubdate'] = $this->parse_date($this->sanitize($item['pubdate']['data'], $item['pubdate']['attribs']));
+				}
+				if (!empty($item['dc:date']['data']))
+				{
+					$newitem['dc:date'] = $this->parse_date($this->sanitize($item['dc:date']['data'], $item['dc:date']['attribs']));
+				}
+				if (!empty($item['issued']['data']))
+				{
+					$newitem['issued'] = $this->parse_date($this->sanitize($item['issued']['data'], $item['issued']['attribs']));
+				}
+				if (!empty($item['published']['data']))
+				{
+					$newitem['published'] = $this->parse_date($this->sanitize($item['published']['data'], $item['published']['attribs']));
+				}
+				if (!empty($item['modified']['data']))
+				{
+					$newitem['modified'] = $this->parse_date($this->sanitize($item['modified']['data'], $item['modified']['attribs']));
+				}
+				if (!empty($item['updated']['data']))
+				{
+					$newitem['updated'] = $this->parse_date($this->sanitize($item['updated']['data'], $item['updated']['attribs']));
+				}
+				
+				// Categories
+				if (!empty($item['category']))
+				{
+					foreach ($item['category'] as $category)
+					{
+						if (!empty($category['data']))
+						{
+							$newitem['category'][] = $this->sanitize($category['data'], $category['attribs']);
+						}
+					}
+				}
+				if (!empty($item['subject']))
+				{
+					foreach ($item['subject'] as $category)
+					{
+						if (!empty($category['data']))
+						{
+							$newitem['subject'][] = $this->sanitize($category['data'], $category['attribs']);
+						}
+					}
+				}
+				
+				// Author
+				if (!empty($item['creator']))
+				{
+					foreach ($item['creator'] as $creator)
+					{
+						if (!empty($creator['data']))
+						{
+							$newitem['creator'][] = new SimplePie_Author($this->sanitize($creator['data'], $creator['attribs']), null, null);
+						}
+					}
+				}
+				if (!empty($item['author']))
+				{
+					foreach ($item['author'] as $author)
+					{
+						if (!empty($author['rss']))
+						{
+							$sane = $this->sanitize($author['rss']['data'], $author['rss']['attribs']);
+							if (preg_match('/(.*)@(.*) \((.*)\)/msiU', $sane, $matches)) {
+								$name = trim($matches[3]);
+								$email = trim("$matches[1]@$matches[2]");
+							} else {
+								$email = $sane;
+							}
+						}
+						else
+						{
+							$name = null;
+							$link = null;
+							$email = null;
+							if (!empty($author['name']))
+							{
+								$name = $this->sanitize($author['name']['data'], $author['name']['attribs']);
+							}
+							if (!empty($author['url']))
+							{
+								$link = $this->sanitize($author['url']['data'], $author['url']['attribs'], true);
+							}
+							else if (!empty($author['uri']))
+							{
+								$link = $this->sanitize($author['uri']['data'], $author['uri']['attribs'], true);
+							}
+							else if (!empty($author['homepage']))
+							{
+								$link = $this->sanitize($author['homepage']['data'], $author['homepage']['attribs'], true);
+							}
+							if (!empty($author['email'])) {
+								$email = $this->sanitize($author['email']['data'], $author['email']['attribs']);
+							}
+						}
+						$newitem['author'][] = new SimplePie_Author($name, $link, $email);
+					}
+				}
+				unset($data['items'][$key]);
+				$this->items[] = new SimplePie_Item($newitem);
+			}
+		}
+	}
+	
+	function sanitize($data, $attribs, $is_url = false)
+	{
+		$this->attribs = $attribs;
+		if (isset($this->feedinfo['type']) && $this->feedinfo['type'] == 'Atom')
+		{
+			if (!empty($attribs['MODE']) && $attribs['MODE'] == 'base64')
+			{
+				$data = base64_decode($data);
+			}
+			else if ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')) && (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false'))
+			{
+				$data = $this->entities_decode($data);
+			}
+			if (!empty($attribs['TYPE']) && ($attribs['TYPE'] == 'xhtml' || $attribs['TYPE'] == 'application/xhtml+xml'))
+			{
+				if ($this->remove_div)
+				{
+					$data = preg_replace('/<div( .*)?>/msiU', '', strrev(preg_replace('/>vid\/</i', '', strrev($data), 1)), 1);
+				}
+				else
+				{
+					$data = preg_replace('/<div( .*)?>/msiU', '<div>', $data, 1);
+				}
+			}
+		}
+		else
+		{
+			if (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false')
+			{
+				$data = $this->entities_decode($data);
+			}
+		}
+		$data = trim($data);
+		$data = str_replace(' spencoded="false">', '>', $data);
+
+		// If Strip Ads is enabled, strip them.
+		if ($this->strip_ads)
+		{
+			$data = preg_replace('/<a (.*)href=(.*)click\.phdo\?s=(.*)<\/a>/msiU', '', $data); // Pheedo links (tested with Dooce.com)
+			$data = preg_replace('/<p(.*)>(.*)<a href="http:\/\/ad.doubleclick.net\/jump\/(.*)<\/p>/msiU', '', $data); // Doubleclick links (tested with InfoWorld.com)
+			$data = preg_replace('/<p><map (.*)name=(.*)google_ad_map(.*)<\/p>/msiU', '', $data); // Google AdSense for Feeds (tested with tuaw.com).
+			// Feedflare, from Feedburner
+		}
+
+		// Replace H1, H2, and H3 tags with the less important H4 tags.
+		// This is because on a site, the more important headers might make sense,
+		// but it most likely doesn't fit in the context of RSS-in-a-webpage.
+		if ($this->replace_headers)
+		{
+			$data = preg_replace('/<h[1-3]((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'|(.*)))*)\s*>/msiU', '<h4\\1>', $data);
+			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
+		}
+
+		if ($is_url)
+		{
+			$data = $this->replace_urls($data, true);
+		}
+		else
+		{
+			$data = preg_replace_callback('/<(\S+)((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'|(.*)))*)\s*(\/>|>(.*)<\/\S+>)/msiU', array(&$this, 'replace_urls'), $data);
+		}
+
+		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
+		if ($this->bypass_image_hotlink)
+		{
+			$images = SimplePie_Misc::get_element('img', $data);
+			foreach ($images as $img)
+			{
+				if (!empty($img['attribs']['SRC']['data']))
+				{
+					$pre = '';
+					if ($this->bypass_image_hotlink_page)
+					{
+						$pre = $this->bypass_image_hotlink_page;
+					}
+					$pre .= "?$this->bypass_image_hotlink=";
+					$img['attribs']['SRC']['data'] = $pre . rawurlencode(strtr($img['attribs']['SRC']['data'], array_flip(get_html_translation_table(HTML_SPECIALCHARS, ENT_QUOTES))));
+					$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
+				}
+			}
+		}
+
+		// Strip out HTML tags and attributes that might cause various security problems.
+		// Based on recommendations by Mark Pilgrim at:
+		// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
+		if ($this->strip_htmltags)
+		{
+			foreach ($this->strip_htmltags as $tag)
+			{
+				$data = preg_replace_callback("/<($tag)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'|(.*)))*)\s*(\/>|>(.*)<\/$tag>)/msiU", array(&$this, 'do_strip_htmltags'), $data);
+			}
+		}
+
+		if ($this->strip_attributes)
+		{
+			foreach ($this->strip_attributes as $attrib)
+			{
+				$data = preg_replace('/ '. trim($attrib) .'=("|&quot;)(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;|<|>|\+|{|})*("|&quot;)/i', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=(\'|&apos;)(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|"|&quot;|<|>|\+|{|})*(\'|&apos;)/i', '', $data);
+				$data = preg_replace('/ '. trim($attrib) .'=(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\+|{|})*/i', '', $data);
+			}
+		}
+
+		return $data;
+	}
+	
+	function do_strip_htmltags($match)
+	{
+		if ($this->encode_instead_of_strip)
+		{
+			if (isset($match[10]))
+			{
+				return "&lt;$match[1]$match[2]&gt;$match[10]&lt;/$match[1]&gt;";
+			}
+			else
+			{
+				return "&lt;$match[1]$match[2]/&gt;";
+			}
+		}
+		else
+		{
+			return '';
+		}
+	}
+	
+	function replace_urls($data, $raw_url = false)
+	{
+		if (!empty($this->attribs['XML:BASE']))
+		{
+			$xmlbase = $attribs['XML:BASE'];
+		}
+		else if (!empty($this->attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE']))
+		{
+			$xmlbase = $this->attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE'];
+		}
+		if (!empty($xmlbase))
+		{
+			if (!empty($this->item_xmlbase))
+			{
+				$xmlbase = parse_url(SimplePie_Misc::absolutize_url($xmlbase, $this->item_xmlbase));
+			}
+			else
+			{
+				$xmlbase = parse_url(SimplePie_Misc::absolutize_url($xmlbase, $this->feed_xmlbase));
+			}
+		}
+		else if (!empty($this->item_xmlbase))
+		{
+			$xmlbase = $this->item_xmlbase;
+		}
+		else
+		{
+			$xmlbase = $this->feed_xmlbase;
+		}
+		
+		if ($raw_url)
+		{
+			return SimplePie_Misc::absolutize_url($data, $xmlbase);
+		}
+		else
+		{
+			$attributes = array(
+				'background',
+				'href',
+				'src',
+				'longdesc',
+				'usemap',
+				'codebase',
+				'data',
+				'classid',
+				'cite',
+				'action',
+				'profile',
+				'for'
+			);
+			foreach ($attributes as $attribute)
+			{
+				if (preg_match("/$attribute='(.*)'/siU", $data[0], $attrib) || preg_match("/$attribute=\"(.*)\"/siU", $data[0], $attrib) || preg_match("/$attribute=(.*)[ |\/|>]/siU", $data[0], $attrib))
+				{
+					$new_tag = str_replace($attrib[1], SimplePie_Misc::absolutize_url($attrib[1], $xmlbase), $attrib[0]);
+					$data[0] = str_replace($attrib[0], $new_tag, $data[0]);
+				}
+			}
+			return $data[0];
+		}
+	}
+	
+	function entities_decode($data) {
+		return preg_replace_callback('/&(#)?(x)?([0-9a-z]+);/mi', array(&$this, 'do_entites_decode'), $data);
+	}
+	
+	function do_entites_decode($data)
+	{
+		$entity_html = html_entity_decode($data[0], ENT_QUOTES);
+		if ($data[0] == $entity_html) {
+			return preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $data[0]);
+		} else {
+			return $entity_html;
+		}
+	}
+
+	/*
+	 * Escape numeric entities
+	 * From a PHP Manual note (on html_entity_decode())
+	 * Copyright (c) 2005 by "php dot net at c dash ovidiu dot tk", 
+	 * "emilianomartinezluque at yahoo dot com" and "hurricane at cyberworldz dot org".
+	 *
+	 * This material may be distributed only subject to the terms and conditions set forth in 
+	 * the Open Publication License, v1.0 or later (the latest version is presently available at 
+	 * http://www.opencontent.org/openpub/).
+	 */
+	function replace_num_entity($ord) {
+		$ord = $ord[1];
+		if (preg_match('/^x([0-9a-f]+)$/i', $ord, $match))
+			$ord = hexdec($match[1]);
+		else
+			$ord = intval($ord);
+		$no_bytes = 0;
+		$byte = array();
+		if ($ord < 128)
+			return chr($ord);
+		if ($ord < 2048)
+			$no_bytes = 2;
+		else if ($ord < 65536)
+			$no_bytes = 3;
+		else if ($ord < 1114112)
+			$no_bytes = 4;
+		else return;
+		switch ($no_bytes) {
+			case 2:
+				$prefix = array(31, 192);
+				break;
+				
+			case 3:
+				$prefix = array(15, 224);
+				break;
+				
+			case 4:
+			$prefix = array(7, 240);
+			break;
+		}
+		for ($i=0; $i < $no_bytes; ++$i)
+			$byte[$no_bytes-$i-1] = (($ord & (63 * pow(2,6*$i))) / pow(2,6*$i)) & 63 | 128;
+		$byte[0] = ($byte[0] & $prefix[0]) | $prefix[1];
+		$ret = '';
+		for ($i=0; $i < $no_bytes; ++$i)
+			$ret .= chr($byte[$i]);
+		return $ret;
+	}
+	
+	function parse_date($date) {
+		if (preg_match('/([0-9]{2,4})-([0-9][0-9])-([0-9][0-9])T([0-9][0-9]):([0-9][0-9]):([0-9][0-9])(\.[0-9][0-9])?Z/i', $date, $matches)) {
+			if (isset($matches[7]) && substr($matches[7], 1) >= 50)
+				$matches[6]++;
+			return strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] -0000");
+		} else if (preg_match('/([0-9]{2,4})-([0-9][0-9])-([0-9][0-9])T([0-9][0-9]):([0-9][0-9]):([0-9][0-9])(\.[0-9][0-9])?(\+|-)([0-9][0-9]):([0-9][0-9])/i', $date, $matches)) {
+			if (isset($matches[7]) && substr($matches[7], 1) >= 50)
+				$matches[6]++;
+			return strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] $matches[8]$matches[9]$matches[10]");
+		} else {
+			return strtotime($date);
+		}
 	}
 }
 
