@@ -3062,7 +3062,7 @@ class SimplePie_Parser
 		}
 		else
 		{
-			$data = "<?xml encoding='$encoding'?>\n";
+			$data = "<?xml version='1.0' encoding='$encoding'?>\n" . $data;
 		}
 		
 		// Add an internal attribute to CDATA sections
