@@ -399,12 +399,12 @@ class SimplePie
 				$encoding = SimplePie_Misc::encoding(null);
 			}
 			
-			if (function_exists('iconv') && $encoding['use_iconv'] && iconv($encoding, 'UTF-8//TRANSLIT', $data))
+			if (function_exists('iconv') && $encoding['use_iconv'] && iconv($encoding['encoding'], 'UTF-8//TRANSLIT', $data))
 			{
 				$data = iconv($encoding['encoding'], 'UTF-8//TRANSLIT', $data);
 				$encoding['encoding'] = 'UTF-8';
 			}
-			else if (function_exists('iconv') && $encoding['use_iconv'] && iconv($encoding, 'UTF-8', $data))
+			else if (function_exists('iconv') && $encoding['use_iconv'] && iconv($encoding['encoding'], 'UTF-8', $data))
 			{
 				$data = iconv($encoding['encoding'], 'UTF-8', $data);
 				$encoding['encoding'] = 'UTF-8';
