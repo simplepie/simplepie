@@ -1226,9 +1226,9 @@ class SimplePie_Item
 	{
 		$enclosures = array();
 		$links = $this->get_links('enclosure');
-		if (!empty($this->data['enclosure']))
+		if (!empty($this->data['enclosures']))
 		{
-			$enclosures = array_merge($enclosures, $this->data['enclosure']);
+			$enclosures = array_merge($enclosures, $this->data['enclosures']);
 		}
 		if (!empty($links))
 		{
