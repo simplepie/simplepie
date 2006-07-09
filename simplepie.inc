@@ -1184,7 +1184,7 @@ class SimplePie_Item
 		}
 	}
 	
-	function get_link($key, $rel = 'alternative')
+	function get_link($key, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
 		if (!empty($links[$key]))
@@ -1197,7 +1197,7 @@ class SimplePie_Item
 		}
 	}
 	
-	function get_links($rel = 'alternative')
+	function get_links($rel = 'alternate')
 	{
 		if (!empty($this->data['link'][$rel]))
 		{
@@ -3055,7 +3055,7 @@ class SimplePie_Parser
 		if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog))
 		{
 			$length = strlen($prolog[0]);
-			$prolog = preg_replace('/\sstandalone=("no"|\'no\')/i', '', $prolog[0]);
+			$prolog = preg_replace('/\sstandalone=("(.*)"|\'(.*)\')/msiU', '', $prolog[0]);
 			$prolog = preg_replace('/\sencoding=("(.*)"|\'(.*)\')/msiU', '', $prolog);
 			$prolog = str_replace('?>', " encoding='$encoding'?>", $prolog);
 			$data = substr_replace($data, $prolog, 0, $length);
