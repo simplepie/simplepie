@@ -4374,18 +4374,29 @@ class SimplePie_Sanitize
 		return $ret;
 	}
 	
-	function parse_date($date) {
-		if (preg_match('/([0-9]{2,4})-([0-9][0-9])-([0-9][0-9])T([0-9][0-9]):([0-9][0-9]):([0-9][0-9])(\.[0-9][0-9])?Z/i', $date, $matches)) {
+	function parse_date($date)
+	{
+		if (preg_match('/([0-9]{2,4})-([0-9][0-9])-([0-9][0-9])T([0-9][0-9]):([0-9][0-9]):([0-9][0-9])(\.[0-9][0-9])?Z/i', $date, $matches)) 
+		{
 			if (isset($matches[7]) && substr($matches[7], 1) >= 50)
+			{
 				$matches[6]++;
-			return strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] -0000");
-		} else if (preg_match('/([0-9]{2,4})-([0-9][0-9])-([0-9][0-9])T([0-9][0-9]):([0-9][0-9]):([0-9][0-9])(\.[0-9][0-9])?(\+|-)([0-9][0-9]):([0-9][0-9])/i', $date, $matches)) {
-			if (isset($matches[7]) && substr($matches[7], 1) >= 50)
-				$matches[6]++;
-			return strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] $matches[8]$matches[9]$matches[10]");
-		} else {
-			return strtotime($date);
+			}
+			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] -0000");
 		}
+		else if (preg_match('/([0-9]{2,4})-([0-9][0-9])-([0-9][0-9])T([0-9][0-9]):([0-9][0-9]):([0-9][0-9])(\.[0-9][0-9])?(\+|-)([0-9][0-9]):([0-9][0-9])/i', $date, $matches))
+		{
+			if (isset($matches[7]) && substr($matches[7], 1) >= 50)
+			{
+				$matches[6]++;
+			}
+			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] $matches[8]$matches[9]$matches[10]");
+		}
+		else
+		{
+			$date = strtotime($date);
+		}
+		return ($date > 0) ? $date : false;
 	}
 }
 
