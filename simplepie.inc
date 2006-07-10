@@ -44,6 +44,7 @@ class SimplePie
 	
 	// Misc. variables
 	var $data;
+	var $error;
 	
 	function SimplePie($feed_url = null, $cache_location = null, $cache_max_minutes = null)
 	{
@@ -4080,6 +4081,9 @@ class SimplePie_Sanitize
 				{
 					foreach ($item['author'] as $author)
 					{
+						$name = null;
+						$link = null;
+						$email = null;
 						if (!empty($author['rss']))
 						{
 							$sane = $this->sanitize($author['rss']['data'], $author['rss']['attribs']);
@@ -4092,9 +4096,6 @@ class SimplePie_Sanitize
 						}
 						else
 						{
-							$name = null;
-							$link = null;
-							$email = null;
 							if (!empty($author['name']))
 							{
 								$name = $this->sanitize($author['name']['data'], $author['name']['attribs']);
