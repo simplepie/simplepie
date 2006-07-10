@@ -82,6 +82,11 @@ function do_first_item_link_test($file, $expected) {
 	test_output($file, $item->get_permalink(), $expected);
 }
 
+function do_relative_absolutize_test($url, $base, $expected)
+{
+	test_output($url, SimplePie_Misc::absolutize_url($url, $base), $expected);
+}
+
 function callable_nl2br($string) {
 	return nl2br($string);
 }
