@@ -74,7 +74,7 @@ do_relative_absolutize_test('g?y/./x', $base, 'http://a/b/c/g?y/./x');
 do_relative_absolutize_test('g?y/../x', $base, 'http://a/b/c/g?y/../x');
 do_relative_absolutize_test('g#s/./x', $base, 'http://a/b/c/g#s/./x');
 do_relative_absolutize_test('g#s/../x', $base, 'http://a/b/c/g#s/../x');
-do_relative_absolutize_test('http:g', $base, 'http://a/b/c/g');
+do_relative_absolutize_test('http:g', $base, 'http:g');
 
 
 
