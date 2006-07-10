@@ -1637,6 +1637,11 @@ class SimplePie_File
 	
 	function SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null)
 	{
+		if (class_exists('idna_convert'))
+		{
+			$idn = new idna_convert;
+			$url = $idn->encode($url);
+		}
 		$this->url = $url;
 		$this->useragent = $useragent;
 		if (preg_match('/^http(s)?:\/\//i', $url))
