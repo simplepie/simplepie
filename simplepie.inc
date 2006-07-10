@@ -4251,7 +4251,14 @@ class SimplePie_Sanitize
 		}
 		else
 		{
-			return '';
+			if (isset($match[10]))
+			{
+				return $match[10];
+			}
+			else
+			{
+				return '';
+			}
 		}
 	}
 	
