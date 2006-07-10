@@ -1679,7 +1679,11 @@ class SimplePie_File
 				}
 				else
 				{
-					list($this->headers, $this->body) = explode("\r\n\r\n", trim(curl_exec($fp)), 2);
+					$this->headers = trim(curl_exec($fp));
+					$info = curl_getinfo($fp);
+					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 2);
+					$this->body = array_pop($this->headers);
+					$this->headers = array_pop($this->headers);
 					$this->headers = $this->parse_headers($this->headers);
 				}
 			}
