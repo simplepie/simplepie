@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 9 July 2006
+Updated: 10 July 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060709';
+	var $build = '20060710';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1673,7 +1673,7 @@ class SimplePie_File
 				}
 				else
 				{
-					list($this->headers, $this->body) = explode("\r\n\r\n", curl_exec($fp), 2);
+					list($this->headers, $this->body) = explode("\r\n\r\n", trim(curl_exec($fp)), 2);
 					$this->headers = $this->parse_headers($this->headers);
 				}
 			}
@@ -1715,7 +1715,7 @@ class SimplePie_File
 						$data .= fgets($this->fp, 128);
 						$info = stream_get_meta_data($this->fp);
 					}
-					$this->headers = $this->parse_headers(substr($data, 0, -4));
+					$this->headers = $this->parse_headers(trim($data));
 					if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
 					{
 						$this->redirects++;
@@ -1759,6 +1759,7 @@ class SimplePie_File
 				{
 					$this->body .= fread($this->fp, 1024);
 				}
+				$this->body = trim($this->body);
 				$this->close();
 			}
 		}
@@ -1822,7 +1823,7 @@ class SimplePie_Cache
 		$this->name = "$location/$this->filename.$this->extension";
 	}
 	
-	function save(&$data)
+	function save($data)
 	{
 		if (file_exists($this->name) && is_writeable($this->name) || file_exists($this->location) && is_writeable($this->location))
 		{
