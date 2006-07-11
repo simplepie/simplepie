@@ -1734,7 +1734,7 @@ class SimplePie_File
 					}
 					if ($info['timed_out'] === false)
 					{
-						$this->headers = $this->parse_headers(trim($data));
+						$this->headers = $this->parse_headers($data);
 						if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
 						{
 							$this->redirects++;
@@ -1814,21 +1814,21 @@ class SimplePie_File
 	
 	function parse_headers($headers)
 	{
-		$headers = explode("\r\n", $headers);
+		$headers = explode("\r\n", trim($headers));
 		$status = array_shift($headers);
 		foreach ($headers as $header)
 		{
 			$data = explode(':', $header, 2);
 			$head[strtolower(trim($data[0]))] = trim($data[1]);
 		}
-		if (preg_match('/HTTP\/[0-9\.]+ ([0-9]+) (.*)/i', $status, $matches))
+		if (preg_match('/HTTP\/[0-9\.]+ ([0-9]+)(.*)$/i', $status, $matches))
 		{
 			if (isset($head['status']))
 			{
 				unset($head['status']);
 			}
 			$head['status']['code'] = $matches[1];
-			$head['status']['name'] = $matches[2];
+			$head['status']['name'] = trim($matches[2]);
 		}
 		return $head;
 	}
