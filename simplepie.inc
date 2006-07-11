@@ -1743,6 +1743,8 @@ class SimplePie_File
 					}
 					else
 					{
+						$this->close();
+						$this->success = false;
 						return false;
 					}
 				}
