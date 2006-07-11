@@ -1732,11 +1732,18 @@ class SimplePie_File
 						$data .= fgets($this->fp, 128);
 						$info = stream_get_meta_data($this->fp);
 					}
-					$this->headers = $this->parse_headers(trim($data));
-					if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
+					if ($info['timed_out'] === false)
 					{
-						$this->redirects++;
-						return $this->__construct($this->headers['location'], $timeout, $redirects, $headers, $useragent);
+						$this->headers = $this->parse_headers(trim($data));
+						if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
+						{
+							$this->redirects++;
+							return $this->__construct($this->headers['location'], $timeout, $redirects, $headers, $useragent);
+						}
+					}
+					else
+					{
+						return false;
 					}
 				}
 			}
