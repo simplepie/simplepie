@@ -4155,8 +4155,9 @@ class SimplePie_Sanitize
 		$this->attribs = $attribs;
 		if (isset($this->feedinfo['type']) && $this->feedinfo['type'] == 'Atom')
 		{
-			if (!empty($attribs['MODE']) && $attribs['MODE'] == 'base64')
+			if ((!empty($attribs['MODE']) && $attribs['MODE'] == 'base64') || (!empty($attribs['TYPE']) && $attribs['TYPE'] == 'application/octet-stream'))
 			{
+				$data = trim($data);
 				$data = base64_decode($data);
 			}
 			else if ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')) && (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false'))
