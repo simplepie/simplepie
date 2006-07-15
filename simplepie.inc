@@ -277,7 +277,7 @@ EOT;
 			{
 				$encoding = SimplePie_Misc::encoding($charset[1]);
 			}
-			else if (preg_match('/<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding(\s*)?=(\s*)?["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
+			else if (preg_match('/<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding=["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
 			{
 				$encoding = SimplePie_Misc::encoding($encoding[1]);
 			}
