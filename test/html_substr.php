@@ -2,14 +2,13 @@
 
 $html = "<p>In the <i>world of the <b class=fishsticks>web www</b></i>, <a href=\"http://simplepie.org/blog/2006/07/01/followup-user-experience-customer-service/\">SimplePie wrote about it</a>. abc. And here is an image: <img src=\"http://simplepie.org/images/128/desktop-mac.png\" alt=\"Mac Desktop\" title=\"Mac Desktop\" border=\"0\" /></p>";
 
-echo shortdesc($html, 38);
-//echo "elvis";
+echo shortdesc($html, 50);
 
 function shortdesc($string, $length='1000000', $line_ending='...') {
 	// Need to port line-ending logic from SPL
 
-	//return balance_html_tags(html_substr($string, $length));
-	return html_substr($string, $length);
+	return balance_html_tags(html_substr($string, $length));
+	//return html_substr($string, $length);
 }
 
 // By Jay
@@ -35,14 +34,14 @@ function html_substr($string, $length=false) {
 	$clean = preg_replace($pattern, chr(1), $string);
 
 	if (!$length) {
-		//$str = word_substr($clean);
-		$str = substr($clean);
+		$str = word_substr($clean);
+		//$str = substr($clean);
 	}
 	else {
-		//$str = word_substr($clean, $length);
-		//$str = word_substr($clean, $length + substr_count($str, chr(1)));
-		$str = substr($clean, 0, $length);
-		$str = substr($clean, 0, $length + substr_count($str, chr(1)));
+		$str = word_substr($clean, $length);
+		$str = word_substr($clean, $length + substr_count($str, chr(1)));
+		//$str = substr($clean, 0, $length);
+		//$str = substr($clean, 0, $length + substr_count($str, chr(1)));
 	}
 
 	$pattern = str_replace(chr(1), '(.*?)', preg_quote($str));
