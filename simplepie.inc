@@ -1665,11 +1665,13 @@ class SimplePie_File
 				return false;
 			}
 			else
-			{
+                        {
 				$this->body = '';
-				while (!feof($this->fp))
-				{
-					$this->body .= fread($this->fp, 1024);
+				if ($this->fp) {
+					while (!feof($this->fp))
+					{
+						$this->body .= fread($this->fp, 1024);
+					}
 				}
 				$this->body = trim($this->body);
 				$this->close();
