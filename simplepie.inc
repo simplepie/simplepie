@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 15 July 2006
+Updated: 25 July 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060715';
+	var $build = '20060725';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -277,7 +277,7 @@ EOT;
 			{
 				$encoding = SimplePie_Misc::encoding($charset[1]);
 			}
-			else if (preg_match('/<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding=["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
+			else if (preg_match('/<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
 			{
 				$encoding = SimplePie_Misc::encoding($encoding[1]);
 			}
@@ -2966,22 +2966,15 @@ class SimplePie_Parser
 	{
 		$this->encoding = $encoding;
 		
-		// Set XML prologue to encoding
+		// Make sure the XML prolog is sane and has the correct encoding
 		if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog))
 		{
-			$length = strlen($prolog[0]);
-			$prolog = preg_replace('/\sstandalone=("(.*)"|\'(.*)\')/msiU', '', $prolog[0]);
-			$prolog = preg_replace('/\sencoding=("(.*)"|\'(.*)\')/msiU', '', $prolog);
-			$prolog = str_replace('?>', " encoding='$encoding'?>", $prolog);
-			$data = substr_replace($data, $prolog, 0, $length);
+			$data = substr_replace($data, '', 0, strlen($prolog[0]));
 		}
-		else
-		{
-			$data = "<?xml version='1.0' encoding='$encoding'?>\n" . $data;
-		}
+		$data = "<?xml version='1.0' encoding='$encoding'?>\n" . $data;
 		
 		// Add an internal attribute to CDATA sections
-		$data = preg_replace_callback('/<(\S+)((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'|(.*)))*)\s*(\/>|><\!\[CDATA\[(.*)<\/\\1>)/msiU', array(&$this, 'spencoded'), $data);
+		$data = preg_replace_callback('/<(\S+)((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'|(.*)))*)\s*(\/>|>\s*<\!\[CDATA\[(.*)<\/\\1>)/msiU', array(&$this, 'spencoded'), $data);
 		
 		// Put some data into CDATA blocks
 		// If we're RSS
@@ -3054,7 +3047,7 @@ class SimplePie_Parser
 	{
 		if (isset($match[10]))
 		{
-			return "<$match[1]$match[2] spencoded=\"false\">$match[10]</$match[1]>";
+			return "<$match[1]$match[2] spencoded=\"false\"><![CDATA[$match[10]</$match[1]>";
 		}
 		return $match[0];
 	}
