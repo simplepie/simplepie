@@ -1660,21 +1660,19 @@ class SimplePie_File
 	{
 		if (is_null($this->body))
 		{
-			if (is_null($this->fp))
+			if ($this->fp)
 			{
-				return false;
-			}
-			else
-                        {
 				$this->body = '';
-				if ($this->fp) {
-					while (!feof($this->fp))
-					{
-						$this->body .= fread($this->fp, 1024);
-					}
+				while (!feof($this->fp))
+				{
+					$this->body .= fread($this->fp, 1024);
 				}
 				$this->body = trim($this->body);
 				$this->close();
+			}
+			else
+			{
+				return false;
 			}
 		}
 		return $this->body;
