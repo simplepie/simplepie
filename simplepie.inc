@@ -4264,7 +4264,7 @@ class SimplePie_Sanitize
 	
 	function do_entites_decode($data)
 	{
-		$entity_html = html_entity_decode($data[0], ENT_QUOTES);
+		$entity_html = utf8_encode(html_entity_decode($data[0], ENT_QUOTES));
 		if ($data[0] == $entity_html) {
 			return preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $data[0]);
 		} else {
