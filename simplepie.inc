@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 25 July 2006
+Updated: 26 July 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060725';
+	var $build = '20060726';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -161,7 +161,7 @@ class SimplePie
 		if (isset($_GET['js']))
 		{
 			// Replace with de-horrified heredoc syntax $embed
-			$embed=<<<EOT
+			$embed = <<<EOT
 function embed_odeo(link) {document.writeln('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="440" height="80" align="middle"><param name="movie" value="http://odeo.com/flash/audio_player_fullsize.swf" /><param name="allowScriptAccess" value="any" /><param name="quality" value="high"><param name="wmode" value="transparent"><param name="flashvars" value="valid_sample_rate=true&external_url='+link+'" /><embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url='+link+'"></embed></object>');}
 function embed_quicktime(type, bgcolor, width, height, link, placeholder, loop) {document.writeln('<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" style="cursor:hand; cursor:pointer;" type="'+type+'" codebase="http://www.apple.com/qtactivex/qtplugin.cab" bgcolor="'+bgcolor+'" width="'+width+'" height="'+height+'"><param name="href" value="'+link+'" /><param name="src" value="'+placeholder+'" /><param name="autoplay" value="false" /><param name="target" value="myself" /><param name="controller" value="false" /><param name="loop" value="'+loop+'" /><param name="scale" value="aspect" /><param name="bgcolor" value="'+bgcolor+'"><embed type="'+type+'" style="cursor:hand; cursor:pointer;" href="'+link+'" src="'+placeholder+'" width="'+width+'" height="'+height+'" autoplay="false" target="myself" controller="false" loop="'+loop+'" scale="aspect" bgcolor="'+bgcolor+'" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>');}
 function embed_flash(bgcolor, width, height, link, loop, type) {document.writeln('<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" bgcolor="'+bgcolor+'" width="'+width+'" height="'+height+'"><param name="movie" value="'+link+'"><param name="quality" value="high"><param name="loop" value="'+loop+'"><param name="bgcolor" value="'+bgcolor+'"><embed src="'+link+'" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="'+type+'" quality="high" width="'+width+'" height="'+height+'" bgcolor="'+bgcolor+'" loop="'+loop+'"></embed></object>');}
@@ -3000,15 +3000,12 @@ class SimplePie_Parser
 		}
 		foreach ($sp_elements as $full)
 		{
-			// The (<\!\[CDATA\[)? never matches any CDATA block, therefore the CDATA gets added, but never replaced
-			$data = preg_replace("/<$full(.*)>[\s]*(<\!\[CDATA\[)?(.*)(]]>)?[\s]*<\/$full>/msiU", "<$full\\1><![CDATA[\\3]]></$full>", $data);
-			// The following line is a work-around for the above bug
-			$data = preg_replace("/<$full(.*)><\!\[CDATA\[[\s]*<\!\[CDATA\[/msiU", "<$full\\1><![CDATA[", $data);
+			$data = preg_replace_callback("/<($full)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'|(.*)))*)\s*(\/>|>(.*)<\/$full>)/msiU", array(&$this, 'add_cdata'), $data);
 		}
 		foreach ($sp_elements as $full)
 		{
 			// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
-			$data = preg_replace_callback("/<($full)(.*)><!\[CDATA\[(.*)\]\]><\/$full>/msiU", array(&$this, 'cdata_in_cdata'), $data);
+			$data = preg_replace_callback("/<($full)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'|(.*)))*)\s*(\/>|><!\[CDATA\[(.*)\]\]><\/$full>)/msiU", array(&$this, 'cdata_in_cdata'), $data);
 		}
 		
 		// Return the XML, if so desired
@@ -3041,6 +3038,17 @@ class SimplePie_Parser
 		return;
 	}
 	
+	function add_cdata($match)
+	{
+		if (isset($match[10]))
+		{
+			$match[10] = preg_replace('/^\s*<\!\[CDATA\[/msiU', '', $match[10]);
+			$match[10] = preg_replace('/]]>\s*$/msiU', '', $match[10]);
+			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
+		}
+		return $match[0];
+	}
+	
 	function spencoded($match)
 	{
 		if (isset($match[10]))
@@ -3052,8 +3060,12 @@ class SimplePie_Parser
 
 	function cdata_in_cdata($match)
 	{
-		$match[3] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[3]);
-		return "<$match[1]$match[2]><![CDATA[$match[3]]]></$match[1]>";
+		if (isset($match[10]))
+		{
+			$match[10] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[10]);
+			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
+		}
+		return $match[0];
 	}
 	
 	function real_cdata_in_cdata($match)
