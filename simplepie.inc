@@ -155,6 +155,10 @@ class SimplePie
 	{
 		if ($this->sanitize->bypass_image_hotlink && !empty($_GET[$this->sanitize->bypass_image_hotlink]))
 		{
+			if (get_magic_quotes_gpc())
+			{
+				$_GET[$this->sanitize->bypass_image_hotlink] = stripslashes($_GET[$this->sanitize->bypass_image_hotlink]);
+			}
 			SimplePie_Misc::display_file($_GET[$this->sanitize->bypass_image_hotlink], 10, $this->useragent);
 		}
 		
@@ -385,6 +389,10 @@ EOT;
 			if ($this->get_encoding())
 			{
 				$header .= ' charset=' . $this->get_encoding();
+			}
+			else
+			{
+				$header .= ' charset=UTF-8';
 			}
 			header($header);
 		}
