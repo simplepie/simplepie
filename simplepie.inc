@@ -269,6 +269,7 @@ EOT;
 				{
 					$this->error = "A feed could not be found at $this->rss_url";
 					SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+					return false;
 				}
 			}
 			
@@ -365,6 +366,7 @@ EOT;
 			{
 				$this->error = "XML error: $data->error_string at line $data->current_line, column $data->current_column";
 				SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+				return false;
 			}
 		}
 	}
@@ -1573,6 +1575,7 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
 				curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+				$this->headers = trim(curl_exec($fp));
 				if (curl_errno($fp))
 				{
 					$this->success = false;
@@ -1580,7 +1583,6 @@ class SimplePie_File
 				}
 				else
 				{
-					$this->headers = trim(curl_exec($fp));
 					$info = curl_getinfo($fp);
 					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 2);
 					$this->body = array_pop($this->headers);
@@ -2800,28 +2802,34 @@ class SimplePie_Locator
 		
 		if ($this->get_links($this->file))
 		{
-			$extension_local = $this->extension($this->local);
-			if ($extension_local)
+			if (!empty($this->local))
 			{
-				return $extension_local;
+				$extension_local = $this->extension($this->local);
+				if ($extension_local)
+				{
+					return $extension_local;
+				}
+			
+				$body_local = $this->body($this->local);
+				if ($body_local)
+				{
+					return $body_local;
+				}
 			}
 			
-			$body_local = $this->body($this->local);
-			if ($body_local)
+			if (!empty($this->elsewhere))
 			{
-				return $body_local;
-			}
-			
-			$extension_elsewhere = $this->extension($this->elsewhere);
-			if ($extension_elsewhere)
-			{
-				return $extension_elsewhere;
-			}
-			
-			$body_elsewhere = $this->body($this->elsewhere);
-			if ($body_elsewhere)
-			{
-				return $body_elsewhere;
+				$extension_elsewhere = $this->extension($this->elsewhere);
+				if ($extension_elsewhere)
+				{
+					return $extension_elsewhere;
+				}
+				
+				$body_elsewhere = $this->body($this->elsewhere);
+				if ($body_elsewhere)
+				{
+					return $body_elsewhere;
+				}
 			}
 		}
 		return false;
@@ -2855,7 +2863,7 @@ class SimplePie_Locator
 			if (!empty($link['attribs']['TYPE']['data']) && !empty($link['attribs']['HREF']['data']))
 			{
 				$type = strtolower(trim($link['attribs']['TYPE']['data']));
-				$href = trim($link['attribs']['HREF']['data']);
+				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->parsed_url);
 				if (!in_array($href, $done) && in_array($type, array('application/rss+xml', 'application/atom+xml', 'application/rdf+xml', 'application/xml+rss', 'application/xml+atom', 'application/xml+rdf', 'application/xml', 'application/x.atom+xml', 'text/xml')))
 				{
 					$feed = $this->is_feed($href);
@@ -2892,10 +2900,16 @@ class SimplePie_Locator
 				}
 			}
 		}
-		if (!empty($this->local) || !empty($this->elsewhere))
+		if (!empty($this->local))
 		{
 			$this->local = array_unique($this->local);
+		}
+		if (!empty($this->elsewhere))
+		{
 			$this->elsewhere = array_unique($this->elsewhere);
+		}
+		if (!empty($this->local) || !empty($this->elsewhere))
+		{
 			return true;
 		}
 		return false;
