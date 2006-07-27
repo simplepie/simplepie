@@ -3063,8 +3063,8 @@ class SimplePie_Parser
 	{
 		if (isset($match[9]))
 		{
-			$match[10] = preg_replace('/^\s*<\!\[CDATA\[/msiU', '', $match[9]);
-			$match[10] = preg_replace('/]]>\s*$/msiU', '', $match[9]);
+			$match[9] = preg_replace('/^\s*<\!\[CDATA\[/msiU', '', $match[9]);
+			$match[9] = preg_replace('/]]>\s*$/msiU', '', $match[9]);
 			return "<$match[1]$match[2]><![CDATA[$match[9]]]></$match[1]>";
 		}
 		return $match[0];
@@ -3083,7 +3083,7 @@ class SimplePie_Parser
 	{
 		if (isset($match[9]))
 		{
-			$match[10] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[9]);
+			$match[9] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[9]);
 			return "<$match[1]$match[2]><![CDATA[$match[9]]]></$match[1]>";
 		}
 		return $match[0];
