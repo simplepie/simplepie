@@ -3061,30 +3061,30 @@ class SimplePie_Parser
 	
 	function add_cdata($match)
 	{
-		if (isset($match[10]))
+		if (isset($match[9]))
 		{
-			$match[10] = preg_replace('/^\s*<\!\[CDATA\[/msiU', '', $match[10]);
-			$match[10] = preg_replace('/]]>\s*$/msiU', '', $match[10]);
-			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
+			$match[10] = preg_replace('/^\s*<\!\[CDATA\[/msiU', '', $match[9]);
+			$match[10] = preg_replace('/]]>\s*$/msiU', '', $match[9]);
+			return "<$match[1]$match[2]><![CDATA[$match[9]]]></$match[1]>";
 		}
 		return $match[0];
 	}
 	
 	function spencoded($match)
 	{
-		if (isset($match[10]))
+		if (isset($match[9]))
 		{
-			return "<$match[1]$match[2] spencoded=\"false\"><![CDATA[$match[10]</$match[1]>";
+			return "<$match[1]$match[2] spencoded=\"false\"><![CDATA[$match[9]</$match[1]>";
 		}
 		return $match[0];
 	}
 
 	function cdata_in_cdata($match)
 	{
-		if (isset($match[10]))
+		if (isset($match[9]))
 		{
-			$match[10] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[10]);
-			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
+			$match[10] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[9]);
+			return "<$match[1]$match[2]><![CDATA[$match[9]]]></$match[1]>";
 		}
 		return $match[0];
 	}
