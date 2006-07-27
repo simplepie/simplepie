@@ -4,6 +4,7 @@ include('../simplepie.inc');
 // Parse it
 $feed = new SimplePie();
 if (!empty($_GET['feed'])) {
+	$_GET['feed'] = stripslashes($_GET['feed']);
 	$feed->feed_url($_GET['feed']);
 	$feed->enable_caching(false);
 	if (isset($_GET['xmldump'])) $feed->enable_xmldump($_GET['xmldump']);

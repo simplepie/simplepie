@@ -2,8 +2,15 @@
 
 function microtime_float()
 {
-	list($usec, $sec) = explode(' ', microtime());
-	return ((float)$usec + (float)$sec);
+	if (version_compare(php_version(), '5.0.0', '>='))
+	{
+		return microtime(true);
+	}
+	else
+	{
+		list($usec, $sec) = explode(' ', microtime());
+		return ((float) $usec + (float) $sec);
+	}
 }
 
 $start = microtime_float();
@@ -13,10 +20,11 @@ include('../simplepie.inc');
 // Parse it
 $feed = new SimplePie();
 if (!empty($_GET['feed'])) {
+	$_GET['feed'] = stripslashes($_GET['feed']);
 	$feed->feed_url($_GET['feed']);
 	$feed->init();
-	if (!headers_sent() && $feed->get_encoding()) header('Content-type: text/html; charset=' . $feed->get_encoding());
 }
+$feed->handle_content_type();
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
