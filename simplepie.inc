@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 26 July 2006
+Updated: 27 July 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060726';
+	var $build = '20060727';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -164,7 +164,6 @@ class SimplePie
 		
 		if (isset($_GET['js']))
 		{
-			// Replace with de-horrified heredoc syntax $embed
 			$embed = <<<EOT
 function embed_odeo(link) {document.writeln('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="440" height="80" align="middle"><param name="movie" value="http://odeo.com/flash/audio_player_fullsize.swf" /><param name="allowScriptAccess" value="any" /><param name="quality" value="high"><param name="wmode" value="transparent"><param name="flashvars" value="valid_sample_rate=true&external_url='+link+'" /><embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url='+link+'"></embed></object>');}
 function embed_quicktime(type, bgcolor, width, height, link, placeholder, loop) {document.writeln('<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" style="cursor:hand; cursor:pointer;" type="'+type+'" codebase="http://www.apple.com/qtactivex/qtplugin.cab" bgcolor="'+bgcolor+'" width="'+width+'" height="'+height+'"><param name="href" value="'+link+'" /><param name="src" value="'+placeholder+'" /><param name="autoplay" value="false" /><param name="target" value="myself" /><param name="controller" value="false" /><param name="loop" value="'+loop+'" /><param name="scale" value="aspect" /><param name="bgcolor" value="'+bgcolor+'"><embed type="'+type+'" style="cursor:hand; cursor:pointer;" href="'+link+'" src="'+placeholder+'" width="'+width+'" height="'+height+'" autoplay="false" target="myself" controller="false" loop="'+loop+'" scale="aspect" bgcolor="'+bgcolor+'" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>');}
@@ -2994,7 +2993,7 @@ class SimplePie_Parser
 		$data = "<?xml version='1.0' encoding='$encoding'?>\n" . $data;
 		
 		// Add an internal attribute to CDATA sections
-		$data = preg_replace_callback('/<(\S+)((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'|(.*)))*)\s*(\/>|>\s*<\!\[CDATA\[(.*)<\/\\1>)/msiU', array(&$this, 'spencoded'), $data);
+		$data = preg_replace_callback('/<(\S+)((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'))*)\s*(\/>|>\s*<\!\[CDATA\[(.*)<\/\\1>)/msiU', array(&$this, 'spencoded'), $data);
 		
 		// Put some data into CDATA blocks
 		// If we're RSS
@@ -3022,12 +3021,12 @@ class SimplePie_Parser
 		}
 		foreach ($sp_elements as $full)
 		{
-			$data = preg_replace_callback("/<($full)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'|(.*)))*)\s*(\/>|>(.*)<\/$full>)/msiU", array(&$this, 'add_cdata'), $data);
+			$data = preg_replace_callback("/<($full)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'))*)\s*(\/>|>(.*)<\/$full>)/msiU", array(&$this, 'add_cdata'), $data);
 		}
 		foreach ($sp_elements as $full)
 		{
 			// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
-			$data = preg_replace_callback("/<($full)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'|(.*)))*)\s*(\/>|><!\[CDATA\[(.*)\]\]><\/$full>)/msiU", array(&$this, 'cdata_in_cdata'), $data);
+			$data = preg_replace_callback("/<($full)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'))*)\s*(\/>|><!\[CDATA\[(.*)\]\]><\/$full>)/msiU", array(&$this, 'cdata_in_cdata'), $data);
 		}
 		
 		// Return the XML, if so desired
