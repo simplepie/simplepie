@@ -1896,24 +1896,24 @@ class SimplePie_Misc
 	{
 		$return = array();
 		$name = preg_quote($realname, '/');
-		preg_match_all("/<($name)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'|(.*)))*)\s*(\/>|>(.*)<\/$name>)/msiU", $string, $matches, PREG_SET_ORDER);
+		preg_match_all("/<($name)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))*)\s*(\/>|>(.*)<\/$name>)/msiU", $string, $matches, PREG_SET_ORDER);
 		for ($i = 0; $i < count($matches); $i++)
 		{
 			$return[$i]['tag'] = $realname;
 			$return[$i]['full'] = $matches[$i][0];
-			if (strlen($matches[$i][9]) == 2)
+			if (strlen($matches[$i][10]) == 2)
 			{
 				$return[$i]['self_closing'] = true;
 			}
 			else
 			{
 				$return[$i]['self_closing'] = false;
-				$return[$i]['content'] = $matches[$i][10];
+				$return[$i]['content'] = $matches[$i][11];
 			}
 			$return[$i]['attribs'] = array();
 			if (!empty($matches[$i][2]))
 			{
-				preg_match_all('/(\w+)\s*=\s*("(.*)"|\'(.*)\'|(\S+))\s/msiU', $matches[$i][2] . ' ', $attribs, PREG_SET_ORDER);
+				preg_match_all('/\s((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'|(\S+))\s/msiU', " $matches[$i][2] ", $attribs, PREG_SET_ORDER);
 				for ($j = 0; $j < count($attribs);  $j++)
 				{
 					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = $attribs[$j][count($attribs[$j])-1];
@@ -1991,7 +1991,7 @@ class SimplePie_Misc
 	{
 		$url = preg_replace('/^http:\/\/photocast.mac.com/i', 'http://web.mac.com', $url);
 		$url = preg_replace('/^(p(od)?cast|feed)[:]?[\/]*(http(s)?:\/\/)?/i', 'http://', $url);
-		if (!preg_match('/^http(s)?:\/\//i', $url) && !file_exists($url)) $url = "http://$url";
+		//$url = preg_replace('/^(.*)(s)?:\/\//i', 'http\\2://', $url);
 
 		if ($http != 1 && strstr($url, 'http://'))
 		{
@@ -2994,7 +2994,7 @@ class SimplePie_Parser
 		$data = "<?xml version='1.0' encoding='$encoding'?>\n" . $data;
 		
 		// Add an internal attribute to CDATA sections
-		$data = preg_replace_callback('/<(\S+)((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'))*)\s*(\/>|>\s*<\!\[CDATA\[(.*)<\/\\1>)/msiU', array(&$this, 'spencoded'), $data);
+		$data = preg_replace_callback('/<(\S+)((\s*((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'))*)\s*(\/>|>\s*<\!\[CDATA\[(.*)<\/\\1>)/msiU', array(&$this, 'spencoded'), $data);
 		
 		// Put some data into CDATA blocks
 		// If we're RSS
@@ -3022,12 +3022,12 @@ class SimplePie_Parser
 		}
 		foreach ($sp_elements as $full)
 		{
-			$data = preg_replace_callback("/<($full)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'))*)\s*(\/>|>(.*)<\/$full>)/msiU", array(&$this, 'add_cdata'), $data);
+			$data = preg_replace_callback("/<($full)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'))*)\s*(\/>|>(.*)<\/$full>)/msiU", array(&$this, 'add_cdata'), $data);
 		}
 		foreach ($sp_elements as $full)
 		{
 			// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
-			$data = preg_replace_callback("/<($full)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'))*)\s*(\/>|><!\[CDATA\[(.*)\]\]><\/$full>)/msiU", array(&$this, 'cdata_in_cdata'), $data);
+			$data = preg_replace_callback("/<($full)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'))*)\s*(\/>|><!\[CDATA\[(.*)\]\]><\/$full>)/msiU", array(&$this, 'cdata_in_cdata'), $data);
 		}
 		
 		// Return the XML, if so desired
@@ -3062,30 +3062,30 @@ class SimplePie_Parser
 	
 	function add_cdata($match)
 	{
-		if (isset($match[9]))
+		if (isset($match[10]))
 		{
-			$match[9] = preg_replace('/^\s*<\!\[CDATA\[/msiU', '', $match[9]);
-			$match[9] = preg_replace('/]]>\s*$/msiU', '', $match[9]);
-			return "<$match[1]$match[2]><![CDATA[$match[9]]]></$match[1]>";
+			$match[10] = preg_replace('/^\s*<\!\[CDATA\[/msiU', '', $match[10]);
+			$match[10] = preg_replace('/]]>\s*$/msiU', '', $match[10]);
+			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
 		}
 		return $match[0];
 	}
 	
 	function spencoded($match)
 	{
-		if (isset($match[9]))
+		if (isset($match[10]))
 		{
-			return "<$match[1]$match[2] spencoded=\"false\"><![CDATA[$match[9]</$match[1]>";
+			return "<$match[1]$match[2] spencoded=\"false\"><![CDATA[$match[10]</$match[1]>";
 		}
 		return $match[0];
 	}
 
 	function cdata_in_cdata($match)
 	{
-		if (isset($match[9]))
+		if (isset($match[10]))
 		{
-			$match[9] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[9]);
-			return "<$match[1]$match[2]><![CDATA[$match[9]]]></$match[1]>";
+			$match[10] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[10]);
+			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
 		}
 		return $match[0];
 	}
@@ -4113,7 +4113,7 @@ class SimplePie_Sanitize
 		// but it most likely doesn't fit in the context of RSS-in-a-webpage.
 		if ($this->replace_headers)
 		{
-			$data = preg_replace('/<h[1-3]((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'|(.*)))*)\s*>/msiU', '<h4\\1>', $data);
+			$data = preg_replace('/<h[1-3]((\s*((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'|(.*)))*)\s*>/msiU', '<h4\\1>', $data);
 			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
 		}
 
@@ -4123,7 +4123,7 @@ class SimplePie_Sanitize
 		}
 		else
 		{
-			$data = preg_replace_callback('/<(\S+)((\s*(\w+)\s*=\s*("(.*)"|\'(.*)\'|(.*)))*)\s*(\/>|>(.*)<\/\S+>)/msiU', array(&$this, 'replace_urls'), $data);
+			$data = preg_replace_callback('/<(\S+)((\s*((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'|(.*)))*)\s*(\/>|>(.*)<\/\S+>)/msiU', array(&$this, 'replace_urls'), $data);
 		}
 
 		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
@@ -4153,7 +4153,7 @@ class SimplePie_Sanitize
 		{
 			foreach ($this->strip_htmltags as $tag)
 			{
-				$data = preg_replace_callback("/<($tag)((\s*(\w+)\s*=\s*(\"(.*)\"|'(.*)'|(.*)))*)\s*(\/>|>(.*)<\/$tag>)/msiU", array(&$this, 'do_strip_htmltags'), $data);
+				$data = preg_replace_callback("/<($tag)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))*)\s*(\/>|>(.*)<\/$tag>)/msiU", array(&$this, 'do_strip_htmltags'), $data);
 			}
 		}
 
@@ -4174,9 +4174,9 @@ class SimplePie_Sanitize
 	{
 		if ($this->encode_instead_of_strip)
 		{
-			if (isset($match[10]))
+			if (isset($match[11]))
 			{
-				return "&lt;$match[1]$match[2]&gt;$match[10]&lt;/$match[1]&gt;";
+				return "&lt;$match[1]$match[2]&gt;$match[11]&lt;/$match[1]&gt;";
 			}
 			else
 			{
@@ -4185,9 +4185,9 @@ class SimplePie_Sanitize
 		}
 		else
 		{
-			if (isset($match[10]))
+			if (isset($match[11]))
 			{
-				return $match[10];
+				return $match[11];
 			}
 			else
 			{
