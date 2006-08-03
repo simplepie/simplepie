@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 30 July 2006
+Updated: 3 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060730';
+	var $build = '20060803';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -277,14 +277,42 @@ EOT;
 			$file->close();
 			unset($file);
 			
+			// First try HTTP headers
 			if (!empty($headers['content-type']) && preg_match('/charset=(.*)/i', $headers['content-type'], $charset))
 			{
 				$encoding = SimplePie_Misc::encoding($charset[1]);
 			}
-			else if (preg_match('/<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
+			// Then prolog, if at the very start of the document
+			else if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
 			{
 				$encoding = SimplePie_Misc::encoding($encoding[1]);
 			}
+			// UTF-32 Big Endian BOM
+			else if (strpos($data, sprintf('%c%c%c%c', 0x00, 0x00, 0xFE, 0xFF)) === 0)
+			{
+				$encoding = SimplePie_Misc::encoding('UTF-32be');
+			}
+			// UTF-32 Little Endian BOM
+			else if (strpos($data, sprintf('%c%c%c%c', 0xFF, 0xFE, 0x00, 0x00)) === 0)
+			{
+				$encoding = SimplePie_Misc::encoding('UTF-32');
+			}
+			// UTF-16 Big Endian BOM
+			else if (strpos($data, sprintf('%c%c', 0xFE, 0xFF)) === 0)
+			{
+				$encoding = SimplePie_Misc::encoding('UTF-16be');
+			}
+			// UTF-16 Little Endian BOM
+			else if (strpos($data, sprintf('%c%c', 0xFF, 0xFE)) === 0)
+			{
+				$encoding = SimplePie_Misc::encoding('UTF-16le');
+			}
+			// UTF-8 BOM
+			else if (strpos($data, sprintf('%c%c%c', 0xEF, 0xBB, 0xBF)) === 0)
+			{
+				$encoding = SimplePie_Misc::encoding('UTF-8');
+			}
+			// Fallback to the default
 			else
 			{
 				$encoding = SimplePie_Misc::encoding(null);
@@ -2759,6 +2787,21 @@ class SimplePie_Misc
 				$return['encoding'] = 'UTF-8';
 				break;
 		}
+		
+		// If mb_list_encodings() exists, use that to set use_mbstring
+		if (function_exists('mb_list_encodings'))
+		{
+			if (in_array($return['encoding'], mb_list_encodings()))
+			{
+				$return['use_mbstring'] = true;
+			}
+			else
+			{
+				$return['use_mbstring'] = false;
+			}
+		}
+		
+		// Then, return it.
 		return $return;
 	}
 }
@@ -2990,6 +3033,33 @@ class SimplePie_Parser
 	function SimplePie_Parser($data, $encoding, $return_xml = false)
 	{
 		$this->encoding = $encoding;
+		
+		// Strip BOM:
+		// UTF-32 Big Endian BOM
+		if (strpos($data, sprintf('%c%c%c%c', 0x00, 0x00, 0xFE, 0xFF)) === 0)
+		{
+			$data = substr($data, 4);
+		}
+		// UTF-32 Little Endian BOM
+		else if (strpos($data, sprintf('%c%c%c%c', 0xFF, 0xFE, 0x00, 0x00)) === 0)
+		{
+			$data = substr($data, 4);
+		}
+		// UTF-16 Big Endian BOM
+		else if (strpos($data, sprintf('%c%c', 0xFE, 0xFF)) === 0)
+		{
+			$data = substr($data, 2);
+		}
+		// UTF-16 Little Endian BOM
+		else if (strpos($data, sprintf('%c%c', 0xFF, 0xFE)) === 0)
+		{
+			$data = substr($data, 2);
+		}
+		// UTF-8 BOM
+		else if (strpos($data, sprintf('%c%c%c', 0xEF, 0xBB, 0xBF)) === 0)
+		{
+			$data = substr($data, 3);
+		}
 		
 		// Make sure the XML prolog is sane and has the correct encoding
 		if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog))
