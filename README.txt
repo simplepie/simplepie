@@ -1,5 +1,5 @@
 ************************************************************
-SIMPLEPIE 1.0 BETA 2
+SIMPLEPIE 1.0 BETA 3
 http://simplepie.org
 
 By Ryan Parman and Geoffrey Sneddon

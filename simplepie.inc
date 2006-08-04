@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 3 August 2006
+Updated: 4 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060803';
+	var $build = '20060804';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1603,6 +1603,11 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
 				curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+				if (version_compare(SimplePie_Misc::get_curl_version(), '7.10') != -1)
+				{
+					curl_setopt($fp, CURLOPT_ENCODING, '');
+				}
+
 				$this->headers = trim(curl_exec($fp));
 				if (curl_errno($fp))
 				{
@@ -1643,6 +1648,11 @@ class SimplePie_File
 					$out = "GET $get HTTP/1.0\r\n";
 					$out .= "Host: $url_parts[host]\r\n";
 					$out .= "User-Agent: $useragent\r\n";
+					if (extension_loaded('zlib') && function_exists('gzinflate'))
+					{
+						$out .= "Accept-Encoding: gzip,deflate\r\n";
+					}
+
 					if (!empty($url_parts['user']) && !empty($url_parts['pass']))
 					{
 						$out .= "Authorization: Basic " . base64_encode("$url_parts[user]:$url_parts[pass]") . "\r\n";
@@ -2803,6 +2813,21 @@ class SimplePie_Misc
 		
 		// Then, return it.
 		return $return;
+	}
+	
+	function get_curl_version() {
+		$curl = 0;
+		if (is_array(curl_version())) {
+			$curl = curl_version();
+			$curl = $curl['version'];
+		}
+		else {
+			$curl = curl_version();
+			$curl = explode(' ', $curl);
+			$curl = explode('/', $curl[0]);
+			$curl = $curl[1];
+		}
+		return $curl;
 	}
 }
 
