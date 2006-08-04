@@ -62,7 +62,7 @@ $feed->handle_content_type();
 
 	<div id="content">
 
-		<div id="" class="chunk">
+		<div class="chunk">
 			<form action="" method="get" name="sp_form" id="sp_form">
 				<div id="sp_input">
 
@@ -201,8 +201,6 @@ $feed->handle_content_type();
 
 				<!-- Stop looping through each item once we've gone through all of them. -->
 				<?php endforeach; ?>
-
-				</div>
 
 			<!-- From here on, we're no longer using data from the feed. -->
 			<?php endif; ?>
