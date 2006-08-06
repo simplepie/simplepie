@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 5 August 2006
+Updated: 6 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060805';
+	var $build = '20060806';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -146,7 +146,7 @@ class SimplePie
 		$this->sanitize->encode_instead_of_strip($enable);
 	}
 	
-	function strip_attributes($attribs = array('class', 'id', 'style', 'onclick', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
+	function strip_attributes($attribs = array('class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
 	{
 		$this->sanitize->strip_attributes($attribs);
 	}
@@ -893,7 +893,7 @@ EOT;
 		}
 	}
 	
-	function get_item($key)
+	function get_item($key = 0)
 	{
 		if (!empty($this->data['items'][$key]))
 		{
@@ -991,23 +991,16 @@ class SimplePie_Item
 		}
 	}
 	
-	function get_category($key = null)
+	function get_category($key = 0)
 	{
-		if (is_null($key))
+		$categories = $this->get_categories();
+		if (!empty($categories[$key]))
 		{
-			return $this->get_categories();
+			return $categories[$key];
 		}
 		else
 		{
-			$categories = $this->get_categories();
-			if (!empty($categories[$key]))
-			{
-				return $categories[$key];
-			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 	}
 	
@@ -1032,7 +1025,7 @@ class SimplePie_Item
 		}
 	}
 	
-	function get_author($key)
+	function get_author($key = 0)
 	{
 		$authors = $this->get_authors();
 		if (!empty($authors[$key]))
@@ -1116,7 +1109,7 @@ class SimplePie_Item
 		}
 	}
 	
-	function get_link($key, $rel = 'alternate')
+	function get_link($key = 0, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
 		if (!empty($links[$key]))
@@ -1141,7 +1134,7 @@ class SimplePie_Item
 		}
 	}
 	
-	function get_enclosure($key)
+	function get_enclosure($key = 0)
 	{
 		$enclosures = $this->get_enclosures();
 		if (!empty($enclosures[$key]))
@@ -1588,12 +1581,20 @@ class SimplePie_File
 			}
 			if (extension_loaded('curl'))
 			{
+				$fp = curl_init();
 				$headers2 = array();
 				foreach ($headers as $key => $value)
 				{
 					$headers2[] = "$key: $value";
 				}
-				$fp = curl_init();
+				if (version_compare(SimplePie_Misc::get_curl_version(), '7.10', '>='))
+				{
+					curl_setopt($fp, CURLOPT_ENCODING, '');
+				}
+				else if (extension_loaded('zlib') && function_exists('gzinflate'))
+				{
+					$headers2[] = 'Accept-Encoding: gzip,deflate';
+				}
 				curl_setopt($fp, CURLOPT_URL, $url);
 				curl_setopt($fp, CURLOPT_HEADER, 1);
 				curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
@@ -1603,10 +1604,6 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
 				curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
-				if (version_compare(SimplePie_Misc::get_curl_version(), '7.10') != -1)
-				{
-					curl_setopt($fp, CURLOPT_ENCODING, '');
-				}
 
 				$this->headers = trim(curl_exec($fp));
 				if (curl_errno($fp))
@@ -2817,7 +2814,8 @@ class SimplePie_Misc
 	
 	function get_curl_version() {
 		$curl = 0;
-		if (is_array(curl_version())) {
+		if (is_array(curl_version()))
+		{
 			$curl = curl_version();
 			$curl = $curl['version'];
 		}
@@ -3747,7 +3745,7 @@ class SimplePie_Sanitize
 		$this->encode_instead_of_strip = (bool) $enable;
 	}
 	
-	function strip_attributes($attribs = array('class', 'id', 'style', 'onclick', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
+	function strip_attributes($attribs = array('class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
 	{
 		if ($attribs)
 		{
