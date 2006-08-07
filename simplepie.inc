@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 6 August 2006
+Updated: 7 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060806';
+	var $build = '20060807';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1868,68 +1868,163 @@ class SimplePie_Cache
 
 class SimplePie_Misc
 {
-	function absolutize_url($href, $location)
+	function absolutize_url($relative, $base)
 	{
-		$href_parts = @parse_url($href);
-		if (!empty($href_parts['scheme']))
+		$relative = trim($relative);
+		$base = trim($base);
+		if (!empty($relative))
 		{
-			return $href;
-		}
-		else
-		{
-			if (isset($location['host']))
+			$relative = parse_url($relative);
+			$base = parse_url($base);
+			if (isset($relative['scheme']))
 			{
-				$full_url = $location['scheme'] . '://' . $location['host'];
+				$target = $relative;
 			}
 			else
 			{
-				$full_url = '';
-			}
-			if (isset($location['port']))
-			{
-				$full_url .= ':' . $location['port'];
-			}
-			if (!empty($href_parts['path']))
-			{
-				if (substr($href_parts['path'], 0, 1) == '/')
+				$target['scheme'] = $base['scheme'];
+				if (isset($relative['host']))
 				{
-					$full_url .= $href_parts['path'];
-				}
-				else if (!empty($location['path']))
-				{
-					$full_url .= dirname($location['path'] . 'a') . '/' . $href_parts['path'];
+					$target = array_merge($target, $relative);
 				}
 				else
 				{
-					$full_url .= $href_parts['path'];
+					$target['host'] = $base['host'];
+					if (isset($relative['path']))
+					{
+						if (strpos($relative['path'], '/') === 0)
+						{
+							$target['path'] = $relative['path'];
+						}
+						else
+						{
+							if (isset($base['path']))
+							{
+								$target['path'] = dirname($base['path']) . '/' . $relative['path'];
+							}
+							else
+							{
+								$target['path'] = '/' . $relative['path'];
+							}
+						}
+						if (isset($relative['query']))
+						{
+							$target['query'] = $relative['query'];
+						}
+						$input = $target['path'];
+						$target['path'] = '';
+						while (!empty($input))
+						{
+							if (strpos($input, '../') === 0)
+							{
+								$input = substr($input, 3);
+							}
+							else if (strpos($input, './') === 0)
+							{
+								$input = substr($input, 2);
+							}
+							else if (strpos($input, '/./') === 0)
+							{
+								$input = substr_replace($input, '/', 0, 3);
+							}
+							else if (strpos($input, '/.') === 0 && SimplePie_Misc::strendpos($input, '/.') === 0)
+							{
+								$input = substr_replace($input, '/', -2);
+							}
+							else if (strpos($input, '/../') === 0)
+							{
+								$input = substr_replace($input, '/', 0, 4);
+								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
+							}
+							else if (strpos($input, '/..') === 0 && SimplePie_Misc::strendpos($input, '/..') === 0)
+							{
+								$input = substr_replace($input, '/', 0, 3);
+								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
+							}
+							else if ($input == '.' || $input == '..')
+							{
+								$input = '';
+							}
+							else
+							{
+								if (preg_match('/^(.+)(\/|$)/U', $input, $match))
+								{
+									$target['path'] .= $match[1];
+									$input = substr_replace($input, '', 0, strlen($match[1]));
+								}
+							}
+						}
+					}
+					else
+					{
+						if (isset($base['path']))
+						{
+							$target['path'] = $base['path'];
+						}
+						else
+						{
+							$target['path'] = '/';
+						}
+						if (isset($relative['query']))
+						{
+							$target['query'] = $relative['query'];
+						}
+						else if (isset($base['query']))
+						{
+							$target['query'] = $base['query'];
+						}
+					}
+				}
+				if (isset($relative['fragment']))
+				{
+					$target['fragment'] = $relative['fragment'];
 				}
 			}
-			else if (!empty($location['path']))
+			$return = '';
+			if (isset($target['scheme']))
 			{
-				$full_url .= $location['path'];
+				$return = "$target[scheme]://";
 			}
-			else
+			if (isset($target['user']))
 			{
-				$full_url .= '/';
+				$return .= $target['user'];
+				if (isset($target['pass']))
+				{
+					$return .= ":$target[pass]";
+				}
+				$return .= '@';
 			}
-			if (!empty($href_parts['query']))
+			if (isset($target['host']))
 			{
-				$full_url .= '?' . $href_parts['query'];
+				$return .= $target['host'];
 			}
-			else if (!empty($location['query']))
+			if (isset($target['port']))
 			{
-				$full_url .= '?' . $location['query'];
+				$return .= ":$target[port]";
 			}
-			if (!empty($href_parts['fragment']))
+			if (isset($target['path']))
 			{
-				$full_url .= '#' . $href_parts['fragment'];
+				$return .= $target['path'];
 			}
-			else if (!empty($location['fragment']))
+			if (isset($target['query']))
 			{
-				$full_url .= '#' . $location['fragment'];
+				$return .= "?$target[query]";
 			}
-			return $full_url;
+			if (isset($target['fragment']))
+			{
+				$return .= "#$target[fragment]";
+			}
 		}
+		else
+		{
+			$return = $base;
+		}
+		return $return;
+	}
+	
+	function strendpos($haystack, $needle)
+	{
+		return strlen($haystack) - strpos($haystack, $needle) - strlen($needle);
 	}
 	
 	function get_element($realname, $string)
