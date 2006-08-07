@@ -2913,14 +2913,16 @@ class SimplePie_Misc
 		return $return;
 	}
 	
-	function get_curl_version() {
+	function get_curl_version()
+	{
 		$curl = 0;
 		if (is_array(curl_version()))
 		{
 			$curl = curl_version();
 			$curl = $curl['version'];
 		}
-		else {
+		else
+		{
 			$curl = curl_version();
 			$curl = explode(' ', $curl);
 			$curl = explode('/', $curl[0]);
