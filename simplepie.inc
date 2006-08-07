@@ -200,6 +200,11 @@ EOT;
 						$this->rss_url = $this->data['feed_url'];
 						return $this->init();
 					}
+					else if ($this->data['url'] != $this->rss_url)
+					{
+						$this->enable_caching(false);
+						return $this->init();
+					}
 					else if ($cache->mtime() + $this->max_minutes * 60 < time())
 					{
 						if (!empty($this->data['last-modified']) || !empty($this->data['etag']))
@@ -352,12 +357,13 @@ EOT;
 			}
 			else if (!$data->error_code)
 			{
-				$this->sanitize->parse_data_array($data->data);
+				$this->sanitize->parse_data_array($data->data, $this->rss_url);
 				unset($data);
 				$this->data['feedinfo'] = $this->sanitize->feedinfo;
 				$this->data['info'] = $this->sanitize->info;
 				$this->data['items'] = $this->sanitize->items;
 				unset($this->sanitize);
+				$this->data['url'] = $this->rss_url;
 				$this->data['feedinfo']['encoding'] = 'UTF-8';
 				if (!empty($headers['last-modified']))
 				{
@@ -3859,7 +3865,7 @@ class SimplePie_Sanitize
 		}
 	}
 	
-	function parse_data_array(&$data)
+	function parse_data_array(&$data, $url)
 	{		
 		// Feed Info (Type and Version)
 		if (!empty($data['feedinfo']['type']))
@@ -3870,12 +3876,18 @@ class SimplePie_Sanitize
 		// Feed level xml:base
 		if (!empty($data['feeddata']['attribs']['XML:BASE']))
 		{
-			$this->feed_xmlbase = parse_url($data['feeddata']['attribs']['XML:BASE']);
+			$this->feed_xmlbase = $data['feeddata']['attribs']['XML:BASE'];
 		}
 		else if (!empty($data['feeddata']['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE']))
 		{
-			$this->feed_xmlbase = parse_url($data['feeddata']['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE']);
+			$this->feed_xmlbase = $data['feeddata']['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE'];
 		}
+		// FeedBurner feeds use alternate link
+		else if (strpos($url, 'http://feeds.feedburner.com/') !== 0)
+		{
+			$this->feed_xmlbase = $url;
+		}
+		
 		
 		// Feed link(s)
 		if (!empty($data['info']['link']))
@@ -3928,7 +3940,7 @@ class SimplePie_Sanitize
 		// Use the first alternate link if we don't have any feed xml:base
 		if (empty($this->feed_xmlbase) && !empty($this->info['link']['alternate'][0]))
 		{
-			$this->feed_xmlbase = parse_url($this->info['link']['alternate'][0]);
+			$this->feed_xmlbase = $this->info['link']['alternate'][0];
 		}
 		
 		// Feed Title
@@ -4011,11 +4023,11 @@ class SimplePie_Sanitize
 				// Item level xml:base
 				if (!empty($item['attribs']['XML:BASE']))
 				{
-					$this->item_xmlbase = parse_url(SimplePie_Misc::absolutize_url($item['attribs']['XML:BASE'], $this->feed_xmlbase));
+					$this->item_xmlbase = SimplePie_Misc::absolutize_url($item['attribs']['XML:BASE'], $this->feed_xmlbase);
 				}
 				else if (!empty($item['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE']))
 				{
-					$this->item_xmlbase = parse_url(SimplePie_Misc::absolutize_url($item['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE'], $this->feed_xmlbase));
+					$this->item_xmlbase = SimplePie_Misc::absolutize_url($item['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE'], $this->feed_xmlbase);
 				}
 				else
 				{
@@ -4403,11 +4415,11 @@ class SimplePie_Sanitize
 		{
 			if (!empty($this->item_xmlbase))
 			{
-				$xmlbase = parse_url(SimplePie_Misc::absolutize_url($xmlbase, $this->item_xmlbase));
+				$xmlbase = SimplePie_Misc::absolutize_url($xmlbase, $this->item_xmlbase);
 			}
 			else
 			{
-				$xmlbase = parse_url(SimplePie_Misc::absolutize_url($xmlbase, $this->feed_xmlbase));
+				$xmlbase = SimplePie_Misc::absolutize_url($xmlbase, $this->feed_xmlbase);
 			}
 		}
 		else if (!empty($this->item_xmlbase))
