@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 7 August 2006
+Updated: 11 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060807';
+	var $build = '20060811';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -2054,7 +2054,7 @@ class SimplePie_Misc
 			$return[$i]['attribs'] = array();
 			if (!empty($matches[$i][2]))
 			{
-				preg_match_all('/\s((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'|(\S+))\s/msiU', " $matches[$i][2] ", $attribs, PREG_SET_ORDER);
+				preg_match_all('/((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'|(\S+))\s/msiU', ' ' . $matches[$i][2] . ' ', $attribs, PREG_SET_ORDER);
 				for ($j = 0; $j < count($attribs);  $j++)
 				{
 					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = $attribs[$j][count($attribs[$j])-1];
@@ -2133,6 +2133,7 @@ class SimplePie_Misc
 		$url = preg_replace('/^http:\/\/photocast.mac.com/i', 'http://web.mac.com', $url);
 		$url = preg_replace('/^(p(od)?cast|feed)[:]?[\/]*(http(s)?:\/\/)?/i', 'http://', $url);
 		//$url = preg_replace('/^(.*)(s)?:\/\//i', 'http\\2://', $url);
+		if (!preg_match('/^http(s)?:\/\//i', $url) && !file_exists($url)) $url = "http://$url";
 
 		if ($http != 1 && strstr($url, 'http://'))
 		{
@@ -2935,7 +2936,6 @@ class SimplePie_Misc
 class SimplePie_Locator
 {
 	var $useragent;
-	var $parsed_url;
 	var $file;
 	var $local;
 	var $elsewhere;
@@ -2961,12 +2961,6 @@ class SimplePie_Locator
 		}
 		
 		$this->useragent = $this->file->useragent;
-		
-		$this->parsed_url = parse_url($this->file->url);
-		if (!isset($this->parsed_url['path']))
-		{
-			$this->parsed_url['path'] = '/';
-		}
 		
 		$autodiscovery = $this->autodiscovery($this->file);
 		if ($autodiscovery)
@@ -3022,6 +3016,7 @@ class SimplePie_Locator
 			$file2 =& $file;
 		}
 		if (((stristr($file2->body(), '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $file2->body())) && (preg_match('/<([a-z0-9]+\:)?channel/mi', $file2->body()) || preg_match('/<([a-z0-9]+\:)?item/mi', $file2->body()))) || (preg_match('/<([a-z0-9]+\:)?feed/mi', $file2->body()) && (preg_match('/<([a-z0-9]+\:)?author/mi', $file2->body()) || preg_match('/<([a-z0-9]+\:)?entry/mi', $file2->body()))))
+		//if (true)
 		{
 			return true;
 		}
@@ -3037,7 +3032,7 @@ class SimplePie_Locator
 			if (!empty($link['attribs']['TYPE']['data']) && !empty($link['attribs']['HREF']['data']))
 			{
 				$type = strtolower(trim($link['attribs']['TYPE']['data']));
-				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->parsed_url);
+				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
 				if (!in_array($href, $done) && in_array($type, array('application/rss+xml', 'application/atom+xml', 'application/rdf+xml', 'application/xml+rss', 'application/xml+atom', 'application/xml+rdf', 'application/xml', 'application/x.atom+xml', 'text/xml')))
 				{
 					$feed = $this->is_feed($href);
@@ -3063,13 +3058,14 @@ class SimplePie_Locator
 				$parsed = @parse_url($href);
 				if (empty($parsed['scheme']) || $parsed['scheme'] != 'javascript')
 				{
-					if (empty($parsed['host']) || $parsed['host'] == $this->parsed_url['host'])
+					$current = parse_url($this->file->url);
+					if (empty($parsed['host']) || $parsed['host'] == $current['host'])
 					{
-						$this->local[] = SimplePie_Misc::absolutize_url($href, $this->parsed_url);
+						$this->local[] = SimplePie_Misc::absolutize_url($href, $this->file->url);
 					}
 					else
 					{
-						$this->elsewhere[] = SimplePie_Misc::absolutize_url($href, $this->parsed_url);
+						$this->elsewhere[] = SimplePie_Misc::absolutize_url($href, $this->file->url);
 					}
 				}
 			}
@@ -3093,7 +3089,7 @@ class SimplePie_Locator
 	{
 		foreach ($array as $key => $value)
 		{
-			$value = SimplePie_Misc::absolutize_url($value, $this->parsed_url);
+			$value = SimplePie_Misc::absolutize_url($value, $this->file->url);
 			if (in_array(strrchr($value, '.'), array('.rss', '.rdf', '.atom', '.xml')))
 			{
 				if ($this->is_feed($value))
@@ -3113,7 +3109,7 @@ class SimplePie_Locator
 	{
 		foreach ($array as $key => $value)
 		{
-			$value = SimplePie_Misc::absolutize_url($value, $this->parsed_url);
+			$value = SimplePie_Misc::absolutize_url($value, $this->file->url);
 			if (preg_match('/(rss|rdf|atom|xml)/i', $value))
 			{
 				if ($this->is_feed($value))
