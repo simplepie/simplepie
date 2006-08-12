@@ -4526,15 +4526,9 @@ class SimplePie_Sanitize
 	
 	function parse_date($date)
 	{
-		if (preg_match('/([0-9]{2,4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(\.([0-9]{2}))?Z/i', $date, $matches)) 
-		{
-			if (isset($matches[8]) && $matches[8] >= 50)
-			{
-				$matches[6]++;
-			}
-			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[6] -0000");
-		}
-		else if (preg_match('/([0-9]{2,4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(:([0-9]{2}))?(\.([0-9]{2}))?(\+|-)([0-9]{2}):([0-9]{2})/i', $date, $matches))
+		$military_timezone = array('A' => '-0100', 'B' => '-0200', 'C' => '-0300', 'D' => '-0400', 'E' => '-0500', 'F' => '-0600', 'G' => '-0700', 'H' => '-0800', 'I' => '-0900', 'K' => '-1000', 'L' => '-1100', 'M' => '-1200', 'N' => '+0100', 'O' => '+0200', 'P' => '+0300', 'Q' => '+0400', 'R' => '+0500', 'S' => '+0600', 'T' => '+0700', 'U' => '+0800', 'V' => '+0900', 'W' => '+1000', 'X' => '+1100', 'Y' => '+1200', 'Z' => '-0000');
+		$north_american_timezone = array('GMT' => '-0000', 'EST' => '-0500', 'EDT' => '-0400', 'CST' => '-0600', 'CDT' => '-0500', 'MST' => '-0700', 'MDT' => '-0600', 'PST' => '-0800', 'PDT' => '-0700');
+		if (preg_match('/([0-9]{2,4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(:([0-9]{2}))?(\.([0-9]{2}))?(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4})/i', $date, $matches))
 		{
 			if (isset($matches[9]) && $matches[9] >= 50)
 			{
@@ -4544,13 +4538,29 @@ class SimplePie_Sanitize
 			{
 				$matches[7] = '00';
 			}
-			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[7] $matches[10]$matches[11]$matches[12]");
+			switch (strlen($matches[10]))
+			{
+				case 1:
+					$timezone = $military_timezone[strtoupper($matches[10])];
+					break;
+				
+				case 2:
+					$timezone = '-0000';
+					break;
+				
+				case 3:
+					$timezone = $north_american_timezone[strtoupper($matches[10])];
+					break;
+				
+				default:
+					$timezone = $matches[10];
+					break;
+			}
+			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[7] $matches[10]");
 		}
 		else if (preg_match('/([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{2}|[0-9]{4})\s*([0-9]{2}):([0-9]{2})(:([0-9]{2}))?\s*(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4})/i', $date, $matches))
 		{
 			$three_month = array('Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12);
-			$military_timezone = array('A' => '-0100', 'B' => '-0200', 'C' => '-0300', 'D' => '-0400', 'E' => '-0500', 'F' => '-0600', 'G' => '-0700', 'H' => '-0800', 'I' => '-0900', 'K' => '-1000', 'L' => '-1100', 'M' => '-1200', 'N' => '+0100', 'O' => '+0200', 'P' => '+0300', 'Q' => '+0400', 'R' => '+0500', 'S' => '+0600', 'T' => '+0700', 'U' => '+0800', 'V' => '+0900', 'W' => '+1000', 'X' => '+1100', 'Y' => '+1200', 'Z' => '-0000');
-			$north_american_timezone = array('GMT' => '-0000', 'EST' => '-0500', 'EDT' => '-0400', 'CST' => '-0600', 'CDT' => '-0500', 'MST' => '-0700', 'MDT' => '-0600', 'PST' => '-0800', 'PDT' => '-0700');
 			$month = $three_month[$matches[2]];
 			if (strlen($matches[3]) == 2)
 			{
@@ -4577,6 +4587,7 @@ class SimplePie_Sanitize
 				
 				default:
 					$timezone = $matches[8];
+					break;
 			}
 			$date = strtotime("$year-$month-$matches[1] $matches[4]:$matches[5]:$second $timezone");
 		}
