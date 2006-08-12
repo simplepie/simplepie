@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 11 August 2006
+Updated: 12 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060811';
+	var $build = '20060812';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -2037,19 +2037,19 @@ class SimplePie_Misc
 	{
 		$return = array();
 		$name = preg_quote($realname, '/');
-		preg_match_all("/<($name)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))*)\s*(\/>|>(.*)<\/$name>)/msiU", $string, $matches, PREG_SET_ORDER);
+		preg_match_all("/<($name)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))*)\s*((\/)?>|>(.*)<\/$name>)/msiU", $string, $matches, PREG_SET_ORDER);
 		for ($i = 0; $i < count($matches); $i++)
 		{
 			$return[$i]['tag'] = $realname;
 			$return[$i]['full'] = $matches[$i][0];
-			if (strlen($matches[$i][10]) == 2)
+			if (strlen($matches[$i][10]) <= 2)
 			{
 				$return[$i]['self_closing'] = true;
 			}
 			else
 			{
 				$return[$i]['self_closing'] = false;
-				$return[$i]['content'] = $matches[$i][11];
+				$return[$i]['content'] = $matches[$i][12];
 			}
 			$return[$i]['attribs'] = array();
 			if (!empty($matches[$i][2]))
