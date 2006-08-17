@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 12 August 2006
+Updated: 17 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060812';
+	var $build = '20060817';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -149,6 +149,11 @@ class SimplePie
 	function strip_attributes($attribs = array('class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
 	{
 		$this->sanitize->strip_attributes($attribs);
+	}
+	
+	function output_encoding($encoding = 'UTF-8')
+	{
+		$this->sanitize->output_encoding($encoding);
 	}
 	
 	function init()
@@ -285,68 +290,45 @@ EOT;
 			// First try HTTP headers
 			if (!empty($headers['content-type']) && preg_match('/charset=(.*)/i', $headers['content-type'], $charset))
 			{
-				$encoding = SimplePie_Misc::encoding($charset[1]);
+				$encoding = $charset[1];
 			}
 			// Then prolog, if at the very start of the document
 			else if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
 			{
-				$encoding = SimplePie_Misc::encoding($encoding[1]);
+				$encoding = $encoding[1];
 			}
 			// UTF-32 Big Endian BOM
 			else if (strpos($data, sprintf('%c%c%c%c', 0x00, 0x00, 0xFE, 0xFF)) === 0)
 			{
-				$encoding = SimplePie_Misc::encoding('UTF-32be');
+				$encoding = 'UTF-32be';
 			}
 			// UTF-32 Little Endian BOM
 			else if (strpos($data, sprintf('%c%c%c%c', 0xFF, 0xFE, 0x00, 0x00)) === 0)
 			{
-				$encoding = SimplePie_Misc::encoding('UTF-32');
+				$encoding = 'UTF-32';
 			}
 			// UTF-16 Big Endian BOM
 			else if (strpos($data, sprintf('%c%c', 0xFE, 0xFF)) === 0)
 			{
-				$encoding = SimplePie_Misc::encoding('UTF-16be');
+				$encoding = 'UTF-16be';
 			}
 			// UTF-16 Little Endian BOM
 			else if (strpos($data, sprintf('%c%c', 0xFF, 0xFE)) === 0)
 			{
-				$encoding = SimplePie_Misc::encoding('UTF-16le');
+				$encoding = 'UTF-16le';
 			}
 			// UTF-8 BOM
 			else if (strpos($data, sprintf('%c%c%c', 0xEF, 0xBB, 0xBF)) === 0)
 			{
-				$encoding = SimplePie_Misc::encoding('UTF-8');
+				$encoding = 'UTF-8';
 			}
 			// Fallback to the default
 			else
 			{
-				$encoding = SimplePie_Misc::encoding(null);
+				$encoding = null;
 			}
 			
-			if (function_exists('iconv') && $encoding['use_iconv'] && iconv($encoding['encoding'], 'UTF-8//TRANSLIT', $data))
-			{
-				$data = iconv($encoding['encoding'], 'UTF-8//TRANSLIT', $data);
-				$encoding['encoding'] = 'UTF-8';
-			}
-			else if (function_exists('iconv') && $encoding['use_iconv'] && iconv($encoding['encoding'], 'UTF-8', $data))
-			{
-				$data = iconv($encoding['encoding'], 'UTF-8', $data);
-				$encoding['encoding'] = 'UTF-8';
-			}
-			else if (function_exists('mb_convert_encoding') && $encoding['use_mbstring'])
-			{
-				$data = mb_convert_encoding($data, 'UTF-8', $encoding['encoding']);
-				$encoding['encoding'] = 'UTF-8';
-			}
-			else if ($encoding['encoding'] == 'ISO-8859-1')
-			{
-				$data = utf8_encode($data);
-				$encoding['encoding'] = 'UTF-8';
-			}
-			else
-			{
-				$encoding['encoding'] = 'UTF-8';
-			}
+			$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 			
 			$data = new SimplePie_Parser($data, 'UTF-8', $this->xml_dump);
 			if ($this->xml_dump)
@@ -364,7 +346,7 @@ EOT;
 				$this->data['items'] = $this->sanitize->items;
 				unset($this->sanitize);
 				$this->data['url'] = $this->rss_url;
-				$this->data['feedinfo']['encoding'] = 'UTF-8';
+				$this->data['feedinfo']['encoding'] = $this->sanitize->output_encoding;
 				if (!empty($headers['last-modified']))
 				{
 					$this->data['last-modified'] = $headers['last-modified'];
@@ -2149,6 +2131,37 @@ class SimplePie_Misc
 		return $url;
 	}
 	
+	function change_encoding($data, $input, $output)
+	{
+		$input = SimplePie_Misc::encoding($input);
+		$output = SimplePie_Misc::encoding($output);
+		
+		if ($input != $output)
+		{
+			if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && iconv($input['encoding'], "$output[encoding]//TRANSLIT", $data))
+			{
+				return iconv($input['encoding'], "$output[encoding]//TRANSLIT", $data);
+			}
+			else if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && iconv($input['encoding'], $output['encoding'], $data))
+			{
+				return iconv($input['encoding'], $output['encoding'], $data);	
+			}
+			else if (function_exists('mb_convert_encoding') && $input['use_mbstring'] && $output['use_mbstring'])
+			{
+				return mb_convert_encoding($data, $output['encoding'], $input['encoding']);
+			}
+			else if ($input['encoding'] == 'ISO-8859-1' && $output['encoding'] == 'UTF-8')
+			{
+				return utf8_encode($data);
+			}
+			else if ($input['encoding'] == 'UTF-8' && $output['encoding'] == 'ISO-8859-1')
+			{
+				return utf8_decode($data);
+			}
+		}
+		return $data;
+	}
+	
 	function encoding($encoding)
 	{
 		$return['use_mbstring'] = false;
@@ -2894,6 +2907,8 @@ class SimplePie_Misc
 			// Default to UTF-8
 			default:
 				$return['encoding'] = 'UTF-8';
+				$return['use_iconv'] = true;
+				$return['use_mbstring'] = true;
 				break;
 		}
 		
@@ -3780,6 +3795,8 @@ class SimplePie_Sanitize
 	var $strip_htmltags = array('blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
 	var $strip_attributes = array('class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur');
+	var $input_encoding = 'UTF-8';
+	var $output_encoding = 'UTF-8';
 	
 	function remove_div($enable = true)
 	{
@@ -3861,6 +3878,16 @@ class SimplePie_Sanitize
 		{
 			$this->strip_attributes = false;
 		}
+	}
+	
+	function input_encoding($encoding = 'UTF-8')
+	{
+		$this->input_encoding = (string) $encoding;
+	}
+	
+	function output_encoding($encoding = 'UTF-8')
+	{
+		$this->output_encoding = (string) $encoding;
 	}
 	
 	function parse_data_array(&$data, $url)
@@ -4461,18 +4488,19 @@ class SimplePie_Sanitize
 		}
 	}
 	
-	function entities_decode($data) {
+	function entities_decode($data)
+	{
 		return preg_replace_callback('/&(#)?(x)?([0-9a-z]+);/mi', array(&$this, 'do_entites_decode'), $data);
 	}
 	
 	function do_entites_decode($data)
 	{
-		$entity_html = utf8_encode(html_entity_decode($data[0], ENT_QUOTES));
-		if ($data[0] == $entity_html) {
-			return preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $data[0]);
-		} else {
-			return $entity_html;
+		$return = SimplePie_Misc::change_encoding(html_entity_decode($data[0], ENT_QUOTES), 'ISO-8859-1', $this->input_encoding);
+		if ($return == $data[0])
+		{
+			$return = SimplePie_Misc::change_encoding(preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $data[0]), 'UTF-8', $this->input_encoding);
 		}
+		return $return;
 	}
 
 	/*
@@ -4485,24 +4513,42 @@ class SimplePie_Sanitize
 	 * the Open Publication License, v1.0 or later (the latest version is presently available at 
 	 * http://www.opencontent.org/openpub/).
 	 */
-	function replace_num_entity($ord) {
+	function replace_num_entity($ord)
+	{
 		$ord = $ord[1];
 		if (preg_match('/^x([0-9a-f]+)$/i', $ord, $match))
+		{
 			$ord = hexdec($match[1]);
+		}
 		else
+		{
 			$ord = intval($ord);
+		}
+		
 		$no_bytes = 0;
 		$byte = array();
 		if ($ord < 128)
+		{
 			return chr($ord);
+		}
 		if ($ord < 2048)
+		{
 			$no_bytes = 2;
+		}
 		else if ($ord < 65536)
+		{
 			$no_bytes = 3;
+		}
 		else if ($ord < 1114112)
+		{
 			$no_bytes = 4;
-		else return;
-		switch ($no_bytes) {
+		}
+		else
+		{
+			return;
+		}
+		switch ($no_bytes)
+		{
 			case 2:
 				$prefix = array(31, 192);
 				break;
@@ -4512,15 +4558,21 @@ class SimplePie_Sanitize
 				break;
 				
 			case 4:
-			$prefix = array(7, 240);
-			break;
+				$prefix = array(7, 240);
+				break;
 		}
-		for ($i=0; $i < $no_bytes; ++$i)
+		
+		for ($i = 0; $i < $no_bytes; $i++)
+		{
 			$byte[$no_bytes-$i-1] = (($ord & (63 * pow(2,6*$i))) / pow(2,6*$i)) & 63 | 128;
+		}
 		$byte[0] = ($byte[0] & $prefix[0]) | $prefix[1];
+		
 		$ret = '';
-		for ($i=0; $i < $no_bytes; ++$i)
+		for ($i = 0; $i < $no_bytes; $i++)
+		{
 			$ret .= chr($byte[$i]);
+		}
 		return $ret;
 	}
 	
