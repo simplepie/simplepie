@@ -450,6 +450,52 @@ EOT;
 		}
 	}
 	
+	function get_favicon($check = false, $alternate = false)
+	{
+		if (!empty($this->data['info']['link']['alternate'][0]))
+		{
+			$url = parse_url($this->data['info']['link']['alternate'][0]);
+			$favicon = $url['scheme'] . '://' . $url['host'] . '/' . 'favicon.ico';
+
+			if ($check)
+			{
+				$file = new SimplePie_File($favicon);
+				$headers = $file->headers();
+
+				if ($headers['status']['code'] == '200')
+				{
+					return $favicon;
+				}
+				else
+				{
+					if ($alternate)
+					{
+						return $alternate;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+			else
+			{
+				return $favicon;
+			}
+		}
+		else
+		{
+			if ($alternate)
+			{
+				return $alternate;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	
 	function subscribe_url()
 	{
 		if (!empty($this->rss_url))
