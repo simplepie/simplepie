@@ -3799,7 +3799,7 @@ class SimplePie_Sanitize
 	var $remove_div = true;
 	var $strip_ads = true;
 	var $replace_headers = false;
-	var $bypass_image_hotlink = 'i';
+	var $bypass_image_hotlink = false;
 	var $bypass_image_hotlink_page = false;
 	var $strip_htmltags = array('blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
