@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 17 August 2006
+Updated: 19 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060817';
+	var $build = '20060819';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -344,9 +344,9 @@ EOT;
 				$this->data['feedinfo'] = $this->sanitize->feedinfo;
 				$this->data['info'] = $this->sanitize->info;
 				$this->data['items'] = $this->sanitize->items;
+				$this->data['feedinfo']['encoding'] = $this->sanitize->output_encoding;
 				unset($this->sanitize);
 				$this->data['url'] = $this->rss_url;
-				$this->data['feedinfo']['encoding'] = $this->sanitize->output_encoding;
 				if (!empty($headers['last-modified']))
 				{
 					$this->data['last-modified'] = $headers['last-modified'];
@@ -3276,8 +3276,7 @@ class SimplePie_Parser
 	{
 		if (isset($match[10]))
 		{
-			$match[10] = preg_replace('/^\s*<\!\[CDATA\[/msiU', '', $match[10]);
-			$match[10] = preg_replace('/]]>\s*$/msiU', '', $match[10]);
+			$match[10] = preg_replace('/^\s*<\!\[CDATA\[(.*)]]>\s*$/msiU', '\\1', $match[10]);
 			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
 		}
 		return $match[0];
