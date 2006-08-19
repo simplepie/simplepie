@@ -30,6 +30,8 @@ class SimplePie
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
+	var $revision = '$Revision$';
+	var $id = '$Id$';
 	
 	// Other objects, instances created here so we can set options on them
 	var $sanitize;
