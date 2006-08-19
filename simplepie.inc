@@ -146,9 +146,14 @@ class SimplePie
 		$this->sanitize->encode_instead_of_strip($enable);
 	}
 	
-	function strip_attributes($attribs = array('class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
+	function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
 	{
 		$this->sanitize->strip_attributes($attribs);
+	}
+	
+	function input_encoding($encoding = 'UTF-8')
+	{
+		$this->sanitize->input_encoding($encoding);
 	}
 	
 	function output_encoding($encoding = 'UTF-8')
@@ -287,8 +292,13 @@ EOT;
 			$file->close();
 			unset($file);
 			
-			// First try HTTP headers
-			if (!empty($headers['content-type']) && preg_match('/charset=(.*)/i', $headers['content-type'], $charset))
+			// First check to see if input has been overridden.
+			if ($this->sanitize->input_encoding)
+			{
+				$encoding = $this->sanitize->input_encoding;
+			}
+			// Second try HTTP headers
+			else if (!empty($headers['content-type']) && preg_match('/charset=(.*)/i', $headers['content-type'], $charset))
 			{
 				$encoding = $charset[1];
 			}
@@ -3793,7 +3803,7 @@ class SimplePie_Sanitize
 	var $bypass_image_hotlink_page = false;
 	var $strip_htmltags = array('blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
-	var $strip_attributes = array('class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur');
+	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur');
 	var $input_encoding = 'UTF-8';
 	var $output_encoding = 'UTF-8';
 	
@@ -3860,7 +3870,7 @@ class SimplePie_Sanitize
 		$this->encode_instead_of_strip = (bool) $enable;
 	}
 	
-	function strip_attributes($attribs = array('class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
+	function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
 	{
 		if ($attribs)
 		{
