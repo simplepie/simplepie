@@ -3804,7 +3804,8 @@ class SimplePie_Sanitize
 	var $strip_htmltags = array('blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
 	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur');
-	var $input_encoding = 'UTF-8';
+	//var $input_encoding = 'UTF-8';
+	var $input_encoding = false;
 	var $output_encoding = 'UTF-8';
 	
 	function remove_div($enable = true)
