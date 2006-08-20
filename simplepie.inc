@@ -2154,23 +2154,48 @@ class SimplePie_Misc
 	****************************************************/
 	function fix_protocol($url, $http = 1)
 	{
-		$url = preg_replace('/^http:\/\/photocast.mac.com/i', 'http://web.mac.com', $url);
-		$url = preg_replace('/^(p(od)?cast|feed)[:]?[\/]*(http(s)?:\/\/)?/i', 'http://', $url);
-		//$url = preg_replace('/^(.*)(s)?:\/\//i', 'http\\2://', $url);
-		if (!preg_match('/^http(s)?:\/\//i', $url) && !file_exists($url)) $url = "http://$url";
-
-		if ($http != 1 && strstr($url, 'http://'))
+		$parsed = SimplePie_Misc::parse_url($url);
+		if (!empty($parsed[2]) && strtolower($parsed[2]) != 'http' && strtolower($parsed[2]) != 'https')
 		{
-			if ($http == 2)
-			{
-				$url = substr_replace($url, 'feed', 0, 4);
-			}
-			else if ($http == 3)
-			{
-				$url = substr_replace($url, 'podcast', 0, 4);
-			}
+			return SimplePie_Misc::fix_protocol("$parsed[4]$parsed[5]$parsed[6]$parsed[8]", $http);
 		}
-		return $url;
+		if (!preg_match('/^http(s)?:\/\//i', $url) && !file_exists($url))
+		{
+			return SimplePie_Misc::fix_protocol("http://$url", $http);
+		}
+
+		if ($http == 2 && !empty($parsed[2]))
+		{
+			return "feed:$url";
+		}
+		else if ($http == 3 && strtolower($parsed[2]) == 'http')
+		{
+			return substr_replace($url, 'podcast', 0, 4);
+		}
+		else
+		{
+			return $url;
+		}
+	}
+	
+	function parse_url($url)
+	{
+		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/i', $url, $match);
+		if (empty($match[0]))
+		{
+			return false;
+		}
+		else
+		{
+			for ($i = 6; $i < 10; $i++)
+			{
+				if (!isset($match[$i]))
+				{
+					$match[$i] = '';
+				}
+			}
+			return $match;
+		}
 	}
 	
 	function change_encoding($data, $input, $output)
