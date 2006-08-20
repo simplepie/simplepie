@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 19 August 2006
+Updated: 20 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060819';
+	var $build = '20060820';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -107,7 +107,7 @@ class SimplePie
 		$this->order_by_date = (bool) $enable;
 	}
 	
-	function bypass_image_hotlink($get = 'i')
+	function bypass_image_hotlink($get = false)
 	{
 		$this->sanitize->bypass_image_hotlink($get);
 	}
@@ -303,9 +303,9 @@ EOT;
 				$encoding = $charset[1];
 			}
 			// Then prolog, if at the very start of the document
-			else if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*["|\'](.*)["|\']/Ui', $prolog[1], $encoding))
+			else if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*("([^"]*)"|\'([^\']*)\')/Ui', $prolog[1], $encoding))
 			{
-				$encoding = $encoding[1];
+				$encoding = substr($encoding[1], 1, -1);
 			}
 			// UTF-32 Big Endian BOM
 			else if (strpos($data, sprintf('%c%c%c%c', 0x00, 0x00, 0xFE, 0xFF)) === 0)
@@ -454,28 +454,17 @@ EOT;
 	{
 		if (!empty($this->data['info']['link']['alternate'][0]))
 		{
-			$url = parse_url($this->data['info']['link']['alternate'][0]);
-			$favicon = $url['scheme'] . '://' . $url['host'] . '/' . 'favicon.ico';
+			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->data['info']['link']['alternate'][0]);
 
 			if ($check)
 			{
 				$file = new SimplePie_File($favicon);
 				$headers = $file->headers();
+				$file->close();
 
-				if ($headers['status']['code'] == '200')
+				if ($headers['status']['code'] == 200)
 				{
 					return $favicon;
-				}
-				else
-				{
-					if ($alternate)
-					{
-						return $alternate;
-					}
-					else
-					{
-						return false;
-					}
 				}
 			}
 			else
@@ -483,16 +472,13 @@ EOT;
 				return $favicon;
 			}
 		}
+		if ($alternate)
+		{
+			return $alternate;
+		}
 		else
 		{
-			if ($alternate)
-			{
-				return $alternate;
-			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 	}
 	
@@ -1944,7 +1930,7 @@ class SimplePie_Misc
 						{
 							if (isset($base['path']))
 							{
-								$target['path'] = dirname($base['path']) . '/' . $relative['path'];
+								$target['path'] = dirname("$base[path].") . '/' . $relative['path'];
 							}
 							else
 							{
@@ -3869,7 +3855,7 @@ class SimplePie_Sanitize
 		$this->enable_headers = (bool) $enable;
 	}
 	
-	function bypass_image_hotlink($get = 'i')
+	function bypass_image_hotlink($get = false)
 	{
 		if ($get)
 		{
