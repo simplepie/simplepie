@@ -3105,8 +3105,8 @@ class SimplePie_Locator
 		{
 			$file2 =& $file;
 		}
-		if (((stristr($file2->body(), '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $file2->body())) && (preg_match('/<([a-z0-9]+\:)?channel/mi', $file2->body()) || preg_match('/<([a-z0-9]+\:)?item/mi', $file2->body()))) || (preg_match('/<([a-z0-9]+\:)?feed/mi', $file2->body()) && (preg_match('/<([a-z0-9]+\:)?author/mi', $file2->body()) || preg_match('/<([a-z0-9]+\:)?entry/mi', $file2->body()))))
-		//if (true)
+		$body = preg_replace('/<\!-(.*)-\>/msiU', '', $file2->body());
+		if (preg_match('/<(\w+\:)?rss/msiU', $body) || preg_match('/<(\w+\:)?RDF/mi', $body) || preg_match('/<(\w+\:)?feed/mi', $body))
 		{
 			return true;
 		}
