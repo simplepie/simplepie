@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 20 August 2006
+Updated: 21 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060820';
+	var $build = '20060821';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -41,6 +41,7 @@ class SimplePie
 	var $max_minutes = 60;
 	var $cache_location = './cache';
 	var $order_by_date = true;
+	var $input_encoding = false;
 	
 	// Misc. variables
 	var $data;
@@ -107,6 +108,18 @@ class SimplePie
 		$this->order_by_date = (bool) $enable;
 	}
 	
+	function input_encoding($encoding = false)
+	{
+		if ($encoding)
+		{
+			$this->input_encoding = (string) $encoding;
+		}
+		else
+		{
+			$this->input_encoding = false;
+		}
+	}
+	
 	function bypass_image_hotlink($get = false)
 	{
 		$this->sanitize->bypass_image_hotlink($get);
@@ -149,11 +162,6 @@ class SimplePie
 	function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
 	{
 		$this->sanitize->strip_attributes($attribs);
-	}
-	
-	function input_encoding($encoding = 'UTF-8')
-	{
-		$this->sanitize->input_encoding($encoding);
 	}
 	
 	function output_encoding($encoding = 'UTF-8')
@@ -293,9 +301,9 @@ EOT;
 			unset($file);
 			
 			// First check to see if input has been overridden.
-			if ($this->sanitize->input_encoding)
+			if (!empty($this->input_encoding))
 			{
-				$encoding = $this->sanitize->input_encoding;
+				$encoding = $this->input_encoding;
 			}
 			// Second try HTTP headers
 			else if (!empty($headers['content-type']) && preg_match('/charset=(.*)/i', $headers['content-type'], $charset))
@@ -3861,8 +3869,7 @@ class SimplePie_Sanitize
 	var $strip_htmltags = array('blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
 	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur');
-	//var $input_encoding = 'UTF-8';
-	var $input_encoding = false;
+	var $input_encoding = 'UTF-8';
 	var $output_encoding = 'UTF-8';
 	
 	function remove_div($enable = true)
