@@ -1577,77 +1577,144 @@ class SimplePie_Enclosure
 		}
 	}
 
-	function embed($options) {
-
+	function embed($options)
+	{
 		// Set up defaults
-		$audio='';
-		$video='';
-		$alt='';
-		$altclass='';
-		$loop='false';
-		$width='auto';
-		$height='auto';
-		$bgcolor='#ffffff';
-		$embed='';
+		$audio = '';
+		$video = '';
+		$alt = '';
+		$altclass = '';
+		$loop = 'false';
+		$width = 'auto';
+		$height = 'auto';
+		$bgcolor = '#ffffff';
 
 		// Process options and reassign values as necessary
-		$options = explode(',', $options);
-		foreach($options as $option) {
-			$opt = explode(':', trim($option));
-			if ($opt[0] == 'audio') $audio=$opt[1];
-			else if ($opt[0] == 'video') $video=$opt[1];
-			else if ($opt[0] == 'alt') $alt=$opt[1];
-			else if ($opt[0] == 'altclass') $altclass=$opt[1];
-			else if ($opt[0] == 'loop') $loop=$opt[1];
-			else if ($opt[0] == 'width') $width=$opt[1];
-			else if ($opt[0] == 'height') $height=$opt[1];
-			else if ($opt[0] == 'bgcolor') $bgcolor=$opt[1];
+		if (is_array($options))
+		{
+			extract($options);
 		}
-
+		else
+		{
+			$options = explode(',', $options);
+			foreach($options as $option)
+			{
+				$opt = explode(':', $option, 2);
+				if (isset($opt[0], $opt[1]))
+				{
+					$opt[0] = trim($opt[0]);
+					$opt[1] = trim($opt[1]);
+					switch ($opt[0])
+					{
+						case 'audio':
+							$audio = $opt[1];
+							break
+						
+						case 'video':
+							$video = $opt[1];
+							break;
+						
+						case 'alt':
+							$alt = $opt[1];
+							break;
+						
+						case 'altclass':
+							$altclass = $opt[1];
+							break;
+						
+						case 'loop':
+							$loop = $opt[1];
+							break;
+						
+						case 'width':
+							$width = $opt[1];
+							break;
+						
+						case 'height':
+							$height = $opt[1];
+							break;
+						
+						case 'bgcolor':
+							$bgcolor = $opt[1];
+							break;
+					}
+				}
+			}
+		}
+	
+		$type = strtolower($this->get_type());
+		$mime = explode('/', $type, 2);
+		$mime = $mime[0];
+		
 		// Process values for 'auto'
-		if ($width == 'auto') {
-			if (stristr($this->type, 'audio/')) $width='100%';
-			else if (stristr($this->type, 'video/')) $width='320';
-			else $width='100%';
+		if ($width == 'auto')
+		{
+			if ($mime = 'video')
+			{
+				$width = '320';
+			}
+			else
+			{
+				$width = '100%';
+			}
 		}
-		if ($height == 'auto') {
-			if (stristr($this->type, 'audio/')) $height=0;
-			else if (stristr($this->type, 'video/')) $height=240;
-			else $height=256;
+		if ($height == 'auto')
+		{
+			if ($mime = 'audio')
+			{
+				$height = 0;
+			}
+			else if ($mime = 'video')
+			{
+				$height = 240;
+			}
+			else
+			{
+				$height = 256;
+			}
 		}
 
 		// Set proper placeholder value
-		if (stristr($this->type, 'audio/')) $placeholder=$audio;
-		else if (stristr($this->type, 'video/')) $placeholder=$video;
+		if ($mime = 'audio')
+		{
+			$placeholder = $audio;
+		}
+		else if ($mime = 'video')
+		{
+			$placeholder = $video;
+		}
 
 		// Make sure the JS library is included
 		// (I know it'll be included multiple times, but I can't think of a better way to do this automatically)
-		$embed.='<script type="text/javascript" src="?js"></script>';
+		$embed = '<script type="text/javascript" src="?js"></script>';
 
 		// Odeo Feed MP3's
-		if (substr(strtolower($this->link), 0, 15) == 'http://odeo.com') {
-			$embed.='<script type="text/javascript">embed_odeo("'.$this->link.'");</script>';
+		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com') {
+			$embed .= '<script type="text/javascript">embed_odeo(' . $this->get_link() . ');</script>';
 		}
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
-		else if ($this->type == 'audio/3gpp' || $this->type == 'audio/3gpp2' || $this->type == 'audio/aac' || $this->type == 'audio/x-aac' || $this->type == 'audio/aiff' || $this->type == 'audio/x-aiff' || $this->type == 'audio/mid' || $this->type == 'audio/midi' || $this->type == 'audio/x-midi' || $this->type == 'audio/mpeg' || $this->type == 'audio/x-mpeg' || $this->type == 'audio/mp3' || $this->type == 'x-audio/mp3' || $this->type == 'audio/mp4' || $this->type == 'audio/m4a' || $this->type == 'audio/x-m4a' || $this->type == 'audio/wav' || $this->type == 'audio/x-wav' || $this->type == 'video/3gpp' || $this->type == 'video/3gpp2' || $this->type == 'video/m4v' || $this->type == 'video/x-m4v' || $this->type == 'video/mp4' || $this->type == 'video/mpeg' || $this->type == 'video/x-mpeg' || $this->type == 'video/quicktime' || $this->type == 'video/sd-video') {
-			$height+=16;
-			$embed.='<script type="text/javascript">embed_quicktime("'.$this->type.'", "'.$bgcolor.'", "'.$width.'", "'.$height.'", "'.$this->link.'", "'.$placeholder.'", "'.$loop.'");</script>';
+		else if (in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'x-audio/mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video')))
+		{
+			$height += 16;
+			$embed .= "<script type='text/javascript'>embed_quicktime('$type', '$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$placeholder', '$loop');</script>";
 		}
 
 		// Flash
-		else if ($this->type == 'application/x-shockwave-flash' || $this->type == 'application/futuresplash') {
-			$embed.='<script type="text/javascript">embed_flash("'.$bgcolor.'", "'.$width.'", "'.$height.'", "'.$this->link.'", "'.$loop.'", "'.$this->type.'");</script>';
+		else if (in_array($type, 'application/x-shockwave-flash', 'application/futuresplash'))
+		{
+			$embed .= "<script type='text/javascript'>embed_flash('$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$loop', '$type');</script>";
 		}
 
 		// Windows Media
-		else if ($this->type == 'application/asx' || $this->type == 'application/x-mplayer2' || $this->type == 'audio/x-ms-wma' || $this->type == 'audio/x-ms-wax' || $this->type == 'video/x-ms-asf-plugin' || $this->type == 'video/x-ms-asf' || $this->type == 'video/x-ms-wm' || $this->type == 'video/x-ms-wmv' || $this->type == 'video/x-ms-wvx') {
-			$height+=45;
-			$embed.='<script type="text/javascript">embed_wmedia("'.$width.'", "'.$height.'", "'.$this->link.'");</script>';
+		else if (in_array($type, array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
+		{
+			$height += 45;
+			$embed .= "<script type='text/javascript'>embed_wmedia('$width', '$height', '" . $this->link() . "');</script>";
 		}
 
 		// Everything else
-		else $embed.='<a href="' . $this->link . '" class="' . $altclass . '">' . $alt . '</a>';
+		else $embed .= '<a href="' . $this->get_link() . '" class="' . $altclass . '">' . $alt . '</a>';
 
 		return $embed;
 	}
