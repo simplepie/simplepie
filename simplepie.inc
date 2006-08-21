@@ -189,7 +189,10 @@ function embed_flash(bgcolor, width, height, link, loop, type) {document.writeln
 function embed_wmedia(width, height, link) {document.writeln('<object classid="CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95" type="application/x-oleobject" width="'+width+'" height="'+height+'" standby="Loading Windows Media Player..."><param name="FileName" value="'+link+'"><param name="autosize" value="true"><param name="ShowControls" value="true"><param name="ShowStatusBar" value="false"><param name="ShowDisplay" value="false"><param name="autostart" value="false"><embed type="application/x-mplayer2" src="'+link+'" autosize="1" width="'+width+'" height="'+height+'" showcontrols="1" showstatusbar="0" showdisplay="0" autostart="0"></embed></object>');}
 EOT;
 
-			ob_start('ob_gzhandler'); 
+			if (function_exists('ob_gzhandler'))
+			{
+				ob_start('ob_gzhandler');
+			}
 			header('Content-type: text/javascript; charset: UTF-8'); 
 			header('Cache-Control: must-revalidate'); 
 			header('Expires: ' .  gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
@@ -1455,22 +1458,47 @@ class SimplePie_Author
 	var $email;
 	
 	// Constructor, used to input the data
-	function SimplePie_Author($name, $link, $email) {
+	function SimplePie_Author($name, $link, $email)
+	{
 		$this->name = $name;
 		$this->link = $link;
 		$this->email = $email;
 	}
 	
-	function get_name() {
-		return (empty($this->name)) ? false : $this->name;
+	function get_name()
+	{
+		if (!empty($this->name))
+		{
+			return $this->name;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
-	function get_link() {
-		return (empty($this->link)) ? false : $this->link;
+	function get_link()
+	{
+		if (!empty($this->link))
+		{
+			return $this->link;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
-	function get_email() {
-		return (empty($this->email)) ? false : $this->email;
+	function get_email()
+	{
+		if (!empty($this->email))
+		{
+			return $this->email;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
 
@@ -1481,34 +1509,72 @@ class SimplePie_Enclosure
 	var $length;
 
 	// Constructor, used to input the data
-	function SimplePie_Enclosure($link, $type, $length) {
+	function SimplePie_Enclosure($link, $type, $length)
+	{
 		$this->link = $link;
 		$this->type = $type;
 		$this->length = $length;
 	}
 
-	function get_link() {
-		return (empty($this->link)) ? false : $this->link;
-	}
-
-	function get_extension() {
-		if (!empty($this->link)) {
-			return pathinfo($this->link, PATHINFO_EXTENSION);
-		} else {
+	function get_link()
+	{
+		if (!empty($this->link))
+		{
+			return $this->link;
+		}
+		else
+		{
 			return false;
 		}
 	}
 
-	function get_type() {
-		return (empty($this->type)) ? false : $this->type;
+	function get_extension()
+	{
+		if (!empty($this->link))
+		{
+			return pathinfo($this->link, PATHINFO_EXTENSION);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
-	function get_length() {
-		return (empty($this->length)) ? false : $this->length;
+	function get_type()
+	{
+		if (!empty($this->type))
+		{
+			return $this->type;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
-	function get_size() {
-		return (empty($this->length)) ? false : round(($this->length/1048576), 2);
+	function get_length()
+	{
+		if (!empty($this->length))
+		{
+			return $this->length;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	function get_size()
+	{
+		$length = $this->get_length();
+		if (!empty($length))
+		{
+			return round($length, 2);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	function embed($options) {
@@ -1912,23 +1978,25 @@ class SimplePie_Misc
 		$base = trim($base);
 		if (!empty($relative))
 		{
-			$relative = parse_url($relative);
-			$base = parse_url($base);
-			if (isset($relative['scheme']))
+			$relative = SimplePie_Misc::parse_url($relative);
+			$relative = array('scheme' => $relative[2], 'authority' => $relative[3], 'path' => $relative[5], 'query' => $relative[7], 'fragment' => $relative[9]);
+			if (!empty($relative['scheme']))
 			{
 				$target = $relative;
 			}
-			else
+			else if (!empty($base))
 			{
+				$base = SimplePie_Misc::parse_url($base);
+				$base = array('scheme' => $base[2], 'authority' => $base[3], 'path' => $base[5], 'query' => $base[7], 'fragment' => $base[9]);
 				$target['scheme'] = $base['scheme'];
-				if (isset($relative['host']))
+				if (!empty($relative['authority']))
 				{
-					$target = array_merge($target, $relative);
+					$target = array_merge($relative, $target);
 				}
 				else
 				{
-					$target['host'] = $base['host'];
-					if (isset($relative['path']))
+					$target['authority'] = $base['authority'];
+					if (!empty($relative['path']))
 					{
 						if (strpos($relative['path'], '/') === 0)
 						{
@@ -1936,7 +2004,7 @@ class SimplePie_Misc
 						}
 						else
 						{
-							if (isset($base['path']))
+							if (!empty($base['path']))
 							{
 								$target['path'] = dirname("$base[path].") . '/' . $relative['path'];
 							}
@@ -1945,7 +2013,7 @@ class SimplePie_Misc
 								$target['path'] = '/' . $relative['path'];
 							}
 						}
-						if (isset($relative['query']))
+						if (!empty($relative['query']))
 						{
 							$target['query'] = $relative['query'];
 						}
@@ -1995,7 +2063,7 @@ class SimplePie_Misc
 					}
 					else
 					{
-						if (isset($base['path']))
+						if (!empty($base['path']))
 						{
 							$target['path'] = $base['path'];
 						}
@@ -2003,52 +2071,31 @@ class SimplePie_Misc
 						{
 							$target['path'] = '/';
 						}
-						if (isset($relative['query']))
+						if (!empty($relative['query']))
 						{
 							$target['query'] = $relative['query'];
 						}
-						else if (isset($base['query']))
+						else if (!empty($base['query']))
 						{
 							$target['query'] = $base['query'];
 						}
 					}
 				}
-				if (isset($relative['fragment']))
+				if (!empty($relative['fragment']))
 				{
 					$target['fragment'] = $relative['fragment'];
 				}
 			}
-			$return = '';
-			if (isset($target['scheme']))
+			else
 			{
-				$return = "$target[scheme]://";
+				return false;
 			}
-			if (isset($target['user']))
-			{
-				$return .= $target['user'];
-				if (isset($target['pass']))
-				{
-					$return .= ":$target[pass]";
-				}
-				$return .= '@';
-			}
-			if (isset($target['host']))
-			{
-				$return .= $target['host'];
-			}
-			if (isset($target['port']))
-			{
-				$return .= ":$target[port]";
-			}
-			if (isset($target['path']))
-			{
-				$return .= $target['path'];
-			}
-			if (isset($target['query']))
+			$return = "$target[scheme]:$target[authority]$target[path]";
+			if (!empty($target['query']))
 			{
 				$return .= "?$target[query]";
 			}
-			if (isset($target['fragment']))
+			if (!empty($target['fragment']))
 			{
 				$return .= "#$target[fragment]";
 			}
