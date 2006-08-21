@@ -13,7 +13,7 @@ include_once('../idn/idna_convert.class.php');
 $feed = new SimplePie();
 
 // Set these Configuration Options
-$feed->bypass_image_hotlink();
+//$feed->bypass_image_hotlink();
 $feed->strip_ads(true);
 
 // Make sure that page is getting passed a URL
@@ -24,6 +24,11 @@ if (!empty($_GET['feed'])) {
 	
 	// Use the URL that was passed to the page in SimplePie
 	$feed->feed_url($_GET['feed']);
+}
+
+// Allow us to change the input encoding from the URL string if we want to. (optional)
+if (!empty($_GET['input'])) {
+	$feed->input_encoding($_GET['input']);
 }
 
 // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and 
@@ -123,7 +128,7 @@ $feed->handle_content_type();
 <a href="?feed=http://www.infoworld.com/rss/news.xml#feed" title="Test: Ad Stripping">InfoWorld</a>, 
 <a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml#feed" title="Test: Tag Stripping">iTunes</a>, 
 <a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf#feed" title="Test: EUC-JP Encoding">Japanese Language</a>, 
-<a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php#feed" title="Test: EUC-KR Encoding">Korean Language</a>, 
+<a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php&input=EUC-KR#feed" title="Test: EUC-KR Encoding">Korean Language</a>, 
 <a href="?feed=http://macnn.com/podcasts/macnn.rss#feed" title="Test: Embedded Enclosures">MacNN</a>, 
 <a href="?feed=http://mir.aculo.us/xml/rss/feed.xml#feed" title="Weblog for the developer of Scriptaculous">mir.aculo.us</a>, 
 <a href="?feed=http://images.apple.com/trailers/rss/newtrailers.rss#feed" title="Apple's QuickTime movie trailer site">Movie Trailers</a>, 
