@@ -278,6 +278,7 @@ EOT;
 			}
 			if (!$file->success)
 			{
+				$this->error = $file->error;
 				return false;
 			}
 			
@@ -1734,6 +1735,7 @@ class SimplePie_File
 	var $body;
 	var $fp;
 	var $redirects = 0;
+	var $error;
 	
 	function SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null)
 	{
@@ -1784,6 +1786,7 @@ class SimplePie_File
 				$this->headers = trim(curl_exec($fp));
 				if (curl_errno($fp))
 				{
+					$this->error = curl_error($fp);
 					$this->success = false;
 					return false;
 				}
@@ -1811,6 +1814,7 @@ class SimplePie_File
 				$this->fp = fsockopen($url_parts['host'], $url_parts['port'], $errno, $errstr, $timeout);
 				if (!$this->fp)
 				{
+					$this->error = $errstr;
 					$this->success = false;
 					return false;
 				}
@@ -1856,6 +1860,7 @@ class SimplePie_File
 					else
 					{
 						$this->close();
+						$this->error = 'Timeout';
 						$this->success = false;
 						return false;
 					}
@@ -1871,6 +1876,7 @@ class SimplePie_File
 			}
 			else
 			{
+				$this->error = 'Could not open the file';
 				$this->success = false;
 				return false;
 			}
