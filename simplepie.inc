@@ -221,14 +221,14 @@ EOT;
 				$this->data = $cache->load();
 				if (!empty($this->data))
 				{
-					if (!empty($this->data['feed_url']))
-					{
-						$this->rss_url = $this->data['feed_url'];
-						return $this->init();
-					}
-					else if ($this->data['url'] != $this->rss_url)
+					if ($this->data['url'] != $this->rss_url)
 					{
 						$this->enable_caching(false);
+						return $this->init();
+					}
+					else if (!empty($this->data['feed_url']))
+					{
+						$this->rss_url = $this->data['feed_url'];
 						return $this->init();
 					}
 					else if ($cache->mtime() + $this->max_minutes * 60 < time())
@@ -2050,7 +2050,7 @@ class SimplePie_Misc
 		$base = trim($base);
 		if (!empty($relative))
 		{
-			$relative = SimplePie_Misc::parse_url($relative);
+			$relative = SimplePie_Misc::parse_url($relative, false);
 			$relative = array('scheme' => $relative[2], 'authority' => $relative[3], 'path' => $relative[5], 'query' => $relative[7], 'fragment' => $relative[9]);
 			if (!empty($relative['scheme']))
 			{
@@ -2058,7 +2058,7 @@ class SimplePie_Misc
 			}
 			else if (!empty($base))
 			{
-				$base = SimplePie_Misc::parse_url($base);
+				$base = SimplePie_Misc::parse_url($base, false);
 				$base = array('scheme' => $base[2], 'authority' => $base[3], 'path' => $base[5], 'query' => $base[7], 'fragment' => $base[9]);
 				$target['scheme'] = $base['scheme'];
 				if (!empty($relative['authority']))
@@ -2282,20 +2282,20 @@ class SimplePie_Misc
 	function fix_protocol($url, $http = 1)
 	{
 		$parsed = SimplePie_Misc::parse_url($url);
-		if (!empty($parsed[2]) && strtolower($parsed[2]) != 'http' && strtolower($parsed[2]) != 'https')
+		if (!empty($parsed['scheme']) && strtolower($parsed['scheme']) != 'http' && strtolower($parsed['scheme']) != 'https')
 		{
-			return SimplePie_Misc::fix_protocol("$parsed[4]$parsed[5]$parsed[6]$parsed[8]", $http);
+			return SimplePie_Misc::fix_protocol("$parsed[authority]$parsed[path]$parsed[query]$parsed[fragment]", $http);
 		}
 		if (!preg_match('/^http(s)?:\/\//i', $url) && !file_exists($url))
 		{
 			return SimplePie_Misc::fix_protocol("http://$url", $http);
 		}
 
-		if ($http == 2 && !empty($parsed[2]))
+		if ($http == 2 && !empty($parsed['scheme']))
 		{
 			return "feed:$url";
 		}
-		else if ($http == 3 && strtolower($parsed[2]) == 'http')
+		else if ($http == 3 && strtolower($parsed['scheme']) == 'http')
 		{
 			return substr_replace($url, 'podcast', 0, 4);
 		}
@@ -2305,7 +2305,7 @@ class SimplePie_Misc
 		}
 	}
 	
-	function parse_url($url)
+	function parse_url($url, $parse_match = true)
 	{
 		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/i', $url, $match);
 		if (empty($match[0]))
@@ -2320,6 +2320,10 @@ class SimplePie_Misc
 				{
 					$match[$i] = '';
 				}
+			}
+			if ($parse_match)
+			{
+				$match = array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[6], 'fragment' => $match[8]);
 			}
 			return $match;
 		}
@@ -3264,11 +3268,11 @@ class SimplePie_Locator
 			if (!empty($link['attribs']['HREF']['data']))
 			{
 				$href = trim($link['attribs']['HREF']['data']);
-				$parsed = @parse_url($href);
+				$parsed = SimplePie_Misc::parse_url($href);
 				if (empty($parsed['scheme']) || $parsed['scheme'] != 'javascript')
 				{
-					$current = parse_url($this->file->url);
-					if (empty($parsed['host']) || $parsed['host'] == $current['host'])
+					$current = SimplePie_Misc::parse_url($this->file->url);
+					if (empty($parsed['authority']) || $parsed['authority'] == $current['authority'])
 					{
 						$this->local[] = SimplePie_Misc::absolutize_url($href, $this->file->url);
 					}
