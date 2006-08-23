@@ -3116,19 +3116,6 @@ class SimplePie_Misc
 				break;
 		}
 		
-		// If mb_list_encodings() exists, use that to set use_mbstring
-		if (function_exists('mb_list_encodings'))
-		{
-			if (in_array($return['encoding'], mb_list_encodings()))
-			{
-				$return['use_mbstring'] = true;
-			}
-			else
-			{
-				$return['use_mbstring'] = false;
-			}
-		}
-		
 		// Then, return it.
 		return $return;
 	}
