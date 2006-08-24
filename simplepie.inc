@@ -1575,7 +1575,7 @@ class SimplePie_Enclosure
 		$length = $this->get_length();
 		if (!empty($length))
 		{
-			return round($length, 2);
+			return round($length/1048576, 2);
 		}
 		else
 		{
@@ -1655,7 +1655,7 @@ class SimplePie_Enclosure
 		// Process values for 'auto'
 		if ($width == 'auto')
 		{
-			if ($mime = 'video')
+			if ($mime == 'video')
 			{
 				$width = '320';
 			}
@@ -1666,11 +1666,11 @@ class SimplePie_Enclosure
 		}
 		if ($height == 'auto')
 		{
-			if ($mime = 'audio')
+			if ($mime == 'audio')
 			{
 				$height = 0;
 			}
-			else if ($mime = 'video')
+			else if ($mime == 'video')
 			{
 				$height = 240;
 			}
@@ -1681,11 +1681,11 @@ class SimplePie_Enclosure
 		}
 
 		// Set proper placeholder value
-		if ($mime = 'audio')
+		if ($mime == 'audio')
 		{
 			$placeholder = $audio;
 		}
-		else if ($mime = 'video')
+		else if ($mime == 'video')
 		{
 			$placeholder = $video;
 		}
