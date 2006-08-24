@@ -1707,7 +1707,7 @@ class SimplePie_Enclosure
 		}
 
 		// Flash
-		else if (in_array($type, 'application/x-shockwave-flash', 'application/futuresplash'))
+		else if (in_array($type, array('application/x-shockwave-flash', 'application/futuresplash')))
 		{
 			$embed .= "<script type='text/javascript'>embed_flash('$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$loop', '$type');</script>";
 		}
