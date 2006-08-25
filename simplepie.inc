@@ -6,6 +6,7 @@ Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
 Updated: 24 August 2006
+Revision: $Rev$
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
