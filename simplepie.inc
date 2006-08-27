@@ -5,8 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 24 August 2006
-Revision: $Rev$
+Updated: 27 August 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -27,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060824';
+	var $build = '20060827';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -1737,6 +1736,7 @@ class SimplePie_File
 	var $fp;
 	var $redirects = 0;
 	var $error;
+	var $method;
 	
 	function SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null)
 	{
@@ -1758,7 +1758,7 @@ class SimplePie_File
 			{
 				$headers = array();
 			}
-			if (extension_loaded('curl'))
+			if (extension_loaded('curl') && version_compare(SimplePie_Misc::get_curl_version(), '7.10', '>='))
 			{
 				$fp = curl_init();
 				$headers2 = array();
@@ -1798,6 +1798,7 @@ class SimplePie_File
 					$this->body = array_pop($this->headers);
 					$this->headers = array_pop($this->headers);
 					$this->headers = $this->parse_headers($this->headers);
+					$this->method = 'curl';
 				}
 			}
 			else
@@ -1821,6 +1822,7 @@ class SimplePie_File
 				}
 				else
 				{
+					$this->method = 'fsockopen';
 					stream_set_timeout($this->fp, $timeout);
 					$get = (isset($url_parts['query'])) ? "$url_parts[path]?$url_parts[query]" : $url_parts['path'];
 					$out = "GET $get HTTP/1.0\r\n";
@@ -1901,6 +1903,11 @@ class SimplePie_File
 					$this->body .= fread($this->fp, 1024);
 				}
 				$this->body = trim($this->body);
+				if ($this->headers['content-encoding'] == 'gzip' && $this->method == 'fsockopen')
+				{
+					$this->body = substr($this->body, 10);
+					$this->body = gzinflate($this->body);
+				}
 				$this->close();
 			}
 			else

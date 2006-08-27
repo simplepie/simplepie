@@ -214,7 +214,7 @@ $feed->handle_content_type();
 			<p class="footnote">Page processed in <?php $mtime = explode(' ', microtime()); echo round($mtime[0] + $mtime[1] - $starttime, 3); ?> seconds.</p>
 
 			<!-- Display the version of SimplePie being loaded. -->
-			<p class="footnote">Powered by <a href="<?php echo $feed->url; ?>"><?php echo $feed->name . ' ' . $feed->version . ', Build ' . $feed->build; ?></a>.  Run the <a href="sp_compatibility_test.php">SimplePie Compatibility Test</a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
+			<p class="footnote">Powered by <a href="<?php echo $feed->url; ?>"><?php echo $feed->name . ' ' . $feed->version . ', Build ' . $feed->build; ?></a>.  Run the <a href="../compatibility_test/sp_compatibility_test.php">SimplePie Compatibility Test</a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
 		</div>
 
 	</div>
