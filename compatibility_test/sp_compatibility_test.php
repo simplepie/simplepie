@@ -1,6 +1,4 @@
 <?php
-// Test fsockopen, zlib, curl 7.10
-
 if (isset($_GET['logopng'])) {
 	$data='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';
 	header('Content-type: image/png');
@@ -15,28 +13,41 @@ else if (isset($_GET['background'])) {
 	exit;
 }
 
-$php_ok = (function_exists('version_compare') && ((version_compare(phpversion(), '4.3.0', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.0.3', '>=')));
+function get_curl_version() {
+	$curl = 0;
+	if (is_array(curl_version())) {
+		$curl = curl_version();
+		$curl = $curl['version'];
+	}
+	else {
+		$curl = curl_version();
+		$curl = explode(' ', $curl);
+		$curl = explode('/', $curl[0]);
+		$curl = $curl[1];
+	}
+	return $curl;
+}
+
+$php_ok = (function_exists('version_compare') && ((version_compare(phpversion(), '4.3.2', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.0.3', '>=')));
 $xml_ok = extension_loaded('xml');
-$curl_ok = extension_loaded('curl');
-$fopen_ok = ini_get('allow_url_fopen');
+$curl_ok = version_compare(get_curl_version(), '7.10', '>=');
+$zlib_ok = extension_loaded('zlib');
 $mbstring_ok = extension_loaded('mbstring');
 $iconv_ok = extension_loaded('iconv');
-
 /*
 // Test the various outcomes of this test.
 $php_ok = true;
 $xml_ok = true;
-$curl_ok = true;
-$fopen_ok = true;
+$curl_ok = '7.10';
+$zlib_ok = true;
 $mbstring_ok = true;
 $iconv_ok = true;
 */
-
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <head>
-<title>SimplePie: Server Compatibility Test</title>
+<title>SimplePie: Server Compatibility Test (Beta 3)</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 <style type="text/css">
@@ -216,13 +227,13 @@ function fnLoadPngs() {
 					</tr>
 					<tr class="<?php echo ($curl_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/curl">curl</a></td>
-						<td>Enabled</td>
-						<td><?php echo ($curl_ok) ? 'Enabled' : 'Disabled'; ?></td>
+						<td>7.10</td>
+						<td><?php echo get_curl_version(); ?></td>
 					</tr>
-					<tr class="<?php echo ($fopen_ok) ? 'enabled' : 'disabled'; ?>">
-						<td><a href="http://php.net/manual/en/ref.filesystem.php#ini.allow-url-fopen">allow_url_fopen</a></td>
+					<tr class="<?php echo ($zlib_ok) ? 'enabled' : 'disabled'; ?>">
+						<td><a href="http://php.net/zlib">zlib</a></td>
 						<td>Enabled</td>
-						<td><?php echo ($fopen_ok) ? 'Enabled' : 'Disabled'; ?></td>
+						<td><?php echo ($zlib_ok) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
 					<tr class="<?php echo ($mbstring_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/mbstring">mbstring</a></td>
@@ -241,37 +252,33 @@ function fnLoadPngs() {
 		<div class="chunk">
 			<h3>What does this mean?</h3>
 			<ol>
-				<?php if ($php_ok && $xml_ok && $mbstring_ok && $iconv_ok && $curl_ok && $fopen_ok) { ?>
+				<?php if ($php_ok && $xml_ok && $mbstring_ok && $iconv_ok && $curl_ok && $zlib_ok) { ?>
 				<li><em>You have everything you need to run SimplePie properly!  Congratulations!</em></li>
 				<?php } else { ?>
 					<?php if ($php_ok) { ?>
 						<li><strong>PHP:</strong> You are running a supported version of PHP.  <em>No problems here.</em></li>
 						<?php if ($xml_ok) { ?>
 							<li><strong>XML:</strong> You have XML support installed.  <em>No problems here.</em></li>
-							<?php if ($curl_ok || $fopen_ok) { ?>
-								<?php if ($curl_ok) { ?>
-									<li><strong>curl:</strong> You have <code>curl</code> installed.  <?php if ($fopen_ok) { ?>SimplePie will try this before trying <code>fopen</code>.  <?php } ?><em>No problems here.</em></li>
-								<?php } else { ?>
-									<li><strong>curl:</strong> The <code>curl</code> extension is not available.  <?php if ($fopen_ok) { ?>SimplePie will use <code>fopen</code> instead.<?php } else { ?><em>SimplePie is a no-go at the moment.</em><?php } ?></li>
-								<?php } ?>
-
-								<?php if ($fopen_ok) { ?>
-									<li><strong>allow_url_fopen:</strong> You have <code>allow_url_fopen</code> enabled<?php if ($curl_ok) { ?>, although SimplePie will try <code>curl</code> before trying <code>fopen</code><?php }  ?>.  <em>No problems here.</em></li>
-								<?php } else { ?>
-									<li><strong>allow_url_fopen:</strong> This setting has been disabled.  <?php if ($curl_ok) { ?>SimplePie will use <code>curl</code> instead.<?php } else { ?><em>SimplePie is a no-go at the moment.</em><?php } ?></li>
-								<?php } ?>
-
-								<?php if ($mbstring_ok && $iconv_ok) { ?>
-									<li><strong>mbstring and iconv:</strong> You have both <code>mbstring</code> and <code>iconv</code> installed!  This will allow SimplePie to handle the greatest number of languages.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
-								<?php } else if ($mbstring_ok) { ?>
-									<li><strong>mbstring:</strong> <code>mbstring</code> is installed, but <code>iconv</code> is not.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
-								<?php } else if ($iconv_ok) { ?>
-									<li><strong>iconv:</strong> <code>iconv</code> is installed, but <code>mbstring</code> is not.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
-								<?php } else { ?>
-									<li><strong>mbstring and iconv:</strong> <em>You do not have either of the extensions installed.</em>  This will significantly affect your ability to read non-english feeds, as well as even some english ones.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
-								<?php } ?>
+							<?php if ($curl_ok) { ?>
+								<li><strong>curl:</strong> You have <code>curl</code> 7.10 or newer installed.  <em>No problems here.</em></li>
 							<?php } else { ?>
-								<li><strong>curl and fopen:</strong> The <code>allow_url_fopen</code> setting has been disabled and the <code>curl</code> extension is not available.  I'm not sure how you're supposed to be able to do anything without one of these two available to you.  I think it's time for you to get a new webhost.  <em>SimplePie is a no-go at the moment.</em></li>
+								<li><strong>curl:</strong> The <code>curl</code> extension is either not available, or is an unsupported version.  SimplePie will use <code>fsockopen</code> instead.</li>
+							<?php } ?>
+
+							<?php if ($zlib_ok) { ?>
+								<li><strong>zlib:</strong> You have <code>zlib</code> enabled.  This allows SimplePie to support GZIP-encoded feeds.  <em>No problems here.</em></li>
+							<?php } else { ?>
+								<li><strong>zlib:</strong> The <code>zlib</code> extension is not available.  SimplePie will ignore any GZIP-encoding, and instead handle feeds as uncompressed text.</li>
+							<?php } ?>
+
+							<?php if ($mbstring_ok && $iconv_ok) { ?>
+								<li><strong>mbstring and iconv:</strong> You have both <code>mbstring</code> and <code>iconv</code> installed!  This will allow SimplePie to handle the greatest number of languages.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
+							<?php } else if ($mbstring_ok) { ?>
+								<li><strong>mbstring:</strong> <code>mbstring</code> is installed, but <code>iconv</code> is not.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
+							<?php } else if ($iconv_ok) { ?>
+								<li><strong>iconv:</strong> <code>iconv</code> is installed, but <code>mbstring</code> is not.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
+							<?php } else { ?>
+								<li><strong>mbstring and iconv:</strong> <em>You do not have either of the extensions installed.</em>  This will significantly affect your ability to read non-english feeds, as well as even some english ones.  Check the <a href="http://simplepie.org/docs/reference/simplepie-core/supported-character-encodings/">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
 							<?php } ?>
 						<?php } else { ?>
 							<li><strong>XML:</strong> Your PHP installation doesn't support XML parsing.  <em>SimplePie is a no-go at the moment.</em></li>
@@ -284,21 +291,24 @@ function fnLoadPngs() {
 		</div>
 
 		<div class="chunk">
-			<?php if ($php_ok && $xml_ok && ($curl_ok || $fopen_ok) && $mbstring_ok && $iconv_ok) { ?>
+			<?php if ($php_ok && $xml_ok && $mbstring_ok && $iconv_ok) { ?>
 				<h3>Bottom Line: Yes, you can!</h3>
 				<p><em>Your webhost has its act together!</em></p>
 				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/installing/">following the instructions</a>.  You can find example uses with <a href="http://simplepie.org/ideas/">SimplePie Ideas</a>.</p>
-			<?php } else if ($php_ok && $xml_ok && ($curl_ok || $fopen_ok) && !$mbstring_ok && !$iconv_ok) { ?>
+				<p class="footnote">**NOTE** Passing this test does not guarantee that SimplePie will run on your webhost &mdash; it only ensures that the basic requirements have been addressed.</p>
+			<?php } else if ($php_ok && $xml_ok && !$mbstring_ok && !$iconv_ok) { ?>
 				<h3>Bottom Line: Yes, but it's crippled.</h3>
 				<p><em>You're limited to essentially english, spanish, italian, and other western-european languages.</em>  Even then you might still have some problems.  We'd recommend that you stick to publishing specific feeds on your site where you know that they're UTF-8 or ISO-8859-1.</p>
 				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/installing/">following the instructions</a>.  You can find example uses with <a href="http://simplepie.org/ideas/">SimplePie Ideas</a>.</p>
-			<?php } else if ($php_ok && $xml_ok && ($curl_ok || $fopen_ok) && (!$mbstring_ok || !$iconv_ok)) { ?>
+				<p class="footnote">**NOTE** Passing this test does not guarantee that SimplePie will run on your webhost &mdash; it only ensures that the basic requirements have been addressed.</p>
+			<?php } else if ($php_ok && $xml_ok && (!$mbstring_ok || !$iconv_ok)) { ?>
 				<h3>Bottom Line: Yes, you can!</h3>
 				<p><em>For most feeds, it'll run with no problems.</em>  There are certain languages that you'll have a hard time with though.</p>
 				<p>You can download the latest version of SimplePie from <a href="http://simplepie.org/downloads/">SimplePie.org</a> and install it by <a href="http://simplepie.org/docs/installing/">following the instructions</a>.  You can find example uses with <a href="http://simplepie.org/ideas/">SimplePie Ideas</a>.</p>
+				<p class="footnote">**NOTE** Passing this test does not guarantee that SimplePie will run on your webhost &mdash; it only ensures that the basic requirements have been addressed.</p>
 			<?php } else { ?>
 				<h3>Bottom Line: We're sorry...</h3>
-				<p><em>Your webhost does not support the minimum requirements for SimplePie.</em>  It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the <code>xml</code>, <code>mbstring</code>, <code>iconv</code>, and <code>curl</code> extensions.</p>
+				<p><em>Your webhost does not support the minimum requirements for SimplePie.</em>  It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the <code>xml</code>, <code>mbstring</code>, <code>iconv</code>, <code>curl</code>, and <code>zlib</code> extensions.</p>
 			<?php } ?>
 		</div>
 

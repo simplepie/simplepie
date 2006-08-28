@@ -1696,7 +1696,7 @@ class SimplePie_Enclosure
 
 		// Odeo Feed MP3's
 		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com') {
-			$embed .= '<script type="text/javascript">embed_odeo(' . $this->get_link() . ');</script>';
+			$embed .= '<script type="text/javascript">embed_odeo("' . $this->get_link() . '");</script>';
 		}
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
