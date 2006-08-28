@@ -2415,16 +2415,6 @@ class SimplePie_Misc
 		}
 	}
 	
-	/****************************************************
-	FIX PROTOCOL
-	Convert feed:// and no-protocol URL's to http://
-	Feed is allowed to have no protocol.  Local files are toggled in init().
-	This is an internal function and is not intended to be used publically.
-
-	$http=1, http://www.domain.com/feed.xml (absolute)
-	$http=2, feed://www.domain.com/feed.xml (absolute)
-	$http=3, podcast://www.domain.com/feed.xml (absolute)
-	****************************************************/
 	function fix_protocol($url, $http = 1)
 	{
 		$parsed = SimplePie_Misc::parse_url($url);
