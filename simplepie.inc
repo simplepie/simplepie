@@ -1649,6 +1649,63 @@ class SimplePie_Enclosure
 		}
 	
 		$type = strtolower($this->get_type());
+
+		// If we encounter an unsupported mime-type, check the file extension and guess intelligently.
+		if (!in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'x-audio/mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video', 'application/x-shockwave-flash', 'application/futuresplash', 'application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
+		{
+			$ext = strtolower($this->get_extension());
+
+			// Audio mime-types
+			if ($ext == 'aac') $type = 'audio/aac';
+			else if ($ext == 'adts') $type = 'audio/aac';
+			else if ($ext == 'aif') $type = 'audio/aiff';
+			else if ($ext == 'aifc') $type = 'audio/aiff';
+			else if ($ext == 'aiff') $type = 'audio/aiff';
+			else if ($ext == 'bwf') $type = 'audio/wav';
+			else if ($ext == 'cdda') $type = 'audio/aiff';
+			else if ($ext == 'kar') $type = 'audio/midi';
+			else if ($ext == 'mid') $type = 'audio/midi';
+			else if ($ext == 'midi') $type = 'audio/midi';
+			else if ($ext == 'm4a') $type = 'audio/x-m4a';
+			else if ($ext == 'mp3') $type = 'audio/mp3';
+			else if ($ext == 'smf') $type = 'audio/midi';
+			else if ($ext == 'swa') $type = 'audio/mp3';
+			else if ($ext == 'wav') $type = 'audio/wav';
+			else if ($ext == 'wax') $type = 'audio/x-ms-wax';
+			else if ($ext == 'wma') $type = 'audio/x-ms-wma';
+
+			// Video mime-types
+			else if ($ext == '3gp') $type = 'video/3gpp';
+			else if ($ext == '3gpp') $type = 'video/3gpp';
+			else if ($ext == '3g2') $type = 'video/3gpp2';
+			else if ($ext == '3gp2') $type = 'video/3gpp2';
+			else if ($ext == 'asf') $type = 'video/x-ms-asf';
+			else if ($ext == 'm1a') $type = 'video/mpeg';
+			else if ($ext == 'm1s') $type = 'video/mpeg';
+			else if ($ext == 'm1v') $type = 'video/mpeg';
+			else if ($ext == 'm15') $type = 'video/mpeg';
+			else if ($ext == 'm4v') $type = 'video/x-m4v';
+			else if ($ext == 'm75') $type = 'video/mpeg';
+			else if ($ext == 'mov') $type = 'video/quicktime';
+			else if ($ext == 'mp2') $type = 'video/mpeg';
+			else if ($ext == 'mp4') $type = 'video/mp4';
+			else if ($ext == 'mpa') $type = 'video/mpeg';
+			else if ($ext == 'mpg4') $type = 'video/mp4';
+			else if ($ext == 'mpeg') $type = 'video/mpeg';
+			else if ($ext == 'mpg') $type = 'video/mpeg';
+			else if ($ext == 'mpm') $type = 'video/mpeg';
+			else if ($ext == 'mpv') $type = 'video/mpeg';
+			else if ($ext == 'qt') $type = 'video/quicktime';
+			else if ($ext == 'sdv') $type = 'video/sd-video';
+			else if ($ext == 'wm') $type = 'video/x-ms-wm';
+			else if ($ext == 'wmv') $type = 'video/x-ms-wmv';
+			else if ($ext == 'wvx') $type = 'video/x-ms-wvx';
+
+			// Flash mime-types
+			else if ($ext == 'spl') $type = 'application/futuresplash';
+			else if ($ext == 'swf') $type = 'application/x-shockwave-flash';
+		}
+
 		$mime = explode('/', $type, 2);
 		$mime = $mime[0];
 		
@@ -1716,7 +1773,7 @@ class SimplePie_Enclosure
 		else if (in_array($type, array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
 		{
 			$height += 45;
-			$embed .= "<script type='text/javascript'>embed_wmedia('$width', '$height', '" . $this->link() . "');</script>";
+			$embed .= "<script type='text/javascript'>embed_wmedia('$width', '$height', '" . $this->get_link() . "');</script>";
 		}
 
 		// Everything else

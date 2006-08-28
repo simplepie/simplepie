@@ -137,6 +137,7 @@ $feed->handle_content_type();
 <a href="?feed=http://osnews.com/files/recent.rdf#feed" title="News about every OS ever">OS News</a>, 
 <a href="?feed=http://weblog.philringnalda.com/feed/#feed" title="Test: Atom 1.0 Support">Phil Ringnalda</a>, 
 <a href="?feed=http://photocast.mac.com/turboderek/iPhoto/top-rides/index.rss#feed" title="Test: iPhoto 6 Photocasting">Photocast</a>, 
+<a href="?feed=http://kabili.libsyn.com/rss#feed" title="Test: Improved enclosure type sniffing">Photoshop Videocast</a>, 
 <a href="?feed=http://refrederator.com/rss#feed" title="Test: Embedded Enclosures">ReFrederator</a>, 
 <a href="?feed=http://www.pariurisportive.com/blog/xmlsrv/rss2.php?blog=2#feed" title="Test: ISO-8859-1 Encoding">Romanian Language</a>, 
 <a href="?feed=http://www.erased.info/rss2.php#feed" title="Test: KOI8-R Encoding">Russian Language</a>, 
