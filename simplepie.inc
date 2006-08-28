@@ -315,7 +315,7 @@ EOT;
 				$encoding = $this->input_encoding;
 			}
 			// Second try HTTP headers
-			else if (!empty($headers['content-type']) && preg_match('/charset=(.*)/i', $headers['content-type'], $charset))
+			else if (!empty($headers['content-type']) && preg_match('/charset\s*=\s*([^;]*)/i', $headers['content-type'], $charset))
 			{
 				$encoding = $charset[1];
 			}
@@ -1652,58 +1652,121 @@ class SimplePie_Enclosure
 
 		// If we encounter an unsupported mime-type, check the file extension and guess intelligently.
 		if (!in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'x-audio/mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video', 'application/x-shockwave-flash', 'application/futuresplash', 'application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
-		{
-			$ext = strtolower($this->get_extension());
+		{			
+			switch (strtolower($this->get_extension())
+			{
+				// Audio mime-types
+				case 'aac':
+				case 'adts':
+					$type = 'audio/acc';
+					break;
+				
+				case 'aif':
+				case 'aifc':
+				case 'aiff':
+				case 'cdda':
+					$type = 'audio/aiff';
+					break;
+				
+				case 'bwf':
+					$type = 'audio/wav';
+					break;
+				
+				case 'kar':
+				case 'mid':
+				case 'midi':
+				case 'smf':
+					$type = 'audio/midi';
+					break;
+				
+				case 'm4a':
+					$type = 'audio/x-m4a';
+					break;
+				
+				case 'mp3':
+				case 'swa':
+					$type = 'audio/mp3';
+					break;
+				
+				case 'wav':
+					$type = 'audio/wav';
+					break;
+				
+				case 'wax':
+					$type = 'audio/x-ms-wax';
+					break;
+				
+				case 'wma':
+					$type = 'audio/x-ms-wma';
+					break;
+				
+				// Video mime-types
+				case '3gp':
+				case '3gpp':
+					$type = 'video/3gpp';
+					break;
 
-			// Audio mime-types
-			if ($ext == 'aac') $type = 'audio/aac';
-			else if ($ext == 'adts') $type = 'audio/aac';
-			else if ($ext == 'aif') $type = 'audio/aiff';
-			else if ($ext == 'aifc') $type = 'audio/aiff';
-			else if ($ext == 'aiff') $type = 'audio/aiff';
-			else if ($ext == 'bwf') $type = 'audio/wav';
-			else if ($ext == 'cdda') $type = 'audio/aiff';
-			else if ($ext == 'kar') $type = 'audio/midi';
-			else if ($ext == 'mid') $type = 'audio/midi';
-			else if ($ext == 'midi') $type = 'audio/midi';
-			else if ($ext == 'm4a') $type = 'audio/x-m4a';
-			else if ($ext == 'mp3') $type = 'audio/mp3';
-			else if ($ext == 'smf') $type = 'audio/midi';
-			else if ($ext == 'swa') $type = 'audio/mp3';
-			else if ($ext == 'wav') $type = 'audio/wav';
-			else if ($ext == 'wax') $type = 'audio/x-ms-wax';
-			else if ($ext == 'wma') $type = 'audio/x-ms-wma';
+				case '3g2':
+				case '3gp2':
+					$type = 'video/3gpp2';
+					break;
 
-			// Video mime-types
-			else if ($ext == '3gp') $type = 'video/3gpp';
-			else if ($ext == '3gpp') $type = 'video/3gpp';
-			else if ($ext == '3g2') $type = 'video/3gpp2';
-			else if ($ext == '3gp2') $type = 'video/3gpp2';
-			else if ($ext == 'asf') $type = 'video/x-ms-asf';
-			else if ($ext == 'm1a') $type = 'video/mpeg';
-			else if ($ext == 'm1s') $type = 'video/mpeg';
-			else if ($ext == 'm1v') $type = 'video/mpeg';
-			else if ($ext == 'm15') $type = 'video/mpeg';
-			else if ($ext == 'm4v') $type = 'video/x-m4v';
-			else if ($ext == 'm75') $type = 'video/mpeg';
-			else if ($ext == 'mov') $type = 'video/quicktime';
-			else if ($ext == 'mp2') $type = 'video/mpeg';
-			else if ($ext == 'mp4') $type = 'video/mp4';
-			else if ($ext == 'mpa') $type = 'video/mpeg';
-			else if ($ext == 'mpg4') $type = 'video/mp4';
-			else if ($ext == 'mpeg') $type = 'video/mpeg';
-			else if ($ext == 'mpg') $type = 'video/mpeg';
-			else if ($ext == 'mpm') $type = 'video/mpeg';
-			else if ($ext == 'mpv') $type = 'video/mpeg';
-			else if ($ext == 'qt') $type = 'video/quicktime';
-			else if ($ext == 'sdv') $type = 'video/sd-video';
-			else if ($ext == 'wm') $type = 'video/x-ms-wm';
-			else if ($ext == 'wmv') $type = 'video/x-ms-wmv';
-			else if ($ext == 'wvx') $type = 'video/x-ms-wvx';
+				case 'asf':
+					$type = 'video/x-ms-asf';
+					break;
 
-			// Flash mime-types
-			else if ($ext == 'spl') $type = 'application/futuresplash';
-			else if ($ext == 'swf') $type = 'application/x-shockwave-flash';
+				case 'm1a':
+				case 'm1s':
+				case 'm1v':
+				case 'm15':
+				case 'm75':
+				case 'mp2':
+				case 'mpa':
+				case 'mpeg':
+				case 'mpg':
+				case 'mpm':
+				case 'mpv':
+					$type = 'video/mpeg';
+					break;
+
+				case 'm4v':
+					$type = 'video/x-m4v';
+					break;
+
+				case 'mov':
+				case 'qt':
+					$type = 'video/quicktime';
+					break;
+
+				case 'mp4':
+				case 'mpg4':
+					$type = 'video/mp4';
+					break;
+
+				case 'sdv':
+					$type = 'video/sd-video';
+					break;
+
+				case 'wm':
+					$type = 'video/x-ms-wm';
+					break;
+
+				case 'wmv':
+					$type = 'video/x-ms-wmv';
+					break;
+
+				case 'wvx':
+					$type = 'video/x-ms-wvx';
+					break;
+					
+				// Flash mime-types
+				case 'spl':
+					$type = 'application/futuresplash';
+					break;
+
+				case 'swf':
+					$type = 'application/x-shockwave-flash';
+					break;
 		}
 
 		$mime = explode('/', $type, 2);
@@ -1823,14 +1886,7 @@ class SimplePie_File
 				{
 					$headers2[] = "$key: $value";
 				}
-				if (version_compare(SimplePie_Misc::get_curl_version(), '7.10', '>='))
-				{
-					curl_setopt($fp, CURLOPT_ENCODING, '');
-				}
-				else if (extension_loaded('zlib') && function_exists('gzinflate'))
-				{
-					$headers2[] = 'Accept-Encoding: gzip,deflate';
-				}
+				curl_setopt($fp, CURLOPT_ENCODING, '');
 				curl_setopt($fp, CURLOPT_URL, $url);
 				curl_setopt($fp, CURLOPT_HEADER, 1);
 				curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
@@ -1932,6 +1988,7 @@ class SimplePie_File
 		{
 			if ($this->fp = fopen($url, 'r'))
 			{
+				$this->method = 'fopen';
 				return true;
 			}
 			else
@@ -1960,7 +2017,7 @@ class SimplePie_File
 					$this->body .= fread($this->fp, 1024);
 				}
 				$this->body = trim($this->body);
-				if ($this->headers['content-encoding'] == 'gzip' && $this->method == 'fsockopen')
+				if ($this->method == 'fsockopen' && !empty($this->headers['content-encoding']) && $this->headers['content-encoding'] == 'gzip')
 				{
 					$this->body = substr($this->body, 10);
 					$this->body = gzinflate($this->body);
