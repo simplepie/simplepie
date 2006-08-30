@@ -33,6 +33,11 @@ if (!empty($_GET['input'])) {
 	$feed->input_encoding($_GET['input']);
 }
 
+// Allow us to snap into IHBB mode.
+if (!empty($_GET['image'])) {
+	$feed->bypass_image_hotlink($_GET['image']);
+}
+
 // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and 
 // all that other good stuff.  The feed's information will not be available to SimplePie before 
 // this is called.
