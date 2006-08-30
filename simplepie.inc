@@ -386,10 +386,13 @@ EOT;
 				$this->sanitize->parse_data_array($data->data, $this->rss_url);
 				unset($data);
 				$this->data['feedinfo'] = $this->sanitize->feedinfo;
+				unset($this->sanitize->feedinfo);
 				$this->data['info'] = $this->sanitize->info;
+				unset($this->sanitize->info);
 				$this->data['items'] = $this->sanitize->items;
+				unset($this->sanitize->items);
 				$this->data['feedinfo']['encoding'] = $this->sanitize->output_encoding;
-				unset($this->sanitize);
+				unset($this->sanitize->output_encoding);
 				$this->data['url'] = $this->rss_url;
 				if (!empty($headers['last-modified']))
 				{

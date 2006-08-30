@@ -13,14 +13,16 @@ include_once('../idn/idna_convert.class.php');
 $feed = new SimplePie();
 
 // Set these Configuration Options
-//$feed->bypass_image_hotlink();
 $feed->strip_ads(true);
 
 // Make sure that page is getting passed a URL
 if (!empty($_GET['feed'])) {
 
 	// Strip slashes if magic quotes is enabled (which automatically escapes certain characters)
-	$_GET['feed'] = stripslashes($_GET['feed']);
+	if (get_magic_quotes_gpc())
+	{
+		$_GET['feed'] = stripslashes($_GET['feed']);
+	}
 	
 	// Use the URL that was passed to the page in SimplePie
 	$feed->feed_url($_GET['feed']);
