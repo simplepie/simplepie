@@ -35,7 +35,8 @@ if (!empty($_GET['input'])) {
 
 // Allow us to snap into IHBB mode.
 if (!empty($_GET['image'])) {
-	$feed->bypass_image_hotlink($_GET['image']);
+	$feed->bypass_image_hotlink('i');
+	$feed->bypass_image_hotlink_page('./ihbb.php');
 }
 
 // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and 
@@ -109,7 +110,7 @@ $feed->handle_content_type();
 <a href="?feed=http://www.adultswim.com/williams/podcast/tools/xml/video_rss.xml#feed" title="Humor from the people who make [adult swim] cartoons.">adult swim</a>, 
 <a href="?feed=http://afterdawn.com/news/afterdawn_rss.xml#feed" title="Ripping, Burning, DRM, and the Dark Side of Consumer Electronics Media">Afterdawn</a>, 
 <a href="?feed=http://feeds.feedburner.com/ajaxian#feed" title="AJAX and Scripting News">Ajaxian</a>, 
-<a href="?feed=http://www.andybudd.com/index.rdf#feed" title="Test: Bypass Image Hotlink Blocking">Andy Budd</a>, 
+<a href="?feed=http://www.andybudd.com/index.rdf&image=true#feed" title="Test: Bypass Image Hotlink Blocking">Andy Budd</a>, 
 <a href="?feed=http://feeds.feedburner.com/AskANinja#feed" title="Test: Embedded Enclosures">Ask a Ninja</a>, 
 <a href="?feed=http://www.atomenabled.org/atom.xml#feed" title="Test: Atom 1.0 Support">AtomEnabled.org</a>, 
 <a href="?feed=http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml#feed" title="World News">BBC News</a>, 
@@ -153,7 +154,7 @@ $feed->handle_content_type();
 <a href="?feed=http://thinksecret.com/rss.xml#feed" title="Apple Rumors">Think Secret</a>, 
 <a href="?feed=http://www.tbray.org/ongoing/ongoing.atom#feed" title="Test: Atom 1.0 Support">Tim Bray</a>, 
 <a href="?feed=http://tuaw.com/rss.xml#feed" title="Test: Ad Stripping">TUAW</a>, 
-<a href="?feed=http://www.tvgasm.com/atom.xml#feed" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>, 
+<a href="?feed=http://www.tvgasm.com/atom.xml&image=true#feed" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>, 
 <a href="?feed=http://feeds.feedburner.com/web20Show#feed" title="Test: Embedded Enclosures">Web 2.0 Show</a>, 
 <a href="?feed=http://whitecollarruckus.libsyn.com/rss#feed" title="Test: Embedded Enclosures">White Collar Ruckus</a>,
 <a href="?feed=http://rss.news.yahoo.com/rss/topstories#feed" title="World News">Yahoo! News</a>, 
