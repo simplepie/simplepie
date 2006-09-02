@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 1 September 2006
+Updated: 2 September 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060901';
+	var $build = '20060902';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -198,10 +198,26 @@ class SimplePie
 		if (isset($_GET['js']))
 		{
 			$embed = <<<EOT
-function embed_odeo(link) {document.writeln('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="440" height="80" align="middle"><param name="movie" value="http://odeo.com/flash/audio_player_fullsize.swf" /><param name="allowScriptAccess" value="any" /><param name="quality" value="high"><param name="wmode" value="transparent"><param name="flashvars" value="valid_sample_rate=true&external_url='+link+'" /><embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url='+link+'"></embed></object>');}
-function embed_quicktime(type, bgcolor, width, height, link, placeholder, loop) {document.writeln('<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" style="cursor:hand; cursor:pointer;" type="'+type+'" codebase="http://www.apple.com/qtactivex/qtplugin.cab" bgcolor="'+bgcolor+'" width="'+width+'" height="'+height+'"><param name="href" value="'+link+'" /><param name="src" value="'+placeholder+'" /><param name="autoplay" value="false" /><param name="target" value="myself" /><param name="controller" value="false" /><param name="loop" value="'+loop+'" /><param name="scale" value="aspect" /><param name="bgcolor" value="'+bgcolor+'"><embed type="'+type+'" style="cursor:hand; cursor:pointer;" href="'+link+'" src="'+placeholder+'" width="'+width+'" height="'+height+'" autoplay="false" target="myself" controller="false" loop="'+loop+'" scale="aspect" bgcolor="'+bgcolor+'" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>');}
-function embed_flash(bgcolor, width, height, link, loop, type) {document.writeln('<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" bgcolor="'+bgcolor+'" width="'+width+'" height="'+height+'"><param name="movie" value="'+link+'"><param name="quality" value="high"><param name="loop" value="'+loop+'"><param name="bgcolor" value="'+bgcolor+'"><embed src="'+link+'" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="'+type+'" quality="high" width="'+width+'" height="'+height+'" bgcolor="'+bgcolor+'" loop="'+loop+'"></embed></object>');}
-function embed_wmedia(width, height, link) {document.writeln('<object classid="CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95" type="application/x-oleobject" width="'+width+'" height="'+height+'" standby="Loading Windows Media Player..."><param name="FileName" value="'+link+'"><param name="autosize" value="true"><param name="ShowControls" value="true"><param name="ShowStatusBar" value="false"><param name="ShowDisplay" value="false"><param name="autostart" value="false"><embed type="application/x-mplayer2" src="'+link+'" autosize="1" width="'+width+'" height="'+height+'" showcontrols="1" showstatusbar="0" showdisplay="0" autostart="0"></embed></object>');}
+function embed_odeo(link) {
+	document.writeln('<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url='+link+'"></embed>');
+}
+
+function embed_quicktime(type, bgcolor, width, height, link, placeholder, loop) {
+	if (placeholder != '') {
+		document.writeln('<embed type="'+type+'" style="cursor:hand; cursor:pointer;" href="'+link+'" src="'+placeholder+'" width="'+width+'" height="'+height+'" autoplay="false" target="myself" controller="false" loop="'+loop+'" scale="aspect" bgcolor="'+bgcolor+'" pluginspage="http://www.apple.com/quicktime/download/"></embed>');
+	}
+	else {
+		document.writeln('<embed type="'+type+'" style="cursor:hand; cursor:pointer;" src="'+link+'" width="'+width+'" height="'+height+'" autoplay="false" target="myself" controller="true" loop="'+loop+'" scale="aspect" bgcolor="'+bgcolor+'" pluginspage="http://www.apple.com/quicktime/download/"></embed>');
+	}
+}
+
+function embed_flash(bgcolor, width, height, link, loop, type) {
+	document.writeln('<embed src="'+link+'" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="'+type+'" quality="high" width="'+width+'" height="'+height+'" bgcolor="'+bgcolor+'" loop="'+loop+'"></embed>');
+}
+
+function embed_wmedia(width, height, link) {
+	document.writeln('<embed type="application/x-mplayer2" src="'+link+'" autosize="1" width="'+width+'" height="'+height+'" showcontrols="1" showstatusbar="0" showdisplay="0" autostart="0"></embed>');
+}
 EOT;
 
 			if (function_exists('ob_gzhandler'))
@@ -1607,7 +1623,12 @@ class SimplePie_Enclosure
 		}
 	}
 
-	function embed($options='')
+	function native_embed($options='')
+	{
+		return $this->embed($options, true);		
+	}
+
+	function embed($options='', $native = false)
 	{
 		// Set up defaults
 		$audio = '';
@@ -1835,33 +1856,71 @@ class SimplePie_Enclosure
 			$placeholder = $video;
 		}
 
+		$embed='';
+
 		// Make sure the JS library is included
 		// (I know it'll be included multiple times, but I can't think of a better way to do this automatically)
-		$embed = '<script type="text/javascript" src="?js"></script>';
+		if (!$native)
+		{
+			$embed .= '<script type="text/javascript" src="?js"></script>';			
+		}
 
 		// Odeo Feed MP3's
 		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com') {
-			$embed .= '<script type="text/javascript">embed_odeo("' . $this->get_link() . '");</script>';
+			if ($native)
+			{
+				$embed .= '<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url=' . $this->get_link() . '"></embed>';
+			}
+			else
+			{
+				$embed .= '<script type="text/javascript">embed_odeo("' . $this->get_link() . '");</script>';				
+			}
 		}
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
 		else if (in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'x-audio/mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video')))
 		{
 			$height += 16;
-			$embed .= "<script type='text/javascript'>embed_quicktime('$type', '$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$placeholder', '$loop');</script>";
+			if ($native)
+			{
+				if ($placeholder != "") {
+					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" href=\"" . $this->get_link() . "\" src=\"$placeholder\" width=\"$width\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"false\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://www.apple.com/quicktime/download/\"></embed>";
+				}
+				else {
+					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" src=\"" . $this->get_link() . "\" width=\"$width+\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"true\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://www.apple.com/quicktime/download/\"></embed>";
+				}
+			}
+			else
+			{
+				$embed .= "<script type='text/javascript'>embed_quicktime('$type', '$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$placeholder', '$loop');</script>";
+			}
 		}
 
 		// Flash
 		else if (in_array($type, array('application/x-shockwave-flash', 'application/futuresplash')))
 		{
-			$embed .= "<script type='text/javascript'>embed_flash('$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$loop', '$type');</script>";
+			if ($native)
+			{
+				$embed .= "<embed src=\"" . $this->get_link() . "\" pluginspage=\"http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash\" type=\"$type\" quality=\"high\" width=\"$width\" height=\"$height\" bgcolor=\"$bgcolor\" loop=\"$loop\"></embed>";
+			}
+			else
+			{
+				$embed .= "<script type='text/javascript'>embed_flash('$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$loop', '$type');</script>";
+			}
 		}
 
 		// Windows Media
 		else if (in_array($type, array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
 		{
 			$height += 45;
-			$embed .= "<script type='text/javascript'>embed_wmedia('$width', '$height', '" . $this->get_link() . "');</script>";
+			if ($native)
+			{
+				$embed .= "<embed type=\"application/x-mplayer2\" src=\"" . $this->get_link() . "\" autosize=\"1\" width=\"$width\" height=\"$height\" showcontrols=\"1\" showstatusbar=\"0\" showdisplay=\"0\" autostart=\"0\"></embed>";
+			}
+			else
+			{
+				$embed .= "<script type='text/javascript'>embed_wmedia('$width', '$height', '" . $this->get_link() . "');</script>";
+			}
 		}
 
 		// Everything else
