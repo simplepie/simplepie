@@ -1566,6 +1566,11 @@ class SimplePie_Enclosure
 	{
 		if (!empty($this->link))
 		{
+			if (class_exists('idna_convert'))
+			{
+				$idn = new idna_convert;
+				$this->link = $idn->encode($this->link);
+			}
 			return $this->link;
 		}
 		else
