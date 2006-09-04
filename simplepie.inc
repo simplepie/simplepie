@@ -2066,7 +2066,7 @@ class SimplePie_File
 						if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
 						{
 							$this->redirects++;
-							return $this->__construct($this->headers['location'], $timeout, $redirects, $headers, $useragent);
+							return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent);
 						}
 					}
 					else
