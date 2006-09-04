@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 2 September 2006
+Updated: 4 September 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060902';
+	var $build = '20060904';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -990,13 +990,20 @@ EOT;
 	
 	function get_items($start = 0, $end = 0)
 	{
-		if ($end == 0)
+		if ($this->get_item_quantity() > 0)
 		{
-			return array_slice($this->data['items'], $start);
+			if ($end == 0)
+			{
+				return array_slice($this->data['items'], $start);
+			}
+			else
+			{
+				return array_slice($this->data['items'], $start, $end);
+			}
 		}
 		else
 		{
-			return array_slice($this->data['items'], $start, $end);
+			return false;
 		}
 	}
 }
@@ -1633,7 +1640,7 @@ class SimplePie_Enclosure
 		return $this->embed($options, true);		
 	}
 
-	function embed($options='', $native = false)
+	function embed($options = '', $native = false)
 	{
 		// Set up defaults
 		$audio = '';
@@ -1861,7 +1868,7 @@ class SimplePie_Enclosure
 			$placeholder = $video;
 		}
 
-		$embed='';
+		$embed = '';
 
 		// Make sure the JS library is included
 		// (I know it'll be included multiple times, but I can't think of a better way to do this automatically)
