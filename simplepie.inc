@@ -423,8 +423,7 @@ EOT;
 					$do_sort = true;
 					foreach ($this->data['items'] as $item)
 					{
-						//var_dump($item->date);
-						if (!isset($item->date))
+						if (!$item->get_date('U'))
 						{
 							$do_sort = false;
 							break;
@@ -432,7 +431,7 @@ EOT;
 					}
 					if ($do_sort)
 					{
-						usort($this->data['items'], create_function('$a,$b', 'if ($a->date == $b->date) return 0; return ($a->date < $b->date) ? 1 : -1;'));
+						usort($this->data['items'], create_function('$a, $b', 'if ($a->get_date(\'U\') == $b->get_date(\'U\')) return 0; return ($a->get_date(\'U\') < $b->get_date(\'U\')) ? 1 : -1;'));
 					}
 				}
 				if ($cache && !$cache->save($this->data))
