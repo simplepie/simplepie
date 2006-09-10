@@ -462,7 +462,7 @@ EOT;
 		}
 	}
 	
-	function handle_content_type($mime='text/html')
+	function handle_content_type($mime = 'text/html')
 	{
 		if (!headers_sent())
 		{
@@ -507,7 +507,7 @@ EOT;
 	{
 		if (!empty($this->data['info']['link']['alternate'][0]))
 		{
-			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->data['info']['link']['alternate'][0]);
+			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->get_feed_link());
 
 			if ($check)
 			{
@@ -1012,7 +1012,7 @@ class SimplePie_Item
 {
 	var $data;
 	
-	function SimplePie_Item($data)
+	function SimplePie_Item(&$data)
 	{
 		$this->data =& $data;
 	}
@@ -1976,6 +1976,7 @@ class SimplePie_File
 			}
 			if (extension_loaded('curl') && version_compare(SimplePie_Misc::get_curl_version(), '7.10', '>='))
 			{
+				$this->method = 'curl';
 				$fp = curl_init();
 				$headers2 = array();
 				foreach ($headers as $key => $value)
@@ -2007,11 +2008,11 @@ class SimplePie_File
 					$this->body = array_pop($this->headers);
 					$this->headers = array_pop($this->headers);
 					$this->headers = $this->parse_headers($this->headers);
-					$this->method = 'curl';
 				}
 			}
 			else
 			{
+				$this->method = 'fsockopen';
 				$url_parts = parse_url($url);
 				if (isset($url_parts['scheme']) && strtolower($url_parts['scheme']) == 'https')
 				{
@@ -2031,7 +2032,6 @@ class SimplePie_File
 				}
 				else
 				{
-					$this->method = 'fsockopen';
 					stream_set_timeout($this->fp, $timeout);
 					$get = (isset($url_parts['query'])) ? "$url_parts[path]?$url_parts[query]" : $url_parts['path'];
 					$out = "GET $get HTTP/1.0\r\n";
@@ -2082,9 +2082,9 @@ class SimplePie_File
 		}
 		else
 		{
+			$this->method = 'fopen';
 			if ($this->fp = fopen($url, 'r'))
 			{
-				$this->method = 'fopen';
 				return true;
 			}
 			else
