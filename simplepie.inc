@@ -1012,7 +1012,7 @@ class SimplePie_Item
 {
 	var $data;
 	
-	function SimplePie_Item(&$data)
+	function SimplePie_Item($data)
 	{
 		$this->data =& $data;
 	}
