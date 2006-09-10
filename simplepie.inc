@@ -423,6 +423,7 @@ EOT;
 					$do_sort = true;
 					foreach ($this->data['items'] as $item)
 					{
+						//var_dump($item->date);
 						if (!isset($item->date))
 						{
 							$do_sort = false;
@@ -4806,7 +4807,7 @@ class SimplePie_Sanitize
 	{
 		if ($this->encode_instead_of_strip)
 		{
-			if (isset($match[11]) && !in_array(strtolower($match[1]), array('script', 'style'))
+			if (isset($match[11]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
 				return "&lt;$match[1]$match[2]&gt;$match[11]&lt;/$match[1]&gt;";
 			}
@@ -4821,7 +4822,7 @@ class SimplePie_Sanitize
 		}
 		else
 		{
-			if (isset($match[11]) && !in_array(strtolower($match[1]), array('script', 'style'))
+			if (isset($match[11]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
 				return $match[11];
 			}
