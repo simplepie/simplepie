@@ -1,4 +1,14 @@
 <?php
+// GZIP-compress the page
+if (function_exists('ob_gzhandler'))
+{
+	ob_start('ob_gzhandler');
+}
+
+// Set some caching headers
+header('Content-type: text/javascript; charset: UTF-8'); 
+header('Cache-Control: must-revalidate'); 
+header('Expires: ' .  gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
 
 // Start counting time for the page load
 $starttime = explode(' ', microtime());
