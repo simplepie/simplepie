@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 10 September 2006
+Updated: 11 September 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060910';
+	var $build = '20060911';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -2386,7 +2386,19 @@ class SimplePie_Misc
 			{
 				return false;
 			}
-			$return = "$target[scheme]:$target[authority]$target[path]";
+			$return = '';
+			if (!empty($target['scheme']))
+			{
+				$return .= "$target[scheme]:";
+			}
+			if (!empty($target['authority']))
+			{
+				$return .= $target['authority'];
+			}
+			if (!empty($target['path']))
+			{
+				$return .= $target['path'];
+			}
 			if (!empty($target['query']))
 			{
 				$return .= "?$target[query]";
@@ -2503,7 +2515,7 @@ class SimplePie_Misc
 		if (!file_exists($url) && empty($parsed['scheme']))
 		{
 			return SimplePie_Misc::fix_protocol("http://$url", $http);
-		}	
+		}
 
 		if ($http == 2 && !empty($parsed['scheme']))
 		{
@@ -4308,7 +4320,15 @@ class SimplePie_Sanitize
 		// FeedBurner feeds use alternate link
 		else if (strpos($url, 'http://feeds.feedburner.com/') !== 0)
 		{
-			$this->feed_xmlbase = $url;
+			$this->feed_xmlbase = SimplePie_Misc::parse_url($url);
+			if (empty($this->feed_xmlbase['authority']))
+			{
+				$this->feed_xmlbase = preg_replace('/^' . preg_quote(realpath($_SERVER['DOCUMENT_ROOT']), '/') . '/', '', realpath($url));
+			}
+			else
+			{
+				$this->feed_xmlbase = $url;
+			}
 		}
 		
 		
