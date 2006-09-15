@@ -37,7 +37,7 @@ class SimplePie
 	// Options
 	var $rss_url;
 	var $file;
-	var $timeout;
+	var $timeout = 10;
 	var $xml_dump = false;
 	var $enable_cache = true;
 	var $max_minutes = 60;
