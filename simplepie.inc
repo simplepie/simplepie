@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 11 September 2006
+Updated: 15 September 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060911';
+	var $build = '20060915';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -37,6 +37,7 @@ class SimplePie
 	// Options
 	var $rss_url;
 	var $file;
+	var $timeout;
 	var $xml_dump = false;
 	var $enable_cache = true;
 	var $max_minutes = 60;
@@ -96,6 +97,11 @@ class SimplePie
 			$this->rss_url = $file->url;
 			$this->file =& $file;
 		}
+	}
+	
+	function set_timeout($timeout = 10)
+	{
+		$this->timeout = (int) $timeout;
 	}
 	
 	function enable_xmldump($enable = false)
@@ -270,7 +276,7 @@ EOT;
 							{
 								$headers['if-none-match'] = $this->data['etag'];
 							}
-							$file = new SimplePie_File($this->rss_url, 1, 5, $headers, $this->useragent);
+							$file = new SimplePie_File($this->rss_url, $this->timeout/10, 5, $headers, $this->useragent);
 							if ($file->success)
 							{
 								$headers = $file->headers();
@@ -306,7 +312,7 @@ EOT;
 				}
 				else
 				{
-					$file = new SimplePie_File($this->rss_url, 10, 5, null, $this->useragent);
+					$file = new SimplePie_File($this->rss_url, $this->timeout, 5, null, $this->useragent);
 				}
 			}
 			if (!$file->success)
@@ -317,7 +323,7 @@ EOT;
 			
 			if (!SimplePie_Locator::is_feed($file))
 			{
-				$locate = new SimplePie_Locator($file);
+				$locate = new SimplePie_Locator($file, $this->timeout, $this->useragent);
 				$feed = $locate->find();
 				if ($feed)
 				{
@@ -511,7 +517,7 @@ EOT;
 
 			if ($check)
 			{
-				$file = new SimplePie_File($favicon);
+				$file = new SimplePie_File($favicon, $this->timeout/10, 5, null, $this->useragent);
 				$headers = $file->headers();
 				$file->close();
 
@@ -2037,7 +2043,7 @@ class SimplePie_File
 					$out = "GET $get HTTP/1.0\r\n";
 					$out .= "Host: $url_parts[host]\r\n";
 					$out .= "User-Agent: $useragent\r\n";
-					if (extension_loaded('zlib') && function_exists('gzinflate'))
+					if (function_exists('gzinflate'))
 					{
 						$out .= "Accept-Encoding: gzip,deflate\r\n";
 					}
@@ -3362,20 +3368,23 @@ class SimplePie_Misc
 class SimplePie_Locator
 {
 	var $useragent;
+	var $timeout;
 	var $file;
 	var $local;
 	var $elsewhere;
 	
-	function SimplePie_Locator(&$file)
+	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null)
 	{
 		if (!is_a($file, 'SimplePie_File'))
 		{
-			$this->file = new SimplePie_File($file);
+			$this->file = new SimplePie_File($file, $timeout, $useragent);
 		}
 		else
 		{
 			$this->file =& $file;
 		}
+		$this->useragent = $useragent;
+		$this->timeout = $timeout;
 	}
 		
 	
@@ -3385,8 +3394,6 @@ class SimplePie_Locator
 		{
 			return $this->file->url;
 		}
-		
-		$this->useragent = $this->file->useragent;
 		
 		$autodiscovery = $this->autodiscovery($this->file);
 		if ($autodiscovery)
@@ -3433,7 +3440,14 @@ class SimplePie_Locator
 	{
 		if (!is_a($file, 'SimplePie_File'))
 		{
-			$file2 = new SimplePie_File($file, 1, 5, null, $this->useragent);
+			if (isset($this))
+			{
+				$file2 = new SimplePie_File($file, $this->timeout, 5, null, $this->useragent);
+			}
+			else
+			{
+				$file2 = new SimplePie_File($file);
+			}
 			$file2->body();
 			$file2->close();
 		}
