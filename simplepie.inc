@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 15 September 2006
+Updated: 16 September 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060915';
+	var $build = '20060916';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -51,13 +51,14 @@ class SimplePie
 	
 	function SimplePie($feed_url = null, $cache_location = null, $cache_max_minutes = null)
 	{
+		// Couple of variables built up from other variables
 		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
 		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . '</a>';
 		
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize = new SimplePie_Sanitize;
 		
-		// Parse the feed, if we get the data sent directly here
+		// Set options if they're passed to the constructor
 		if (!is_null($feed_url))
 		{
 			$this->feed_url($feed_url);
@@ -78,7 +79,8 @@ class SimplePie
 		{
 			$this->enable_xmldump(true);
 		}
-
+		
+		// Only init the script if we're passed a feed URL
 		if (!is_null($feed_url))
 		{
 			return $this->init();
@@ -102,6 +104,11 @@ class SimplePie
 	function set_timeout($timeout = 10)
 	{
 		$this->timeout = (int) $timeout;
+	}
+	
+	function set_raw_data($data)
+	{
+		$this->raw_data = trim((string) $data);
 	}
 	
 	function enable_xmldump($enable = false)
@@ -237,116 +244,134 @@ EOT;
 			exit;
 		}
 		
-		if (!empty($this->rss_url))
+		if (!empty($this->rss_url) || !empty($this->raw_data))
 		{
 			$this->data = array();
-			if ($this->enable_cache && preg_match('/^http(s)?:\/\//i', $this->rss_url))
+			$cache = false;
+			
+			if (!empty($this->rss_url))
 			{
-				$cache = new SimplePie_Cache($this->cache_location, sha1($this->rss_url), 'spc');
-			}
-			else
-			{
-				$cache = false;
-			}
-			if ($cache && !$this->xml_dump)
-			{
-				$this->data = $cache->load();
-				if (!empty($this->data))
+				// Decide whether to enable caching
+				if ($this->enable_cache && preg_match('/^http(s)?:\/\//i', $this->rss_url))
 				{
-					if (isset($this->data['url']) && $this->data['url'] != $this->rss_url)
+					$cache = new SimplePie_Cache($this->cache_location, sha1($this->rss_url), 'spc');
+				}
+				// If it's enabled and we don't want an XML dump, use the cache
+				if ($cache && !$this->xml_dump)
+				{
+					// Load the Cache
+					$this->data = $cache->load();
+					if (!empty($this->data))
 					{
-						$this->enable_caching(false);
-						return $this->init();
-					}
-					else if (!empty($this->data['feed_url']))
-					{
-						$this->rss_url = $this->data['feed_url'];
-						return $this->init();
-					}
-					else if ($cache->mtime() + $this->max_minutes * 60 < time())
-					{
-						if (!empty($this->data['last-modified']) || !empty($this->data['etag']))
+						// If we've hit a sha1 collision just rerun it with caching disabled
+						if (isset($this->data['url']) && $this->data['url'] != $this->rss_url)
 						{
-							$headers = array();
-							if (!empty($this->data['last-modified']))
-							{
-								$headers['if-modified-since'] = $this->data['last-modified'];
-							}
-							if (!empty($this->data['etag']))
-							{
-								$headers['if-none-match'] = $this->data['etag'];
-							}
-							$file = new SimplePie_File($this->rss_url, $this->timeout/10, 5, $headers, $this->useragent);
-							if ($file->success)
-							{
-								$headers = $file->headers();
-								if ($headers['status']['code'] == 304)
-								{
-									$cache->touch();
-									return true;
-								}
-							}
-							unset($file);
+							$this->enable_caching(false);
+							return $this->init();
 						}
+						// If we've got a feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL
+						else if (!empty($this->data['feed_url']))
+						{
+							$this->rss_url = $this->data['feed_url'];
+							return $this->init();
+						}
+						// If the cache is new enough
+						else if ($cache->mtime() + $this->max_minutes * 60 < time())
+						{
+							// If we have last-modified and/or etag set
+							if (!empty($this->data['last-modified']) || !empty($this->data['etag']))
+							{
+								$headers = array();
+								if (!empty($this->data['last-modified']))
+								{
+									$headers['if-modified-since'] = $this->data['last-modified'];
+								}
+								if (!empty($this->data['etag']))
+								{
+									$headers['if-none-match'] = $this->data['etag'];
+								}
+								$file = new SimplePie_File($this->rss_url, $this->timeout/10, 5, $headers, $this->useragent);
+								if ($file->success)
+								{
+									$headers = $file->headers();
+									if ($headers['status']['code'] == 304)
+									{
+										$cache->touch();
+										return true;
+									}
+								}
+								unset($file);
+							}
+							// If we don't have last-modified or etag set, just clear the cache
+							else
+							{
+								$cache->unlink();
+							}
+						}
+						// If the cache is still valid, just return true
 						else
 						{
-							$cache->unlink();
+							return true;
 						}
+					}
+					// If the cache is empty, delete it
+					else
+					{
+						$cache->unlink();
+					}
+				}
+				$this->data = array();
+				// If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
+				if (!isset($file))
+				{
+					if (is_a($this->file, 'SimplePie_File') && $this->file->url == $this->rss_url)
+					{
+						$file =& $this->file;
 					}
 					else
 					{
-						return true;
+						$file = new SimplePie_File($this->rss_url, $this->timeout, 5, null, $this->useragent);
 					}
 				}
-				else
+				// If the file connection has an error, set SimplePie::error to that and quit
+				if (!$file->success)
 				{
-					$cache->unlink();
-				}
-			}
-			$this->data = array();
-			if (!isset($file))
-			{
-				if (is_a($this->file, 'SimplePie_File') && $this->file->url == $this->rss_url)
-				{
-					$file =& $this->file;
-				}
-				else
-				{
-					$file = new SimplePie_File($this->rss_url, $this->timeout, 5, null, $this->useragent);
-				}
-			}
-			if (!$file->success)
-			{
-				$this->error = $file->error;
-				return false;
-			}
-			
-			if (!SimplePie_Locator::is_feed($file))
-			{
-				$locate = new SimplePie_Locator($file, $this->timeout, $this->useragent);
-				$feed = $locate->find();
-				if ($feed)
-				{
-					if ($cache && !$cache->save(array('url' => $this->rss_url, 'feed_url' => $feed)))
-					{
-						$this->error = "$cache->name is not writeable";
-						SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
-					}
-					$this->rss_url = $feed;
-					return $this->init();
-				}
-				else
-				{
-					$this->error = "A feed could not be found at $this->rss_url";
-					SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+					$this->error = $file->error;
 					return false;
 				}
+				
+				// Check if the supplied URL is a feed, if it isn't, look for it.
+				if (!SimplePie_Locator::is_feed($file))
+				{
+					$locate = new SimplePie_Locator($file, $this->timeout, $this->useragent);
+					$feed = $locate->find();
+					if ($feed)
+					{
+						if ($cache && !$cache->save(array('url' => $this->rss_url, 'feed_url' => $feed)))
+						{
+							$this->error = "$cache->name is not writeable";
+							SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+						}
+						$this->rss_url = $feed;
+						return $this->init();
+					}
+					else
+					{
+						$this->error = "A feed could not be found at $this->rss_url";
+						SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+						return false;
+					}
+				}
+				
+				$headers = $file->headers();
+				$data = trim($file->body());
+				$file->close();
+				unset($file);
 			}
-			
-			$headers = $file->headers();
-			$data = trim($file->body());
-			$file->close();
-			unset($file);
+			else
+			{
+				$data = $this->raw_data;
+			}
 			
 			// First check to see if input has been overridden.
 			if (!empty($this->input_encoding))
@@ -394,19 +419,25 @@ EOT;
 				$encoding = null;
 			}
 			
+			// Change the encoding to UTF-8 (as we always use UTF-8 internally)
 			$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 			
+			// Start parsing
 			$data = new SimplePie_Parser($data, 'UTF-8', $this->xml_dump);
+			// If we want the XML, just output that and quit
 			if ($this->xml_dump)
 			{
 				header('Content-type: text/xml; charset=UTF-8');
 				echo $data->data;
 				exit;
 			}
+			// If it's parsed fine
 			else if (!$data->error_code)
 			{
+				// Parse the data, and make it sane
 				$this->sanitize->parse_data_array($data->data, $this->rss_url);
 				unset($data);
+				// Get the sane data
 				$this->data['feedinfo'] = $this->sanitize->feedinfo;
 				unset($this->sanitize->feedinfo);
 				$this->data['info'] = $this->sanitize->info;
@@ -416,6 +447,8 @@ EOT;
 				$this->data['feedinfo']['encoding'] = $this->sanitize->output_encoding;
 				unset($this->sanitize->output_encoding);
 				$this->data['url'] = $this->rss_url;
+				
+				// Store the headers that we need
 				if (!empty($headers['last-modified']))
 				{
 					$this->data['last-modified'] = $headers['last-modified'];
@@ -424,6 +457,8 @@ EOT;
 				{
 					$this->data['etag'] = $headers['etag'];
 				}
+				
+				// If we want to order it by date, check if all items have a date, and then sort it
 				if ($this->order_by_date && !empty($this->data['items']))
 				{
 					$do_sort = true;
@@ -440,6 +475,8 @@ EOT;
 						usort($this->data['items'], create_function('$a, $b', 'if ($a->get_date(\'U\') == $b->get_date(\'U\')) return 0; return ($a->get_date(\'U\') < $b->get_date(\'U\')) ? 1 : -1;'));
 					}
 				}
+				
+				// Cache the file if caching is enabled
 				if ($cache && !$cache->save($this->data))
 				{
 					$this->error = "$cache->name is not writeable";
@@ -447,6 +484,7 @@ EOT;
 				}
 				return true;
 			}
+			// If we have an error, just set SimplePie::error to it and quit
 			else
 			{
 				$this->error = "XML error: $data->error_string at line $data->current_line, column $data->current_column";
