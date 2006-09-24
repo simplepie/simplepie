@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 16 September 2006
+Updated: 24 September 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060916';
+	var $build = '20060924';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -2034,9 +2034,12 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
 				curl_setopt($fp, CURLOPT_REFERER, $url);
 				curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
-				curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
-				curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+				if (!ini_get('open_basedir') && !ini_get('safe_mode'))
+				{
+					curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
+					curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
+				}
 
 				$this->headers = trim(curl_exec($fp));
 				if (curl_errno($fp))
@@ -2052,6 +2055,11 @@ class SimplePie_File
 					$this->body = array_pop($this->headers);
 					$this->headers = array_pop($this->headers);
 					$this->headers = $this->parse_headers($this->headers);
+					if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
+					{
+						$this->redirects++;
+						return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent);
+					}
 				}
 			}
 			else
