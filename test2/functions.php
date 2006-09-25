@@ -147,7 +147,14 @@ function first_item_title_test($file)
 					$feed->enable_caching(false);
 					$feed->init();
 					$item = $feed->get_item(0);
-					run_test($value, $item->get_title() == $expected);
+					if ($item)
+					{
+						run_test($value, $item->get_title() == $expected);
+					}
+					else
+					{
+						run_test($value, false);
+					}
 				}
 			}
 
