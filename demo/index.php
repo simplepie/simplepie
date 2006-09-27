@@ -155,7 +155,8 @@ $feed->handle_content_type();
 <a href="?feed=http://tuaw.com/rss.xml#feed" title="Test: Ad Stripping">TUAW</a>, 
 <a href="?feed=http://www.tvgasm.com/atom.xml&image=true#feed" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>, 
 <a href="?feed=http://feeds.feedburner.com/web20Show#feed" title="Test: Embedded Enclosures">Web 2.0 Show</a>, 
-<a href="?feed=http://whitecollarruckus.libsyn.com/rss#feed" title="Test: Embedded Enclosures">White Collar Ruckus</a>,
+<a href="?feed=http://whitecollarruckus.libsyn.com/rss#feed" title="Test: Embedded Enclosures">White Collar Ruckus</a>, 
+<a href="?feed=http://blogs.technet.com/windowsvista/rss.xml#feed" title="Test: Tag Stripping">Windows Vista Blog</a>, 
 <a href="?feed=http://rss.news.yahoo.com/rss/topstories#feed" title="World News">Yahoo! News</a>, 
 <a href="?feed=http://youtube.com/rss/global/recently_added.rss#feed" title="Funny user-submitted videos">You Tube</a>, 
 <a href="?feed=http://zeldman.com/rss/#feed" title="The father of the web standards movement">Zeldman</a></p>
