@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 24 September 2006
+Updated: 29 September 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20060924';
+	var $build = '20060929';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -4255,6 +4255,7 @@ class SimplePie_Sanitize
 	var $feed_xmlbase;
 	var $item_xmlbase;
 	var $attribs;
+	var $cached_entities;
 	
 	// Options
 	var $remove_div = true;
@@ -4981,12 +4982,20 @@ class SimplePie_Sanitize
 	
 	function do_entites_decode($data)
 	{
-		$return = SimplePie_Misc::change_encoding(html_entity_decode($data[0], ENT_QUOTES), 'ISO-8859-1', $this->input_encoding);
-		if ($return == $data[0])
+		if (isset($this->cached_entities[$data[0]]))
 		{
-			$return = SimplePie_Misc::change_encoding(preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $data[0]), 'UTF-8', $this->input_encoding);
+			return $this->cached_entities[$data[0]];
 		}
-		return $return;
+		else
+		{
+			$return = SimplePie_Misc::change_encoding(html_entity_decode($data[0], ENT_QUOTES), 'ISO-8859-1', $this->input_encoding);
+			if ($return == $data[0])
+			{
+				$return = SimplePie_Misc::change_encoding(preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $data[0]), 'UTF-8', $this->input_encoding);
+			}
+			$this->cached_entities[$data[0]] = $return;
+			return $return;
+		}
 	}
 
 	/*
