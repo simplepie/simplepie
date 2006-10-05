@@ -127,11 +127,14 @@ absolutize_test($files);
 $files = SimplePie_List::get('date');
 date_test($files);
 
-$feed_title = SimplePie_List::get('first_item_title');
-first_item_title_test($feed_title);
+$files = SimplePie_List::get('feed_title');
+feed_title_test($files);
 
-$feed_permalink = SimplePie_List::get('first_item_permalink');
-first_item_permalink_test($feed_permalink);
+$files = SimplePie_List::get('first_item_title');
+first_item_title_test($files);
+
+$files = SimplePie_List::get('first_item_permalink');
+first_item_permalink_test($files);
 
 ?>
 		</tbody>
