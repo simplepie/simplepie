@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 1 October 2006
+Updated: 5 October 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20061001';
+	var $build = '20061005';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -266,13 +266,12 @@ EOT;
 						// If we've hit a sha1 collision just rerun it with caching disabled
 						if (isset($this->data['url']) && $this->data['url'] != $this->rss_url)
 						{
-							$this->enable_caching(false);
-							return $this->init();
+							$cache = false;
 						}
 						// If we've got a feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL
 						else if (!empty($this->data['feed_url']))
 						{
-							$this->rss_url = $this->data['feed_url'];
+							$this->feed_url($this->data['feed_url']);
 							return $this->init();
 						}
 						// If the cache is new enough
@@ -445,7 +444,6 @@ EOT;
 				$this->data['items'] = $this->sanitize->items;
 				unset($this->sanitize->items);
 				$this->data['feedinfo']['encoding'] = $this->sanitize->output_encoding;
-				unset($this->sanitize->output_encoding);
 				$this->data['url'] = $this->rss_url;
 				
 				// Store the headers that we need
@@ -547,7 +545,7 @@ EOT;
 		}
 	}
 	
-	function get_favicon($check = false, $alternate = false)
+	function get_favicon($check = false, $alternate = null)
 	{
 		if (!empty($this->data['info']['link']['alternate'][0]))
 		{
@@ -569,7 +567,7 @@ EOT;
 				return $favicon;
 			}
 		}
-		if ($alternate)
+		if (!is_null($alternate))
 		{
 			return $alternate;
 		}
@@ -1262,7 +1260,20 @@ class SimplePie_Item
 	
 	function get_links($rel = 'alternate')
 	{
-		if (!empty($this->data['link'][$rel]))
+		if ($rel == 'alternate')
+		{
+			$links = array();
+			if (!empty($this->data['link'][$rel]))
+			{
+				$links = $this->data['link'][$rel];
+			}
+			if (!empty($this->data['guid']['data']) && $this->data['guid']['permalink'] == true)
+			{
+				$links[] = $this->data['guid']['data'];
+			}
+			return $links;
+		}
+		else if (!empty($this->data['link'][$rel]))
 		{
 			return $this->data['link'][$rel];
 		}
@@ -4879,6 +4890,9 @@ class SimplePie_Sanitize
 				$data = preg_replace('/ '. trim($attrib) .'=(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\+|{|})*/i', '', $data);
 			}
 		}
+		
+		// Convert encoding
+		$data = SimplePie_Misc::change_encoding($data, $this->input_encoding, $this->output_encoding);
 
 		return $data;
 	}

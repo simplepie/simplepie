@@ -153,11 +153,48 @@ function first_item_title_test($file)
 					}
 					else
 					{
+						trigger_error($feed->error, E_USER_WARNING);
 						run_test($value, false);
 					}
 				}
 			}
 
+		}
+	}
+}
+
+function first_item_permalink_test($file)
+{
+	if (is_array($file))
+	{
+		foreach ($file as $key => $value)
+		{
+			$istest = true;
+			if (is_array($value))
+			{
+				first_item_permalink_test($file[$key]);
+			}
+			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_caching(false);
+					$feed->init();
+					$item = $feed->get_item(0);
+					if ($item)
+					{
+						run_test($value, $item->get_permalink() == $expected);
+					}
+					else
+					{
+						trigger_error($feed->error, E_USER_WARNING);
+						run_test($value, false);
+					}
+				}
+			}
 		}
 	}
 }
