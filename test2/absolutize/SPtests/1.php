@@ -1,7 +1,7 @@
 <?php
 
-$base = 'http://a/';
-$relative = 'b';
-$expected = 'http://a/b';
+$base = 'http://a/b/';
+$relative = 'c';
+$expected = 'http://a/b/c';
 
 ?>
