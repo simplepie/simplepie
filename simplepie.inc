@@ -4711,9 +4711,9 @@ class SimplePie_Sanitize
 						{
 							$newitem['category'][] = $this->sanitize($category['data'], $category['attribs']);
 						}
-						else if (!empty($category['attribs']['term']))
+						else if (!empty($category['attribs']['TERM']))
 						{
-							$newitem['term'][] = $this->sanitize($category['attribs']['term'], $category['attribs']);
+							$newitem['term'][] = $this->sanitize($category['attribs']['TERM'], $category['attribs']);
 						}
 					}
 				}

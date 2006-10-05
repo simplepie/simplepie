@@ -136,6 +136,9 @@ first_item_title_test($files);
 $files = SimplePie_List::get('first_item_permalink');
 first_item_permalink_test($files);
 
+$files = SimplePie_List::get('first_item_category');
+first_item_category_test($files);
+
 ?>
 		</tbody>
 	</table>
