@@ -181,7 +181,6 @@ function first_item_title_test($file)
 					}
 					else
 					{
-						trigger_error($feed->error, E_USER_WARNING);
 						run_test($value, false);
 					}
 				}
@@ -218,7 +217,6 @@ function first_item_permalink_test($file)
 					}
 					else
 					{
-						trigger_error($feed->error, E_USER_WARNING);
 						run_test($value, false);
 					}
 				}
@@ -254,7 +252,6 @@ function first_item_category_test($file)
 					}
 					else
 					{
-						trigger_error($feed->error, E_USER_WARNING);
 						run_test($value, false);
 					}
 				}
