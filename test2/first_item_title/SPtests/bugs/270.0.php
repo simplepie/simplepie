@@ -9,6 +9,6 @@ $data = <<<EOD
 </feed>
 EOD;
 
-$expected = 'This title';
+$expected = 'The title';
 
 ?>
