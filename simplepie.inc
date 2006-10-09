@@ -2342,24 +2342,6 @@ class SimplePie_Cache
 		return false;
 	}
 	
-	function atime()
-	{
-		if (file_exists($this->name))
-		{
-			return fileatime($this->name);
-		}
-		return false;
-	}
-	
-	function ctime()
-	{
-		if (file_exists($this->name))
-		{
-			return filectime($this->name);
-		}
-		return false;
-	}
-	
 	function mtime()
 	{
 		if (file_exists($this->name))
