@@ -2368,17 +2368,6 @@ class SimplePie_Cache
 		}
 		return false;
 	}
-	
-	function clear($expire)
-	{
-		foreach (glob("$this->location/*.$this->extension") as $file)
-		{
-			if (time() - filemtime($file) > $expire)
-			{
-				unlink($file);
-			}
-		}
-	}
 }
 
 class SimplePie_Misc
