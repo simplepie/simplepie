@@ -191,6 +191,11 @@ class SimplePie
 		return false;
 	}
 	
+	function set_useragent($ua)
+	{
+		$this->useragent = (string) $ua;
+	}
+	
 	function bypass_image_hotlink($get = false)
 	{
 		$this->sanitize->bypass_image_hotlink($get);
