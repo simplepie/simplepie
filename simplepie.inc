@@ -151,44 +151,32 @@ class SimplePie
 		}
 	}
 	
-	function set_cache_class($object = 'SimplePie_Cache')
+	function set_cache_class($class = 'SimplePie_Cache')
 	{
-		if (class_exists($object))
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Cache'))
 		{
-			$class = new $object;
-			if (is_a($class, 'SimplePie_Cache'))
-			{
-				$this->cache_class = 'SimplePie_Cache';
-				return true;
-			}
+			$this->cache_class = $class;
+			return true;
 		}
 		return false;
 	}
 	
-	function set_locator_class($object = 'SimplePie_Locator')
+	function set_locator_class($class = 'SimplePie_Locator')
 	{
-		if (class_exists($object))
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Locator'))
 		{
-			$class = new $object;
-			if (is_a($class, 'SimplePie_Locator'))
-			{
-				$this->locator_class = 'SimplePie_Locator';
-				return true;
-			}
+			$this->locator_class = $class;
+			return true;
 		}
 		return false;
 	}
 	
-	function set_parser_class($object = 'SimplePie_Parser')
+	function set_parser_class($class = 'SimplePie_Parser')
 	{
-		if (class_exists($object))
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Parser'))
 		{
-			$class = new $object;
-			if (is_a($class, 'SimplePie_Parser'))
-			{
-				$this->parser_class = 'SimplePie_Parser';
-				return true;
-			}
+			$this->parser_class = $class;
+			return true;
 		}
 		return false;
 	}
@@ -252,19 +240,19 @@ class SimplePie
 		$this->sanitize->output_encoding($encoding);
 	}
 	
-	function set_item_class($object = 'SimplePie_Item')
+	function set_item_class($class = 'SimplePie_Item')
 	{
-		return $this->sanitize->set_item_class($object);
+		return $this->sanitize->set_item_class($class);
 	}
 	
-	function set_author_class($object = 'SimplePie_Author')
+	function set_author_class($class = 'SimplePie_Author')
 	{
-		return $this->sanitize->set_author_class($object);
+		return $this->sanitize->set_author_class($class);
 	}
 	
-	function set_enclosure_class($object = 'SimplePie_Enclosure')
+	function set_enclosure_class($class = 'SimplePie_Enclosure')
 	{
-		return $this->sanitize->set_enclosure_class($object);
+		return $this->sanitize->set_enclosure_class($class);
 	}
 	
 	function init()
@@ -3461,6 +3449,23 @@ class SimplePie_Misc
 		}
 		return $curl;
 	}
+	
+	function is_a_class($class1, $class2)
+	{
+		if (class_exists($class1))
+		{
+			$classes = array(strtolower($class1));
+			while ($class1 = get_parent_class($class1))
+			{
+				$classes[] = strtolower($class1);
+			}
+			return in_array(strtolower($class2), $classes);
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 
 class SimplePie_Locator
@@ -4416,44 +4421,32 @@ class SimplePie_Sanitize
 		$this->output_encoding = (string) $encoding;
 	}
 	
-	function set_item_class($object = 'SimplePie_Item')
+	function set_item_class($class = 'SimplePie_Item')
 	{
-		if (class_exists($object))
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Item'))
 		{
-			$class = new $object;
-			if (is_a($class, 'SimplePie_Item'))
-			{
-				$this->item_class = 'SimplePie_Item';
-				return true;
-			}
+			$this->item_class = $class;
+			return true;
 		}
 		return false;
 	}
 	
-	function set_author_class($object = 'SimplePie_Author')
+	function set_author_class($class = 'SimplePie_Author')
 	{
-		if (class_exists($object))
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Author'))
 		{
-			$class = new $object;
-			if (is_a($class, 'SimplePie_Author'))
-			{
-				$this->author_class = 'SimplePie_Author';
-				return true;
-			}
+			$this->author_class = $class;
+			return true;
 		}
 		return false;
 	}
 	
-	function set_enclosure_class($object = 'SimplePie_Enclosure')
+	function set_enclosure_class($class = 'SimplePie_Enclosure')
 	{
-		if (class_exists($object))
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Enclosure'))
 		{
-			$class = new $object;
-			if (is_a($class, 'SimplePie_Enclosure'))
-			{
-				$this->enclosure_class = 'SimplePie_Enclosure';
-				return true;
-			}
+			$this->enclosure_class = $class;
+			return true;
 		}
 		return false;
 	}
