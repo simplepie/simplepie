@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 7 October 2006
+Updated: 9 October 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20061007';
+	var $build = '20061009';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -44,6 +44,9 @@ class SimplePie
 	var $cache_location = './cache';
 	var $order_by_date = true;
 	var $input_encoding = false;
+	var $cache_class = 'SimplePie_Cache';
+	var $locator_class = 'SimplePie_Locator';
+	var $parser_class = 'SimplePie_Parser';
 	
 	// Misc. variables
 	var $data;
@@ -148,6 +151,58 @@ class SimplePie
 		}
 	}
 	
+	function set_cache_class($object = 'SimplePie_Cache')
+	{
+		if (class_exists($object))
+		{
+			$class = new $object;
+			if (is_a($class, 'SimplePie_Cache'))
+			{
+				$this->cache_class = 'SimplePie_Cache';
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function set_locator_class($object = 'SimplePie_Locator')
+	{
+		if (class_exists($object))
+		{
+			$class = new $object;
+			if (is_a($class, 'SimplePie_Locator'))
+			{
+				$this->locator_class = 'SimplePie_Locator';
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function set_parser_class($object = 'SimplePie_Parser')
+	{
+		if (class_exists($object))
+		{
+			$class = new $object;
+			if (is_a($class, 'SimplePie_Parser'))
+			{
+				$this->parser_class = 'SimplePie_Parser';
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function set_sanitize_class($object = 'SimplePie_Sanitize')
+	{
+		if (class_exists($object))
+		{
+			$this->sanitize = new $object;
+			return true;
+		}
+		return false;
+	}
+	
 	function bypass_image_hotlink($get = false)
 	{
 		$this->sanitize->bypass_image_hotlink($get);
@@ -195,6 +250,21 @@ class SimplePie
 	function output_encoding($encoding = 'UTF-8')
 	{
 		$this->sanitize->output_encoding($encoding);
+	}
+	
+	function set_item_class($object = 'SimplePie_Item')
+	{
+		return $this->sanitize->set_item_class($object);
+	}
+	
+	function set_author_class($object = 'SimplePie_Author')
+	{
+		return $this->sanitize->set_author_class($object);
+	}
+	
+	function set_enclosure_class($object = 'SimplePie_Enclosure')
+	{
+		return $this->sanitize->set_enclosure_class($object);
 	}
 	
 	function init()
@@ -254,7 +324,7 @@ EOT;
 				// Decide whether to enable caching
 				if ($this->enable_cache && preg_match('/^http(s)?:\/\//i', $this->rss_url))
 				{
-					$cache = new SimplePie_Cache($this->cache_location, sha1($this->rss_url), 'spc');
+					$cache = new $this->cache_class($this->cache_location, sha1($this->rss_url), 'spc');
 				}
 				// If it's enabled and we don't want an XML dump, use the cache
 				if ($cache && !$this->xml_dump)
@@ -340,9 +410,9 @@ EOT;
 				}
 				
 				// Check if the supplied URL is a feed, if it isn't, look for it.
-				if (!SimplePie_Locator::is_feed($file))
+				if (!call_user_func(array($this->locator_class, 'is_feed'), $file))
 				{
-					$locate = new SimplePie_Locator($file, $this->timeout, $this->useragent);
+					$locate = new $this->locator_class($file, $this->timeout, $this->useragent);
 					$feed = $locate->find();
 					if ($feed)
 					{
@@ -422,7 +492,7 @@ EOT;
 			$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 			
 			// Start parsing
-			$data = new SimplePie_Parser($data, 'UTF-8', $this->xml_dump);
+			$data = new $this->parser_class($data, 'UTF-8', $this->xml_dump);
 			// If we want the XML, just output that and quit
 			if ($this->xml_dump)
 			{
@@ -4279,6 +4349,9 @@ class SimplePie_Sanitize
 	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur');
 	var $input_encoding = 'UTF-8';
 	var $output_encoding = 'UTF-8';
+	var $item_class = 'SimplePie_Item';
+	var $author_class = 'SimplePie_Author';
+	var $enclosure_class = 'SimplePie_Enclosure';
 	
 	function remove_div($enable = true)
 	{
@@ -4372,6 +4445,48 @@ class SimplePie_Sanitize
 		$this->output_encoding = (string) $encoding;
 	}
 	
+	function set_item_class($object = 'SimplePie_Item')
+	{
+		if (class_exists($object))
+		{
+			$class = new $object;
+			if (is_a($class, 'SimplePie_Item'))
+			{
+				$this->item_class = 'SimplePie_Item';
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function set_author_class($object = 'SimplePie_Author')
+	{
+		if (class_exists($object))
+		{
+			$class = new $object;
+			if (is_a($class, 'SimplePie_Author'))
+			{
+				$this->author_class = 'SimplePie_Author';
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function set_enclosure_class($object = 'SimplePie_Enclosure')
+	{
+		if (class_exists($object))
+		{
+			$class = new $object;
+			if (is_a($class, 'SimplePie_Enclosure'))
+			{
+				$this->enclosure_class = 'SimplePie_Enclosure';
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	function parse_data_array(&$data, $url)
 	{		
 		// Feed Info (Type and Version)
@@ -4436,7 +4551,7 @@ class SimplePie_Sanitize
 					if (!empty($link['attribs']['LENGTH'])) {
 						$length = $this->sanitize($link['attribs']['LENGTH'], $link['attribs']);
 					}
-					$this->info['link']['enclosure'][] = new SimplePie_Enclosure($href, $type, $length);
+					$this->info['link']['enclosure'][] = new $this->enclosure_class($href, $type, $length);
 				}
 				else
 				{
@@ -4618,7 +4733,7 @@ class SimplePie_Sanitize
 							}
 							if (!empty($href))
 							{
-								$newitem['link'][$rel][] = new SimplePie_Enclosure($href, $type, $length);
+								$newitem['link'][$rel][] = new $this->enclosure_class($href, $type, $length);
 							}
 						}
 						else
@@ -4653,7 +4768,7 @@ class SimplePie_Sanitize
 							{
 								$length = $this->sanitize($enclosure['attribs']['LENGTH'], $enclosure['attribs']);
 							}
-							$newitem['enclosures'][] = new SimplePie_Enclosure($href, $type, $length);
+							$newitem['enclosures'][] = new $this->enclosure_class($href, $type, $length);
 						}
 					}
 				}
@@ -4735,7 +4850,7 @@ class SimplePie_Sanitize
 					{
 						if (!empty($creator['data']))
 						{
-							$newitem['creator'][] = new SimplePie_Author($this->sanitize($creator['data'], $creator['attribs']), null, null);
+							$newitem['creator'][] = new $this->author_class($this->sanitize($creator['data'], $creator['attribs']), null, null);
 						}
 					}
 				}
@@ -4778,11 +4893,11 @@ class SimplePie_Sanitize
 								$email = $this->sanitize($author['email']['data'], $author['email']['attribs']);
 							}
 						}
-						$newitem['author'][] = new SimplePie_Author($name, $link, $email);
+						$newitem['author'][] = new $this->author_class($name, $link, $email);
 					}
 				}
 				unset($data['items'][$key]);
-				$this->items[] = new SimplePie_Item($newitem);
+				$this->items[] = new $this->item_class($newitem);
 			}
 		}
 	}
