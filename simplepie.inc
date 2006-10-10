@@ -2122,7 +2122,7 @@ class SimplePie_File
 				$this->headers = trim(curl_exec($fp));
 				if (curl_errno($fp))
 				{
-					$this->error = curl_error($fp);
+					$this->error = 'cURL error: ' . curl_error($fp);
 					$this->success = false;
 					return false;
 				}
@@ -2156,7 +2156,7 @@ class SimplePie_File
 				$this->fp = fsockopen($url_parts['host'], $url_parts['port'], $errno, $errstr, $timeout);
 				if (!$this->fp)
 				{
-					$this->error = $errstr;
+					$this->error = 'fsockopen error: ' . $errstr;
 					$this->success = false;
 					return false;
 				}
@@ -2202,7 +2202,7 @@ class SimplePie_File
 					else
 					{
 						$this->close();
-						$this->error = 'Timeout';
+						$this->error = 'fsocket timed out';
 						$this->success = false;
 						return false;
 					}
@@ -2219,7 +2219,7 @@ class SimplePie_File
 			}
 			else
 			{
-				$this->error = 'Could not open the file';
+				$this->error = 'fopen could not open the file';
 				$this->success = false;
 				return false;
 			}
