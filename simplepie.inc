@@ -262,6 +262,10 @@ class SimplePie
 	
 	function init()
 	{
+		if (!(function_exists('version_compare') && ((version_compare(phpversion(), '4.3.2', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.0.3', '>='))) || !extension_loaded('xml') || !extension_loaded('pcre'))
+		{
+			return false;
+		}
 		if ($this->sanitize->bypass_image_hotlink && !empty($_GET[$this->sanitize->bypass_image_hotlink]))
 		{
 			if (get_magic_quotes_gpc())
@@ -5175,6 +5179,14 @@ class SimplePie_Sanitize
 		$north_american_timezone = array('GMT' => '-0000', 'EST' => '-0500', 'EDT' => '-0400', 'CST' => '-0600', 'CDT' => '-0500', 'MST' => '-0700', 'MDT' => '-0600', 'PST' => '-0800', 'PDT' => '-0700');
 		if (preg_match('/([0-9]{2,4})-?([0-9]{2})-?([0-9]{2})T([0-9]{2}):?([0-9]{2})(:?([0-9]{2}(\.[0-9]*)?))?(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
 		{
+			if (!isset($matches[7]))
+			{
+				$matches[7] = '';
+			}
+			if (!isset($matches[9]))
+			{
+				$matches[9] = '';
+			}
 			$matches[7] = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
 			switch (strlen($matches[9]))
 			{
@@ -5204,7 +5216,7 @@ class SimplePie_Sanitize
 			}
 			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[7] $timezone");
 		}
-		else if (preg_match('/([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{2}|[0-9]{4})\s*([0-9]{2}):([0-9]{2})(:([0-9]{2}(\.[0-9]*)?))?\s*(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})/i', $date, $matches))
+		else if (preg_match('/([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{2}|[0-9]{4})\s*([0-9]{2}):([0-9]{2})(:([0-9]{2}(\.[0-9]*)?))?\s*(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
 		{
 			$three_month = array('Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12);
 			$month = $three_month[$matches[2]];
@@ -5216,9 +5228,21 @@ class SimplePie_Sanitize
 			{
 				$year = $matches[3];
 			}
+			if (!isset($matches[7]))
+			{
+				$matches[7] = '';
+			}
+			if (!isset($matches[9]))
+			{
+				$matches[9] = '';
+			}
 			$second = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
 			switch (strlen($matches[9]))
 			{
+				case 0:
+					$timezone = '';
+					break;
+					
 				case 1:
 					$timezone = $military_timezone[strtoupper($matches[9])];
 					break;
