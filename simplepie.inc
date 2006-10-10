@@ -5173,11 +5173,15 @@ class SimplePie_Sanitize
 	{
 		$military_timezone = array('A' => '-0100', 'B' => '-0200', 'C' => '-0300', 'D' => '-0400', 'E' => '-0500', 'F' => '-0600', 'G' => '-0700', 'H' => '-0800', 'I' => '-0900', 'K' => '-1000', 'L' => '-1100', 'M' => '-1200', 'N' => '+0100', 'O' => '+0200', 'P' => '+0300', 'Q' => '+0400', 'R' => '+0500', 'S' => '+0600', 'T' => '+0700', 'U' => '+0800', 'V' => '+0900', 'W' => '+1000', 'X' => '+1100', 'Y' => '+1200', 'Z' => '-0000');
 		$north_american_timezone = array('GMT' => '-0000', 'EST' => '-0500', 'EDT' => '-0400', 'CST' => '-0600', 'CDT' => '-0500', 'MST' => '-0700', 'MDT' => '-0600', 'PST' => '-0800', 'PDT' => '-0700');
-		if (preg_match('/([0-9]{2,4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(:([0-9]{2}(\.[0-9]*)?))?(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})/i', $date, $matches))
+		if (preg_match('/([0-9]{2,4})-?([0-9]{2})-?([0-9]{2})T([0-9]{2}):?([0-9]{2})(:?([0-9]{2}(\.[0-9]*)?))?(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
 		{
 			$matches[7] = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
 			switch (strlen($matches[9]))
 			{
+				case 0:
+					$timezone = '';
+					break;
+					
 				case 1:
 					$timezone = $military_timezone[strtoupper($matches[9])];
 					break;
