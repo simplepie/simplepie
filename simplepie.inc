@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 9 October 2006
+Updated: 10 October 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20061009';
+	var $build = '20061010';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -4965,7 +4965,7 @@ class SimplePie_Sanitize
 		{
 			foreach ($this->strip_htmltags as $tag)
 			{
-				$data = preg_replace_callback("/<($tag)((\s*((\w+:)?\w+)(\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))?)*)\s*(\/>|>(\s|.)*<\/($tag)((\s*((\w+:)?\w+)(\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))?)*)\s*>)/msiU", array(&$this, 'do_strip_htmltags'), $data);
+				$data = preg_replace_callback("/<($tag)((\s*((\w+:)?\w+)(\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))?)*)\s*(\/>|>(.*)<\/($tag)((\s*((\w+:)?\w+)(\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))?)*)\s*>)/msiU", array(&$this, 'do_strip_htmltags'), $data);
 			}
 		}
 
@@ -4989,11 +4989,11 @@ class SimplePie_Sanitize
 	{
 		if ($this->encode_instead_of_strip)
 		{
-			if (isset($match[11]) && !in_array(strtolower($match[1]), array('script', 'style')))
+			if (isset($match[12]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
-				return "&lt;$match[1]$match[2]&gt;$match[11]&lt;/$match[1]&gt;";
+				return "&lt;$match[1]$match[2]&gt;$match[12]&lt;/$match[1]&gt;";
 			}
-			else if (isset($match[11]))
+			else if (isset($match[12]))
 			{
 				return "&lt;$match[1]$match[2]&gt;&lt;/$match[1]&gt;";
 			}
@@ -5004,9 +5004,9 @@ class SimplePie_Sanitize
 		}
 		else
 		{
-			if (isset($match[11]) && !in_array(strtolower($match[1]), array('script', 'style')))
+			if (isset($match[12]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
-				return $match[11];
+				return $match[12];
 			}
 			else
 			{
