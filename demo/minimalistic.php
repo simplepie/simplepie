@@ -2,7 +2,7 @@
 
 function microtime_float()
 {
-	if (version_compare(php_version(), '5.0.0', '>='))
+	if (version_compare(phpversion(), '5.0.0', '>='))
 	{
 		return microtime(true);
 	}
@@ -20,7 +20,10 @@ include('../simplepie.inc');
 // Parse it
 $feed = new SimplePie();
 if (!empty($_GET['feed'])) {
-	$_GET['feed'] = stripslashes($_GET['feed']);
+	if (get_magic_quotes_gpc())
+	{
+		$_GET['feed'] = stripslashes($_GET['feed']);
+	}
 	$feed->feed_url($_GET['feed']);
 	$feed->init();
 }
