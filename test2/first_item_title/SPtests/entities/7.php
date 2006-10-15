@@ -8,6 +8,6 @@ $data = <<<EOD
 </feed>
 EOD;
 
-$expected = 'This &amp;amp;amp; this';
+$expected = 'This &amp;amp; this';
 
 ?>
