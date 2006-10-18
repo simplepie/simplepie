@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 16 October 2006
+Updated: 17 October 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20061016';
+	var $build = '20061017';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -47,6 +47,7 @@ class SimplePie
 	var $cache_class = 'SimplePie_Cache';
 	var $locator_class = 'SimplePie_Locator';
 	var $parser_class = 'SimplePie_Parser';
+	var $force_fsockopen = false;
 	
 	// Misc. variables
 	var $data;
@@ -260,6 +261,11 @@ class SimplePie
 		return $this->sanitize->set_enclosure_class($class);
 	}
 	
+	function force_fsockopen($enable = true)
+	{
+		$this->force_fsockopen = (bool) $enable;
+	}
+	
 	function init()
 	{
 		if (!(function_exists('version_compare') && ((version_compare(phpversion(), '4.3.2', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.0.3', '>='))) || !extension_loaded('xml') || !extension_loaded('pcre'))
@@ -356,7 +362,7 @@ EOT;
 								{
 									$headers['if-none-match'] = $this->data['etag'];
 								}
-								$file = new SimplePie_File($this->rss_url, $this->timeout/10, 5, $headers, $this->useragent);
+								$file = new SimplePie_File($this->rss_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
 								if ($file->success)
 								{
 									$headers = $file->headers();
@@ -396,7 +402,7 @@ EOT;
 					}
 					else
 					{
-						$file = new SimplePie_File($this->rss_url, $this->timeout, 5, null, $this->useragent);
+						$file = new SimplePie_File($this->rss_url, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen);
 					}
 				}
 				// If the file connection has an error, set SimplePie::error to that and quit
@@ -620,7 +626,7 @@ EOT;
 
 			if ($check)
 			{
-				$file = new SimplePie_File($favicon, $this->timeout/10, 5, null, $this->useragent);
+				$file = new SimplePie_File($favicon, $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
 				$headers = $file->headers();
 				$file->close();
 
@@ -2076,7 +2082,7 @@ class SimplePie_File
 	var $error;
 	var $method;
 	
-	function SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null)
+	function SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
 	{
 		if (class_exists('idna_convert'))
 		{
@@ -2096,7 +2102,7 @@ class SimplePie_File
 			{
 				$headers = array();
 			}
-			if (extension_loaded('curl') && version_compare(SimplePie_Misc::get_curl_version(), '7.10', '>='))
+			if (extension_loaded('curl') && version_compare(SimplePie_Misc::get_curl_version(), '7.10', '>=') && !$force_fsockopen)
 			{
 				$this->method = 'curl';
 				$fp = curl_init();
@@ -2136,7 +2142,7 @@ class SimplePie_File
 					if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
 					{
 						$this->redirects++;
-						return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent);
+						return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 					}
 				}
 			}
@@ -2196,7 +2202,7 @@ class SimplePie_File
 						if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
 						{
 							$this->redirects++;
-							return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent);
+							return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 						}
 					}
 					else
@@ -2247,9 +2253,12 @@ class SimplePie_File
 				if (!$info['timed_out'])
 				{
 					$this->body = trim($this->body);
-					if ($this->method == 'fsockopen' && !empty($this->headers['content-encoding']) && $this->headers['content-encoding'] == 'gzip')
+					if ($this->method == 'fsockopen' && !empty($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
 					{
-						$this->body = substr($this->body, 10);
+						if (substr($this->body, 0, 10) == "\x1f\x8b\x08\x00\x00\x00\x00\x00")
+						{
+							$this->body = substr($this->body, 10);
+						}
 						$this->body = gzinflate($this->body);
 					}
 					$this->close();

@@ -1,8 +1,8 @@
 <?php
 
-require('simplepie.inc');
-new SimplePie_File('http://blog.skyzyx.com/feed/');
+require('../simplepie.inc');
+$file = new SimplePie_File('http://nymag.com/rss/Movies.xml');
 
-print_r(get_headers($url, 1));
+print_r($file);
 
 ?>
