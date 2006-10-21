@@ -2463,12 +2463,12 @@ class SimplePie_Misc
 							else if (strpos($input, '/../') === 0)
 							{
 								$input = substr_replace($input, '/', 0, 4);
-								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
+								$target['path'] = preg_replace('/(\/)?([^\/]+)$/msiU', '', $target['path']);
 							}
 							else if (strpos($input, '/..') === 0 && SimplePie_Misc::strendpos($input, '/..') === 0)
 							{
 								$input = substr_replace($input, '/', 0, 3);
-								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
+								$target['path'] = preg_replace('/(\/)?([^\/]+)$/msiU', '', $target['path']);
 							}
 							else if ($input == '.' || $input == '..')
 							{
@@ -2476,7 +2476,7 @@ class SimplePie_Misc
 							}
 							else
 							{
-								if (preg_match('/^(.+)(\/|$)/U', $input, $match))
+								if (preg_match('/^(.+)(\/|$)/msiU', $input, $match))
 								{
 									$target['path'] .= $match[1];
 									$input = substr_replace($input, '', 0, strlen($match[1]));
