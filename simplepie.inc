@@ -4936,6 +4936,7 @@ class SimplePie_Sanitize
 		}
 		$data = trim($data);
 		$data = str_replace(' spencoded="false">', '>', $data);
+		$data = preg_replace('/<\!--([^-]|-[^-])*-->/msiU', '', $data);
 
 		// If Strip Ads is enabled, strip them.
 		if ($this->strip_ads)
