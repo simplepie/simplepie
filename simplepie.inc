@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 21 October 2006
+Updated: 22 October 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20061021';
+	var $build = '20061022';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -3607,11 +3607,12 @@ class SimplePie_Locator
 		$done = array();
 		foreach ($links as $link)
 		{
-			if (!empty($link['attribs']['TYPE']['data']) && !empty($link['attribs']['HREF']['data']))
+			if (!empty($link['attribs']['TYPE']['data']) && !empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
 			{
+				$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['REL']['data'])));
 				$type = strtolower(trim($link['attribs']['TYPE']['data']));
 				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
-				if (!in_array($href, $done) && in_array($type, array('application/rss+xml', 'application/atom+xml', 'application/rdf+xml', 'application/xml+rss', 'application/xml+atom', 'application/xml+rdf', 'application/xml', 'application/x.atom+xml', 'text/xml')))
+				if (!in_array($href, $done) && in_array($rel, 'alternate') && in_array($type, array('application/rss+xml', 'application/atom+xml', 'application/rdf+xml', 'application/xml+rss', 'application/xml+atom', 'application/xml+rdf', 'application/xml', 'application/x.atom+xml', 'text/xml')))
 				{
 					$feed = $this->is_feed($href);
 					if ($feed)
