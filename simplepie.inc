@@ -3778,9 +3778,20 @@ class SimplePie_Parser
 		{
 			$sp_elements = array(
 				'author',
+				'category',
+				'copyright', 
 				'description',
+				'docs', 
+				'generator', 
+				'guid', 
+				'language',
+				'lastBuildDate', 
 				'link',
+				'managingEditor', 
+				'pubDate', 
 				'title',
+				'url', 
+				'webMaster', 
 			);
 		}
 		// Or if we're Atom
