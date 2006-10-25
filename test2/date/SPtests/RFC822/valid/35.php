@@ -1,6 +1,6 @@
 <?php
 
-$date = 'Fri, 05 Nov 1994 23:15:30 W';
+$date = 'Fri, 05 Nov 94 23:15:30 W';
 $expected = 784041330;
 
 ?>
