@@ -49,6 +49,7 @@ class SimplePie
 	var $parser_class = 'SimplePie_Parser';
 	var $file_class = 'SimplePie_File';
 	var $force_fsockopen = false;
+	var $cache_name_type = 'sha1';
 	
 	// Misc. variables
 	var $data;
@@ -213,6 +214,33 @@ class SimplePie
 		$this->force_fsockopen = (bool) $enable;
 	}
 	
+	function set_cache_name_type($type = 'sha1')
+	{
+		$type = strtolower(trim($type));
+		switch ($type)
+		{
+			case 'crc32':
+				$this->cache_name_type = 'crc32';
+				break;
+			
+			case 'md5':
+				$this->cache_name_type = 'md5';
+				break;
+			
+			case 'rawurlencode':
+				$this->cache_name_type = 'rawurlencode';
+				break;
+			
+			case 'urlencode':
+				$this->cache_name_type = 'urlencode';
+				break;
+			
+			default:
+				$this->cache_name_type = 'sha1';
+				break;
+		}
+	}
+	
 	function bypass_image_hotlink($get = false)
 	{
 		$this->sanitize->bypass_image_hotlink($get);
@@ -338,7 +366,7 @@ EOT;
 				// Decide whether to enable caching
 				if ($this->enable_cache && preg_match('/^http(s)?:\/\//i', $this->rss_url))
 				{
-					$cache = new $this->cache_class($this->cache_location, sha1($this->rss_url), 'spc');
+					$cache = new $this->cache_class($this->cache_location, call_user_func($this->cache_name_type, $this->rss_url), 'spc');
 				}
 				// If it's enabled and we don't want an XML dump, use the cache
 				if ($cache && !$this->xml_dump)
@@ -347,7 +375,7 @@ EOT;
 					$this->data = $cache->load();
 					if (!empty($this->data))
 					{
-						// If we've hit a sha1 collision just rerun it with caching disabled
+						// If we've hit a collision just rerun it with caching disabled
 						if (isset($this->data['url']) && $this->data['url'] != $this->rss_url)
 						{
 							$cache = false;
