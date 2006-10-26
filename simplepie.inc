@@ -5,7 +5,7 @@ A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
 Version: "Lemon Meringue"
-Updated: 24 October 2006
+Updated: 26 October 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
 
@@ -26,7 +26,7 @@ class SimplePie
 	// SimplePie Info
 	var $name = 'SimplePie';
 	var $version = 'Lemon Meringue';
-	var $build = '20061024';
+	var $build = '20061026';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
 	var $linkback;
@@ -47,6 +47,7 @@ class SimplePie
 	var $cache_class = 'SimplePie_Cache';
 	var $locator_class = 'SimplePie_Locator';
 	var $parser_class = 'SimplePie_Parser';
+	var $file_class = 'SimplePie_File';
 	var $force_fsockopen = false;
 	
 	// Misc. variables
@@ -177,6 +178,16 @@ class SimplePie
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Parser'))
 		{
 			$this->parser_class = $class;
+			return true;
+		}
+		return false;
+	}
+	
+	function set_file_class($class = 'SimplePie_File')
+	{
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_File'))
+		{
+			$this->file_class = $class;
 			return true;
 		}
 		return false;
@@ -362,7 +373,7 @@ EOT;
 								{
 									$headers['if-none-match'] = $this->data['etag'];
 								}
-								$file = new SimplePie_File($this->rss_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
+								$file = new $this->file_class($this->rss_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
 								if ($file->success)
 								{
 									$headers = $file->headers();
@@ -402,7 +413,7 @@ EOT;
 					}
 					else
 					{
-						$file = new SimplePie_File($this->rss_url, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen);
+						$file = new $this->file_class($this->rss_url, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen);
 					}
 				}
 				// If the file connection has an error, set SimplePie::error to that and quit
@@ -626,7 +637,7 @@ EOT;
 
 			if ($check)
 			{
-				$file = new SimplePie_File($favicon, $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
+				$file = new $this->file_class($favicon, $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
 				$headers = $file->headers();
 				$file->close();
 
@@ -3510,17 +3521,19 @@ class SimplePie_Locator
 	var $file;
 	var $local;
 	var $elsewhere;
+	var $file_class = 'SimplePie_File';
 	
-	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null)
+	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File')
 	{
 		if (!is_a($file, 'SimplePie_File'))
 		{
-			$this->file = new SimplePie_File($file, $timeout, $useragent);
+			$this->file = new $this->file_class($file, $timeout, $useragent);
 		}
 		else
 		{
 			$this->file =& $file;
 		}
+		$this->file_class = $file_class;
 		$this->useragent = $useragent;
 		$this->timeout = $timeout;
 	}
@@ -3580,11 +3593,11 @@ class SimplePie_Locator
 		{
 			if (isset($this))
 			{
-				$file2 = new SimplePie_File($file, $this->timeout, 5, null, $this->useragent);
+				$file2 = new $this->file_class($file, $this->timeout, 5, null, $this->useragent);
 			}
 			else
 			{
-				$file2 = new SimplePie_File($file);
+				$file2 = new $this->file_class($file);
 			}
 			$file2->body();
 			$file2->close();
