@@ -4593,7 +4593,7 @@ class SimplePie_Sanitize
 		// Feed Descriptions
 		if (!empty($data['info']['description']['data']))
 		{
-			$this->info['description'] = $this->sanitize($data['info']['description']['data'], $data['info']['description']['attribs']);
+			$this->info['description'] = $this->sanitize($data['info']['description']['data'], $data['info']['description']['attribs'], false, true);
 		}
 		if (!empty($data['info']['dc:description']['data']))
 		{
@@ -4699,7 +4699,7 @@ class SimplePie_Sanitize
 				}
 				if (!empty($item['description']['data']))
 				{
-					$newitem['description'] = $this->sanitize($item['description']['data'], $item['description']['attribs']);
+					$newitem['description'] = $this->sanitize($item['description']['data'], $item['description']['attribs'], false, true);
 				}
 				if (!empty($item['dc:description']['data']))
 				{
@@ -4913,7 +4913,7 @@ class SimplePie_Sanitize
 		}
 	}
 	
-	function sanitize($data, $attribs, $is_url = false)
+	function sanitize($data, $attribs, $is_url = false, $force_decode = false)
 	{
 		$this->attribs = $attribs;
 		if (isset($this->feedinfo['type']) && $this->feedinfo['type'] == 'Atom')
@@ -4943,6 +4943,10 @@ class SimplePie_Sanitize
 		else
 		{
 			$data = $this->convert_entities($data);
+		}
+		if ($force_decode)
+		{
+			$data = $this->entities_decode($data);
 		}
 		$data = trim($data);
 		$data = preg_replace('/<\!--([^-]|-[^-])*-->/msiU', '', $data);
