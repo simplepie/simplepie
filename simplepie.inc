@@ -3622,10 +3622,9 @@ class SimplePie_Locator
 		{
 			if (!empty($link['attribs']['TYPE']['data']) && !empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
 			{
-				$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['REL']['data'])));
-				$type = strtolower(trim($link['attribs']['TYPE']['data']));
+				$type = preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/msiU', trim($link['attribs']['TYPE']['data']));
 				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
-				if (!in_array($href, $done) && in_array('alternate', $rel) && in_array($type, array('application/rss+xml', 'application/atom+xml', 'application/rdf+xml', 'application/xml+rss', 'application/xml+atom', 'application/xml+rdf', 'application/xml', 'application/x.atom+xml', 'text/xml')))
+				if (!in_array($href, $done) && $type)
 				{
 					$feed = $this->is_feed($href);
 					if ($feed)
@@ -3782,9 +3781,6 @@ class SimplePie_Parser
 		}
 		$data = "<?xml version='1.0' encoding='$encoding'?>\n" . $data;
 		
-		// Add an internal attribute to CDATA sections
-		$data = preg_replace_callback('/<(\S+)((\s*((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'))*)\s*(\/>|>\s*<\!\[CDATA\[(.*)<\/\\1>)/msiU', array(&$this, 'spencoded'), $data);
-		
 		// Put some data into CDATA blocks
 		// If we're RSS
 		if ((stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $data)) && (preg_match('/<([a-z0-9]+\:)?channel/mi', $data) || preg_match('/<([a-z0-9]+\:)?item/mi', $data)))
@@ -3864,17 +3860,7 @@ class SimplePie_Parser
 	{
 		if (isset($match[10]))
 		{
-			$match[10] = preg_replace('/^\s*<\!\[CDATA\[(.*)]]>\s*$/msiU', '\\1', $match[10]);
 			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
-		}
-		return $match[0];
-	}
-	
-	function spencoded($match)
-	{
-		if (isset($match[10]))
-		{
-			return "<$match[1]$match[2] spencoded=\"false\"><![CDATA[$match[10]</$match[1]>";
 		}
 		return $match[0];
 	}
@@ -3891,7 +3877,7 @@ class SimplePie_Parser
 	
 	function real_cdata_in_cdata($match)
 	{
-		return htmlentities($match[1], ENT_NOQUOTES, $this->encoding);
+		return htmlspecialchars($match[1], ENT_NOQUOTES);
 	}
 	
 	function do_add_content(&$array, $data)
@@ -4373,6 +4359,7 @@ class SimplePie_Sanitize
 	var $item_xmlbase;
 	var $attribs;
 	var $cached_entities;
+	var $cache_convert_entities;
 	
 	// Options
 	var $remove_div = true;
@@ -4936,7 +4923,7 @@ class SimplePie_Sanitize
 				$data = trim($data);
 				$data = base64_decode($data);
 			}
-			else if ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')) && (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false'))
+			else if ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')))
 			{
 				$data = $this->entities_decode($data);
 			}
@@ -4950,17 +4937,14 @@ class SimplePie_Sanitize
 				{
 					$data = preg_replace('/<div( .*)?>/msiU', '<div>', $data, 1);
 				}
+				$data = $this->convert_entities($data);
 			}
 		}
 		else
 		{
-			if (empty($attribs['SPENCODED']) || $attribs['SPENCODED'] != 'false')
-			{
-				$data = $this->entities_decode($data);
-			}
+			$data = $this->convert_entities($data);
 		}
 		$data = trim($data);
-		$data = str_replace(' spencoded="false">', '>', $data);
 		$data = preg_replace('/<\!--([^-]|-[^-])*-->/msiU', '', $data);
 
 		// If Strip Ads is enabled, strip them.
@@ -5145,11 +5129,34 @@ class SimplePie_Sanitize
 			$return = SimplePie_Misc::change_encoding(html_entity_decode($data[0], ENT_QUOTES), 'ISO-8859-1', $this->input_encoding);
 			if ($return == $data[0])
 			{
-				$return = SimplePie_Misc::change_encoding(preg_replace_callback('/&#([0-9a-fx]+);/mi', array(&$this, 'replace_num_entity'), $data[0]), 'UTF-8', $this->input_encoding);
+				$return = SimplePie_Misc::change_encoding(preg_replace_callback('/&#([x]?[0-9a-f]+);/mi', array(&$this, 'replace_num_entity'), $data[0]), 'UTF-8', $this->input_encoding);
 			}
 			$this->cached_entities[$data[0]] = $return;
 			return $return;
 		}
+	}
+	
+	function convert_entities($data)
+	{
+		return preg_replace_callback('/&#(x)?([0-9a-z]+);/mi', array(&$this, 'do_convert_entities'), $data);
+	}
+	
+	function do_convert_entities($data)
+	{
+		if (isset($this->cache_convert_entities[$data[0]]))
+		{
+			return $this->cache_convert_entities[$data[0]];
+		}
+		else if (isset($this->cached_entities[$data[0]]))
+		{
+			$return = htmlentities($this->cached_entities[$data[0]], ENT_QUOTES, 'UTF-8');
+		}
+		else
+		{
+			$return = htmlentities(preg_replace_callback('/&#([x]?[0-9a-f]+);/mi', array(&$this, 'replace_num_entity'), $data[0]), ENT_QUOTES, 'UTF-8');
+		}
+		$this->cache_convert_entities[$data[0]] = $return;
+		return $return;
 	}
 
 	/*
