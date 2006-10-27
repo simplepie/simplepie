@@ -24,12 +24,12 @@ if (!empty($_GET['feed'])) {
 	}
 	
 	// Use the URL that was passed to the page in SimplePie
-	$feed->feed_url($_GET['feed']);
+	$feed->set_feed_url($_GET['feed']);
 }
 
 // Allow us to change the input encoding from the URL string if we want to. (optional)
 if (!empty($_GET['input'])) {
-	$feed->input_encoding($_GET['input']);
+	$feed->set_input_encoding($_GET['input']);
 }
 
 // Allow us to snap into IHBB mode.

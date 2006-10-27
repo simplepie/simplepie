@@ -19,12 +19,13 @@ include('../simplepie.inc');
 
 // Parse it
 $feed = new SimplePie();
-if (!empty($_GET['feed'])) {
+if (!empty($_GET['feed']))
+{
 	if (get_magic_quotes_gpc())
 	{
 		$_GET['feed'] = stripslashes($_GET['feed']);
 	}
-	$feed->feed_url($_GET['feed']);
+	$feed->set_feed_url($_GET['feed']);
 	$feed->init();
 }
 $feed->handle_content_type();

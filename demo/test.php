@@ -4,11 +4,14 @@ include_once('../idn/idna_convert.class.php');
 
 // Parse it
 $feed = new SimplePie();
-if (!empty($_GET['feed'])) {
-	$_GET['feed'] = stripslashes($_GET['feed']);
-	$feed->feed_url($_GET['feed']);
-	$feed->enable_caching(false);
-	if (isset($_GET['xmldump'])) $feed->enable_xmldump($_GET['xmldump']);
+if (!empty($_GET['feed']))
+{
+	if (get_magic_quotes_gpc())
+	{
+		$_GET['feed'] = stripslashes($_GET['feed']);
+	}
+	$feed->set_feed_url($_GET['feed']);
+	$feed->set_cache(false);
 	$starttime = explode(' ', microtime());
 	$starttime = $starttime[1] + $starttime[0];
 	$feed->init();
