@@ -4,7 +4,7 @@ SIMPLEPIE
 A PHP-Based RSS and Atom Feed Framework
 Takes the hard work out of managing a complete RSS/Atom solution.
 
-Version: "Lemon Meringue"
+Version: "Razzleberry"
 Updated: 27 October 2006
 Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
 http://simplepie.org
@@ -25,7 +25,7 @@ class SimplePie
 {
 	// SimplePie Info
 	var $name = 'SimplePie';
-	var $version = 'Lemon Meringue';
+	var $version = 'Razzleberry';
 	var $build = '20061027';
 	var $url = 'http://simplepie.org/';
 	var $useragent;
