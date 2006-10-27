@@ -1,61 +1,200 @@
 <?php
-/****************************************************
-SIMPLEPIE
-A PHP-Based RSS and Atom Feed Framework
-Takes the hard work out of managing a complete RSS/Atom solution.
+/**
+ * SimplePie
+ * 
+ * A PHP-Based RSS and Atom Feed Framework.
+ * Takes the hard work out of managing a complete RSS/Atom solution.
+ * 
+ * @package SimplePie
+ * @version "Razzleberry"
+ * @copyright 2004-2006 Ryan Parman, Geoffrey Sneddon
+ * @author Ryan Parman
+ * @author Geoffrey Sneddon
+ * @link http://simplepie.org/ SimplePie
+ * @link http://simplepie.org/support/ Please submit all bug reports and feature requests to the SimplePie forums.
+ * @license http://opensource.org/licenses/lgpl-license.php GNU Lesser General Public License
+ */
 
-Version: "Razzleberry"
-Updated: 27 October 2006
-Copyright: 2004-2006 Ryan Parman, Geoffrey Sneddon
-http://simplepie.org
-
-*****************************************************
-LICENSE:
-
-GNU Lesser General Public License 2.1 (LGPL)
-http://creativecommons.org/licenses/LGPL/2.1/
-
-*****************************************************
-Please submit all bug reports and feature requests to the SimplePie forums.
-http://simplepie.org/support/
-
-****************************************************/
-
+/**
+ * SimplePie
+ *
+ * Main class of SimplePie
+ *
+ * @package SimplePie
+ */
 class SimplePie
 {
-	// SimplePie Info
+	/**
+	 * @var string SimplePie Name
+	 * @access protected
+	 */
 	var $name = 'SimplePie';
+	
+	/**
+	 * @var string SimplePie Version
+	 * @access protected
+	 */
 	var $version = 'Razzleberry';
-	var $build = '20061027';
+	
+	/**
+	 * @var int SimplePie Build
+	 * @access protected
+	 */
+	var $build = 20061027;
+	
+	/**
+	 * @var string SimplePie Website URL
+	 * @access protected
+	 */
 	var $url = 'http://simplepie.org/';
+	
+	/**
+	 * @var string SimplePie Useragent
+	 * @see set_useragent
+	 * @access protected
+	 */
 	var $useragent;
+	
+	/**
+	 * @var string Link to SimplePie Website
+	 * @access protected
+	 */
 	var $linkback;
 	
-	// Other objects, instances created here so we can set options on them
-	var $sanitize;
+	/**
+	 * @var array Raw data
+	 * @access protected
+	 */
+	var $data = array();
 	
-	// Options
-	var $rss_url;
-	var $file;
-	var $timeout = 10;
-	var $xml_dump = false;
-	var $enable_cache = true;
-	var $max_minutes = 60;
-	var $cache_location = './cache';
-	var $order_by_date = true;
-	var $input_encoding = false;
-	var $cache_class = 'SimplePie_Cache';
-	var $locator_class = 'SimplePie_Locator';
-	var $parser_class = 'SimplePie_Parser';
-	var $file_class = 'SimplePie_File';
-	var $force_fsockopen = false;
-	var $cache_name_type = 'sha1';
-	
-	// Misc. variables
-	var $data;
+	/**
+	 * @var mixed Error string
+	 * @access protected
+	 */
 	var $error;
 	
-	function SimplePie($feed_url = null, $cache_location = null, $cache_max_minutes = null)
+	/**
+	 * @var object Instance of SimplePie_Sanitize (or other class)
+	 * @see set_sanitize_class
+	 * @access private
+	 */
+	var $sanitize;
+	
+	/**
+	 * @var string Feed URL
+	 * @see set_feed_url
+	 * @access private
+	 */
+	var $feed_url;
+	
+	/**
+	 * @var object SimplePie_File of feed
+	 * @see set_file
+	 * @access private
+	 */
+	var $file;
+	
+	/**
+	 * @var int Timeout (used for fetching external files)
+	 * @see set_timeout
+	 * @access private
+	 */
+	var $timeout = 10;
+	
+	/**
+	 * @var bool Force fsockopen() (instead of cURL for fetching external files)
+	 * @see set_force_fsockopen
+	 * @access private
+	 */
+	var $force_fsockopen = false;
+	
+	/**
+	 * @var bool Enable/Disable XML dump
+	 * @see set_xml_dump
+	 * @access private
+	 */
+	var $xml_dump = false;
+	
+	/**
+	 * @var bool Enable/Disable Caching
+	 * @see set_cache
+	 * @access private
+	 */
+	var $cache = true;
+	
+	/**
+	 * @var float Cache duration (in minutes)
+	 * @see set_cache_duration
+	 * @access private
+	 */
+	var $cache_duration = 60;
+	
+	/**
+	 * @var string Cache location (relative to executing script)
+	 * @see set_cache_location
+	 * @access private
+	 */
+	var $cache_location = './cache';
+	
+	/**
+	 * @var string Function that creates the cache filename
+	 * @see set_cache_name_type
+	 * @access private
+	 */
+	var $cache_name_type = 'sha1';
+	
+	/**
+	 * @var bool Reorder feed by date descending
+	 * @see set_order_by_date
+	 * @access private
+	 */
+	var $order_by_date = true;
+	
+	/**
+	 * @var mixed Force input encoding to be set to the follow value (false, or anything type-cast to false, disables this feature)
+	 * @see set_input_encoding
+	 * @access private
+	 */
+	var $input_encoding = false;
+	
+	/**
+	 * @var string Class used for caching feeds
+	 * @see set_cache_class
+	 * @access private
+	 */
+	var $cache_class = 'SimplePie_Cache';
+	
+	/**
+	 * @var string Class used for locating feeds
+	 * @see set_locator_class
+	 * @access private
+	 */
+	var $locator_class = 'SimplePie_Locator';
+	
+	/**
+	 * @var string Class used for parsing feeds
+	 * @see set_parser_class
+	 * @access private
+	 */
+	var $parser_class = 'SimplePie_Parser';
+	
+	/**
+	 * @var string Class used for fetching feeds
+	 * @see set_file_class
+	 * @access private
+	 */
+	var $file_class = 'SimplePie_File';
+	
+	/**
+	 * Creates useragent, linkback and sanitize members, and runs init if
+	 * a feed URL is passed (as the first parameter)
+	 *
+	 * @access public
+	 * @param mixed $feed_url Feed URL, defaults to null, sets the feed URL and runs init() if not
+	 * @param mixed $cache_location Cache Location, defaults to null, sets the cache location if not
+	 * @param mixed $cache_duration Cache Duration, defaults to null, sets the cache duration (in minutes) if not
+	 */
+	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
 	{
 		// Couple of variables built up from other variables
 		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
@@ -67,23 +206,23 @@ class SimplePie
 		// Set options if they're passed to the constructor
 		if (!is_null($feed_url))
 		{
-			$this->feed_url($feed_url);
+			$this->set_feed_url($feed_url);
 		}
 
 		if (!is_null($cache_location))
 		{
-			$this->cache_location($cache_location);
+			$this->set_cache_location($cache_location);
 		}
 
-		if (!is_null($cache_max_minutes))
+		if (!is_null($cache_duration))
 		{
-			$this->cache_max_minutes($cache_max_minutes);
+			$this->set_cache_duration($cache_duration);
 		}
 
-		// If we've passed an xmldump variable in the URL, snap into XMLdump mode
+		// If we've passed an xmldump variable in the URL, snap into XML dump mode
 		if (isset($_GET['xmldump']))
 		{
-			$this->enable_xmldump(true);
+			$this->set_xml_dump(true);
 		}
 		
 		// Only init the script if we're passed a feed URL
@@ -93,16 +232,16 @@ class SimplePie
 		}
 	}
 	
-	function feed_url($url)
+	function set_feed_url($url)
 	{
-		$this->rss_url = SimplePie_Misc::fix_protocol($url, 1);
+		$this->feed_url = SimplePie_Misc::fix_protocol($url, 1);
 	}
 	
 	function set_file(&$file)
 	{
 		if (is_a($file, 'SimplePie_File'))
 		{
-			$this->rss_url = $file->url;
+			$this->feed_url = $file->url;
 			$this->file =& $file;
 		}
 	}
@@ -117,32 +256,32 @@ class SimplePie
 		$this->raw_data = trim((string) $data);
 	}
 	
-	function enable_xmldump($enable = false)
+	function set_xml_dump($enable = false)
 	{
 		$this->xml_dump = (bool) $enable;
 	}
 	
-	function enable_caching($enable = true)
+	function set_cache($enable = true)
 	{
-		$this->enable_cache = (bool) $enable;
+		$this->cache = (bool) $enable;
 	}
 	
-	function cache_max_minutes($minutes = 60)
+	function set_cache_duration($minutes = 60)
 	{
-		$this->max_minutes = (float) $minutes;
+		$this->cache_duration = (float) $minutes;
 	}
 	
-	function cache_location($location = './cache')
+	function set_cache_location($location = './cache')
 	{
 		$this->cache_location = (string) $location;
 	}
 	
-	function order_by_date($enable = true)
+	function set_order_by_date($enable = true)
 	{
 		$this->order_by_date = (bool) $enable;
 	}
 	
-	function input_encoding($encoding = false)
+	function set_input_encoding($encoding = false)
 	{
 		if ($encoding)
 		{
@@ -209,7 +348,7 @@ class SimplePie
 		$this->useragent = (string) $ua;
 	}
 	
-	function force_fsockopen($enable = false)
+	function set_force_fsockopen($enable = false)
 	{
 		$this->force_fsockopen = (bool) $enable;
 	}
@@ -356,17 +495,17 @@ EOT;
 			exit;
 		}
 		
-		if (!empty($this->rss_url) || !empty($this->raw_data))
+		if (!empty($this->feed_url) || !empty($this->raw_data))
 		{
 			$this->data = array();
 			$cache = false;
 			
-			if (!empty($this->rss_url))
+			if (!empty($this->feed_url))
 			{
 				// Decide whether to enable caching
-				if ($this->enable_cache && preg_match('/^http(s)?:\/\//i', $this->rss_url))
+				if ($this->cache && preg_match('/^http(s)?:\/\//i', $this->feed_url))
 				{
-					$cache = new $this->cache_class($this->cache_location, call_user_func($this->cache_name_type, $this->rss_url), 'spc');
+					$cache = new $this->cache_class($this->cache_location, call_user_func($this->cache_name_type, $this->feed_url), 'spc');
 				}
 				// If it's enabled and we don't want an XML dump, use the cache
 				if ($cache && !$this->xml_dump)
@@ -376,18 +515,18 @@ EOT;
 					if (!empty($this->data))
 					{
 						// If we've hit a collision just rerun it with caching disabled
-						if (isset($this->data['url']) && $this->data['url'] != $this->rss_url)
+						if (isset($this->data['url']) && $this->data['url'] != $this->feed_url)
 						{
 							$cache = false;
 						}
 						// If we've got a feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL
 						else if (!empty($this->data['feed_url']))
 						{
-							$this->feed_url($this->data['feed_url']);
+							$this->set_feed_url($this->data['feed_url']);
 							return $this->init();
 						}
 						// If the cache is new enough
-						else if ($cache->mtime() + $this->max_minutes * 60 < time())
+						else if ($cache->mtime() + $this->cache_duration * 60 < time())
 						{
 							// If we have last-modified and/or etag set
 							if (!empty($this->data['last-modified']) || !empty($this->data['etag']))
@@ -401,7 +540,7 @@ EOT;
 								{
 									$headers['if-none-match'] = $this->data['etag'];
 								}
-								$file = new $this->file_class($this->rss_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
+								$file = new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
 								if ($file->success)
 								{
 									$headers = $file->headers();
@@ -435,13 +574,13 @@ EOT;
 				// If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
 				if (!isset($file))
 				{
-					if (is_a($this->file, 'SimplePie_File') && $this->file->url == $this->rss_url)
+					if (is_a($this->file, 'SimplePie_File') && $this->file->url == $this->feed_url)
 					{
 						$file =& $this->file;
 					}
 					else
 					{
-						$file = new $this->file_class($this->rss_url, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen);
+						$file = new $this->file_class($this->feed_url, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen);
 					}
 				}
 				// If the file connection has an error, set SimplePie::error to that and quit
@@ -458,17 +597,17 @@ EOT;
 					$feed = $locate->find();
 					if ($feed)
 					{
-						if ($cache && !$cache->save(array('url' => $this->rss_url, 'feed_url' => $feed)))
+						if ($cache && !$cache->save(array('url' => $this->feed_url, 'feed_url' => $feed)))
 						{
 							$this->error = "$cache->name is not writeable";
 							SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
 						}
-						$this->rss_url = $feed;
+						$this->feed_url = $feed;
 						return $this->init();
 					}
 					else
 					{
-						$this->error = "A feed could not be found at $this->rss_url";
+						$this->error = "A feed could not be found at $this->feed_url";
 						SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
 						return false;
 					}
@@ -546,7 +685,7 @@ EOT;
 			else if (!$data->error_code)
 			{
 				// Parse the data, and make it sane
-				$this->sanitize->parse_data_array($data->data, $this->rss_url);
+				$this->sanitize->parse_data_array($data->data, $this->feed_url);
 				unset($data);
 				// Get the sane data
 				$this->data['feedinfo'] = $this->sanitize->feedinfo;
@@ -556,7 +695,7 @@ EOT;
 				$this->data['items'] = $this->sanitize->items;
 				unset($this->sanitize->items);
 				$this->data['feedinfo']['encoding'] = $this->sanitize->output_encoding;
-				$this->data['url'] = $this->rss_url;
+				$this->data['url'] = $this->feed_url;
 				
 				// Store the headers that we need
 				if (!empty($headers['last-modified']))
@@ -691,9 +830,9 @@ EOT;
 	
 	function subscribe_url()
 	{
-		if (!empty($this->rss_url))
+		if (!empty($this->feed_url))
 		{
-			return $this->rss_url;
+			return $this->feed_url;
 		}
 		else
 		{
@@ -703,9 +842,9 @@ EOT;
 	
 	function subscribe_feed()
 	{
-		if (!empty($this->rss_url))
+		if (!empty($this->feed_url))
 		{
-			return SimplePie_Misc::fix_protocol($this->rss_url, 2);
+			return SimplePie_Misc::fix_protocol($this->feed_url, 2);
 		}
 		else
 		{
@@ -715,9 +854,9 @@ EOT;
 	
 	function subscribe_outlook()
 	{
-		if (!empty($this->rss_url))
+		if (!empty($this->feed_url))
 		{
-			return 'outlook' . SimplePie_Misc::fix_protocol($this->rss_url, 2);
+			return 'outlook' . SimplePie_Misc::fix_protocol($this->feed_url, 2);
 		}
 		else
 		{
@@ -727,9 +866,9 @@ EOT;
 	
 	function subscribe_podcast()
 	{
-		if (!empty($this->rss_url))
+		if (!empty($this->feed_url))
 		{
-			return SimplePie_Misc::fix_protocol($this->rss_url, 3);
+			return SimplePie_Misc::fix_protocol($this->feed_url, 3);
 		}
 		else
 		{
