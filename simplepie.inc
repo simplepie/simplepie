@@ -2310,10 +2310,11 @@ class SimplePie_File
 			{
 				$headers = array();
 			}
-			if (extension_loaded('curl') && version_compare(SimplePie_Misc::get_curl_version(), '7.10', '>=') && !$force_fsockopen)
+			if (extension_loaded('curl') && version_compare(SimplePie_Misc::get_curl_version(), '7.10.5', '>=') && !$force_fsockopen)
 			{
 				$this->method = 'curl';
 				$fp = curl_init();
+				$fp_ok = true;
 				$headers2 = array();
 				foreach ($headers as $key => $value)
 				{
@@ -2336,11 +2337,18 @@ class SimplePie_File
 				$this->headers = trim(curl_exec($fp));
 				if (curl_errno($fp))
 				{
-					$this->error = 'cURL error: ' . curl_error($fp);
-					$this->success = false;
-					return false;
+					curl_setopt($fp, CURLOPT_ENCODING, 'none');
+					$this->headers = trim(curl_exec($fp));
+					if (curl_errno($fp))
+					{
+						$this->error = 'cURL error: ' . curl_error($fp);
+						$this->success = false;
+						$fp_ok = false;
+						return false;
+					}
 				}
-				else
+
+				if ($fp_ok)
 				{
 					$info = curl_getinfo($fp);
 					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 2);

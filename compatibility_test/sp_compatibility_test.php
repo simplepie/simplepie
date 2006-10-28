@@ -35,7 +35,7 @@ function get_curl_version()
 $php_ok = (function_exists('version_compare') && ((version_compare(phpversion(), '4.3.2', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.0.3', '>=')));
 $xml_ok = extension_loaded('xml');
 $pcre_ok = extension_loaded('pcre');
-$curl_ok = (extension_loaded('curl') && version_compare(get_curl_version(), '7.10', '>='));
+$curl_ok = (extension_loaded('curl') && version_compare(get_curl_version(), '7.10.5', '>='));
 $zlib_ok = extension_loaded('zlib');
 $mbstring_ok = extension_loaded('mbstring');
 $iconv_ok = extension_loaded('iconv');
