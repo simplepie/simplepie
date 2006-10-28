@@ -263,7 +263,7 @@ function fnLoadPngs() {
 							<?php if ($pcre_ok): ?>
 								<li><strong>PCRE:</strong> You have PCRE support installed. <em>No problems here.</em></li>
 								<?php if ($curl_ok): ?>
-									<li><strong>cURL:</strong> You have <code>cURL</code> 7.10 or newer installed.  <em>No problems here.</em></li>
+									<li><strong>cURL:</strong> You have <code>cURL</code> 7.10.5 or newer installed.  <em>No problems here.</em></li>
 								<?php else: ?>
 									<li><strong>cURL:</strong> The <code>cURL</code> extension is either not available, or is an unsupported version.  SimplePie will use <code>fsockopen</code> instead.</li>
 								<?php endif; ?>
