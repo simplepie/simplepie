@@ -42,7 +42,7 @@ class SimplePie
 	 * @var int SimplePie Build
 	 * @access protected
 	 */
-	var $build = 20061027;
+	var $build = 20061028;
 	
 	/**
 	 * @var string SimplePie Website URL
@@ -540,7 +540,7 @@ EOT;
 							$cache = false;
 						}
 						// If we've got a feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL
-						else if (!empty($this->data['feed_url']))
+						else if (!empty($this->data['feed_url']) && $this->data['feed_url'] != $this->data['url'])
 						{
 							$this->set_feed_url($this->data['feed_url']);
 							return $this->init();
