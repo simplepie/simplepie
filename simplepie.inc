@@ -2314,7 +2314,6 @@ class SimplePie_File
 			{
 				$this->method = 'curl';
 				$fp = curl_init();
-				$fp_ok = true;
 				$headers2 = array();
 				foreach ($headers as $key => $value)
 				{
@@ -2335,39 +2334,34 @@ class SimplePie_File
 				}
 
 				$this->headers = trim(curl_exec($fp));
-				if (curl_errno($fp))
+				if (curl_errno($fp) == 61)
 				{
 					curl_setopt($fp, CURLOPT_ENCODING, 'none');
 					$this->headers = trim(curl_exec($fp));
-					if (curl_errno($fp))
-					{
-						$this->error = 'cURL error: ' . curl_error($fp);
-						$this->success = false;
-						$fp_ok = false;
-						return false;
-					}
 				}
-
-				if ($fp_ok)
+				if (curl_errno($fp))
 				{
-					$info = curl_getinfo($fp);
-					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 2);
-					if (count($this->headers) == $info['redirect_count'] + 1)
-					{
-						$this->headers = array_pop($this->headers);
-						$this->body = '';
-					}
-					else
-					{
-						$this->body = array_pop($this->headers);
-						$this->headers = array_pop($this->headers);
-					}
-					$this->headers = $this->parse_headers($this->headers);
-					if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
-					{
-						$this->redirects++;
-						return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
-					}
+					$this->error = 'cURL error: ' . curl_error($fp);
+					$this->success = false;
+					return false;
+				}
+				$info = curl_getinfo($fp);
+				$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 2);
+				if (count($this->headers) == $info['redirect_count'] + 1)
+				{
+					$this->headers = array_pop($this->headers);
+					$this->body = '';
+				}
+				else
+				{
+					$this->body = array_pop($this->headers);
+					$this->headers = array_pop($this->headers);
+				}
+				$this->headers = $this->parse_headers($this->headers);
+				if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
+				{
+					$this->redirects++;
+					return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 				}
 			}
 			else
