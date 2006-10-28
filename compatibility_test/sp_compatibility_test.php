@@ -228,7 +228,7 @@ function fnLoadPngs() {
 					</tr>
 					<tr class="<?php echo ($curl_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/curl">cURL</a></td>
-						<td>7.10</td>
+						<td>7.10.5</td>
 						<td><?php echo get_curl_version(); ?></td>
 					</tr>
 					<tr class="<?php echo ($zlib_ok) ? 'enabled' : 'disabled'; ?>">
