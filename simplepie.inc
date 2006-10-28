@@ -11,16 +11,18 @@
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @link http://simplepie.org/ SimplePie
- * @link http://simplepie.org/support/ Please submit all bug reports and feature requests to the SimplePie forums.
+ * @link http://simplepie.org/support/ Please submit all bug reports and feature requests to the SimplePie forums
  * @license http://opensource.org/licenses/lgpl-license.php GNU Lesser General Public License
  */
 
 /**
  * SimplePie
- *
- * Main class of SimplePie
- *
+ * 
  * @package SimplePie
+ * @version "Razzleberry"
+ * @copyright 2004-2006 Ryan Parman, Geoffrey Sneddon
+ * @author Ryan Parman
+ * @author Geoffrey Sneddon
  */
 class SimplePie
 {
@@ -50,7 +52,7 @@ class SimplePie
 	
 	/**
 	 * @var string SimplePie Useragent
-	 * @see set_useragent
+	 * @see SimplePie::set_useragent()
 	 * @access protected
 	 */
 	var $useragent;
@@ -75,112 +77,112 @@ class SimplePie
 	
 	/**
 	 * @var object Instance of SimplePie_Sanitize (or other class)
-	 * @see set_sanitize_class
+	 * @see SimplePie::set_sanitize_class()
 	 * @access private
 	 */
 	var $sanitize;
 	
 	/**
 	 * @var string Feed URL
-	 * @see set_feed_url
+	 * @see SimplePie::set_feed_url()
 	 * @access private
 	 */
 	var $feed_url;
 	
 	/**
 	 * @var object SimplePie_File of feed
-	 * @see set_file
+	 * @see SimplePie::set_file()
 	 * @access private
 	 */
 	var $file;
 	
 	/**
 	 * @var int Timeout (used for fetching external files)
-	 * @see set_timeout
+	 * @see SimplePie::set_timeout()
 	 * @access private
 	 */
 	var $timeout = 10;
 	
 	/**
 	 * @var bool Force fsockopen() (instead of cURL for fetching external files)
-	 * @see set_force_fsockopen
+	 * @see SimplePie::set_force_fsockopen()
 	 * @access private
 	 */
 	var $force_fsockopen = false;
 	
 	/**
 	 * @var bool Enable/Disable XML dump
-	 * @see set_xml_dump
+	 * @see SimplePie::set_xml_dump()
 	 * @access private
 	 */
 	var $xml_dump = false;
 	
 	/**
 	 * @var bool Enable/Disable Caching
-	 * @see set_cache
+	 * @see SimplePie::set_cache()
 	 * @access private
 	 */
 	var $cache = true;
 	
 	/**
 	 * @var float Cache duration (in minutes)
-	 * @see set_cache_duration
+	 * @see SimplePie::set_cache_duration()
 	 * @access private
 	 */
 	var $cache_duration = 60;
 	
 	/**
 	 * @var string Cache location (relative to executing script)
-	 * @see set_cache_location
+	 * @see SimplePie::set_cache_location()
 	 * @access private
 	 */
 	var $cache_location = './cache';
 	
 	/**
 	 * @var string Function that creates the cache filename
-	 * @see set_cache_name_type
+	 * @see SimplePie::set_cache_name_type()
 	 * @access private
 	 */
 	var $cache_name_type = 'sha1';
 	
 	/**
 	 * @var bool Reorder feed by date descending
-	 * @see set_order_by_date
+	 * @see SimplePie::set_order_by_date()
 	 * @access private
 	 */
 	var $order_by_date = true;
 	
 	/**
 	 * @var mixed Force input encoding to be set to the follow value (false, or anything type-cast to false, disables this feature)
-	 * @see set_input_encoding
+	 * @see SimplePie::set_input_encoding()
 	 * @access private
 	 */
 	var $input_encoding = false;
 	
 	/**
 	 * @var string Class used for caching feeds
-	 * @see set_cache_class
+	 * @see SimplePie::set_cache_class()
 	 * @access private
 	 */
 	var $cache_class = 'SimplePie_Cache';
 	
 	/**
 	 * @var string Class used for locating feeds
-	 * @see set_locator_class
+	 * @see SimplePie::set_locator_class()
 	 * @access private
 	 */
 	var $locator_class = 'SimplePie_Locator';
 	
 	/**
 	 * @var string Class used for parsing feeds
-	 * @see set_parser_class
+	 * @see SimplePie::set_parser_class()
 	 * @access private
 	 */
 	var $parser_class = 'SimplePie_Parser';
 	
 	/**
 	 * @var string Class used for fetching feeds
-	 * @see set_file_class
+	 * @see SimplePie::set_file_class()
 	 * @access private
 	 */
 	var $file_class = 'SimplePie_File';
@@ -232,18 +234,36 @@ class SimplePie
 		}
 	}
 	
+	/**
+	 * Sets the feed URL
+	 *
+	 * @access public
+	 * @param string $url Feed URL
+	 * @return string Parsed Feed URL
+	 */
 	function set_feed_url($url)
 	{
-		$this->feed_url = SimplePie_Misc::fix_protocol($url, 1);
+		return $this->feed_url = SimplePie_Misc::fix_protocol($url, 1);
 	}
 	
+	/**
+	 * Provides an instance of SimplePie_File (or subclass) to use as
+	 * the feed
+	 *
+	 * @access public
+	 * @param object &$file Instance of SimplePie_File (or subclass)
+	 * @return bool True if $file is a instance of SimplePie_File (or a
+	 * subclass thereof), otherwise false
+	 */
 	function set_file(&$file)
 	{
 		if (is_a($file, 'SimplePie_File'))
 		{
 			$this->feed_url = $file->url;
 			$this->file =& $file;
+			return true;
 		}
+		return false;
 	}
 	
 	function set_timeout($timeout = 10)
