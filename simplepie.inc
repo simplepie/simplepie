@@ -140,10 +140,10 @@ class SimplePie
 	
 	/**
 	 * @var string Function that creates the cache filename
-	 * @see SimplePie::set_cache_name_type()
+	 * @see SimplePie::set_cache_name_function()
 	 * @access private
 	 */
-	var $cache_name_type = 'sha1';
+	var $cache_name_function = 'sha1';
 	
 	/**
 	 * @var bool Reorder feed by date descending
@@ -373,29 +373,29 @@ class SimplePie
 		$this->force_fsockopen = (bool) $enable;
 	}
 	
-	function set_cache_name_type($type = 'sha1')
+	function set_cache_name_function($function = 'sha1')
 	{
-		$type = strtolower(trim($type));
-		switch ($type)
+		$function = strtolower(trim($function));
+		switch ($function)
 		{
 			case 'crc32':
-				$this->cache_name_type = 'crc32';
+				$this->cache_name_function = 'crc32';
 				break;
 			
 			case 'md5':
-				$this->cache_name_type = 'md5';
+				$this->cache_name_function = 'md5';
 				break;
 			
 			case 'rawurlencode':
-				$this->cache_name_type = 'rawurlencode';
+				$this->cache_name_function = 'rawurlencode';
 				break;
 			
 			case 'urlencode':
-				$this->cache_name_type = 'urlencode';
+				$this->cache_name_function = 'urlencode';
 				break;
 			
 			default:
-				$this->cache_name_type = 'sha1';
+				$this->cache_name_function = 'sha1';
 				break;
 		}
 	}
@@ -525,7 +525,7 @@ EOT;
 				// Decide whether to enable caching
 				if ($this->cache && preg_match('/^http(s)?:\/\//i', $this->feed_url))
 				{
-					$cache = new $this->cache_class($this->cache_location, call_user_func($this->cache_name_type, $this->feed_url), 'spc');
+					$cache = new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
 				}
 				// If it's enabled and we don't want an XML dump, use the cache
 				if ($cache && !$this->xml_dump)
