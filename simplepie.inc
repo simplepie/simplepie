@@ -2466,6 +2466,7 @@ class SimplePie_File
 					}
 				}
 			}
+			register_shutdown_function(array($this, 'close'));
 			return $this->headers['status']['code'];
 		}
 		else
@@ -2473,6 +2474,7 @@ class SimplePie_File
 			$this->method = 'fopen';
 			if ($this->fp = fopen($url, 'r'))
 			{
+				register_shutdown_function(array($this, 'close'));
 				return true;
 			}
 			else
@@ -3743,6 +3745,40 @@ class SimplePie_Misc
 		else
 		{
 			return false;
+		}
+	}
+	
+	function replace_num_entity($code)
+	{
+		$code = preg_replace('/^&#(.*);$/s', '\\1', $code);
+		if (preg_match('/^x([0-9a-f]+)$/i', $code, $match))
+		{
+			$code = hexdec($match[1]);
+		}
+		else
+		{
+			$code = (int) $code;
+		}
+		
+		if ($code < 128)
+		{
+			return chr($code);
+		}
+		else if ($code < 2048)
+		{
+			return chr(($code >> 6) + 192) . chr(($code & 63) + 128);
+		}
+		else if ($code < 65536)
+		{
+			return chr(($code >> 12) + 224) . chr((($code >> 6) & 63) + 128) . chr(($code & 63) + 128);
+		}
+		else if ($code < 2097152)
+		{
+			return chr($code >> 18 + 240) . chr((($code >> 12) & 63) + 128) . chr(($code >> 6) & 63 + 128) . chr($code & 63 + 128);
+		}
+		else
+		{
+			return null;
 		}
 	}
 }
@@ -5396,10 +5432,10 @@ class SimplePie_Sanitize
 	
 	function entities_decode($data)
 	{
-		return preg_replace_callback('/&(#)?(x)?([0-9a-z]+);/mi', array(&$this, 'do_entites_decode'), $data);
+		return preg_replace_callback('/&(#)?(x)?([0-9a-z]+);/mi', array(&$this, 'do_entities_decode'), $data);
 	}
 	
-	function do_entites_decode($data)
+	function do_entities_decode($data)
 	{
 		if (isset($this->cached_entities[$data[0]]))
 		{
@@ -5410,7 +5446,7 @@ class SimplePie_Sanitize
 			$return = SimplePie_Misc::change_encoding(html_entity_decode($data[0], ENT_QUOTES), 'ISO-8859-1', $this->input_encoding);
 			if ($return == $data[0])
 			{
-				$return = SimplePie_Misc::change_encoding(preg_replace_callback('/&#([x]?[0-9a-f]+);/mi', array(&$this, 'replace_num_entity'), $data[0]), 'UTF-8', $this->input_encoding);
+				$return = SimplePie_Misc::change_encoding(SimplePie_Misc::replace_num_entity($data[0]), 'UTF-8', $this->input_encoding);
 			}
 			$this->cached_entities[$data[0]] = $return;
 			return $return;
@@ -5430,87 +5466,14 @@ class SimplePie_Sanitize
 		}
 		else if (isset($this->cached_entities[$data[0]]))
 		{
-			$return = htmlentities($this->cached_entities[$data[0]], ENT_QUOTES, 'UTF-8');
+			$return = SimplePie_Misc::change_encoding(htmlentities($this->cached_entities[$data[0]], ENT_QUOTES, 'UTF-8'), 'UTF-8', $this->input_encoding);
 		}
 		else
 		{
-			$return = htmlentities(preg_replace_callback('/&#([x]?[0-9a-f]+);/mi', array(&$this, 'replace_num_entity'), $data[0]), ENT_QUOTES, 'UTF-8');
+			$return = SimplePie_Misc::change_encoding(htmlentities(SimplePie_Misc::replace_num_entity($data[0]), ENT_QUOTES, 'UTF-8'), 'UTF-8', $this->input_encoding);
 		}
 		$this->cache_convert_entities[$data[0]] = $return;
 		return $return;
-	}
-
-	/*
-	 * Escape numeric entities
-	 * From a PHP Manual note (on html_entity_decode())
-	 * Copyright (c) 2005 by "php dot net at c dash ovidiu dot tk", 
-	 * "emilianomartinezluque at yahoo dot com" and "hurricane at cyberworldz dot org".
-	 *
-	 * This material may be distributed only subject to the terms and conditions set forth in 
-	 * the Open Publication License, v1.0 or later (the latest version is presently available at 
-	 * http://www.opencontent.org/openpub/).
-	 */
-	function replace_num_entity($ord)
-	{
-		$ord = $ord[1];
-		if (preg_match('/^x([0-9a-f]+)$/i', $ord, $match))
-		{
-			$ord = hexdec($match[1]);
-		}
-		else
-		{
-			$ord = intval($ord);
-		}
-		
-		$no_bytes = 0;
-		$byte = array();
-		if ($ord < 128)
-		{
-			return chr($ord);
-		}
-		if ($ord < 2048)
-		{
-			$no_bytes = 2;
-		}
-		else if ($ord < 65536)
-		{
-			$no_bytes = 3;
-		}
-		else if ($ord < 1114112)
-		{
-			$no_bytes = 4;
-		}
-		else
-		{
-			return;
-		}
-		switch ($no_bytes)
-		{
-			case 2:
-				$prefix = array(31, 192);
-				break;
-				
-			case 3:
-				$prefix = array(15, 224);
-				break;
-				
-			case 4:
-				$prefix = array(7, 240);
-				break;
-		}
-		
-		for ($i = 0; $i < $no_bytes; $i++)
-		{
-			$byte[$no_bytes-$i-1] = (($ord & (63 * pow(2,6*$i))) / pow(2,6*$i)) & 63 | 128;
-		}
-		$byte[0] = ($byte[0] & $prefix[0]) | $prefix[1];
-		
-		$ret = '';
-		for ($i = 0; $i < $no_bytes; $i++)
-		{
-			$ret .= chr($byte[$i]);
-		}
-		return $ret;
 	}
 	
 	function parse_date($date)
