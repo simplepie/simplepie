@@ -42,7 +42,7 @@ class SimplePie
 	 * @var int SimplePie Build
 	 * @access protected
 	 */
-	var $build = 20061028;
+	var $build = 20061030;
 	
 	/**
 	 * @var string SimplePie Website URL
@@ -1598,6 +1598,40 @@ class SimplePie_Item
 			return false;
 		}
 	}
+	
+	function get_latitude()
+	{
+	    if (!empty($this->data['geo:lat']))
+		{
+			return $this->data['geo:lat'];
+		}
+		else if (!empty($this->data['georss:point']))
+		{
+		    list($latitude, $longitude) = explode(' ', trim($this->data['georss:point']));
+		    return $latitude;
+	    }
+	    else
+		{
+			return false;
+		}
+    }
+    
+    function get_longitude()
+    {
+	    if (!empty($this->data['geo:long']))
+		{
+			return $this->data['geo:long'];
+		}
+		else if (!empty($this->data['georss:point']))
+		{
+		    list($latitude, $longitude) = explode(' ', trim($this->data['georss:point']));
+		    return $longitude;
+	    }
+	    else
+		{
+			return false;
+		}
+    }
 	
 	function add_to_blinklist()
 	{
@@ -3921,7 +3955,7 @@ class SimplePie_Parser
 {	
 	var $encoding;
 	var $data;
-	var $namespaces = array('xml' => 'HTTP://WWW.W3.ORG/XML/1998/NAMESPACE', 'atom' => 'ATOM', 'rss2' => 'RSS', 'rdf' => 'RDF', 'rss1' => 'RSS', 'dc' => 'DC', 'xhtml' => 'XHTML', 'content' => 'CONTENT');
+	var $namespaces = array('xml' => 'HTTP://WWW.W3.ORG/XML/1998/NAMESPACE', 'atom' => 'ATOM', 'rss2' => 'RSS', 'rdf' => 'RDF', 'rss1' => 'RSS', 'dc' => 'DC', 'xhtml' => 'XHTML', 'content' => 'CONTENT', 'geo' => 'GEO', 'georss' => 'GEORSS');
 	var $xml;
 	var $error_code;
 	var $error_string;
@@ -4278,6 +4312,18 @@ class SimplePie_Parser
 				case $this->namespaces['rss2'] . ':AUTHOR':
 					$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['rss'], $data);
 					break;
+					
+		        case $this->namespaces['geo'] . ':LAT':
+    				$this->do_add_content($this->data['items'][$this->item_number]['geo:lat'], $data);
+    				break;
+
+    			case $this->namespaces['geo'] . ':LONG':
+				    $this->do_add_content($this->data['items'][$this->item_number]['geo:long'], $data);
+				    break;
+				    
+				case $this->namespaces['georss'] . ':POINT':
+        			$this->do_add_content($this->data['items'][$this->item_number]['georss:point'], $data);
+        			break;
 			}
 
 			if ($this->inside_author)
@@ -4510,6 +4556,14 @@ class SimplePie_Parser
 		{
 			$this->namespaces['content'] = $uri;
 		}
+		else if ($prefix == 'GEO' || $uri == 'HTTP://WWW.W3.ORG/2003/01/GEO/WGS84_pos#')
+		{
+			$this->namespaces['geo'] = $uri;
+		}
+		else if ($prefix == 'GEORSS' || $uri == 'HTTP://WWW.GEORSS.ORG/GEORSS')
+		{
+			$this->namespaces['georss'] = $uri;
+		}
 	}
 	
 	function end_name_space($parser, $prefix)
@@ -4544,6 +4598,14 @@ class SimplePie_Parser
 			else if ($key == 'content')
 			{
 				$this->namespaces['content'] = 'CONTENT';
+			}
+			else if ($key == 'geo')
+			{
+				$this->namespaces['geo'] = 'GEO';
+			}
+			else if ($key == 'georss')
+			{
+				$this->namespaces['georss'] = 'GEORSS';
 			}
 		}
 	}
@@ -5107,6 +5169,21 @@ class SimplePie_Sanitize
 						$newitem['author'][] = new $this->author_class($name, $link, $email);
 					}
 				}
+				
+				// Geo
+				if (!empty($item['geo:lat']['data']))
+				{
+					$newitem['geo:lat'] = $this->sanitize($item['geo:lat']['data'], $item['geo:lat']['attribs']);
+				}
+				if (!empty($item['geo:long']['data']))
+				{
+					$newitem['geo:long'] = $this->sanitize($item['geo:long']['data'], $item['geo:long']['attribs']);
+				}
+				if (!empty($item['georss:point']['data']))
+				{
+					$newitem['georss:point'] = $this->sanitize($item['georss:point']['data'], $item['georss:point']['attribs']);
+				}				
+				
 				unset($data['items'][$key]);
 				$this->items[] = new $this->item_class($newitem);
 			}
