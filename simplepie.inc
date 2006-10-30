@@ -2466,7 +2466,6 @@ class SimplePie_File
 					}
 				}
 			}
-			register_shutdown_function(array($this, 'close'));
 			return $this->headers['status']['code'];
 		}
 		else
@@ -2474,7 +2473,6 @@ class SimplePie_File
 			$this->method = 'fopen';
 			if ($this->fp = fopen($url, 'r'))
 			{
-				register_shutdown_function(array($this, 'close'));
 				return true;
 			}
 			else
