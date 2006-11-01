@@ -2866,7 +2866,7 @@ class SimplePie_Misc
 	
 	function display_file($url, $timeout = 10, $useragent = null)
 	{
-		$file = new SimplePie_File($url, $timeout, 5, null, $useragent);
+		$file = new SimplePie_File($url, $timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $useragent);
 		$headers = $file->headers();
 		if ($file->body() !== false)
 		{

@@ -108,7 +108,7 @@ form#sp_form input.text {
 	<h1><?php echo (empty($_GET['feed'])) ? 'SimplePie' : 'SimplePie: ' . $feed->get_feed_title(); ?></h1>
 
 	<form action="" method="get" name="sp_form" id="sp_form">
-		<p><input type="text" name="feed" value="<?php echo ($feed->subscribe_url()) ? $feed->subscribe_url() : 'http://'; ?>" class="text" id="feed_input" />&nbsp;<input type="submit" value="Read" class="button" /></p>
+		<p><input type="text" name="feed" value="<?php echo ($feed->subscribe_url()) ? htmlspecialchars($feed->subscribe_url()) : 'http://'; ?>" class="text" id="feed_input" />&nbsp;<input type="submit" value="Read" class="button" /></p>
 	</form>
 
 	<div id="sp_results">

@@ -80,7 +80,7 @@ $feed->handle_content_type();
 
 
 					<!-- If a feed has already been passed through the form, then make sure that the URL remains in the form field. -->
-					<p><strong>Feed URL:</strong>&nbsp;<input type="text" name="feed" value="<?php if ($feed->subscribe_url()) echo $feed->subscribe_url(); ?>" class="text" id="feed_input" />&nbsp;<input type="submit" value="Read" class="button" /></p>
+					<p><strong>Feed URL:</strong>&nbsp;<input type="text" name="feed" value="<?php if ($feed->subscribe_url()) echo htmlspecialchars($feed->subscribe_url()); ?>" class="text" id="feed_input" />&nbsp;<input type="submit" value="Read" class="button" /></p>
 
 
 				</div>
@@ -95,7 +95,7 @@ $feed->handle_content_type();
 				echo '<div class="sp_errors">' . "\r\n";
 
 					// ... and display it.
-					echo "<p>$feed->error</p>\r\n";
+					echo '<p>' . htmlspecialchars($feed->error) . "</p>\r\n";
 
 				// Close the <div> element we opened.
 				echo '</div>' . "\r\n";

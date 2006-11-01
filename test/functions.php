@@ -39,7 +39,7 @@ function test_output($file, $result, $expected) {
 
 function do_feed_title_test($file, $expected) {
 	$feed = new SimplePie();
-	$feed->feed_url($file);
+	$feed->set_feed_url($file);
 	$feed->remove_div(false);
 	$feed->init();
 	test_output($file, $feed->get_feed_title(), $expected);
@@ -47,7 +47,7 @@ function do_feed_title_test($file, $expected) {
 
 function do_first_item_title_test($file, $expected) {
 	$feed = new SimplePie();
-	$feed->feed_url($file);
+	$feed->set_feed_url($file);
 	$feed->remove_div(false);
 	$feed->init();
 	$item = $feed->get_item(0);
@@ -56,7 +56,7 @@ function do_first_item_title_test($file, $expected) {
 
 function do_first_item_author_name_test($file, $expected) {
 	$feed = new SimplePie();
-	$feed->feed_url($file);
+	$feed->set_feed_url($file);
 	$feed->remove_div(false);
 	$feed->init();
 	$item = $feed->get_item(0);
@@ -66,7 +66,7 @@ function do_first_item_author_name_test($file, $expected) {
 
 function do_first_item_content_test($file, $expected) {
 	$feed = new SimplePie();
-	$feed->feed_url($file);
+	$feed->set_feed_url($file);
 	$feed->remove_div(false);
 	$feed->init();
 	$item = $feed->get_item(0);
@@ -75,7 +75,7 @@ function do_first_item_content_test($file, $expected) {
 
 function do_first_item_link_test($file, $expected) {
 	$feed = new SimplePie();
-	$feed->feed_url($file);
+	$feed->set_feed_url($file);
 	$feed->remove_div(false);
 	$feed->init();
 	$item = $feed->get_item(0);
