@@ -42,7 +42,7 @@ class SimplePie
 	 * @var int SimplePie Build
 	 * @access protected
 	 */
-	var $build = 20061030;
+	var $build = 20061103;
 	
 	/**
 	 * @var string SimplePie Website URL
@@ -2507,7 +2507,7 @@ class SimplePie_File
 					$this->body = trim($this->body);
 					if ($this->method == 'fsockopen' && !empty($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
 					{
-						if (substr($this->body, 0, 10) == "\x1f\x8b\x08\x00\x00\x00\x00\x00")
+						if (substr($this->body, 0, 8) == "\x1f\x8b\x08\x00\x00\x00\x00\x00")
 						{
 							$this->body = substr($this->body, 10);
 						}
