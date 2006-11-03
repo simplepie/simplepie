@@ -2368,14 +2368,14 @@ class SimplePie_File
 				}
 
 				$this->headers = trim(curl_exec($fp));
-				if (curl_errno($fp) == 61)
+				if (curl_errno($fp) == 23 || curl_errno($fp) == 61)
 				{
 					curl_setopt($fp, CURLOPT_ENCODING, 'none');
 					$this->headers = trim(curl_exec($fp));
 				}
 				if (curl_errno($fp))
 				{
-					$this->error = 'cURL error: ' . curl_error($fp);
+					$this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
 					$this->success = false;
 					return false;
 				}
