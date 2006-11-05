@@ -16,6 +16,41 @@
  */
 
 /**
+ * No Autodiscovery
+ */
+define('SIMPLEPIE_LOCATER_NONE', 0);
+
+/**
+ * Feed Link-Element Autodiscovery
+ */
+define('SIMPLEPIE_LOCATER_AUTODISCOVERY', 1);
+
+/**
+ * Local Feed Extension Autodiscovery
+ */
+define('SIMPLEPIE_LOCATER_LOCAL_EXTENSION', 2);
+
+/**
+ * Local Feed Body Autodiscovery
+ */
+define('SIMPLEPIE_LOCATER_LOCAL_BODY', 4);
+
+/**
+ * Remote Feed Extension Autodiscovery
+ */
+define('SIMPLEPIE_LOCATER_REMOTE_EXTENSION', 8);
+
+/**
+ * Remote Feed Body Autodiscovery
+ */
+define('SIMPLEPIE_LOCATER_REMOTE_BODY', 16);
+
+/**
+ * All Feed Autodiscovery
+ */
+define('SIMPLEPIE_LOCATER_ALL', 31);
+
+/**
  * SimplePie
  * 
  * @package SimplePie
@@ -42,7 +77,7 @@ class SimplePie
 	 * @var int SimplePie Build
 	 * @access protected
 	 */
-	var $build = 20061103;
+	var $build = 20061105;
 	
 	/**
 	 * @var string SimplePie Website URL
@@ -158,6 +193,13 @@ class SimplePie
 	 * @access private
 	 */
 	var $input_encoding = false;
+	
+	/**
+	 * @var int Feed Autodiscovery Level
+	 * @see SimplePie::set_autodiscovery_level()
+	 * @access private
+	 */
+	var $autodiscovery = SIMPLEPIE_LOCATER_ALL;
 	
 	/**
 	 * @var string Class used for caching feeds
@@ -311,6 +353,19 @@ class SimplePie
 		{
 			$this->input_encoding = false;
 		}
+	}
+	
+	/**
+	 * Set how much feed autodiscovery to do
+	 *
+	 * @access public
+	 * @param int $level Feed Autodiscovery Level (use SIMPLEPIE_LOCATER
+	 * constants, with bitwise OR operator)
+	 * @return int $level cast to an int, if it wasn't already an int
+	 */
+	function set_autodiscovery_level($level = SIMPLEPIE_LOCATER_ALL)
+	{
+		return $this->autodiscovery = (int) $level;
 	}
 	
 	function set_cache_class($class = 'SimplePie_Cache')
@@ -624,16 +679,19 @@ EOT;
 				$locate = new $this->locator_class($file, $this->timeout, $this->useragent);
 				if (!$locate->is_feed($file))
 				{
-					$feed = $locate->find();
-					if ($feed)
+					$file = $locate->find($this->autodiscovery);
+					if ($file)
 					{
-						if ($cache && !$cache->save(array('url' => $this->feed_url, 'feed_url' => $feed)))
+						if ($cache)
 						{
-							$this->error = "$cache->name is not writeable";
-							SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+							if (!$cache->save(array('url' => $this->feed_url, 'feed_url' => $file->url)))
+							{
+								$this->error = "$cache->name is not writeable";
+								SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+							}
+							$cache = new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
 						}
-						$this->feed_url = $feed;
-						return $this->init();
+						$this->feed_url = $file->url;
 					}
 					else
 					{
@@ -3786,68 +3844,75 @@ class SimplePie_Locator
 	var $useragent;
 	var $timeout;
 	var $file;
-	var $local;
-	var $elsewhere;
+	var $local = array();
+	var $elsewhere = array();
 	var $file_class = 'SimplePie_File';
 	
 	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File')
 	{
-		if (!is_a($file, 'SimplePie_File'))
-		{
-			$this->file = new $this->file_class($file, $timeout, $useragent);
-		}
-		else
-		{
-			$this->file =& $file;
-		}
+		$this->file =& $file;
 		$this->file_class = $file_class;
 		$this->useragent = $useragent;
 		$this->timeout = $timeout;
 	}
-		
 	
-	function find()
+	function find($type = SIMPLEPIE_LOCATER_ALL)
 	{		
 		if ($this->is_feed($this->file))
 		{
 			return $this->file->url;
 		}
 		
-		$autodiscovery = $this->autodiscovery($this->file);
-		if ($autodiscovery)
+		if ($type & SIMPLEPIE_LOCATER_AUTODISCOVERY)
 		{
-			return $autodiscovery;
+			$working = $this->autodiscovery($this->file);
+			if ($working)
+			{
+				return $working;
+			}
 		}
 		
-		if ($this->get_links($this->file))
+		if ($type & SIMPLEPIE_LOCATER_LOCAL_EXTENSION | SIMPLEPIE_LOCATER_LOCAL_BODY | SIMPLEPIE_LOCATER_REMOTE_EXTENSION | SIMPLEPIE_LOCATER_REMOTE_BODY && $this->get_links($this->file))
 		{
 			if (!empty($this->local))
 			{
-				$extension_local = $this->extension($this->local);
-				if ($extension_local)
+				if ($type & SIMPLEPIE_LOCATER_LOCAL_EXTENSION)
 				{
-					return $extension_local;
+					$working = $this->extension($this->local);
+					if ($working)
+					{
+						return $working;
+					}
 				}
 			
-				$body_local = $this->body($this->local);
-				if ($body_local)
+				if ($type & SIMPLEPIE_LOCATER_LOCAL_BODY)
 				{
-					return $body_local;
+					$working = $this->body($this->local);
+					if ($working)
+					{
+						return $working;
+					}
 				}
 			}
 			
 			if (!empty($this->elsewhere))
 			{
-				$extension_elsewhere = $this->extension($this->elsewhere);
-				if ($extension_elsewhere)
+				if ($type & SIMPLEPIE_LOCATER_REMOTE_EXTENSION)
 				{
-					return $extension_elsewhere;
+					$working = $this->extension($this->elsewhere);
+					if ($working)
+					{
+						return $working;
+					}
 				}
-				
-				$body_elsewhere = $this->body($this->elsewhere);
-				if ($body_elsewhere)
+			
+				if ($type & SIMPLEPIE_LOCATER_REMOTE_BODY)
 				{
-					return $body_elsewhere;
+					$working = $this->body($this->elsewhere);
+					if ($working)
+					{
+						return $working;
+					}
 				}
 			}
 		}
@@ -3856,24 +3921,7 @@ class SimplePie_Locator
 	
 	function is_feed(&$file)
 	{
-		if (!is_a($file, 'SimplePie_File'))
-		{
-			if (isset($this))
-			{
-				$file2 = new $this->file_class($file, $this->timeout, 5, null, $this->useragent);
-			}
-			else
-			{
-				$file2 = new $this->file_class($file);
-			}
-			$file2->body();
-			$file2->close();
-		}
-		else
-		{
-			$file2 =& $file;
-		}
-		$body = preg_replace('/<\!-(.*)-\>/msiU', '', $file2->body());
+		$body = preg_replace('/<\!-(.*)-\>/msiU', '', $file->body());
 		if (preg_match('/<(\w+\:)?rss/msiU', $body) || preg_match('/<(\w+\:)?RDF/mi', $body) || preg_match('/<(\w+\:)?feed/mi', $body))
 		{
 			return true;
@@ -3894,10 +3942,10 @@ class SimplePie_Locator
 				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
 				if (!in_array($href, $done) && in_array('alternate', $rel) && $type)
 				{
-					$feed = $this->is_feed($href);
-					if ($feed)
+					$feed = new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
+					if ($this->is_feed($feed))
 					{
-						return $href;
+						return $feed;
 					}
 				}
 				$done[] = $href;
@@ -3915,7 +3963,7 @@ class SimplePie_Locator
 			{
 				$href = trim($link['attribs']['HREF']['data']);
 				$parsed = SimplePie_Misc::parse_url($href);
-				if (empty($parsed['scheme']) || $parsed['scheme'] != 'javascript')
+				if (empty($parsed['scheme']) || preg_match('/^http(s)?$/i', $parsed['scheme']))
 				{
 					$current = SimplePie_Misc::parse_url($this->file->url);
 					if (empty($parsed['authority']) || $parsed['authority'] == $current['authority'])
@@ -3929,14 +3977,8 @@ class SimplePie_Locator
 				}
 			}
 		}
-		if (!empty($this->local))
-		{
-			$this->local = array_unique($this->local);
-		}
-		if (!empty($this->elsewhere))
-		{
-			$this->elsewhere = array_unique($this->elsewhere);
-		}
+		$this->local = array_unique($this->local);
+		$this->elsewhere = array_unique($this->elsewhere);
 		if (!empty($this->local) || !empty($this->elsewhere))
 		{
 			return true;
@@ -3949,11 +3991,12 @@ class SimplePie_Locator
 		foreach ($array as $key => $value)
 		{
 			$value = SimplePie_Misc::absolutize_url($value, $this->file->url);
-			if (in_array(strrchr($value, '.'), array('.rss', '.rdf', '.atom', '.xml')))
+			if (in_array(strtolower(strrchr($value, '.')), array('.rss', '.rdf', '.atom', '.xml')))
 			{
-				if ($this->is_feed($value))
+				$feed = new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
+				if ($this->is_feed($feed))
 				{
-					return $value;
+					return $feed;
 				}
 				else
 				{
@@ -3971,9 +4014,10 @@ class SimplePie_Locator
 			$value = SimplePie_Misc::absolutize_url($value, $this->file->url);
 			if (preg_match('/(rss|rdf|atom|xml)/i', $value))
 			{
-				if ($this->is_feed($value))
+				$feed = new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
+				if ($this->is_feed($feed))
 				{
-					return $value;
+					return $feed;
 				}
 				else
 				{
