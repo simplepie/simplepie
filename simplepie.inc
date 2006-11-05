@@ -17,36 +17,43 @@
 
 /**
  * No Autodiscovery
+ * @see SimplePie::set_set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_NONE', 0);
 
 /**
- * Feed Link-Element Autodiscovery
+ * Feed Link Element Autodiscovery
+ * @see SimplePie::set_set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_AUTODISCOVERY', 1);
 
 /**
  * Local Feed Extension Autodiscovery
+ * @see SimplePie::set_set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_LOCAL_EXTENSION', 2);
 
 /**
  * Local Feed Body Autodiscovery
+ * @see SimplePie::set_set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_LOCAL_BODY', 4);
 
 /**
  * Remote Feed Extension Autodiscovery
+ * @see SimplePie::set_set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_REMOTE_EXTENSION', 8);
 
 /**
  * Remote Feed Body Autodiscovery
+ * @see SimplePie::set_set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_REMOTE_BODY', 16);
 
 /**
  * All Feed Autodiscovery
+ * @see SimplePie::set_set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_ALL', 31);
 
@@ -359,6 +366,13 @@ class SimplePie
 	 * Set how much feed autodiscovery to do
 	 *
 	 * @access public
+	 * @see SIMPLEPIE_LOCATER_NONE
+	 * @see SIMPLEPIE_LOCATER_AUTODISCOVERY
+	 * @see SIMPLEPIE_LOCATER_LOCAL_EXTENSION
+	 * @see SIMPLEPIE_LOCATER_LOCAL_BODY
+	 * @see SIMPLEPIE_LOCATER_REMOTE_EXTENSION
+	 * @see SIMPLEPIE_LOCATER_REMOTE_BODY
+	 * @see SIMPLEPIE_LOCATER_ALL
 	 * @param int $level Feed Autodiscovery Level (use SIMPLEPIE_LOCATER
 	 * constants, with bitwise OR operator)
 	 * @return int $level cast to an int, if it wasn't already an int
