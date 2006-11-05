@@ -17,43 +17,43 @@
 
 /**
  * No Autodiscovery
- * @see SimplePie::set_set_autodiscovery_level()
+ * @see SimplePie::set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_NONE', 0);
 
 /**
  * Feed Link Element Autodiscovery
- * @see SimplePie::set_set_autodiscovery_level()
+ * @see SimplePie::set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_AUTODISCOVERY', 1);
 
 /**
  * Local Feed Extension Autodiscovery
- * @see SimplePie::set_set_autodiscovery_level()
+ * @see SimplePie::set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_LOCAL_EXTENSION', 2);
 
 /**
  * Local Feed Body Autodiscovery
- * @see SimplePie::set_set_autodiscovery_level()
+ * @see SimplePie::set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_LOCAL_BODY', 4);
 
 /**
  * Remote Feed Extension Autodiscovery
- * @see SimplePie::set_set_autodiscovery_level()
+ * @see SimplePie::set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_REMOTE_EXTENSION', 8);
 
 /**
  * Remote Feed Body Autodiscovery
- * @see SimplePie::set_set_autodiscovery_level()
+ * @see SimplePie::set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_REMOTE_BODY', 16);
 
 /**
  * All Feed Autodiscovery
- * @see SimplePie::set_set_autodiscovery_level()
+ * @see SimplePie::set_autodiscovery_level()
  */
 define('SIMPLEPIE_LOCATER_ALL', 31);
 
