@@ -84,7 +84,7 @@ class SimplePie
 	 * @var int SimplePie Build
 	 * @access protected
 	 */
-	var $build = 20061105;
+	var $build = 20061106;
 	
 	/**
 	 * @var string SimplePie Website URL
@@ -5318,7 +5318,7 @@ class SimplePie_Sanitize
 			$data = $this->entities_decode($data);
 		}
 		$data = trim($data);
-		$data = preg_replace('/<\!--([^-]|-[^-])*-->/msiU', '', $data);
+		$data = preg_replace('/<\!--(?:[^-]|-[^-])*-->/', '', $data);
 
 		// If Strip Ads is enabled, strip them.
 		if ($this->strip_ads)
