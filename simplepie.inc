@@ -3851,6 +3851,34 @@ class SimplePie_Misc
 			return null;
 		}
 	}
+	
+	/**
+	 * Strip HTML comments
+	 */
+	function strip_comments($data, $output = '')
+	{
+		while (strpos($data, '<!--') !== 0 && strlen($data) > 0)
+		{
+			$output .= substr($data, 0, 1);
+			$data = substr_replace($data, '', 0, 1);
+		}
+		if (strpos($data, '<!--') === 0)
+		{
+			while (strpos($data, '-->') !== 0 && strlen($data) > 0)
+			{
+				$data = substr_replace($data, '', 0, 1);
+			}
+			if (strpos($data, '-->') === 0)
+			{
+				$data = substr_replace($data, '', 0, 3);
+			}
+			if (strlen($data) > 0)
+			{
+				return SimplePie_Misc::strip_comments($data, $output);
+			}
+		}
+		return $output;
+	}
 }
 
 class SimplePie_Locator
@@ -3935,7 +3963,7 @@ class SimplePie_Locator
 	
 	function is_feed(&$file)
 	{
-		$body = preg_replace('/<\!-(.*)-\>/msiU', '', $file->body());
+		$body = SimplePie_Misc::strip_comments($file->body());
 		if (preg_match('/<(\w+\:)?rss/msiU', $body) || preg_match('/<(\w+\:)?RDF/mi', $body) || preg_match('/<(\w+\:)?feed/mi', $body))
 		{
 			return true;
@@ -4853,14 +4881,20 @@ class SimplePie_Sanitize
 	}
 	
 	function parse_data_array(&$data, $url)
-	{		
+	{
+		// Parse feed URL
+		$parsed_url = SimplePie_Misc::parse_url($url);
+		
+		// XML Base status
+		$xmlbase = true;
+
 		// Feed Info (Type and Version)
 		if (!empty($data['feedinfo']['type']))
 		{
 			$this->feedinfo = $data['feedinfo'];
 		}
 		
-		// Feed level xml:base
+		// Feed XML Base
 		if (!empty($data['feeddata']['attribs']['XML:BASE']))
 		{
 			$this->feed_xmlbase = $data['feeddata']['attribs']['XML:BASE'];
@@ -4869,18 +4903,16 @@ class SimplePie_Sanitize
 		{
 			$this->feed_xmlbase = $data['feeddata']['attribs']['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE:BASE'];
 		}
-		// FeedBurner feeds use alternate link
-		else if (strpos($url, 'http://feeds.feedburner.com/') !== 0)
+		// Local URL
+		else if (empty($parsed_url['authority']))
 		{
-			$this->feed_xmlbase = SimplePie_Misc::parse_url($url);
-			if (empty($this->feed_xmlbase['authority']))
-			{
-				$this->feed_xmlbase = preg_replace('/^' . preg_quote(realpath($_SERVER['DOCUMENT_ROOT']), '/') . '/', '', realpath($url));
-			}
-			else
-			{
-				$this->feed_xmlbase = $url;
-			}
+			$this->feed_xmlbase = preg_replace('/^' . preg_quote(realpath($_SERVER['DOCUMENT_ROOT']), '/') . '/', '', realpath($url));
+		}
+		// Just take the feed URL
+		else
+		{
+			$this->feed_xmlbase = $url;
+			$xmlbase = false;
 		}
 		
 		
@@ -4932,8 +4964,8 @@ class SimplePie_Sanitize
 			}
 		}
 		
-		// Use the first alternate link if we don't have any feed xml:base
-		if (empty($this->feed_xmlbase) && !empty($this->info['link']['alternate'][0]))
+		// Use the first alternate link if we don't have a xml base
+		if (!$xmlbase && !empty($this->info['link']['alternate'][0]))
 		{
 			$this->feed_xmlbase = $this->info['link']['alternate'][0];
 		}
@@ -5318,7 +5350,7 @@ class SimplePie_Sanitize
 			$data = $this->entities_decode($data);
 		}
 		$data = trim($data);
-		$data = preg_replace('/<\!--(?:[^-]|-[^-])*-->/', '', $data);
+		$data = SimplePie_Misc::strip_comments($data);
 
 		// If Strip Ads is enabled, strip them.
 		if ($this->strip_ads)
