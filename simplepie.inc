@@ -84,7 +84,7 @@ class SimplePie
 	 * @var int SimplePie Build
 	 * @access protected
 	 */
-	var $build = 20061106;
+	var $build = 20061107;
 	
 	/**
 	 * @var string SimplePie Website URL
@@ -3854,30 +3854,41 @@ class SimplePie_Misc
 	
 	/**
 	 * Strip HTML comments
+	 *
+	 * @access public
+	 * @param string $data Data to strip comments from
+	 * @param string $output Current output buffer
+	 * @return string Comment stripped string
 	 */
 	function strip_comments($data, $output = '')
 	{
-		while (strpos($data, '<!--') !== 0 && strlen($data) > 0)
+		$strpos = strpos($data, '<!--');
+		if ($strpos !== false)
 		{
-			$output .= substr($data, 0, 1);
-			$data = substr_replace($data, '', 0, 1);
-		}
-		if (strpos($data, '<!--') === 0)
-		{
-			while (strpos($data, '-->') !== 0 && strlen($data) > 0)
+			$output .= substr($data, 0, $strpos);
+			$data = substr_replace($data, '', 0, $strpos);
+			$strpos = strpos($data, '-->');
+			if ($strpos !== false)
 			{
-				$data = substr_replace($data, '', 0, 1);
+				$data = substr_replace($data, '', 0, $strpos + 3);
 			}
-			if (strpos($data, '-->') === 0)
+			else
 			{
-				$data = substr_replace($data, '', 0, 3);
+				$data = '';
 			}
 			if (strlen($data) > 0)
 			{
 				return SimplePie_Misc::strip_comments($data, $output);
 			}
+			else
+			{
+				return $output;
+			}
 		}
-		return $output;
+		else
+		{
+			return $output . $data;
+		}
 	}
 }
 
