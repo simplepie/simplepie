@@ -118,7 +118,7 @@ function date_test($file)
 				require $value;
 				if ($istest)
 				{
-					run_test($value, SimplePie_Sanitize::parse_date($date) == $expected);
+					run_test($value, SimplePie_Misc::parse_date($date) == $expected);
 				}
 			}
 
