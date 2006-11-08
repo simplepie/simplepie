@@ -16,6 +16,43 @@
  */
 
 /**
+ * SimplePie Name
+ * @see SimplePie::name
+ */
+define('SIMPLEPIE_NAME', 'SimplePie');
+
+/**
+ * SimplePie Version
+ * @see SimplePie::version
+ */
+define('SIMPLEPIE_VERSION', 'Razzleberry');
+
+/**
+ * SimplePie Build
+ * @see SimplePie::build
+ */
+define('SIMPLEPIE_BUILD', gmdate('Ymd', SimplePie_Misc::parse_date('$Date$')));
+
+/**
+ * SimplePie Website URL
+ * @see SimplePie::url
+ */
+define('SIMPLEPIE_URL', 'http://simplepie.org/');
+
+/**
+ * SimplePie Useragent
+ * @see SimplePie::useragent
+ * @see SimplePie::set_useragent()
+ */
+define('SIMPLEPIE_USERAGENT', SIMPLEPIE_NAME . '/' . SIMPLEPIE_VERSION . ' (Feed Parser; ' . SIMPLEPIE_URL . '; Allow like Gecko) Build/' . SIMPLEPIE_BUILD);
+
+/**
+ * SimplePie Linkback
+ * @see SimplePie::linkback
+ */
+define('SIMPLEPIE_LINKBACK', '<a href="' . SIMPLEPIE_URL . '" title="' . SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . '">' . SIMPLEPIE_NAME . '</a>');
+
+/**
  * No Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
  */
@@ -72,38 +109,38 @@ class SimplePie
 	 * @var string SimplePie Name
 	 * @access protected
 	 */
-	var $name = 'SimplePie';
+	var $name = SIMPLEPIE_NAME;
 	
 	/**
 	 * @var string SimplePie Version
 	 * @access protected
 	 */
-	var $version = 'Razzleberry';
+	var $version = SIMPLEPIE_VERSION;
 	
 	/**
 	 * @var int SimplePie Build
 	 * @access protected
 	 */
-	var $build = 20061107;
+	var $build = SIMPLEPIE_BUILD;
 	
 	/**
 	 * @var string SimplePie Website URL
 	 * @access protected
 	 */
-	var $url = 'http://simplepie.org/';
+	var $url = SIMPLEPIE_URL;
 	
 	/**
 	 * @var string SimplePie Useragent
 	 * @see SimplePie::set_useragent()
 	 * @access protected
 	 */
-	var $useragent;
+	var $useragent = SIMPLEPIE_USERAGENT;
 	
 	/**
 	 * @var string Link to SimplePie Website
 	 * @access protected
 	 */
-	var $linkback;
+	var $linkback = SIMPLEPIE_LINKBACK;
 	
 	/**
 	 * @var array Raw data
@@ -247,10 +284,6 @@ class SimplePie
 	 */
 	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
 	{
-		// Couple of variables built up from other variables
-		$this->useragent = $this->name . '/' . $this->version . ' (Feed Parser; ' . $this->url . '; Allow like Gecko) Build/' . $this->build;
-		$this->linkback = '<a href="' . $this->url . '" title="' . $this->name . ' ' . $this->version . '">' . $this->name . '</a>';
-		
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize = new SimplePie_Sanitize;
 		
@@ -432,7 +465,7 @@ class SimplePie
 		return false;
 	}
 	
-	function set_useragent($ua)
+	function set_useragent($ua = SIMPLEPIE_USERAGENT)
 	{
 		$this->useragent = (string) $ua;
 	}
@@ -3890,6 +3923,112 @@ class SimplePie_Misc
 			return $output . $data;
 		}
 	}
+	
+	function parse_date($date)
+	{
+		$military_timezone = array('A' => '-0100', 'B' => '-0200', 'C' => '-0300', 'D' => '-0400', 'E' => '-0500', 'F' => '-0600', 'G' => '-0700', 'H' => '-0800', 'I' => '-0900', 'K' => '-1000', 'L' => '-1100', 'M' => '-1200', 'N' => '+0100', 'O' => '+0200', 'P' => '+0300', 'Q' => '+0400', 'R' => '+0500', 'S' => '+0600', 'T' => '+0700', 'U' => '+0800', 'V' => '+0900', 'W' => '+1000', 'X' => '+1100', 'Y' => '+1200', 'Z' => '-0000');
+		$north_american_timezone = array('GMT' => '-0000', 'EST' => '-0500', 'EDT' => '-0400', 'CST' => '-0600', 'CDT' => '-0500', 'MST' => '-0700', 'MDT' => '-0600', 'PST' => '-0800', 'PDT' => '-0700');
+		if (preg_match('/([0-9]{2,4})-?([0-9]{2})-?([0-9]{2})(?:T|\s*)([0-9]{2}):?([0-9]{2})(:?([0-9]{2}(\.[0-9]*)?))?\s*(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
+		{
+			if (!isset($matches[7]))
+			{
+				$matches[7] = '';
+			}
+			if (!isset($matches[9]))
+			{
+				$matches[9] = '';
+			}
+			$matches[7] = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
+			switch (strlen($matches[9]))
+			{
+				case 0:
+					$timezone = '';
+					break;
+					
+				case 1:
+					$timezone = $military_timezone[strtoupper($matches[9])];
+					break;
+				
+				case 2:
+					$timezone = '-0000';
+					break;
+				
+				case 3:
+					$timezone = $north_american_timezone[strtoupper($matches[9])];
+					break;
+				
+				case 5:
+					$timezone = $matches[9];
+					break;
+				
+				case 6:
+					$timezone = substr_replace($matches[9], '', 3, 1);
+					break;
+			}
+			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[7] $timezone");
+		}
+		else if (preg_match('/([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{2}|[0-9]{4})\s*([0-9]{2}):([0-9]{2})(:([0-9]{2}(\.[0-9]*)?))?\s*(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
+		{
+			$three_month = array('Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12);
+			$month = $three_month[$matches[2]];
+			if (strlen($matches[3]) == 2)
+			{
+				$year = ($matches[3] < 70) ? "20$matches[3]" : "19$matches[3]";
+			}
+			else
+			{
+				$year = $matches[3];
+			}
+			if (!isset($matches[7]))
+			{
+				$matches[7] = '';
+			}
+			if (!isset($matches[9]))
+			{
+				$matches[9] = '';
+			}
+			$second = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
+			switch (strlen($matches[9]))
+			{
+				case 0:
+					$timezone = '';
+					break;
+					
+				case 1:
+					$timezone = $military_timezone[strtoupper($matches[9])];
+					break;
+				
+				case 2:
+					$timezone = '-0000';
+					break;
+				
+				case 3:
+					$timezone = $north_american_timezone[strtoupper($matches[9])];
+					break;
+				
+				case 5:
+					$timezone = $matches[9];
+					break;
+				
+				case 6:
+					$timezone = substr_replace($matches[9], '', 3, 1);
+					break;
+			}
+			$date = strtotime("$year-$month-$matches[1] $matches[4]:$matches[5]:$second $timezone");
+		}
+		else
+		{
+			$date = strtotime($date);
+		}
+		if ($date !== false && $date !== -1)
+		{
+			return $date;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 
 class SimplePie_Locator
@@ -5214,27 +5353,27 @@ class SimplePie_Sanitize
 				// Date
 				if (!empty($item['pubdate']['data']))
 				{
-					$newitem['pubdate'] = $this->parse_date($this->sanitize($item['pubdate']['data'], $item['pubdate']['attribs']));
+					$newitem['pubdate'] = SimplePie_Misc::parse_date($this->sanitize($item['pubdate']['data'], $item['pubdate']['attribs']));
 				}
 				if (!empty($item['dc:date']['data']))
 				{
-					$newitem['dc:date'] = $this->parse_date($this->sanitize($item['dc:date']['data'], $item['dc:date']['attribs']));
+					$newitem['dc:date'] = SimplePie_Misc::parse_date($this->sanitize($item['dc:date']['data'], $item['dc:date']['attribs']));
 				}
 				if (!empty($item['issued']['data']))
 				{
-					$newitem['issued'] = $this->parse_date($this->sanitize($item['issued']['data'], $item['issued']['attribs']));
+					$newitem['issued'] = SimplePie_Misc::parse_date($this->sanitize($item['issued']['data'], $item['issued']['attribs']));
 				}
 				if (!empty($item['published']['data']))
 				{
-					$newitem['published'] = $this->parse_date($this->sanitize($item['published']['data'], $item['published']['attribs']));
+					$newitem['published'] = SimplePie_Misc::parse_date($this->sanitize($item['published']['data'], $item['published']['attribs']));
 				}
 				if (!empty($item['modified']['data']))
 				{
-					$newitem['modified'] = $this->parse_date($this->sanitize($item['modified']['data'], $item['modified']['attribs']));
+					$newitem['modified'] = SimplePie_Misc::parse_date($this->sanitize($item['modified']['data'], $item['modified']['attribs']));
 				}
 				if (!empty($item['updated']['data']))
 				{
-					$newitem['updated'] = $this->parse_date($this->sanitize($item['updated']['data'], $item['updated']['attribs']));
+					$newitem['updated'] = SimplePie_Misc::parse_date($this->sanitize($item['updated']['data'], $item['updated']['attribs']));
 				}
 				
 				// Categories
@@ -5585,112 +5724,6 @@ class SimplePie_Sanitize
 		}
 		$this->cache_convert_entities[$data[0]] = $return;
 		return $return;
-	}
-	
-	function parse_date($date)
-	{
-		$military_timezone = array('A' => '-0100', 'B' => '-0200', 'C' => '-0300', 'D' => '-0400', 'E' => '-0500', 'F' => '-0600', 'G' => '-0700', 'H' => '-0800', 'I' => '-0900', 'K' => '-1000', 'L' => '-1100', 'M' => '-1200', 'N' => '+0100', 'O' => '+0200', 'P' => '+0300', 'Q' => '+0400', 'R' => '+0500', 'S' => '+0600', 'T' => '+0700', 'U' => '+0800', 'V' => '+0900', 'W' => '+1000', 'X' => '+1100', 'Y' => '+1200', 'Z' => '-0000');
-		$north_american_timezone = array('GMT' => '-0000', 'EST' => '-0500', 'EDT' => '-0400', 'CST' => '-0600', 'CDT' => '-0500', 'MST' => '-0700', 'MDT' => '-0600', 'PST' => '-0800', 'PDT' => '-0700');
-		if (preg_match('/([0-9]{2,4})-?([0-9]{2})-?([0-9]{2})T([0-9]{2}):?([0-9]{2})(:?([0-9]{2}(\.[0-9]*)?))?(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
-		{
-			if (!isset($matches[7]))
-			{
-				$matches[7] = '';
-			}
-			if (!isset($matches[9]))
-			{
-				$matches[9] = '';
-			}
-			$matches[7] = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
-			switch (strlen($matches[9]))
-			{
-				case 0:
-					$timezone = '';
-					break;
-					
-				case 1:
-					$timezone = $military_timezone[strtoupper($matches[9])];
-					break;
-				
-				case 2:
-					$timezone = '-0000';
-					break;
-				
-				case 3:
-					$timezone = $north_american_timezone[strtoupper($matches[9])];
-					break;
-				
-				case 5:
-					$timezone = $matches[9];
-					break;
-				
-				case 6:
-					$timezone = substr_replace($matches[9], '', 3, 1);
-					break;
-			}
-			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[7] $timezone");
-		}
-		else if (preg_match('/([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{2}|[0-9]{4})\s*([0-9]{2}):([0-9]{2})(:([0-9]{2}(\.[0-9]*)?))?\s*(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
-		{
-			$three_month = array('Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12);
-			$month = $three_month[$matches[2]];
-			if (strlen($matches[3]) == 2)
-			{
-				$year = ($matches[3] < 70) ? "20$matches[3]" : "19$matches[3]";
-			}
-			else
-			{
-				$year = $matches[3];
-			}
-			if (!isset($matches[7]))
-			{
-				$matches[7] = '';
-			}
-			if (!isset($matches[9]))
-			{
-				$matches[9] = '';
-			}
-			$second = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
-			switch (strlen($matches[9]))
-			{
-				case 0:
-					$timezone = '';
-					break;
-					
-				case 1:
-					$timezone = $military_timezone[strtoupper($matches[9])];
-					break;
-				
-				case 2:
-					$timezone = '-0000';
-					break;
-				
-				case 3:
-					$timezone = $north_american_timezone[strtoupper($matches[9])];
-					break;
-				
-				case 5:
-					$timezone = $matches[9];
-					break;
-				
-				case 6:
-					$timezone = substr_replace($matches[9], '', 3, 1);
-					break;
-			}
-			$date = strtotime("$year-$month-$matches[1] $matches[4]:$matches[5]:$second $timezone");
-		}
-		else
-		{
-			$date = strtotime($date);
-		}
-		if ($date !== false && $date !== -1)
-		{
-			return $date;
-		}
-		else
-		{
-			return false;
-		}
 	}
 }
 
