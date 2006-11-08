@@ -4106,6 +4106,7 @@ class SimplePie_Parser
 	var $attribs;
 	var $is_first;
 	var $inside_author;
+	var $depth_inside_item = 0;
 	
 		
 	function SimplePie_Parser($data, $encoding, $return_xml = false)
@@ -4263,6 +4264,12 @@ class SimplePie_Parser
 		$this->tag_name = $name;
 		$this->attribs = $attribs;
 		$this->is_first = true;
+		
+		if ($this->inside_item)
+		{
+			$this->depth_inside_item++;
+		}
+		
 		switch ($this->tag_name)
 		{
 			case 'ITEM':
@@ -4325,7 +4332,7 @@ class SimplePie_Parser
 
 	function data_handler($parser, $data)
 	{
-		if ($this->inside_item)
+		if ($this->inside_item && $this->depth_inside_item == 1)
 		{
 			switch ($this->tag_name)
 			{
@@ -4651,6 +4658,11 @@ class SimplePie_Parser
 					$this->link_number++;
 				}
 				break;
+		}
+		
+		if ($this->inside_item)
+		{
+			$this->depth_inside_item--;
 		}
 	}
 	
