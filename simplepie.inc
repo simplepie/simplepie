@@ -1011,213 +1011,115 @@ EOT;
 		}
 	}
 	
-	function subscribe_aol()
+	/**
+	 * Creates the subscribe_* methods return data
+	 *
+	 * @access private
+	 * @param string $feed_url String to prefix to the feed URL
+	 * @param string $site_url String to prefix to the site URL (and
+	 * suffix to the feed URL)
+	 * @return mixed URL if feed exists, false otherwise
+	 */
+	function subscribe_service($feed_url, $site_url = '')
 	{
 		if ($this->subscribe_url())
 		{
-			return 'http://feeds.my.aol.com/add.jsp?url=' . rawurlencode($this->subscribe_url());
+			$return = $feed_url . rawurlencode($this->subscribe_url());
+			if (!empty($site_url) && $this->get_feed_link())
+			{
+				$return .= $site_url . rawurlencode($this->get_feed_link());
+			}
+			return $return;
 		}
 		else
 		{
 			return false;
 		}
+	}
+	
+	function subscribe_aol()
+	{
+		return $this->subscribe_service('http://feeds.my.aol.com/add.jsp?url=');
 	}
 	
 	function subscribe_bloglines()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.bloglines.com/sub/' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.bloglines.com/sub/');
 	}
 	
 	function subscribe_eskobo()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.eskobo.com/?AddToMyPage=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.eskobo.com/?AddToMyPage=');
 	}
 	
 	function subscribe_feedfeeds()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.feedfeeds.com/add?feed=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.feedfeeds.com/add?feed=');
 	}
 	
 	function subscribe_feedlounge()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://my.feedlounge.com/external/subscribe?url=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://my.feedlounge.com/external/subscribe?url=');
 	}
 	
 	function subscribe_feedster()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.feedster.com/myfeedster.php?action=addrss&amp;confirm=no&amp;rssurl=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.feedster.com/myfeedster.php?action=addrss&amp;confirm=no&amp;rssurl=');
 	}
 	
 	function subscribe_google()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://fusion.google.com/add?feedurl=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://fusion.google.com/add?feedurl=');
 	}
 	
 	function subscribe_gritwire()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://my.gritwire.com/feeds/addExternalFeed.aspx?FeedUrl=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://my.gritwire.com/feeds/addExternalFeed.aspx?FeedUrl=');
 	}
 	
 	function subscribe_msn()
 	{
-		if ($this->subscribe_url())
-		{
-			$url = 'http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=' . rawurlencode($this->subscribe_url());
-			if ($this->get_feed_link())
-			{
-				$url .= '&amp;ru=' . rawurlencode($this->get_feed_link());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=', '&amp;ru=');
 	}
 	
 	function subscribe_netvibes()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.netvibes.com/subscribe.php?url=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.netvibes.com/subscribe.php?url=');
 	}
 	
 	function subscribe_newsburst()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.newsburst.com/Source/?add=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.newsburst.com/Source/?add=');
 	}
 	
 	function subscribe_newsgator()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.newsgator.com/ngs/subscriber/subext.aspx?url=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.newsgator.com/ngs/subscriber/subext.aspx?url=');
 	}
 	
 	function subscribe_odeo()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.odeo.com/listen/subscribe?feed=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.odeo.com/listen/subscribe?feed=');
 	}
 	
 	function subscribe_pluck()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://client.pluck.com/pluckit/prompt.aspx?GCID=C12286x053&amp;a=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://client.pluck.com/pluckit/prompt.aspx?GCID=C12286x053&amp;a=');
 	}
 	
 	function subscribe_podnova()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.podnova.com/index_your_podcasts.srf?action=add&amp;url=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.podnova.com/index_your_podcasts.srf?action=add&amp;url=');
 	}
 	
 	function subscribe_rojo()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://www.rojo.com/add-subscription?resource=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://www.rojo.com/add-subscription?resource=');
 	}
 	
 	function subscribe_yahoo()
 	{
-		if ($this->subscribe_url())
-		{
-			return 'http://add.my.yahoo.com/rss?url=' . rawurlencode($this->subscribe_url());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->subscribe_service('http://add.my.yahoo.com/rss?url=');
 	}
 	
 	function get_feed_title()
