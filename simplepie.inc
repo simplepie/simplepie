@@ -933,7 +933,7 @@ EOT;
 	
 	function get_favicon($check = false, $alternate = null)
 	{
-		if (!empty($this->data['info']['link']['alternate'][0]))
+		if ($this->get_feed_link())
 		{
 			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->get_feed_link());
 
@@ -3931,6 +3931,29 @@ class SimplePie_Misc
 			return false;
 		}
 	}
+	
+	function entities_decode($data, $encoding, &$cache)
+	{
+		return preg_replace('/&(#)?(x)?([0-9a-z]+);/ie', 'SimplePie_Misc::do_entities_decode(\'\\0\', $encoding, $cache)', $data);
+	}
+	
+	function do_entities_decode($data, $encoding, &$cache)
+	{
+		if (isset($cache[$encoding][$data]))
+		{
+			return $cache[$encoding][$data];
+		}
+		else
+		{
+			$return = SimplePie_Misc::change_encoding(html_entity_decode($data, ENT_QUOTES), 'ISO-8859-1', $encoding);
+			if ($return == $data)
+			{
+				$return = SimplePie_Misc::change_encoding(SimplePie_Misc::replace_num_entity($data), 'UTF-8', $encoding);
+			}
+			$cache[$encoding][$data] = $return;
+			return $return;
+		}
+	}
 }
 
 class SimplePie_Locator
@@ -3941,6 +3964,7 @@ class SimplePie_Locator
 	var $local = array();
 	var $elsewhere = array();
 	var $file_class = 'SimplePie_File';
+	var $cached_entities = array();
 	
 	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File')
 	{
@@ -4031,9 +4055,9 @@ class SimplePie_Locator
 		{
 			if (!empty($link['attribs']['TYPE']['data']) && !empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
 			{
-				$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['REL']['data'])));
-				$type = preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/msiU', trim($link['attribs']['TYPE']['data']));
-				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
+				$rel = preg_split('/\s+/', strtolower(trim(SimplePie_Misc::entities_decode($link['attribs']['REL']['data'], 'UTF-8', $this->cached_entities))));
+				$type = preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/msiU', trim(SimplePie_Misc::entities_decode($link['attribs']['TYPE']['data'], 'UTF-8', $this->cached_entities)));
+				$href = SimplePie_Misc::absolutize_url(trim(SimplePie_Misc::entities_decode($link['attribs']['HREF']['data'], 'UTF-8', $this->cached_entities)), $this->file->url);
 				if (!in_array($href, $done) && in_array('alternate', $rel) && $type)
 				{
 					$feed = new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
@@ -5390,7 +5414,7 @@ class SimplePie_Sanitize
 			}
 			else if ((!empty($attribs['MODE']) && $attribs['MODE'] == 'escaped' || !empty($attribs['TYPE']) && ($attribs['TYPE'] == 'html' || $attribs['TYPE'] == 'text/html')))
 			{
-				$data = $this->entities_decode($data);
+				$data = SimplePie_Misc::entities_decode($data, $this->input_encoding, $this->cached_entities);
 			}
 			if (!empty($attribs['TYPE']) && ($attribs['TYPE'] == 'xhtml' || $attribs['TYPE'] == 'application/xhtml+xml'))
 			{
@@ -5411,7 +5435,7 @@ class SimplePie_Sanitize
 		}
 		if ($force_decode)
 		{
-			$data = $this->entities_decode($data);
+			$data = SimplePie_Misc::entities_decode($data, $this->input_encoding, $this->cached_entities);
 		}
 		$data = trim($data);
 		$data = SimplePie_Misc::strip_comments($data);
@@ -5579,29 +5603,6 @@ class SimplePie_Sanitize
 				}
 			}
 			return $data[0];
-		}
-	}
-	
-	function entities_decode($data)
-	{
-		return preg_replace_callback('/&(#)?(x)?([0-9a-z]+);/mi', array(&$this, 'do_entities_decode'), $data);
-	}
-	
-	function do_entities_decode($data)
-	{
-		if (isset($this->cached_entities[$data[0]]))
-		{
-			return $this->cached_entities[$data[0]];
-		}
-		else
-		{
-			$return = SimplePie_Misc::change_encoding(html_entity_decode($data[0], ENT_QUOTES), 'ISO-8859-1', $this->input_encoding);
-			if ($return == $data[0])
-			{
-				$return = SimplePie_Misc::change_encoding(SimplePie_Misc::replace_num_entity($data[0]), 'UTF-8', $this->input_encoding);
-			}
-			$this->cached_entities[$data[0]] = $return;
-			return $return;
 		}
 	}
 	
