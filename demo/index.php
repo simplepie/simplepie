@@ -65,7 +65,7 @@ $feed->handle_content_type();
 
 <ul id="menu">
 	<!-- Must all be on the same line due to spacing bugs. -->
-	<li><a href="http://simplepie.org/docs/misc/release-notes/beta3/">Release Notes</a>|</li><li><a href="http://simplepie.org/support/">Bug Reports &amp; Feature Requests</a>|</li><li><a href="http://simplepie.org/docs/reference/">Function Reference</a>|</li><li><a href="http://simplepie.org/blog/">Weblog</a></li>
+	<li><a href="http://simplepie.org/docs/misc/release-notes/beta3/">Release Notes</a>|</li><li><a href="http://simplepie.org/support/">Bug Reports &amp; Feature Requests</a>|</li><li><a href="http://simplepie.org/docs/reference/">Function Reference</a>|</li><li><a href="http://simplepie.org/blog/">Weblog</a>|</li><li><a href="../test2/test.php">Unit Tests</a></li>
 </ul>
 
 <div id="site">
