@@ -260,4 +260,47 @@ function first_item_category_test($file)
 	}
 }
 
+function dive_into_mark_atom_autodiscovery()
+{
+	$next = 'http://diveintomark.org/tests/client/autodiscovery/';
+	$done = array();
+	$cached_entities = array();
+	for ($i = 0; $next; $i++)
+	{
+		usleep(1000);
+		$current = $next;
+		$file = new SimplePie_File($current, 10, 5, null, SIMPLEPIE_USERAGENT);
+		if ($file->success)
+		{
+			$next = false;
+			$links = SimplePie_Misc::get_element('link', $file->body());
+			foreach ($links as $link)
+			{
+				if (!empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
+				{
+					$rel = preg_split('/\s+/', strtolower(trim(SimplePie_Misc::entities_decode($link['attribs']['HREF']['data'], 'UTF-8', $cached_entities))));
+					$href = SimplePie_Misc::absolutize_url(trim(SimplePie_Misc::entities_decode($link['attribs']['HREF']['data'], 'UTF-8', $cached_entities)), $file->url);
+					if (!in_array($href, $done) && in_array('next', $rel))
+					{
+						$next = $href;
+					}
+					$done[] = $href;
+				}
+			}
+			if ($i > 0)
+			{
+				$feed = new SimplePie();
+				$feed->set_file($file);
+				$feed->set_cache(false);
+				$feed->init();
+				run_test($current, $feed->get_feed_link() == $current);
+			}
+		}
+		else
+		{
+			run_test($next, false);
+		}
+	}
+}
+
 ?>

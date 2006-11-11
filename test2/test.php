@@ -165,6 +165,11 @@ first_item_permalink_test($files);
 $files = SimplePie_List::get('first_item_title');
 first_item_title_test($files);
 
+if (!isset($_GET['localonly']))
+{
+	dive_into_mark_atom_autodiscovery();
+}
+
 $total = $passed + $failed;
 $passed_percentage = round($passed/$total*100);
 $failed_percentage = round($failed/$total*100);
