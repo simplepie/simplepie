@@ -785,9 +785,9 @@ EOT;
 				$encoding = $charset[1];
 			}
 			// Then prolog, if at the very start of the document
-			else if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*("([^"]*)"|\'([^\']*)\')/Ui', $prolog[1], $encoding))
+			else if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*("|\')([a-z][a-z0-9._\-]*)("|\')/i', $prolog[1], $encoding))
 			{
-				$encoding = substr($encoding[1], 1, -1);
+				$encoding = $encoding[2];
 			}
 			// UTF-32 Big Endian BOM
 			else if (strpos($data, sprintf('%c%c%c%c', 0x00, 0x00, 0xFE, 0xFF)) === 0)
