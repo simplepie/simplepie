@@ -301,7 +301,7 @@ class SimplePie
 	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
 	{
 		// Other objects, instances created here so we can set options on them
-		$this->sanitize = new SimplePie_Sanitize;
+		$this->sanitize =& new SimplePie_Sanitize;
 		
 		// Set options if they're passed to the constructor
 		if (!is_null($feed_url))
@@ -475,7 +475,7 @@ class SimplePie
 	{
 		if (class_exists($object))
 		{
-			$this->sanitize = new $object;
+			$this->sanitize =& new $object;
 			return true;
 		}
 		return false;
@@ -643,7 +643,7 @@ EOT;
 				// Decide whether to enable caching
 				if ($this->cache && preg_match('/^http(s)?:\/\//i', $this->feed_url))
 				{
-					$cache = new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
+					$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
 				}
 				// If it's enabled and we don't want an XML dump, use the cache
 				if ($cache && !$this->xml_dump)
@@ -685,7 +685,7 @@ EOT;
 								{
 									$headers['if-none-match'] = $this->data['etag'];
 								}
-								$file = new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
+								$file =& new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
 								if ($file->success)
 								{
 									$headers = $file->headers();
@@ -728,7 +728,7 @@ EOT;
 					}
 					else
 					{
-						$file = new $this->file_class($this->feed_url, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen);
+						$file =& new $this->file_class($this->feed_url, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen);
 					}
 				}
 				// If the file connection has an error, set SimplePie::error to that and quit
@@ -739,7 +739,7 @@ EOT;
 				}
 				
 				// Check if the supplied URL is a feed, if it isn't, look for it.
-				$locate = new $this->locator_class($file, $this->timeout, $this->useragent);
+				$locate =& new $this->locator_class($file, $this->timeout, $this->useragent);
 				if (!$locate->is_feed($file))
 				{
 					$file = $locate->find($this->autodiscovery);
@@ -752,7 +752,7 @@ EOT;
 								$this->error = "$cache->name is not writeable";
 								SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
 							}
-							$cache = new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
+							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
 						}
 						$this->feed_url = $file->url;
 					}
@@ -763,6 +763,7 @@ EOT;
 						return false;
 					}
 				}
+				$locate = null;
 				
 				$headers = $file->headers();
 				$data = trim($file->body());
@@ -824,7 +825,7 @@ EOT;
 			$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 			
 			// Start parsing
-			$data = new $this->parser_class($data, 'UTF-8', $this->xml_dump);
+			$data =& new $this->parser_class($data, 'UTF-8', $this->xml_dump);
 			// If we want the XML, just output that and quit
 			if ($this->xml_dump)
 			{
@@ -870,6 +871,7 @@ EOT;
 							break;
 						}
 					}
+					$item = null;
 					if ($do_sort)
 					{
 						usort($this->data['items'], create_function('$a, $b', 'if ($a->get_date(\'U\') == $b->get_date(\'U\')) return 1; return ($a->get_date(\'U\') < $b->get_date(\'U\')) ? 1 : -1;'));
@@ -4190,7 +4192,7 @@ class SimplePie_Parser
 	var $depth_inside_item = 0;
 	
 		
-	function SimplePie_Parser($data, $encoding, $return_xml = false)
+	function SimplePie_Parser(&$data, $encoding, $return_xml = false)
 	{
 		$this->encoding = $encoding;
 		
