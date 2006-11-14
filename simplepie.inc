@@ -957,7 +957,7 @@ EOT;
 
 			if ($check)
 			{
-				$file = new $this->file_class($favicon, $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
+				$file =& new $this->file_class($favicon, $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
 				$headers = $file->headers();
 				$file->close();
 
@@ -1970,7 +1970,7 @@ class SimplePie_Enclosure
 		{
 			if (class_exists('idna_convert'))
 			{
-				$idn = new idna_convert;
+				$idn =& new idna_convert;
 				$this->link = $idn->encode($this->link);
 			}
 			return $this->link;
@@ -2353,7 +2353,7 @@ class SimplePie_File
 	{
 		if (class_exists('idna_convert'))
 		{
-			$idn = new idna_convert;
+			$idn =& new idna_convert;
 			$url = $idn->encode($url);
 		}
 		$this->url = $url;
@@ -2891,7 +2891,7 @@ class SimplePie_Misc
 	
 	function display_file($url, $timeout = 10, $useragent = null)
 	{
-		$file = new SimplePie_File($url, $timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $useragent);
+		$file =& new SimplePie_File($url, $timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $useragent);
 		$headers = $file->headers();
 		if ($file->body() !== false)
 		{
@@ -4078,7 +4078,7 @@ class SimplePie_Locator
 				$href = SimplePie_Misc::absolutize_url(trim(SimplePie_Misc::entities_decode($link['attribs']['HREF']['data'], 'UTF-8', $this->cached_entities)), $this->file->url);
 				if (!in_array($href, $done) && in_array('alternate', $rel) && $type)
 				{
-					$feed = new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
+					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
 					if ($this->is_feed($feed))
 					{
 						return $feed;
@@ -4129,7 +4129,7 @@ class SimplePie_Locator
 			$value = SimplePie_Misc::absolutize_url($value, $this->file->url);
 			if (in_array(strtolower(strrchr($value, '.')), array('.rss', '.rdf', '.atom', '.xml')))
 			{
-				$feed = new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
+				$feed =& new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
 				if ($this->is_feed($feed))
 				{
 					return $feed;
@@ -4150,7 +4150,7 @@ class SimplePie_Locator
 			$value = SimplePie_Misc::absolutize_url($value, $this->file->url);
 			if (preg_match('/(rss|rdf|atom|xml)/i', $value))
 			{
-				$feed = new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
+				$feed =& new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
 				if ($this->is_feed($feed))
 				{
 					return $feed;
@@ -5054,7 +5054,7 @@ class SimplePie_Sanitize
 					if (!empty($link['attribs']['LENGTH'])) {
 						$length = $this->sanitize($link['attribs']['LENGTH'], $link['attribs']);
 					}
-					$this->info['link']['enclosure'][] = new $this->enclosure_class($href, $type, $length);
+					$this->info['link']['enclosure'][] =& new $this->enclosure_class($href, $type, $length);
 				}
 				else
 				{
@@ -5236,7 +5236,7 @@ class SimplePie_Sanitize
 							}
 							if (!empty($href))
 							{
-								$newitem['link'][$rel][] = new $this->enclosure_class($href, $type, $length);
+								$newitem['link'][$rel][] =& new $this->enclosure_class($href, $type, $length);
 							}
 						}
 						else
@@ -5271,7 +5271,7 @@ class SimplePie_Sanitize
 							{
 								$length = $this->sanitize($enclosure['attribs']['LENGTH'], $enclosure['attribs']);
 							}
-							$newitem['enclosures'][] = new $this->enclosure_class($href, $type, $length);
+							$newitem['enclosures'][] =& new $this->enclosure_class($href, $type, $length);
 						}
 					}
 				}
@@ -5353,7 +5353,7 @@ class SimplePie_Sanitize
 					{
 						if (!empty($creator['data']))
 						{
-							$newitem['creator'][] = new $this->author_class($this->sanitize($creator['data'], $creator['attribs']), null, null);
+							$newitem['creator'][] =& new $this->author_class($this->sanitize($creator['data'], $creator['attribs']), null, null);
 						}
 					}
 				}
@@ -5396,7 +5396,7 @@ class SimplePie_Sanitize
 								$email = $this->sanitize($author['email']['data'], $author['email']['attribs']);
 							}
 						}
-						$newitem['author'][] = new $this->author_class($name, $link, $email);
+						$newitem['author'][] =& new $this->author_class($name, $link, $email);
 					}
 				}
 				
@@ -5415,7 +5415,7 @@ class SimplePie_Sanitize
 				}				
 				
 				unset($data['items'][$key]);
-				$this->items[] = new $this->item_class($newitem);
+				$this->items[] =& new $this->item_class($newitem);
 			}
 		}
 	}
