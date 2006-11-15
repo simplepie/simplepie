@@ -961,7 +961,7 @@ EOT;
 				$headers = $file->headers();
 				$file->close();
 
-				if ($headers['status']['code'] == 200)
+				if ($headers['status']['code'] == 200 || $headers['status']['code'] > 206 && $headers['status']['code'] < 300)
 				{
 					return $favicon;
 				}
@@ -2417,7 +2417,7 @@ class SimplePie_File
 					$this->headers = array_pop($this->headers);
 				}
 				$this->headers = $this->parse_headers($this->headers);
-				if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
+				if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location']) && $this->redirects < $redirects)
 				{
 					$this->redirects++;
 					return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
@@ -2476,7 +2476,7 @@ class SimplePie_File
 					if (!$info['timed_out'])
 					{
 						$this->headers = $this->parse_headers($data);
-						if (($this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307) && !empty($this->headers['location']) && $this->redirects < $redirects)
+						if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location']) && $this->redirects < $redirects)
 						{
 							$this->redirects++;
 							return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
