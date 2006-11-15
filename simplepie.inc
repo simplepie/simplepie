@@ -72,43 +72,43 @@ define('SIMPLEPIE_LINKBACK', '<a href="' . SIMPLEPIE_URL . '" title="' . SIMPLEP
  * No Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
  */
-define('SIMPLEPIE_LOCATER_NONE', 0);
+define('SIMPLEPIE_LOCATOR_NONE', 0);
 
 /**
  * Feed Link Element Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
  */
-define('SIMPLEPIE_LOCATER_AUTODISCOVERY', 1);
+define('SIMPLEPIE_LOCATOR_AUTODISCOVERY', 1);
 
 /**
  * Local Feed Extension Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
  */
-define('SIMPLEPIE_LOCATER_LOCAL_EXTENSION', 2);
+define('SIMPLEPIE_LOCATOR_LOCAL_EXTENSION', 2);
 
 /**
  * Local Feed Body Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
  */
-define('SIMPLEPIE_LOCATER_LOCAL_BODY', 4);
+define('SIMPLEPIE_LOCATOR_LOCAL_BODY', 4);
 
 /**
  * Remote Feed Extension Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
  */
-define('SIMPLEPIE_LOCATER_REMOTE_EXTENSION', 8);
+define('SIMPLEPIE_LOCATOR_REMOTE_EXTENSION', 8);
 
 /**
  * Remote Feed Body Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
  */
-define('SIMPLEPIE_LOCATER_REMOTE_BODY', 16);
+define('SIMPLEPIE_LOCATOR_REMOTE_BODY', 16);
 
 /**
  * All Feed Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
  */
-define('SIMPLEPIE_LOCATER_ALL', 31);
+define('SIMPLEPIE_LOCATOR_ALL', 31);
 
 /**
  * SimplePie
@@ -259,7 +259,7 @@ class SimplePie
 	 * @see SimplePie::set_autodiscovery_level()
 	 * @access private
 	 */
-	var $autodiscovery = SIMPLEPIE_LOCATER_ALL;
+	var $autodiscovery = SIMPLEPIE_LOCATOR_ALL;
 	
 	/**
 	 * @var string Class used for caching feeds
@@ -415,18 +415,18 @@ class SimplePie
 	 * Set how much feed autodiscovery to do
 	 *
 	 * @access public
-	 * @see SIMPLEPIE_LOCATER_NONE
-	 * @see SIMPLEPIE_LOCATER_AUTODISCOVERY
-	 * @see SIMPLEPIE_LOCATER_LOCAL_EXTENSION
-	 * @see SIMPLEPIE_LOCATER_LOCAL_BODY
-	 * @see SIMPLEPIE_LOCATER_REMOTE_EXTENSION
-	 * @see SIMPLEPIE_LOCATER_REMOTE_BODY
-	 * @see SIMPLEPIE_LOCATER_ALL
-	 * @param int $level Feed Autodiscovery Level (use SIMPLEPIE_LOCATER
+	 * @see SIMPLEPIE_LOCATOR_NONE
+	 * @see SIMPLEPIE_LOCATOR_AUTODISCOVERY
+	 * @see SIMPLEPIE_LOCATOR_LOCAL_EXTENSION
+	 * @see SIMPLEPIE_LOCATOR_LOCAL_BODY
+	 * @see SIMPLEPIE_LOCATOR_REMOTE_EXTENSION
+	 * @see SIMPLEPIE_LOCATOR_REMOTE_BODY
+	 * @see SIMPLEPIE_LOCATOR_ALL
+	 * @param int $level Feed Autodiscovery Level (use SIMPLEPIE_LOCATOR
 	 * constants, with bitwise OR operator)
 	 * @return int $level cast to an int, if it wasn't already an int
 	 */
-	function set_autodiscovery_level($level = SIMPLEPIE_LOCATER_ALL)
+	function set_autodiscovery_level($level = SIMPLEPIE_LOCATOR_ALL)
 	{
 		return $this->autodiscovery = (int) $level;
 	}
@@ -3992,14 +3992,14 @@ class SimplePie_Locator
 		$this->timeout = $timeout;
 	}
 	
-	function find($type = SIMPLEPIE_LOCATER_ALL)
+	function find($type = SIMPLEPIE_LOCATOR_ALL)
 	{		
 		if ($this->is_feed($this->file))
 		{
 			return $this->file->url;
 		}
 		
-		if ($type & SIMPLEPIE_LOCATER_AUTODISCOVERY)
+		if ($type & SIMPLEPIE_LOCATOR_AUTODISCOVERY)
 		{
 			$working = $this->autodiscovery($this->file);
 			if ($working)
@@ -4008,11 +4008,11 @@ class SimplePie_Locator
 			}
 		}
 		
-		if ($type & SIMPLEPIE_LOCATER_LOCAL_EXTENSION | SIMPLEPIE_LOCATER_LOCAL_BODY | SIMPLEPIE_LOCATER_REMOTE_EXTENSION | SIMPLEPIE_LOCATER_REMOTE_BODY && $this->get_links($this->file))
+		if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY && $this->get_links($this->file))
 		{
 			if (!empty($this->local))
 			{
-				if ($type & SIMPLEPIE_LOCATER_LOCAL_EXTENSION)
+				if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION)
 				{
 					$working = $this->extension($this->local);
 					if ($working)
@@ -4021,7 +4021,7 @@ class SimplePie_Locator
 					}
 				}
 			
-				if ($type & SIMPLEPIE_LOCATER_LOCAL_BODY)
+				if ($type & SIMPLEPIE_LOCATOR_LOCAL_BODY)
 				{
 					$working = $this->body($this->local);
 					if ($working)
@@ -4033,7 +4033,7 @@ class SimplePie_Locator
 			
 			if (!empty($this->elsewhere))
 			{
-				if ($type & SIMPLEPIE_LOCATER_REMOTE_EXTENSION)
+				if ($type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION)
 				{
 					$working = $this->extension($this->elsewhere);
 					if ($working)
@@ -4042,7 +4042,7 @@ class SimplePie_Locator
 					}
 				}
 			
-				if ($type & SIMPLEPIE_LOCATER_REMOTE_BODY)
+				if ($type & SIMPLEPIE_LOCATOR_REMOTE_BODY)
 				{
 					$working = $this->body($this->elsewhere);
 					if ($working)
