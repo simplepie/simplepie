@@ -1505,31 +1505,39 @@ class SimplePie_Item
 	{
 		if (!empty($this->data['pubdate']))
 		{
-			return date($date_format, $this->data['pubdate']);
+			$date = $this->data['pubdate'];
 		}
 		else if (!empty($this->data['dc:date']))
 		{
-			return date($date_format, $this->data['dc:date']);
+			$date = $this->data['dc:date'];
 		}
 		else if (!empty($this->data['issued']))
 		{
-			return date($date_format, $this->data['issued']);
+			$date = $this->data['issued'];
 		}
 		else if (!empty($this->data['published']))
 		{
-			return date($date_format, $this->data['published']);
+			$date = $this->data['published'];
 		}
 		else if (!empty($this->data['modified']))
 		{
-			return date($date_format, $this->data['modified']);
+			$date = $this->data['modified'];
 		}
 		else if (!empty($this->data['updated']))
 		{
-			return date($date_format, $this->data['updated']);
+			$date = $this->data['updated'];
 		}
 		else
 		{
 			return false;
+		}
+		if ($date_format == 'U')
+		{
+			return $date;
+		}
+		else
+		{
+			return date($date_format, $date);
 		}
 	}
 	
