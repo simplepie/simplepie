@@ -4009,8 +4009,7 @@ class SimplePie_Locator
 		
 		if ($type & SIMPLEPIE_LOCATOR_AUTODISCOVERY)
 		{
-			$working = $this->autodiscovery($this->file);
-			if ($working)
+			if ($working = $this->autodiscovery($this->file))
 			{
 				return $working;
 			}
@@ -4022,8 +4021,7 @@ class SimplePie_Locator
 			{
 				if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION)
 				{
-					$working = $this->extension($this->local);
-					if ($working)
+					if ($working = $this->extension($this->local))
 					{
 						return $working;
 					}
@@ -4031,8 +4029,7 @@ class SimplePie_Locator
 			
 				if ($type & SIMPLEPIE_LOCATOR_LOCAL_BODY)
 				{
-					$working = $this->body($this->local);
-					if ($working)
+					if ($working = $this->body($this->local))
 					{
 						return $working;
 					}
@@ -4043,8 +4040,7 @@ class SimplePie_Locator
 			{
 				if ($type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION)
 				{
-					$working = $this->extension($this->elsewhere);
-					if ($working)
+					if ($working = $this->extension($this->elsewhere))
 					{
 						return $working;
 					}
@@ -4052,8 +4048,7 @@ class SimplePie_Locator
 			
 				if ($type & SIMPLEPIE_LOCATOR_REMOTE_BODY)
 				{
-					$working = $this->body($this->elsewhere);
-					if ($working)
+					if ($working = $this->body($this->elsewhere))
 					{
 						return $working;
 					}
