@@ -824,6 +824,23 @@ EOT;
 			// Change the encoding to UTF-8 (as we always use UTF-8 internally)
 			$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 			
+			// Strip illegal characters (if on less  than PHP5, as on PHP5 expat can manage fine)
+			if (version_compare(phpversion(), '5', '<'))
+			{
+				if (function_exists('iconv'))
+				{
+					$data = iconv('UTF-8', 'UTF-8//IGNORE', $data);
+				}
+				else if (function_exists('mb_convert_encoding'))
+				{
+					$data = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
+				}
+				else
+				{
+					$data = SimplePie_Misc::utf8_bad_replace($data);
+				}
+			}
+			
 			// Start parsing
 			$data =& new $this->parser_class($data, 'UTF-8', $this->xml_dump);
 			// If we want the XML, just output that and quit
@@ -2957,6 +2974,47 @@ class SimplePie_Misc
 			}
 			return $match;
 		}
+	}
+	
+	/**
+	 * Replace bad bytes
+	 *
+	 * PCRE Pattern to locate bad bytes in a UTF-8 string
+	 * Comes from W3 FAQ: Multilingual Forms
+	 * Note: modified to include full ASCII range including control chars
+	 *
+	 * Modified by Geoffrey Sneddon 2006-11-19 to remove functionality
+	 * to choose what the replace string is, and to use a variable for
+	 * the output instead of PHP's output buffer
+	 *
+	 * @author Harry Fuecks <hfuecks@gmail.com>
+	 * @author Geoffrey Sneddon
+	 * @see http://www.w3.org/International/questions/qa-forms-utf-8
+	 * @param string $str String to search
+	 * @return string Clean string
+	 */
+	function utf8_bad_replace($str)
+	{
+		$UTF8_BAD =
+		 '([\x00-\x7F]' .							# ASCII (including control chars)
+		 '|[\xC2-\xDF][\x80-\xBF]' .				# non-overlong 2-byte
+		 '|\xE0[\xA0-\xBF][\x80-\xBF]' .			# excluding overlongs
+		 '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}' .		# straight 3-byte
+		 '|\xED[\x80-\x9F][\x80-\xBF]' .			# excluding surrogates
+		 '|\xF0[\x90-\xBF][\x80-\xBF]{2}' .			# planes 1-3
+		 '|[\xF1-\xF3][\x80-\xBF]{3}' .				# planes 4-15
+		 '|\xF4[\x80-\x8F][\x80-\xBF]{2}' .			# plane 16
+		 '|(.{1}))';								# invalid byte
+		$output = '';
+		while (preg_match('/' . $UTF8_BAD . '/S', $str, $matches))
+		{
+			if (!isset($matches[2]))
+			{
+				$output .= $matches[0];
+			}
+			$str = substr($str, strlen($matches[0]));
+		}
+		return $output;
 	}
 	
 	function change_encoding($data, $input, $output)
