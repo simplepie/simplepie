@@ -3910,110 +3910,297 @@ class SimplePie_Misc
 		}
 	}
 	
-	function parse_date($date)
+	function parse_date($dt, $rfc822 = true)
 	{
-		$military_timezone = array('A' => '-0100', 'B' => '-0200', 'C' => '-0300', 'D' => '-0400', 'E' => '-0500', 'F' => '-0600', 'G' => '-0700', 'H' => '-0800', 'I' => '-0900', 'K' => '-1000', 'L' => '-1100', 'M' => '-1200', 'N' => '+0100', 'O' => '+0200', 'P' => '+0300', 'Q' => '+0400', 'R' => '+0500', 'S' => '+0600', 'T' => '+0700', 'U' => '+0800', 'V' => '+0900', 'W' => '+1000', 'X' => '+1100', 'Y' => '+1200', 'Z' => '-0000');
-		$north_american_timezone = array('GMT' => '-0000', 'EST' => '-0500', 'EDT' => '-0400', 'CST' => '-0600', 'CDT' => '-0500', 'MST' => '-0700', 'MDT' => '-0600', 'PST' => '-0800', 'PDT' => '-0700');
-		if (preg_match('/([0-9]{2,4})-?([0-9]{2})-?([0-9]{2})(?:T|\s*)([0-9]{2}):?([0-9]{2})(:?([0-9]{2}(\.[0-9]*)?))?\s*(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
+		/*
+		Capturing subpatterns:
+		1: RFC 822 date
+		2: RFC 822 day
+		3: RFC 822 month
+		4: RFC 822 year
+		5: ISO 8601 date
+		6: ISO 8601 century
+		7: ISO 8601 year
+		8: ISO 8601 month
+		9: ISO 8601 day
+		10: ISO 8601 ordinal day
+		11: ISO 8601 week
+		12: ISO 8601 day of week
+		13: Time
+		14: Hour
+		15: Hour Decimal
+		16: Minute
+		17: Minute Decimal
+		18: Second
+		19: Second Decimal
+		20: Timezone
+		21: Diff ±
+		22: Hour
+		23: Hour Decimal
+		24: Minute
+		25: Minute Decimal
+		26: Alphabetic Timezone
+		*/
+		if (preg_match('/(?:(([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{4}|[0-9]{2}))|(([0-9]{2})(?:([0-9]{2})(?:(?:-|\s)*(?:([0-9]{2})(?:(?:-|\s)*([0-9]{2}))?|([0-9]{3})|W([0-9]{2})(?:(?:-|\s)*([0-9]))?))?)?))((?:T|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*))?)?)?(?:\s)*((?:(\\+|-)([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*(?:([0-9]{2})(?:(?:,|\.)([0-9]*))?))?)|([A-Z]{1,3}))?)/i', $dt, $match))
 		{
-			if (!isset($matches[7]))
+			// Set blank vars
+			$year = 1970;
+			$month = 1;
+			$day = 1;
+			$hour = 0;
+			$minute = 0;
+			$second = 0;
+			$timezone = false;
+			
+			// RFC 822
+			if (!empty($match[1]))
 			{
-				$matches[7] = '';
+				if (strlen($match[4]) == 2)
+				{
+					$year = ($match[4] < 70) ? "20$match[4]" : "19$match[4]";
+				}
+				else
+				{
+					$year = $match[4];
+				}
+				switch (strtolower($match[3]))
+				{
+					case 'jan':
+						$month = 1;
+						break;
+						
+					case 'feb':
+						$month = 2;
+						break;
+						
+					case 'mar':
+						$month = 3;
+						break;
+						
+					case 'apr':
+						$month = 4;
+						break;
+						
+					case 'may':
+						$month = 5;
+						break;
+						
+					case 'jun':
+						$month = 6;
+						break;
+						
+					case 'jul':
+						$month = 7;
+						break;
+						
+					case 'aug':
+						$month = 8;
+						break;
+						
+					case 'sep':
+						$month = 9;
+						break;
+						
+					case 'oct':
+						$month = 10;
+						break;
+						
+					case 'nov':
+						$month = 11;
+						break;
+						
+					case 'dec':
+						$month = 12;
+						break;
+				}
+				$day = $match[2];
 			}
-			if (!isset($matches[9]))
+			// ISO 8601
+			else
 			{
-				$matches[9] = '';
-			}
-			$matches[7] = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
-			switch (strlen($matches[9]))
-			{
-				case 0:
-					$timezone = '';
-					break;
+				// Year
+				if (!empty($match[7]))
+				{
+					$year = "$match[6]$match[7]";
 					
-				case 1:
-					$timezone = $military_timezone[strtoupper($matches[9])];
-					break;
-				
-				case 2:
-					$timezone = '-0000';
-					break;
-				
-				case 3:
-					$timezone = $north_american_timezone[strtoupper($matches[9])];
-					break;
-				
-				case 5:
-					$timezone = $matches[9];
-					break;
-				
-				case 6:
-					$timezone = substr_replace($matches[9], '', 3, 1);
-					break;
+					// Month
+					if (!empty($match[8]))
+					{
+						$month = $match[8];
+						
+						// Day
+						if (!empty($match[9]))
+						{
+							$day = $match[9];
+						}
+					}
+					
+					// Ordinal Day
+					else if (!empty($match[10]))
+					{
+						$day = $match[10];
+					}
+					
+					//  Week Date
+					else if (!empty($match[11]))
+					{
+						// Week Day
+						if (!empty($match[12]))
+						{
+							$day = $match[12];
+						}
+						
+						$first_day_of_year = date('w', mktime(0, 0, 0, 1, 1, $year));
+						if ($first_day_of_year == 0)
+						{
+							$first_day_of_year = 7;
+						}
+						
+						$day = 7 * ($match[11] - 1) + $day - ($first_day_of_year - 1);
+					}
+				}
+				else
+				{
+					$year = "$match[6]00";
+				}
 			}
-			$date = strtotime("$matches[1]-$matches[2]-$matches[3] $matches[4]:$matches[5]:$matches[7] $timezone");
-		}
-		else if (preg_match('/([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{2}|[0-9]{4})\s*([0-9]{2}):([0-9]{2})(:([0-9]{2}(\.[0-9]*)?))?\s*(UT|GMT|EST|EDT|CST|CDT|MST|MDT|PST|PDT|[a-z]|(\\+|-)[0-9]{4}|(\\+|-)[0-9]{2}:[0-9]{2})?/i', $date, $matches))
-		{
-			$three_month = array('Jan' => 1, 'Feb' => 2, 'Mar' => 3, 'Apr' => 4, 'May' => 5, 'Jun' => 6, 'Jul' => 7, 'Aug' => 8, 'Sep' => 9, 'Oct' => 10, 'Nov' => 11, 'Dec' => 12);
-			$month = $three_month[$matches[2]];
-			if (strlen($matches[3]) == 2)
+			// Time
+			for ($i = 14; $i <= 19; $i++)
 			{
-				$year = ($matches[3] < 70) ? "20$matches[3]" : "19$matches[3]";
+				if (!isset($match[$i]))
+				{
+					$match[$i] = '';
+				}
+			}
+			
+			$time = 0;
+			$time += ($match[14] + ('.' . $match[15])) * 3600;
+			$time += ($match[16] + ('.' . $match[17])) * 60;
+			$time += $match[18] + ('.' . $match[19]);
+			$hour = floor($time / 3600);
+			$time -= $hour * 3600;
+			$minute = floor($time / 60);
+			$time -= $minute * 60;
+			$second = round($time);
+			
+			// Timezone
+			if (!empty($match[20]))
+			{
+				// Alphabetic Timezone
+				if (!empty($match[26]))
+				{
+					// Military
+					if (strlen($match[26]) == 1)
+					{
+						if ($match[26] == 'Z' || $match[26] == 'z')
+						{
+							$timezone = 0;
+						}
+						else if (preg_match('/^[A-IK-Ya-ik-y]$/', $match[26]))
+						{
+							if ($rfc822)
+							{
+								$timezone = ord(strtoupper($match[26]));
+								
+								if ($timezone > 74)
+								{
+									$timezone--;
+								}
+								
+								if ($timezone <= 76)
+								{
+									$timezone = -($timezone - 64);
+								}
+								else
+								{
+									$timezone -= 76;
+								}
+								
+								$timezone *= 3600;
+							}
+							else
+							{
+								$timezone = 0;
+							}
+						}
+					}
+					// Code
+					else
+					{
+						switch (strtoupper($match[26]))
+						{
+							case 'UT':
+							case 'UTC':
+							case 'GMT':
+								$timezone = 0;
+								break;
+							
+							case 'EST':
+								$timezone = -18000;
+								break;
+							
+							case 'CST':
+								$timezone = -21600;
+								break;
+							
+							case 'MST':
+								$timezone = -25200;
+								break;
+							
+							case 'PST':
+								$timezone = -28800;
+								break;
+							
+							case 'EDT':
+								$timezone = -14400;
+								break;
+							
+							case 'CDT':
+								$timezone = -18000;
+								break;
+							
+							case 'MDT':
+								$timezone = -21600;
+								break;
+							
+							case 'PDT':
+								$timezone = -25200;
+								break;
+						}
+					}
+				}
+				// Timezone difference from UTC
+				else
+				{
+					for ($i = 21; $i <= 25; $i++)
+					{
+						if (!isset($match[$i]))
+						{
+							$match[$i] = '';
+						}
+					}
+					
+					$timezone = 0;
+					$timezone += ($match[22] + ('.' . $match[23])) * 3600;
+					$timezone += ($match[24] + ('.' . $match[25])) * 60;
+					$timezone = round($timezone);
+					
+					if ($match[21] == '-')
+					{
+						$timezone = -$timezone;
+					}
+				}
+			}
+			if ($timezone === false)
+			{
+				return mktime($hour, $minute, $second, $month, $day, $year);
 			}
 			else
 			{
-				$year = $matches[3];
+				return gmmktime($hour, $minute, $second, $month, $day, $year) - $timezone;
 			}
-			if (!isset($matches[7]))
-			{
-				$matches[7] = '';
-			}
-			if (!isset($matches[9]))
-			{
-				$matches[9] = '';
-			}
-			$second = str_pad(round($matches[7]), 2, '0', STR_PAD_LEFT);
-			switch (strlen($matches[9]))
-			{
-				case 0:
-					$timezone = '';
-					break;
-					
-				case 1:
-					$timezone = $military_timezone[strtoupper($matches[9])];
-					break;
-				
-				case 2:
-					$timezone = '-0000';
-					break;
-				
-				case 3:
-					$timezone = $north_american_timezone[strtoupper($matches[9])];
-					break;
-				
-				case 5:
-					$timezone = $matches[9];
-					break;
-				
-				case 6:
-					$timezone = substr_replace($matches[9], '', 3, 1);
-					break;
-			}
-			$date = strtotime("$year-$month-$matches[1] $matches[4]:$matches[5]:$second $timezone");
 		}
-		else
-		{
-			$date = strtotime($date);
-		}
-		if ($date !== false && $date !== -1)
-		{
-			return $date;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 	
 	function entities_decode($data, $encoding, &$cache)
