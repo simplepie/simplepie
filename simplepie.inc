@@ -4200,7 +4200,14 @@ class SimplePie_Misc
 				return gmmktime($hour, $minute, $second, $month, $day, $year) - $timezone;
 			}
 		}
-		return false;
+		else if (($time = strtotime($dt)) > 0)
+		{
+			return $time;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	function entities_decode($data, $encoding, &$cache)
