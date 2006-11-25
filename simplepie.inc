@@ -3924,24 +3924,26 @@ class SimplePie_Misc
 		8: ISO 8601 month
 		9: ISO 8601 day
 		10: ISO 8601 ordinal day
-		11: ISO 8601 week
-		12: ISO 8601 day of week
-		13: Time
-		14: Hour
-		15: Hour Decimal
-		16: Minute
-		17: Minute Decimal
-		18: Second
-		19: Second Decimal
-		20: Timezone
-		21: Diff ±
-		22: Hour
-		23: Hour Decimal
-		24: Minute
-		25: Minute Decimal
-		26: Alphabetic Timezone
+		11: ISO 8601 month
+		12: ISO 8601 day
+		13: ISO 8601 week
+		14: ISO 8601 day of week
+		15: Time
+		16: Hour
+		17: Hour Decimal
+		18: Minute
+		19: Minute Decimal
+		20: Second
+		21: Second Decimal
+		22: Timezone
+		23: Diff ±
+		24: Hour
+		25: Hour Decimal
+		26: Minute
+		27: Minute Decimal
+		28: Alphabetic Timezone
 		*/
-		if (preg_match('/(?:(([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{4}|[0-9]{2}))|(([0-9]{2})(?:([0-9]{2})(?:(?:-|\s)*(?:([0-9]{2})(?:(?:-|\s)*([0-9]{2}))?|([0-9]{3})|W([0-9]{2})(?:(?:-|\s)*([0-9]))?))?)?))((?:T|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*))?)?)?(?:\s)*((?:(\\+|-)([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*(?:([0-9]{2})(?:(?:,|\.)([0-9]*))?))?)|([A-Z]{1,3}))?)/i', $dt, $match))
+		if (preg_match('/(?:(([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{4}|[0-9]{2}))|(([0-9]{2})(?:([0-9]{2})(?:(?:-|\s)*(?:([0-9]{2})([0-9]{2})|([0-9]{3})|([0-9]{2})(?:(?:-|\s)*([0-9]{2}))?|W([0-9]{2})(?:(?:-|\s)*([0-9]))?))?)?))((?:T|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*))?)?)?(?:\s)*((?:(\\+|-)([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*(?:([0-9]{2})(?:(?:,|\.)([0-9]*))?))?)|([A-Z]{1,3}))?)?/i', $dt, $match))
 		{
 			// Set blank vars
 			$year = 1970;
@@ -4023,16 +4025,21 @@ class SimplePie_Misc
 				{
 					$year = "$match[6]$match[7]";
 					
-					// Month
-					if (!empty($match[8]))
+					// Two Digit Month/Day
+					if (!empty($match[11]))
+					{
+						$month = $match[11];
+						if (!empty($match[12]))
+						{
+							$day = $match[12];
+						}
+					}
+					
+					// Four Digit Month/Day
+					else if (!empty($match[8]))
 					{
 						$month = $match[8];
-						
-						// Day
-						if (!empty($match[9]))
-						{
-							$day = $match[9];
-						}
+						$day = $match[9];
 					}
 					
 					// Ordinal Day
@@ -4042,12 +4049,12 @@ class SimplePie_Misc
 					}
 					
 					//  Week Date
-					else if (!empty($match[11]))
+					else if (!empty($match[13]))
 					{
 						// Week Day
-						if (!empty($match[12]))
+						if (!empty($match[14]))
 						{
-							$day = $match[12];
+							$day = $match[14];
 						}
 						
 						$first_day_of_year = date('w', mktime(0, 0, 0, 1, 1, $year));
@@ -4056,7 +4063,7 @@ class SimplePie_Misc
 							$first_day_of_year = 7;
 						}
 						
-						$day = 7 * ($match[11] - 1) + $day - ($first_day_of_year - 1);
+						$day = 7 * ($match[13] - 1) + $day - ($first_day_of_year - 1);
 					}
 				}
 				else
@@ -4065,129 +4072,132 @@ class SimplePie_Misc
 				}
 			}
 			// Time
-			for ($i = 14; $i <= 19; $i++)
+			if (!empty($match[15]))
 			{
-				if (!isset($match[$i]))
+				for ($i = 16; $i <= 21; $i++)
 				{
-					$match[$i] = '';
-				}
-			}
-			
-			$time = 0;
-			$time += ($match[14] + ('.' . $match[15])) * 3600;
-			$time += ($match[16] + ('.' . $match[17])) * 60;
-			$time += $match[18] + ('.' . $match[19]);
-			$hour = floor($time / 3600);
-			$time -= $hour * 3600;
-			$minute = floor($time / 60);
-			$time -= $minute * 60;
-			$second = round($time);
-			
-			// Timezone
-			if (!empty($match[20]))
-			{
-				// Alphabetic Timezone
-				if (!empty($match[26]))
-				{
-					// Military
-					if (strlen($match[26]) == 1)
+					if (!isset($match[$i]))
 					{
-						if ($match[26] == 'Z' || $match[26] == 'z')
+						$match[$i] = '';
+					}
+				}
+				
+				$time = 0;
+				$time += ($match[16] + ('.' . $match[17])) * 3600;
+				$time += ($match[18] + ('.' . $match[19])) * 60;
+				$time += $match[20] + ('.' . $match[21]);
+				$hour = floor($time / 3600);
+				$time -= $hour * 3600;
+				$minute = floor($time / 60);
+				$time -= $minute * 60;
+				$second = round($time);
+				
+				// Timezone
+				if (!empty($match[22]))
+				{
+					// Alphabetic Timezone
+					if (!empty($match[28]))
+					{
+						// Military
+						if (strlen($match[28]) == 1)
 						{
-							$timezone = 0;
-						}
-						else if (preg_match('/^[A-IK-Ya-ik-y]$/', $match[26]))
-						{
-							if ($rfc822)
+							if ($match[28] == 'Z' || $match[28] == 'z')
 							{
-								$timezone = ord(strtoupper($match[26]));
-								
-								if ($timezone > 74)
+								$timezone = 0;
+							}
+							else if (preg_match('/^[A-IK-Ya-ik-y]$/', $match[28]))
+							{
+								if ($rfc822)
 								{
-									$timezone--;
-								}
-								
-								if ($timezone <= 76)
-								{
-									$timezone = -($timezone - 64);
+									$timezone = ord(strtoupper($match[28]));
+									
+									if ($timezone > 74)
+									{
+										$timezone--;
+									}
+									
+									if ($timezone <= 76)
+									{
+										$timezone = -($timezone - 64);
+									}
+									else
+									{
+										$timezone -= 76;
+									}
+									
+									$timezone *= 3600;
 								}
 								else
 								{
-									$timezone -= 76;
+									$timezone = 0;
 								}
-								
-								$timezone *= 3600;
 							}
-							else
+						}
+						// Code
+						else
+						{
+							switch (strtoupper($match[28]))
 							{
-								$timezone = 0;
+								case 'UT':
+								case 'UTC':
+								case 'GMT':
+									$timezone = 0;
+									break;
+								
+								case 'EST':
+									$timezone = -18000;
+									break;
+								
+								case 'CST':
+									$timezone = -21600;
+									break;
+								
+								case 'MST':
+									$timezone = -25200;
+									break;
+								
+								case 'PST':
+									$timezone = -28800;
+									break;
+								
+								case 'EDT':
+									$timezone = -14400;
+									break;
+								
+								case 'CDT':
+									$timezone = -18000;
+									break;
+								
+								case 'MDT':
+									$timezone = -21600;
+									break;
+								
+								case 'PDT':
+									$timezone = -25200;
+									break;
 							}
 						}
 					}
-					// Code
+					// Timezone difference from UTC
 					else
 					{
-						switch (strtoupper($match[26]))
+						for ($i = 23; $i <= 27; $i++)
 						{
-							case 'UT':
-							case 'UTC':
-							case 'GMT':
-								$timezone = 0;
-								break;
-							
-							case 'EST':
-								$timezone = -18000;
-								break;
-							
-							case 'CST':
-								$timezone = -21600;
-								break;
-							
-							case 'MST':
-								$timezone = -25200;
-								break;
-							
-							case 'PST':
-								$timezone = -28800;
-								break;
-							
-							case 'EDT':
-								$timezone = -14400;
-								break;
-							
-							case 'CDT':
-								$timezone = -18000;
-								break;
-							
-							case 'MDT':
-								$timezone = -21600;
-								break;
-							
-							case 'PDT':
-								$timezone = -25200;
-								break;
+							if (!isset($match[$i]))
+							{
+								$match[$i] = '';
+							}
 						}
-					}
-				}
-				// Timezone difference from UTC
-				else
-				{
-					for ($i = 21; $i <= 25; $i++)
-					{
-						if (!isset($match[$i]))
+						
+						$timezone = 0;
+						$timezone += ($match[24] + ('.' . $match[25])) * 3600;
+						$timezone += ($match[26] + ('.' . $match[27])) * 60;
+						$timezone = round($timezone);
+						
+						if ($match[23] == '-')
 						{
-							$match[$i] = '';
+							$timezone = -$timezone;
 						}
-					}
-					
-					$timezone = 0;
-					$timezone += ($match[22] + ('.' . $match[23])) * 3600;
-					$timezone += ($match[24] + ('.' . $match[25])) * 60;
-					$timezone = round($timezone);
-					
-					if ($match[21] == '-')
-					{
-						$timezone = -$timezone;
 					}
 				}
 			}
