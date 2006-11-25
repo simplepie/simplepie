@@ -2757,12 +2757,12 @@ class SimplePie_Misc
 							else if (strpos($input, '/../') === 0)
 							{
 								$input = substr_replace($input, '/', 0, 4);
-								$target['path'] = preg_replace('/(\/)?([^\/]+)$/msiU', '', $target['path']);
+								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
 							}
 							else if (strpos($input, '/..') === 0 && SimplePie_Misc::strendpos($input, '/..') === 0)
 							{
 								$input = substr_replace($input, '/', 0, 3);
-								$target['path'] = preg_replace('/(\/)?([^\/]+)$/msiU', '', $target['path']);
+								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
 							}
 							else if ($input == '.' || $input == '..')
 							{
@@ -2770,7 +2770,7 @@ class SimplePie_Misc
 							}
 							else
 							{
-								if (preg_match('/^(.+)(\/|$)/msiU', $input, $match))
+								if (preg_match('/^(.+)(\/|$)/U', $input, $match))
 								{
 									$target['path'] .= $match[1];
 									$input = substr_replace($input, '', 0, strlen($match[1]));
@@ -5880,6 +5880,7 @@ class SimplePie_Sanitize
 			{
 				if (preg_match("/$attribute='(.*)'/siU", $data[0], $attrib) || preg_match("/$attribute=\"(.*)\"/siU", $data[0], $attrib) || preg_match("/$attribute=(.*)[ |\/|>]/siU", $data[0], $attrib))
 				{
+					$attrib[1] = rawurlencode(rawurldecode($attrib[1]));
 					$new_tag = str_replace($attrib[1], SimplePie_Misc::absolutize_url($attrib[1], $xmlbase), $attrib[0]);
 					$data[0] = str_replace($attrib[0], $new_tag, $data[0]);
 				}
