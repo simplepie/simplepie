@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>Flash Video Player 3.1 ReadMe</title>
+
+
+<style type="text/css">
+body { color:#000; margin:0; padding:0; font-family:Arial, sans-serif; font-size:13px; line-height:18px; background-color:#EEE; }
+h1 { margin-top:40px; line-height:24px; border-bottom:2px solid #572; font-size:20px; }
+h2 { margin-top: 50px; font-size: 16px; }
+p { margin-top:5px; margin-bottom:15px; }
+a { color: #572; }
+a:hover { color: #000; }
+table { margin-top:10px; margin-bottom:30px; border-collapse:collapse; width:100%; font-size:12px; font-family:monospace;}
+td { vertical-align:top; padding: 5px; border-bottom:1px solid #FFF; }
+#thead { background-color:#572; color:#FFF; }
+#name { width: 100px; }
+#values { width: 125px; }
+.tlight { background-color:#EEE;}
+pre { margin-top:5px; margin-bottom:15px; font-family:monospace; font-size:12px; color:#572; }
+ul,ol { margin:5px 0 15px 50px;padding:0; list-style-type:square;}
+#wrapper { width: 700px; padding:10px 50px; text-align:left; margin: 0 auto; background-color:#FFF;}
+#lead { font-weight:bold; font-style:italic; }
+#footer { margin-top:60px; font-size:11px; clear:both; width:480px; padding-bottom:5px; }
+</style>
+
+
+</head>
+<body>
+<div id="wrapper">
+
+
+<h1>FLASH VIDEO PLAYER 3.1 README</h1>
+<p id="lead">The Flash Video (FLV) Player can be used standalone, without the need for the Flash authoring tool. The player allows you to show your videos more controlled and to a broader audience than with Quicktime, Windows Media or Real Media. It supports playback of a single FLV file, RTMP streams or RSS/XSPF playlists, a wide range of flashvars (settings) for tweaking both behavior and appearance and an extensive, documented javascript/actionscript API. Contents of this readme:</p>
+<ul>
+	<li><a href="#licensing">Licensing</a></li>
+	<li><a href="#download">Download</a></li>
+	<li><a href="#plugins">Plugins</a></li>
+	<li><a href="#installing">Installing</a></li>
+	<li><a href="#flashvars">Flashvars</a></li>
+	<li><a href="#playlists">Playlists</a></li>
+	<li><a href="#history">History</a></li>
+	<li><a href="#support">Support</a></li>
+</ul>
+
+
+<h2 id="licensing">LICENSING</h2>
+<p>This script is licensed under a <a href="http://creativecommons.org/licenses/by-nc-sa/2.0/" title="the Creative Commons Licensing Terms">Creative Commons License</a>. It allows you to use and modify the script for noncommercial purposes. For commercial use, I distribute licenses of the script for 15 euros. For more info and instant ordering, please <a href="http://www.jeroenwijering.com/?order=form" title="Order commercial licenses">advance to my online order page</a>!</p>
+
+
+<h2 id="download">DOWNLOAD</h2>
+<p>You can <a href="http://www.jeroenwijering.com/upload/flash_flv_player.zip" title="the Flash Video Player download">download the Flash Video Player here</a>. It includes the source files (Flash8) and a readme with tips regarding the installation and use of this script. Please read it carefully!</p>
+
+
+<h2 id="plugins">PLUGINS</h2>
+<p>Unfortunately, there are no plugins for inserting the Flash Video Player 3 into a much-used CMS yet. If you have written any such plugin, please <a href="http://www.jeroenwijering.com/?thread=CMS_Plugins_for_the_players">report so in my forum</a>, so I can set a link to your plugin from here!</p>
+
+
+<h2 id="installing">INSTALLING</h2>
+<p>The example flvplayer.html works right out of the box. If you look at it's source code (in a text or HTML editor), you can see that both instances of the flvplayer are inserted in the page with a small javascript. These javascripts use the external ufo.js script by <a href="http://www.bobbyvandersluis.com/ufo/">Bobby van der Sluis</a> in order to prevent the annoying "click here to activate" message. If you copy the flvplayer to your website, make sure you don't forget to copy the ufo.js file as well. The ufo.js is inserted in the HTML page right at the top:</p>
+<pre>&lt;script type="text/javascript" src="ufo.js"&gt;&lt;/script&gt;</pre>
+<p>An insertion javascript allows you to set the location of the movie, it's width and height, the version and build of Flash that is needed (just leave this to 7 and 0) and the backgroundcolor of the movie. You can also send a list of so-called Flashvars to the script (for that see the next paragraph):</p>
+<pre>&lt;p id="player1"&gt;&lt;a href="http://www.macromedia.com/go/getflashplayer"&gt;Get the Flash Player&lt;/a&gt; to see this player.&lt;/p&gt;
+&lt;script type="text/javascript"&gt;
+  var FO = { movie:"flvplayer.swf",width:"300",height:"20",majorversion:"7",build:"0",bgcolor:"#FFFFFF",
+             flashvars:"file=video.flv&amp;showdigits=true&amp;autostart=true" };
+UFO.create(FO,"player1");
+&lt;/script&gt;</pre>
+<p>When the HTML page loads, the javascript replaces the part of your HTML with the "id" you provided in the javascript (in this case the paragraph with the id "player1"), and you have a Flash player running on your website.</p>
+<p>If you cannot use javascript on your website (for example if you run the flvplayer on a profile site like MySpace), you can use an "embed" code instead of the javascript. Your flvplayer.swf will probably be on another server then. That is OK, but note that your playlist.xml should always reside on the same server than your SWF, or else the security restrictions won't allow the flvplayer to load it:</p>
+<pre>&lt;embed src="http://www.myfileserver.com/folder/flvplayer.swf" width="300" height="200" bgcolor="#FFFFFF"
+type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" 
+flashvars="file=http://www.myfileserver.com/folder/playlist.xml&amp;showdigits=true&amp;autostart=true" /&gt;</pre>
+
+
+<h2 id="flashvars">FLASHVARS</h2>
+<p>The flashvars are settings you can insert into your HTML code to control both behavior and appearance of the flvplayer. In the installation example above, you can see how to insert these flashvars: just insert them into the "flashvars" attribute of your embed code, and stack them with the "&amp;" symbol. Here is a list of all flashvars, their default values are bold:</p>
+<table>
+<tr id="thead"><td id="name">Name</td><td id="values">Values</td><td>Explanation</td></tr>
+<tr><td>file</td><td>URL (<b>video.flv</b>)</td><td>The location of the file to play. It can be a single FLV file, an RTMP stream * or an RSS or XSPF playlist. For more info about playlists, see below.</td></tr>
+<tr class="tlight"><td>autostart</td><td>true,<b>false</b></td><td>Set this to "true" if you want the m3player to automatically start playing.</td></tr>
+<tr><td>shuffle</td><td><b>true</b>,false</td><td>If you have a playlist, the flvplayer will shuffle through the songs. Set this to "false" if ou don't want that.</td></tr>
+<tr class="tlight"><td>repeat</td><td>true,<b>false</b></td><td>Set this to true to make the flvplayer automatically repeat playing when a song is completed.</td></tr>
+<tr><td>backcolor</td><td>COLOR (<b>0xFFFFFF</b>)</td><td>Backgroundcolor of the flvplayer. In the "extras" folder of this download there's a colorpicker script with which you can pick a hexadecimal color.</td></tr>
+<tr class="tlight"><td>frontcolor</td><td>COLOR (<b>0x000000</b>)</td><td>Texts / buttons color of the flvplayer. In the "extras" folder of this download there's a colorpicker script with which you pick a right hexadecimal color.</td></tr>
+<tr><td>lightcolor</td><td>COLOR (<b>0x000000</b>)</td><td>Rollover/ active color of the flvplayer. In the "extras" folder of this download there's a colorpicker script with which you can pick a hexadecimal color.</td></tr>
+<tr class="tlight"><td>displayheight</td><td>NUMBER (<b>height-20px</b>)</td><td>Height of the display.</td></tr>
+<tr><td>linkfromdisplay</td><td>true, <b>false</b></td><td>If you defined links in your playlist and set this to true, a click on the display will jump to the link. Else a click on the display will play/pause the  MP3.</td></tr>
+<tr class="tlight"><td>overstretch</td><td>true,<b>false</b></td><td>Set this to false if you don't want the display image/video to overstretch to fill the entire display.</td></tr>
+<tr><td>showdigits</td><td>true,<b>false</b></td><td>Set this to true to show the digits for % loaded, elapsed and remaining time in the flvplayer.</td></tr>
+<tr class="tlight"><td>showfsbutton</td><td>true,<b>false</b></td><td>Set this to true to show the fullscreen button.</td></tr>
+<tr><td>fullscreenpage</td><td>URL (<b>fullscreen.html</b>)</td><td>HTML page to jump to for fullscreen. This HTML page has the flvplayer included at 100% screensize.</td></tr>
+<tr class="tlight"><td>fsreturnpage</td><td>URL (<b>flvplayer.html</b>)</td><td>HTML page to return to from fullscreen. This usually is the page you currently include the player into. Both the "fsreturnpage" and "file" are saved as a flashcookie before jumping to fullscreen.</td></tr>
+<tr><td>fullscreenmode</td><td>true,<b>false</b></td><td>Set this to true to tell the player it is in fullscreen mode (it's done in the fullscreen.html). If so, it shows the controls 50% transparent and links the fullscreen button to the fsreturnpage.</td></tr>
+<tr class="tlight"><td>volume</td><td>NUMBER (<b>80</b>)</td><td>Startup volume of the flvplayer.</td></tr>
+<tr><td>bufferlength</td><td>NUMBER (<b>5</b>)</td><td>Number of seconds a video should be buffered ahead before the player starts it. Set this smaller for fast connections or short videos. Set this bigger for slow connections.</td></tr>
+<tr class="tlight"><td>autoscroll</td><td>true,<b>false</b></td><td>Set this to true to let the playlist automatically scroll, based upon the mouse cursor. It defaults to false, at which you'll see a scrollbar.</td></tr>
+<tr><td>thumbsinplaylist</td><td>true,<b>false</b></td><td>Set this to true if you want to show small thumbnails of the cover images in the playlist.</td></tr>
+<tr class="tlight"><td>callback</td><td>URL (<b>undefined</b>)</td><td>You can set the location of a server-side script here to track callback statistics. The flvplayer will send the url, title and id of any song that is either started or completed by the user. A small example of a statistics script can be found in the "extras" folder of this download.</td></tr>
+<tr><td>streamscript</td><td>URL (<b>undefined</b>)</td><td>URL of an optional script to use for 'fake streaming' FLV files. The parameters 'file' and 'pos' are sent to the script. An example is 'stream.php' in the 'extras' folder, more info <a href="http://www.flashcomguru.com/index.cfm/2005/11/2/Streaming-flv-video-via-PHP-take-two">can be found here</a></td></tr>
+<tr class="tlight"><td>enablejs</td><td>true, <b>false</b></td><td>Set this to "true" to enable javascript interaction. An example of how to control the rotator with javascript can be found <a href="http://www.jeroenwijering.com/embed/javascript.html">here at my website</a>. The example uses the mediaplayer, but all controls are similar to the ones for the flvplayer.</td></tr>
+<tr><td>width</td><td>NUMBER</td><td>Force the width of your movie if you have a messed-up display IE. Normally, just setting the width in your HTML will be sufficient.</td></tr>
+<tr class="tlight"><td>height</td><td>NUMBER</td><td>Force the height of your movie if you have a messed-up display IE. Normally, just setting the height in your HTML will be sufficient.</td></tr>
+</table>
+<p>* For refering to RTMP streams, the additional "id" flashvar has to be sent as well. Example: "&amp;file=rtmp://my.streaming.server/mypath&amp;id=video_one". You can also insert streams into playlists with this file/id pair (see below).</p>
+<p>Note that you can urlencode your flashvars in order to prevent the use of the ? = &amp; symbols. The urlencoded values for these symbols are: <i>?</i> &rarr; <i>%3F</i>,  <i>=</i> &rarr; <i>%3D</i>, <i>&amp;</i> &rarr; <i>%26</i>. So if your "file" flashvar has the value of getflv.php?id=23421, you can set it like this: getflv.php%3Fid%3D23421.</p>
+
+
+<h2 id="playlists">PLAYLISTS</h2>
+
+<p>Besides a single file, you can also load an entire playlist of videos into the flvplayer. The flvplayer supports two commonly used playlist formats to ensure maximum compatibility: <a href="http://blogs.law.harvard.edu/tech/rss">RSS</a> (much-used for Podcasts) and <a href="http://www.xspf.org">XSPF</a> (much used for CC music). The example playlist.xml of this download is in XSPF format.</p>
+<p>Note that you can also send each tag like a flashvar to the flvplayer, in case you use a single FLV file. So if you have a single file "video.flv" and want to display a preview image, you can set the flashvars "file=video.flv&amp;image=preview.jpg". Here is a list of all flashvars and their corresponding XSPF/RSS tags that are supported by the flvplayer. Their names should be self-explanatory:</p>
+<table>
+<tr id="thead"><td>Flashvar</td><td>XSPF Tag</td><td>RSS Tag</td></tr>
+<tr><td>file</td><td>location</td><td>enclosure.url or media:content</td></tr>
+<tr class="tlight"><td>title</td><td>title</td><td>title</td></tr>
+<tr><td>author</td><td>creator</td><td>author</td></tr>
+<tr class="tlight"><td>link</td><td>info</td><td>link</td></tr>
+<tr><td>image</td><td>image</td><td>media:thumbnail.url or itunes:image.href</td></tr>
+<tr class="tlight"><td>id</td><td>identifier</td><td>guid</td></tr>
+<tr><td>start</td><td>meta *</td><td>-</td></tr>
+</table>
+<p>* The start flashvar allows you to provide a starting percentage for each playlist item. This way, you can turn a playlist into a chapter-index if your refer each item to the same file, but with different starting points. However, if you set a starting point 50% inside a file, the player will still have to download the first 50% as well. This is how the tag looks like in XSPF:</p>
+
+<pre>&lt;meta rel="http://www.jeroenwijering.com/start"&gt;50&lt;/meta&gt;</pre>
+
+<p>I'd like to point out two common pitfalls users encounter when using playlists. First, a playlist should always reside on the same server as the SWF file, due to security restrictions of the Flash Player (there is a small workaround, the "external_feed.php" in the "extras" folder of this download). Second, always try to use full URL's (including the http:// part) when referring to files, links or images in your playlists. It will save you a lot of troubles with unresponsive flvplayers or "file not found" errors!</p>
+
+<p>I've included some additional playlist-related files in the "extras" folder of this download. First, the "force_download.php" script will enable you to force a download of your mediafiles instead of opening them in your Windows MediaPlayer or any other program. If you copy this script to your website and fill out the "link" tags of your playlist like this: "force_download.php?file=path_to_my_file.mp3", the small link buttons of the playlist will act like download buttons for your files.</p>
+
+<p>Second, the "extras" folder contains a PHP example of how to create a playlist on-the-fly, either by pulling data off a database or scanning a certain directory for mediafiles. In both cases you can feed the php file to the flvplayer with the "file" flashvar.</p>
+
+
+<h2 id="history">HISTORY</h2> 
+<ol>
+<li>3.1: Various Bugfixes. Added RTMP streaming support. [<a href="http://www.jeroenwijering.com/upload/flash_flv_player.zip">download</a>]</li>
+<li>3.0: Complete rewrite of the flvplayer. Added XSPF/RSS playlists and documented actionscript/javascript API.</li>
+<li>2.5: New squarish design. Video smoothing fixed. Added flashvars for image, repeat and clicktext. [<a href="http://www.jeroenwijering.com/upload/flash_flv_player_25.zip">download</a>]</li>
+<li>2.0: First FLVPlayer without mediacomponent dependencies. Includes an autostart flashvar and the ability to load a cover image. [<a href="http://www.jeroenwijering.com/upload/flash_flv_player_20.zip">download</a>]</li>
+</ol>
+
+
+<h2 id="support">SUPPORT</h2>
+<p>If your progressbar isn't running or if your video dimensions are messed-up, your FLV file doesn't have correct metadata inserted. You can fix this by using the small tool available at <a href="http://www.buraks.com/flvmdi/" title="The Buraks FLV Metadata Injector">www.buraks.com/flvmdi/</a>.</p>
+<p>This player will run quite OK inside the Flash Player 7. However, the following features are not supported: display of GIF/PNG images, smoothing of scaled images/video, VP6 encoded video, javascript control and the digits in the controlbar.</p>
+<p>For tips, tricks, additional info and bug reports, you can always have a look at my forum's <a href="http://www.jeroenwijering.com?forum=Flash_FLV_Player">Flash FLV Player threads</a>.</p>
+<p>For more info about the embedding of Flash in HTML, have a look at my <a href="http://www.jeroenwijering.com/?item=Embedding_Flash">Embedding Flash article</a>.</p>
+<p>For more info about Flash Video and some compression tips, check out my <a href="http://www.jeroenwijering.com/?item=FLV_Video_Compression">Flash Video Compression article</a>.</p>
+
+
+<div id="footer">website: <a href="http://www.jeroenwijering.com">www.jeroenwijering.com</a> | last update: november 17th, 2006</div>
+</div>
+</body>
+</html>

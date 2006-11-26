@@ -614,7 +614,16 @@ function embed_quicktime(type, bgcolor, width, height, link, placeholder, loop) 
 }
 
 function embed_flash(bgcolor, width, height, link, loop, type) {
-	document.writeln('<embed src="'+link+'" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="'+type+'" quality="high" width="'+width+'" height="'+height+'" bgcolor="'+bgcolor+'" loop="'+loop+'"></embed>');
+	document.writeln('<embed src="'+link+'" pluginspage="http://www.macromedia.com/go/getflashplayer" type="'+type+'" quality="high" width="'+width+'" height="'+height+'" bgcolor="'+bgcolor+'" loop="'+loop+'"></embed>');
+}
+
+function embed_flv(width, height, link, placeholder, loop, player) {
+	if (placeholder != '') {
+		document.writeln('<embed src="'+player+'" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="'+width+'" height="'+height+'" wmode="transparent" flashvars="file='+link+'&autostart=false&image='+placeholder+'&repeat='+loop+'&clicktext=%20&showfsbutton=false"></embed>');
+	}
+	else {
+		document.writeln('<embed src="'+player+'" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="'+width+'" height="'+height+'" wmode="transparent" flashvars="file='+link+'&autostart=false&repeat='+loop+'&showfsbutton=false"></embed>');
+	}
 }
 
 function embed_wmedia(width, height, link) {
@@ -1136,12 +1145,7 @@ EOT;
 	{
 		return $this->subscribe_service('http://www.odeo.com/listen/subscribe?feed=');
 	}
-	
-	function subscribe_pluck()
-	{
-		return $this->subscribe_service('http://client.pluck.com/pluckit/prompt.aspx?GCID=C12286x053&amp;a=');
-	}
-	
+
 	function subscribe_podnova()
 	{
 		return $this->subscribe_service('http://www.podnova.com/index_your_podcasts.srf?action=add&amp;url=');
@@ -2071,6 +2075,7 @@ class SimplePie_Enclosure
 		$width = 'auto';
 		$height = 'auto';
 		$bgcolor = '#ffffff';
+		$flvplayer = '';
 
 		// Process options and reassign values as necessary
 		if (is_array($options))
@@ -2120,6 +2125,10 @@ class SimplePie_Enclosure
 						case 'bgcolor':
 							$bgcolor = $opt[1];
 							break;
+						
+						case 'flvplayer':
+							$flvplayer = $opt[1];
+							break;
 					}
 				}
 			}
@@ -2128,7 +2137,7 @@ class SimplePie_Enclosure
 		$type = strtolower($this->get_type());
 
 		// If we encounter an unsupported mime-type, check the file extension and guess intelligently.
-		if (!in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'x-audio/mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video', 'application/x-shockwave-flash', 'application/futuresplash', 'application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
+		if (!in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'x-audio/mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/flv', 'video/x-flv', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video', 'application/x-shockwave-flash', 'application/futuresplash', 'application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
 		{			
 			switch (strtolower($this->get_extension()))
 			{
@@ -2190,6 +2199,10 @@ class SimplePie_Enclosure
 
 				case 'asf':
 					$type = 'video/x-ms-asf';
+					break;
+
+				case 'flv':
+					$type = 'video/x-flv';
 					break;
 
 				case 'm1a':
@@ -2338,6 +2351,25 @@ class SimplePie_Enclosure
 			else
 			{
 				$embed .= "<script type='text/javascript'>embed_flash('$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$loop', '$type');</script>";
+			}
+		}
+
+		// Flash Video file types.
+		else if (in_array($type, array('video/flv', 'video/x-flv')) && ($flvplayer != ''))
+		{
+			$height += 20;
+			if ($native)
+			{
+				if ($placeholder != "") {
+					$embed .= "<embed src=\"$flvplayer\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&image=$placeholder&repeat=$loop&clicktext=%20&showfsbutton=false\"></embed>";
+				}
+				else {
+					$embed .= "<embed src=\"$flvplayer\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&repeat=$loop&showfsbutton=false\"></embed>";
+				}
+			}
+			else
+			{
+				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link()) . "', '$placeholder', '$loop', '$flvplayer');</script>";
 			}
 		}
 
