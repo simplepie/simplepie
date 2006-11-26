@@ -4129,7 +4129,7 @@ class SimplePie_Misc
 							{
 								$timezone = 0;
 							}
-							else if (preg_match('/^[A-IK-Ya-ik-y]$/', $match[28]))
+							else if (preg_match('/^[a-ik-y]$/i', $match[28]))
 							{
 								if ($rfc822)
 								{
@@ -4347,7 +4347,7 @@ class SimplePie_Locator
 	function is_feed(&$file)
 	{
 		$body = SimplePie_Misc::strip_comments($file->body());
-		if (preg_match('/<(\w+\:)?rss/msiU', $body) || preg_match('/<(\w+\:)?RDF/mi', $body) || preg_match('/<(\w+\:)?feed/mi', $body))
+		if (preg_match('/<(\w+:)?(rss|RDF|feed)/i', $body))
 		{
 			return true;
 		}
@@ -4388,7 +4388,7 @@ class SimplePie_Locator
 			{
 				$href = trim($link['attribs']['HREF']['data']);
 				$parsed = SimplePie_Misc::parse_url($href);
-				if (empty($parsed['scheme']) || preg_match('/^http(s)?$/i', $parsed['scheme']))
+				if (empty($parsed['scheme']) || preg_match('/^(http(s)|feed)?$/i', $parsed['scheme']))
 				{
 					$current = SimplePie_Misc::parse_url($this->file->url);
 					if (empty($parsed['authority']) || $parsed['authority'] == $current['authority'])
@@ -4513,7 +4513,7 @@ class SimplePie_Parser
 		}
 		
 		// Make sure the XML prolog is sane and has the correct encoding
-		if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog))
+		if (preg_match('/^<\?xml(.*)?>/siU', $data, $prolog))
 		{
 			$data = substr_replace($data, '', 0, strlen($prolog[0]));
 		}
@@ -4521,7 +4521,7 @@ class SimplePie_Parser
 		
 		// Put some data into CDATA blocks
 		// If we're RSS
-		if ((stristr($data, '<rss') || preg_match('/<([a-z0-9]+\:)?RDF/mi', $data)) && (preg_match('/<([a-z0-9]+\:)?channel/mi', $data) || preg_match('/<([a-z0-9]+\:)?item/mi', $data)))
+		if (preg_match('/<(\w+:)?(rss|RDF)/i', $data))
 		{
 			$sp_elements = array(
 				'author',
