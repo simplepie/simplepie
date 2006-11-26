@@ -424,7 +424,7 @@ class SimplePie
 	 * @see SIMPLEPIE_LOCATOR_ALL
 	 * @param int $level Feed Autodiscovery Level (use SIMPLEPIE_LOCATOR
 	 * constants, with bitwise OR operator)
-	 * @return int $level cast to an int, if it wasn't already an int
+	 * @return int Autodiscovery Level
 	 */
 	function set_autodiscovery_level($level = SIMPLEPIE_LOCATOR_ALL)
 	{
@@ -491,30 +491,22 @@ class SimplePie
 		$this->force_fsockopen = (bool) $enable;
 	}
 	
+	/**
+	 * Set callback function to create cache filename with
+	 *
+	 * @access public
+	 * @param mixed $function Callback function
+	 * @return mixed Callback function (or sha1 if it doesn't exist)
+	 */
 	function set_cache_name_function($function = 'sha1')
 	{
-		$function = strtolower(trim($function));
-		switch ($function)
+		if (is_callable($function))
 		{
-			case 'crc32':
-				$this->cache_name_function = 'crc32';
-				break;
-			
-			case 'md5':
-				$this->cache_name_function = 'md5';
-				break;
-			
-			case 'rawurlencode':
-				$this->cache_name_function = 'rawurlencode';
-				break;
-			
-			case 'urlencode':
-				$this->cache_name_function = 'urlencode';
-				break;
-			
-			default:
-				$this->cache_name_function = 'sha1';
-				break;
+			return $this->cache_name_function = $function;
+		}
+		else
+		{
+			return $this->cache_name_function = 'sha1';
 		}
 	}
 	
