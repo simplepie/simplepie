@@ -2793,6 +2793,11 @@ class SimplePie_Misc
 									$target['path'] .= $match[1];
 									$input = substr_replace($input, '', 0, strlen($match[1]));
 								}
+								else
+								{
+									// We've ended up in a recursive loop, so do what we otherwise never will: return false.
+									return false;
+								}
 							}
 						}
 					}
@@ -2823,7 +2828,8 @@ class SimplePie_Misc
 			}
 			else
 			{
-				return false;
+				// No base URL, just return the relative URL
+				$target = $relative;
 			}
 			$return = '';
 			if (!empty($target['scheme']))
