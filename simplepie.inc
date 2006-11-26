@@ -618,12 +618,7 @@ function embed_flash(bgcolor, width, height, link, loop, type) {
 }
 
 function embed_flv(width, height, link, placeholder, loop, player) {
-	if (placeholder != '') {
-		document.writeln('<embed src="'+player+'" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="'+width+'" height="'+height+'" wmode="transparent" flashvars="file='+link+'&autostart=false&image='+placeholder+'&repeat='+loop+'&clicktext=%20&showfsbutton=false"></embed>');
-	}
-	else {
-		document.writeln('<embed src="'+player+'" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="'+width+'" height="'+height+'" wmode="transparent" flashvars="file='+link+'&autostart=false&repeat='+loop+'&showfsbutton=false"></embed>');
-	}
+	document.writeln('<embed src="'+player+'" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="'+width+'" height="'+height+'" wmode="transparent" flashvars="file='+link+'&autostart=false&repeat='+loop+'&showdigits=true&showfsbutton=false"></embed>');
 }
 
 function embed_wmedia(width, height, link) {
@@ -2360,12 +2355,7 @@ class SimplePie_Enclosure
 			$height += 20;
 			if ($native)
 			{
-				if ($placeholder != "") {
-					$embed .= "<embed src=\"$flvplayer\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&image=$placeholder&repeat=$loop&clicktext=%20&showfsbutton=false\"></embed>";
-				}
-				else {
-					$embed .= "<embed src=\"$flvplayer\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&repeat=$loop&showfsbutton=false\"></embed>";
-				}
+				$embed .= "<embed src=\"$flvplayer\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
 			}
 			else
 			{
