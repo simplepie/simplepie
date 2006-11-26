@@ -636,8 +636,9 @@ EOT;
 			
 			if (!empty($this->feed_url))
 			{
+				$parsed_feed_url = parse_url($this->feed_url);
 				// Decide whether to enable caching
-				if ($this->cache && preg_match('/^http(s)?:\/\//i', $this->feed_url))
+				if ($this->cache && !empty($parsed_feed_url['scheme']))
 				{
 					$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
 				}
@@ -2787,7 +2788,7 @@ class SimplePie_Misc
 							}
 							else
 							{
-								if (preg_match('/^(.+)(\/|$)/U', $input, $match))
+								if (preg_match('/^(.+)(\/|$)/sU', $input, $match))
 								{
 									$target['path'] .= $match[1];
 									$input = substr_replace($input, '', 0, strlen($match[1]));
@@ -5790,12 +5791,16 @@ class SimplePie_Sanitize
 		// Based on recommendations by Mark Pilgrim at:
 		// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
 		if ($this->strip_htmltags)
-		{
-			foreach ($this->strip_htmltags as $tag)
-			{
-				$data = preg_replace_callback("/<($tag)((\s*((\w+:)?\w+)(\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))?)*)\s*(\/>|>(.*)<\/($tag)((\s*((\w+:)?\w+)(\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))?)*)\s*>)/msiU", array(&$this, 'do_strip_htmltags'), $data);
-			}
-		}
+				{
+					foreach ($this->strip_htmltags as $tag)
+					{
+						$pcre = "/<($tag)((?:\s*(?:(?:\w+:)?\w+)(?:\s*=\s*(?:\"(?:[^\"]*)\"|'(?:[^']*)'|(?:[a-z0-9\-._:]*)))?)*)\s*(\/>|>(.*)<\/($tag)((?:\s*(?:(?:\w+:)?\w+)(?:\s*=\s*(?:\"(?:[^\"]*)\"|'(?:[^']*)'|(?:[a-z0-9\-._:]*)))?)*)\s*>)/si";
+						while (preg_match($pcre, $data))
+						{
+							$data = preg_replace_callback($pcre, array(&$this, 'do_strip_htmltags'), $data);
+						}
+					}
+				}
 
 		if ($this->strip_attributes)
 		{
@@ -5817,24 +5822,22 @@ class SimplePie_Sanitize
 	{
 		if ($this->encode_instead_of_strip)
 		{
-			if (isset($match[12]) && !in_array(strtolower($match[1]), array('script', 'style')))
+			if (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
-				return "&lt;$match[1]$match[2]&gt;$match[12]&lt;/$match[1]&gt;";
-			}
-			else if (isset($match[12]))
-			{
-				return "&lt;$match[1]$match[2]&gt;&lt;/$match[1]&gt;";
+				$match[1] = SimplePie_Misc::change_encoding(htmlspecialchars($match[1], ENT_COMPAT, 'UTF-8'), 'UTF-8', $this->input_encoding);
+				$match[2] = SimplePie_Misc::change_encoding(htmlspecialchars($match[2], ENT_COMPAT, 'UTF-8'), 'UTF-8', $this->input_encoding);
+				return "&lt;$match[1]$match[2]&gt;$match[4]&lt;/$match[1]&gt;";
 			}
 			else
 			{
-				return "&lt;$match[1]$match[2]/&gt;";
+				return SimplePie_Misc::change_encoding(htmlspecialchars($match[0], ENT_COMPAT, 'UTF-8'), 'UTF-8', $this->input_encoding);
 			}
 		}
 		else
 		{
-			if (isset($match[12]) && !in_array(strtolower($match[1]), array('script', 'style')))
+			if (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
-				return $match[12];
+				return $match[4];
 			}
 			else
 			{
@@ -5875,7 +5878,6 @@ class SimplePie_Sanitize
 		
 		if ($raw_url)
 		{
-			$data = rawurlencode(rawurldecode($data));
 			return SimplePie_Misc::absolutize_url($data, $xmlbase);
 		}
 		else
@@ -5898,7 +5900,6 @@ class SimplePie_Sanitize
 			{
 				if (preg_match("/$attribute='(.*)'/siU", $data[0], $attrib) || preg_match("/$attribute=\"(.*)\"/siU", $data[0], $attrib) || preg_match("/$attribute=(.*)[ |\/|>]/siU", $data[0], $attrib))
 				{
-					$attrib[1] = rawurlencode(rawurldecode($attrib[1]));
 					$new_tag = str_replace($attrib[1], SimplePie_Misc::absolutize_url($attrib[1], $xmlbase), $attrib[0]);
 					$data[0] = str_replace($attrib[0], $new_tag, $data[0]);
 				}
