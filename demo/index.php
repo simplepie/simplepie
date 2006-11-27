@@ -200,13 +200,20 @@ $feed->handle_content_type();
 							// Use the embed() method to embed the enclosure into the page inline.
 							echo '<div align="center">';
 							echo '<p>' . $enclosure->embed(array(
+								//'width' => '640',
+								//'height' => '480',
 								'audio' => './for_the_demo/place_audio.png',
 								'video' => './for_the_demo/place_video.png',
+								//'mediaplayer' => './for_the_demo/mediaplayer.swf',
 								'alt' => '<img src="./for_the_demo/mini_podcast.png" class="download" border="0" title="Download the Podcast (' . $enclosure->get_extension() . '; ' . $enclosure->get_size() . ' MB)" />',
-								'altclass' => 'download',
-								'flvplayer' => './for_the_demo/flvplayer.swf'
+								'altclass' => 'download'
 							)) . '</p>';
-							echo '<p class="footnote" align="center">(' . $enclosure->get_type() . '; ' . $enclosure->get_size() . ' MB)</p>';
+							echo '<p class="footnote" align="center">(' . $enclosure->get_type();
+							if ($enclosure->get_size())
+							{
+								echo '; ' . $enclosure->get_size() . ' MB';								
+							}
+							echo ')</p>';
 							echo '</div>';
 						}
 						?>

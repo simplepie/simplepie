@@ -2066,7 +2066,7 @@ class SimplePie_Enclosure
 		$width = 'auto';
 		$height = 'auto';
 		$bgcolor = '#ffffff';
-		$flvplayer = '';
+		$mediaplayer = '';
 
 		// Process options and reassign values as necessary
 		if (is_array($options))
@@ -2117,8 +2117,8 @@ class SimplePie_Enclosure
 							$bgcolor = $opt[1];
 							break;
 						
-						case 'flvplayer':
-							$flvplayer = $opt[1];
+						case 'mediaplayer':
+							$mediaplayer = $opt[1];
 							break;
 					}
 				}
@@ -2128,7 +2128,7 @@ class SimplePie_Enclosure
 		$type = strtolower($this->get_type());
 
 		// If we encounter an unsupported mime-type, check the file extension and guess intelligently.
-		if (!in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'x-audio/mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/flv', 'video/x-flv', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video', 'application/x-shockwave-flash', 'application/futuresplash', 'application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
+		if (!in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'audio/x-mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/flv', 'video/x-flv', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video', 'application/x-shockwave-flash', 'application/futuresplash', 'application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
 		{			
 			switch (strtolower($this->get_extension()))
 			{
@@ -2266,6 +2266,7 @@ class SimplePie_Enclosure
 				$width = '100%';
 			}
 		}
+
 		if ($height == 'auto')
 		{
 			if ($mime == 'audio')
@@ -2279,6 +2280,13 @@ class SimplePie_Enclosure
 			else
 			{
 				$height = 256;
+			}
+		}
+		else
+		{
+			if ($mime == 'audio')
+			{
+				$height = 0;
 			}
 		}
 
@@ -2314,7 +2322,8 @@ class SimplePie_Enclosure
 		}
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
-		else if (in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'x-audio/mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video')))
+		// Only handle MP3's if the Flash Media Player is not present.
+		else if (in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video')) || (in_array($type, array('audio/mp3', 'audio/x-mp3')) && $mediaplayer == ''))
 		{
 			$height += 16;
 			if ($native)
@@ -2345,17 +2354,18 @@ class SimplePie_Enclosure
 			}
 		}
 
-		// Flash Video file types.
-		else if (in_array($type, array('video/flv', 'video/x-flv')) && ($flvplayer != ''))
+		// Flash Media Player file types.
+		// Preferred handler for MP3 file types.
+		else if (in_array($type, array('audio/mp3', 'audio/x-mp3', 'video/flv', 'video/x-flv')) && ($mediaplayer != ''))
 		{
 			$height += 20;
 			if ($native)
 			{
-				$embed .= "<embed src=\"$flvplayer\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
+				$embed .= "<embed src=\"$mediaplayer\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
 			}
 			else
 			{
-				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link()) . "', '$placeholder', '$loop', '$flvplayer');</script>";
+				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link()) . "', '$placeholder', '$loop', '$mediaplayer');</script>";
 			}
 		}
 
