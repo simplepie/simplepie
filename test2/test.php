@@ -77,6 +77,7 @@ table tr {
 
 table tr.fail {
 	color:red;
+	background-color:#fee;
 }
 
 table th {
