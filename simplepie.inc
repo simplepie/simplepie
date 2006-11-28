@@ -4370,11 +4370,11 @@ class SimplePie_Locator
 		$done = array();
 		foreach ($links as $link)
 		{
-			if (!empty($link['attribs']['TYPE']['data']) && !empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']) && preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/i', trim(SimplePie_Misc::entities_decode($link['attribs']['TYPE']['data'], 'UTF-8', $this->cached_entities))))
+			if (!empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
 			{
 				$rel = preg_split('/\s+/', strtolower(trim(SimplePie_Misc::entities_decode($link['attribs']['REL']['data'], 'UTF-8', $this->cached_entities))));
 				$href = SimplePie_Misc::absolutize_url(trim(SimplePie_Misc::entities_decode($link['attribs']['HREF']['data'], 'UTF-8', $this->cached_entities)), $this->file->url);
-				if (!in_array($href, $done) && in_array('alternate', $rel))
+				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/i', trim(SimplePie_Misc::entities_decode($link['attribs']['TYPE']['data'], 'UTF-8', $this->cached_entities)))))
 				{
 					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
 					if ($this->is_feed($feed))
