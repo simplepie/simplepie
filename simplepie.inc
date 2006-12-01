@@ -2669,7 +2669,7 @@ class SimplePie_Misc
 							}
 							else
 							{
-								if (preg_match('/^(.+)(\/|$)/sU', $input, $match))
+								if (preg_match('/^([^\/]+|(\/)[^\/]*)(\/|$)/', $input, $match))
 								{
 									$target['path'] .= $match[1];
 									$input = substr_replace($input, '', 0, strlen($match[1]));
