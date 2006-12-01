@@ -1933,6 +1933,11 @@ class SimplePie_Author
 		$this->email = $email;
 	}
 	
+	function __toString()
+	{
+		return serialize(compact($this->name, $this->link, $this->email));
+	}
+	
 	function get_name()
 	{
 		if (!empty($this->name))
@@ -1982,6 +1987,11 @@ class SimplePie_Enclosure
 		$this->link = $link;
 		$this->type = $type;
 		$this->length = $length;
+	}
+	
+	function __toString()
+	{
+		return serialize(compact($this->link, $this->type, $this->length));
 	}
 
 	function get_link()
