@@ -1047,7 +1047,7 @@ EOT;
 	}
 	
 	/**
-	 * Creates the subscribe_* methods return data
+	 * Creates the subscribe_* methods' return data
 	 *
 	 * @access private
 	 * @param string $feed_url String to prefix to the feed URL
@@ -1678,244 +1678,105 @@ class SimplePie_Item
 		}
     }
 	
-	function add_to_blinklist()
+	/**
+	 * Creates the add_to_* methods' return data
+	 *
+	 * @access private
+	 * @param string $feed_url String to prefix to the item permalink
+	 * @param string $title_url String to prefix to the item title (and
+	 * suffix to the item permalink)
+	 * @return mixed URL if feed exists, false otherwise
+	 */
+	function add_to_service($feed_url, $title_url = '')
 	{
 		if ($this->get_permalink())
 		{
-			$url = 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
+			$return = $feed_url . rawurlencode($this->get_permalink());
+			if (!empty($title_url) && $this->get_title())
 			{
-				$url .= '&amp;Title=' . rawurlencode($this->get_title());
+				$return .= $title_url . rawurlencode($this->get_title());
 			}
-			return $url;
+			return $return;
 		}
 		else
 		{
 			return false;
 		}
+	}
+	
+	function add_to_blinklist()
+	{
+		return $this->add_to_service('http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=', '&amp;Title=');
 	}
 	
 	function add_to_blogmarks()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://blogmarks.net/my/new.php?mini=1&amp;simple=1&amp;url=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;title=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://blogmarks.net/my/new.php?mini=1&amp;simple=1&amp;url=', '&amp;title=');
 	}
 	
 	function add_to_delicious()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://del.icio.us/post/?v=3&amp;url=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;title=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://del.icio.us/post/?v=3&amp;url=', '&amp;title=');
 	}
 	
 	function add_to_digg()
 	{
-		if ($this->get_permalink())
-		{
-			return 'http://digg.com/submit?phase=2&amp;URL=' . rawurlencode($this->get_permalink());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://digg.com/submit?phase=2&amp;URL=');
 	}
 	
 	function add_to_furl()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://www.furl.net/storeIt.jsp?u=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;t=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://www.furl.net/storeIt.jsp?u=', '&amp;t=');
 	}
 	
 	function add_to_magnolia()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://ma.gnolia.com/bookmarklet/add?url=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;title=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://ma.gnolia.com/bookmarklet/add?url=', '&amp;title=');
 	}
 	
 	function add_to_myweb20()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://myweb2.search.yahoo.com/myresults/bookmarklet?u=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;t=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&amp;t=');
 	}
 	
 	function add_to_newsvine()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://www.newsvine.com/_wine/save?u=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;h=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://www.newsvine.com/_wine/save?u=', '&amp;h=');
 	}
 	
 	function add_to_reddit()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://reddit.com/submit?url=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;title=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://reddit.com/submit?url=', '&amp;title=');
 	}
 	
 	function add_to_segnalo()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://segnalo.com/post.html.php?url=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;title=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://segnalo.com/post.html.php?url=', '&amp;title=');
 	}
 	
 	function add_to_simpy()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://www.simpy.com/simpy/LinkAdd.do?href=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;title=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://www.simpy.com/simpy/LinkAdd.do?href=', '&amp;title=');
 	}
 	
 	function add_to_smarking()
 	{
-		if ($this->get_permalink())
-		{
-			return 'http://smarking.com/editbookmark/?url=' . rawurlencode($this->get_permalink());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://smarking.com/editbookmark/?url=');
 	}
 	
 	function add_to_spurl()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://www.spurl.net/spurl.php?v=3&amp;url=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;title=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://www.spurl.net/spurl.php?v=3&amp;url=', '&amp;title=');
 	}
 	
 	function add_to_wists()
 	{
-		if ($this->get_permalink())
-		{
-			$url = 'http://wists.com/r.php?c=&amp;r=' . rawurlencode($this->get_permalink());
-			if ($this->get_title())
-			{
-				$url .= '&amp;title=' . rawurlencode($this->get_title());
-			}
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://wists.com/r.php?c=&amp;r=', '&amp;title=');
 	}
 	
 	function search_technorati()
 	{
-		if ($this->get_permalink())
-		{
-			return 'http://www.technorati.com/search/' . rawurlencode($this->get_permalink());
-		}
-		else
-		{
-			return false;
-		}
+		return $this->add_to_service('http://www.technorati.com/search/');
 	}
 }
 
