@@ -757,7 +757,7 @@ EOT;
 					else
 					{
 						$this->error = "A feed could not be found at $this->feed_url";
-						SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+						SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
 						return false;
 					}
 				}
@@ -907,7 +907,7 @@ EOT;
 			else
 			{
 				$this->error = "XML error: $data->error_string at line $data->current_line, column $data->current_column";
-				SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+				SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
 				return false;
 			}
 		}
