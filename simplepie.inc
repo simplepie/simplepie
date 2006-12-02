@@ -2394,7 +2394,7 @@ class SimplePie_File
 					$data = '';
 					while (strpos($data, "\r\n\r\n") === false && !$info['timed_out'])
 					{
-						$data .= fgets($this->fp, 128);
+						$data .= fgets($this->fp, 1160);
 						$info = stream_get_meta_data($this->fp);
 					}
 					if (!$info['timed_out'])
@@ -2446,9 +2446,17 @@ class SimplePie_File
 			{
 				$info = stream_get_meta_data($this->fp);
 				$this->body = '';
+				if ($this->method == 'fsockopen')
+				{
+					$read = 1160;
+				}
+				else
+				{
+					$read = 1024;
+				}
 				while (!$info['eof'] && !$info['timed_out'])
 				{
-					$this->body .= fread($this->fp, 1024);
+					$this->body .= fread($this->fp, $read);
 					$info = stream_get_meta_data($this->fp);
 				}
 				if (!$info['timed_out'])
