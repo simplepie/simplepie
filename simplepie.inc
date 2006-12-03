@@ -1886,7 +1886,8 @@ class SimplePie_Enclosure
 	{
 		if (!empty($this->link))
 		{
-			return pathinfo($this->link, PATHINFO_EXTENSION);
+			$e = explode('?', pathinfo($this->link, PATHINFO_EXTENSION));
+			return $e[0];
 		}
 		else
 		{
