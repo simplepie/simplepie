@@ -111,6 +111,16 @@ define('SIMPLEPIE_LOCATOR_REMOTE_BODY', 16);
 define('SIMPLEPIE_LOCATOR_ALL', 31);
 
 /**
+ * PCRE for HTML attributes
+ */
+define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', '((?:\s*(?:(?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?)*)\s*');
+
+/**
+ * PCRE for XML attributes
+ */
+define('SIMPLEPIE_PCRE_XML_ATTRIBUTE', '((?:\s*(?:(?:[^\s:]+:)?[^\s:]+)\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'))*)\s*');
+
+/**
  * SimplePie
  * 
  * @package SimplePie
@@ -2758,27 +2768,31 @@ class SimplePie_Misc
 	{
 		$return = array();
 		$name = preg_quote($realname, '/');
-		preg_match_all("/<($name)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'|(.*)))*)\s*((\/)?>|>(.*)<\/$name>)/msiU", $string, $matches, PREG_SET_ORDER);
+		preg_match_all("/<($name)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "((\/)?>|>(.*)<\/$name>)/siU", $string, $matches, PREG_SET_ORDER);
 		for ($i = 0; $i < count($matches); $i++)
 		{
 			$return[$i]['tag'] = $realname;
 			$return[$i]['full'] = $matches[$i][0];
-			if (strlen($matches[$i][10]) <= 2)
+			if (strlen($matches[$i][3]) <= 2)
 			{
 				$return[$i]['self_closing'] = true;
 			}
 			else
 			{
 				$return[$i]['self_closing'] = false;
-				$return[$i]['content'] = $matches[$i][12];
+				$return[$i]['content'] = $matches[$i][5];
 			}
 			$return[$i]['attribs'] = array();
 			if (!empty($matches[$i][2]))
 			{
-				preg_match_all('/((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'|(\S+))\s/msiU', ' ' . $matches[$i][2] . ' ', $attribs, PREG_SET_ORDER);
+				preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*("([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2] . ' ', $attribs, PREG_SET_ORDER);
 				for ($j = 0; $j < count($attribs);  $j++)
 				{
-					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = $attribs[$j][count($attribs[$j])-1];
+					if (count($attribs[$j]) == 2)
+					{
+						$attribs[$j][2] = $attribs[$j][1];
+					}
+					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode($attribs[$j][count($attribs[$j])-1], 'UTF-8', $cache);
 					$first = substr($attribs[$j][2], 0, 1);
 					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['split'] = ($first == '"' || $first == "'") ? $first : '"';
 				}
@@ -4236,7 +4250,7 @@ class SimplePie_Locator
 	function is_feed(&$file)
 	{
 		$body = SimplePie_Misc::strip_comments($file->body());
-		if (preg_match('/<(\w+:)?(rss|RDF|feed)/i', $body))
+		if (preg_match('/<([^\s:]+:)?(rss|RDF|feed)/i', $body))
 		{
 			return true;
 		}
@@ -4251,9 +4265,9 @@ class SimplePie_Locator
 		{
 			if (!empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
 			{
-				$rel = preg_split('/\s+/', strtolower(trim(SimplePie_Misc::entities_decode($link['attribs']['REL']['data'], 'UTF-8', $this->cached_entities))));
-				$href = SimplePie_Misc::absolutize_url(trim(SimplePie_Misc::entities_decode($link['attribs']['HREF']['data'], 'UTF-8', $this->cached_entities)), $this->file->url);
-				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/i', trim(SimplePie_Misc::entities_decode($link['attribs']['TYPE']['data'], 'UTF-8', $this->cached_entities)))))
+				$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['REL']['data'])));
+				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
+				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/i', trim($link['attribs']['TYPE']['data']))))
 				{
 					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
 					if ($this->is_feed($feed))
@@ -4409,7 +4423,7 @@ class SimplePie_Parser
 		
 		// Put some data into CDATA blocks
 		// If we're RSS
-		if (preg_match('/<(\w+:)?(rss|RDF)/i', $data))
+		if (preg_match('/<([^\s:]+:)?(rss|RDF)/i', $data))
 		{
 			$sp_elements = array(
 				'author',
@@ -4444,12 +4458,12 @@ class SimplePie_Parser
 		}
 		foreach ($sp_elements as $full)
 		{
-			$data = preg_replace_callback("/<($full)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'))*)\s*(\/>|>(.*)<\/$full>)/msiU", array(&$this, 'add_cdata'), $data);
+			$data = preg_replace_callback("/<($full)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "(\/>|>(.*)<\/$full>)/siU", array(&$this, 'add_cdata'), $data);
 		}
 		foreach ($sp_elements as $full)
 		{
 			// Deal with CDATA within CDATA (this can be caused by us inserting CDATA above)
-			$data = preg_replace_callback("/<($full)((\s*((\w+:)?\w+)\s*=\s*(\"([^\"]*)\"|'([^']*)'))*)\s*(\/>|><!\[CDATA\[(.*)\]\]><\/$full>)/msiU", array(&$this, 'cdata_in_cdata'), $data);
+			$data = preg_replace_callback("/<($full)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "(\/>|><!\[CDATA\[(.*)\]\]><\/$full>)/msiU", array(&$this, 'cdata_in_cdata'), $data);
 		}
 		
 		// Return the XML, if so desired
@@ -4484,19 +4498,19 @@ class SimplePie_Parser
 	
 	function add_cdata($match)
 	{
-		if (isset($match[10]))
+		if (isset($match[4]))
 		{
-			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
+			return "<$match[1]$match[2]><![CDATA[$match[4]]]></$match[1]>";
 		}
 		return $match[0];
 	}
 
 	function cdata_in_cdata($match)
 	{
-		if (isset($match[10]))
+		if (isset($match[4]))
 		{
-			$match[10] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/msiU', array(&$this, 'real_cdata_in_cdata'), $match[10]);
-			return "<$match[1]$match[2]><![CDATA[$match[10]]]></$match[1]>";
+			$match[4] = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/siU', array(&$this, 'real_cdata_in_cdata'), $match[4]);
+			return "<$match[1]$match[2]><![CDATA[$match[4]]]></$match[1]>";
 		}
 		return $match[0];
 	}
@@ -5614,11 +5628,12 @@ class SimplePie_Sanitize
 			{
 				if ($this->remove_div)
 				{
-					$data = preg_replace('/<div( .*)?>/msiU', '', strrev(preg_replace('/>vid\/</i', '', strrev($data), 1)), 1);
+					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '', $data);
+					$data = preg_replace('/<\/div>$/', '', $data);
 				}
 				else
 				{
-					$data = preg_replace('/<div( .*)?>/msiU', '<div>', $data, 1);
+					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
 				}
 				$data = $this->convert_entities($data);
 			}
@@ -5648,8 +5663,8 @@ class SimplePie_Sanitize
 		// but it most likely doesn't fit in the context of RSS-in-a-webpage.
 		if ($this->replace_headers)
 		{
-			$data = preg_replace('/<h[1-3]((\s*((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'|(.*)))*)\s*>/msiU', '<h4\\1>', $data);
-			$data = preg_replace('/<\/h[1-3]>/i', '</h4>', $data);
+			$data = preg_replace('/<h[1-3]' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>/i', '<h4\\1>', $data);
+			$data = preg_replace('/<\/h[1-3]' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>/i', '</h4>', $data);
 		}
 
 		if ($is_url)
@@ -5658,7 +5673,7 @@ class SimplePie_Sanitize
 		}
 		else
 		{
-			$data = preg_replace_callback('/<(\S+)((\s*((\w+:)?\w+)\s*=\s*("([^"]*)"|\'([^\']*)\'|(.*)))*)\s*(\/>|>(.*)<\/\S+>)/msiU', array(&$this, 'replace_urls'), $data);
+			$data = preg_replace_callback('/<(\S+)' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '(\/>|>(.*)<\/\S+>)/siU', array(&$this, 'replace_urls'), $data);
 		}
 
 		// If Bypass Image Hotlink is enabled, rewrite all the image tags.
@@ -5685,16 +5700,16 @@ class SimplePie_Sanitize
 		// Based on recommendations by Mark Pilgrim at:
 		// http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
 		if ($this->strip_htmltags)
+		{
+			foreach ($this->strip_htmltags as $tag)
+			{
+				$pcre = "/<($tag)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "(\/>|>(.*)<\/($tag)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>)/siU';
+				while (preg_match($pcre, $data))
 				{
-					foreach ($this->strip_htmltags as $tag)
-					{
-						$pcre = "/<($tag)((?:\s*(?:(?:\w+:)?\w+)(?:\s*=\s*(?:\"(?:[^\"]*)\"|'(?:[^']*)'|(?:[a-z0-9\-._:]*)))?)*)\s*(\/>|>(.*)<\/($tag)((?:\s*(?:(?:\w+:)?\w+)(?:\s*=\s*(?:\"(?:[^\"]*)\"|'(?:[^']*)'|(?:[a-z0-9\-._:]*)))?)*)\s*>)/si";
-						while (preg_match($pcre, $data))
-						{
-							$data = preg_replace_callback($pcre, array(&$this, 'do_strip_htmltags'), $data);
-						}
-					}
+					$data = preg_replace_callback($pcre, array(&$this, 'do_strip_htmltags'), $data);
 				}
+			}
+		}
 
 		if ($this->strip_attributes)
 		{
@@ -5804,7 +5819,7 @@ class SimplePie_Sanitize
 	
 	function convert_entities($data)
 	{
-		return preg_replace_callback('/&#(x)?([0-9a-z]+);/mi', array(&$this, 'do_convert_entities'), $data);
+		return preg_replace_callback('/&#(x)?([0-9a-z]+);/i', array(&$this, 'do_convert_entities'), $data);
 	}
 	
 	function do_convert_entities($data)
