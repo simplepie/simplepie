@@ -278,8 +278,8 @@ function dive_into_mark_atom_autodiscovery()
 			{
 				if (!empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
 				{
-					$rel = preg_split('/\s+/', strtolower(trim(SimplePie_Misc::entities_decode($link['attribs']['REL']['data'], 'UTF-8', $cached_entities))));
-					$href = SimplePie_Misc::absolutize_url(trim(SimplePie_Misc::entities_decode($link['attribs']['HREF']['data'], 'UTF-8', $cached_entities)), $file->url);
+					$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['REL']['data'])));
+					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $file->url);
 					if (!in_array($href, $done) && in_array('next', $rel))
 					{
 						$next = $href;
