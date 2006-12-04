@@ -832,21 +832,10 @@ EOT;
 			// Change the encoding to UTF-8 (as we always use UTF-8 internally)
 			$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 			
-			// Strip illegal characters (if on less  than PHP5, as on PHP5 expat can manage fine)
+			// Strip illegal characters (if on less  than PHP5, as on PHP5 expat can manage fine, thereby breaking the XML spec)
 			if (version_compare(phpversion(), '5', '<'))
 			{
-				if (function_exists('iconv'))
-				{
-					$data = iconv('UTF-8', 'UTF-8//IGNORE', $data);
-				}
-				else if (function_exists('mb_convert_encoding'))
-				{
-					$data = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
-				}
-				else
-				{
-					$data = SimplePie_Misc::utf8_bad_replace($data);
-				}
+				$data = SimplePie_Misc::utf8_bad_replace($data);
 			}
 			
 			// Start parsing
@@ -2915,6 +2904,9 @@ class SimplePie_Misc
 	 * to choose what the replace string is, and to use a variable for
 	 * the output instead of PHP's output buffer
 	 *
+	 * Modified by Geoffrey Sneddon 2006-12-04 to use iconv or mbstring
+	 * if either is enabled
+	 *
 	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 * @author Geoffrey Sneddon
 	 * @see http://www.w3.org/International/questions/qa-forms-utf-8
@@ -2923,26 +2915,134 @@ class SimplePie_Misc
 	 */
 	function utf8_bad_replace($str)
 	{
-		$UTF8_BAD =
-		 '([\x00-\x7F]' .							# ASCII (including control chars)
-		 '|[\xC2-\xDF][\x80-\xBF]' .				# non-overlong 2-byte
-		 '|\xE0[\xA0-\xBF][\x80-\xBF]' .			# excluding overlongs
-		 '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}' .		# straight 3-byte
-		 '|\xED[\x80-\x9F][\x80-\xBF]' .			# excluding surrogates
-		 '|\xF0[\x90-\xBF][\x80-\xBF]{2}' .			# planes 1-3
-		 '|[\xF1-\xF3][\x80-\xBF]{3}' .				# planes 4-15
-		 '|\xF4[\x80-\x8F][\x80-\xBF]{2}' .			# plane 16
-		 '|(.{1}))';								# invalid byte
-		$output = '';
-		while (preg_match('/' . $UTF8_BAD . '/S', $str, $matches))
+		if (function_exists('iconv'))
 		{
-			if (!isset($matches[2]))
-			{
-				$output .= $matches[0];
-			}
-			$str = substr($str, strlen($matches[0]));
+			return iconv('UTF-8', 'UTF-8//IGNORE', $str);
 		}
-		return $output;
+		else if (function_exists('mb_convert_encoding'))
+		{
+			return mb_convert_encoding($str, 'UTF-8', 'UTF-8');
+		}
+		else
+		{
+			$UTF8_BAD =
+			 '([\x00-\x7F]' .							# ASCII (including control chars)
+			 '|[\xC2-\xDF][\x80-\xBF]' .				# non-overlong 2-byte
+			 '|\xE0[\xA0-\xBF][\x80-\xBF]' .			# excluding overlongs
+			 '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}' .		# straight 3-byte
+			 '|\xED[\x80-\x9F][\x80-\xBF]' .			# excluding surrogates
+			 '|\xF0[\x90-\xBF][\x80-\xBF]{2}' .			# planes 1-3
+			 '|[\xF1-\xF3][\x80-\xBF]{3}' .				# planes 4-15
+			 '|\xF4[\x80-\x8F][\x80-\xBF]{2}' .			# plane 16
+			 '|(.{1}))';								# invalid byte
+			$output = '';
+			while (preg_match('/' . $UTF8_BAD . '/S', $str, $matches))
+			{
+				if (!isset($matches[2]))
+				{
+					$output .= $matches[0];
+				}
+				$str = substr($str, strlen($matches[0]));
+			}
+			return $output;
+		}
+	}
+	
+	/**
+	 * Converting a string to UTF-7 (RFC 2152)
+	 *
+	 * @author Tomas V.V.Cox <cox@idecnet.com>
+	 * @author Pierre-Alain Joye <pajoye@php.net>
+	 * @author Amir Mohammad Saied <amir@php.net>
+	 * @copyright 1997-2006 Pierre-Alain Joye,Tomas V.V.Cox,Amir Mohammad Saied
+	 * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
+	 * @version CVS: $Id: Validate.php,v 1.104 2006/11/17 16:32:06 amir Exp $
+	 * @link http://pear.php.net/package/Validate
+	 * @access public
+	 * @param $string string to be converted
+	 * @return string converted string
+	 */
+	function string_to_utf7($string)
+	{
+		$return = '';
+		$utf7 = array(
+						'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+						'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
+						'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+						'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+						's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2',
+						'3', '4', '5', '6', '7', '8', '9', '+', ','
+					);
+
+		$state = 0;
+		if (!empty($string))
+		{
+			$i = 0;
+			while ($i <= strlen($string))
+			{
+				$char = substr($string, $i, 1);
+				if ($state == 0) {
+					if ((ord($char) >= 0x7F) || (ord($char) <= 0x1F))
+					{
+						if ($char)
+						{
+							$return .= '&';
+						}
+						$state = 1;
+					}
+					elseif ($char == '&')
+					{
+						$return .= '&-';
+					}
+					else
+					{
+						$return .= $char;
+					}
+				}
+				elseif (($i == strlen($string) || !((ord($char) >= 0x7F)) || (ord($char) <= 0x1F)))
+				{
+					if ($state != 1)
+					{
+						if (ord($char) > 64)
+						{
+							$return .= '';
+						}
+						else
+						{
+							$return .= $utf7[ord($char)];
+						}
+					}
+					$return .= '-';
+					$state = 0;
+				}
+				else
+				{
+					switch($state)
+					{
+						case 1:
+							$return .= $utf7[ord($char) >> 2];
+							$residue = (ord($char) & 0x03) << 4;
+							$state = 2;
+							break;
+							
+						case 2:
+							$return .= $utf7[$residue | (ord($char) >> 4)];
+							$residue = (ord($char) & 0x0F) << 2;
+							$state = 3;
+							break;
+							
+						case 3:
+							$return .= $utf7[$residue | (ord($char) >> 6)];
+							$return .= $utf7[ord($char) & 0x3F];
+							$state = 1;
+							break;
+					}
+				}
+				$i++;
+			}
+			return $return;
+		}
+		return '';
 	}
 	
 	function change_encoding($data, $input, $output)
@@ -2952,13 +3052,13 @@ class SimplePie_Misc
 		
 		if ($input != $output)
 		{
-			if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && iconv($input['encoding'], "$output[encoding]//TRANSLIT", $data))
+			if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && $data = iconv($input['encoding'], "$output[encoding]//TRANSLIT", $data))
 			{
-				return iconv($input['encoding'], "$output[encoding]//TRANSLIT", $data);
+				return $data;
 			}
-			else if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && iconv($input['encoding'], $output['encoding'], $data))
+			else if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && $data = iconv($input['encoding'], $output['encoding'], $data))
 			{
-				return iconv($input['encoding'], $output['encoding'], $data);	
+				return $data;
 			}
 			else if (function_exists('mb_convert_encoding') && $input['use_mbstring'] && $output['use_mbstring'])
 			{
@@ -2971,6 +3071,10 @@ class SimplePie_Misc
 			else if ($input['encoding'] == 'UTF-8' && $output['encoding'] == 'ISO-8859-1')
 			{
 				return utf8_decode($data);
+			}
+			else if ($output['encoding'] == 'UTF-7')
+			{
+				return SimplePie_Misc::string_to_utf7($data);
 			}
 		}
 		return $data;
@@ -3838,8 +3942,9 @@ class SimplePie_Misc
 		}
 	}
 	
-	function parse_date($dt, $rfc822 = true)
+	function parse_date($dt, $rfc822_tz = true)
 	{
+		$dt = SimplePie_Misc::uncomment_rfc822($dt);
 		/*
 		Capturing subpatterns:
 		1: RFC 822 date
@@ -4035,7 +4140,7 @@ class SimplePie_Misc
 							}
 							else if (preg_match('/^[a-ik-y]$/i', $match[28]))
 							{
-								if ($rfc822)
+								if ($rfc822_tz)
 								{
 									$timezone = ord(strtoupper($match[28]));
 									
@@ -4169,6 +4274,96 @@ class SimplePie_Misc
 			$cache[$encoding][$data] = $return;
 			return $return;
 		}
+	}
+	
+	/**
+	 * Remove RFC822 comments
+	 *
+	 * @author Tomas V.V.Cox <cox@idecnet.com>
+	 * @author Pierre-Alain Joye <pajoye@php.net>
+	 * @author Amir Mohammad Saied <amir@php.net>
+	 * @copyright 1997-2006 Pierre-Alain Joye,Tomas V.V.Cox,Amir Mohammad Saied
+	 * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
+	 * @version CVS: $Id: Validate.php,v 1.104 2006/11/17 16:32:06 amir Exp $
+	 * @link http://pear.php.net/package/Validate
+	 * @access public
+	 * @param string $data Data to strip comments from
+	 * @return string Comment stripped string
+	 */
+	function uncomment_rfc822($data)
+	{
+		return preg_replace('/((?:(?:\\\\"|[^("])*(?:"(?:[^"\\\\\r]|\\\\.)*"\s*)?)*)((?<!\\\\)\((?:(?2)|.)*?(?<!\\\\)\))/', '$1', $data);
+	}
+	
+	/**
+	 * Validate an email according to full RFC822 (inclusive human
+	 * readable part)
+	 *
+	 * @author Tomas V.V.Cox <cox@idecnet.com>
+	 * @author Pierre-Alain Joye <pajoye@php.net>
+	 * @author Amir Mohammad Saied <amir@php.net>
+	 * @copyright 1997-2006 Pierre-Alain Joye,Tomas V.V.Cox,Amir Mohammad Saied
+	 * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
+	 * @version CVS: $Id: Validate.php,v 1.104 2006/11/17 16:32:06 amir Exp $
+	 * @link http://pear.php.net/package/Validate
+	 * @access public
+	 * @param string $email email to validate
+	 * @return boolean true if valid email, false if not
+	 */
+	function validate_rfc822_email(&$email)
+	{
+		if (SimplePie_Misc::change_encoding($email, 'UTF-7', 'UTF-7') != $email)
+		{
+			return false;
+		}
+		static $address = null;
+		if (!$address)
+		{
+			// atom		   =  1*<any CHAR except specials, SPACE and CTLs>
+			$atom = '[^][()<>@,;:\\".\s\000-\037\177-\377]+\s*';
+			// qtext	   =  <any CHAR excepting <">,	   ; => may be folded
+			//		   "\" & CR, and including linear-white-space>
+			$qtext = '[^"\\\\\r]';
+			// quoted-pair =  "\" CHAR					   ; may quote any char
+			$quoted_pair = '\\\\.';
+			// quoted-string = <"> *(qtext/quoted-pair) <">; Regular qtext or
+			//											   ;   quoted chars.
+			$quoted_string = '"(?:' . $qtext . '|' . $quoted_pair . ')*"\s*';
+			// word		   =  atom / quoted-string
+			$word = '(?:' . $atom . '|' . $quoted_string . ')';
+			// local-part  =  word *("." word)			   ; uninterpreted
+			//											   ; case-preserved
+			$local_part = $word . '(?:\.\s*' . $word . ')*';
+			// dtext	   =  <any CHAR excluding "[",	   ; => may be folded
+			//		   "]", "\" & CR, & including linear-white-space>
+			$dtext = '[^][\\\\\r]';
+			// domain-literal =	 "[" *(dtext / quoted-pair) "]"
+			$domain_literal = '\[(?:' . $dtext . '|' . $quoted_pair . ')*\]\s*';
+			// sub-domain  =  domain-ref / domain-literal
+			// domain-ref  =  atom						   ; symbolic reference
+			$sub_domain = '(?:' . $atom . '|' . $domain_literal . ')';
+			// domain	   =  sub-domain *("." sub-domain)
+			$domain = $sub_domain . '(?:\.\s*' . $sub_domain . ')*';
+			// addr-spec   =  local-part "@" domain		   ; global address
+			$addr_spec = $local_part . '@\s*' . $domain;
+			// route	   =  1#("@" domain) ":"		   ; path-relative
+			$route = '@' . $domain . '(?:,@\s*' . $domain . ')*:\s*';
+			// route-addr  =  "<" [route] addr-spec ">"
+			$route_addr = '<\s*(?:' . $route . ')?' . $addr_spec . '>\s*';
+			// phrase	   =  1*word					   ; Sequence of words
+			$phrase = $word	 . '+';
+			// mailbox	   =  addr-spec					   ; simple address
+			//			   /  phrase route-addr			   ; name & addr-spec
+			$mailbox = '(?:' . $addr_spec . '|' . $phrase . $route_addr . ')';
+			// group	   =  phrase ":" [#mailbox] ";"
+			$group = $phrase . ':\s*(?:' . $mailbox . '(?:,\s*' . $mailbox . ')*)?;\s*';
+			//	   address	   =  mailbox					   ; one addressee
+			//				   /  group						   ; named list
+			$address = '/^\s*(?:' . $mailbox . '|' . $group . ')$/';
+		}
+		// strip comments
+		$email = SimplePie_Misc::uncomment_rfc822($email);
+		return (bool) preg_match($address, $email);
 	}
 }
 
@@ -5558,12 +5753,18 @@ class SimplePie_Sanitize
 						$email = null;
 						if (!empty($author['rss']))
 						{
-							$sane = $this->sanitize($author['rss']['data'], $author['rss']['attribs']);
-							if (preg_match('/(.*)@(.*) \((.*)\)/msiU', $sane, $matches)) {
-								$name = trim($matches[3]);
-								$email = trim("$matches[1]@$matches[2]");
-							} else {
-								$email = $sane;
+							$sane_nocomment = $sane = $this->sanitize($author['rss']['data'], $author['rss']['attribs']);
+							if (SimplePie_Misc::validate_rfc822_email($sane_nocomment))
+							{
+								if (preg_match('/((?:(?:\\\\"|[^("])*(?:"(?:[^"\\\\\r]|\\\\.)*"\s*)?)*)((?<!\\\\)\(((?:(?2)|.)*)?(?<!\\\\)\))$/', $sane, $match))
+								{
+									$name = trim($match[3]);
+								}
+								$email = trim($sane_nocomment);
+							}
+							else
+							{
+								$name = $sane;
 							}
 						}
 						else
@@ -5584,7 +5785,8 @@ class SimplePie_Sanitize
 							{
 								$link = $this->sanitize($author['homepage']['data'], $author['homepage']['attribs'], true);
 							}
-							if (!empty($author['email'])) {
+							if (!empty($author['email']))
+							{
 								$email = $this->sanitize($author['email']['data'], $author['email']['attribs']);
 							}
 						}
