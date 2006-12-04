@@ -314,11 +314,6 @@ class SimplePie
 		$this->sanitize =& new SimplePie_Sanitize;
 		
 		// Set options if they're passed to the constructor
-		if (!is_null($feed_url))
-		{
-			$this->set_feed_url($feed_url);
-		}
-
 		if (!is_null($cache_location))
 		{
 			$this->set_cache_location($cache_location);
@@ -338,6 +333,7 @@ class SimplePie
 		// Only init the script if we're passed a feed URL
 		if (!is_null($feed_url))
 		{
+			$this->set_feed_url($feed_url);
 			return $this->init();
 		}
 	}
