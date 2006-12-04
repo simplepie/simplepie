@@ -1886,13 +1886,13 @@ class SimplePie_Enclosure
 	{
 		if (!empty($this->link))
 		{
-			$e = explode('?', pathinfo($this->link, PATHINFO_EXTENSION));
-			return $e[0];
+			$url = parse_url($this->link);
+			if (!empty($url['path']))
+			{
+				return pathinfo($url['path'], PATHINFO_EXTENSION);
+			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	function get_type()
