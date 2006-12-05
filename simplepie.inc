@@ -2754,24 +2754,25 @@ class SimplePie_Misc
 	{
 		$return = array();
 		$name = preg_quote($realname, '/');
-		preg_match_all("/<($name)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "((\/)?>|>(.*)<\/$name>)/siU", $string, $matches, PREG_SET_ORDER);
+		preg_match_all("/<($name)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "((\/)?>|>(.*)<\/$name>)/siU", $string, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 		for ($i = 0; $i < count($matches); $i++)
 		{
 			$return[$i]['tag'] = $realname;
-			$return[$i]['full'] = $matches[$i][0];
-			if (strlen($matches[$i][3]) <= 2)
+			$return[$i]['full'] = $matches[$i][0][0];
+			$return[$i]['offset'] = $matches[$i][0][1];
+			if (strlen($matches[$i][3][0]) <= 2)
 			{
 				$return[$i]['self_closing'] = true;
 			}
 			else
 			{
 				$return[$i]['self_closing'] = false;
-				$return[$i]['content'] = $matches[$i][5];
+				$return[$i]['content'] = $matches[$i][5][0];
 			}
 			$return[$i]['attribs'] = array();
-			if (!empty($matches[$i][2]))
+			if (!empty($matches[$i][2][0]))
 			{
-				preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*("([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2] . ' ', $attribs, PREG_SET_ORDER);
+				preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*("([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER);
 				for ($j = 0; $j < count($attribs);  $j++)
 				{
 					if (count($attribs[$j]) == 2)
