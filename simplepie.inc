@@ -5777,6 +5777,17 @@ class SimplePie_Sanitize
 							$sane_nocomment = $sane = $this->sanitize($author['rss']['data'], $author['rss']['attribs']);
 							if (SimplePie_Misc::validate_rfc822_email($sane_nocomment))
 							{
+								/**
+								 * The following PCRE removes RFC822 comments
+								 *
+								 * @author Tomas V.V.Cox <cox@idecnet.com>
+								 * @author Pierre-Alain Joye <pajoye@php.net>
+								 * @author Amir Mohammad Saied <amir@php.net>
+								 * @copyright 1997-2006 Pierre-Alain Joye,Tomas V.V.Cox,Amir Mohammad Saied
+								 * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
+								 * @version CVS: $Id: Validate.php,v 1.104 2006/11/17 16:32:06 amir Exp $
+								 * @link http://pear.php.net/package/Validate
+								 */
 								if (preg_match('/((?:(?:\\\\"|[^("])*(?:"(?:[^"\\\\\r]|\\\\.)*"\s*)?)*)((?<!\\\\)\(((?:(?2)|.)*)?(?<!\\\\)\))$/', $sane, $match))
 								{
 									$name = trim($match[3]);
