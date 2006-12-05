@@ -4373,6 +4373,8 @@ class SimplePie_Locator
 	var $elsewhere = array();
 	var $file_class = 'SimplePie_File';
 	var $cached_entities = array();
+	var $base;
+	var $base_location = 0;
 	
 	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File')
 	{
@@ -4386,54 +4388,44 @@ class SimplePie_Locator
 	{		
 		if ($this->is_feed($this->file))
 		{
-			return $this->file->url;
+			return $this->file;
 		}
 		
-		if ($type & SIMPLEPIE_LOCATOR_AUTODISCOVERY)
+		if ($type & (SIMPLEPIE_LOCATOR_AUTODISCOVERY | SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY))
 		{
-			if ($working = $this->autodiscovery($this->file))
-			{
-				return $working;
-			}
+			$this->get_base();
 		}
 		
-		if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY && $this->get_links($this->file))
+		if ($type & SIMPLEPIE_LOCATOR_AUTODISCOVERY && $working = $this->autodiscovery())
+		{
+			return $working;
+		}
+		
+		if ($type & (SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY) && $this->get_links())
 		{
 			if (!empty($this->local))
 			{
-				if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION)
+				if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION && $working = $this->extension($this->local))
 				{
-					if ($working = $this->extension($this->local))
-					{
-						return $working;
-					}
+					return $working;
 				}
 			
-				if ($type & SIMPLEPIE_LOCATOR_LOCAL_BODY)
+				if ($type & SIMPLEPIE_LOCATOR_LOCAL_BODY && $working = $this->body($this->local))
 				{
-					if ($working = $this->body($this->local))
-					{
-						return $working;
-					}
+					return $working;
 				}
 			}
 			
 			if (!empty($this->elsewhere))
 			{
-				if ($type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION)
+				if ($type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION && $working = $this->extension($this->elsewhere))
 				{
-					if ($working = $this->extension($this->elsewhere))
-					{
-						return $working;
-					}
+					return $working;
 				}
 			
-				if ($type & SIMPLEPIE_LOCATOR_REMOTE_BODY)
+				if ($type & SIMPLEPIE_LOCATOR_REMOTE_BODY && $working = $this->body($this->elsewhere))
 				{
-					if ($working = $this->body($this->elsewhere))
-					{
-						return $working;
-					}
+					return $working;
 				}
 			}
 		}
@@ -4450,16 +4442,40 @@ class SimplePie_Locator
 		return false;
 	}
 	
-	function autodiscovery(&$file)
+	function get_base()
 	{
-		$links = array_merge(SimplePie_Misc::get_element('link', $file->body()), SimplePie_Misc::get_element('a', $file->body()));
+		$this->base = $this->file->url;
+		$elements = SimplePie_Misc::get_element('base', $this->file->body());
+		foreach ($elements as $element)
+		{
+			if (!empty($element['attribs']['HREF']['data']))
+			{
+				$this->base = SimplePie_Misc::absolutize_url(trim($element['attribs']['HREF']['data']), $this->file->url);
+				$this->base_location = $element['offset'];
+				break;
+			}
+		}
+	}
+	
+	function autodiscovery()
+	{
+		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body()), SimplePie_Misc::get_element('a', $this->file->body()));
 		$done = array();
 		foreach ($links as $link)
 		{
 			if (!empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
 			{
 				$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['REL']['data'])));
-				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
+				
+				if ($this->base_location < $link['offset'])
+				{
+					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->base);
+				}
+				else
+				{
+					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
+				}
+				
 				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/i', trim($link['attribs']['TYPE']['data']))))
 				{
 					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
@@ -4474,9 +4490,9 @@ class SimplePie_Locator
 		return false;
 	}
 	
-	function get_links(&$file)
+	function get_links()
 	{
-		$links = SimplePie_Misc::get_element('a', $file->body());
+		$links = SimplePie_Misc::get_element('a', $this->file->body());
 		foreach ($links as $link)
 		{
 			if (!empty($link['attribs']['HREF']['data']))
@@ -4485,14 +4501,24 @@ class SimplePie_Locator
 				$parsed = SimplePie_Misc::parse_url($href);
 				if (empty($parsed['scheme']) || preg_match('/^(http(s)|feed)?$/i', $parsed['scheme']))
 				{
-					$current = SimplePie_Misc::parse_url($this->file->url);
-					if (empty($parsed['authority']) || $parsed['authority'] == $current['authority'])
+					if ($this->base_location < $link['offset'])
 					{
-						$this->local[] = SimplePie_Misc::absolutize_url($href, $this->file->url);
+						$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->base);
 					}
 					else
 					{
-						$this->elsewhere[] = SimplePie_Misc::absolutize_url($href, $this->file->url);
+						$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
+					}
+					
+					$current = SimplePie_Misc::parse_url($this->file->url);
+					
+					if (empty($parsed['authority']) || $parsed['authority'] == $current['authority'])
+					{
+						$this->local[] = $href;
+					}
+					else
+					{
+						$this->elsewhere[] = $href;
 					}
 				}
 			}
@@ -4510,7 +4536,6 @@ class SimplePie_Locator
 	{
 		foreach ($array as $key => $value)
 		{
-			$value = SimplePie_Misc::absolutize_url($value, $this->file->url);
 			if (in_array(strtolower(strrchr($value, '.')), array('.rss', '.rdf', '.atom', '.xml')))
 			{
 				$feed =& new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
@@ -4531,7 +4556,6 @@ class SimplePie_Locator
 	{
 		foreach ($array as $key => $value)
 		{
-			$value = SimplePie_Misc::absolutize_url($value, $this->file->url);
 			if (preg_match('/(rss|rdf|atom|xml)/i', $value))
 			{
 				$feed =& new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
