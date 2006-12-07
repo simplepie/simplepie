@@ -597,7 +597,14 @@ class SimplePie
 		
 		if (isset($_GET['js']))
 		{
-			$embed = <<<EOT
+			if (function_exists('ob_gzhandler'))
+			{
+				ob_start('ob_gzhandler');
+			}
+			header('Content-type: text/javascript; charset: UTF-8'); 
+			header('Cache-Control: must-revalidate'); 
+			header('Expires: ' .  gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
+			?>
 function embed_odeo(link) {
 	document.writeln('<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url='+link+'"></embed>');
 }
@@ -622,16 +629,7 @@ function embed_flv(width, height, link, placeholder, loop, player) {
 function embed_wmedia(width, height, link) {
 	document.writeln('<embed type="application/x-mplayer2" src="'+link+'" autosize="1" width="'+width+'" height="'+height+'" showcontrols="1" showstatusbar="0" showdisplay="0" autostart="0"></embed>');
 }
-EOT;
-
-			if (function_exists('ob_gzhandler'))
-			{
-				ob_start('ob_gzhandler');
-			}
-			header('Content-type: text/javascript; charset: UTF-8'); 
-			header('Cache-Control: must-revalidate'); 
-			header('Expires: ' .  gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
-			echo $embed;
+			<?php
 			exit;
 		}
 		
