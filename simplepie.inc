@@ -211,7 +211,7 @@ class SimplePie
 	/**
 	 * @var bool Force fsockopen() (instead of cURL for fetching
 	 * external files)
-	 * @see SimplePie::set_force_fsockopen()
+	 * @see SimplePie::force_fsockopen()
 	 * @access private
 	 */
 	var $force_fsockopen = false;
@@ -2893,12 +2893,7 @@ class SimplePie_Misc
 	
 	function parse_url($url, $parse_match = true)
 	{
-		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/i', $url, $match);
-		if (empty($match[0]))
-		{
-			return false;
-		}
-		else
+		if (preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/i', $url, $match))
 		{
 			for ($i = 6; $i < 10; $i++)
 			{
@@ -2912,6 +2907,10 @@ class SimplePie_Misc
 				$match = array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[6], 'fragment' => $match[8]);
 			}
 			return $match;
+		}
+		else
+		{
+			return false;
 		}
 	}
 	
