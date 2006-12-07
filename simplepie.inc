@@ -2779,34 +2779,37 @@ class SimplePie_Misc
 	{
 		$return = array();
 		$name = preg_quote($realname, '/');
-		preg_match_all("/<($name)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "((\/)?>|>(.*)<\/$name>)/siU", $string, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
-		for ($i = 0; $i < count($matches); $i++)
+		if (preg_match_all("/<($name)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "((\/)?>|>(.*)<\/$name>)/siU", $string, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE))
 		{
-			$return[$i]['tag'] = $realname;
-			$return[$i]['full'] = $matches[$i][0][0];
-			$return[$i]['offset'] = $matches[$i][0][1];
-			if (strlen($matches[$i][3][0]) <= 2)
+			$total_matches = count($matches);
+			for ($i = 0; $i < $total_matches; $i++)
 			{
-				$return[$i]['self_closing'] = true;
-			}
-			else
-			{
-				$return[$i]['self_closing'] = false;
-				$return[$i]['content'] = $matches[$i][5][0];
-			}
-			$return[$i]['attribs'] = array();
-			if (!empty($matches[$i][2][0]))
-			{
-				preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*("([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER);
-				for ($j = 0; $j < count($attribs);  $j++)
+				$return[$i]['tag'] = $realname;
+				$return[$i]['full'] = $matches[$i][0][0];
+				$return[$i]['offset'] = $matches[$i][0][1];
+				if (strlen($matches[$i][3][0]) <= 2)
 				{
-					if (count($attribs[$j]) == 2)
+					$return[$i]['self_closing'] = true;
+				}
+				else
+				{
+					$return[$i]['self_closing'] = false;
+					$return[$i]['content'] = $matches[$i][5][0];
+				}
+				$return[$i]['attribs'] = array();
+				if (!empty($matches[$i][2][0]) && preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*("([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER))
+				{
+					$total_attribs = count($attribs);
+					for ($j = 0; $j < $total_attribs;  $j++)
 					{
-						$attribs[$j][2] = $attribs[$j][1];
+						if (count($attribs[$j]) == 2)
+						{
+							$attribs[$j][2] = $attribs[$j][1];
+						}
+						$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode($attribs[$j][count($attribs[$j])-1], 'UTF-8', $cache);
+						$first = substr($attribs[$j][2], 0, 1);
+						$return[$i]['attribs'][strtoupper($attribs[$j][1])]['split'] = ($first == '"' || $first == "'") ? $first : '"';
 					}
-					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode($attribs[$j][count($attribs[$j])-1], 'UTF-8', $cache);
-					$first = substr($attribs[$j][2], 0, 1);
-					$return[$i]['attribs'][strtoupper($attribs[$j][1])]['split'] = ($first == '"' || $first == "'") ? $first : '"';
 				}
 			}
 		}
@@ -2895,7 +2898,7 @@ class SimplePie_Misc
 	{
 		if (preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/i', $url, $match))
 		{
-			for ($i = 6; $i < 10; $i++)
+			for ($i = count($match); $i <= 9; $i++)
 			{
 				if (!isset($match[$i]))
 				{
@@ -4128,7 +4131,7 @@ class SimplePie_Misc
 			// Time
 			if (!empty($match[15]))
 			{
-				for ($i = 16; $i <= 21; $i++)
+				for ($i = count($match); $i <= 21; $i++)
 				{
 					if (!isset($match[$i]))
 					{
@@ -4235,7 +4238,7 @@ class SimplePie_Misc
 					// Timezone difference from UTC
 					else
 					{
-						for ($i = 23; $i <= 27; $i++)
+						for ($i = count($match); $i <= 27; $i++)
 						{
 							if (!isset($match[$i]))
 							{
