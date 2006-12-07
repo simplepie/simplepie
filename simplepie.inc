@@ -2639,6 +2639,7 @@ class SimplePie_Misc
 						$target['path'] = '';
 						while (!empty($input))
 						{
+							// A: If the input buffer begins with a prefix of "../" or "./", then remove that prefix from the input buffer; otherwise,
 							if (strpos($input, '../') === 0)
 							{
 								$input = substr($input, 3);
@@ -2647,28 +2648,32 @@ class SimplePie_Misc
 							{
 								$input = substr($input, 2);
 							}
+							// B: if the input buffer begins with a prefix of "/./" or "/.", where "." is a complete path segment, then replace that prefix with "/" in the input buffer; otherwise,
 							else if (strpos($input, '/./') === 0)
 							{
 								$input = substr_replace($input, '/', 0, 3);
 							}
-							else if (strpos($input, '/.') === 0 && SimplePie_Misc::strendpos($input, '/.') === 0)
+							else if ($input == '/.')
 							{
-								$input = substr_replace($input, '/', -2);
+								$input = '/';
 							}
+							// C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise, 
 							else if (strpos($input, '/../') === 0)
 							{
 								$input = substr_replace($input, '/', 0, 4);
 								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
 							}
-							else if (strpos($input, '/..') === 0 && SimplePie_Misc::strendpos($input, '/..') === 0)
+							else if ($input == '/..')
 							{
-								$input = substr_replace($input, '/', 0, 3);
+								$input = '/';
 								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
 							}
+							// D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
 							else if ($input == '.' || $input == '..')
 							{
 								$input = '';
 							}
+							// E: move the first path segment in the input buffer to the end of the output buffer, including the initial "/" character (if any) and any subsequent characters up to, but not including, the next "/" character or the end of the input buffer
 							else
 							{
 								if (preg_match('/^([^\/]+|(\/)[^\/]*)(\/|$)/', $input, $match))
@@ -2741,18 +2746,6 @@ class SimplePie_Misc
 			$return = $base;
 		}
 		return $return;
-	}
-	
-	function strendpos($haystack, $needle)
-	{
-		if (($pos = strpos($haystack, $needle)) !== false)
-		{
-			return strlen($haystack) - $pos - strlen($needle);
-		}
-		else
-		{
-			return false;
-		}
 	}
 	
 	function get_element($realname, $string)
