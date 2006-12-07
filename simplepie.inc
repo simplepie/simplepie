@@ -2622,13 +2622,13 @@ class SimplePie_Misc
 						}
 						else
 						{
-							if (!empty($base['path']))
+							if ($base['path'] == '/' || empty($base['path']))
 							{
-								$target['path'] = dirname("$base[path].") . '/' . $relative['path'];
+								$target['path'] = '/' . $relative['path'];
 							}
 							else
 							{
-								$target['path'] = '/' . $relative['path'];
+								$target['path'] = dirname("$base[path].") . '/' . $relative['path'];
 							}
 						}
 						if (!empty($relative['query']))
@@ -2873,7 +2873,7 @@ class SimplePie_Misc
 	
 	function parse_url($url, $parse_match = true)
 	{
-		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/i', $url, $match);
+		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/i', $url, $match);
 		if (empty($match[0]))
 		{
 			return false;
