@@ -2745,7 +2745,14 @@ class SimplePie_Misc
 	
 	function strendpos($haystack, $needle)
 	{
-		return strlen($haystack) - strpos($haystack, $needle) - strlen($needle);
+		if (($pos = strpos($haystack, $needle)) !== false)
+		{
+			return strlen($haystack) - $pos - strlen($needle);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	function get_element($realname, $string)
