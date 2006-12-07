@@ -11,14 +11,16 @@ if (!empty($_GET['feed']))
 		$_GET['feed'] = stripslashes($_GET['feed']);
 	}
 	$feed->set_feed_url($_GET['feed']);
-	$feed->set_cache(false);
+	$feed->enable_cache(false);
 	$starttime = explode(' ', microtime());
 	$starttime = $starttime[1] + $starttime[0];
 	$feed->init();
 	$endtime = explode(' ', microtime());
 	$endtime = $endtime[1] + $endtime[0];
 	$time = $endtime - $starttime;
-} else {
+}
+else
+{
 	$time = 'null';
 }
 

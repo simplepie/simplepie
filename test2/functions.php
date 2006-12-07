@@ -144,7 +144,7 @@ function feed_title_test($file)
 				{
 					$feed = new SimplePie();
 					$feed->set_raw_data($data);
-					$feed->set_cache(false);
+					$feed->enable_cache(false);
 					$feed->init();
 					run_test($value, $feed->get_feed_title() == $expected);
 				}
@@ -172,7 +172,7 @@ function first_item_title_test($file)
 				{
 					$feed = new SimplePie();
 					$feed->set_raw_data($data);
-					$feed->set_cache(false);
+					$feed->enable_cache(false);
 					$feed->init();
 					$item = $feed->get_item(0);
 					if ($item)
@@ -208,7 +208,7 @@ function first_item_permalink_test($file)
 				{
 					$feed = new SimplePie();
 					$feed->set_raw_data($data);
-					$feed->set_cache(false);
+					$feed->enable_cache(false);
 					$feed->init();
 					$item = $feed->get_item(0);
 					if ($item)
@@ -243,7 +243,7 @@ function first_item_category_test($file)
 				{
 					$feed = new SimplePie();
 					$feed->set_raw_data($data);
-					$feed->set_cache(false);
+					$feed->enable_cache(false);
 					$feed->init();
 					$item = $feed->get_item(0);
 					if ($item)
@@ -291,7 +291,7 @@ function dive_into_mark_atom_autodiscovery()
 			{
 				$feed = new SimplePie();
 				$feed->set_file($file);
-				$feed->set_cache(false);
+				$feed->enable_cache(false);
 				$feed->init();
 				run_test($current, $feed->get_feed_link() == $current);
 			}
