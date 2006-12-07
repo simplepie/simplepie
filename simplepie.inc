@@ -3831,18 +3831,17 @@ class SimplePie_Misc
 	
 	function get_curl_version()
 	{
-		$curl = 0;
-		if (is_array(curl_version()))
+		if (is_array($curl = curl_version()))
 		{
-			$curl = curl_version();
 			$curl = $curl['version'];
+		}
+		else if (preg_match('/curl\/(\S+)(\s|$)/', $curl, $match))
+		{
+			$curl = $match[1];
 		}
 		else
 		{
-			$curl = curl_version();
-			$curl = explode(' ', $curl);
-			$curl = explode('/', $curl[0]);
-			$curl = $curl[1];
+			$curl = 0;
 		}
 		return $curl;
 	}
