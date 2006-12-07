@@ -209,7 +209,8 @@ class SimplePie
 	var $timeout = 10;
 	
 	/**
-	 * @var bool Force fsockopen() (instead of cURL for fetching external files)
+	 * @var bool Force fsockopen() (instead of cURL for fetching
+	 * external files)
 	 * @see SimplePie::set_force_fsockopen()
 	 * @access private
 	 */
@@ -217,14 +218,14 @@ class SimplePie
 	
 	/**
 	 * @var bool Enable/Disable XML dump
-	 * @see SimplePie::set_xml_dump()
+	 * @see SimplePie::enable_xml_dump()
 	 * @access private
 	 */
 	var $xml_dump = false;
 	
 	/**
 	 * @var bool Enable/Disable Caching
-	 * @see SimplePie::set_cache()
+	 * @see SimplePie::enable_cache()
 	 * @access private
 	 */
 	var $cache = true;
@@ -252,13 +253,14 @@ class SimplePie
 	
 	/**
 	 * @var bool Reorder feed by date descending
-	 * @see SimplePie::set_order_by_date()
+	 * @see SimplePie::enable_order_by_date()
 	 * @access private
 	 */
 	var $order_by_date = true;
 	
 	/**
-	 * @var mixed Force input encoding to be set to the follow value (false, or anything type-cast to false, disables this feature)
+	 * @var mixed Force input encoding to be set to the follow value
+	 * (false, or anything type-cast to false, disables this feature)
 	 * @see SimplePie::set_input_encoding()
 	 * @access private
 	 */
@@ -300,13 +302,24 @@ class SimplePie
 	var $file_class = 'SimplePie_File';
 	
 	/**
-	 * Creates useragent, linkback and sanitize members, and runs init if
-	 * a feed URL is passed (as the first parameter)
+	 * @var mixed Set javascript query string parameter (false, or
+	 * anything type-cast to false, disables this feature)
+	 * @see SimplePie::set_javascript()
+	 * @access private
+	 */
+	var $javascript = 'js';
+	
+	/**
+	 * Creates useragent, linkback and sanitize members, and runs
+	 * init if a feed URL is passed (as the first parameter)
 	 *
 	 * @access public
-	 * @param mixed $feed_url Feed URL, defaults to null, sets the feed URL and runs init() if not
-	 * @param mixed $cache_location Cache Location, defaults to null, sets the cache location if not
-	 * @param mixed $cache_duration Cache Duration, defaults to null, sets the cache duration (in minutes) if not
+	 * @param mixed $feed_url Feed URL, defaults to null, sets the
+	 * feed URL and runs init() if not
+	 * @param mixed $cache_location Cache Location, defaults to null,
+	 * sets the cache location if not
+	 * @param mixed $cache_duration Cache Duration, defaults to null,
+	 * sets the cache duration (in minutes) if not
 	 */
 	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
 	{
@@ -334,7 +347,7 @@ class SimplePie
 		if (!is_null($feed_url))
 		{
 			$this->set_feed_url($feed_url);
-			return $this->init();
+			$this->init();
 		}
 	}
 	
@@ -343,11 +356,10 @@ class SimplePie
 	 *
 	 * @access public
 	 * @param string $url Feed URL
-	 * @return string Parsed Feed URL
 	 */
 	function set_feed_url($url)
 	{
-		return $this->feed_url = SimplePie_Misc::fix_protocol($url, 1);
+		$this->feed_url = SimplePie_Misc::fix_protocol($url, 1);
 	}
 	
 	/**
@@ -356,8 +368,7 @@ class SimplePie
 	 *
 	 * @access public
 	 * @param object &$file Instance of SimplePie_File (or subclass)
-	 * @return bool True if $file is a instance of SimplePie_File (or a
-	 * subclass thereof), otherwise false
+	 * @return bool True on success, false on failure
 	 */
 	function set_file(&$file)
 	{
@@ -380,12 +391,12 @@ class SimplePie
 		$this->raw_data = trim((string) $data);
 	}
 	
-	function set_xml_dump($enable = false)
+	function enable_xml_dump($enable = false)
 	{
 		$this->xml_dump = (bool) $enable;
 	}
 	
-	function set_cache($enable = true)
+	function enable_cache($enable = true)
 	{
 		$this->cache = (bool) $enable;
 	}
@@ -400,7 +411,7 @@ class SimplePie
 		$this->cache_location = (string) $location;
 	}
 	
-	function set_order_by_date($enable = true)
+	function enable_order_by_date($enable = true)
 	{
 		$this->order_by_date = (bool) $enable;
 	}
@@ -428,13 +439,12 @@ class SimplePie
 	 * @see SIMPLEPIE_LOCATOR_REMOTE_EXTENSION
 	 * @see SIMPLEPIE_LOCATOR_REMOTE_BODY
 	 * @see SIMPLEPIE_LOCATOR_ALL
-	 * @param int $level Feed Autodiscovery Level (use SIMPLEPIE_LOCATOR
-	 * constants, with bitwise OR operator)
-	 * @return int Autodiscovery Level
+	 * @param int $level Feed Autodiscovery Level (level can be a
+	 * combination of the above constants, see bitwise OR operator)
 	 */
 	function set_autodiscovery_level($level = SIMPLEPIE_LOCATOR_ALL)
 	{
-		return $this->autodiscovery = (int) $level;
+		$this->autodiscovery = (int) $level;
 	}
 	
 	function set_cache_class($class = 'SimplePie_Cache')
@@ -477,11 +487,11 @@ class SimplePie
 		return false;
 	}
 	
-	function set_sanitize_class($object = 'SimplePie_Sanitize')
+	function set_sanitize_class($class = 'SimplePie_Sanitize')
 	{
-		if (class_exists($object))
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Sanitize'))
 		{
-			$this->sanitize =& new $object;
+			$this->sanitize =& new $class;
 			return true;
 		}
 		return false;
@@ -492,7 +502,7 @@ class SimplePie
 		$this->useragent = (string) $ua;
 	}
 	
-	function set_force_fsockopen($enable = false)
+	function force_fsockopen($enable = false)
 	{
 		$this->force_fsockopen = (bool) $enable;
 	}
@@ -502,17 +512,34 @@ class SimplePie
 	 *
 	 * @access public
 	 * @param mixed $function Callback function
-	 * @return mixed Callback function (or sha1 if it doesn't exist)
 	 */
 	function set_cache_name_function($function = 'sha1')
 	{
 		if (is_callable($function))
 		{
-			return $this->cache_name_function = $function;
+			$this->cache_name_function = $function;
 		}
 		else
 		{
-			return $this->cache_name_function = 'sha1';
+			$this->cache_name_function = 'sha1';
+		}
+	}
+	
+	/**
+	 * Set javascript query string parameter
+	 *
+	 * @access public
+	 * @param mixed $get Javascript query string parameter
+	 */
+	function set_javascript($get = 'js')
+	{
+		if ($get)
+		{
+			$this->javascript = $get;
+		}
+		else
+		{
+			$this->javascript = false;
 		}
 	}
 	
@@ -560,7 +587,7 @@ class SimplePie
 		$this->sanitize->strip_attributes($attribs);
 	}
 	
-	function output_encoding($encoding = 'UTF-8')
+	function set_output_encoding($encoding = 'UTF-8')
 	{
 		$this->sanitize->output_encoding($encoding);
 	}
@@ -595,7 +622,7 @@ class SimplePie
 			SimplePie_Misc::display_file($_GET[$this->sanitize->bypass_image_hotlink], 10, $this->useragent);
 		}
 		
-		if (isset($_GET['js']))
+		if (isset($_GET[$this->javascript]))
 		{
 			if (function_exists('ob_gzhandler'))
 			{
@@ -1676,8 +1703,8 @@ class SimplePie_Item
 	 *
 	 * @access private
 	 * @param string $feed_url String to prefix to the item permalink
-	 * @param string $title_url String to prefix to the item title (and
-	 * suffix to the item permalink)
+	 * @param string $title_url String to prefix to the item title
+	 * (and suffix to the item permalink)
 	 * @return mixed URL if feed exists, false otherwise
 	 */
 	function add_to_service($feed_url, $title_url = '')
@@ -2893,14 +2920,15 @@ class SimplePie_Misc
 	 *
 	 * PCRE Pattern to locate bad bytes in a UTF-8 string
 	 * Comes from W3 FAQ: Multilingual Forms
-	 * Note: modified to include full ASCII range including control chars
+	 * Note: modified to include full ASCII range including control
+	 * chars
 	 *
 	 * Modified by Geoffrey Sneddon 2006-11-19 to remove functionality
 	 * to choose what the replace string is, and to use a variable for
 	 * the output instead of PHP's output buffer
 	 *
-	 * Modified by Geoffrey Sneddon 2006-12-04 to use iconv or mbstring
-	 * if either is enabled
+	 * Modified by Geoffrey Sneddon 2006-12-04 to use iconv or
+	 * mbstring if either is enabled
 	 *
 	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 * @author Geoffrey Sneddon
@@ -5356,7 +5384,7 @@ class SimplePie_Sanitize
 		$this->input_encoding = (string) $encoding;
 	}
 	
-	function output_encoding($encoding = 'UTF-8')
+	function set_output_encoding($encoding = 'UTF-8')
 	{
 		$this->output_encoding = (string) $encoding;
 	}
