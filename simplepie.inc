@@ -5381,7 +5381,7 @@ class SimplePie_Sanitize
 		}
 	}
 	
-	function input_encoding($encoding = 'UTF-8')
+	function set_input_encoding($encoding = 'UTF-8')
 	{
 		$this->input_encoding = (string) $encoding;
 	}
