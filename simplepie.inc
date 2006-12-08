@@ -2623,23 +2623,23 @@ class SimplePie_Misc
 		$base = trim($base);
 		if (!empty($relative))
 		{
-			$relative = SimplePie_Misc::parse_url($relative, false);
-			$relative = array('scheme' => $relative[2], 'authority' => $relative[3], 'path' => $relative[5], 'query' => $relative[7], 'fragment' => $relative[9]);
+			$relative = SimplePie_Misc::parse_url($relative);
 			if (!empty($relative['scheme']))
 			{
 				$target = $relative;
 			}
 			else if (!empty($base))
 			{
-				$base = SimplePie_Misc::parse_url($base, false);
-				$base = array('scheme' => $base[2], 'authority' => $base[3], 'path' => $base[5], 'query' => $base[7], 'fragment' => $base[9]);
-				$target['scheme'] = $base['scheme'];
+				$base = SimplePie_Misc::parse_url($base);
+				$target = SimplePie_Misc::parse_url('');
 				if (!empty($relative['authority']))
 				{
-					$target = array_merge($relative, $target);
+					$target = $relative;
+					$target['scheme'] = $base['scheme'];
 				}
 				else
 				{
+					$target['scheme'] = $base['scheme'];
 					$target['authority'] = $base['authority'];
 					if (!empty($relative['path']))
 					{
@@ -2746,27 +2746,7 @@ class SimplePie_Misc
 				// No base URL, just return the relative URL
 				$target = $relative;
 			}
-			$return = '';
-			if (!empty($target['scheme']))
-			{
-				$return .= "$target[scheme]:";
-			}
-			if (!empty($target['authority']))
-			{
-				$return .= $target['authority'];
-			}
-			if (!empty($target['path']))
-			{
-				$return .= $target['path'];
-			}
-			if (!empty($target['query']))
-			{
-				$return .= "?$target[query]";
-			}
-			if (!empty($target['fragment']))
-			{
-				$return .= "#$target[fragment]";
-			}
+			$return = SimplePie_Misc::compress_parse_url($target['scheme'], $target['authority'], $target['path'], $target['query'], $target['fragment']);
 		}
 		else
 		{
@@ -2871,9 +2851,9 @@ class SimplePie_Misc
 	function fix_protocol($url, $http = 1)
 	{
 		$parsed = SimplePie_Misc::parse_url($url);
-		if (!empty($parsed['scheme']) && strtolower($parsed['scheme']) != 'http' && strtolower($parsed['scheme']) != 'https')
+		if (!empty($parsed['scheme']) && !preg_match('/^http(s)?$/i', $parsed['scheme']))
 		{
-			return SimplePie_Misc::fix_protocol("$parsed[authority]$parsed[path]$parsed[query]$parsed[fragment]", $http);
+			return SimplePie_Misc::fix_protocol(SimplePie_Misc::compress_parse_url('http', $parsed['authority'], $parsed['path'], $parsed['query'], $parsed['fragment']), $http);
 		}
 		if (!file_exists($url) && empty($parsed['scheme']))
 		{
@@ -2894,7 +2874,7 @@ class SimplePie_Misc
 		}
 	}
 	
-	function parse_url($url, $parse_match = true)
+	function parse_url($url)
 	{
 		if (preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/i', $url, $match))
 		{
@@ -2905,16 +2885,38 @@ class SimplePie_Misc
 					$match[$i] = '';
 				}
 			}
-			if ($parse_match)
-			{
-				$match = array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[6], 'fragment' => $match[8]);
-			}
-			return $match;
+			return array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
 		}
 		else
 		{
 			return false;
 		}
+	}
+	
+	function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
+	{
+		$return = '';
+		if (!empty($scheme))
+		{
+			$return .= "$scheme:";
+		}
+		if (!empty($authority))
+		{
+			$return .= "//$authority";
+		}
+		if (!empty($path))
+		{
+			$return .= $path;
+		}
+		if (!empty($query))
+		{
+			$return .= "?$query";
+		}
+		if (!empty($fragment))
+		{
+			$return .= "#$fragment";
+		}
+		return $return;
 	}
 	
 	/**
