@@ -1868,6 +1868,12 @@ class SimplePie_Enclosure
 		$this->link = $link;
 		$this->type = $type;
 		$this->length = $length;
+		if (class_exists('idna_convert'))
+		{
+			$idn =& new idna_convert;
+			$parsed = SimplePie_Misc::parse_url($link);
+			$this->link = SimplePie_Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
+		}
 	}
 	
 	function __toString()
@@ -1879,11 +1885,6 @@ class SimplePie_Enclosure
 	{
 		if (!empty($this->link))
 		{
-			if (class_exists('idna_convert'))
-			{
-				$idn =& new idna_convert;
-				$this->link = $idn->encode($this->link);
-			}
 			return $this->link;
 		}
 		else
@@ -2299,7 +2300,8 @@ class SimplePie_File
 		if (class_exists('idna_convert'))
 		{
 			$idn =& new idna_convert;
-			$url = $idn->encode($url);
+			$parsed = SimplePie_Misc::parse_url($url);
+			$url = SimplePie_Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
 		}
 		$this->url = $url;
 		$this->useragent = $useragent;
