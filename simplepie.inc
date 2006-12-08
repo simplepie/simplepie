@@ -2779,7 +2779,7 @@ class SimplePie_Misc
 					$return[$i]['content'] = $matches[$i][5][0];
 				}
 				$return[$i]['attribs'] = array();
-				if (!empty($matches[$i][2][0]) && preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*("([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER))
+				if (!empty($matches[$i][2][0]) && preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER))
 				{
 					$total_attribs = count($attribs);
 					for ($j = 0; $j < $total_attribs;  $j++)
@@ -2789,8 +2789,6 @@ class SimplePie_Misc
 							$attribs[$j][2] = $attribs[$j][1];
 						}
 						$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode($attribs[$j][count($attribs[$j])-1], 'UTF-8', $cache);
-						$first = substr($attribs[$j][2], 0, 1);
-						$return[$i]['attribs'][strtoupper($attribs[$j][1])]['split'] = ($first == '"' || $first == "'") ? $first : '"';
 					}
 				}
 			}
@@ -2804,7 +2802,7 @@ class SimplePie_Misc
 		foreach ($element['attribs'] as $key => $value)
 		{
 			$key = strtolower($key);
-			$full .= " $key=$value[split]$value[data]$value[split]";
+			$full .= " $key=\"" . htmlspecialchars($value['data']) . '"';
 		}
 		if ($element['self_closing'])
 		{
