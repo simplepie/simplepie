@@ -563,11 +563,6 @@ class SimplePie
 		$this->sanitize->remove_div($enable);
 	}
 
-	function strip_ads($enable = false)
-	{
-		$this->sanitize->strip_ads($enable);
-	}
-
 	function strip_htmltags($tags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'), $encode = null)
 	{
 		$this->sanitize->strip_htmltags($tags);
@@ -5320,7 +5315,6 @@ class SimplePie_Sanitize
 
 	// Options
 	var $remove_div = true;
-	var $strip_ads = false;
 	var $replace_headers = false;
 	var $bypass_image_hotlink = false;
 	var $bypass_image_hotlink_page = false;
@@ -5336,11 +5330,6 @@ class SimplePie_Sanitize
 	function remove_div($enable = true)
 	{
 		$this->remove_div = (bool) $enable;
-	}
-
-	function strip_ads($enable = false)
-	{
-		$this->strip_ads = (bool) $enable;
 	}
 
 	function replace_headers($enable = false)
@@ -5944,15 +5933,6 @@ class SimplePie_Sanitize
 		}
 		$data = trim($data);
 		$data = SimplePie_Misc::strip_comments($data);
-
-		// If Strip Ads is enabled, strip them.
-		if ($this->strip_ads)
-		{
-			$data = preg_replace('/<a (.*)href=(.*)click\.phdo\?s=(.*)<\/a>/msiU', '', $data); // Pheedo links (tested with Dooce.com)
-			$data = preg_replace('/<p(.*)>(.*)<a href="http:\/\/ad.doubleclick.net\/jump\/(.*)<\/p>/msiU', '', $data); // Doubleclick links (tested with InfoWorld.com)
-			$data = preg_replace('/<p><map (.*)name=(.*)google_ad_map(.*)<\/p>/msiU', '', $data); // Google AdSense for Feeds (tested with tuaw.com).
-			// Feedflare, from Feedburner
-		}
 
 		// Replace H1, H2, and H3 tags with the less important H4 tags.
 		// This is because on a site, the more important headers might make sense,

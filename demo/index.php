@@ -11,9 +11,6 @@ include_once('../idn/idna_convert.class.php');
 // Create a new instance of the SimplePie object
 $feed = new SimplePie();
 
-// Set these Configuration Options
-$feed->strip_ads(true);
-
 // Make sure that page is getting passed a URL
 if (!empty($_GET['feed'])) {
 
