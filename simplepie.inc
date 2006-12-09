@@ -2657,65 +2657,12 @@ class SimplePie_Misc
 							}
 							else
 							{
-								$target['path'] = dirname("$base[path].") . '/' . $relative['path'];
+								$target['path'] = preg_replace('/^(.*)((\/)([^\/]*))?$/sU', '\\1', $base['path']) . '/' . $relative['path'];
 							}
 						}
 						if (!empty($relative['query']))
 						{
 							$target['query'] = $relative['query'];
-						}
-						$input = $target['path'];
-						$target['path'] = '';
-						while (!empty($input))
-						{
-							// A: If the input buffer begins with a prefix of "../" or "./", then remove that prefix from the input buffer; otherwise,
-							if (strpos($input, '../') === 0)
-							{
-								$input = substr($input, 3);
-							}
-							else if (strpos($input, './') === 0)
-							{
-								$input = substr($input, 2);
-							}
-							// B: if the input buffer begins with a prefix of "/./" or "/.", where "." is a complete path segment, then replace that prefix with "/" in the input buffer; otherwise,
-							else if (strpos($input, '/./') === 0)
-							{
-								$input = substr_replace($input, '/', 0, 3);
-							}
-							else if ($input == '/.')
-							{
-								$input = '/';
-							}
-							// C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise,
-							else if (strpos($input, '/../') === 0)
-							{
-								$input = substr_replace($input, '/', 0, 4);
-								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
-							}
-							else if ($input == '/..')
-							{
-								$input = '/';
-								$target['path'] = preg_replace('/(\/)?([^\/]+)$/U', '', $target['path']);
-							}
-							// D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
-							else if ($input == '.' || $input == '..')
-							{
-								$input = '';
-							}
-							// E: move the first path segment in the input buffer to the end of the output buffer, including the initial "/" character (if any) and any subsequent characters up to, but not including, the next "/" character or the end of the input buffer
-							else
-							{
-								if (preg_match('/^([^\/]+|(\/)[^\/]*)(\/|$)/', $input, $match))
-								{
-									$target['path'] .= $match[1];
-									$input = substr_replace($input, '', 0, strlen($match[1]));
-								}
-								else
-								{
-									// We've ended up in a recursive loop, so do what we otherwise never will: return false.
-									return false;
-								}
-							}
 						}
 					}
 					else
@@ -2754,7 +2701,65 @@ class SimplePie_Misc
 		{
 			$return = $base;
 		}
+		$return = SimplePie_Misc::normalize_url($return);
 		return $return;
+	}
+	
+	function remove_dot_segments($input)
+	{
+		$output = '';
+		while (!empty($input))
+		{
+			// A: If the input buffer begins with a prefix of "../" or "./", then remove that prefix from the input buffer; otherwise,
+			if (strpos($input, '../') === 0)
+			{
+				$input = substr($input, 3);
+			}
+			else if (strpos($input, './') === 0)
+			{
+				$input = substr($input, 2);
+			}
+			// B: if the input buffer begins with a prefix of "/./" or "/.", where "." is a complete path segment, then replace that prefix with "/" in the input buffer; otherwise,
+			else if (strpos($input, '/./') === 0)
+			{
+				$input = substr_replace($input, '/', 0, 3);
+			}
+			else if ($input == '/.')
+			{
+				$input = '/';
+			}
+			// C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise,
+			else if (strpos($input, '/../') === 0)
+			{
+				$input = substr_replace($input, '/', 0, 4);
+				$output = preg_replace('/(\/)?([^\/]+)$/U', '', $output);
+			}
+			else if ($input == '/..')
+			{
+				$input = '/';
+				$output = preg_replace('/(\/)?([^\/]+)$/U', '', $output);
+			}
+			// D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
+			else if ($input == '.' || $input == '..')
+			{
+				$input = '';
+			}
+			// E: move the first path segment in the input buffer to the end of the output buffer, including the initial "/" character (if any) and any subsequent characters up to, but not including, the next "/" character or the end of the input buffer
+			else
+			{
+				if (preg_match('/^([^\/]+|(\/)[^\/]*)(\/|$)/', $input, $match))
+				{
+					$output .= $match[1];
+					$input = substr_replace($input, '', 0, strlen($match[1]));
+				}
+				else
+				{
+					// We've ended up in a recursive loop, so do what we otherwise never will: return false.
+					return false;
+				}
+			}
+		}
+		return $output;
 	}
 
 	function get_element($realname, $string)
@@ -2850,6 +2855,7 @@ class SimplePie_Misc
 
 	function fix_protocol($url, $http = 1)
 	{
+		$url = SimplePie_Misc::normalize_url($url);
 		$parsed = SimplePie_Misc::parse_url($url);
 		if (!empty($parsed['scheme']) && !preg_match('/^http(s)?$/i', $parsed['scheme']))
 		{
@@ -2889,7 +2895,7 @@ class SimplePie_Misc
 		}
 		else
 		{
-			return false;
+			return array('scheme' => '', 'authority' => '', 'path' => '', 'query' => '', 'fragment' => '');
 		}
 	}
 
@@ -2917,6 +2923,32 @@ class SimplePie_Misc
 			$return .= "#$fragment";
 		}
 		return $return;
+	}
+	
+	function normalize_url($url)
+	{
+		$url = preg_replace_callback('/%([0-9a-f]{2})/i', array('SimplePie_Misc', 'percent_encoding_normalization'), $url);
+		$url = SimplePie_Misc::parse_url($url);
+		$url['scheme'] = strtolower($url['scheme']);
+		if (!empty($url['authority']))
+		{
+			$url['authority'] = strtolower($url['authority']);
+			$url['path'] = SimplePie_Misc::remove_dot_segments($url['path']);
+		}
+		return SimplePie_Misc::compress_parse_url($url['scheme'], $url['authority'], $url['path'], $url['query'], $url['fragment']);
+	}
+	
+	function percent_encoding_normalization($match)
+	{
+		$integer = hexdec($match[1]);
+		if ($integer >= 0x41 && $integer <= 0x5A || $integer >= 0x61 && $integer <= 0x7A || $integer >= 0x30 && $integer <= 0x39 || $integer == 0x2D || $integer == 0x2E || $integer == 0x5F || $integer == 0x7E)
+		{
+			return chr($integer);
+		}
+		else
+		{
+			return strtoupper($match[0]);
+		}
 	}
 
 	/**
