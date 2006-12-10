@@ -2,7 +2,7 @@
 
 // Invalid dates should return false
 
-$date = 'A really, really, really invalid time';
+$date = 'meep';
 $expected = false;
 
 ?>
