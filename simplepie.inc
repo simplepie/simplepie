@@ -981,7 +981,7 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	function get_favicon($check = false, $alternate = null)
+	function get_favicon($check = false)
 	{
 		if ($this->get_feed_link())
 		{
@@ -1003,14 +1003,7 @@ function embed_wmedia(width, height, link) {
 				return $favicon;
 			}
 		}
-		if (!is_null($alternate))
-		{
-			return $alternate;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	function subscribe_url()
