@@ -340,7 +340,7 @@ class SimplePie
 		// If we've passed an xmldump variable in the URL, snap into XML dump mode
 		if (isset($_GET['xmldump']))
 		{
-			$this->set_xml_dump(true);
+			$this->enable_xml_dump(true);
 		}
 
 		// Only init the script if we're passed a feed URL
