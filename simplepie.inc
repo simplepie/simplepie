@@ -231,11 +231,11 @@ class SimplePie
 	var $cache = true;
 
 	/**
-	 * @var float Cache duration (in minutes)
+	 * @var int Cache duration (in seconds)
 	 * @see SimplePie::set_cache_duration()
 	 * @access private
 	 */
-	var $cache_duration = 60;
+	var $cache_duration = 3600;
 
 	/**
 	 * @var string Cache location (relative to executing script)
@@ -319,7 +319,7 @@ class SimplePie
 	 * @param mixed $cache_location Cache Location, defaults to null,
 	 * sets the cache location if not
 	 * @param mixed $cache_duration Cache Duration, defaults to null,
-	 * sets the cache duration (in minutes) if not
+	 * sets the cache duration (in seconds) if not
 	 */
 	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
 	{
@@ -401,9 +401,9 @@ class SimplePie
 		$this->cache = (bool) $enable;
 	}
 
-	function set_cache_duration($minutes = 60)
+	function set_cache_duration($seconds = 3600)
 	{
-		$this->cache_duration = (float) $minutes;
+		$this->cache_duration = (int) $seconds;
 	}
 
 	function set_cache_location($location = './cache')
@@ -694,7 +694,7 @@ function embed_wmedia(width, height, link) {
 							}
 						}
 						// If the cache is new enough
-						else if ($cache->mtime() + $this->cache_duration * 60 < time())
+						else if ($cache->mtime() + $this->cache_duration < time())
 						{
 							// If we have last-modified and/or etag set
 							if (!empty($this->data['last-modified']) || !empty($this->data['etag']))
@@ -815,27 +815,27 @@ function embed_wmedia(width, height, link) {
 				$encoding = $encoding[2];
 			}
 			// UTF-32 Big Endian BOM
-			else if (strpos($data, sprintf('%c%c%c%c', 0x00, 0x00, 0xFE, 0xFF)) === 0)
+			else if (strpos($data, "\x0\x0\xFE\xFF") === 0)
 			{
 				$encoding = 'UTF-32be';
 			}
 			// UTF-32 Little Endian BOM
-			else if (strpos($data, sprintf('%c%c%c%c', 0xFF, 0xFE, 0x00, 0x00)) === 0)
+			else if (strpos($data, "\xFF\xFE\x0\x0") === 0)
 			{
 				$encoding = 'UTF-32';
 			}
 			// UTF-16 Big Endian BOM
-			else if (strpos($data, sprintf('%c%c', 0xFE, 0xFF)) === 0)
+			else if (strpos($data, "\xFE\xFF") === 0)
 			{
 				$encoding = 'UTF-16be';
 			}
 			// UTF-16 Little Endian BOM
-			else if (strpos($data, sprintf('%c%c', 0xFF, 0xFE)) === 0)
+			else if (strpos($data, "\xFF\xFE") === 0)
 			{
 				$encoding = 'UTF-16le';
 			}
 			// UTF-8 BOM
-			else if (strpos($data, sprintf('%c%c%c', 0xEF, 0xBB, 0xBF)) === 0)
+			else if (strpos($data, "\xEF\xBB\xBF") === 0)
 			{
 				$encoding = 'UTF-8';
 			}
@@ -4662,27 +4662,27 @@ class SimplePie_Parser
 
 		// Strip BOM:
 		// UTF-32 Big Endian BOM
-		if (strpos($data, sprintf('%c%c%c%c', 0x00, 0x00, 0xFE, 0xFF)) === 0)
+		if (strpos($data, "\x0\x0\xFE\xFF") === 0)
 		{
 			$data = substr($data, 4);
 		}
 		// UTF-32 Little Endian BOM
-		else if (strpos($data, sprintf('%c%c%c%c', 0xFF, 0xFE, 0x00, 0x00)) === 0)
+		else if (strpos($data, "\xFF\xFE\x0\x0") === 0)
 		{
 			$data = substr($data, 4);
 		}
 		// UTF-16 Big Endian BOM
-		else if (strpos($data, sprintf('%c%c', 0xFE, 0xFF)) === 0)
+		else if (strpos($data, "\xFE\xFF") === 0)
 		{
 			$data = substr($data, 2);
 		}
 		// UTF-16 Little Endian BOM
-		else if (strpos($data, sprintf('%c%c', 0xFF, 0xFE)) === 0)
+		else if (strpos($data, "\xFF\xFE") === 0)
 		{
 			$data = substr($data, 2);
 		}
 		// UTF-8 BOM
-		else if (strpos($data, sprintf('%c%c%c', 0xEF, 0xBB, 0xBF)) === 0)
+		else if (strpos($data, "\xEF\xBB\xBF") === 0)
 		{
 			$data = substr($data, 3);
 		}
