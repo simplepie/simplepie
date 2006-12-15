@@ -993,7 +993,7 @@ function embed_wmedia(width, height, link) {
 				$headers = $file->headers();
 				$file->close();
 
-				if ($headers['status']['code'] == 200 || $headers['status']['code'] > 206 && $headers['status']['code'] < 300)
+				if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
 				{
 					return $favicon;
 				}
