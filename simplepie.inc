@@ -2954,6 +2954,9 @@ class SimplePie_Misc
 	 * Modified by Geoffrey Sneddon 2006-12-04 to use iconv or
 	 * mbstring if either is enabled
 	 *
+	 * Modified by Geoffrey Sneddon 2006-12-16 to use preg_match_all(),
+	 * so the regular expression is only run once
+	 *
 	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 * @author Geoffrey Sneddon
 	 * @see http://www.w3.org/International/questions/qa-forms-utf-8
@@ -2983,13 +2986,15 @@ class SimplePie_Misc
 			 '|\xF4[\x80-\x8F][\x80-\xBF]{2}' .			# plane 16
 			 '|(.{1}))';								# invalid byte
 			$output = '';
-			while (preg_match('/' . $UTF8_BAD . '/S', $str, $matches))
+			if (preg_match_all('/' . $UTF8_BAD . '/S', $str, $matches, PREG_SET_ORDER))
 			{
-				if (!isset($matches[2]))
+				foreach ($matches as $match)
 				{
-					$output .= $matches[0];
+					if (!isset($match[2]))
+					{
+						$output .= $match[0];
+					}
 				}
-				$str = substr($str, strlen($matches[0]));
 			}
 			return $output;
 		}
