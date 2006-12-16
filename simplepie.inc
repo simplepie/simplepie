@@ -4411,6 +4411,18 @@ class SimplePie_Misc
 		$email = SimplePie_Misc::uncomment_rfc822($email);
 		return (bool) preg_match($address, $email);
 	}
+	
+	function parse_mime($mime)
+	{
+		if (preg_match('/^([^;]*)(;|$)/i', trim($mime), $match))
+		{
+			return $match[1];
+		}
+		else
+		{
+			return $mime;
+		}
+	}
 }
 
 class SimplePie_Locator
