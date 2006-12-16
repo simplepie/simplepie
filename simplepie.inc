@@ -4416,7 +4416,7 @@ class SimplePie_Misc
 	{
 		if (preg_match('/^([^;]*)(;|$)/i', trim($mime), $match))
 		{
-			return $match[1];
+			return rtrim($match[1]);
 		}
 		else
 		{
@@ -4537,7 +4537,7 @@ class SimplePie_Locator
 					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
 				}
 
-				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && preg_match('/^(application\/rss\+xml|application\/atom\+xml|application\/rdf\+xml|application\/xml\+rss|application\/xml\+atom|application\/xml\+rdf|application\/xml|application\/x\.atom\+xml|text\/xml)(;|$)/i', trim($link['attribs']['TYPE']['data']))))
+				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && in_array(SimplePie_Misc::parse_mime($link['attribs']['TYPE']['data']), array('application/rss+xml', 'application/atom+xml'))))
 				{
 					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
 					if ($this->is_feed($feed))
