@@ -4526,6 +4526,7 @@ class SimplePie_Locator
 	function autodiscovery()
 	{
 		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body()), SimplePie_Misc::get_element('a', $this->file->body()));
+		var_dump($links);
 		$done = array();
 		foreach ($links as $link)
 		{
@@ -4542,7 +4543,7 @@ class SimplePie_Locator
 					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $this->file->url);
 				}
 
-				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && in_array(SimplePie_Misc::parse_mime($link['attribs']['TYPE']['data']), array('application/rss+xml', 'application/atom+xml'))))
+				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && in_array(strtolower(SimplePie_Misc::parse_mime($link['attribs']['TYPE']['data'])), array('application/rss+xml', 'application/atom+xml'))))
 				{
 					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
 					if ($this->is_feed($feed))
