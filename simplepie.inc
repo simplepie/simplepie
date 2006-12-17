@@ -5949,12 +5949,12 @@ class SimplePie_Sanitize
 			{
 				if ($this->remove_div)
 				{
-					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '', $data);
-					$data = preg_replace('/<\/div>$/', '', $data);
+					$data = preg_replace('/^\s*<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '', $data);
+					$data = preg_replace('/<\/div>\s*$/', '', $data);
 				}
 				else
 				{
-					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
+					$data = preg_replace('/^\s*<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
 				}
 				$data = $this->convert_entities($data);
 			}
