@@ -2184,10 +2184,14 @@ class SimplePie_Enclosure
 		$embed = '';
 
 		// Make sure the JS library is included
-		// (I know it'll be included multiple times, but I can't think of a better way to do this automatically)
 		if (!$native)
 		{
-			$embed .= '<script type="text/javascript" src="?js"></script>';
+			static $javascript_outputted;
+			if (!$javascript_outputted)
+			{
+				$embed .= '<script type="text/javascript" src="?js"></script>';
+				$javascript_outputted = true;
+			}
 		}
 
 		// Odeo Feed MP3's
