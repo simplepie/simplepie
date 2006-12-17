@@ -541,6 +541,7 @@ class SimplePie
 		{
 			$this->javascript = false;
 		}
+		$this->sanitize->set_javascript($get);
 	}
 
 	function bypass_image_hotlink($get = false)
@@ -1849,13 +1850,15 @@ class SimplePie_Enclosure
 	var $link;
 	var $type;
 	var $length;
+	var $javascript;
 
 	// Constructor, used to input the data
-	function SimplePie_Enclosure($link, $type, $length)
+	function SimplePie_Enclosure($link, $type, $length, $javascript)
 	{
 		$this->link = $link;
 		$this->type = $type;
 		$this->length = $length;
+		$this->javascript = $javascript;
 		if (class_exists('idna_convert'))
 		{
 			$idn =& new idna_convert;
@@ -2186,10 +2189,10 @@ class SimplePie_Enclosure
 		// Make sure the JS library is included
 		if (!$native)
 		{
-			static $javascript_outputted;
-			if (!$javascript_outputted)
+			static $javascript_outputted = null;
+			if (!$javascript_outputted && $this->javascript)
 			{
-				$embed .= '<script type="text/javascript" src="?js"></script>';
+				$embed .= '<script type="text/javascript" src="?' . htmlspecialchars($this->javascript) . '"></script>';
 				$javascript_outputted = true;
 			}
 		}
@@ -5340,6 +5343,7 @@ class SimplePie_Sanitize
 	var $item_class = 'SimplePie_Item';
 	var $author_class = 'SimplePie_Author';
 	var $enclosure_class = 'SimplePie_Enclosure';
+	var $javascript = 'js';
 
 	function remove_div($enable = true)
 	{
@@ -5458,6 +5462,24 @@ class SimplePie_Sanitize
 		return false;
 	}
 
+	/**
+	 * Set javascript query string parameter
+	 *
+	 * @access public
+	 * @param string $get Javascript query string parameter
+	 */
+	function set_javascript($get = 'js')
+	{
+		if ($get)
+		{
+			$this->javascript = $get;
+		}
+		else
+		{
+			$this->javascript = false;
+		}
+	}
+
 	function parse_data_array(&$data, $url)
 	{
 		// Parse feed URL
@@ -5526,7 +5548,7 @@ class SimplePie_Sanitize
 					if (!empty($link['attribs']['LENGTH'])) {
 						$length = $this->sanitize($link['attribs']['LENGTH'], $link['attribs']);
 					}
-					$this->info['link']['enclosure'][] =& new $this->enclosure_class($href, $type, $length);
+					$this->info['link']['enclosure'][] =& new $this->enclosure_class($href, $type, $length, $this->javascript);
 				}
 				else
 				{
@@ -5708,7 +5730,7 @@ class SimplePie_Sanitize
 							}
 							if (!empty($href))
 							{
-								$newitem['link'][$rel][] =& new $this->enclosure_class($href, $type, $length);
+								$newitem['link'][$rel][] =& new $this->enclosure_class($href, $type, $length, $this->javascript);
 							}
 						}
 						else
@@ -5743,7 +5765,7 @@ class SimplePie_Sanitize
 							{
 								$length = $this->sanitize($enclosure['attribs']['LENGTH'], $enclosure['attribs']);
 							}
-							$newitem['enclosures'][] =& new $this->enclosure_class($href, $type, $length);
+							$newitem['enclosures'][] =& new $this->enclosure_class($href, $type, $length, $this->javascript);
 						}
 					}
 				}
@@ -6023,13 +6045,13 @@ class SimplePie_Sanitize
 		{
 			if (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
-				$match[1] = SimplePie_Misc::change_encoding(htmlspecialchars($match[1], ENT_COMPAT, 'UTF-8'), 'UTF-8', $this->input_encoding);
-				$match[2] = SimplePie_Misc::change_encoding(htmlspecialchars($match[2], ENT_COMPAT, 'UTF-8'), 'UTF-8', $this->input_encoding);
+				$match[1] = htmlspecialchars($match[1]);
+				$match[2] = htmlspecialchars($match[2]);
 				return "&lt;$match[1]$match[2]&gt;$match[4]&lt;/$match[1]&gt;";
 			}
 			else
 			{
-				return SimplePie_Misc::change_encoding(htmlspecialchars($match[0], ENT_COMPAT, 'UTF-8'), 'UTF-8', $this->input_encoding);
+				return htmlspecialchars($match[0]);
 			}
 		}
 		else
