@@ -5466,7 +5466,7 @@ class SimplePie_Sanitize
 	 * Set javascript query string parameter
 	 *
 	 * @access public
-	 * @param string $get Javascript query string parameter
+	 * @param mixed $get Javascript query string parameter
 	 */
 	function set_javascript($get = 'js')
 	{
