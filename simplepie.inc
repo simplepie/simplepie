@@ -310,6 +310,13 @@ class SimplePie
 	var $javascript = 'js';
 
 	/**
+	 * @var int Maximum number of feeds to check with autodiscovery
+	 * @see SimplePie::set_max_checked_feeds()
+	 * @access private
+	 */
+	var $max_checked_feeds = 10;
+
+	/**
 	 * Creates useragent, linkback and sanitize members, and runs
 	 * init if a feed URL is passed (as the first parameter)
 	 *
@@ -544,6 +551,17 @@ class SimplePie
 		$this->sanitize->set_javascript($get);
 	}
 
+	/**
+	 * Set maximum number of feeds to check with autodiscovery
+	 *
+	 * @access public
+	 * @param int $max Maximum number of feeds to check
+	 */
+	function set_max_checked_feeds($max = 10)
+	{
+		$this->max_checked_feeds = $max;
+	}
+
 	function bypass_image_hotlink($get = false)
 	{
 		$this->sanitize->bypass_image_hotlink($get);
@@ -764,7 +782,7 @@ function embed_wmedia(width, height, link) {
 				}
 
 				// Check if the supplied URL is a feed, if it isn't, look for it.
-				$locate =& new $this->locator_class($file, $this->timeout, $this->useragent);
+				$locate =& new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds);
 				if (!$locate->is_feed($file))
 				{
 					$file = $locate->find($this->autodiscovery);
@@ -4450,13 +4468,16 @@ class SimplePie_Locator
 	var $cached_entities = array();
 	var $base;
 	var $base_location = 0;
+	var $checked_feeds = 0;
+	var $max_checked_feeds = 10;
 
-	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File')
+	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds)
 	{
 		$this->file =& $file;
 		$this->file_class = $file_class;
 		$this->useragent = $useragent;
 		$this->timeout = $timeout;
+		$this->max_checked_feeds = $max_checked_feeds;
 	}
 
 	function find($type = SIMPLEPIE_LOCATOR_ALL)
@@ -4466,7 +4487,7 @@ class SimplePie_Locator
 			return $this->file;
 		}
 
-		if ($type & (SIMPLEPIE_LOCATOR_AUTODISCOVERY | SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY))
+		if ($type & ~SIMPLEPIE_LOCATOR_NONE)
 		{
 			$this->get_base();
 		}
@@ -4476,29 +4497,29 @@ class SimplePie_Locator
 			return $working;
 		}
 
-		if ($type & (SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY) && $this->get_links())
+		if ($this->checked_feeds != $this->max_checked_feeds && $type & (SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY) && $this->get_links())
 		{
 			if (!empty($this->local))
 			{
-				if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION && $working = $this->extension($this->local))
+				if ($this->checked_feeds != $this->max_checked_feeds && $type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION && $working = $this->extension($this->local))
 				{
 					return $working;
 				}
 
-				if ($type & SIMPLEPIE_LOCATOR_LOCAL_BODY && $working = $this->body($this->local))
+				if ($this->checked_feeds != $this->max_checked_feeds && $type & SIMPLEPIE_LOCATOR_LOCAL_BODY && $working = $this->body($this->local))
 				{
 					return $working;
 				}
 			}
 
-			if (!empty($this->elsewhere))
+			if ($this->checked_feeds != $this->max_checked_feeds && !empty($this->elsewhere))
 			{
-				if ($type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION && $working = $this->extension($this->elsewhere))
+				if ($this->checked_feeds != $this->max_checked_feeds && $type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION && $working = $this->extension($this->elsewhere))
 				{
 					return $working;
 				}
 
-				if ($type & SIMPLEPIE_LOCATOR_REMOTE_BODY && $working = $this->body($this->elsewhere))
+				if ($this->checked_feeds != $this->max_checked_feeds && $type & SIMPLEPIE_LOCATOR_REMOTE_BODY && $working = $this->body($this->elsewhere))
 				{
 					return $working;
 				}
@@ -4538,6 +4559,10 @@ class SimplePie_Locator
 		$done = array();
 		foreach ($links as $link)
 		{
+			if ($this->checked_feeds == $this->max_checked_feeds)
+			{
+				break;
+			}
 			if (!empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
 			{
 				$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['REL']['data'])));
@@ -4553,6 +4578,7 @@ class SimplePie_Locator
 
 				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['TYPE']['data']) && in_array(strtolower(SimplePie_Misc::parse_mime($link['attribs']['TYPE']['data'])), array('application/rss+xml', 'application/atom+xml'))))
 				{
+					$this->checked_feeds++;
 					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
 					if ($this->is_feed($feed))
 					{
@@ -4611,8 +4637,13 @@ class SimplePie_Locator
 	{
 		foreach ($array as $key => $value)
 		{
+			if ($this->checked_feeds == $this->max_checked_feeds)
+			{
+				break;
+			}
 			if (in_array(strtolower(strrchr($value, '.')), array('.rss', '.rdf', '.atom', '.xml')))
 			{
+				$this->checked_feeds++;
 				$feed =& new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
 				if ($this->is_feed($feed))
 				{
@@ -4631,8 +4662,13 @@ class SimplePie_Locator
 	{
 		foreach ($array as $key => $value)
 		{
+			if ($this->checked_feeds == $this->max_checked_feeds)
+			{
+				break;
+			}
 			if (preg_match('/(rss|rdf|atom|xml)/i', $value))
 			{
+				$this->checked_feeds++;
 				$feed =& new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
 				if ($this->is_feed($feed))
 				{
