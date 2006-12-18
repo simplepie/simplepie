@@ -2198,7 +2198,8 @@ class SimplePie_Enclosure
 		}
 
 		// Odeo Feed MP3's
-		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com') {
+		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com')
+		{
 			if ($native)
 			{
 				$embed .= '<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url=' . $this->get_link() . '"></embed>';
@@ -2216,7 +2217,7 @@ class SimplePie_Enclosure
 			$height += 16;
 			if ($native)
 			{
-				if ($placeholder != "") {
+				if ($placeholder != ""){
 					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" href=\"" . $this->get_link() . "\" src=\"$placeholder\" width=\"$width\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"false\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://www.apple.com/quicktime/download/\"></embed>";
 				}
 				else {
@@ -3040,7 +3041,8 @@ class SimplePie_Misc
 			while ($i <= strlen($string))
 			{
 				$char = substr($string, $i, 1);
-				if ($state == 0) {
+				if ($state == 0)
+				{
 					if ((ord($char) >= 0x7F) || (ord($char) <= 0x1F))
 					{
 						if ($char)
@@ -5542,10 +5544,12 @@ class SimplePie_Sanitize
 					{
 						$href = $this->sanitize($link['attribs']['HREF'], $link['attribs'], true);
 					}
-					if (!empty($link['attribs']['TYPE'])) {
+					if (!empty($link['attribs']['TYPE']))
+					{
 						$type = $this->sanitize($link['attribs']['TYPE'], $link['attribs']);
 					}
-					if (!empty($link['attribs']['LENGTH'])) {
+					if (!empty($link['attribs']['LENGTH']))
+					{
 						$length = $this->sanitize($link['attribs']['LENGTH'], $link['attribs']);
 					}
 					$this->info['link']['enclosure'][] =& new $this->enclosure_class($href, $type, $length, $this->javascript);
@@ -5662,7 +5666,8 @@ class SimplePie_Sanitize
 				}
 
 				// Title
-				if (!empty($item['title']['data'])) {
+				if (!empty($item['title']['data']))
+				{
 					$newitem['title'] = $this->sanitize($item['title']['data'], $item['title']['attribs']);
 				}
 				if (!empty($item['dc:title']['data']))
@@ -5722,10 +5727,12 @@ class SimplePie_Sanitize
 							{
 								$href = $this->sanitize($link['attribs']['HREF'], $link['attribs'], true);
 							}
-							if (!empty($link['attribs']['TYPE'])) {
+							if (!empty($link['attribs']['TYPE']))
+							{
 								$type = $this->sanitize($link['attribs']['TYPE'], $link['attribs']);
 							}
-							if (!empty($link['attribs']['LENGTH'])) {
+							if (!empty($link['attribs']['LENGTH']))
+							{
 								$length = $this->sanitize($link['attribs']['LENGTH'], $link['attribs']);
 							}
 							if (!empty($href))
