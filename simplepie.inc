@@ -3069,7 +3069,7 @@ class SimplePie_Misc
 						}
 						$state = 1;
 					}
-					elseif ($char == '&')
+					else if ($char == '&')
 					{
 						$return .= '&-';
 					}
@@ -3078,7 +3078,7 @@ class SimplePie_Misc
 						$return .= $char;
 					}
 				}
-				elseif (($i == strlen($string) || !((ord($char) >= 0x7F)) || (ord($char) <= 0x1F)))
+				else if (($i == strlen($string) || !((ord($char) >= 0x7F)) || (ord($char) <= 0x1F)))
 				{
 					if ($state != 1)
 					{
@@ -3131,11 +3131,7 @@ class SimplePie_Misc
 
 		if ($input != $output)
 		{
-			if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && $data = iconv($input['encoding'], "$output[encoding]//TRANSLIT", $data))
-			{
-				return $data;
-			}
-			else if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && $data = iconv($input['encoding'], $output['encoding'], $data))
+			if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && $data = iconv($input['encoding'], $output['encoding'], $data))
 			{
 				return $data;
 			}
