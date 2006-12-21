@@ -139,8 +139,6 @@ function fnLoadPngs() {
 require_once '../simplepie.inc';
 require_once 'functions.php';
 
-$feed = new SimplePie;
-
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
 
@@ -186,7 +184,7 @@ $time = $mtime - $starttime;
 	<h3><?php echo $passed_percentage; ?>% passed!</h3>
 	<p>We ran <?php echo $total; ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time/$total, 3); ?> seconds per test) of which <?php echo $passed; ?> (<?php echo $passed_percentage; ?>%) were passed, and <?php echo $failed; ?> (<?php echo $failed_percentage; ?>%) were failed.</p>
 	
-	<p class="footnote">Powered by <a href="<?php echo $feed->url; ?>"><?php echo $feed->name . ' ' . $feed->version . ', Build ' . $feed->build; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
+	<p class="footnote">Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
 
 </div>
 

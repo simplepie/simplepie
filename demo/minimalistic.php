@@ -130,7 +130,7 @@ form#sp_form input.text {
 	</div>
 
 	<div id="footer">
-		Powered by <?php echo $feed->linkback; ?>, a product of <a href="http://www.skyzyx.com">Skyzyx Technologies</a>.<br />
+		Powered by <?php echo SIMPLEPIE_LINKBACK; ?>, a product of <a href="http://www.skyzyx.com">Skyzyx Technologies</a>.<br />
 		Page created in <?php echo round(microtime_float()-$start, 3); ?> seconds.
 	</div>
 </body>

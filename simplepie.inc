@@ -132,43 +132,6 @@ define('SIMPLEPIE_PCRE_XML_ATTRIBUTE', '((?:\s*(?:(?:[^\s:]+:)?[^\s:]+)\s*=\s*(?
 class SimplePie
 {
 	/**
-	 * @var string SimplePie Name
-	 * @access protected
-	 */
-	var $name = SIMPLEPIE_NAME;
-
-	/**
-	 * @var string SimplePie Version
-	 * @access protected
-	 */
-	var $version = SIMPLEPIE_VERSION;
-
-	/**
-	 * @var int SimplePie Build
-	 * @access protected
-	 */
-	var $build = SIMPLEPIE_BUILD;
-
-	/**
-	 * @var string SimplePie Website URL
-	 * @access protected
-	 */
-	var $url = SIMPLEPIE_URL;
-
-	/**
-	 * @var string SimplePie Useragent
-	 * @see SimplePie::set_useragent()
-	 * @access protected
-	 */
-	var $useragent = SIMPLEPIE_USERAGENT;
-
-	/**
-	 * @var string Link to SimplePie Website
-	 * @access protected
-	 */
-	var $linkback = SIMPLEPIE_LINKBACK;
-
-	/**
 	 * @var array Raw data
 	 * @access protected
 	 */
@@ -186,6 +149,13 @@ class SimplePie
 	 * @access private
 	 */
 	var $sanitize;
+
+	/**
+	 * @var string SimplePie Useragent
+	 * @see SimplePie::set_useragent()
+	 * @access private
+	 */
+	var $useragent = SIMPLEPIE_USERAGENT;
 
 	/**
 	 * @var string Feed URL
@@ -859,7 +829,7 @@ function embed_wmedia(width, height, link) {
 				$encoding = 'UTF-8';
 			}
 			// Fallback to the default (US-ASCII for text/* MIME types, UTF-8 otherwise)
-			else if (preg_match('/^text\//i', $headers['content-type']))
+			else if (!empty($headers['content-type']) && preg_match('/^text\//i', $headers['content-type']))
 			{
 				$encoding = 'US-ASCII';
 			}
