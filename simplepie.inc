@@ -858,10 +858,14 @@ function embed_wmedia(width, height, link) {
 			{
 				$encoding = 'UTF-8';
 			}
-			// Fallback to the default
+			// Fallback to the default (US-ASCII for text/* MIME types, UTF-8 otherwise)
+			else if (preg_match('/^text\//i', $headers['content-type']))
+			{
+				$encoding = 'US-ASCII';
+			}
 			else
 			{
-				$encoding = null;
+				$encoding = 'UTF-8';
 			}
 
 			// Change the encoding to UTF-8 (as we always use UTF-8 internally)
@@ -3131,23 +3135,23 @@ class SimplePie_Misc
 
 		if ($input != $output)
 		{
-			if (function_exists('iconv') && $input['use_iconv'] && $output['use_iconv'] && $data = iconv($input['encoding'], $output['encoding'], $data))
+			if (function_exists('iconv') && $data = @iconv($input, $output, $data))
 			{
 				return $data;
 			}
-			else if (function_exists('mb_convert_encoding') && $input['use_mbstring'] && $output['use_mbstring'])
+			else if (function_exists('mb_convert_encoding') && $data = @mb_convert_encoding($data, $output, $input))
 			{
-				return mb_convert_encoding($data, $output['encoding'], $input['encoding']);
+				return $data;
 			}
-			else if ($input['encoding'] == 'ISO-8859-1' && $output['encoding'] == 'UTF-8')
+			else if ($input == 'ISO-8859-1' && $output == 'UTF-8')
 			{
 				return utf8_encode($data);
 			}
-			else if ($input['encoding'] == 'UTF-8' && $output['encoding'] == 'ISO-8859-1')
+			else if ($input == 'UTF-8' && $output == 'ISO-8859-1')
 			{
 				return utf8_decode($data);
 			}
-			else if ($output['encoding'] == 'UTF-7')
+			else if ($output == 'UTF-7')
 			{
 				return SimplePie_Misc::string_to_utf7($data);
 			}
@@ -3157,186 +3161,149 @@ class SimplePie_Misc
 
 	function encoding($encoding)
 	{
-		$return['use_mbstring'] = false;
-		$return['use_iconv'] = false;
 		switch (strtolower($encoding))
 		{
-
 			// 7bit
 			case '7bit':
 			case '7-bit':
-				$return['encoding'] = '7bit';
-				$return['use_mbstring'] = true;
+				return '7bit';
 				break;
 
 			// 8bit
 			case '8bit':
 			case '8-bit':
-				$return['encoding'] = '8bit';
-				$return['use_mbstring'] = true;
+				return '8bit';
 				break;
 
 			// ARMSCII-8
 			case 'armscii-8':
 			case 'armscii':
-				$return['encoding'] = 'ARMSCII-8';
-				$return['use_iconv'] = true;
+				return 'ARMSCII-8';
 				break;
 
 			// ASCII
 			case 'us-ascii':
 			case 'ascii':
-				$return['encoding'] = 'US-ASCII';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'US-ASCII';
 				break;
 
 			// BASE64
 			case 'base64':
 			case 'base-64':
-				$return['encoding'] = 'BASE64';
-				$return['use_mbstring'] = true;
+				return 'BASE64';
 				break;
 
 			// Big5 - Traditional Chinese, mainly used in Taiwan
 			case 'big5':
 			case '950':
-				$return['encoding'] = 'BIG5';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'BIG5';
 				break;
 
 			// Big5 with Hong Kong extensions, Traditional Chinese
 			case 'big5-hkscs':
-				$return['encoding'] = 'BIG5-HKSCS';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'BIG5-HKSCS';
 				break;
 
 			// byte2be
 			case 'byte2be':
-				$return['encoding'] = 'byte2be';
-				$return['use_mbstring'] = true;
+				return 'byte2be';
 				break;
 
 			// byte2le
 			case 'byte2le':
-				$return['encoding'] = 'byte2le';
-				$return['use_mbstring'] = true;
+				return 'byte2le';
 				break;
 
 			// byte4be
 			case 'byte4be':
-				$return['encoding'] = 'byte4be';
-				$return['use_mbstring'] = true;
+				return 'byte4be';
 				break;
 
 			// byte4le
 			case 'byte4le':
-				$return['encoding'] = 'byte4le';
-				$return['use_mbstring'] = true;
+				return 'byte4le';
 				break;
 
 			// EUC-CN
 			case 'euc-cn':
 			case 'euccn':
-				$return['encoding'] = 'EUC-CN';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'EUC-CN';
 				break;
 
 			// EUC-JISX0213
 			case 'euc-jisx0213':
 			case 'eucjisx0213':
-				$return['encoding'] = 'EUC-JISX0213';
-				$return['use_iconv'] = true;
+				return 'EUC-JISX0213';
 				break;
 
 			// EUC-JP
 			case 'euc-jp':
 			case 'eucjp':
-				$return['encoding'] = 'EUC-JP';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'EUC-JP';
 				break;
 
 			// EUCJP-win
 			case 'euc-jp-win':
 			case 'eucjp-win':
 			case 'eucjpwin':
-				$return['encoding'] = 'EUCJP-win';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'EUCJP-win';
 				break;
 
 			// EUC-KR
 			case 'euc-kr':
 			case 'euckr':
-				$return['encoding'] = 'EUC-KR';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'EUC-KR';
 				break;
 
 			// EUC-TW
 			case 'euc-tw':
 			case 'euctw':
-				$return['encoding'] = 'EUC-TW';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'EUC-TW';
 				break;
 
 			// GB18030 - Simplified Chinese, national standard character set
 			case 'gb18030-2000':
 			case 'gb18030':
-				$return['encoding'] = 'GB18030';
-				$return['use_iconv'] = true;
+				return 'GB18030';
 				break;
 
 			// GB2312 - Simplified Chinese, national standard character set
 			case 'gb2312':
 			case '936':
-				$return['encoding'] = 'GB2312';
-				$return['use_mbstring'] = true;
+				return 'GB2312';
 				break;
 
 			// GBK
 			case 'gbk':
-				$return['encoding'] = 'GBK';
-				$return['use_iconv'] = true;
+				return 'GBK';
 				break;
 
 			// Georgian-Academy
 			case 'georgian-academy':
-				$return['encoding'] = 'Georgian-Academy';
-				$return['use_iconv'] = true;
+				return 'Georgian-Academy';
 				break;
 
 			// Georgian-PS
 			case 'georgian-ps':
-				$return['encoding'] = 'Georgian-PS';
-				$return['use_iconv'] = true;
+				return 'Georgian-PS';
 				break;
 
 			// HTML-ENTITIES
 			case 'html-entities':
 			case 'htmlentities':
-				$return['encoding'] = 'HTML-ENTITIES';
-				$return['use_mbstring'] = true;
+				return 'HTML-ENTITIES';
 				break;
 
 			// HZ
 			case 'hz':
-				$return['encoding'] = 'HZ';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'HZ';
 				break;
 
 			// ISO-2022-CN
 			case 'iso-2022-cn':
 			case 'iso2022-cn':
 			case 'iso2022cn':
-				$return['encoding'] = 'ISO-2022-CN';
-				$return['use_iconv'] = true;
+				return 'ISO-2022-CN';
 				break;
 
 			// ISO-2022-CN-EXT
@@ -3344,17 +3311,14 @@ class SimplePie_Misc
 			case 'iso2022-cn-ext':
 			case 'iso2022cn-ext':
 			case 'iso2022cnext':
-				$return['encoding'] = 'ISO-2022-CN';
-				$return['use_iconv'] = true;
+				return 'ISO-2022-CN';
 				break;
 
 			// ISO-2022-JP
 			case 'iso-2022-jp':
 			case 'iso2022-jp':
 			case 'iso2022jp':
-				$return['encoding'] = 'ISO-2022-JP';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-2022-JP';
 				break;
 
 			// ISO-2022-JP-1
@@ -3362,8 +3326,7 @@ class SimplePie_Misc
 			case 'iso2022-jp-1':
 			case 'iso2022jp-1':
 			case 'iso2022jp1':
-				$return['encoding'] = 'ISO-2022-JP-1';
-				$return['use_iconv'] = true;
+				return 'ISO-2022-JP-1';
 				break;
 
 			// ISO-2022-JP-2
@@ -3371,8 +3334,7 @@ class SimplePie_Misc
 			case 'iso2022-jp-2':
 			case 'iso2022jp-2':
 			case 'iso2022jp2':
-				$return['encoding'] = 'ISO-2022-JP-2';
-				$return['use_iconv'] = true;
+				return 'ISO-2022-JP-2';
 				break;
 
 			// ISO-2022-JP-3
@@ -3380,97 +3342,74 @@ class SimplePie_Misc
 			case 'iso2022-jp-3':
 			case 'iso2022jp-3':
 			case 'iso2022jp3':
-				$return['encoding'] = 'ISO-2022-JP-3';
-				$return['use_iconv'] = true;
+				return 'ISO-2022-JP-3';
 				break;
 
 			// ISO-2022-KR
 			case 'iso-2022-kr':
 			case 'iso2022-kr':
 			case 'iso2022kr':
-				$return['encoding'] = 'ISO-2022-KR';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-2022-KR';
 				break;
 
 			// ISO-8859-1
 			case 'iso-8859-1':
 			case 'iso8859-1':
-				$return['encoding'] = 'ISO-8859-1';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-1';
 				break;
 
 			// ISO-8859-2
 			case 'iso-8859-2':
 			case 'iso8859-2':
-				$return['encoding'] = 'ISO-8859-2';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-2';
 				break;
 
 			// ISO-8859-3
 			case 'iso-8859-3':
 			case 'iso8859-3':
-				$return['encoding'] = 'ISO-8859-3';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-3';
 				break;
 
 			// ISO-8859-4
 			case 'iso-8859-4':
 			case 'iso8859-4':
-				$return['encoding'] = 'ISO-8859-4';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-4';
 				break;
 
 			// ISO-8859-5
 			case 'iso-8859-5':
 			case 'iso8859-5':
-				$return['encoding'] = 'ISO-8859-5';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-5';
 				break;
 
 			// ISO-8859-6
 			case 'iso-8859-6':
 			case 'iso8859-6':
-				$return['encoding'] = 'ISO-8859-6';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-6';
 				break;
 
 			// ISO-8859-7
 			case 'iso-8859-7':
 			case 'iso8859-7':
-				$return['encoding'] = 'ISO-8859-7';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-7';
 				break;
 
 			// ISO-8859-8
 			case 'iso-8859-8':
 			case 'iso8859-8':
-				$return['encoding'] = 'ISO-8859-8';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-8';
 				break;
 
 			// ISO-8859-9
 			case 'iso-8859-9':
 			case 'iso8859-9':
-				$return['encoding'] = 'ISO-8859-9';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-9';
 				break;
 
 			// ISO-8859-10
 			case 'iso-8859-10':
 			case 'iso8859-10':
-				$return['encoding'] = 'ISO-8859-10';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-10';
 				break;
 
 			// mbstring/iconv functions don't appear to support 11 & 12
@@ -3478,203 +3417,166 @@ class SimplePie_Misc
 			// ISO-8859-13
 			case 'iso-8859-13':
 			case 'iso8859-13':
-				$return['encoding'] = 'ISO-8859-13';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-13';
 				break;
 
 			// ISO-8859-14
 			case 'iso-8859-14':
 			case 'iso8859-14':
-				$return['encoding'] = 'ISO-8859-14';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-14';
 				break;
 
 			// ISO-8859-15
 			case 'iso-8859-15':
 			case 'iso8859-15':
-				$return['encoding'] = 'ISO-8859-15';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'ISO-8859-15';
 				break;
 
 			// ISO-8859-16
 			case 'iso-8859-16':
 			case 'iso8859-16':
-				$return['encoding'] = 'ISO-8859-16';
-				$return['use_iconv'] = true;
+				return 'ISO-8859-16';
 				break;
 
 			// JIS
 			case 'jis':
-				$return['encoding'] = 'JIS';
-				$return['use_mbstring'] = true;
+				return 'JIS';
 				break;
 
 			// JOHAB - Korean
 			case 'johab':
-				$return['encoding'] = 'JOHAB';
-				$return['use_iconv'] = true;
+				return 'JOHAB';
 				break;
 
 			// Russian
 			case 'koi8-r':
 			case 'koi8r':
-				$return['encoding'] = 'KOI8-R';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'KOI8-R';
 				break;
 
 			// Turkish
 			case 'koi8-t':
 			case 'koi8t':
-				$return['encoding'] = 'KOI8-T';
-				$return['use_iconv'] = true;
+				return 'KOI8-T';
 				break;
 
 			// Ukrainian
 			case 'koi8-u':
 			case 'koi8u':
-				$return['encoding'] = 'KOI8-U';
-				$return['use_iconv'] = true;
+				return 'KOI8-U';
 				break;
 
 			// Russian+Ukrainian
 			case 'koi8-ru':
 			case 'koi8ru':
-				$return['encoding'] = 'KOI8-RU';
-				$return['use_iconv'] = true;
+				return 'KOI8-RU';
 				break;
 
 			// Macintosh (Mac OS Classic)
 			case 'macintosh':
-				$return['encoding'] = 'Macintosh';
-				$return['use_iconv'] = true;
+				return 'Macintosh';
 				break;
 
 			// MacArabic (Mac OS Classic)
 			case 'macarabic':
-				$return['encoding'] = 'MacArabic';
-				$return['use_iconv'] = true;
+				return 'MacArabic';
 				break;
 
 			// MacCentralEurope (Mac OS Classic)
 			case 'maccentraleurope':
-				$return['encoding'] = 'MacCentralEurope';
-				$return['use_iconv'] = true;
+				return 'MacCentralEurope';
 				break;
 
 			// MacCroatian (Mac OS Classic)
 			case 'maccroatian':
-				$return['encoding'] = 'MacCroatian';
-				$return['use_iconv'] = true;
+				return 'MacCroatian';
 				break;
 
 			// MacCyrillic (Mac OS Classic)
 			case 'maccyrillic':
-				$return['encoding'] = 'MacCyrillic';
-				$return['use_iconv'] = true;
+				return 'MacCyrillic';
 				break;
 
 			// MacGreek (Mac OS Classic)
 			case 'macgreek':
-				$return['encoding'] = 'MacGreek';
-				$return['use_iconv'] = true;
+				return 'MacGreek';
 				break;
 
 			// MacHebrew (Mac OS Classic)
 			case 'machebrew':
-				$return['encoding'] = 'MacHebrew';
-				$return['use_iconv'] = true;
+				return 'MacHebrew';
 				break;
 
 			// MacIceland (Mac OS Classic)
 			case 'maciceland':
-				$return['encoding'] = 'MacIceland';
-				$return['use_iconv'] = true;
+				return 'MacIceland';
 				break;
 
 			// MacRoman (Mac OS Classic)
 			case 'macroman':
-				$return['encoding'] = 'MacRoman';
-				$return['use_iconv'] = true;
+				return 'MacRoman';
 				break;
 
 			// MacRomania (Mac OS Classic)
 			case 'macromania':
-				$return['encoding'] = 'MacRomania';
-				$return['use_iconv'] = true;
+				return 'MacRomania';
 				break;
 
 			// MacThai (Mac OS Classic)
 			case 'macthai':
-				$return['encoding'] = 'MacThai';
-				$return['use_iconv'] = true;
+				return 'MacThai';
 				break;
 
 			// MacTurkish (Mac OS Classic)
 			case 'macturkish':
-				$return['encoding'] = 'MacTurkish';
-				$return['use_iconv'] = true;
+				return 'MacTurkish';
 				break;
 
 			// MacUkraine (Mac OS Classic)
 			case 'macukraine':
-				$return['encoding'] = 'MacUkraine';
-				$return['use_iconv'] = true;
+				return 'MacUkraine';
 				break;
 
 			// MuleLao-1
 			case 'mulelao-1':
 			case 'mulelao1':
-				$return['encoding'] = 'MuleLao-1';
-				$return['use_iconv'] = true;
+				return 'MuleLao-1';
 				break;
 
 			// Shift_JIS
 			case 'shift_jis':
 			case 'sjis':
 			case '932':
-				$return['encoding'] = 'Shift_JIS';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'Shift_JIS';
 				break;
 
 			// Shift_JISX0213
 			case 'shift-jisx0213':
 			case 'shiftjisx0213':
-				$return['encoding'] = 'Shift_JISX0213';
-				$return['use_iconv'] = true;
+				return 'Shift_JISX0213';
 				break;
 
 			// SJIS-win
 			case 'sjis-win':
 			case 'sjiswin':
 			case 'shift_jis-win':
-				$return['encoding'] = 'SJIS-win';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'SJIS-win';
 				break;
 
 			// TCVN - Vietnamese
 			case 'tcvn':
-				$return['encoding'] = 'TCVN';
-				$return['use_iconv'] = true;
+				return 'TCVN';
 				break;
 
 			// TDS565 - Turkish
 			case 'tds565':
-				$return['encoding'] = 'TDS565';
-				$return['use_iconv'] = true;
+				return 'TDS565';
 				break;
 
 			// TIS-620 Thai
 			case 'tis-620':
 			case 'tis620':
-				$return['encoding'] = 'TIS-620';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'TIS-620';
 				break;
 
 			// UCS-2
@@ -3682,9 +3584,7 @@ class SimplePie_Misc
 			case 'ucs2':
 			case 'utf-16':
 			case 'utf16':
-				$return['encoding'] = 'UCS-2';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-2';
 				break;
 
 			// UCS-2BE
@@ -3692,9 +3592,7 @@ class SimplePie_Misc
 			case 'ucs2be':
 			case 'utf-16be':
 			case 'utf16be':
-				$return['encoding'] = 'UCS-2BE';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-2BE';
 				break;
 
 			// UCS-2LE
@@ -3702,16 +3600,13 @@ class SimplePie_Misc
 			case 'ucs2le':
 			case 'utf-16le':
 			case 'utf16le':
-				$return['encoding'] = 'UCS-2LE';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-2LE';
 				break;
 
 			// UCS-2-INTERNAL
 			case 'ucs-2-internal':
 			case 'ucs2internal':
-				$return['encoding'] = 'UCS-2-INTERNAL';
-				$return['use_iconv'] = true;
+				return 'UCS-2-INTERNAL';
 				break;
 
 			// UCS-4
@@ -3719,9 +3614,7 @@ class SimplePie_Misc
 			case 'ucs4':
 			case 'utf-32':
 			case 'utf32':
-				$return['encoding'] = 'UCS-4';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-4';
 				break;
 
 			// UCS-4BE
@@ -3729,9 +3622,7 @@ class SimplePie_Misc
 			case 'ucs4be':
 			case 'utf-32be':
 			case 'utf32be':
-				$return['encoding'] = 'UCS-4BE';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-4BE';
 				break;
 
 			// UCS-4LE
@@ -3739,86 +3630,67 @@ class SimplePie_Misc
 			case 'ucs4le':
 			case 'utf-32le':
 			case 'utf32le':
-				$return['encoding'] = 'UCS-4LE';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-4LE';
 				break;
 
 			// UCS-4-INTERNAL
 			case 'ucs-4-internal':
 			case 'ucs4internal':
-				$return['encoding'] = 'UCS-4-INTERNAL';
-				$return['use_iconv'] = true;
+				return 'UCS-4-INTERNAL';
 				break;
 
 			// UCS-16
 			case 'ucs-16':
 			case 'ucs16':
-				$return['encoding'] = 'UCS-16';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-16';
 				break;
 
 			// UCS-16BE
 			case 'ucs-16be':
 			case 'ucs16be':
-				$return['encoding'] = 'UCS-16BE';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-16BE';
 				break;
 
 			// UCS-16LE
 			case 'ucs-16le':
 			case 'ucs16le':
-				$return['encoding'] = 'UCS-16LE';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-16LE';
 				break;
 
 			// UCS-32
 			case 'ucs-32':
 			case 'ucs32':
-				$return['encoding'] = 'UCS-32';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-32';
 				break;
 
 			// UCS-32BE
 			case 'ucs-32be':
 			case 'ucs32be':
-				$return['encoding'] = 'UCS-32BE';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-32BE';
 				break;
 
 			// UCS-32LE
 			case 'ucs-32le':
 			case 'ucs32le':
-				$return['encoding'] = 'UCS-32LE';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UCS-32LE';
 				break;
 
 			// UTF-7
 			case 'utf-7':
 			case 'utf7':
-				$return['encoding'] = 'UTF-7';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UTF-7';
 				break;
 
 			// UTF7-IMAP
 			case 'utf-7-imap':
 			case 'utf7-imap':
 			case 'utf7imap':
-				$return['encoding'] = 'UTF7-IMAP';
-				$return['use_mbstring'] = true;
+				return 'UTF7-IMAP';
 				break;
 
 			// VISCII - Vietnamese ASCII
 			case 'viscii':
-				$return['encoding'] = 'VISCII';
-				$return['use_iconv'] = true;
+				return 'VISCII';
 				break;
 
 			// Windows-specific Central & Eastern Europe
@@ -3826,8 +3698,7 @@ class SimplePie_Misc
 			case 'windows-1250':
 			case 'win-1250':
 			case '1250':
-				$return['encoding'] = 'Windows-1250';
-				$return['use_iconv'] = true;
+				return 'Windows-1250';
 				break;
 
 			// Windows-specific Cyrillic
@@ -3835,78 +3706,63 @@ class SimplePie_Misc
 			case 'windows-1251':
 			case 'win-1251':
 			case '1251':
-				$return['encoding'] = 'Windows-1251';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'Windows-1251';
 				break;
 
 			// Windows-specific Western Europe
 			case 'cp1252':
 			case 'windows-1252':
 			case '1252':
-				$return['encoding'] = 'Windows-1252';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'Windows-1252';
 				break;
 
 			// Windows-specific Greek
 			case 'cp1253':
 			case 'windows-1253':
 			case '1253':
-				$return['encoding'] = 'Windows-1253';
-				$return['use_iconv'] = true;
+				return 'Windows-1253';
 				break;
 
 			// Windows-specific Turkish
 			case 'cp1254':
 			case 'windows-1254':
 			case '1254':
-				$return['encoding'] = 'Windows-1254';
-				$return['use_iconv'] = true;
+				return 'Windows-1254';
 				break;
 
 			// Windows-specific Hebrew
 			case 'cp1255':
 			case 'windows-1255':
 			case '1255':
-				$return['encoding'] = 'Windows-1255';
-				$return['use_iconv'] = true;
+				return 'Windows-1255';
 				break;
 
 			// Windows-specific Arabic
 			case 'cp1256':
 			case 'windows-1256':
 			case '1256':
-				$return['encoding'] = 'Windows-1256';
-				$return['use_iconv'] = true;
+				return 'Windows-1256';
 				break;
 
 			// Windows-specific Baltic
 			case 'cp1257':
 			case 'windows-1257':
 			case '1257':
-				$return['encoding'] = 'Windows-1257';
-				$return['use_iconv'] = true;
+				return 'Windows-1257';
 				break;
 
 			// Windows-specific Vietnamese
 			case 'cp1258':
 			case 'windows-1258':
 			case '1258':
-				$return['encoding'] = 'Windows-1258';
-				$return['use_iconv'] = true;
+				return 'Windows-1258';
 				break;
 
 			// Default to UTF-8
 			default:
-				$return['encoding'] = 'UTF-8';
-				$return['use_iconv'] = true;
-				$return['use_mbstring'] = true;
+				return 'UTF-8';
 				break;
 		}
-
-		// Then, return it.
-		return $return;
 	}
 
 	function get_curl_version()
