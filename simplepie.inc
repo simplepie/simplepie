@@ -935,8 +935,8 @@ function embed_wmedia(width, height, link) {
 	/**
 	 * Return the raw data array
 	 *
-	 * <strong>Warning:</strong> The structure of this array may change
-	 * from release to release without any warning
+	 * Warning: The structure of this array may change from release to
+	 * release without any warning
 	 *
 	 * @access public
 	 * @return array Raw Data
