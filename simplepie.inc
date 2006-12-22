@@ -133,13 +133,13 @@ class SimplePie
 {
 	/**
 	 * @var array Raw data
-	 * @access protected
+	 * @access private
 	 */
 	var $data = array();
 
 	/**
 	 * @var mixed Error string
-	 * @access protected
+	 * @access private
 	 */
 	var $error;
 
@@ -919,6 +919,31 @@ function embed_wmedia(width, height, link) {
 				return false;
 			}
 		}
+	}
+	
+	/**
+	 * Return the error message for the occured error
+	 *
+	 * @access public
+	 * @return string Error message
+	 */
+	function error()
+	{
+		return $this->error;
+	}
+	
+	/**
+	 * Return the raw data array
+	 *
+	 * <strong>Warning:</strong> The structure of this array may change
+	 * from release to release without any warning
+	 *
+	 * @access public
+	 * @return array Raw Data
+	 */
+	function get_data()
+	{
+		return $this->data;
 	}
 
 	function get_encoding()
