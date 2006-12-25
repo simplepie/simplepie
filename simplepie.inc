@@ -4912,40 +4912,38 @@ class SimplePie_Parser
         			$this->do_add_content($this->data['items'][$this->item_number]['georss:point'], $data);
         			break;
 			}
-
-			if ($this->inside_author)
+		}
+		else if ($this->inside_author && $this->depth_inside_item == 2)
+		{
+			switch ($this->tag_name)
 			{
-				switch ($this->tag_name)
-				{
-					case 'NAME':
-					case $this->namespaces['atom'] . ':NAME':
-						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['name'], $data);
-						break;
+				case 'NAME':
+				case $this->namespaces['atom'] . ':NAME':
+					$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['name'], $data);
+					break;
 
-					case 'URL':
-					case $this->namespaces['atom'] . ':URL':
-						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['url'], $data);
-						break;
+				case 'URL':
+				case $this->namespaces['atom'] . ':URL':
+					$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['url'], $data);
+					break;
 
-					case 'URI':
-					case $this->namespaces['atom'] . ':URI':
-						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['uri'], $data);
-						break;
+				case 'URI':
+				case $this->namespaces['atom'] . ':URI':
+					$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['uri'], $data);
+					break;
 
-					case 'HOMEPAGE':
-					case $this->namespaces['atom'] . ':HOMEPAGE':
-						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['homepage'], $data);
-						break;
+				case 'HOMEPAGE':
+				case $this->namespaces['atom'] . ':HOMEPAGE':
+					$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['homepage'], $data);
+					break;
 
-					case 'EMAIL':
-					case $this->namespaces['atom'] . ':EMAIL':
-						$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['email'], $data);
-						break;
-				}
+				case 'EMAIL':
+				case $this->namespaces['atom'] . ':EMAIL':
+					$this->do_add_content($this->data['items'][$this->item_number]['author'][$this->author_number]['email'], $data);
+					break;
 			}
 		}
-
-		else if (($this->inside_channel && !$this->inside_image) || (isset($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom'))
+		else if (!$this->inside_item && (($this->inside_channel && !$this->inside_image) || (isset($this->data['feedinfo']['type']) && $this->data['feedinfo']['type'] == 'Atom')))
 		{
 			switch ($this->tag_name)
 			{
