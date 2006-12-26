@@ -5,7 +5,7 @@ $data = <<<EOD
 	<entry>
 		<x:foo xmlns:x="urn:foo">
 			<title>Extension Title</title>
-		</x>
+		</x:foo>
 		<title>Item Title</title>
 	</entry>
 </feed>
