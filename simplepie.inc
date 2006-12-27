@@ -794,7 +794,7 @@ function embed_wmedia(width, height, link) {
 				$encoding = $this->input_encoding;
 			}
 			// Second try HTTP headers
-			else if (!empty($headers['content-type']) && preg_match('/charset\s*=\s*([^;]*)/i', $headers['content-type'], $charset))
+			else if (!empty($headers['content-type']) && preg_match('/charset=([^;]*)/i', $headers['content-type'], $charset))
 			{
 				$encoding = $charset[1];
 			}
@@ -828,10 +828,14 @@ function embed_wmedia(width, height, link) {
 			{
 				$encoding = 'UTF-8';
 			}
-			// Fallback to the default (US-ASCII for text/* MIME types, UTF-8 otherwise)
-			else if (!empty($headers['content-type']) && preg_match('/^text\//i', $headers['content-type']))
+			// Fallback to the default (US-ASCII for text/xml, ISO-8859-1 for text/* MIME types, UTF-8 otherwise)
+			else if (!empty($headers['content-type']) && strtolower(SimplePie_Misc::parse_mime($headers['content-type'])) == 'text/xml')
 			{
 				$encoding = 'US-ASCII';
+			}
+			else if (!empty($headers['content-type']) && preg_match('/^text\//i', SimplePie_Misc::parse_mime($headers['content-type'])))
+			{
+				$encoding = 'ISO-8859-1';
 			}
 			else
 			{
@@ -2548,7 +2552,7 @@ class SimplePie_File
 		foreach ($headers as $header)
 		{
 			$data = explode(':', $header, 2);
-			$head[strtolower(trim($data[0]))] = trim($data[1]);
+			$head[strtolower(trim($data[0]))] = preg_replace("/(\r\n)?(\x09|\x20)+/", '', $data[1]);
 		}
 		if (preg_match('/HTTP\/[0-9\.]+ ([0-9]+)(.*)$/i', $status, $matches))
 		{
