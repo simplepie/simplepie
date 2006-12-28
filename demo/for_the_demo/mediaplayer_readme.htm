@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Flash Media Player 3.1 ReadMe</title>
+<title>Flash Media Player 3.2 ReadMe</title>
 
 
 <style type="text/css">
@@ -29,7 +29,7 @@ ul,ol { margin:5px 0 15px 50px;padding:0; list-style-type:square;}
 <div id="wrapper">
 
 
-<h1>FLASH MEDIA PLAYER 3.1 README</h1>
+<h1>FLASH MEDIA PLAYER 3.2 README</h1>
 <p id="lead">The Flash Media player supports playback of a single media file of any format the Adobe Flash Player can handle (MP3,FLV,SWF,JPG,PNG or GIF). It also supports RSS/XSPF playlist (with mixed mediatypes), a wide range of flashvars (settings) for tweaking both behavior and appearance and an extensive, documented javascript/actionscript API. Contents of this readme:</p>
 <ul>
 	<li><a href="#licensing">Licensing</a></li>
@@ -52,7 +52,7 @@ ul,ol { margin:5px 0 15px 50px;padding:0; list-style-type:square;}
 
 
 <h2 id="plugins">PLUGINS</h2>
-<p>Unfortunately, there are no plugins for inserting the Flash Media Player 3 into a much-used CMS yet. If you have written any such plugin, please <a href="http://www.jeroenwijering.com/?thread=CMS_Plugins_for_the_players">report so in my forum</a>, so I can set a link to your plugin from here!</p>
+<p>An up-to-date list of third-party plugins for the Flash Media Player can be found on the <a href="http://www.jeroenwijering.com/?item=Flash_Media_Player">Flash Media Player page</a>. If you have written or seen an unlisted plugin, please <a href="http://www.jeroenwijering.com/?thread=CMS_Plugins_for_the_players">report so in my forum</a>!</p>
 
 
 <h2 id="installing">INSTALLING</h2>
@@ -84,8 +84,8 @@ flashvars="file=http://www.myfileserver.com/folder/playlist.xml&amp;showdigits=t
 <tr class="tlight"><td>frontcolor</td><td>COLOR (<b>0x000000</b>)</td><td>Texts / buttons color of the mediaplayer. In the "extras" folder of this download there's a colorpicker script with which you pick a right hexadecimal color.</td></tr>
 <tr><td>lightcolor</td><td>COLOR (<b>0x000000</b>)</td><td>Rollover/ active color of the mediaplayer. In the "extras" folder of this download there's a colorpicker script with which you can pick a hexadecimal color.</td></tr>
 <tr class="tlight"><td>displayheight</td><td>NUMBER (<b>height-20px</b>)</td><td>Height of the display (where images and videos are shown).</td></tr>
-<tr><td>linkfromdisplay</td><td>true, <b>false</b></td><td>If you defined links in your playlist and set this to true, a click on the display will jump to the link. Else a click on the display will play/pause the  MP3.</td></tr>
-<tr class="tlight"><td>overstretch</td><td>true,<b>false</b></td><td>Set this to false if you don't want the display image/video to overstretch to fill the entire display.</td></tr>
+<tr><td>linkfromdisplay</td><td>true, <b>false</b></td><td>If you defined links in your playlist and set this to true, a click on the display will jump to the link. Else a click on the display will play/pause the file.</td></tr>
+
 <tr><td>showdigits</td><td>true,<b>false</b></td><td>Set this to true to show the digits for % loaded, elapsed and remaining time in the mediaplayer.</td></tr>
 <tr class="tlight"><td>showfsbutton</td><td>true,<b>false</b></td><td>Set this to true to show the fullscreen button.</td></tr>
 <tr><td>fullscreenpage</td><td>URL (<b>fullscreen.html</b>)</td><td>HTML page to jump to for fullscreen. This HTML page has the mediaplayer included at 100% screensize.</td></tr>
@@ -99,8 +99,8 @@ flashvars="file=http://www.myfileserver.com/folder/playlist.xml&amp;showdigits=t
 <tr><td>callback</td><td>URL (<b>undefined</b>)</td><td>You can set the location of a server-side script here to track callback statistics. The mediaplayer will send the url, title and id of any song that is either started or completed by the user. A small example of a statistics script can be found in the "extras" folder of this download.</td></tr>
 <tr class="tlight"><td>streamscript</td><td>URL (<b>undefined</b>)</td><td>URL of an optional script to use for 'fake streaming' FLV files. The parameters 'file' and 'pos' are sent to the script. An example is 'stream.php' in the 'extras' folder, more info <a href="http://www.flashcomguru.com/index.cfm/2005/11/2/Streaming-flv-video-via-PHP-take-two">can be found here</a></td></tr>
 <tr><td>enablejs</td><td>true, <b>false</b></td><td>Set this to "true" to enable javascript interaction. An example of how to control the rotator with javascript can be found <a href="http://www.jeroenwijering.com/embed/javascript.html">here at my website</a>.</td></tr>
-<tr class="tlight"><td>width</td><td>NUMBER</td><td>Force the width of your movie if you have a messed-up display IE. Normally, just setting the width in your HTML will be sufficient.</td></tr>
-<tr><td>height</td><td>NUMBER</td><td>Force the height of your movie if you have a messed-up display IE. Normally, just setting the height in your HTML will be sufficient.</td></tr>
+<tr class="tlight"><td>width</td><td>NUMBER</td><td>Force the width of your movie if you have a messed-up display in IE. Normally, just setting the width in your HTML will be sufficient.</td></tr>
+<tr><td>height</td><td>NUMBER</td><td>Force the height of your movie if you have a messed-up display in IE. Normally, just setting the height in your HTML will be sufficient.</td></tr>
 </table>
 <p>* For refering to RTMP streams, the additional "id" flashvar has to be sent as well. Example: "&amp;file=rtmp://my.streaming.server/mypath&amp;id=video_one". You can also insert streams into playlists with this file/id pair (see below).</p>
 <p>Note that you can urlencode your flashvars in order to prevent the use of the ? = &amp; symbols. The urlencoded values for these symbols are: <i>?</i> &rarr; <i>%3F</i>,  <i>=</i> &rarr; <i>%3D</i>, <i>&amp;</i> &rarr; <i>%26</i>. So if your "file" flashvar has the value of getplaylist.php?id=23421, you can set it like this: getplaylist.php%3Fid%3D23421.</p>
@@ -112,11 +112,11 @@ flashvars="file=http://www.myfileserver.com/folder/playlist.xml&amp;showdigits=t
 <p>Note that you can also send each tag like a flashvar to the mediaplayer, in case you use a single MP3 file. So if you have a single file "song.mp3" and want to display a cover image too, you can set the flashvars "file=song.mp3&amp;image=albumcover.jpg". Here is a list of all flashvars and their corresponding XSPF/RSS tags that are supported by the mediaplayer. Their names should be self-explanatory:</p>
 <table>
 <tr id="thead"><td>Flashvar</td><td>XSPF Tag</td><td>RSS Tag</td></tr>
-<tr><td>file</td><td>location</td><td>enclosure.url or media:content</td></tr>
+<tr><td>file</td><td>location</td><td>enclosure or media:content</td></tr>
 <tr class="tlight"><td>title</td><td>title</td><td>title</td></tr>
 <tr><td>author</td><td>creator</td><td>author</td></tr>
 <tr class="tlight"><td>link</td><td>info</td><td>link</td></tr>
-<tr><td>image</td><td>image</td><td>media:thumbnail.url or itunes:image.href</td></tr>
+<tr><td>image</td><td>image</td><td>media:thumbnail or itunes:image</td></tr>
 <tr class="tlight"><td>id</td><td>identifier</td><td>guid</td></tr>
 <tr><td>start</td><td>meta *</td><td>-</td></tr>
 </table>
@@ -133,21 +133,24 @@ flashvars="file=http://www.myfileserver.com/folder/playlist.xml&amp;showdigits=t
 
 <h2 id="history">HISTORY</h2>
 <ol>
-<li>3.1: Various Bugfixes. Added RTMP streaming support. [<a href="http://www.jeroenwijering.com/upload/flash_media_player.zip">download</a>]</li>
+<li>3.2: Various bugfixes. Added "targetlink" and "showicons" Flashvars. Added .rbs support. Added play/pause/duration support for SWF files. Added "fit" and "none" parameter to "overstretch" flashvar. Enabled "loadFile()" function for actionscript/javascript. [<a href="http://www.jeroenwijering.com/upload/flash_media_player.zip">download</a>]</li>
+<li>3.1: Various Bugfixes. Added RTMP streaming support.</li>
 <li>3.0: First installment; the player started with version 3 to stay on par with the other Flash Players. </li>
 </ol>
 
 
 <h2 id="support">SUPPORT</h2>
 <p>If your progressbar isn't running or if your video dimensions are messed-up, your FLV file doesn't have correct metadata inserted. You can fix this by using the small tool available at <a href="http://www.buraks.com/flvmdi/" title="The Buraks FLV Metadata Injector">www.buraks.com/flvmdi/</a>.</p>
-<p>If you encounter too fast or too slow playback of MP3 files or if your progressbar is messed up, your MP3 files contain variable bitrate encoding. Flash isn't very good at handling these, it's best to stick to constant bitrate encoding.</p>
+<p>If you encounter too fast or too slow playback of MP3 files or if your progressbar is messed up, your MP3 files contain variable bitrate encoding. Flash isn't very good at handling these, it's best to stick to constant bitrate encoding. Also make sure to stick to a sampling frequancy that is a multitude of 11.025kHz (48kHz, for example, also poses problems)</p>
 <p>This player will run quite OK inside the Flash Player 7. However, the following features are not supported: display of GIF/PNG images, smoothing of scaled images/video, VP6 encoded video, javascript control and the digits in the controlbar.</p>
+<p>I receive a lot of requests for creating customized versions of my players. In most cases however, a clever setting of the flashvars already fulfilled the requests, so please make sure you check the list of flashvars first! Additionally, I do not design or program any particular (paid-for) customizations (I just don't have time for it), but interesting features will be plugged into the next update of the players. I created a <a href="http://www.jeroenwijering.com/?forum=Third_Party">Third Party</a> forum category on my website to bring together site owners and freelance developers.</p>
+<p>If you are familiar with actionscripting yourself, you should find that changing or adding to the players is quite simple. To get started, I've provided <a href="../source/doc/index.html">a clear documentation</a> of the code, including a <a href="../source/doc/Schematic_Overview.html">schematic overview</a> of the players.</p>
 <p>For tips, tricks, additional info and bug reports, you can always have a look at my forum's <a href="http://www.jeroenwijering.com?forum=Flash_Media_Player">Flash Media Player threads</a>.</p>
 <p>For more info about the embedding of Flash in HTML, have a look at my <a href="http://www.jeroenwijering.com/?item=Embedding_Flash">Embedding Flash article</a>.</p>
 <p>For more info about Flash Video and some compression tips, check out my <a href="http://www.jeroenwijering.com/?item=FLV_Video_Compression">Flash Video Compression article</a>.</p>
 
 
-<div id="footer">website: <a href="http://www.jeroenwijering.com">www.jeroenwijering.com</a> | last update: november 17th, 2006</div>
+<div id="footer">website: <a href="http://www.jeroenwijering.com">www.jeroenwijering.com</a> | last update: december 26th, 2006</div>
 </div>
 </body>
 </html>
