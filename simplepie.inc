@@ -682,7 +682,7 @@ function embed_wmedia(width, height, link) {
 								return $this->init();
 							}
 						}
-						// If the cache is new enough
+						// Check if the cache has been updated
 						else if ($cache->mtime() + $this->cache_duration < time())
 						{
 							// If we have last-modified and/or etag set
