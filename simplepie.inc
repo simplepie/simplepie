@@ -794,14 +794,14 @@ function embed_wmedia(width, height, link) {
 				$encoding = $this->input_encoding;
 			}
 			// Second try HTTP headers
-			else if (!empty($headers['content-type']) && preg_match('/charset=([^;]*)/i', $headers['content-type'], $charset))
+			else if (!empty($headers['content-type']) && preg_match('/;charset=([^;]*)/i', $headers['content-type'], $charset))
 			{
 				$encoding = $charset[1];
 			}
 			// Then prolog, if at the very start of the document
-			else if (preg_match('/^<\?xml(.*)?>/msiU', $data, $prolog) && preg_match('/encoding\s*=\s*("|\')([a-z][a-z0-9._\-]*)("|\')/i', $prolog[1], $encoding))
+			else if (preg_match("/^<\?xml[\x20\x9\xD\xA]+version([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"1.0\"|'1.0'|\"1.1\"|'1.1')[\x20\x9\xD\xA]+encoding([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"[A-Za-z][A-Za-z0-9._\\-]*\"|'[A-Za-z][A-Za-z0-9._\\-]*')([\x20\x9\xD\xA]+standalone([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"(yes|no)\"|'(yes|no)'))?([\x20\x9\xD\xA]+)?\?>/", $data, $prolog))
 			{
-				$encoding = $encoding[2];
+				$encoding = substr($prolog[6], 1, -1);
 			}
 			// UTF-32 Big Endian BOM
 			else if (strpos($data, "\x0\x0\xFE\xFF") === 0)
@@ -4594,7 +4594,7 @@ class SimplePie_Parser
 		}
 
 		// Make sure the XML prolog is sane and has the correct encoding
-		if (preg_match('/^<\?xml(.*)?>/siU', $data, $prolog))
+		if (preg_match("/^<\?xml[\x20\x9\xD\xA]+version([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"1.0\"|'1.0'|\"1.1\"|'1.1')([\x20\x9\xD\xA]+encoding([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"[A-Za-z][A-Za-z0-9._\\-]*\"|'[A-Za-z][A-Za-z0-9._\\-]*'))?([\x20\x9\xD\xA]+standalone([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"(yes|no)\"|'(yes|no)'))?([\x20\x9\xD\xA]+)?\?>/", $data, $prolog))
 		{
 			$data = substr_replace($data, '', 0, strlen($prolog[0]));
 		}
