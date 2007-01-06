@@ -146,34 +146,25 @@ $passed = 0;
 $failed = 0;
 global $passed, $failed;
 
-$files = SimplePie_List::get('absolutize');
-absolutize_test($files);
+absolutize_test(SimplePie_List::get('absolutize'));
 
-$files = SimplePie_List::get('date');
-date_test($files);
+date_test(SimplePie_List::get('date'));
 
-$files = SimplePie_List::get('feed_copyright');
-feed_copyright_test($files);
+feed_copyright_test(SimplePie_List::get('feed_copyright'));
 
-$files = SimplePie_List::get('feed_description');
-feed_description_test($files);
+feed_description_test(SimplePie_List::get('feed_description'));
 
-$files = SimplePie_List::get('feed_link');
-feed_link_test($files);
+feed_link_test(SimplePie_List::get('feed_link'));
 
-$files = SimplePie_List::get('feed_title');
-feed_title_test($files);
+feed_title_test(SimplePie_List::get('feed_title'));
 
-$files = SimplePie_List::get('first_item_category');
-first_item_category_test($files);
+first_item_category_test(SimplePie_List::get('first_item_category'));
 
-$files = SimplePie_List::get('first_item_permalink');
-first_item_permalink_test($files);
+first_item_permalink_test(SimplePie_List::get('first_item_permalink'));
 
-$files = SimplePie_List::get('first_item_title');
-first_item_title_test($files);
+first_item_title_test(SimplePie_List::get('first_item_title'));
 
-if (!isset($_GET['localonly']))
+if (isset($_GET['remote']))
 {
 	dive_into_mark_atom_autodiscovery();
 }
