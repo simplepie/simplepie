@@ -152,6 +152,9 @@ absolutize_test($files);
 $files = SimplePie_List::get('date');
 date_test($files);
 
+$files = SimplePie_List::get('feed_description');
+feed_description_test($files);
+
 $files = SimplePie_List::get('feed_link');
 feed_link_test($files);
 

@@ -126,6 +126,34 @@ function date_test($file)
 	}
 }
 
+function feed_description_test($file)
+{
+	if (is_array($file))
+	{
+		foreach ($file as $key => $value)
+		{
+			$istest = true;
+			if (is_array($value))
+			{
+				feed_description_test($file[$key]);
+			}
+			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					run_test($value, $feed->get_feed_description() == $expected);
+				}
+			}
+
+		}
+	}
+}
+
 function feed_link_test($file)
 {
 	if (is_array($file))
@@ -182,7 +210,7 @@ function feed_title_test($file)
 	}
 }
 
-function first_item_title_test($file)
+function first_item_category_test($file)
 {
 	if (is_array($file))
 	{
@@ -191,7 +219,7 @@ function first_item_title_test($file)
 			$istest = true;
 			if (is_array($value))
 			{
-				first_item_title_test($file[$key]);
+				first_item_category_test($file[$key]);
 			}
 			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
 			{
@@ -205,7 +233,7 @@ function first_item_title_test($file)
 					$item = $feed->get_item(0);
 					if ($item)
 					{
-						run_test($value, $item->get_title() == $expected);
+						run_test($value, $item->get_category() == $expected);
 					}
 					else
 					{
@@ -213,7 +241,6 @@ function first_item_title_test($file)
 					}
 				}
 			}
-
 		}
 	}
 }
@@ -253,7 +280,7 @@ function first_item_permalink_test($file)
 	}
 }
 
-function first_item_category_test($file)
+function first_item_title_test($file)
 {
 	if (is_array($file))
 	{
@@ -262,7 +289,7 @@ function first_item_category_test($file)
 			$istest = true;
 			if (is_array($value))
 			{
-				first_item_category_test($file[$key]);
+				first_item_title_test($file[$key]);
 			}
 			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
 			{
@@ -276,7 +303,7 @@ function first_item_category_test($file)
 					$item = $feed->get_item(0);
 					if ($item)
 					{
-						run_test($value, $item->get_category() == $expected);
+						run_test($value, $item->get_title() == $expected);
 					}
 					else
 					{
@@ -284,6 +311,7 @@ function first_item_category_test($file)
 					}
 				}
 			}
+
 		}
 	}
 }
