@@ -5,7 +5,7 @@ class SimplePie_List
 	function get($dir)
 	{
 		SimplePie_List::list_files($dir, $array);
-		SimplePie_List::recursive_uasort($array, array('SimplePie_List', 'do_uasort'));
+		usort($array, array('SimplePie_List', 'do_usort'));
 		return $array;
 	}
 	
@@ -19,7 +19,7 @@ class SimplePie_List
 				{
 					if (is_dir("$dir/$file"))
 					{
-						SimplePie_List::list_files("$dir/$file", $array[$file]);
+						SimplePie_List::list_files("$dir/$file", $array);
 					}
 					else
 					{
@@ -30,28 +30,13 @@ class SimplePie_List
 		}
 	}
 	
-	function recursive_uasort(&$array, $callback)
+	function do_usort(&$a, &$b)
 	{
-		if (is_array($array))
-		{
-			uasort($array, $callback);
-			foreach ($array as $key => $value)
-			{
-				if (is_array($array[$key]))
-				{
-					SimplePie_List::recursive_uasort($array[$key], $callback);
-				}
-			}
-		}
-	}
-	
-	function do_uasort(&$a, &$b)
-	{
-		if (is_array($a))
+		if (substr_count($a, '/') > substr_count($b, '/'))
 		{
 			return 1;
 		}
-		else if (is_array($b))
+		else if (substr_count($a, '/') < substr_count($b, '/'))
 		{
 			return -1;
 		}
