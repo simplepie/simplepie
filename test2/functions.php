@@ -182,6 +182,34 @@ function feed_description_test($file)
 	}
 }
 
+function feed_language_test($file)
+{
+	if (is_array($file))
+	{
+		foreach ($file as $key => $value)
+		{
+			$istest = true;
+			if (is_array($value))
+			{
+				feed_language_test($file[$key]);
+			}
+			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					run_test($value, $feed->get_feed_language() == $expected);
+				}
+			}
+
+		}
+	}
+}
+
 function feed_link_test($file)
 {
 	if (is_array($file))

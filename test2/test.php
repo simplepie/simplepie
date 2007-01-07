@@ -154,6 +154,8 @@ feed_copyright_test(SimplePie_List::get('feed_copyright'));
 
 feed_description_test(SimplePie_List::get('feed_description'));
 
+feed_language_test(SimplePie_List::get('feed_language'));
+
 feed_link_test(SimplePie_List::get('feed_link'));
 
 feed_title_test(SimplePie_List::get('feed_title'));
