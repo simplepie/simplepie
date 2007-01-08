@@ -64,17 +64,13 @@ function run_test($file, $success)
 
 function absolutize_test($file)
 {
-	global $base;
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				absolutize_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -91,14 +87,11 @@ function date_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				date_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -115,14 +108,11 @@ function feed_copyright_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				feed_copyright_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -143,14 +133,11 @@ function feed_description_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				feed_description_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -171,14 +158,11 @@ function feed_language_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				feed_language_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -199,14 +183,11 @@ function feed_link_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				feed_link_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -227,14 +208,11 @@ function feed_title_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				feed_title_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -255,14 +233,11 @@ function first_item_category_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				first_item_category_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -290,14 +265,11 @@ function first_item_permalink_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				first_item_permalink_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
@@ -325,14 +297,11 @@ function first_item_title_test($file)
 {
 	if (is_array($file))
 	{
-		foreach ($file as $key => $value)
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
 		{
 			$istest = true;
-			if (is_array($value))
-			{
-				first_item_title_test($file[$key]);
-			}
-			else if (pathinfo($value, PATHINFO_EXTENSION) == pathinfo(__FILE__, PATHINFO_EXTENSION))
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
 			{
 				require $value;
 				if ($istest)
