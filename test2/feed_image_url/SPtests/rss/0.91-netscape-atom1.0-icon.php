@@ -2,15 +2,13 @@
 
 $data = <<<EOD
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
-<rss version="0.91">
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
-		<image>
-			<title>Image Title</title>
-		</image>
+		<a:icon>http://example.com/</a:icon>
 	</channel>
 </rss>
 EOD;
 
-$expected = 'Image Title';
+$expected = 'http://example.com/';
 
 ?>

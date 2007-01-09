@@ -179,6 +179,31 @@ function feed_image_title_test($file)
 	}
 }
 
+function feed_image_url_test($file)
+{
+	if (is_array($file))
+	{
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
+		{
+			$istest = true;
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					run_test($value, $feed->get_image_url() == $expected);
+				}
+			}
+
+		}
+	}
+}
+
 function feed_language_test($file)
 {
 	if (is_array($file))

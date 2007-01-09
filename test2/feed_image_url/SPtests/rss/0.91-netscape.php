@@ -5,12 +5,12 @@ $data = <<<EOD
 <rss version="0.91">
 	<channel>
 		<image>
-			<title>Image Title</title>
+			<url>http://example.com/</url>
 		</image>
 	</channel>
 </rss>
 EOD;
 
-$expected = 'Image Title';
+$expected = 'http://example.com/';
 
 ?>

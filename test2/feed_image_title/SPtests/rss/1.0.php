@@ -1,14 +1,13 @@
 <?php
 
 $data = <<<EOD
-<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
-<rss version="0.91">
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<channel>
 		<image>
 			<title>Image Title</title>
 		</image>
 	</channel>
-</rss>
+</rdf:RDF>
 EOD;
 
 $expected = 'Image Title';
