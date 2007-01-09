@@ -8,6 +8,6 @@ $data = <<<EOD
 </rdf:RDF>
 EOD;
 
-$expected = 'Feed Title';
+$expected = 'http://example.com/';
 
 ?>
