@@ -147,29 +147,19 @@ $failed = 0;
 global $passed, $failed;
 
 absolutize_test(SimplePie_List::get('absolutize'));
-
 date_test(SimplePie_List::get('date'));
-
 feed_copyright_test(SimplePie_List::get('feed_copyright'));
-
 feed_description_test(SimplePie_List::get('feed_description'));
-
+feed_image_height_test(SimplePie_List::get('feed_image_height'));
 feed_image_link_test(SimplePie_List::get('feed_image_link'));
-
 feed_image_title_test(SimplePie_List::get('feed_image_title'));
-
 feed_image_url_test(SimplePie_List::get('feed_image_url'));
-
+feed_image_width_test(SimplePie_List::get('feed_image_width'));
 feed_language_test(SimplePie_List::get('feed_language'));
-
 feed_link_test(SimplePie_List::get('feed_link'));
-
 feed_title_test(SimplePie_List::get('feed_title'));
-
 first_item_category_test(SimplePie_List::get('first_item_category'));
-
 first_item_permalink_test(SimplePie_List::get('first_item_permalink'));
-
 first_item_title_test(SimplePie_List::get('first_item_title'));
 
 if (isset($_GET['remote']))
