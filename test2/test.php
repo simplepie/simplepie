@@ -159,6 +159,8 @@ feed_language_test(SimplePie_List::get('feed_language'));
 feed_link_test(SimplePie_List::get('feed_link'));
 feed_title_test(SimplePie_List::get('feed_title'));
 first_item_category_test(SimplePie_List::get('first_item_category'));
+first_item_content_test(SimplePie_List::get('first_item_content'));
+first_item_description_test(SimplePie_List::get('first_item_description'));
 first_item_id_test(SimplePie_List::get('first_item_id'));
 first_item_permalink_test(SimplePie_List::get('first_item_permalink'));
 first_item_title_test(SimplePie_List::get('first_item_title'));

@@ -386,6 +386,70 @@ function first_item_category_test($file)
 	}
 }
 
+function first_item_content_test($file)
+{
+	if (is_array($file))
+	{
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
+		{
+			$istest = true;
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					$item = $feed->get_item(0);
+					if ($item && method_exists($item, 'get_content'))
+					{
+						run_test($value, $item->get_content() == $expected);
+					}
+					else
+					{
+						run_test($value, false);
+					}
+				}
+			}
+		}
+	}
+}
+
+function first_item_description_test($file)
+{
+	if (is_array($file))
+	{
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
+		{
+			$istest = true;
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					$item = $feed->get_item(0);
+					if ($item)
+					{
+						run_test($value, $item->get_description() == $expected);
+					}
+					else
+					{
+						run_test($value, false);
+					}
+				}
+			}
+		}
+	}
+}
+
 function first_item_id_test($file)
 {
 	if (is_array($file))
