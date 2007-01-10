@@ -354,6 +354,46 @@ function feed_title_test($file)
 	}
 }
 
+function first_item_author_name_test($file)
+{
+	if (is_array($file))
+	{
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
+		{
+			$istest = true;
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					$item = $feed->get_item(0);
+					if ($item)
+					{
+						$author = $item->get_author();
+						if ($author)
+						{
+							run_test($value, $author->get_name() == $expected);
+						}
+						else
+						{
+							run_test($value, false);
+						}
+					}
+					else
+					{
+						run_test($value, false);
+					}
+				}
+			}
+		}
+	}
+}
+
 function first_item_category_test($file)
 {
 	if (is_array($file))
