@@ -1,3 +1,4 @@
+
 <?php
 if (isset($_GET['logopng']))
 {
@@ -16,23 +17,22 @@ else if (isset($_GET['background']))
 
 function get_curl_version()
 {
-	$curl = 0;
-	if (is_array(curl_version()))
+	if (is_array($curl = curl_version()))
 	{
-		$curl = curl_version();
 		$curl = $curl['version'];
+	}
+	else if (preg_match('/curl\/(\S+)(\s|$)/', $curl, $match))
+	{
+		$curl = $match[1];
 	}
 	else
 	{
-		$curl = curl_version();
-		$curl = explode(' ', $curl);
-		$curl = explode('/', $curl[0]);
-		$curl = $curl[1];
+		$curl = 0;
 	}
 	return $curl;
 }
 
-$php_ok = (function_exists('version_compare') && ((version_compare(phpversion(), '4.3.2', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.0.3', '>=')));
+$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '4.3.2', '>='));
 $xml_ok = extension_loaded('xml');
 $pcre_ok = extension_loaded('pcre');
 $curl_ok = (extension_loaded('curl') && version_compare(get_curl_version(), '7.10.5', '>='));
@@ -213,7 +213,7 @@ function fnLoadPngs() {
 				<tbody>
 					<tr class="<?php echo ($php_ok) ? 'enabled' : 'disabled'; ?>">
 						<td>PHP</td>
-						<td>4.3.2&ndash;4.4.x or 5.0.3&ndash;5.1.x</td>
+						<td>4.3.2 or higher</td>
 						<td><?php echo phpversion(); ?></td>
 					</tr>
 					<tr class="<?php echo ($xml_ok) ? 'enabled' : 'disabled'; ?>">
@@ -228,8 +228,8 @@ function fnLoadPngs() {
 					</tr>
 					<tr class="<?php echo ($curl_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/curl">cURL</a></td>
-						<td>7.10.5</td>
-						<td><?php echo get_curl_version(); ?></td>
+						<td>7.10.5 or higher</td>
+						<td><?php echo (extension_loaded('curl')) ? get_curl_version() : 'Disabled'; ?></td>
 					</tr>
 					<tr class="<?php echo ($zlib_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/zlib">Zlib</a></td>
