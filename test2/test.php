@@ -19,12 +19,11 @@ else
 	header('Content-type: text/html; charset=UTF-8');
 }
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
 <head>
 <title>SimplePie: Unit Tests</title>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
 <style type="text/css">
 body {
@@ -45,6 +44,7 @@ h2 {
 	font-size:18px;
 	padding:0;
 	margin:30px 0 10px 0;
+	text-align:center;
 }
 
 h3 {
@@ -131,8 +131,8 @@ function fnLoadPngs() {
 <body>
 
 <div id="site">
-	<h2 style="text-align:center;"><img src="?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test" /></h2>
-	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+	<h2><img src="?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test"></h2>
+	<table>
 		<tbody>
 <?php
 
@@ -161,8 +161,11 @@ feed_title_test(SimplePie_List::get('feed_title'));
 first_item_author_name_test(SimplePie_List::get('first_item_author_name'));
 first_item_category_test(SimplePie_List::get('first_item_category'));
 first_item_content_test(SimplePie_List::get('first_item_content'));
+first_item_date_test(SimplePie_List::get('first_item_date'));
 first_item_description_test(SimplePie_List::get('first_item_description'));
 first_item_id_test(SimplePie_List::get('first_item_id'));
+first_item_latitude_test(SimplePie_List::get('first_item_latitude'));
+first_item_longitude_test(SimplePie_List::get('first_item_longitude'));
 first_item_permalink_test(SimplePie_List::get('first_item_permalink'));
 first_item_title_test(SimplePie_List::get('first_item_title'));
 

@@ -8,7 +8,7 @@ $data = <<<EOD
 	<body xml:base="//example.com/">
 		<a:feed xmlns:a="http://www.w3.org/2005/Atom">
 			<a:entry>
-				<a:link href="/alternate" />
+				<a:link href="/alternate"/>
 			</a:entry>
 		</a:feed>
 	</body>

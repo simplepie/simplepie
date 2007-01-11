@@ -458,6 +458,38 @@ function first_item_content_test($file)
 	}
 }
 
+function first_item_date_test($file)
+{
+	if (is_array($file))
+	{
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
+		{
+			$istest = true;
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					$item = $feed->get_item(0);
+					if ($item)
+					{
+						run_test($value, $item->get_date('U') == $expected);
+					}
+					else
+					{
+						run_test($value, false);
+					}
+				}
+			}
+		}
+	}
+}
+
 function first_item_description_test($file)
 {
 	if (is_array($file))
@@ -511,6 +543,70 @@ function first_item_id_test($file)
 					if ($item)
 					{
 						run_test($value, $item->get_id() == $expected);
+					}
+					else
+					{
+						run_test($value, false);
+					}
+				}
+			}
+		}
+	}
+}
+
+function first_item_latitude_test($file)
+{
+	if (is_array($file))
+	{
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
+		{
+			$istest = true;
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					$item = $feed->get_item(0);
+					if ($item)
+					{
+						run_test($value, $item->get_latitude() == $expected);
+					}
+					else
+					{
+						run_test($value, false);
+					}
+				}
+			}
+		}
+	}
+}
+
+function first_item_longitude_test($file)
+{
+	if (is_array($file))
+	{
+		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+		foreach ($file as $value)
+		{
+			$istest = true;
+			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
+			{
+				require $value;
+				if ($istest)
+				{
+					$feed = new SimplePie();
+					$feed->set_raw_data($data);
+					$feed->enable_cache(false);
+					$feed->init();
+					$item = $feed->get_item(0);
+					if ($item)
+					{
+						run_test($value, $item->get_longitude() == $expected);
 					}
 					else
 					{

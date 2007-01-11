@@ -3,7 +3,7 @@
 $data = <<<EOD
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
-		<category label="Item Category" />
+		<category label="Item Category"/>
 	</entry>
 </feed>
 EOD;
