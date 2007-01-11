@@ -188,7 +188,7 @@ $feed->handle_content_type();
 						<h4><?php if ($item->get_permalink()) echo '<a href="' . $item->get_permalink() . '">'; echo $item->get_title(); if ($item->get_permalink()) echo '</a>'; ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y'); ?></span></h4>
 
 						<!-- Display the item's primary content. -->
-						<?php echo $item->get_description(); ?>
+						<?php echo $item->get_content(); ?>
 
 						<?php
 						// Check for enclosures.  If an item has any, set the first one to the $enclosure variable.

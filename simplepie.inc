@@ -2024,8 +2024,6 @@ class SimplePie_Item
 	var $enclosure_class = 'SimplePie_Enclosure';
 	var $javascript = 'js';
 	var $data = array();
-	var $links = array();
-	var $enclosures = array();
 
 	function SimplePie_Item($feed, $data, $author_class, $enclosure_class, $javascript)
 	{
