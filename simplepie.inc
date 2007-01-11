@@ -6316,10 +6316,11 @@ class SimplePie_Parser
 					return 'text';
 				}
 
-			// RSS 0.92 and RSS 2.0 (assuming feeds with unknown RSS version follow the 2.0 rules) allow HTML within the <description> element
+			// RSS 0.92 and RSS 2.0 (assuming feeds with unknown RSS version follow the 2.0 rules) allow HTML within the <description> element. RSS 0.91 feeds commonly break the specification.
 			case 'HTTP://PURL.ORG/RSS/1.0/:DESCRIPTION':
 			case 'HTTP://BACKEND.USERLAND.COM/RSS2:DESCRIPTION':
 			case 'rss092:DESCRIPTION':
+			case 'rss091:DESCRIPTION':
 			case 'rss_unknown:DESCRIPTION':
 				return 'html';
 
