@@ -165,22 +165,29 @@ class SimplePie
 	var $feed_url;
 
 	/**
-	 * @var object SimplePie_File of feed
+	 * @var object Instance of SimplePie_File to use as a feed
 	 * @see SimplePie::set_file()
 	 * @access private
 	 */
 	var $file;
 
 	/**
-	 * @var int Timeout (used for fetching external files)
+	 * @var string Raw feed data
+	 * @see SimplePie::set_raw_data()
+	 * @access private
+	 */
+	var $raw_data;
+
+	/**
+	 * @var int Timeout for fetching remote files
 	 * @see SimplePie::set_timeout()
 	 * @access private
 	 */
 	var $timeout = 10;
 
 	/**
-	 * @var bool Force fsockopen() (instead of cURL for fetching
-	 * external files)
+	 * @var bool Forces fsockopen() to be used for remote files instead
+	 * of cURL, even if a new enough version is installed
 	 * @see SimplePie::force_fsockopen()
 	 * @access private
 	 */
@@ -271,10 +278,25 @@ class SimplePie
 	 */
 	var $file_class = 'SimplePie_File';
 
+	/**
+	 * @var string Class used for items
+	 * @see SimplePie::set_item_class()
+	 * @access private
+	 */
 	var $item_class = 'SimplePie_Item';
 
+	/**
+	 * @var string Class used for authors
+	 * @see SimplePie::set_author_class()
+	 * @access private
+	 */
 	var $author_class = 'SimplePie_Author';
 
+	/**
+	 * @var string Class used for enclosures
+	 * @see SimplePie::set_enclosures_class()
+	 * @access private
+	 */
 	var $enclosure_class = 'SimplePie_Enclosure';
 
 	/**
@@ -331,8 +353,11 @@ class SimplePie
 	/**
 	 * Sets the feed URL
 	 *
+	 * This takes priority over any set raw data
+	 *
 	 * @access public
 	 * @param string $url Feed URL
+	 * @see SimplePie::set_raw_data()
 	 */
 	function set_feed_url($url)
 	{
@@ -340,8 +365,7 @@ class SimplePie
 	}
 
 	/**
-	 * Provides an instance of SimplePie_File (or subclass) to use as
-	 * the feed
+	 * Provides an instance of SimplePie_File to use as a feed
 	 *
 	 * @access public
 	 * @param object &$file Instance of SimplePie_File (or subclass)
@@ -358,14 +382,41 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Sets the raw feed data
+	 *
+	 * Any set feed URL takes priority over this
+	 *
+	 * @access public
+	 * @param string $data Raw feed data
+	 * @see SimplePie::set_feed_url()
+	 */
+	function set_raw_data($data)
+	{
+		$this->raw_data = trim((string) $data);
+	}
+
+	/**
+	 * Sets the timeout for fetching remote files
+	 *
+	 * @access public
+	 * @param int $timeout Timeout (in seconds)
+	 */
 	function set_timeout($timeout = 10)
 	{
 		$this->timeout = (int) $timeout;
 	}
 
-	function set_raw_data($data)
+	/**
+	 * Forces fsockopen() to be used for remote files instead of cURL,
+	 * even if a new enough version is installed
+	 *
+	 * @access public
+	 * @param bool $enable Force fsockopen() to be used
+	 */
+	function force_fsockopen($enable = false)
 	{
-		$this->raw_data = trim((string) $data);
+		$this->force_fsockopen = (bool) $enable;
 	}
 
 	function enable_xml_dump($enable = false)
@@ -507,11 +558,6 @@ class SimplePie
 	function set_useragent($ua = SIMPLEPIE_USERAGENT)
 	{
 		$this->useragent = (string) $ua;
-	}
-
-	function force_fsockopen($enable = false)
-	{
-		$this->force_fsockopen = (bool) $enable;
 	}
 
 	/**
