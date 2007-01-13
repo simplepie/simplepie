@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (C) 2004-2006 Ryan Parman, Geoffrey Sneddon
+ * Copyright (C) 2004-2007 Ryan Parman, Geoffrey Sneddon
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
