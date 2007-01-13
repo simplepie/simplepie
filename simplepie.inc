@@ -4197,28 +4197,15 @@ class SimplePie_Misc
 	}
 
 	/**
-	 * Replace bad bytes
+	 * Remove bad UTF-8 bytes
 	 *
-	 * PCRE Pattern to locate bad bytes in a UTF-8 string
-	 * Comes from W3 FAQ: Multilingual Forms
-	 * Note: modified to include full ASCII range including control
-	 * chars
+	 * PCRE Pattern to locate bad bytes in a UTF-8 string comes from W3C
+	 * FAQ: Multilingual Forms (modified to include full ASCII range)
 	 *
-	 * Modified by Geoffrey Sneddon 2006-11-19 to remove functionality
-	 * to choose what the replace string is, and to use a variable for
-	 * the output instead of PHP's output buffer
-	 *
-	 * Modified by Geoffrey Sneddon 2006-12-04 to use iconv or
-	 * mbstring if either is enabled
-	 *
-	 * Modified by Geoffrey Sneddon 2006-12-16 to use preg_match_all(),
-	 * so the regular expression is only run once
-	 *
-	 * @author Harry Fuecks <hfuecks@gmail.com>
 	 * @author Geoffrey Sneddon
 	 * @see http://www.w3.org/International/questions/qa-forms-utf-8
-	 * @param string $str String to search
-	 * @return string Clean string
+	 * @param string $str String to remove bad UTF-8 bytes from
+	 * @return string UTF-8 string
 	 */
 	function utf8_bad_replace($str)
 	{
@@ -4232,28 +4219,14 @@ class SimplePie_Misc
 		}
 		else
 		{
-			$UTF8_BAD =
-			 '([\x00-\x7F]' .							# ASCII (including control chars)
-			 '|[\xC2-\xDF][\x80-\xBF]' .				# non-overlong 2-byte
-			 '|\xE0[\xA0-\xBF][\x80-\xBF]' .			# excluding overlongs
-			 '|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}' .		# straight 3-byte
-			 '|\xED[\x80-\x9F][\x80-\xBF]' .			# excluding surrogates
-			 '|\xF0[\x90-\xBF][\x80-\xBF]{2}' .			# planes 1-3
-			 '|[\xF1-\xF3][\x80-\xBF]{3}' .				# planes 4-15
-			 '|\xF4[\x80-\x8F][\x80-\xBF]{2}' .			# plane 16
-			 '|(.{1}))';								# invalid byte
-			$output = '';
-			if (preg_match_all('/' . $UTF8_BAD . '/S', $str, $matches, PREG_SET_ORDER))
+			if (preg_match_all('/([\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})/', $str, $matches))
 			{
-				foreach ($matches as $match)
-				{
-					if (!isset($match[2]))
-					{
-						$output .= $match[0];
-					}
-				}
+				return implode('', $matches[0]);
 			}
-			return $output;
+			else
+			{
+				return '';
+			}
 		}
 	}
 
@@ -5868,6 +5841,7 @@ class SimplePie_Parser
 		xml_set_object($this->xml, $this);
 		xml_set_character_data_handler($this->xml, 'cdata');
 		xml_set_element_handler($this->xml, 'tag_open', 'tag_close');
+		xml_set_external_entity_ref_handler($this->xml, 'external_entity_reference');
 
 		// Parse!
 		if (!xml_parse($this->xml, $data))
@@ -6216,6 +6190,11 @@ class SimplePie_Parser
 		{
 			return array('', $string);
 		}
+	}
+	
+	function external_entity_reference($parser, $open_entity_names, $base, $system_id, $public_id)
+	{
+		var_dump($parser, $open_entity_names, $base, $system_id, $public_id);
 	}
 
 	function update_inside($change)
