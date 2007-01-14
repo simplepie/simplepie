@@ -921,7 +921,7 @@ function embed_wmedia(width, height, link) {
 				exit;
 			}
 			// If it's parsed fine
-			else if ($parser->parse($data, 'UTF-8'))
+			else if ($parser->parse($data))
 			{
 				unset($data);
 				$this->data = $parser->get_data();
@@ -5799,6 +5799,16 @@ class SimplePie_Parser
 
 	function pre_process(&$data, $encoding)
 	{
+		// Use UTF-8 if we get passed US-ASCII, as every US-ASCII character is a UTF-8 character
+		if (strtoupper($encoding) == 'US-ASCII')
+		{
+			$this->encoding = 'UTF-8';
+		}
+		else
+		{
+			$this->encoding = $encoding;
+		}
+		
 		// Strip BOM:
 		// UTF-32 Big Endian BOM
 		if (strpos($data, "\x0\x0\xFE\xFF") === 0)
@@ -5831,20 +5841,12 @@ class SimplePie_Parser
 		$data = "<?xml version='1.0' encoding='$encoding'?>\n" . $data;
 	}
 
-	function parse(&$data, $encoding)
+	function parse(&$data)
 	{
-		if (strtoupper($encoding) == 'US-ASCII')
-		{
-			$this->encoding = 'UTF-8';
-		}
-		else
-		{
-			$this->encoding = $encoding;
-		}
 		$return = true;
 
 		// Create the parser
-		$this->xml = xml_parser_create_ns($encoding);
+		$this->xml = xml_parser_create_ns($this->encoding);
 		xml_parser_set_option($this->xml, XML_OPTION_SKIP_WHITE, 1);
 		xml_set_object($this->xml, $this);
 		xml_set_character_data_handler($this->xml, 'cdata');
@@ -6144,7 +6146,7 @@ class SimplePie_Parser
 	{
 		if (!is_null($this->current_xhtml_construct))
 		{
-			$this->current_xhtml_construct .= htmlentities($cdata, ENT_QUOTES, 'UTF-8');
+			$this->current_xhtml_construct .= htmlspecialchars($cdata, ENT_QUOTES, $this->encoding);
 		}
 		else if ($this->atom10_feed > 1 || $this->atom03_feed > 1 || $this->atom_unknown_feed > 1 || $this->rss091_feed > 1 || $this->rss092_feed > 1 || $this->rss10_feed > 1 || $this->rss20_feed > 1 || $this->rss_unknown_feed > 1)
 		{
