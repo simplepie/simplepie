@@ -113,12 +113,12 @@ define('SIMPLEPIE_LOCATOR_ALL', 31);
 /**
  * PCRE for HTML attributes
  */
-define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', '((?:\s*(?:(?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?)*)\s*');
+define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', '((?:\s+(?:(?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?)*)\s*');
 
 /**
  * PCRE for XML attributes
  */
-define('SIMPLEPIE_PCRE_XML_ATTRIBUTE', '((?:\s*(?:(?:[^\s:]+:)?[^\s:]+)\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'))*)\s*');
+define('SIMPLEPIE_PCRE_XML_ATTRIBUTE', '((?:\s+(?:(?:[^\s:]+:)?[^\s:]+)\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'))*)\s*');
 
 /**
  * SimplePie
@@ -3780,7 +3780,7 @@ class SimplePie_File
 		foreach ($headers as $header)
 		{
 			$data = explode(':', $header, 2);
-			$head[strtolower(trim($data[0]))] = preg_replace("/(\r\n)?(\x09|\x20)+/", '', $data[1]);
+			$head[strtolower(trim($data[0]))] = preg_replace("/(\r\n)?[\x09\x20]+/", '', $data[1]);
 		}
 		if (preg_match('/HTTP\/[0-9\.]+ ([0-9]+)(.*)$/i', $status, $matches))
 		{
@@ -3952,59 +3952,66 @@ class SimplePie_Misc
 
 	function remove_dot_segments($input)
 	{
-		$output = '';
-		while (!empty($input))
+		if (strpos($input, '.') !== false)
 		{
-			// A: If the input buffer begins with a prefix of "../" or "./", then remove that prefix from the input buffer; otherwise,
-			if (strpos($input, '../') === 0)
+			$output = '';
+			while (!empty($input))
 			{
-				$input = substr($input, 3);
-			}
-			else if (strpos($input, './') === 0)
-			{
-				$input = substr($input, 2);
-			}
-			// B: if the input buffer begins with a prefix of "/./" or "/.", where "." is a complete path segment, then replace that prefix with "/" in the input buffer; otherwise,
-			else if (strpos($input, '/./') === 0)
-			{
-				$input = substr_replace($input, '/', 0, 3);
-			}
-			else if ($input == '/.')
-			{
-				$input = '/';
-			}
-			// C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise,
-			else if (strpos($input, '/../') === 0)
-			{
-				$input = substr_replace($input, '/', 0, 4);
-				$output = preg_replace('/(\/)?([^\/]+)$/U', '', $output);
-			}
-			else if ($input == '/..')
-			{
-				$input = '/';
-				$output = preg_replace('/(\/)?([^\/]+)$/U', '', $output);
-			}
-			// D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
-			else if ($input == '.' || $input == '..')
-			{
-				$input = '';
-			}
-			// E: move the first path segment in the input buffer to the end of the output buffer, including the initial "/" character (if any) and any subsequent characters up to, but not including, the next "/" character or the end of the input buffer
-			else
-			{
-				if (preg_match('/^([^\/]+|(\/)[^\/]*)(\/|$)/', $input, $match))
+				// A: If the input buffer begins with a prefix of "../" or "./", then remove that prefix from the input buffer; otherwise,
+				if (strpos($input, '../') === 0)
 				{
-					$output .= $match[1];
-					$input = substr_replace($input, '', 0, strlen($match[1]));
+					$input = substr($input, 3);
 				}
+				else if (strpos($input, './') === 0)
+				{
+					$input = substr($input, 2);
+				}
+				// B: if the input buffer begins with a prefix of "/./" or "/.", where "." is a complete path segment, then replace that prefix with "/" in the input buffer; otherwise,
+				else if (strpos($input, '/./') === 0)
+				{
+					$input = substr_replace($input, '/', 0, 3);
+				}
+				else if ($input == '/.')
+				{
+					$input = '/';
+				}
+				// C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise,
+				else if (strpos($input, '/../') === 0)
+				{
+					$input = substr_replace($input, '/', 0, 4);
+					$output = preg_replace('/(\/)?([^\/]+)$/U', '', $output);
+				}
+				else if ($input == '/..')
+				{
+					$input = '/';
+					$output = preg_replace('/(\/)?([^\/]+)$/U', '', $output);
+				}
+				// D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
+				else if ($input == '.' || $input == '..')
+				{
+					$input = '';
+				}
+				// E: move the first path segment in the input buffer to the end of the output buffer, including the initial "/" character (if any) and any subsequent characters up to, but not including, the next "/" character or the end of the input buffer
 				else
 				{
-					// We've ended up in a recursive loop, so do what we otherwise never will: return false.
-					return false;
+					if (preg_match('/^([^\/]+|(\/)[^\/]*)(\/|$)/S', $input, $match))
+					{
+						$output .= $match[1];
+						$input = substr_replace($input, '', 0, strlen($match[1]));
+					}
+					else
+					{
+						// We've ended up in a recursive loop, so do what we otherwise never will: return false.
+						return false;
+					}
 				}
 			}
+			return $output;
 		}
-		return $output;
+		else
+		{
+			return $input;
+		}
 	}
 
 	function get_element($realname, $string)
@@ -5498,13 +5505,13 @@ class SimplePie_Misc
 
 	function parse_mime($mime)
 	{
-		if (preg_match('/^([^;]*)(;|$)/i', trim($mime), $match))
+		if (($pos = strpos($mime, ';')) === false)
 		{
-			return rtrim($match[1]);
+			return $mime;
 		}
 		else
 		{
-			return $mime;
+			return substr($mime, 0, $pos);
 		}
 	}
 
@@ -5595,7 +5602,7 @@ class SimplePie_Locator
 	function is_feed(&$file)
 	{
 		$body = SimplePie_Misc::strip_comments($file->body());
-		if (preg_match('/<([^\s:]+:)?(rss|RDF|feed)/i', $body))
+		if (preg_match('/<([^\s:]+:)?(rss|RDF|feed)' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/i', $body))
 		{
 			return true;
 		}
