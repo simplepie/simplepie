@@ -5783,17 +5783,18 @@ class SimplePie_Parser
 	var $inside = array('atom10_feed', 'atom03_feed', 'atom_unknown_feed', 'rss091_feed', 'rss092_feed', 'rss10_feed', 'rss20_feed', 'rss_unknown_feed');
 	var $assume_namespace = '';
 	var $tag = '';
-	var $tags = array();
+	var $tags = array('');
 	var $namespace = '';
-	var $namespaces = array();
+	var $namespaces = array('');
 	var $element = '';
-	var $elements = array();
+	var $elements = array('');
 	var $xml_base = '';
-	var $xml_bases = array();
+	var $xml_bases = array('');
 	var $xml_base_explicit = false;
-	var $current_xhtml_construct = null;
+	var $xml_base_explicits = array(false);
 	var $data = array();
-	var $datas = array();
+	var $datas = array(array());
+	var $current_xhtml_construct = null;
 	var $encoding;
 
 	function pre_process(&$data, $encoding)
@@ -6032,12 +6033,14 @@ class SimplePie_Parser
 		if (!empty($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['BASE']))
 		{
 			$this->xml_base = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['BASE'], $this->xml_base);
-			$this->xml_bases[] = array($this->xml_base, true);
+			$this->xml_bases[] = $this->xml_base;
 			$this->xml_base_explicit = true;
+			$this->xml_base_explicits[] = true;
 		}
 		else
 		{
-			$this->xml_bases[] = array($this->xml_base, $this->xml_base_explicit);
+			$this->xml_bases[] = $this->xml_base;
+			$this->xml_base_explicits[] = $this->xml_base_explicit;
 		}
 
 		if (!is_null($this->current_xhtml_construct) && $this->namespace == 'HTTP://WWW.W3.ORG/1999/XHTML')
@@ -6089,7 +6092,7 @@ class SimplePie_Parser
 						}
 						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC']))
 						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SLONGDESCRC'], $this->xml_base);
+							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC'], $this->xml_base);
 						}
 						break;
 
@@ -6182,8 +6185,8 @@ class SimplePie_Parser
 		$this->namespace = end($this->namespaces);
 		array_pop($this->xml_bases);
 		$this->xml_base = end($this->xml_bases);
-		$this->xml_base_explicit = $this->xml_base[1];
-		$this->xml_base = $this->xml_base[0];
+		array_pop($this->xml_base_explicits);
+		$this->xml_base_explicit = end($this->xml_base_explicits);
 		$this->update_inside(-1);
 	}
 
@@ -6240,8 +6243,7 @@ class SimplePie_Parser
 			case 'HTTP://WWW.W3.ORG/2005/ATOM:CONTENT':
 				if (!empty($attribs['HTTP://WWW.W3.ORG/2005/ATOM']['TYPE']))
 				{
-					$parsed = SimplePie_Misc::parse_mime($attribs['HTTP://WWW.W3.ORG/2005/ATOM']['TYPE']);
-					switch (strtolower($parsed))
+					switch (strtolower(SimplePie_Misc::parse_mime($attribs['HTTP://WWW.W3.ORG/2005/ATOM']['TYPE'])))
 					{
 						case 'html':
 						case 'text/html':
@@ -6272,8 +6274,7 @@ class SimplePie_Parser
 			case 'HTTP://PURL.ORG/ATOM/NS#:CONTENT':
 				if (!empty($attribs['HTTP://PURL.ORG/ATOM/NS#']['TYPE']))
 				{
-					$parsed = SimplePie_Misc::parse_mime($attribs['HTTP://PURL.ORG/ATOM/NS#']['TYPE']);
-					switch (strtolower($parsed))
+					switch (strtolower(SimplePie_Misc::parse_mime($attribs['HTTP://PURL.ORG/ATOM/NS#']['TYPE'])))
 					{
 						case 'application/xhtml+xml':
 							return 'xhtml';
@@ -6322,8 +6323,7 @@ class SimplePie_Parser
 			case 'atom_unknown:CONTENT':
 				if (!empty($attribs['atom_unknown']['TYPE']))
 				{
-					$parsed = SimplePie_Misc::parse_mime($attribs['atom_unknown']['TYPE']);
-					switch (strtolower($parsed))
+					switch (strtolower(SimplePie_Misc::parse_mime($attribs['atom_unknown']['TYPE'])))
 					{
 						case 'html':
 						case 'text/html':
