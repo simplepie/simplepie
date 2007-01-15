@@ -3874,8 +3874,6 @@ class SimplePie_Misc
 {
 	function absolutize_url($relative, $base)
 	{
-		$relative = trim($relative);
-		$base = trim($base);
 		if (!empty($relative))
 		{
 			$relative = SimplePie_Misc::parse_url($relative);
@@ -3904,13 +3902,13 @@ class SimplePie_Misc
 						}
 						else
 						{
-							if ($base['path'] == '/' || empty($base['path']))
+							if (($target['path'] = dirname("$base[path].")) == '/')
 							{
-								$target['path'] = '/' . $relative['path'];
+								$target['path'] .= $relative['path'];
 							}
 							else
 							{
-								$target['path'] = preg_replace('/^(.*)((\/)([^\/]*))?$/sU', '\\1', $base['path']) . '/' . $relative['path'];
+								$target['path'] .= '/' . $relative['path'];
 							}
 						}
 						if (!empty($relative['query']))
