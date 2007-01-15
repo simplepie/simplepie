@@ -903,9 +903,12 @@ function embed_wmedia(width, height, link) {
 			}
 
 			// Change the encoding to UTF-8 (as we always use UTF-8 internally)
-			$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
+			if ($encoding != 'UTF-8')
+			{
+				$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
+			}
 
-			// Strip illegal characters (if on less  than PHP5, as on PHP5 expat can manage fine, thereby breaking the XML spec)
+			// Strip illegal characters (if on less than PHP5, as on PHP5's XML extension can manage fine, thereby breaking the XML spec)
 			if (version_compare(phpversion(), '5', '<'))
 			{
 				$data = SimplePie_Misc::utf8_bad_replace($data);
@@ -4346,28 +4349,25 @@ class SimplePie_Misc
 		$input = SimplePie_Misc::encoding($input);
 		$output = SimplePie_Misc::encoding($output);
 
-		if ($input != $output)
+		if (function_exists('iconv') && ($data = @iconv($input, $output, $data)))
 		{
-			if (function_exists('iconv') && ($data = @iconv($input, $output, $data)))
-			{
-				return $data;
-			}
-			else if (function_exists('mb_convert_encoding') && ($data = @mb_convert_encoding($data, $output, $input)))
-			{
-				return $data;
-			}
-			else if ($input == 'ISO-8859-1' && $output == 'UTF-8')
-			{
-				return utf8_encode($data);
-			}
-			else if ($input == 'UTF-8' && $output == 'ISO-8859-1')
-			{
-				return utf8_decode($data);
-			}
-			else if ($output == 'UTF-7')
-			{
-				return SimplePie_Misc::string_to_utf7($data);
-			}
+			return $data;
+		}
+		else if (function_exists('mb_convert_encoding') && ($data = @mb_convert_encoding($data, $output, $input)))
+		{
+			return $data;
+		}
+		else if ($input == 'ISO-8859-1' && $output == 'UTF-8')
+		{
+			return utf8_encode($data);
+		}
+		else if ($input == 'UTF-8' && $output == 'ISO-8859-1')
+		{
+			return utf8_decode($data);
+		}
+		else if ($output == 'UTF-7')
+		{
+			return SimplePie_Misc::string_to_utf7($data);
 		}
 		return $data;
 	}
@@ -6581,7 +6581,10 @@ class SimplePie_Sanitize
 					$array['data'] = htmlspecialchars($array['data'], ENT_COMPAT, 'UTF-8');
 					break;
 			}
-			$array['data'] = SimplePie_Misc::change_encoding($array['data'], 'UTF-8', $this->output_encoding);
+			if ($this->output_encoding != 'UTF-8')
+			{
+				$array['data'] = SimplePie_Misc::change_encoding($array['data'], 'UTF-8', $this->output_encoding);
+			}
 		}
 	}
 
