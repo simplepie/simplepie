@@ -4350,11 +4350,11 @@ class SimplePie_Misc
 
 		if ($input != $output)
 		{
-			if (function_exists('iconv') && $data = @iconv($input, $output, $data))
+			if (function_exists('iconv') && ($data = @iconv($input, $output, $data)))
 			{
 				return $data;
 			}
-			else if (function_exists('mb_convert_encoding') && $data = @mb_convert_encoding($data, $output, $input))
+			else if (function_exists('mb_convert_encoding') && ($data = @mb_convert_encoding($data, $output, $input)))
 			{
 				return $data;
 			}
@@ -5862,7 +5862,7 @@ class SimplePie_Parser
 		xml_set_external_entity_ref_handler($this->xml, 'external_entity_reference');
 
 		// Parse!
-		if (!xml_parse($this->xml, $data))
+		if (!xml_parse($this->xml, $data, true))
 		{
 			$this->data = null;
 			$this->error_code = xml_get_error_code($this->xml);
