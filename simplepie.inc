@@ -4000,7 +4000,7 @@ class SimplePie_Misc
 				// E: move the first path segment in the input buffer to the end of the output buffer, including the initial "/" character (if any) and any subsequent characters up to, but not including, the next "/" character or the end of the input buffer
 				else
 				{
-					if (preg_match('/^([^\/]+|(\/)[^\/]*)(\/|$)/S', $input, $match))
+					if (preg_match('/^([^\/]+|(\/)[^\/]*)(\/|$)/', $input, $match))
 					{
 						$output .= $match[1];
 						$input = substr_replace($input, '', 0, strlen($match[1]));
@@ -5801,6 +5801,7 @@ class SimplePie_Parser
 	var $data = array();
 	var $datas = array(array());
 	var $current_xhtml_construct = null;
+	var $split_ns_cache = array();
 	var $encoding;
 
 	function pre_process(&$data, $encoding)
@@ -6200,14 +6201,18 @@ class SimplePie_Parser
 
 	function split_ns($string)
 	{
-		if (preg_match('/^(.+)\:([^:]+)$/', $string, $match))
+		if (!isset($this->split_ns_cache[$string]))
 		{
-			return array($match[1], $match[2]);
+			if (preg_match('/^(.+)\:([^:]+)$/', $string, $match))
+			{
+				$this->split_ns_cache[$string] = array($match[1], $match[2]);
+			}
+			else
+			{
+				$this->split_ns_cache[$string] = array('', $string);
+			}
 		}
-		else
-		{
-			return array('', $string);
-		}
+		return $this->split_ns_cache[$string];
 	}
 	
 	function external_entity_reference($parser, $open_entity_names, $base, $system_id, $public_id)
