@@ -1998,7 +1998,7 @@ function embed_wmedia(width, height, link) {
 				$items[] = new $this->item_class($this, $return[$key], $this->author_class, $this->enclosure_class, $this->javascript);
 			}
 		}
-		if ($return = $this->get_tags('HTTP://PURL.ORG/RSS/1.0/', 'ITEM'))
+		if ($return = $this->get_tags('HTTP://PURL.ORG/RSS/1.0/', 'ITEM', false))
 		{
 			$keys = array_keys($return);
 			foreach ($keys as $key)
@@ -2006,7 +2006,7 @@ function embed_wmedia(width, height, link) {
 				$items[] = new $this->item_class($this, $return[$key], $this->author_class, $this->enclosure_class, $this->javascript);
 			}
 		}
-		if ($return = $this->get_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'ITEM'))
+		if ($return = $this->get_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'ITEM', false))
 		{
 			$keys = array_keys($return);
 			foreach ($keys as $key)
@@ -2015,6 +2015,14 @@ function embed_wmedia(width, height, link) {
 			}
 		}
 		if ($return = $this->get_tags('rss_unknown', 'ITEM'))
+		{
+			$keys = array_keys($return);
+			foreach ($keys as $key)
+			{
+				$items[] = new $this->item_class($this, $return[$key], $this->author_class, $this->enclosure_class, $this->javascript);
+			}
+		}
+		if ($return = $this->get_tags('rss_unknown', 'ITEM', false))
 		{
 			$keys = array_keys($return);
 			foreach ($keys as $key)
