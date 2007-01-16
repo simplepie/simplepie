@@ -1078,7 +1078,6 @@ function embed_wmedia(width, height, link) {
 			{
 				$file =& new $this->file_class($favicon, $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
 				$headers = $file->headers();
-				$file->close();
 
 				if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
 				{
