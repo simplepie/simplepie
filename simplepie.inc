@@ -840,7 +840,6 @@ function embed_wmedia(width, height, link) {
 
 				$headers = $file->headers();
 				$data = trim($file->body());
-				$file->close();
 				unset($file);
 			}
 			else
@@ -3605,25 +3604,28 @@ class SimplePie_File
 				{
 					$this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
 					$this->success = false;
-					return false;
-				}
-				$info = curl_getinfo($fp);
-				$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 2);
-				if (count($this->headers) == $info['redirect_count'] + 1)
-				{
-					$this->headers = array_pop($this->headers);
-					$this->body = '';
 				}
 				else
 				{
-					$this->body = array_pop($this->headers);
-					$this->headers = array_pop($this->headers);
-				}
-				$this->headers = $this->parse_headers($this->headers);
-				if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location']) && $this->redirects < $redirects)
-				{
-					$this->redirects++;
-					return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+					$info = curl_getinfo($fp);
+					curl_close($fp);
+					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 2);
+					if (count($this->headers) == $info['redirect_count'] + 1)
+					{
+						$this->headers = array_pop($this->headers);
+						$this->body = '';
+					}
+					else
+					{
+						$this->body = array_pop($this->headers);
+						$this->headers = array_pop($this->headers);
+					}
+					$this->headers = $this->parse_headers($this->headers);
+					if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location']) && $this->redirects < $redirects)
+					{
+						$this->redirects++;
+						return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+					}
 				}
 			}
 			else
@@ -3644,7 +3646,6 @@ class SimplePie_File
 				{
 					$this->error = 'fsockopen error: ' . $errstr;
 					$this->success = false;
-					return false;
 				}
 				else
 				{
@@ -3684,99 +3685,66 @@ class SimplePie_File
 							$this->redirects++;
 							return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 						}
+						$this->body = '';
+						while (!$info['eof'] && !$info['timed_out'])
+						{
+							$this->body .= fread($this->fp, 1160);
+							$info = stream_get_meta_data($this->fp);
+						}
+						if (!$info['timed_out'])
+						{
+							$this->body = trim($this->body);
+							if (!empty($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
+							{
+								if (substr($this->body, 0, 8) == "\x1f\x8b\x08\x00\x00\x00\x00\x00")
+								{
+									$this->body = substr($this->body, 10);
+								}
+								$this->body = gzinflate($this->body);
+							}
+						}
+						else
+						{
+							$this->body = null;
+						}
 					}
 					else
 					{
-						$this->close();
 						$this->error = 'fsocket timed out';
 						$this->success = false;
-						return false;
 					}
+					fclose($fp);
 				}
 			}
-			return $this->headers['status']['code'];
 		}
 		else
 		{
-			$this->method = 'fopen';
-			if ($this->fp = fopen($url, 'r'))
+			$this->method = 'file_get_contents';
+			if (!$this->body = file_get_contents($url))
 			{
-				return true;
-			}
-			else
-			{
-				$this->error = 'fopen could not open the file';
+				$this->error = 'file_get_contents could not read the file';
 				$this->success = false;
-				return false;
 			}
 		}
 	}
 
 	function headers()
 	{
-		return $this->headers;
+		if (!is_null($this->headers))
+		{
+			return $this->headers;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	function body()
 	{
-		if (is_null($this->body))
+		if (!is_null($this->body))
 		{
-			if ($this->fp)
-			{
-				$info = stream_get_meta_data($this->fp);
-				$this->body = '';
-				if ($this->method == 'fsockopen')
-				{
-					$read = 1160;
-				}
-				else
-				{
-					$read = 1024;
-				}
-				while (!$info['eof'] && !$info['timed_out'])
-				{
-					$this->body .= fread($this->fp, $read);
-					$info = stream_get_meta_data($this->fp);
-				}
-				if (!$info['timed_out'])
-				{
-					$this->body = trim($this->body);
-					if ($this->method == 'fsockopen' && !empty($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
-					{
-						if (substr($this->body, 0, 8) == "\x1f\x8b\x08\x00\x00\x00\x00\x00")
-						{
-							$this->body = substr($this->body, 10);
-						}
-						$this->body = gzinflate($this->body);
-					}
-					$this->close();
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
-		return $this->body;
-	}
-
-	function close()
-	{
-		if (!is_null($this->fp))
-		{
-			if (fclose($this->fp))
-			{
-				$this->fp = null;
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return $this->body;
 		}
 		else
 		{
