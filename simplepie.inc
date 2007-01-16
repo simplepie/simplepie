@@ -4054,7 +4054,7 @@ class SimplePie_Misc
 						{
 							$attribs[$j][2] = $attribs[$j][1];
 						}
-						$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode($attribs[$j][count($attribs[$j])-1], 'UTF-8', $cache);
+						$return[$i]['attribs'][strtoupper($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode($attribs[$j][count($attribs[$j])-1], 'UTF-8');
 					}
 				}
 			}
@@ -5396,13 +5396,14 @@ class SimplePie_Misc
 		}
 	}
 
-	function entities_decode($data, $encoding, &$cache)
+	function entities_decode($data, $encoding)
 	{
-		return preg_replace('/&(#)?(x)?([0-9a-z]+);/ie', 'SimplePie_Misc::do_entities_decode(\'\\0\', $encoding, $cache)', $data);
+		return preg_replace('/&(#)?(x)?([0-9a-z]+);/ie', 'SimplePie_Misc::do_entities_decode(\'\\0\', $encoding)', $data);
 	}
 
-	function do_entities_decode($data, $encoding, &$cache)
+	function do_entities_decode($data, $encoding)
 	{
+		static $cache = array();
 		if (isset($cache[$encoding][$data]))
 		{
 			return $cache[$encoding][$data];
