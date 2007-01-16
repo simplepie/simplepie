@@ -4027,7 +4027,7 @@ class SimplePie_Misc
 	{
 		$return = array();
 		$name = preg_quote($realname, '/');
-		if (preg_match_all("/<($name)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "((\/)?>|>(.*)<\/$name>)/siU", $string, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE))
+		if (preg_match_all("/<($name)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "(>(.*)<\/$name>|(\/)?>)/siU", $string, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE))
 		{
 			$total_matches = count($matches);
 			for ($i = 0; $i < $total_matches; $i++)
@@ -4042,7 +4042,7 @@ class SimplePie_Misc
 				else
 				{
 					$return[$i]['self_closing'] = false;
-					$return[$i]['content'] = $matches[$i][5][0];
+					$return[$i]['content'] = $matches[$i][4][0];
 				}
 				$return[$i]['attribs'] = array();
 				if (!empty($matches[$i][2][0]) && preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER))
@@ -6519,7 +6519,7 @@ class SimplePie_Sanitize
 					{
 						foreach ($this->strip_htmltags as $tag)
 						{
-							$pcre = "/<($tag)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "(\/>|>(.*)<\/($tag)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>)/siU';
+							$pcre = "/<($tag)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "(>(.*)<\/$tag" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>|(\/)?>)/siU';
 							while (preg_match($pcre, $array['data']))
 							{
 								$array['data'] = preg_replace_callback($pcre, array(&$this, 'do_strip_htmltags'), $array['data']);
@@ -6622,11 +6622,11 @@ class SimplePie_Sanitize
 	{
 		if ($this->encode_instead_of_strip)
 		{
-			if (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style')))
+			if (isset($match[3]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
 				$match[1] = htmlspecialchars($match[1], ENT_COMPAT, 'UTF-8');
 				$match[2] = htmlspecialchars($match[2], ENT_COMPAT, 'UTF-8');
-				return "&lt;$match[1]$match[2]&gt;$match[4]&lt;/$match[1]&gt;";
+				return "&lt;$match[1]$match[2]&gt;$match[3]&lt;/$match[1]&gt;";
 			}
 			else
 			{
@@ -6635,9 +6635,9 @@ class SimplePie_Sanitize
 		}
 		else
 		{
-			if (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style')))
+			if (isset($match[3]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
-				return $match[4];
+				return $match[3];
 			}
 			else
 			{
