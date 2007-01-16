@@ -5398,7 +5398,7 @@ class SimplePie_Misc
 
 	function entities_decode($data, $encoding)
 	{
-		return preg_replace('/&(#)?(x)?([0-9a-z]+);/ie', 'SimplePie_Misc::do_entities_decode(\'\\0\', $encoding)', $data);
+		return preg_replace('/&(#(x[0-9a-fA-F]+|[0-9]+)|[0-9a-zA-Z]+);/e', 'SimplePie_Misc::do_entities_decode(\'\\0\', $encoding)', $data);
 	}
 
 	function do_entities_decode($data, $encoding)
