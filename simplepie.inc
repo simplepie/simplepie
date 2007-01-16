@@ -5789,8 +5789,6 @@ class SimplePie_Parser
 	var $rss_unknown_feed = 0;
 	var $inside = array('atom10_feed', 'atom03_feed', 'atom_unknown_feed', 'rss091_feed', 'rss092_feed', 'rss10_feed', 'rss20_feed', 'rss_unknown_feed');
 	var $assume_namespace = '';
-	var $tag = '';
-	var $tags = array('');
 	var $namespace = '';
 	var $namespaces = array('');
 	var $element = '';
@@ -5802,7 +5800,6 @@ class SimplePie_Parser
 	var $data = array();
 	var $datas = array(array());
 	var $current_xhtml_construct = null;
-	var $split_ns_cache = array();
 	var $encoding;
 
 	function pre_process(&$data, $encoding)
@@ -6016,8 +6013,6 @@ class SimplePie_Parser
 		{
 			$this->namespace = $this->assume_namespace;
 		}
-		$this->tag = "$this->namespace:$this->element";
-		$this->tags[] = $this->tag;
 		$this->namespaces[] = $this->namespace;
 		$this->elements[] = $this->element;
 
@@ -6140,7 +6135,7 @@ class SimplePie_Parser
 		}
 		else if ($this->atom10_feed > 1 || $this->atom03_feed > 1 || $this->atom_unknown_feed > 1 || $this->rss091_feed > 1 || $this->rss092_feed > 1 || $this->rss10_feed > 1 || $this->rss20_feed > 1 || $this->rss_unknown_feed > 1)
 		{
-			$this->data['child'][$this->namespace][$this->element][] = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'type' => $this->get_data_type($this->tag, $attribs));
+			$this->data['child'][$this->namespace][$this->element][] = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'type' => $this->get_data_type($attribs));
 			$this->datas[] =& $this->data;
 			$this->data =& $this->data['child'][$this->namespace][$this->element][count($this->data['child'][$this->namespace][$this->element])-1];
 			if ($this->data['type'] == 'xhtml')
@@ -6187,8 +6182,6 @@ class SimplePie_Parser
 				break;
 		}
 
-		array_pop($this->tags);
-		$this->tag = end($this->tags);
 		array_pop($this->elements);
 		$this->element = end($this->elements);
 		array_pop($this->namespaces);
@@ -6202,18 +6195,19 @@ class SimplePie_Parser
 
 	function split_ns($string)
 	{
-		if (!isset($this->split_ns_cache[$string]))
+		static $cache = array();
+		if (!isset($cache[$string]))
 		{
 			if (preg_match('/^(.+)\:([^:]+)$/', $string, $match))
 			{
-				$this->split_ns_cache[$string] = array($match[1], $match[2]);
+				$cache[$string] = array($match[1], $match[2]);
 			}
 			else
 			{
-				$this->split_ns_cache[$string] = array('', $string);
+				$cache[$string] = array('', $string);
 			}
 		}
-		return $this->split_ns_cache[$string];
+		return $cache[$string];
 	}
 	
 	function external_entity_reference($parser, $open_entity_names, $base, $system_id, $public_id)
@@ -6232,9 +6226,9 @@ class SimplePie_Parser
 		}
 	}
 
-	function get_data_type($tag, $attribs)
+	function get_data_type($attribs)
 	{
-		switch ($tag)
+		switch ("$this->namespace:$this->element")
 		{
 			// Atom 1.0
 			case 'HTTP://WWW.W3.ORG/2005/ATOM:RIGHTS':
