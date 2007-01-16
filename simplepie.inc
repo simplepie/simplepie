@@ -5474,11 +5474,11 @@ class SimplePie_Misc
 	{
 		if (($pos = strpos($mime, ';')) === false)
 		{
-			return $mime;
+			return trim($mime);
 		}
 		else
 		{
-			return substr($mime, 0, $pos);
+			return trim(substr($mime, 0, $pos));
 		}
 	}
 
