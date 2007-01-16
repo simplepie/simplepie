@@ -5087,7 +5087,7 @@ class SimplePie_Misc
 		27: Minute Decimal
 		28: Alphabetic Timezone
 		*/
-		if (preg_match('/(?:(([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{4}|[0-9]{2}))|(([0-9]{2})(?:([0-9]{2})(?:(?:-|\s)*(?:([0-9]{2})([0-9]{2})|([0-9]{3})|([0-9]{2})(?:(?:-|\s)*([0-9]{2}))?|W([0-9]{2})(?:(?:-|\s)*([0-9]))?))?)?))((?:T|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*))?)?)?(?:\s)*((?:(\+|-)([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*(?:([0-9]{2})(?:(?:,|\.)([0-9]*))?))?)|([A-Z]{1,3}))?)?/i', $dt, $match))
+		if (preg_match('/(?:(([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{4}|[0-9]{2}))|(([0-9]{2})(?:([0-9]{2})(?:(?:-|\s)*(?:([0-9]{2})([0-9]{2})|([0-9]{3})|([0-9]{2})(?:(?:-|\s)*([0-9]{2}))?|W([0-9]{2})(?:(?:-|\s)*([0-9]))?))?)?))((?:T|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*))?)?)?(?:\s)*((?:(\+|-)([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*(?:([0-9]{2})(?:(?:,|\.)([0-9]*))?))?)|(UTC|GMT|EST|CST|MST|PST|EDT|CDT|MDT|PDT|UT|[A-IK-Z]))?)?/i', $dt, $match))
 		{
 			// Set blank vars
 			$year = 1970;
@@ -5245,36 +5245,29 @@ class SimplePie_Misc
 						// Military
 						if (strlen($match[28]) == 1)
 						{
-							if ($match[28] == 'Z' || $match[28] == 'z')
+							if ($match[28] == 'Z' || $match[28] == 'z' || !$rfc822_tz)
 							{
 								$timezone = 0;
 							}
-							else if (preg_match('/^[a-ik-yA-IK-Y]$/', $match[28]))
+							else
 							{
-								if ($rfc822_tz)
+								$timezone = ord(strtoupper($match[28]));
+
+								if ($timezone > 74)
 								{
-									$timezone = ord(strtoupper($match[28]));
+									$timezone--;
+								}
 
-									if ($timezone > 74)
-									{
-										$timezone--;
-									}
-
-									if ($timezone <= 76)
-									{
-										$timezone = -($timezone - 64);
-									}
-									else
-									{
-										$timezone -= 76;
-									}
-
-									$timezone *= 3600;
+								if ($timezone <= 76)
+								{
+									$timezone = -($timezone - 64);
 								}
 								else
 								{
-									$timezone = 0;
+									$timezone -= 76;
 								}
+
+								$timezone *= 3600;
 							}
 						}
 						// Code
@@ -6584,7 +6577,7 @@ class SimplePie_Sanitize
 	{
 		if ($this->encode_instead_of_strip)
 		{
-			if (isset($match[3]) && !in_array(strtolower($match[1]), array('script', 'style')))
+			if (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
 				$match[1] = htmlspecialchars($match[1], ENT_COMPAT, 'UTF-8');
 				$match[2] = htmlspecialchars($match[2], ENT_COMPAT, 'UTF-8');
@@ -6597,9 +6590,9 @@ class SimplePie_Sanitize
 		}
 		else
 		{
-			if (isset($match[3]) && !in_array(strtolower($match[1]), array('script', 'style')))
+			if (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style')))
 			{
-				return $match[3];
+				return $match[4];
 			}
 			else
 			{
