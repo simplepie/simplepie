@@ -5757,6 +5757,8 @@ class SimplePie_Parser
 	var $xml_bases = array('');
 	var $xml_base_explicit = false;
 	var $xml_base_explicits = array(false);
+	var $xml_lang = '';
+	var $xml_langs = array('');
 	var $data = array();
 	var $datas = array(array());
 	var $current_xhtml_construct = null;
@@ -6008,6 +6010,16 @@ class SimplePie_Parser
 			$this->xml_base_explicits[] = $this->xml_base_explicit;
 		}
 
+		if (!empty($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['LANG']))
+		{
+			$this->xml_lang = $attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['LANG'];
+			$this->xml_langs[] = $this->xml_lang;
+		}
+		else
+		{
+			$this->xml_langs[] = $this->xml_lang;
+		}
+
 		if (!is_null($this->current_xhtml_construct) && $this->namespace == 'HTTP://WWW.W3.ORG/1999/XHTML')
 		{
 			// We need to deal with xml:base now, as if we have an xml:base within the XHTML it will otherwise be lost
@@ -6016,75 +6028,47 @@ class SimplePie_Parser
 				switch ($this->element)
 				{
 					case 'BLOCKQUOTE':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'], $this->xml_base);
-						}
-						break;
-
 					case 'INS':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'], $this->xml_base);
-						}
-						break;
-
 					case 'DEL':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE']))
+					case 'Q':
+						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE']))
 						{
 							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'], $this->xml_base);
 						}
 						break;
 
 					case 'A':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF']))
+					case 'AREA':
+						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF']))
 						{
 							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF'], $this->xml_base);
 						}
 						break;
-
-					case 'Q':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'], $this->xml_base);
-						}
-						break;
-
+						
 					case 'IMG':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC'], $this->xml_base);
-						}
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC']))
+						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC']))
 						{
 							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC'], $this->xml_base);
 						}
-						break;
+						// No break here, as <img> can have a src attribute
 
-					case 'AREA':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF']))
+					case 'INPUT':
+						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC']))
 						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF'], $this->xml_base);
+							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC'], $this->xml_base);
 						}
 						break;
 
 					case 'FORM':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['ACTION']))
+						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['ACTION']))
 						{
 							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['ACTION'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['ACTION'], $this->xml_base);
-						}
-						break;
-
-					case 'INPUT':
-						if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC'], $this->xml_base);
 						}
 						break;
 				}
 			}
 			$this->current_xhtml_construct .= '<' . strtolower($this->element);
-			if (!empty($attribs['HTTP://WWW.W3.ORG/1999/XHTML']))
+			if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']))
 			{
 				foreach ($attribs['HTTP://WWW.W3.ORG/1999/XHTML'] as $name => $value)
 				{
@@ -6095,13 +6079,18 @@ class SimplePie_Parser
 		}
 		else if ($this->atom10_feed > 1 || $this->atom03_feed > 1 || $this->atom_unknown_feed > 1 || $this->rss091_feed > 1 || $this->rss092_feed > 1 || $this->rss10_feed > 1 || $this->rss20_feed > 1 || $this->rss_unknown_feed > 1)
 		{
-			$this->data['child'][$this->namespace][$this->element][] = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'type' => $this->get_data_type($attribs));
+			$this->data['child'][$this->namespace][$this->element][] = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'xml_lang' => $this->xml_lang, 'type' => $this->get_data_type($attribs));
 			$this->datas[] =& $this->data;
 			$this->data =& $this->data['child'][$this->namespace][$this->element][count($this->data['child'][$this->namespace][$this->element])-1];
 			if ($this->data['type'] == 'xhtml')
 			{
 				$this->current_xhtml_construct =& $this->data['data'];
 			}
+		}
+		else if ($this->atom10_feed == 1 || $this->atom03_feed == 1 || $this->atom_unknown_feed == 1 || $this->rss091_feed == 1 || $this->rss092_feed == 1 || $this->rss10_feed == 1 || $this->rss20_feed == 1 || $this->rss_unknown_feed == 1)
+		{
+			$this->data['attibs'] = $attribs;
+			$this->data['xml_lang'] = $this->xml_lang;
 		}
 	}
 
@@ -6150,6 +6139,8 @@ class SimplePie_Parser
 		$this->xml_base = end($this->xml_bases);
 		array_pop($this->xml_base_explicits);
 		$this->xml_base_explicit = end($this->xml_base_explicits);
+		array_pop($this->xml_langs);
+		$this->xml_lang = end($this->xml_langs);
 		$this->update_inside(-1);
 	}
 
