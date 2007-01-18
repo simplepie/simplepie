@@ -1600,9 +1600,6 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	/**
-	 * @todo Add xml:lang support
-	 */
 	function get_feed_language()
 	{
 		if ($return = $this->get_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'LANGUAGE'))
@@ -1628,6 +1625,10 @@ function embed_wmedia(width, height, link) {
 		else if ($return = $this->get_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'LANGUAGE'))
 		{
 			return $return[0]['data'];
+		}
+		else if (!empty($this->data['xml_lang']))
+		{
+			return $this->data['xml_lang'];
 		}
 		else
 		{
@@ -5775,7 +5776,7 @@ class SimplePie_Parser
 		{
 			$this->encoding = $encoding;
 		}
-		
+
 		// Strip BOM:
 		// UTF-32 Big Endian BOM
 		if (strpos($data, "\x0\x0\xFE\xFF") === 0)
@@ -6044,7 +6045,7 @@ class SimplePie_Parser
 							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF'], $this->xml_base);
 						}
 						break;
-						
+
 					case 'IMG':
 						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC']))
 						{
@@ -6160,7 +6161,7 @@ class SimplePie_Parser
 		}
 		return $cache[$string];
 	}
-	
+
 	function external_entity_reference($parser, $open_entity_names, $base, $system_id, $public_id)
 	{
 		var_dump($parser, $open_entity_names, $base, $system_id, $public_id);
