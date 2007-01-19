@@ -5510,7 +5510,7 @@ class SimplePie_Locator
 	var $checked_feeds = 0;
 	var $max_checked_feeds = 10;
 
-	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds)
+	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds = 10)
 	{
 		$this->file =& $file;
 		$this->file_class = $file_class;
