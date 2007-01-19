@@ -572,10 +572,6 @@ class SimplePie
 		{
 			$this->cache_name_function = $function;
 		}
-		else
-		{
-			$this->cache_name_function = 'sha1';
-		}
 	}
 
 	/**
