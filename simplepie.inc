@@ -5536,29 +5536,29 @@ class SimplePie_Locator
 			return $working;
 		}
 
-		if ($this->checked_feeds != $this->max_checked_feeds && $type & (SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY) && $this->get_links())
+		if ($type & (SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY) && $this->get_links())
 		{
-			if (!empty($this->local))
+			if ($type & (SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY) && !empty($this->local))
 			{
-				if ($this->checked_feeds != $this->max_checked_feeds && $type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION && $working = $this->extension($this->local))
+				if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION && $working = $this->extension($this->local))
 				{
 					return $working;
 				}
 
-				if ($this->checked_feeds != $this->max_checked_feeds && $type & SIMPLEPIE_LOCATOR_LOCAL_BODY && $working = $this->body($this->local))
+				if ($type & SIMPLEPIE_LOCATOR_LOCAL_BODY && $working = $this->body($this->local))
 				{
 					return $working;
 				}
 			}
 
-			if ($this->checked_feeds != $this->max_checked_feeds && !empty($this->elsewhere))
+			if ($type & (SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY) && !empty($this->elsewhere))
 			{
-				if ($this->checked_feeds != $this->max_checked_feeds && $type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION && $working = $this->extension($this->elsewhere))
+				if ($type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION && $working = $this->extension($this->elsewhere))
 				{
 					return $working;
 				}
 
-				if ($this->checked_feeds != $this->max_checked_feeds && $type & SIMPLEPIE_LOCATOR_REMOTE_BODY && $working = $this->body($this->elsewhere))
+				if ($type & SIMPLEPIE_LOCATOR_REMOTE_BODY && $working = $this->body($this->elsewhere))
 				{
 					return $working;
 				}
