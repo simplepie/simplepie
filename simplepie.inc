@@ -393,7 +393,7 @@ class SimplePie
 	 */
 	function set_raw_data($data)
 	{
-		$this->raw_data = trim((string) $data);
+		$this->raw_data = trim($data);
 	}
 
 	/**
@@ -584,7 +584,7 @@ class SimplePie
 	{
 		if ($get)
 		{
-			$this->javascript = $get;
+			$this->javascript = (string) $get;
 		}
 		else
 		{
@@ -600,7 +600,7 @@ class SimplePie
 	 */
 	function set_max_checked_feeds($max = 10)
 	{
-		$this->max_checked_feeds = $max;
+		$this->max_checked_feeds = (int) $max;
 	}
 
 	function bypass_image_hotlink($get = false)
