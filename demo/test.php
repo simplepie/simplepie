@@ -29,9 +29,23 @@ $feed->handle_content_type();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <title>SimplePie Test</title>
-<p>Parsed in: <?php echo $time; ?></p>
 <pre>
 <?php
+
+// memory_get_peak_usage() only exists on PHP 5.2 and higher if PHP is compiled with the --enable-memory-limit configuration option
+if (function_exists('memory_get_peak_usage'))
+{
+	var_dump($time, memory_get_usage(), memory_get_peak_usage());
+}
+// memory_get_usage() only exists if PHP is compiled with the --enable-memory-limit configuration option
+else if (function_exists('memory_get_usage'))
+{
+	var_dump($time, memory_get_usage());
+}
+else
+{
+	var_dump($time);
+}
 
 // Output buffer
 function callable_htmlspecialchars($string)
