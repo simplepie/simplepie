@@ -6220,18 +6220,22 @@ class SimplePie_Parser
 			case 'HTTP://PURL.ORG/ATOM/NS#:TITLE':
 			case 'HTTP://PURL.ORG/ATOM/NS#:TAGLINE':
 			case 'HTTP://PURL.ORG/ATOM/NS#:COPYRIGHT':
+			case 'HTTP://PURL.ORG/ATOM/NS#:INFO':
 			case 'HTTP://PURL.ORG/ATOM/NS#:SUMMARY':
 			case 'HTTP://PURL.ORG/ATOM/NS#:CONTENT':
 				if (!empty($attribs['HTTP://PURL.ORG/ATOM/NS#']['TYPE']))
 				{
 					switch (strtolower(SimplePie_Misc::parse_mime($attribs['HTTP://PURL.ORG/ATOM/NS#']['TYPE'])))
 					{
-						case 'application/xhtml+xml':
-							return 'xhtml';
-
+						case 'html':
 						case 'text/html':
 							return 'html';
 
+						case 'xhtml':
+						case 'application/xhtml+xml':
+							return 'xhtml';
+
+						case 'text':
 						case 'text/plain':
 							return 'text';
 
