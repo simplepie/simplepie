@@ -6080,9 +6080,9 @@ class SimplePie_Parser
 		}
 		else if ($this->atom10_feed > 1 || $this->atom03_feed > 1 || $this->atom_unknown_feed > 1 || $this->rss091_feed > 1 || $this->rss092_feed > 1 || $this->rss10_feed > 1 || $this->rss20_feed > 1 || $this->rss_unknown_feed > 1)
 		{
-			$this->data['child'][$this->namespace][$this->element][] = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'xml_lang' => $this->xml_lang, 'type' => $this->get_data_type($attribs));
 			$this->datas[] =& $this->data;
-			$this->data =& $this->data['child'][$this->namespace][$this->element][count($this->data['child'][$this->namespace][$this->element])-1];
+			$this->data =& $this->data['child'][$this->namespace][$this->element][];
+			$this->data = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'xml_lang' => $this->xml_lang, 'type' => $this->get_data_type($attribs));
 			if ($this->data['type'] == 'xhtml')
 			{
 				$this->current_xhtml_construct =& $this->data['data'];
