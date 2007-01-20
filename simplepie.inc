@@ -720,8 +720,14 @@ function embed_wmedia(width, height, link) {
 					$this->data = $cache->load();
 					if (!empty($this->data))
 					{
+						// If the cache is for an outdated build of SimplePie
+						if (!isset($this->data['build']) || $this->data['build'] != SIMPLEPIE_BUILD)
+						{
+							$cache->unlink();
+							$this->data = array();
+						}
 						// If we've hit a collision just rerun it with caching disabled
-						if (isset($this->data['url']) && $this->data['url'] != $this->feed_url)
+						else if (isset($this->data['url']) && $this->data['url'] != $this->feed_url)
 						{
 							$cache = false;
 						}
@@ -731,6 +737,7 @@ function embed_wmedia(width, height, link) {
 							if ($this->data['feed_url'] == $this->data['url'])
 							{
 								$cache->unlink();
+								$this->data = array();
 							}
 							else
 							{
@@ -779,6 +786,7 @@ function embed_wmedia(width, height, link) {
 					else
 					{
 						$cache->unlink();
+						$this->data = array();
 					}
 				}
 				// If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
@@ -934,6 +942,7 @@ function embed_wmedia(width, height, link) {
 				{
 					$this->data['etag'] = $headers['etag'];
 				}
+				$this->data['build'] = SIMPLEPIE_BUILD;
 
 				// Cache the file if caching is enabled
 				if ($cache && !$cache->save($this->data))
