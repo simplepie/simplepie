@@ -730,6 +730,7 @@ function embed_wmedia(width, height, link) {
 						else if (isset($this->data['url']) && $this->data['url'] != $this->feed_url)
 						{
 							$cache = false;
+							$this->data = array();
 						}
 						// If we've got a feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL
 						else if (!empty($this->data['feed_url']))
