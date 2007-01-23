@@ -3997,12 +3997,12 @@ class SimplePie_Misc
 				else if (strpos($input, '/../') === 0)
 				{
 					$input = substr_replace($input, '/', 0, 4);
-					$output = preg_replace('/(\/)?([^\/]+)$/U', '', $output);
+					$output = preg_replace('/(\/)?([^\/]+)$/', '', $output);
 				}
 				else if ($input == '/..')
 				{
 					$input = '/';
-					$output = preg_replace('/(\/)?([^\/]+)$/U', '', $output);
+					$output = preg_replace('/(\/)?([^\/]+)$/', '', $output);
 				}
 				// D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
 				else if ($input == '.' || $input == '..')
