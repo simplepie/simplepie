@@ -120,6 +120,21 @@ define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', '((?:\s+(?:(?:[^\s:]+:)?[^\s:]+)(?:\s*=\
  */
 define('SIMPLEPIE_PCRE_XML_ATTRIBUTE', '((?:\s+(?:(?:[^\s:]+:)?[^\s:]+)\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'))*)\s*');
 
+if (version_compare(phpversion(), '5.0.0', '>='))
+{
+	/**
+	 * We're running on PHP5
+	 */
+	define('SIMPLEPIE_PHP5', true);
+}
+else
+{
+	/**
+	 * We're not running on PHP5
+	 */
+	define('SIMPLEPIE_PHP5', false);
+}
+
 /**
  * SimplePie
  *
@@ -913,7 +928,7 @@ function embed_wmedia(width, height, link) {
 			}
 
 			// Strip illegal characters (if on less than PHP5, as on PHP5's XML extension can manage fine, thereby breaking the XML spec)
-			if (version_compare(phpversion(), '5', '<'))
+			if (!SIMPLEPIE_PHP5)
 			{
 				$data = SimplePie_Misc::utf8_bad_replace($data);
 			}
@@ -932,7 +947,7 @@ function embed_wmedia(width, height, link) {
 			{
 				unset($data);
 				$this->data = $parser->get_data();
-				$this->do_prepare($this->data);
+				$this->do_prepare($this->data, $this->get_feed_link(), $this->subscribe_url());
 
 				// Store the headers that we need
 				if (!empty($headers['last-modified']))
@@ -963,21 +978,41 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	function do_prepare(&$array)
+	function do_prepare(&$array, $link, $url)
 	{
-		$keys1 = array_keys($array['child']);
-		foreach ($keys1 as $key1)
+		if (SIMPLEPIE_PHP5)
 		{
-			$keys2 = array_keys($array['child'][$key1]);
-			foreach ($keys2 as $key2)
+			foreach ($array['child'] as &$subarray1)
 			{
-				$keys3 = array_keys($array['child'][$key1][$key2]);
-				foreach ($keys3 as $key3)
+				foreach ($subarray1 as &$subarray2)
 				{
-					$this->sanitize->sanitize($array['child'][$key1][$key2][$key3], $this->get_feed_link(), $this->subscribe_url());
-					if (isset($array['child'][$key1][$key2][$key3]['child']))
+					foreach ($subarray2 as &$subarray3)
 					{
-						$this->do_prepare($array['child'][$key1][$key2][$key3]);
+						$this->sanitize->sanitize($subarray3, $link, $url);
+						if (isset($subarray3['child']))
+						{
+							$this->do_prepare($subarray3, $link, $url);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			$keys1 = array_keys($array['child']);
+			foreach ($keys1 as $key1)
+			{
+				$keys2 = array_keys($array['child'][$key1]);
+				foreach ($keys2 as $key2)
+				{
+					$keys3 = array_keys($array['child'][$key1][$key2]);
+					foreach ($keys3 as $key3)
+					{
+						$this->sanitize->sanitize($array['child'][$key1][$key2][$key3], $link, $url);
+						if (isset($array['child'][$key1][$key2][$key3]['child']))
+						{
+							$this->do_prepare($array['child'][$key1][$key2][$key3], $link, $url);
+						}
 					}
 				}
 			}
@@ -4117,7 +4152,7 @@ class SimplePie_Misc
 
 	function parse_url($url)
 	{
-		if (preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/i', $url, $match))
+		if (preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/', $url, $match))
 		{
 			for ($i = count($match); $i <= 9; $i++)
 			{
