@@ -3886,18 +3886,18 @@ class SimplePie_Misc
 {
 	function absolutize_url($relative, $base)
 	{
-		if (!empty($relative))
+		if ($relative !== '')
 		{
 			$relative = SimplePie_Misc::parse_url($relative);
-			if (!empty($relative['scheme']))
+			if ($relative['scheme'] !== '')
 			{
 				$target = $relative;
 			}
-			else if (!empty($base))
+			else if ($base !== '')
 			{
 				$base = SimplePie_Misc::parse_url($base);
 				$target = SimplePie_Misc::parse_url('');
-				if (!empty($relative['authority']))
+				if ($relative['authority'] !== '')
 				{
 					$target = $relative;
 					$target['scheme'] = $base['scheme'];
@@ -3906,7 +3906,7 @@ class SimplePie_Misc
 				{
 					$target['scheme'] = $base['scheme'];
 					$target['authority'] = $base['authority'];
-					if (!empty($relative['path']))
+					if ($relative['path'] !== '')
 					{
 						if (strpos($relative['path'], '/') === 0)
 						{
@@ -3923,14 +3923,14 @@ class SimplePie_Misc
 								$target['path'] .= '/' . $relative['path'];
 							}
 						}
-						if (!empty($relative['query']))
+						if ($relative['query'] !== '')
 						{
 							$target['query'] = $relative['query'];
 						}
 					}
 					else
 					{
-						if (!empty($base['path']))
+						if ($base['path'] !== '')
 						{
 							$target['path'] = $base['path'];
 						}
@@ -3938,17 +3938,17 @@ class SimplePie_Misc
 						{
 							$target['path'] = '/';
 						}
-						if (!empty($relative['query']))
+						if ($relative['query'] !== '')
 						{
 							$target['query'] = $relative['query'];
 						}
-						else if (!empty($base['query']))
+						else if ($base['query'] !== '')
 						{
 							$target['query'] = $base['query'];
 						}
 					}
 				}
-				if (!empty($relative['fragment']))
+				if ($relative['fragment'] !== '')
 				{
 					$target['fragment'] = $relative['fragment'];
 				}
@@ -4172,23 +4172,23 @@ class SimplePie_Misc
 	function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
 	{
 		$return = '';
-		if (!empty($scheme))
+		if ($scheme !== '')
 		{
 			$return .= "$scheme:";
 		}
-		if (!empty($authority))
+		if ($authority !== '')
 		{
 			$return .= "//$authority";
 		}
-		if (!empty($path))
+		if ($path !== '')
 		{
 			$return .= $path;
 		}
-		if (!empty($query))
+		if ($query !== '')
 		{
 			$return .= "?$query";
 		}
-		if (!empty($fragment))
+		if ($fragment !== '')
 		{
 			$return .= "#$fragment";
 		}
