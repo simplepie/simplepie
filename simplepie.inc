@@ -980,7 +980,7 @@ function embed_wmedia(width, height, link) {
 
 	function do_prepare(&$array, $link, $url)
 	{
-		if (SIMPLEPIE_PHP5)
+		/*if (SIMPLEPIE_PHP5)
 		{
 			foreach ($array['child'] as &$subarray1)
 			{
@@ -998,7 +998,7 @@ function embed_wmedia(width, height, link) {
 			}
 		}
 		else
-		{
+		{*/
 			$keys1 = array_keys($array['child']);
 			foreach ($keys1 as $key1)
 			{
@@ -1016,7 +1016,7 @@ function embed_wmedia(width, height, link) {
 					}
 				}
 			}
-		}
+		//}
 	}
 
 	/**
