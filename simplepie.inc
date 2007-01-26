@@ -29,42 +29,40 @@
  * @link http://simplepie.org/ SimplePie
  * @link http://simplepie.org/support/ Please submit all bug reports and feature requests to the SimplePie forums
  * @license http://opensource.org/licenses/lgpl-license.php GNU Lesser General Public License
+ * @todo phpDoc comments
+ * @todo Add support for itunes and media namespaces
+ * @todo Check all regular expressions
  */
 
 /**
  * SimplePie Name
- * @see SimplePie::name
  */
 define('SIMPLEPIE_NAME', 'SimplePie');
 
 /**
  * SimplePie Version
- * @see SimplePie::version
  */
 define('SIMPLEPIE_VERSION', 'Razzleberry++');
 
 /**
  * SimplePie Build
- * @see SimplePie::build
+ * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
  */
 define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date('$Date$')));
 
 /**
  * SimplePie Website URL
- * @see SimplePie::url
  */
 define('SIMPLEPIE_URL', 'http://simplepie.org/');
 
 /**
  * SimplePie Useragent
- * @see SimplePie::useragent
  * @see SimplePie::set_useragent()
  */
 define('SIMPLEPIE_USERAGENT', SIMPLEPIE_NAME . '/' . SIMPLEPIE_VERSION . ' (Feed Parser; ' . SIMPLEPIE_URL . '; Allow like Gecko) Build/' . SIMPLEPIE_BUILD);
 
 /**
  * SimplePie Linkback
- * @see SimplePie::linkback
  */
 define('SIMPLEPIE_LINKBACK', '<a href="' . SIMPLEPIE_URL . '" title="' . SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . '">' . SIMPLEPIE_NAME . '</a>');
 
@@ -143,6 +141,9 @@ else
  * @copyright 2004-2007 Ryan Parman, Geoffrey Sneddon
  * @author Ryan Parman
  * @author Geoffrey Sneddon
+ * @todo Add geo namespace support at feed level
+ * @todo Cache all HTTP headers
+ * @todo Option for type of fetching (cache, not modified header, fetch, etc.)
  */
 class SimplePie
 {
@@ -2145,6 +2146,9 @@ class SimplePie_Item
 		}
 	}
 
+	/**
+	 * @todo Create ID instead of returning false
+	 */
 	function get_id()
 	{
 		if ($return = $this->get_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'ID'))
@@ -2384,6 +2388,7 @@ class SimplePie_Item
 
 	/**
 	 * @todo Properly deal with the output encoding (attributes are in their original UTF-8 form)
+	 * @todo Move categories into an object, allowing access to label/term/scheme
 	 */
 	function get_categories()
 	{
@@ -3579,6 +3584,9 @@ class SimplePie_Enclosure
 	}
 }
 
+/**
+ * Move to properly supporting RFC2616 (HTTP/1.1)
+ */
 class SimplePie_File
 {
 	var $url;
@@ -5758,6 +5766,9 @@ class SimplePie_Locator
 	}
 }
 
+/**
+ * @todo External entities aren't supported, for some reason xml_set_external_entity_ref_handler()'s callback function isn't called
+ */
 class SimplePie_Parser
 {
 	var $xml;
@@ -6362,6 +6373,9 @@ class SimplePie_Parser
 	}
 }
 
+/**
+ * @todo Move to using an actual HTML parser (this will allow tags to be properly stripped, and to switch between HTML and XHTML), this will also make it easier to shortern a string while preserving HTML tags
+ */
 class SimplePie_Sanitize
 {
 	// Private vars
