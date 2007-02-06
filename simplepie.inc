@@ -1134,6 +1134,9 @@ function embed_wmedia(width, height, link) {
 		return false;
 	}
 
+	/**
+	 * @todo If we have a perm redirect we should return the new URL
+	 */
 	function subscribe_url()
 	{
 		if (!empty($this->feed_url))
@@ -3585,7 +3588,7 @@ class SimplePie_Enclosure
 }
 
 /**
- * Move to properly supporting RFC2616 (HTTP/1.1)
+ * @todo Move to properly supporting RFC2616 (HTTP/1.1)
  */
 class SimplePie_File
 {

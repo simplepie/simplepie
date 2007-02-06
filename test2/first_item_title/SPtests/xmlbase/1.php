@@ -8,6 +8,6 @@ $data = <<<EOD
 </feed>
 EOD;
 
-$expected = '<p><a href="http://example.com/test/bleh">Link</a></p>';
+$expected = '<p><a href="http://example.com/bleh">Link</a></p>';
 
 ?>

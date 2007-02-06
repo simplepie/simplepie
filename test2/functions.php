@@ -62,625 +62,273 @@ function run_test($file, $success)
 	}
 }
 
-function absolutize_test($file)
+function do_test($callback, $files, $vars = 'data')
 {
-	if (is_array($file))
+	$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
+	$files = SimplePie_List::get($files);
+	foreach ($files as $file)
 	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
+		$istest = true;
+		$debug = false;
+		if (pathinfo($file, PATHINFO_EXTENSION) == $extension)
 		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
+			include $file;
+			if ($istest)
 			{
-				require $value;
-				if ($istest)
+				$args = compact($vars);
+				$result = call_user_func_array($callback, $args);
+				run_test($file, $result == $expected);
+				if ($debug)
 				{
-					run_test($value, SimplePie_Misc::absolutize_url($relative, $base) == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function date_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					run_test($value, SimplePie_Misc::parse_date($date) == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_copyright_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_feed_copyright() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_description_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_feed_description() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_image_height_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_image_height() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_image_link_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_image_link() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_image_title_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_image_title() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_image_url_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_image_url() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_image_width_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_image_width() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_language_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_feed_language() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_link_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_feed_link() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function feed_title_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					run_test($value, $feed->get_feed_title() == $expected);
-				}
-			}
-
-		}
-	}
-}
-
-function first_item_author_name_test($file)
-{
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						$author = $item->get_author();
-						if ($author)
-						{
-							run_test($value, $author->get_name() == $expected);
-						}
-						else
-						{
-							run_test($value, false);
-						}
-					}
-					else
-					{
-						run_test($value, false);
-					}
+					var_dump($file, $args, $result, $expected);
 				}
 			}
 		}
 	}
 }
 
-function first_item_category_test($file)
+function absolutize_test($relative, $base)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						run_test($value, $item->get_category() == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
-		}
-	}
+	return SimplePie_Misc::absolutize_url($relative, $base);
 }
 
-function first_item_content_test($file)
+function date_test($date)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item && method_exists($item, 'get_content'))
-					{
-						run_test($value, $item->get_content() == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
-		}
-	}
+	return SimplePie_Misc::parse_date($date);
 }
 
-function first_item_date_test($file)
+function feed_copyright_test($data)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						run_test($value, $item->get_date('U') == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
-		}
-	}
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_feed_copyright();
 }
 
-function first_item_description_test($file)
+function feed_description_test($data)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						run_test($value, $item->get_description() == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
-		}
-	}
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_feed_description();
 }
 
-function first_item_id_test($file)
+function feed_image_height_test($data)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						run_test($value, $item->get_id() == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
-		}
-	}
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_image_height();
 }
 
-function first_item_latitude_test($file)
+function feed_image_link_test($data)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						run_test($value, $item->get_latitude() == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
-		}
-	}
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_image_link();
 }
 
-function first_item_longitude_test($file)
+function feed_image_title_test($data)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						run_test($value, $item->get_longitude() == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
-		}
-	}
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_image_title();
 }
 
-function first_item_permalink_test($file)
+function feed_image_url_test($data)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						run_test($value, $item->get_permalink() == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
-		}
-	}
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_image_url();
 }
 
-function first_item_title_test($file)
+function feed_image_width_test($data)
 {
-	if (is_array($file))
-	{
-		$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-		foreach ($file as $value)
-		{
-			$istest = true;
-			if (pathinfo($value, PATHINFO_EXTENSION) == $extension)
-			{
-				require $value;
-				if ($istest)
-				{
-					$feed = new SimplePie();
-					$feed->set_raw_data($data);
-					$feed->enable_cache(false);
-					$feed->init();
-					$item = $feed->get_item(0);
-					if ($item)
-					{
-						run_test($value, $item->get_title() == $expected);
-					}
-					else
-					{
-						run_test($value, false);
-					}
-				}
-			}
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_image_width();
+}
 
+function feed_language_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_feed_language();
+}
+
+function feed_link_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_feed_link();
+}
+
+function feed_title_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	return $feed->get_feed_title();
+}
+
+function first_item_author_name_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		$author = $item->get_author();
+		if ($author)
+		{
+			return $author->get_name();
 		}
 	}
+	return false;
+}
+
+function first_item_category_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_category();
+	}
+	return false;
+}
+
+function first_item_content_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_content();
+	}
+	return false;
+}
+
+function first_item_date_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_date('U');
+	}
+	return false;
+}
+
+function first_item_description_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_description();
+	}
+	return false;
+}
+
+function first_item_id_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_id();
+	}
+	return false;
+}
+
+function first_item_latitude_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_latitude();
+	}
+	return false;
+}
+
+function first_item_longitude_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_longitude();
+	}
+	return false;
+}
+
+function first_item_permalink_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_permalink();
+	}
+	return false;
+}
+
+function first_item_title_test($data)
+{
+	$feed = new SimplePie();
+	$feed->set_raw_data($data);
+	$feed->enable_cache(false);
+	$feed->init();
+	$item = $feed->get_item(0);
+	if ($item)
+	{
+		return $item->get_title();
+	}
+	return false;
 }
 
 function dive_into_mark_atom_autodiscovery()
@@ -690,7 +338,6 @@ function dive_into_mark_atom_autodiscovery()
 	$cached_entities = array();
 	for ($i = 0; $next; $i++)
 	{
-		usleep(1000);
 		$current = $next;
 		$file = new SimplePie_File($current, 10, 5, null, SIMPLEPIE_USERAGENT);
 		if ($file->success)
