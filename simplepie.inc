@@ -836,8 +836,9 @@ function embed_wmedia(width, height, link) {
 				$locate =& new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds);
 				if (!$locate->is_feed($file))
 				{
-					$file = $locate->find($this->autodiscovery);
-					if ($file)
+					// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
+					unset($file);
+					if ($file = $locate->find($this->autodiscovery))
 					{
 						if ($cache)
 						{
