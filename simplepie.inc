@@ -6073,51 +6073,6 @@ class SimplePie_Parser
 
 		if (!is_null($this->current_xhtml_construct) && $this->namespace == 'HTTP://WWW.W3.ORG/1999/XHTML')
 		{
-			// We need to deal with xml:base now, as if we have an xml:base within the XHTML it will otherwise be lost
-			if ($this->xml_base_explicit)
-			{
-				switch ($this->element)
-				{
-					case 'BLOCKQUOTE':
-					case 'INS':
-					case 'DEL':
-					case 'Q':
-						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['CITE'], $this->xml_base);
-						}
-						break;
-
-					case 'A':
-					case 'AREA':
-						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['HREF'], $this->xml_base);
-						}
-						break;
-
-					case 'IMG':
-						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['LONGDESC'], $this->xml_base);
-						}
-						// No break here, as <img> can have a src attribute
-
-					case 'INPUT':
-						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['SRC'], $this->xml_base);
-						}
-						break;
-
-					case 'FORM':
-						if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['ACTION']))
-						{
-							$attribs['HTTP://WWW.W3.ORG/1999/XHTML']['ACTION'] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/1999/XHTML']['ACTION'], $this->xml_base);
-						}
-						break;
-				}
-			}
 			$this->current_xhtml_construct .= '<' . strtolower($this->element);
 			if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']))
 			{
@@ -6540,22 +6495,19 @@ class SimplePie_Sanitize
 						}
 					}
 
-					// HTML content still needs xml:base URLs replaced
-					if ($array['xml_base_explicit'] && $array['type'] == 'html' || !$array['xml_base_explicit'])
-					{
-						$this->feed_link = $feed_link;
-						$this->feed_url = $feed_url;
-						$this->replace_urls($array, 'blockquote', 'CITE');
-						$this->replace_urls($array, 'ins', 'CITE');
-						$this->replace_urls($array, 'del', 'CITE');
-						$this->replace_urls($array, 'a', 'HREF');
-						$this->replace_urls($array, 'q', 'CITE');
-						$this->replace_urls($array, 'img', 'SRC');
-						$this->replace_urls($array, 'img', 'LONGDESC');
-						$this->replace_urls($array, 'area', 'HREF');
-						$this->replace_urls($array, 'form', 'ACTION');
-						$this->replace_urls($array, 'input', 'SRC');
-					}
+					// Replace relative URLs
+					$this->feed_link = $feed_link;
+					$this->feed_url = $feed_url;
+					$this->replace_urls($array, 'blockquote', 'CITE');
+					$this->replace_urls($array, 'ins', 'CITE');
+					$this->replace_urls($array, 'del', 'CITE');
+					$this->replace_urls($array, 'a', 'HREF');
+					$this->replace_urls($array, 'q', 'CITE');
+					$this->replace_urls($array, 'img', 'SRC');
+					$this->replace_urls($array, 'img', 'LONGDESC');
+					$this->replace_urls($array, 'area', 'HREF');
+					$this->replace_urls($array, 'form', 'ACTION');
+					$this->replace_urls($array, 'input', 'SRC');
 
 					// If Bypass Image Hotlink is enabled, rewrite all the image tags.
 					if ($this->bypass_image_hotlink)
