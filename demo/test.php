@@ -32,12 +32,12 @@ $feed->handle_content_type();
 <pre>
 <?php
 
-// memory_get_peak_usage() only exists on PHP 5.2 and higher if PHP is compiled with the --enable-memory-limit configuration option
+// memory_get_peak_usage() only exists on PHP 5.2 and higher if PHP is compiled with the --enable-memory-limit configuration option or on PHP 5.2.1 and higher (which runs as if --enable-memory-limit was on, with no option)
 if (function_exists('memory_get_peak_usage'))
 {
 	var_dump($time, memory_get_usage(), memory_get_peak_usage());
 }
-// memory_get_usage() only exists if PHP is compiled with the --enable-memory-limit configuration option
+// memory_get_usage() only exists if PHP is compiled with the --enable-memory-limit configuration option or on PHP 5.2.1 and higher (which runs as if --enable-memory-limit was on, with no option)
 else if (function_exists('memory_get_usage'))
 {
 	var_dump($time, memory_get_usage());
