@@ -1,90 +1,15 @@
 <?php
 
-class SimplePie_List
+require_once 'unit_test/unit_test.php';
+
+function on_success($file)
 {
-	function get($dir)
-	{
-		SimplePie_List::list_files($dir, $array);
-		usort($array, array('SimplePie_List', 'do_usort'));
-		return $array;
-	}
-	
-	function list_files($dir, &$array)
-	{
-		if ($dh = opendir($dir))
-		{
-			while (($file = readdir($dh)) !== false)
-			{
-				if (substr($file, 0, 1) != '.')
-				{
-					if (is_dir("$dir/$file"))
-					{
-						SimplePie_List::list_files("$dir/$file", $array);
-					}
-					else
-					{
-						$array[] = "$dir/$file";
-					}
-				}
-			}
-		}
-	}
-	
-	function do_usort(&$a, &$b)
-	{
-		if (substr_count($a, '/') > substr_count($b, '/'))
-		{
-			return 1;
-		}
-		else if (substr_count($a, '/') < substr_count($b, '/'))
-		{
-			return -1;
-		}
-		else
-		{
-			return strnatcmp($a, $b);
-		}
-	}
+	echo "<tr class='pass'><td>✔</td><td>$file</td></tr>";
 }
 
-function run_test($file, $success)
+function on_fail($file)
 {
-	global $passed, $failed;
-	if ($success)
-	{
-		$passed++;
-		echo "<tr class='pass'><td>✔</td><td>$file</td></tr>";
-	}
-	else
-	{
-		$failed++;
-		echo "<tr class='fail'><td>✘</td><td>$file</td></tr>";
-	}
-}
-
-function do_test($callback, $files, $vars = 'data')
-{
-	$extension = pathinfo(__FILE__, PATHINFO_EXTENSION);
-	$files = SimplePie_List::get($files);
-	foreach ($files as $file)
-	{
-		$istest = true;
-		$debug = false;
-		if (pathinfo($file, PATHINFO_EXTENSION) == $extension)
-		{
-			include $file;
-			if ($istest)
-			{
-				$args = compact($vars);
-				$result = call_user_func_array($callback, $args);
-				run_test($file, $result == $expected);
-				if ($debug)
-				{
-					var_dump($file, $args, $result, $expected);
-				}
-			}
-		}
-	}
+	echo "<tr class='fail'><td>✘</td><td>$file</td></tr>";
 }
 
 function absolutize_test($relative, $base)
@@ -331,7 +256,7 @@ function first_item_title_test($data)
 	return false;
 }
 
-function dive_into_mark_atom_autodiscovery()
+function dive_into_mark_atom_autodiscovery($tests)
 {
 	$url = 'http://diveintomark.org/tests/client/autodiscovery/';
 	$done = array();
@@ -347,7 +272,7 @@ function dive_into_mark_atom_autodiscovery()
 				$feed->set_file($file);
 				$feed->enable_cache(false);
 				$feed->init();
-				run_test($file->url, $feed->get_feed_link() == $file->url);
+				$tests->run_test($file->url, $feed->get_feed_link() == $file->url);
 			}
 			$links = SimplePie_Misc::get_element('link', $file->body());
 			foreach ($links as $link)
@@ -366,7 +291,7 @@ function dive_into_mark_atom_autodiscovery()
 		}
 		else
 		{
-			run_test($file->url, false);
+			$tests->run_test($file->url, false);
 		}
 	}
 }

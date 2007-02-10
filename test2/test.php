@@ -142,41 +142,38 @@ require_once 'functions.php';
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
 
-$passed = 0;
-$failed = 0;
-global $passed, $failed;
+$tests = new Unit_Test('on_success', 'on_fail');
 
-do_test('absolutize_test', 'absolutize', array('relative', 'base'));
-do_test('date_test', 'date', 'date');
-do_test('feed_copyright_test', 'feed_copyright');
-do_test('feed_description_test', 'feed_description');
-do_test('feed_image_height_test', 'feed_image_height');
-do_test('feed_image_link_test', 'feed_image_link');
-do_test('feed_image_title_test', 'feed_image_title');
-do_test('feed_image_url_test', 'feed_image_url');
-do_test('feed_image_width_test', 'feed_image_width');
-do_test('feed_language_test', 'feed_language');
-do_test('feed_link_test', 'feed_link');
-do_test('feed_title_test', 'feed_title');
-do_test('first_item_author_name_test', 'first_item_author_name');
-do_test('first_item_category_test', 'first_item_category');
-do_test('first_item_content_test', 'first_item_content');
-do_test('first_item_date_test', 'first_item_date');
-do_test('first_item_description_test', 'first_item_description');
-do_test('first_item_id_test', 'first_item_id');
-do_test('first_item_latitude_test', 'first_item_latitude');
-do_test('first_item_longitude_test', 'first_item_longitude');
-do_test('first_item_permalink_test', 'first_item_permalink');
-do_test('first_item_title_test', 'first_item_title');
+$tests->do_test('absolutize_test', 'absolutize', array('relative', 'base'));
+$tests->do_test('date_test', 'date', 'date');
+$tests->do_test('feed_copyright_test', 'feed_copyright');
+$tests->do_test('feed_description_test', 'feed_description');
+$tests->do_test('feed_image_height_test', 'feed_image_height');
+$tests->do_test('feed_image_link_test', 'feed_image_link');
+$tests->do_test('feed_image_title_test', 'feed_image_title');
+$tests->do_test('feed_image_url_test', 'feed_image_url');
+$tests->do_test('feed_image_width_test', 'feed_image_width');
+$tests->do_test('feed_language_test', 'feed_language');
+$tests->do_test('feed_link_test', 'feed_link');
+$tests->do_test('feed_title_test', 'feed_title');
+$tests->do_test('first_item_author_name_test', 'first_item_author_name');
+$tests->do_test('first_item_category_test', 'first_item_category');
+$tests->do_test('first_item_content_test', 'first_item_content');
+$tests->do_test('first_item_date_test', 'first_item_date');
+$tests->do_test('first_item_description_test', 'first_item_description');
+$tests->do_test('first_item_id_test', 'first_item_id');
+$tests->do_test('first_item_latitude_test', 'first_item_latitude');
+$tests->do_test('first_item_longitude_test', 'first_item_longitude');
+$tests->do_test('first_item_permalink_test', 'first_item_permalink');
+$tests->do_test('first_item_title_test', 'first_item_title');
 
 if (isset($_GET['remote']))
 {
-	dive_into_mark_atom_autodiscovery();
+	dive_into_mark_atom_autodiscovery($tests);
 }
 
-$total = $passed + $failed;
-$passed_percentage = round($passed/$total*100);
-$failed_percentage = round($failed/$total*100);
+$passed_percentage = $tests->passed() / $tests->total() * 100;
+$failed_percentage = $tests->failed() / $tests->total() * 100;
 
 $mtime = explode(' ', microtime());
 $mtime = $mtime[1] + $mtime[0];
@@ -186,8 +183,8 @@ $time = $mtime - $starttime;
 		</tbody>
 	</table>
 	
-	<h3><?php echo $passed_percentage; ?>% passed!</h3>
-	<p>We ran <?php echo $total; ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time/$total, 3); ?> seconds per test) of which <?php echo $passed; ?> (<?php echo $passed_percentage; ?>%) were passed, and <?php echo $failed; ?> (<?php echo $failed_percentage; ?>%) were failed.</p>
+	<h3><?php echo round($passed_percentage); ?>% passed!</h3>
+	<p>We ran <?php echo $tests->total(); ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time / $tests->total(), 3); ?> seconds per test) of which <?php echo $tests->passed(); ?> (<?php echo round($passed_percentage); ?>%) were passed, and <?php echo $tests->failed(); ?> (<?php echo round($failed_percentage); ?>%) were failed.</p>
 	
 	<p class="footnote">Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
 
