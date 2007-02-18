@@ -847,7 +847,7 @@ function embed_wmedia(width, height, link) {
 								$this->error = "$cache->name is not writeable";
 								SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
 							}
-							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
+							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
 						}
 						$this->feed_url = $file->url;
 					}
