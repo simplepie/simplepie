@@ -231,6 +231,13 @@ class SimplePie
 	var $cache_duration = 3600;
 
 	/**
+	 * @var int Auto-discovery cache duration (in seconds)
+	 * @see SimplePie::set_autodiscovery_cache_duration()
+	 * @access private
+	 */
+	var $autodiscovery_cache_duration = 604800; // 7 Days.
+
+	/**
 	 * @var string Cache location (relative to executing script)
 	 * @see SimplePie::set_cache_location()
 	 * @access private
@@ -445,9 +452,28 @@ class SimplePie
 		$this->cache = (bool) $enable;
 	}
 
+	/**
+	 * Set the length of time (in seconds) that the contents of a feed
+	 * will be cached. Default value is 1 hour.
+	 *
+	 * @access public
+	 * @param int $seconds The feed content cache duration.
+	 */
 	function set_cache_duration($seconds = 3600)
 	{
 		$this->cache_duration = (int) $seconds;
+	}
+
+	/**
+	 * Set the length of time (in seconds) that the autodiscovered feed
+	 * URL will be cached. Default value is 7 days.
+	 *
+	 * @access public
+	 * @param int $seconds The autodiscovered feed URL cache duration.
+	 */
+	function set_autodiscovery_cache_duration($seconds = 604800)
+	{
+		$this->autodiscovery_cache_duration = (int) $seconds;
 	}
 
 	function set_cache_location($location = './cache')
@@ -748,18 +774,23 @@ function embed_wmedia(width, height, link) {
 							$cache = false;
 							$this->data = array();
 						}
-						// If we've got a feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL
+						// If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
 						else if (!empty($this->data['feed_url']))
 						{
-							if ($this->data['feed_url'] == $this->data['url'])
+							// If the autodiscovery cache is still valid use it.
+							if ($cache->mtime() + $this->autodiscovery_cache_duration > time())
 							{
-								$cache->unlink();
-								$this->data = array();
-							}
-							else
-							{
-								$this->set_feed_url($this->data['feed_url']);
-								return $this->init();
+								// Do not need to do feed autodiscovery yet.
+								if ($this->data['feed_url'] == $this->data['url'])
+								{
+									$cache->unlink();
+									$this->data = array();
+								}
+								else
+								{
+									$this->set_feed_url($this->data['feed_url']);
+									return $this->init();
+								}
 							}
 						}
 						// Check if the cache has been updated
@@ -842,7 +873,7 @@ function embed_wmedia(width, height, link) {
 					{
 						if ($cache)
 						{
-							if (!$cache->save(array('url' => $this->feed_url, 'feed_url' => $file->url)))
+							if (!$cache->save(array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD)))
 							{
 								$this->error = "$cache->name is not writeable";
 								SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
@@ -3812,7 +3843,15 @@ class SimplePie_File
 		foreach ($headers as $header)
 		{
 			$data = explode(':', $header, 2);
-			$head[strtolower(trim($data[0]))] = preg_replace("/(\r\n)?[\x09\x20]+/", '', $data[1]);
+			$header_name = strtolower(trim($data[0]));
+			if (in_array($header_name, array('last-modified', 'date', 'expires', 'if-range', 'if-unmodified-since', 'last-modified', 'retry-after'))
+			{
+				$head[$header_name] = $data[1];
+			}
+			else
+			{
+				$head[$header_name] = preg_replace('/(\r\n)?[\x09\x20]+/', '', $data[1]);
+			}
 		}
 		if (preg_match('/HTTP\/[0-9\.]+ ([0-9]+)(.*)$/i', $status, $matches))
 		{
