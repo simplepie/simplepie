@@ -4021,7 +4021,7 @@ class SimplePie_Misc
 
 	function remove_dot_segments($input)
 	{
-		if (strpos($input, '.') !== false)
+		if (strpos($input, './') !== false || strpos($input, '/.') !== false || $input == '.' || $input == '..')
 		{
 			$output = '';
 			while (!empty($input))
