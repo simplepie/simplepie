@@ -4070,7 +4070,7 @@ class SimplePie_Misc
 					}
 					else
 					{
-						// We've ended up in a recursive loop, so do what we otherwise never will: return false.
+						// We've ended up in an infinite loop, so do what we otherwise never will: return false.
 						return false;
 					}
 				}
