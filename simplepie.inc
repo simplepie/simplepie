@@ -3844,7 +3844,7 @@ class SimplePie_File
 		{
 			$data = explode(':', $header, 2);
 			$header_name = strtolower(trim($data[0]));
-			if (in_array($header_name, array('last-modified', 'date', 'expires', 'if-range', 'if-unmodified-since', 'last-modified', 'retry-after'))
+			if (in_array($header_name, array('date', 'expires', 'if-range', 'if-unmodified-since', 'last-modified', 'retry-after')))
 			{
 				$head[$header_name] = $data[1];
 			}
