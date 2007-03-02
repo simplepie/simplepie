@@ -69,6 +69,7 @@ h3 {
 
 table {
 	border-collapse:collapse;
+	width: 100%;
 }
 
 table tr {
