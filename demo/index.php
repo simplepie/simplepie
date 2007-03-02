@@ -38,7 +38,7 @@ if (!empty($_GET['image'])) {
 // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and 
 // all that other good stuff.  The feed's information will not be available to SimplePie before 
 // this is called.
-$feed->init();
+$success = $feed->init();
 
 // We'll make sure that the right content type and character encoding gets set automatically.
 // This function will grab the proper character encoding, as well as set the content type to text/html.
@@ -164,7 +164,7 @@ $feed->handle_content_type();
 
 
 			<!-- As long as the feed has data to work with... -->
-			<?php if ($feed->data): ?>
+			<?php if ($success): ?>
 				<div class="chunk focus" align="center">
 
 					<!-- If the feed has a link back to the site that publishes it (which 99% of them do), link the feed's title to it. -->
