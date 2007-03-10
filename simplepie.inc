@@ -980,26 +980,35 @@ function embed_wmedia(width, height, link) {
 			{
 				unset($data);
 				$this->data = $parser->get_data();
-				$this->do_prepare($this->data, $this->get_feed_link(), $this->subscribe_url());
-
-				// Store the headers that we need
-				if (!empty($headers['last-modified']))
+				if (isset($this->data['child']))
 				{
-					$this->data['last-modified'] = $headers['last-modified'];
+					$this->do_prepare($this->data, $this->get_feed_link(), $this->subscribe_url());
+	
+					// Store the headers that we need
+					if (!empty($headers['last-modified']))
+					{
+						$this->data['last-modified'] = $headers['last-modified'];
+					}
+					if (!empty($headers['etag']))
+					{
+						$this->data['etag'] = $headers['etag'];
+					}
+					$this->data['build'] = SIMPLEPIE_BUILD;
+	
+					// Cache the file if caching is enabled
+					if ($cache && !$cache->save($this->data))
+					{
+						$this->error = "$cache->name is not writeable";
+						SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+					}
+					return true;
 				}
-				if (!empty($headers['etag']))
+				else
 				{
-					$this->data['etag'] = $headers['etag'];
+					$this->error = "A feed could not be found at $this->feed_url";
+					SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+					return false;
 				}
-				$this->data['build'] = SIMPLEPIE_BUILD;
-
-				// Cache the file if caching is enabled
-				if ($cache && !$cache->save($this->data))
-				{
-					$this->error = "$cache->name is not writeable";
-					SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
-				}
-				return true;
 			}
 			// If we have an error, just set SimplePie::error to it and quit
 			else
