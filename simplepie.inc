@@ -338,16 +338,12 @@ class SimplePie
 	var $max_checked_feeds = 10;
 
 	/**
-	 * Creates useragent, linkback and sanitize members, and runs
-	 * init if a feed URL is passed (as the first parameter)
+	 * Creates sanitize member, and runs init if a feed URL is passed
 	 *
 	 * @access public
-	 * @param mixed $feed_url Feed URL, defaults to null, sets the
-	 * feed URL and runs init() if not
-	 * @param mixed $cache_location Cache Location, defaults to null,
-	 * sets the cache location if not
-	 * @param mixed $cache_duration Cache Duration, defaults to null,
-	 * sets the cache duration (in seconds) if not
+	 * @param mixed $feed_url Sets the feed URL and runs init()
+	 * @param mixed $cache_location Sets the cache location
+	 * @param mixed $cache_duration Sets the cache duration (in seconds)
 	 */
 	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
 	{
@@ -2167,7 +2163,7 @@ class SimplePie_Item
 	var $javascript = 'js';
 	var $data = array();
 
-	function SimplePie_Item($feed, $data, $author_class, $enclosure_class, $javascript)
+	function SimplePie_Item(&$feed, &$data, $author_class, $enclosure_class, $javascript)
 	{
 		$this->feed = $feed;
 		$this->data = $data;
@@ -3154,7 +3150,7 @@ class SimplePie_Author
 
 	function __toString()
 	{
-		return serialize(compact($this->name, $this->link, $this->email));
+		return sha1(serialize($this));
 	}
 
 	function get_name()
@@ -3218,7 +3214,7 @@ class SimplePie_Enclosure
 
 	function __toString()
 	{
-		return serialize(compact($this->link, $this->type, $this->length));
+		return sha1(serialize($this));
 	}
 
 	function get_link()
