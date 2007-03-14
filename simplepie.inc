@@ -6082,13 +6082,9 @@ class SimplePie_Parser
 			{
 				$attribs[$attrib_namespace][$attribute] = $value;
 			}
-			else if (!empty($this->namespace))
-			{
-				$attribs[$this->namespace][$attribute] = $value;
-			}
 			else
 			{
-				$attribs[$this->assume_namespace][$attribute] = $value;
+				$attribs[''][$attribute] = $value;
 			}
 		}
 
