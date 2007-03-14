@@ -6139,7 +6139,7 @@ class SimplePie_Parser
 		}
 		else if ($this->atom10_feed == 1 || $this->atom03_feed == 1 || $this->atom_unknown_feed == 1 || $this->rss091_feed == 1 || $this->rss092_feed == 1 || $this->rss10_feed == 1 || $this->rss20_feed == 1 || $this->rss_unknown_feed == 1)
 		{
-			$this->data['attibs'] = $attribs;
+			$this->data['attribs'] = $attribs;
 			$this->data['xml_lang'] = $this->xml_lang;
 		}
 	}
