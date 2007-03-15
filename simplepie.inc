@@ -5825,24 +5825,7 @@ class SimplePie_Parser
 	var $current_line;
 	var $current_column;
 	var $current_byte;
-	var $atom03 = false;
-	var $atom10 = false;
-	var $atom_unknown = false;
-	var $rss090 = false;
-	var $rss091 = false;
-	var $rss092 = false;
-	var $rss10 = false;
-	var $rss20 = false;
-	var $rss_unknown = false;
-	var $atom03_feed = 0;
-	var $atom10_feed = 0;
-	var $atom_unknown_feed = 0;
-	var $rss091_feed = 0;
-	var $rss092_feed = 0;
-	var $rss10_feed = 0;
-	var $rss20_feed = 0;
-	var $rss_unknown_feed = 0;
-	var $inside = array('atom10_feed', 'atom03_feed', 'atom_unknown_feed', 'rss091_feed', 'rss092_feed', 'rss10_feed', 'rss20_feed', 'rss_unknown_feed');
+	var $feed = false;
 	var $assume_namespace = '';
 	var $namespace = '';
 	var $namespaces = array('');
@@ -5913,7 +5896,6 @@ class SimplePie_Parser
 		xml_set_object($this->xml, $this);
 		xml_set_character_data_handler($this->xml, 'cdata');
 		xml_set_element_handler($this->xml, 'tag_open', 'tag_close');
-		xml_set_external_entity_ref_handler($this->xml, 'external_entity_reference');
 
 		// Parse!
 		if (!xml_parse($this->xml, $data, true))
@@ -5960,109 +5942,29 @@ class SimplePie_Parser
 		return $this->data;
 	}
 
-	/**
-	 * @todo finish method
-	 */
-	function get_type()
-	{
-		if ($this->atom03)
-		{
-			return array('Atom', '0.3');
-		}
-		else if ($this->atom10)
-		{
-			return array('Atom', '1.0');
-		}
-		else if ($this->atom_unknown)
-		{
-			return array('Atom', false);
-		}
-	}
-
 	function tag_open($parser, $tag, $attributes)
 	{
-		$this->update_inside(1);
-
-		switch ($tag)
+		if ($this->feed === 0)
 		{
-			case 'HTTP://WWW.W3.ORG/2005/ATOM:FEED':
-				$this->atom10 = true;
-				$this->atom10_feed = 1;
-				break;
-
-			case 'HTTP://PURL.ORG/ATOM/NS#:FEED':
-				$this->atom03 = true;
-				$this->atom03_feed = 1;
-				break;
-
-			case 'FEED':
-				if (!empty($attributes['VERSION']))
-				{
-					switch ($attributes['VERSION'])
-					{
-						case '0.3':
-							$this->atom03 = true;
-							$this->atom03_feed = 1;
-							$this->assume_namespace = 'HTTP://PURL.ORG/ATOM/NS#';
-							break 2;
-
-						case '1.0':
-							$this->atom10 = true;
-							$this->atom10_feed = 1;
-							$this->assume_namespace = 'HTTP://WWW.W3.ORG/2005/ATOM';
-							break 2;
-					}
-				}
-				$this->atom_unknown_feed = 1;
-				$this->atom_unknown = true;
-				$this->assume_namespace = 'atom_unknown';
-				break;
-
-			case 'HTTP://BACKEND.USERLAND.COM/RSS2:RSS':
-				$this->rss20 = true;
-				$this->rss20_feed = 1;
-				break;
-
-			case 'RSS':
-				if (!empty($attributes['VERSION']))
-				{
-					switch ($attributes['VERSION'])
-					{
-						case '0.91':
-							$this->rss091 = true;
-							$this->rss091_feed = 1;
-							$this->assume_namespace = 'rss091';
-							break 2;
-
-						case '0.92':
-							$this->rss092 = true;
-							$this->rss092_feed = 1;
-							$this->assume_namespace = 'rss092';
-							break 2;
-
-						case '2.0':
-							$this->rss20 = true;
-							$this->rss20_feed = 1;
-							$this->assume_namespace = 'HTTP://BACKEND.USERLAND.COM/RSS2';
-							break 2;
-					}
-				}
-				$this->rss_unknown_feed = 1;
-				$this->rss_unknown = true;
-				$this->assume_namespace = 'rss_unknown';
-				break;
-
-			case 'HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#:RDF':
-				$this->rss10_feed = 1;
-				break;
-
-			case 'HTTP://PURL.ORG/RSS/1.0/:CHANNEL':
-				$this->rss10 = true;
-				break;
-
-			case 'HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/:CHANNEL':
-				$this->rss090 = true;
-				break;
+			return;
+		}
+		else if ($this->feed == false)
+		{
+			switch ($tag)
+			{
+				case 'HTTP://WWW.W3.ORG/2005/ATOM:FEED':
+				case 'HTTP://PURL.ORG/ATOM/NS#:FEED':
+				case 'FEED':
+				case 'HTTP://BACKEND.USERLAND.COM/RSS2:RSS':
+				case 'RSS':
+				case 'HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#:RDF':
+					$this->feed = 1;
+					break;
+			}
+		}
+		else
+		{
+			$this->feed++;
 		}
 
 		list($this->namespace, $this->element) = $this->split_ns($tag);
@@ -6123,17 +6025,17 @@ class SimplePie_Parser
 			}
 			$this->current_xhtml_construct .= '>';
 		}
-		else if ($this->atom10_feed > 1 || $this->atom03_feed > 1 || $this->atom_unknown_feed > 1 || $this->rss091_feed > 1 || $this->rss092_feed > 1 || $this->rss10_feed > 1 || $this->rss20_feed > 1 || $this->rss_unknown_feed > 1)
+		else if ($this->feed > 1)
 		{
 			$this->datas[] =& $this->data;
 			$this->data =& $this->data['child'][$this->namespace][$this->element][];
-			$this->data = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'xml_lang' => $this->xml_lang, 'type' => $this->get_data_type($attribs));
+			$this->data = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'xml_lang' => $this->xml_lang, 'type' => $this->get_data_type($tag, $attribs));
 			if ($this->data['type'] == 'xhtml')
 			{
 				$this->current_xhtml_construct =& $this->data['data'];
 			}
 		}
-		else if ($this->atom10_feed == 1 || $this->atom03_feed == 1 || $this->atom_unknown_feed == 1 || $this->rss091_feed == 1 || $this->rss092_feed == 1 || $this->rss10_feed == 1 || $this->rss20_feed == 1 || $this->rss_unknown_feed == 1)
+		else if ($this->feed == 1)
 		{
 			$this->data['attribs'] = $attribs;
 			$this->data['xml_lang'] = $this->xml_lang;
@@ -6146,7 +6048,7 @@ class SimplePie_Parser
 		{
 			$this->current_xhtml_construct .= htmlspecialchars($cdata, ENT_QUOTES, $this->encoding);
 		}
-		else if ($this->atom10_feed > 1 || $this->atom03_feed > 1 || $this->atom_unknown_feed > 1 || $this->rss091_feed > 1 || $this->rss092_feed > 1 || $this->rss10_feed > 1 || $this->rss20_feed > 1 || $this->rss_unknown_feed > 1)
+		else if ($this->feed > 1)
 		{
 			$this->data['data'] .= $cdata;
 		}
@@ -6154,11 +6056,16 @@ class SimplePie_Parser
 
 	function tag_close($parser, $tag)
 	{
+		if ($this->feed == 0)
+		{
+			return;
+		}
+		
 		if (!is_null($this->current_xhtml_construct) && $this->namespace == 'HTTP://WWW.W3.ORG/1999/XHTML')
 		{
 			$this->current_xhtml_construct .= '</' . strtolower($this->element) . '>';
 		}
-		else if ($this->atom10_feed > 1 || $this->atom03_feed > 1 || $this->atom_unknown_feed > 1 || $this->rss091_feed > 1 || $this->rss092_feed > 1 || $this->rss10_feed > 1 || $this->rss20_feed > 1 || $this->rss_unknown_feed > 1)
+		else if ($this->feed > 1)
 		{
 			if ($this->data['type'] == 'xhtml')
 			{
@@ -6167,14 +6074,6 @@ class SimplePie_Parser
 			}
 			$this->data =& $this->datas[count($this->datas)-1];
 			array_pop($this->datas);
-		}
-
-		switch ($tag)
-		{
-			case 'FEED':
-			case 'RSS':
-				$this->assume_namespace = '';
-				break;
 		}
 
 		array_pop($this->elements);
@@ -6187,7 +6086,7 @@ class SimplePie_Parser
 		$this->xml_base_explicit = end($this->xml_base_explicits);
 		array_pop($this->xml_langs);
 		$this->xml_lang = end($this->xml_langs);
-		$this->update_inside(-1);
+		$this->feed--;
 	}
 
 	function split_ns($string)
@@ -6207,34 +6106,18 @@ class SimplePie_Parser
 		return $cache[$string];
 	}
 
-	function external_entity_reference($parser, $open_entity_names, $base, $system_id, $public_id)
+	function get_data_type($tag, $attribs)
 	{
-		var_dump($parser, $open_entity_names, $base, $system_id, $public_id);
-	}
-
-	function update_inside($change)
-	{
-		foreach ($this->inside as $inside)
-		{
-			if ($this->$inside > 0)
-			{
-				$this->$inside += $change;
-			}
-		}
-	}
-
-	function get_data_type($attribs)
-	{
-		switch ("$this->namespace:$this->element")
+		switch ($tag)
 		{
 			// Atom 1.0
 			case 'HTTP://WWW.W3.ORG/2005/ATOM:RIGHTS':
 			case 'HTTP://WWW.W3.ORG/2005/ATOM:SUBTITLE':
 			case 'HTTP://WWW.W3.ORG/2005/ATOM:SUMMARY':
 			case 'HTTP://WWW.W3.ORG/2005/ATOM:TITLE':
-				if (!empty($attribs['HTTP://WWW.W3.ORG/2005/ATOM']['TYPE']))
+				if (!empty($attribs['']['TYPE']))
 				{
-					switch (strtolower($attribs['HTTP://WWW.W3.ORG/2005/ATOM']['TYPE']))
+					switch (strtolower($attribs['']['TYPE']))
 					{
 						case 'html':
 							return 'html';
@@ -6246,9 +6129,9 @@ class SimplePie_Parser
 				return 'text';
 
 			case 'HTTP://WWW.W3.ORG/2005/ATOM:CONTENT':
-				if (!empty($attribs['HTTP://WWW.W3.ORG/2005/ATOM']['TYPE']))
+				if (!empty($attribs['']['TYPE']))
 				{
-					switch (strtolower(SimplePie_Misc::parse_mime($attribs['HTTP://WWW.W3.ORG/2005/ATOM']['TYPE'])))
+					switch (strtolower(SimplePie_Misc::parse_mime($attribs['']['TYPE'])))
 					{
 						case 'html':
 						case 'text/html':
@@ -6278,9 +6161,9 @@ class SimplePie_Parser
 			case 'HTTP://PURL.ORG/ATOM/NS#:INFO':
 			case 'HTTP://PURL.ORG/ATOM/NS#:SUMMARY':
 			case 'HTTP://PURL.ORG/ATOM/NS#:CONTENT':
-				if (!empty($attribs['HTTP://PURL.ORG/ATOM/NS#']['TYPE']))
+				if (!empty($attribs['']['TYPE']))
 				{
-					switch (strtolower(SimplePie_Misc::parse_mime($attribs['HTTP://PURL.ORG/ATOM/NS#']['TYPE'])))
+					switch (strtolower(SimplePie_Misc::parse_mime($attribs['']['TYPE'])))
 					{
 						case 'html':
 						case 'text/html':
@@ -6298,9 +6181,9 @@ class SimplePie_Parser
 							return false;
 					}
 				}
-				if (!empty($attribs['HTTP://PURL.ORG/ATOM/NS#']['MODE']))
+				if (!empty($attribs['']['MODE']))
 				{
-					switch (strtolower($attribs['HTTP://PURL.ORG/ATOM/NS#']['MODE']))
+					switch (strtolower($attribs['']['MODE']))
 					{
 						case 'xml':
 							return 'xhtml';
@@ -6312,13 +6195,13 @@ class SimplePie_Parser
 				return 'text';
 
 			// Unknown Atom (assume 1.0 rules)
-			case 'atom_unknown:RIGHTS':
-			case 'atom_unknown:SUBTITLE':
-			case 'atom_unknown:SUMMARY':
-			case 'atom_unknown:TITLE':
-				if (!empty($attribs['atom_unknown']['TYPE']))
+			case 'RIGHTS':
+			case 'SUBTITLE':
+			case 'SUMMARY':
+			case 'TITLE':
+				if (!empty($attribs['']['TYPE']))
 				{
-					switch (strtolower($attribs['atom_unknown']['TYPE']))
+					switch (strtolower($attribs['']['TYPE']))
 					{
 						case 'html':
 							return 'html';
@@ -6329,10 +6212,10 @@ class SimplePie_Parser
 				}
 				return 'text';
 
-			case 'atom_unknown:CONTENT':
-				if (!empty($attribs['atom_unknown']['TYPE']))
+			case 'CONTENT':
+				if (!empty($attribs['']['TYPE']))
 				{
-					switch (strtolower(SimplePie_Misc::parse_mime($attribs['atom_unknown']['TYPE'])))
+					switch (strtolower(SimplePie_Misc::parse_mime($attribs['']['TYPE'])))
 					{
 						case 'html':
 						case 'text/html':
@@ -6358,9 +6241,7 @@ class SimplePie_Parser
 			// RSS 0.92 and RSS 2.0 (assuming feeds with unknown RSS version follow the 2.0 rules) allow HTML within the <description> element. RSS 0.91 feeds commonly break the specification.
 			case 'HTTP://PURL.ORG/RSS/1.0/:DESCRIPTION':
 			case 'HTTP://BACKEND.USERLAND.COM/RSS2:DESCRIPTION':
-			case 'rss092:DESCRIPTION':
-			case 'rss091:DESCRIPTION':
-			case 'rss_unknown:DESCRIPTION':
+			case 'DESCRIPTION':
 				return 'html';
 
 			case 'HTTP://PURL.ORG/RSS/1.0/MODULES/CONTENT/:ENCODED':
