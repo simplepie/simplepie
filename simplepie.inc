@@ -338,12 +338,25 @@ class SimplePie
 	var $max_checked_feeds = 10;
 
 	/**
-	 * Creates sanitize member, and runs init if a feed URL is passed
+	 * The SimplePie class contains feed level data and options
+	 *
+	 * There are two ways that you can create a new SimplePie object. The first
+	 * is by passing a feed URL as a parameter to the SimplePie constructor
+	 * (as well as optionally setting the cache location and cache expiry). This
+	 * will initialise the whole feed with all of the default settings, and you
+	 * can begin accessing methods and properties immediately.
+	 * 
+	 * The second way is to create the SimplePie object with no parameters
+	 * at all. This will enable you to set configuration options. After setting
+	 * them, you must initialise the feed using $feed->init(). At that point the
+	 * object's methods and properties will be available to you. This format is
+	 * what is used throughout this documentation.
 	 *
 	 * @access public
-	 * @param mixed $feed_url Sets the feed URL and runs init()
-	 * @param mixed $cache_location Sets the cache location
-	 * @param mixed $cache_duration Sets the cache duration (in seconds)
+	 * @since 1.0 Preview Release
+	 * @param string $feed_url This is the URL you want to parse.
+	 * @param string $cache_location This is where you want the cache to be stored.
+	 * @param int $cache_duration This is the number of seconds that you want to store the cache file for.
 	 */
 	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
 	{
@@ -370,12 +383,15 @@ class SimplePie
 	}
 
 	/**
-	 * Sets the feed URL
+	 * This is the URL of the feed you want to parse.
 	 *
-	 * This takes priority over any set raw data
+	 * This allows you to enter the URL of the feed you want to parse, or the
+	 * website you want to try to use auto-discovery on. This takes priority
+	 * over any set raw data.
 	 *
 	 * @access public
-	 * @param string $url Feed URL
+	 * @since 1.0 Preview Release
+	 * @param string $url This is the URL of the feed you want to parse.
 	 * @see SimplePie::set_raw_data()
 	 */
 	function set_feed_url($url)
@@ -402,12 +418,15 @@ class SimplePie
 	}
 
 	/**
-	 * Sets the raw feed data
+	 * Allows you to use a string of RSS/Atom data instead of a remote feed.
 	 *
-	 * Any set feed URL takes priority over this
+	 * If you have a feed available as a string in PHP, you can tell SimplePie
+	 * to parse that data string instead of a remote feed. Any set feed URL
+	 * takes precedence.
 	 *
 	 * @access public
-	 * @param string $data Raw feed data
+	 * @since 1.0 Beta 3
+	 * @param string $data RSS or Atom data as a string.
 	 * @see SimplePie::set_feed_url()
 	 */
 	function set_raw_data($data)
@@ -416,10 +435,14 @@ class SimplePie
 	}
 
 	/**
-	 * Sets the timeout for fetching remote files
+	 * Allows you to override the default timeout for fetching remote feeds.
+	 *
+	 * This allows you to change the maximum time the feed's server to respond
+	 * and send the feed back.
 	 *
 	 * @access public
-	 * @param int $timeout Timeout (in seconds)
+	 * @since 1.0 Beta 3
+	 * @param int $timeout The maximum number of seconds to spend waiting to retrieve a feed.
 	 */
 	function set_timeout($timeout = 10)
 	{
@@ -427,10 +450,11 @@ class SimplePie
 	}
 
 	/**
-	 * Forces fsockopen() to be used for remote files instead of cURL,
-	 * even if a new enough version is installed
+	 * Forces SimplePie to use fsockopen() instead of the preferred cURL
+	 * functions.
 	 *
 	 * @access public
+	 * @since 1.0 Beta 3
 	 * @param bool $enable Force fsockopen() to be used
 	 */
 	function force_fsockopen($enable = false)
@@ -438,11 +462,36 @@ class SimplePie
 		$this->force_fsockopen = (bool) $enable;
 	}
 
+	/**
+	 * Outputs the raw XML content of the feed, after it has gone through
+	 * SimplePie's filters.
+	 *
+	 * Used only for debugging, this function will output the XML content as
+	 * text/xml. When SimplePie reads in a feed, it does a bit of cleaning up
+	 * before trying to parse it. Many parts of the feed are re-written in
+	 * memory, and in the end, you have a parsable feed. XML dump shows you the
+	 * actual XML that SimplePie tries to parse, which may or may not be very
+	 * different from the original feed.
+	 *
+	 * @access public
+	 * @since 1.0 Preview Release
+	 * @param bool $enable Enable XML dump
+	 */
 	function enable_xml_dump($enable = false)
 	{
 		$this->xml_dump = (bool) $enable;
 	}
 
+	/**
+	 * Enables/disables caching in SimplePie.
+	 *
+	 * This option allows you to disable caching all-together in SimplePie.
+	 * However, disabling the cache can lead to longer load times.
+	 *
+	 * @access public
+	 * @since 1.0 Preview Release
+	 * @param bool $enable Enable caching
+	 */
 	function enable_cache($enable = true)
 	{
 		$this->cache = (bool) $enable;
@@ -450,7 +499,7 @@ class SimplePie
 
 	/**
 	 * Set the length of time (in seconds) that the contents of a feed
-	 * will be cached. Default value is 1 hour.
+	 * will be cached.
 	 *
 	 * @access public
 	 * @param int $seconds The feed content cache duration.
@@ -462,7 +511,7 @@ class SimplePie
 
 	/**
 	 * Set the length of time (in seconds) that the autodiscovered feed
-	 * URL will be cached. Default value is 7 days.
+	 * URL will be cached.
 	 *
 	 * @access public
 	 * @param int $seconds The autodiscovered feed URL cache duration.
