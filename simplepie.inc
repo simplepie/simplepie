@@ -1833,13 +1833,29 @@ function embed_wmedia(width, height, link) {
 		{
 			return $return[0]['data'];
 		}
-		else if (!empty($this->data['xml_lang']))
+		else if (isset($this->data['child']['HTTP://WWW.W3.ORG/2005/ATOM']['FEED'][0]['xml_lang']))
 		{
-			return $this->data['xml_lang'];
+			return $this->data['child']['HTTP://WWW.W3.ORG/2005/ATOM']['FEED'][0]['xml_lang'];
+		}
+		else if (isset($this->data['child']['HTTP://PURL.ORG/ATOM/NS#']['FEED'][0]['xml_lang']))
+		{
+			return $this->data['child']['HTTP://PURL.ORG/ATOM/NS#']['FEED'][0]['xml_lang'];
+		}
+		else if (isset($this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS'][0]['xml_lang']))
+		{
+			return $this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS'][0]['xml_lang'];
+		}
+		else if (isset($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['xml_lang']))
+		{
+			return $this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['xml_lang'];
+		}
+		else if (isset($this->data['child']['']['RSS'][0]['xml_lang']))
+		{
+			return $this->data['child']['']['RSS'][0]['xml_lang'];
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -6679,9 +6695,9 @@ class SimplePie_Parser
 		if (!is_null($this->current_xhtml_construct) && $this->namespace == 'HTTP://WWW.W3.ORG/1999/XHTML')
 		{
 			$this->current_xhtml_construct .= '<' . strtolower($this->element);
-			if (isset($attribs['HTTP://WWW.W3.ORG/1999/XHTML']))
+			if (isset($attribs['']))
 			{
-				foreach ($attribs['HTTP://WWW.W3.ORG/1999/XHTML'] as $name => $value)
+				foreach ($attribs[''] as $name => $value)
 				{
 					$this->current_xhtml_construct .= ' ' . strtolower($name) . '="' . htmlspecialchars($value, ENT_COMPAT, $this->encoding) . '"';
 				}
