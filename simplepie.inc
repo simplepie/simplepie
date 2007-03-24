@@ -1957,7 +1957,8 @@ function embed_wmedia(width, height, link) {
 		{
 			return $return[0]['data'];
 		}
-		else if ($this->get_image_url() && $this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION)
+		else if (isset($this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS'][0]['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['CHANNEL'][0]['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['IMAGE'][0]['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['URL'])
+		|| isset($this->data['child']['']['RSS'][0]['child']['']['CHANNEL'][0]['child']['']['IMAGE'][0]['child']['']['URL']))
 		{
 			return 88;
 		}
@@ -1977,7 +1978,8 @@ function embed_wmedia(width, height, link) {
 		{
 			return $return[0]['data'];
 		}
-		else if ($this->get_image_url() && $this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION)
+		else if (isset($this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS'][0]['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['CHANNEL'][0]['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['IMAGE'][0]['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['URL'])
+		|| isset($this->data['child']['']['RSS'][0]['child']['']['CHANNEL'][0]['child']['']['IMAGE'][0]['child']['']['URL']))
 		{
 			return 31;
 		}
