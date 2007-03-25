@@ -22,6 +22,9 @@ if (!empty($_GET['feed'])) {
 	
 	// Use the URL that was passed to the page in SimplePie
 	$feed->set_feed_url($_GET['feed']);
+	
+	// XML dump
+	$feed->enable_xml_dump(isset($_GET['xmldump']) ? true : false);
 }
 
 // Allow us to change the input encoding from the URL string if we want to. (optional)
