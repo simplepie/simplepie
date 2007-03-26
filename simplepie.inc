@@ -5525,38 +5525,24 @@ class SimplePie_Misc
 	 *
 	 * @access public
 	 * @param string $data Data to strip comments from
-	 * @param string $output Current output buffer
 	 * @return string Comment stripped string
 	 */
-	function strip_comments($data, $output = '')
+	function strip_comments($data)
 	{
-		$strpos = strpos($data, '<!--');
-		if ($strpos !== false)
+		$output = '';
+		while (($start = strpos($data, '<!--')) !== false)
 		{
-			$output .= substr($data, 0, $strpos);
-			$data = substr_replace($data, '', 0, $strpos);
-			$strpos = strpos($data, '-->');
-			if ($strpos !== false)
+			$output .= substr($data, 0, $start);
+			if (($end = strpos($data, '-->', $start)) !== false)
 			{
-				$data = substr_replace($data, '', 0, $strpos + 3);
+				$data = substr_replace($data, '', 0, $end + 3);
 			}
 			else
 			{
 				$data = '';
 			}
-			if (strlen($data) > 0)
-			{
-				return SimplePie_Misc::strip_comments($data, $output);
-			}
-			else
-			{
-				return $output;
-			}
 		}
-		else
-		{
-			return $output . $data;
-		}
+		return $output . $data;
 	}
 
 	function parse_date($dt, $rfc822_tz = true)
