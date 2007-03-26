@@ -1611,7 +1611,7 @@ function embed_wmedia(width, height, link) {
 	
 	function get_base($element = array())
 	{
-		if (!empty($element['xml_base_explicit']) && isset($element['xml_base']))
+		if (!($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION) && !empty($element['xml_base_explicit']) && isset($element['xml_base']))
 		{
 			return $element['xml_base'];
 		}
