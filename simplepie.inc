@@ -1249,10 +1249,6 @@ function embed_wmedia(width, height, link) {
 		{
 			$type &= SIMPLEPIE_TYPE_ATOM_03;
 		}
-		else if (isset($this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS']))
-		{
-			$type &= SIMPLEPIE_TYPE_RSS_20;
-		}
 		else if (isset($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF']))
 		{
 			if (isset($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['child']['HTTP://PURL.ORG/RSS/1.0/']['CHANNEL'])
@@ -1517,13 +1513,6 @@ function embed_wmedia(width, height, link) {
 				return $this->data['child']['HTTP://PURL.ORG/ATOM/NS#']['FEED'][0]['child'][$namespace][$tag];
 			}
 		}
-		if ($type & SIMPLEPIE_TYPE_RSS_20)
-		{
-			if (isset($this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS'][0]['child'][$namespace][$tag]))
-			{
-				return $this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS'][0]['child'][$namespace][$tag];
-			}
-		}
 		if ($type & SIMPLEPIE_TYPE_RSS_RDF)
 		{
 			if (isset($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['child'][$namespace][$tag]))
@@ -1549,16 +1538,6 @@ function embed_wmedia(width, height, link) {
 			if ($return = $this->get_feed_tags($namespace, $tag))
 			{
 				return $return;
-			}
-		}
-		if ($type & SIMPLEPIE_TYPE_RSS_20)
-		{
-			if ($channel = $this->get_feed_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'CHANNEL'))
-			{
-				if (isset($channel[0]['child'][$namespace][$tag]))
-				{
-					return $channel[0]['child'][$namespace][$tag];
-				}
 			}
 		}
 		if ($type & SIMPLEPIE_TYPE_RSS_10)
@@ -1597,16 +1576,6 @@ function embed_wmedia(width, height, link) {
 	function get_image_tags($namespace, $tag)
 	{
 		$type = $this->get_type();
-		if ($type & SIMPLEPIE_TYPE_RSS_20)
-		{
-			if ($image = $this->get_channel_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'IMAGE'))
-			{
-				if (isset($image[0]['child'][$namespace][$tag]))
-				{
-					return $image[0]['child'][$namespace][$tag];
-				}
-			}
-		}
 		if ($type & SIMPLEPIE_TYPE_RSS_10)
 		{
 			if ($image = $this->get_feed_tags('HTTP://PURL.ORG/RSS/1.0/', 'IMAGE'))
@@ -1665,10 +1634,6 @@ function embed_wmedia(width, height, link) {
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/ATOM/NS#', 'TITLE'))
 		{
 			return $this->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-		}
-		else if ($return = $this->get_channel_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'TITLE'))
-		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/RSS/1.0/', 'TITLE'))
 		{
@@ -1737,10 +1702,6 @@ function embed_wmedia(width, height, link) {
 					}
 				}
 			}
-			if ($links = $this->get_channel_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'LINK'))
-			{
-				$this->data['links']['alternate'][] = $this->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
 			if ($links = $this->get_channel_tags('HTTP://PURL.ORG/RSS/1.0/', 'LINK'))
 			{
 				$this->data['links']['alternate'][] = $this->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
@@ -1775,10 +1736,6 @@ function embed_wmedia(width, height, link) {
 		{
 			return $this->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
-		else if ($return = $this->get_channel_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'DESCRIPTION'))
-		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/RSS/1.0/', 'DESCRIPTION'))
 		{
 			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
@@ -1811,10 +1768,6 @@ function embed_wmedia(width, height, link) {
 		{
 			return $this->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
-		else if ($return = $this->get_channel_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'COPYRIGHT'))
-		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
 		else if ($return = $this->get_channel_tags('', 'COPYRIGHT'))
 		{
 			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
@@ -1835,11 +1788,7 @@ function embed_wmedia(width, height, link) {
 
 	function get_feed_language()
 	{
-		if ($return = $this->get_channel_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'LANGUAGE'))
-		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		else if ($return = $this->get_channel_tags('', 'LANGUAGE'))
+		if ($return = $this->get_channel_tags('', 'LANGUAGE'))
 		{
 			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
@@ -1859,17 +1808,9 @@ function embed_wmedia(width, height, link) {
 		{
 			return $this->sanitize->sanitize($this->data['child']['HTTP://PURL.ORG/ATOM/NS#']['FEED'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
-		else if (isset($this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS'][0]['xml_lang']))
-		{
-			return $this->sanitize->sanitize($this->data['child']['HTTP://BACKEND.USERLAND.COM/RSS2']['RSS'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
 		else if (isset($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['xml_lang']))
 		{
 			return $this->sanitize->sanitize($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		else if (isset($this->data['child']['']['RSS'][0]['xml_lang']))
-		{
-			return $this->sanitize->sanitize($this->data['child']['']['RSS'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -1879,11 +1820,7 @@ function embed_wmedia(width, height, link) {
 
 	function get_image_title()
 	{
-		if ($return = $this->get_image_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'TITLE'))
-		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		else if ($return = $this->get_image_tags('HTTP://PURL.ORG/RSS/1.0/', 'TITLE'))
+		if ($return = $this->get_image_tags('HTTP://PURL.ORG/RSS/1.0/', 'TITLE'))
 		{
 			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
@@ -1922,10 +1859,6 @@ function embed_wmedia(width, height, link) {
 		{
 			return $return[0]['data'];
 		}
-		else if ($return = $this->get_image_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'URL'))
-		{
-			return $return[0]['data'];
-		}
 		else if ($return = $this->get_image_tags('HTTP://PURL.ORG/RSS/1.0/', 'URL'))
 		{
 			return $return[0]['data'];
@@ -1949,11 +1882,7 @@ function embed_wmedia(width, height, link) {
 	 */
 	function get_image_link()
 	{
-		if ($return = $this->get_image_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'LINK'))
-		{
-			return $return[0]['data'];
-		}
-		else if ($return = $this->get_image_tags('HTTP://PURL.ORG/RSS/1.0/', 'LINK'))
+		if ($return = $this->get_image_tags('HTTP://PURL.ORG/RSS/1.0/', 'LINK'))
 		{
 			return $return[0]['data'];
 		}
@@ -1973,15 +1902,11 @@ function embed_wmedia(width, height, link) {
 
 	function get_image_width()
 	{
-		if ($return = $this->get_image_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'WIDTH'))
+		if ($return = $this->get_image_tags('', 'WIDTH'))
 		{
 			return round($return[0]['data']);
 		}
-		else if ($return = $this->get_image_tags('', 'WIDTH'))
-		{
-			return round($return[0]['data']);
-		}
-		else if ($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION && ($this->get_image_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'URL') || $this->get_image_tags('', 'URL')))
+		else if ($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION && $this->get_image_tags('', 'URL'))
 		{
 			return 88;
 		}
@@ -1993,15 +1918,11 @@ function embed_wmedia(width, height, link) {
 
 	function get_image_height()
 	{
-		if ($return = $this->get_image_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'HEIGHT'))
+		if ($return = $this->get_image_tags('', 'HEIGHT'))
 		{
 			return round($return[0]['data']);
 		}
-		else if ($return = $this->get_image_tags('', 'HEIGHT'))
-		{
-			return round($return[0]['data']);
-		}
-		else if ($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION && ($this->get_image_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'URL') || $this->get_image_tags('', 'URL')))
+		else if ($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION && $this->get_image_tags('', 'URL'))
 		{
 			return 31;
 		}
@@ -2050,14 +1971,6 @@ function embed_wmedia(width, height, link) {
 				}
 			}
 			if ($items = $this->get_feed_tags('HTTP://PURL.ORG/ATOM/NS#', 'ENTRY'))
-			{
-				$keys = array_keys($items);
-				foreach ($keys as $key)
-				{
-					$this->data['items'][] = new $this->item_class($this, $items[$key]);
-				}
-			}
-			if ($items = $this->get_channel_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'ITEM'))
 			{
 				$keys = array_keys($items);
 				foreach ($keys as $key)
@@ -2178,10 +2091,6 @@ class SimplePie_Item
 		{
 			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
-		else if ($return = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'GUID'))
-		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
 		else if ($return = $this->get_item_tags('', 'GUID'))
 		{
 			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
@@ -2209,10 +2118,6 @@ class SimplePie_Item
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'TITLE'))
 		{
 			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'TITLE'))
-		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'TITLE'))
 		{
@@ -2249,10 +2154,6 @@ class SimplePie_Item
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'SUMMARY'))
 		{
 			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'DESCRIPTION'))
-		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'DESCRIPTION'))
 		{
@@ -2314,10 +2215,6 @@ class SimplePie_Item
 		{
 			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
 		}
-		else if ($return = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'DESCRIPTION'))
-		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
-		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'DESCRIPTION'))
 		{
 			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
@@ -2375,10 +2272,6 @@ class SimplePie_Item
 			{
 				$categories[] = $this->feed->sanitize->sanitize($category['attribs']['']['TERM'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-		}
-		if ($return = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'CATEGORY'))
-		{
-			$categories[] = $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		if ($return = $this->get_item_tags('', 'CATEGORY'))
 		{
@@ -2474,6 +2367,7 @@ class SimplePie_Item
 		{
 			$authors[] = new $this->feed->author_class($author['data'], null, null);
 		}
+		
 		if (!empty($authors))
 		{
 			return array_unique($authors);
@@ -2503,10 +2397,6 @@ class SimplePie_Item
 			$date = $return[0]['data'];
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'MODIFIED'))
-		{
-			$date = $return[0]['data'];
-		}
-		else if ($return = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'PUBDATE'))
 		{
 			$date = $return[0]['data'];
 		}
@@ -2614,17 +2504,6 @@ class SimplePie_Item
 					}
 				}
 			}
-			if ($links = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'LINK'))
-			{
-				if ($links[0]['xml_base_explicit'])
-				{
-					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $links[0]['xml_base']);
-				}
-				else
-				{
-					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $base);
-				}
-			}
 			if ($links = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'LINK'))
 			{
 				if ($links[0]['xml_base_explicit'])
@@ -2656,20 +2535,6 @@ class SimplePie_Item
 				else
 				{
 					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $base);
-				}
-			}
-			if ($links = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'GUID'))
-			{
-				if (!isset($links[0]['attribs']['']['ISPERMALINK']) || strtolower($links[0]['attribs']['']['ISPERMALINK'] == 'true'))
-				{
-					if ($links[0]['xml_base_explicit'])
-					{
-						$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $links[0]['xml_base']);
-					}
-					else
-					{
-						$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $base);
-					}
 				}
 			}
 			if ($links = $this->get_item_tags('', 'GUID'))
@@ -2772,32 +2637,6 @@ class SimplePie_Item
 					if (!empty($link['attribs']['']['LENGTH']))
 					{
 						$length = $link['attribs']['']['LENGTH'];
-					}
-					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
-				}
-			}
-			if ($enclosure = $this->get_item_tags('HTTP://BACKEND.USERLAND.COM/RSS2', 'ENCLOSURE'))
-			{
-				if (isset($enclosure[0]['attribs']['']['URL']))
-				{
-					$url = null;
-					$type = null;
-					$length = null;
-					if ($enclosure[0]['xml_base_explicit'])
-					{
-						$url = SimplePie_Misc::absolutize_url($enclosure[0]['attribs']['']['URL'], $enclosure[0]['xml_base']);
-					}
-					else
-					{
-						$url = SimplePie_Misc::absolutize_url($enclosure[0]['attribs']['']['URL'], $base);
-					}
-					if (!empty($enclosure[0]['attribs']['']['TYPE']))
-					{
-						$type = $enclosure[0]['attribs']['']['TYPE'];
-					}
-					if (!empty($enclosure[0]['attribs']['']['LENGTH']))
-					{
-						$length = $enclosure[0]['attribs']['']['LENGTH'];
 					}
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
@@ -6614,7 +6453,6 @@ class SimplePie_Parser
 				case 'HTTP://WWW.W3.ORG/2005/ATOM:FEED':
 				case 'HTTP://PURL.ORG/ATOM/NS#:FEED':
 				case 'FEED':
-				case 'HTTP://BACKEND.USERLAND.COM/RSS2:RSS':
 				case 'RSS':
 				case 'HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#:RDF':
 					$this->feed = 1;
