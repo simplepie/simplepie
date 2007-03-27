@@ -2053,6 +2053,56 @@ function embed_wmedia(width, height, link) {
 			return -1;
 		}
 	}
+
+	function merge_items($start = 0, $end = 0)
+	{
+		if (func_num_args() > 2)
+		{
+			$items = array();
+			$args = func_get_args();
+			unset($args[0], $args[1]);
+			foreach ($args as $arg)
+			{
+				if (is_a($arg, 'SimplePie'))
+				{
+					$items = array_merge($items, $arg->get_items());
+				}
+				else
+				{
+					trigger_error('Arguments must be SimplePie objects', E_USER_WARNING);
+				}
+			}
+	
+			$do_sort = true;
+			foreach ($items as $item)
+			{
+				if (!$item->get_date('U'))
+				{
+					$do_sort = false;
+					break;
+				}
+			}
+			$item = null;
+			if ($do_sort)
+			{
+				usort($items, array('SimplePie', 'sort_items'));
+			}
+			
+			if ($end == 0)
+			{
+				return array_slice($items, $start);
+			}
+			else
+			{
+				return array_slice($items, $start, $end);
+			}
+		}
+		else
+		{
+			trigger_error('Cannot merge zero SimplePie objects', E_USER_WARNING);
+			return array();
+		}
+	}
 }
 
 class SimplePie_Item
