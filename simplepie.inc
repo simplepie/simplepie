@@ -3217,7 +3217,7 @@ class SimplePie_Enclosure
 		{
 			if ($mime == 'video')
 			{
-				$width = '320';
+				$width = '480';
 			}
 			else
 			{
@@ -3229,22 +3229,22 @@ class SimplePie_Enclosure
 		{
 			if ($mime == 'audio')
 			{
-				$height = 0;
+				$height = '0';
 			}
 			else if ($mime == 'video')
 			{
-				$height = 240;
+				$height = '360';
 			}
 			else
 			{
-				$height = 256;
+				$height = '376';
 			}
 		}
 		else
 		{
 			if ($mime == 'audio')
 			{
-				$height = 0;
+				$height = '0';
 			}
 		}
 
@@ -3276,11 +3276,39 @@ class SimplePie_Enclosure
 		{
 			if ($native)
 			{
-				$embed .= '<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url=' . $this->get_link() . '"></embed>';
+				$embed .= '<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://adobe.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url=' . $this->get_link() . '"></embed>';
 			}
 			else
 			{
 				$embed .= '<script type="text/javascript">embed_odeo("' . $this->get_link() . '");</script>';
+			}
+		}
+
+		// Flash
+		else if (in_array($type, array('application/x-shockwave-flash', 'application/futuresplash')))
+		{
+			if ($native)
+			{
+				$embed .= "<embed src=\"" . $this->get_link() . "\" pluginspage=\"http://adobe.com/go/getflashplayer\" type=\"$type\" quality=\"high\" width=\"$width\" height=\"$height\" bgcolor=\"$bgcolor\" loop=\"$loop\"></embed>";
+			}
+			else
+			{
+				$embed .= "<script type='text/javascript'>embed_flash('$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$loop', '$type');</script>";
+			}
+		}
+
+		// Flash Media Player file types.
+		// Preferred handler for MP3 file types.
+		else if (in_array($type, array('audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg', 'video/flv', 'video/x-flv')) && ($mediaplayer != ''))
+		{
+			$height += 20;
+			if ($native)
+			{
+				$embed .= "<embed src=\"$mediaplayer\" pluginspage=\"http://adobe.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
+			}
+			else
+			{
+				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link()) . "', '$placeholder', '$loop', '$mediaplayer');</script>";
 			}
 		}
 
@@ -3292,43 +3320,15 @@ class SimplePie_Enclosure
 			if ($native)
 			{
 				if ($placeholder != ""){
-					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" href=\"" . $this->get_link() . "\" src=\"$placeholder\" width=\"$width\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"false\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://www.apple.com/quicktime/download/\"></embed>";
+					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" href=\"" . $this->get_link() . "\" src=\"$placeholder\" width=\"$width\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"false\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://apple.com/quicktime/download/\"></embed>";
 				}
 				else {
-					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" src=\"" . $this->get_link() . "\" width=\"$width+\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"true\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://www.apple.com/quicktime/download/\"></embed>";
+					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" src=\"" . $this->get_link() . "\" width=\"$width+\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"true\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://apple.com/quicktime/download/\"></embed>";
 				}
 			}
 			else
 			{
 				$embed .= "<script type='text/javascript'>embed_quicktime('$type', '$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$placeholder', '$loop');</script>";
-			}
-		}
-
-		// Flash
-		else if (in_array($type, array('application/x-shockwave-flash', 'application/futuresplash')))
-		{
-			if ($native)
-			{
-				$embed .= "<embed src=\"" . $this->get_link() . "\" pluginspage=\"http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash\" type=\"$type\" quality=\"high\" width=\"$width\" height=\"$height\" bgcolor=\"$bgcolor\" loop=\"$loop\"></embed>";
-			}
-			else
-			{
-				$embed .= "<script type='text/javascript'>embed_flash('$bgcolor', '$width', '$height', '" . $this->get_link() . "', '$loop', '$type');</script>";
-			}
-		}
-
-		// Flash Media Player file types.
-		// Preferred handler for MP3 file types.
-		else if (in_array($type, array('audio/mp3', 'audio/x-mp3', 'video/flv', 'video/x-flv')) && ($mediaplayer != ''))
-		{
-			$height += 20;
-			if ($native)
-			{
-				$embed .= "<embed src=\"$mediaplayer\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
-			}
-			else
-			{
-				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link()) . "', '$placeholder', '$loop', '$mediaplayer');</script>";
 			}
 		}
 

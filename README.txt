@@ -1,9 +1,8 @@
 ************************************************************
-SIMPLEPIE 1.0 BETA 3
+SIMPLEPIE 1.0
 http://simplepie.org
 
 By Ryan Parman and Geoffrey Sneddon
-A product of Skyzyx Technologies
 
 
 ************************************************************
