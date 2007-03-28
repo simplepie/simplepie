@@ -839,7 +839,7 @@ class SimplePie
 		$this->sanitize->encode_instead_of_strip($enable);
 	}
 
-	function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
+	function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'))
 	{
 		$this->sanitize->strip_attributes($attribs);
 	}
@@ -2475,7 +2475,7 @@ class SimplePie_Item
 			$date = SimplePie_Misc::parse_date($date);
 			if ($date_format == 'U')
 			{
-				return $date;
+				return $this->feed->sanitize->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			else
 			{
@@ -2515,28 +2515,18 @@ class SimplePie_Item
 		}
 	}
 
-	/**
-	 * @todo Properly deal with the output encoding (attributes are in their original UTF-8 form)
-	 */
 	function get_links($rel = 'alternate')
 	{
 		if (empty($this->data['links']))
 		{
 			$this->data['links'] = array();
-			$base = $this->feed->get_base();
 			foreach ((array) $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'LINK') as $link)
 			{
 				if (isset($link['attribs']['']['HREF']))
 				{
 					$link_rel = (isset($link['attribs']['']['REL'])) ? $link['attribs']['']['REL'] : 'alternate';
-					if ($link['xml_base_explicit'])
-					{
-						$this->data['links'][$link_rel][] = SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $link['xml_base']);
-					}
-					else
-					{
-						$this->data['links'][$link_rel][] = SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $base);
-					}
+					$this->data['links'][$link_rel][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->feed->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+
 				}
 			}
 			foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'LINK') as $link)
@@ -2544,61 +2534,26 @@ class SimplePie_Item
 				if (isset($link['attribs']['']['HREF']))
 				{
 					$link_rel = (isset($link['attribs']['']['REL'])) ? $link['attribs']['']['REL'] : 'alternate';
-					if ($link['xml_base_explicit'])
-					{
-						$this->data['links'][$link_rel][] = SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $link['xml_base']);
-					}
-					else
-					{
-						$this->data['links'][$link_rel][] = SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $base);
-					}
+					$this->data['links'][$link_rel][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->feed->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
 				}
 			}
 			if ($links = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'LINK'))
 			{
-				if ($links[0]['xml_base_explicit'])
-				{
-					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $links[0]['xml_base']);
-				}
-				else
-				{
-					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $base);
-				}
+				$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($links = $this->get_item_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'LINK'))
 			{
-				if ($links[0]['xml_base_explicit'])
-				{
-					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $links[0]['xml_base']);
-				}
-				else
-				{
-					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $base);
-				}
+				$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($links = $this->get_item_tags('', 'LINK'))
 			{
-				if ($links[0]['xml_base_explicit'])
-				{
-					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $links[0]['xml_base']);
-				}
-				else
-				{
-					$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $base);
-				}
+				$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if ($links = $this->get_item_tags('', 'GUID'))
 			{
-				if (!isset($links[0]['attribs']['']['ISPERMALINK']) || strtolower($links[0]['attribs']['']['ISPERMALINK'] == 'true'))
+				if (!isset($links[0]['attribs']['']['ISPERMALINK']) || strtolower(trim($links[0]['attribs']['']['ISPERMALINK'])) == 'true')
 				{
-					if ($links[0]['xml_base_explicit'])
-					{
-						$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $links[0]['xml_base']);
-					}
-					else
-					{
-						$this->data['links']['alternate'][] = SimplePie_Misc::absolutize_url(SimplePie_Misc::htmlspecialchars_decode($links[0]['data'], ENT_QUOTES), $base);
-					}
+					$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
 				}
 			}
 			$keys = array_keys($this->data['links']);
@@ -6655,7 +6610,7 @@ class SimplePie_Sanitize
 	var $bypass_image_hotlink_page = false;
 	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
-	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur');
+	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
 	var $output_encoding = 'UTF-8';
 
 	function remove_div($enable = true)
@@ -6716,7 +6671,7 @@ class SimplePie_Sanitize
 		$this->encode_instead_of_strip = (bool) $encode;
 	}
 
-	function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur'))
+	function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'))
 	{
 		if ($attribs)
 		{
