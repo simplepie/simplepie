@@ -957,16 +957,16 @@ function embed_wmedia(width, height, link) {
 						else if ($cache->mtime() + $this->cache_duration < time())
 						{
 							// If we have last-modified and/or etag set
-							if (!empty($this->data['last-modified']) || !empty($this->data['etag']))
+							if (!empty($this->data['headers']['last-modified'][0]) || !empty($this->data['headers']['etag'][0]))
 							{
 								$headers = array();
-								if (!empty($this->data['last-modified']))
+								if (!empty($this->data['headers']['last-modified'][0]))
 								{
-									$headers['if-modified-since'] = $this->data['last-modified'];
+									$headers['if-modified-since'] = $this->data['headers']['last-modified'][0];
 								}
-								if (!empty($this->data['etag']))
+								if (!empty($this->data['headers']['etag'][0]))
 								{
-									$headers['if-none-match'] = $this->data['etag'];
+									$headers['if-none-match'] = $this->data['headers']['etag'][0];
 								}
 								$file =& new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
 								if ($file->success)
@@ -1066,7 +1066,7 @@ function embed_wmedia(width, height, link) {
 				$encoding = $this->input_encoding;
 			}
 			// Second try HTTP headers
-			else if (!empty($headers['content-type']) && preg_match('/;charset=([^;]*)/i', $headers['content-type'], $charset))
+			else if (!empty($headers['content-type'][0]) && preg_match('/;charset=([^;]*)/i', $headers['content-type'][0], $charset))
 			{
 				$encoding = $charset[1];
 			}
@@ -1101,11 +1101,11 @@ function embed_wmedia(width, height, link) {
 				$encoding = 'UTF-8';
 			}
 			// Fallback to the default (US-ASCII for text/xml, ISO-8859-1 for text/* MIME types, UTF-8 otherwise)
-			else if (!empty($headers['content-type']) && strtolower(SimplePie_Misc::parse_mime($headers['content-type'])) == 'text/xml')
+			else if (!empty($headers['content-type'][0]) && strtolower(SimplePie_Misc::parse_mime($headers['content-type'][0])) == 'text/xml')
 			{
 				$encoding = 'US-ASCII';
 			}
-			else if (!empty($headers['content-type']) && preg_match('/^text\//i', SimplePie_Misc::parse_mime($headers['content-type'])))
+			else if (!empty($headers['content-type'][0]) && preg_match('/^text\//i', SimplePie_Misc::parse_mime($headers['content-type'][0])))
 			{
 				$encoding = 'ISO-8859-1';
 			}
@@ -1142,15 +1142,7 @@ function embed_wmedia(width, height, link) {
 				$this->data = $parser->get_data();
 				if (isset($this->data['child']))
 				{
-					// Store the headers that we need
-					if (!empty($headers['last-modified']))
-					{
-						$this->data['last-modified'] = $headers['last-modified'];
-					}
-					if (!empty($headers['etag']))
-					{
-						$this->data['etag'] = $headers['etag'];
-					}
+					$this->data['headers'] = $headers;
 					$this->data['build'] = SIMPLEPIE_BUILD;
 
 					// Cache the file if caching is enabled
@@ -3394,10 +3386,10 @@ class SimplePie_File
 						$this->headers = array_pop($this->headers);
 					}
 					$this->headers = $this->parse_headers($this->headers);
-					if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location']) && $this->redirects < $redirects)
+					if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location'][0]) && $this->redirects < $redirects)
 					{
 						$this->redirects++;
-						return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+						return $this->SimplePie_File($this->headers['location'][0], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 					}
 				}
 			}
@@ -3453,10 +3445,10 @@ class SimplePie_File
 					if (!$info['timed_out'])
 					{
 						$this->headers = $this->parse_headers($data);
-						if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location']) && $this->redirects < $redirects)
+						if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location'][0]) && $this->redirects < $redirects)
 						{
 							$this->redirects++;
-							return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+							return $this->SimplePie_File($this->headers['location'][0], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 						}
 						$this->body = '';
 						while (!$info['eof'] && !$info['timed_out'])
@@ -3467,7 +3459,7 @@ class SimplePie_File
 						if (!$info['timed_out'])
 						{
 							$this->body = trim($this->body);
-							if (!empty($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
+							if (!empty($this->headers['content-encoding'][0]) && ($this->headers['content-encoding'][0] == 'gzip' || $this->headers['content-encoding'][0] == 'deflate'))
 							{
 								if (substr($this->body, 0, 8) == "\x1f\x8b\x08\x00\x00\x00\x00\x00")
 								{
@@ -3535,11 +3527,11 @@ class SimplePie_File
 			$header_name = strtolower(trim($data[0]));
 			if (in_array($header_name, array('date', 'expires', 'if-range', 'if-unmodified-since', 'last-modified', 'retry-after')))
 			{
-				$head[$header_name] = $data[1];
+				$head[$header_name][] = $data[1];
 			}
 			else
 			{
-				$head[$header_name] = preg_replace('/(\r\n)?[\x09\x20]+/', '', $data[1]);
+				$head[$header_name][] = preg_replace('/(\r\n)?[\x09\x20]+/', '', $data[1]);
 			}
 		}
 		if (preg_match('/HTTP\/[0-9\.]+ ([0-9]+)(.*)$/i', $status, $matches))
@@ -3857,7 +3849,7 @@ class SimplePie_Misc
 		$headers = $file->headers();
 		if ($file->body() !== false)
 		{
-			header('Content-type: ' . $headers['content-type']);
+			header('Content-type: ' . $headers['content-type'][0]);
 			echo $file->body();
 			exit;
 		}
