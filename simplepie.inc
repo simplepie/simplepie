@@ -1142,7 +1142,10 @@ function embed_wmedia(width, height, link) {
 				$this->data = $parser->get_data();
 				if (isset($this->data['child']))
 				{
-					$this->data['headers'] = $headers;
+					if (isset($headers))
+					{
+						$this->data['headers'] = $headers;
+					}
 					$this->data['build'] = SIMPLEPIE_BUILD;
 
 					// Cache the file if caching is enabled
