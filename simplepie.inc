@@ -4093,13 +4093,13 @@ class SimplePie_Misc
 		$input = SimplePie_Misc::encoding($input);
 		$output = SimplePie_Misc::encoding($output);
 
-		if (function_exists('iconv') && ($data = @iconv($input, $output, $data)))
+		if (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
 		{
-			return $data;
+			return $return;
 		}
-		else if (function_exists('mb_convert_encoding') && ($data = @mb_convert_encoding($data, $output, $input)))
+		else if (function_exists('mb_convert_encoding') && ($return = @mb_convert_encoding($data, $output, $input)))
 		{
-			return $data;
+			return $return;
 		}
 		else if ($input == 'ISO-8859-1' && $output == 'UTF-8')
 		{
