@@ -138,7 +138,7 @@ input[type=text]:focus, select:focus, textarea:focus {
 	background-color:#ffe;
 }
 
-#feed_input {
+div#sp_input input#feed_input {
 	border:1px solid #999;
 	background:#e9f5ff url(feed.png) no-repeat 4px 50%;
 	width:75%;
