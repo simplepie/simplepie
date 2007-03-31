@@ -5,7 +5,7 @@ Description: A simple, yet beautiful theme inspired by (but not stolen from) 37S
 Version: 1.0
 Author: Ryan Parman
 Author URI: http://www.skyzyx.com
-Updated: 6 April 2006
+Updated: 30 March 2007
 */
 
 
@@ -136,6 +136,16 @@ input[type=text], select, textarea {
 
 input[type=text]:focus, select:focus, textarea:focus {
 	background-color:#ffe;
+}
+
+#feed_input {
+	border:1px solid #999;
+	background:#e9f5ff url(feed.png) no-repeat 4px 50%;
+	width:75%;
+	padding:2px 2px 2px 28px;
+	font:18px/22px "Lucida Grande", Verdana, sans-serif;
+	font-weight:bold;
+	letter-spacing:-1px;
 }
 
 table#chart {
