@@ -11,6 +11,6 @@ $data = <<<EOD
 </rss>
 EOD;
 
-$expected = 31;
+$expected = 31.0;
 
 ?>

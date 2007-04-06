@@ -6,6 +6,6 @@ $data = <<<EOD
 </feed>
 EOD;
 
-$expected = false;
+$expected = null;
 
 ?>

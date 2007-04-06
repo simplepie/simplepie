@@ -8,6 +8,6 @@ $data = <<<EOD
 </rdf:RDF>
 EOD;
 
-$expected = false;
+$expected = null;
 
 ?>

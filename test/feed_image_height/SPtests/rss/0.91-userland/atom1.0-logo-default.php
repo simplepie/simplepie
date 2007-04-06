@@ -8,6 +8,6 @@ $data = <<<EOD
 </rss>
 EOD;
 
-$expected = false;
+$expected = null;
 
 ?>

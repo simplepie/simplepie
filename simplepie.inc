@@ -1903,7 +1903,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else if ($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION && $this->get_image_tags('', 'URL'))
 		{
-			return 88;
+			return 88.0;
 		}
 		else
 		{
@@ -1919,7 +1919,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else if ($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION && $this->get_image_tags('', 'URL'))
 		{
-			return 31;
+			return 31.0;
 		}
 		else
 		{
@@ -2463,14 +2463,14 @@ class SimplePie_Item
 		}
 		if (!$date_format)
 		{
-			return $date;
+			return $this->feed->sanitize->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
 			$date = SimplePie_Misc::parse_date($date);
 			if ($date_format == 'U')
 			{
-				return $this->feed->sanitize->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
+				return $date;
 			}
 			else
 			{
@@ -5814,7 +5814,7 @@ class SimplePie_Misc
 						$timezone = 0;
 						$timezone += ($match[24] + ('.' . $match[25])) * 3600;
 						$timezone += ($match[26] + ('.' . $match[27])) * 60;
-						$timezone = round($timezone);
+						$timezone = (int) round($timezone);
 
 						if ($match[23] == '-')
 						{
