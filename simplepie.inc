@@ -1603,7 +1603,7 @@ function embed_wmedia(width, height, link) {
 		}
 		return null;
 	}
-	
+
 	function get_base($element = array())
 	{
 		if (!($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION) && !empty($element['xml_base_explicit']) && isset($element['xml_base']))
@@ -1709,8 +1709,30 @@ function embed_wmedia(width, height, link) {
 			{
 				$this->data['links']['alternate'][] = $this->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
 			}
+
+			$keys = array_keys($this->data['links']);
+			foreach ($keys as $key)
+			{
+				if (SimplePie_Misc::is_isegment_nz_nc($key))
+				{
+					if (isset($this->data['links']['http://www.iana.org/assignments/relation/' . $key]))
+					{
+						$this->data['links']['http://www.iana.org/assignments/relation/' . $key] = array_merge($this->data['links'][$key], $this->data['links']['http://www.iana.org/assignments/relation/' . $key]);
+						$this->data['links'][$key] =& $this->data['links']['http://www.iana.org/assignments/relation/' . $key];
+					}
+					else
+					{
+						$this->data['links']['http://www.iana.org/assignments/relation/' . $key] =& $this->data['links'][$key];
+					}
+				}
+				else if (substr($key, 0, 41) == 'http://www.iana.org/assignments/relation/')
+				{
+					$this->data['links'][substr($key, 41)] =& $this->data['links'][$key];
+				}
+				$this->data['links'][$key] = array_unique($this->data['links'][$key]);
+			}
 		}
-		
+
 		if (isset($this->data['links'][$rel]))
 		{
 			return $this->data['links'][$rel];
@@ -2036,7 +2058,7 @@ function embed_wmedia(width, height, link) {
 			return array();
 		}
 	}
-	
+
 	function sort_items($a, $b)
 	{
 		if ($a->get_date('U') <= $b->get_date('U'))
@@ -2067,7 +2089,7 @@ function embed_wmedia(width, height, link) {
 					trigger_error('Arguments must be SimplePie objects', E_USER_WARNING);
 				}
 			}
-	
+
 			$do_sort = true;
 			foreach ($items as $item)
 			{
@@ -2082,7 +2104,7 @@ function embed_wmedia(width, height, link) {
 			{
 				usort($items, array('SimplePie', 'sort_items'));
 			}
-			
+
 			if ($end == 0)
 			{
 				return array_slice($items, $start);
@@ -2306,7 +2328,7 @@ class SimplePie_Item
 	function get_categories()
 	{
 		$categories = array();
-		
+
 		foreach ((array) $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'CATEGORY') as $category)
 		{
 			if (isset($category['attribs']['']['LABEL']))
@@ -2330,7 +2352,7 @@ class SimplePie_Item
 		{
 			$categories[] = $this->feed->sanitize->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
-		
+
 		if (!empty($categories))
 		{
 			return array_unique($categories);
@@ -2412,7 +2434,7 @@ class SimplePie_Item
 		{
 			$authors[] = new $this->feed->author_class($author['data'], null, null);
 		}
-		
+
 		if (!empty($authors))
 		{
 			return array_unique($authors);
@@ -2551,9 +2573,26 @@ class SimplePie_Item
 					$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
 				}
 			}
+
 			$keys = array_keys($this->data['links']);
 			foreach ($keys as $key)
 			{
+				if (SimplePie_Misc::is_isegment_nz_nc($key))
+				{
+					if (isset($this->data['links']['http://www.iana.org/assignments/relation/' . $key]))
+					{
+						$this->data['links']['http://www.iana.org/assignments/relation/' . $key] = array_merge($this->data['links'][$key], $this->data['links']['http://www.iana.org/assignments/relation/' . $key]);
+						$this->data['links'][$key] =& $this->data['links']['http://www.iana.org/assignments/relation/' . $key];
+					}
+					else
+					{
+						$this->data['links']['http://www.iana.org/assignments/relation/' . $key] =& $this->data['links'][$key];
+					}
+				}
+				else if (substr($key, 0, 41) == 'http://www.iana.org/assignments/relation/')
+				{
+					$this->data['links'][substr($key, 41)] =& $this->data['links'][$key];
+				}
 				$this->data['links'][$key] = array_unique($this->data['links'][$key]);
 			}
 		}
@@ -5979,7 +6018,7 @@ class SimplePie_Misc
 			return strtr($string, array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style)));
 		}
 	}
-	
+
 	function atom_03_construct_type($attribs)
 	{
 		if (isset($attribs['']['MODE']) && strtolower(trim($attribs['']['MODE']) == 'base64'))
@@ -5997,15 +6036,15 @@ class SimplePie_Misc
 				case 'text':
 				case 'text/plain':
 					return SIMPLEPIE_CONSTRUCT_TEXT | $mode;
-				
+
 				case 'html':
 				case 'text/html':
 					return SIMPLEPIE_CONSTRUCT_HTML | $mode;
-				
+
 				case 'xhtml':
 				case 'application/xhtml+xml':
 					return SIMPLEPIE_CONSTRUCT_XHTML | $mode;
-				
+
 				default:
 					return SIMPLEPIE_CONSTRUCT_NONE | $mode;
 			}
@@ -6015,7 +6054,7 @@ class SimplePie_Misc
 			return SIMPLEPIE_CONSTRUCT_TEXT | $mode;
 		}
 	}
-	
+
 	function atom_10_construct_type($attribs)
 	{
 		if (isset($attribs['']['TYPE']))
@@ -6024,20 +6063,20 @@ class SimplePie_Misc
 			{
 				case 'text':
 					return SIMPLEPIE_CONSTRUCT_TEXT;
-				
+
 				case 'html':
 					return SIMPLEPIE_CONSTRUCT_HTML;
-				
+
 				case 'xhtml':
 					return SIMPLEPIE_CONSTRUCT_XHTML;
-				
+
 				default:
 					return SIMPLEPIE_CONSTRUCT_NONE;
 			}
 		}
 		return SIMPLEPIE_CONSTRUCT_TEXT;
 	}
-	
+
 	function atom_10_content_construct_type($attribs)
 	{
 		if (isset($attribs['']['TYPE']))
@@ -6047,10 +6086,10 @@ class SimplePie_Misc
 			{
 				case 'text':
 					return SIMPLEPIE_CONSTRUCT_TEXT;
-				
+
 				case 'html':
 					return SIMPLEPIE_CONSTRUCT_HTML;
-				
+
 				case 'xhtml':
 					return SIMPLEPIE_CONSTRUCT_XHTML;
 			}
@@ -6067,6 +6106,11 @@ class SimplePie_Misc
 		{
 			return SIMPLEPIE_CONSTRUCT_TEXT;
 		}
+	}
+
+	function is_isegment_nz_nc($string)
+	{
+		return (bool) preg_match('/^([A-Za-z0-9\-._~\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}!$&\'()*+,;=@]|(%[0-9ABCDEF]{2}))+$/u', $string);
 	}
 }
 
@@ -6786,7 +6830,7 @@ class SimplePie_Sanitize
 			{
 				$data = htmlspecialchars($data, ENT_COMPAT, 'UTF-8');
 			}
-			
+
 			if ($this->output_encoding != 'UTF-8')
 			{
 				$data = SimplePie_Misc::change_encoding($data, 'UTF-8', $this->output_encoding);
