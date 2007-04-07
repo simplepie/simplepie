@@ -27,17 +27,30 @@ else
 
 <style type="text/css">
 body {
-	font:11px/16px verdana, sans-serif;
+	font:12px/18px Verdana, sans-serif;
 	letter-spacing:0px;
 	color:#333;
 	margin:0;
 	padding:0;
-	background:#fff url(?background) repeat-x top left;
+	background:#fff url(<?php echo $_SERVER['PHP_SELF']; ?>?background) repeat-x top left;
 }
 
 div#site {
 	width:500px;
 	margin:20px auto;
+}
+
+a {
+	color:#000;
+	text-decoration:underline;
+	padding:0 1px;
+}
+
+a:hover {
+	color:#fff;
+	background-color:#333;
+	text-decoration:none;
+	padding:0 1px;
 }
 
 h2 {
@@ -132,8 +145,13 @@ function fnLoadPngs() {
 <body>
 
 <div id="site">
-	<h2><img src="?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test"></h2>
-	<p align="center"><a href="#results">Skip to the results</a> | <a href="?remote=true">Re-run with remote tests</a></p>
+	<h2><img src="<?php echo $_SERVER['PHP_SELF']; ?>?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test"></h2>
+	<p align="center"><a href="#results">Skip to the results</a> | 
+	<?php
+	if (isset($_GET['remote'])) echo '<a href="'.$_SERVER["PHP_SELF"].'">Re-run without remote tests</a>';
+	else echo '<a href="'.$_SERVER["PHP_SELF"].'?remote=true">Re-run with remote tests</a>';
+	?>
+	</p>
 	<table>
 		<tbody>
 <?php
