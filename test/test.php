@@ -204,7 +204,7 @@ $time = $mtime - $starttime;
 	</table>
 
 	<h3><a name="results"><?php echo floor($passed_percentage*10)/10; ?>% passed!</a></h3>
-	<p>We ran <?php echo $tests->total(); ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time / $tests->total(), 3); ?> seconds per test) of which <?php echo $tests->passed(); ?> (<?php echo floor($passed_percentage*10)/10; ?>%) were passed, and <?php echo $tests->failed(); ?> (<?php echo floor($failed_percentage*10)/10; ?>%) were failed.</p>
+	<p>We ran <?php echo $tests->total(); ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time / $tests->total(), 3); ?> seconds per test) of which <?php echo $tests->passed(); ?> (<?php echo floor($passed_percentage*10)/10; ?>%) were passed, and <?php echo $tests->failed(); ?> (<?php echo ceil($failed_percentage*10)/10; ?>%) were failed.</p>
 	
 	<p class="footnote">Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
 
