@@ -133,6 +133,7 @@ function fnLoadPngs() {
 
 <div id="site">
 	<h2><img src="?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test"></h2>
+	<p align="center"><a href="#results">Skip to the results</a> | <a href="?remote=true">Re-run with remote tests</a></p>
 	<table>
 		<tbody>
 <?php
@@ -183,8 +184,8 @@ $time = $mtime - $starttime;
 ?>
 		</tbody>
 	</table>
-	
-	<h3><?php echo round($passed_percentage); ?>% passed!</h3>
+
+	<h3><a name="results"><?php echo round($passed_percentage); ?>% passed!</a></h3>
 	<p>We ran <?php echo $tests->total(); ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time / $tests->total(), 3); ?> seconds per test) of which <?php echo $tests->passed(); ?> (<?php echo round($passed_percentage); ?>%) were passed, and <?php echo $tests->failed(); ?> (<?php echo round($failed_percentage); ?>%) were failed.</p>
 	
 	<p class="footnote">Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
