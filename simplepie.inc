@@ -2374,7 +2374,6 @@ class SimplePie_Item
 	}
 
 	/**
-	 * @todo Properly deal with the output encoding (attributes are in their original UTF-8 form)
 	 * @todo Move categories into an object, allowing access to label/term/scheme
 	 */
 	function get_categories()
@@ -2392,9 +2391,9 @@ class SimplePie_Item
 				$categories[] = $this->feed->sanitize->sanitize($category['attribs']['']['TERM'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 		}
-		if ($return = $this->get_item_tags('', 'CATEGORY'))
+		foreach ((array) $this->get_item_tags('', 'CATEGORY') as $category)
 		{
-			$categories[] = $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			$categories[] = $this->feed->sanitize->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'SUBJECT') as $category)
 		{
@@ -2441,15 +2440,15 @@ class SimplePie_Item
 			$email = null;
 			if (isset($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['NAME'][0]['data']))
 			{
-				$name = $author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['NAME'][0]['data'];
+				$name =  $this->feed->sanitize->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['NAME'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (isset($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['URI'][0]['data']))
 			{
-				$uri = $author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['URI'][0]['data'];
+				$uri = $this->feed->sanitize->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['URI'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (isset($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['EMAIL'][0]['data']))
 			{
-				$email = $author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['EMAIL'][0]['data'];
+				$email = $this->feed->sanitize->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['EMAIL'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (!is_null($name) || !is_null($email) || !is_null($uri))
 			{
@@ -2463,28 +2462,32 @@ class SimplePie_Item
 			$email = null;
 			if (isset($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['NAME'][0]['data']))
 			{
-				$name = $author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['NAME'][0]['data'];
+				$name = $this->feed->sanitize->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['NAME'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (isset($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['URL'][0]['data']))
 			{
-				$url = $author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['URL'][0]['data'];
+				$url = $this->feed->sanitize->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['URL'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (isset($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['EMAIL'][0]['data']))
 			{
-				$email = $author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['EMAIL'][0]['data'];
+				$email = $this->feed->sanitize->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['EMAIL'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (!is_null($name) || !is_null($email) || !is_null($url))
 			{
 				$authors[] = new $this->feed->author_class($name, $url, $email);
 			}
 		}
+		if ($author = $this->get_item_tags('', 'AUTHOR'))
+		{
+			$authors[] = new $this->feed->author_class(null, null, $this->feed->sanitize->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+		}
 		foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'CREATOR') as $author)
 		{
-			$authors[] = new $this->feed->author_class($author['data'], null, null);
+			$authors[] = new $this->feed->author_class($this->feed->sanitize->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 		foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'CREATOR') as $author)
 		{
-			$authors[] = new $this->feed->author_class($author['data'], null, null);
+			$authors[] = new $this->feed->author_class($this->feed->sanitize->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 
 		if (!empty($authors))
@@ -2550,6 +2553,54 @@ class SimplePie_Item
 			{
 				return date($date_format, $date);
 			}
+		}
+	}
+
+	function get_ftime($date_format = '%d %B %Y, %I:%M %p')
+	{
+		if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'PUBLISHED'))
+		{
+			$date = $return[0]['data'];
+		}
+		else if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'UPDATED'))
+		{
+			$date = $return[0]['data'];
+		}
+		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'ISSUED'))
+		{
+			$date = $return[0]['data'];
+		}
+		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'CREATED'))
+		{
+			$date = $return[0]['data'];
+		}
+		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'MODIFIED'))
+		{
+			$date = $return[0]['data'];
+		}
+		else if ($return = $this->get_item_tags('', 'PUBDATE'))
+		{
+			$date = $return[0]['data'];
+		}
+		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'DATE'))
+		{
+			$date = $return[0]['data'];
+		}
+		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'DATE'))
+		{
+			$date = $return[0]['data'];
+		}
+		else
+		{
+			return false;
+		}
+		if (!$date_format)
+		{
+			return $this->feed->sanitize->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
+		}
+		else
+		{
+			return strftime($date_format, SimplePie_Misc::parse_date($date));
 		}
 	}
 
