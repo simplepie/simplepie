@@ -1620,7 +1620,15 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
+	/**
+	 * @todo Remove support for this function.  Use $feed->get_title() instead.  This should have died when we moved from get_item_title() to get_title().
+	 */
 	function get_feed_title()
+	{
+		return $this->get_title();
+	}
+
+	function get_title()
 	{
 		if ($return = $this->get_channel_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'TITLE'))
 		{
@@ -1656,9 +1664,16 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	function get_feed_link($key = 0, $rel = 'alternate')
+	/**
+	 * @todo Remove support for this function.  Use $feed->get_link() instead.  This should have died when we moved from get_item_title() to get_title().
+	 */
+	function get_feed_link($key = 0, $rel = 'alternate') {
+		return $this->get_link($key, $rel);
+	}
+
+	function get_link($key = 0, $rel = 'alternate')
 	{
-		$links = $this->get_feed_links($rel);
+		$links = $this->get_links($rel);
 		if (isset($links[$key]))
 		{
 			return $links[$key];
@@ -1669,7 +1684,23 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
+	/**
+	 * Added for parity between the parent-level and the item/entry-level.
+	 */
+	function get_permalink()
+	{
+		return $this->get_link(0);
+	}
+
+	/**
+	 * @todo Remove support for this function.  Use $feed->get_links() instead.  This should have died when we moved from get_item_title() to get_title().
+	 */
 	function get_feed_links($rel = 'alternate')
+	{
+		return $this->get_links($rel);
+	}
+
+	function get_links($rel = 'alternate')
 	{
 		if (!isset($this->data['links']))
 		{
@@ -1743,7 +1774,14 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	function get_feed_description()
+	/**
+	 * @todo Remove support for this function.  Use $feed->get_description() instead.  This should have died when we moved from get_item_title() to get_title().
+	 */
+	function get_feed_description() {
+		return $this->get_description();
+	}
+
+	function get_description()
 	{
 		if ($return = $this->get_channel_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'SUBTITLE'))
 		{
@@ -1779,7 +1817,14 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	function get_feed_copyright()
+	/**
+	 * @todo Remove support for this function.  Use $feed->get_copyright() instead.  This should have died when we moved from get_item_title() to get_title().
+	 */
+	function get_feed_copyright() {
+		return $this->get_copyright();
+	}
+
+	function get_copyright()
 	{
 		if ($return = $this->get_channel_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'RIGHTS'))
 		{
@@ -1803,7 +1848,14 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	function get_feed_language()
+	/**
+	 * @todo Remove support for this function.  Use $feed->get_language() instead.  This should have died when we moved from get_item_title() to get_title().
+	 */
+	function get_feed_language() {
+		return $this->get_language();
+	}
+
+	function get_language()
 	{
 		if ($return = $this->get_channel_tags('', 'LANGUAGE'))
 		{
