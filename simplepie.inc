@@ -855,7 +855,7 @@ class SimplePie
 		{
 			return false;
 		}
-		if ($this->sanitize->bypass_image_hotlink && !empty($_GET[$this->sanitize->bypass_image_hotlink]))
+		if ($this->sanitize->bypass_image_hotlink && isset($_GET[$this->sanitize->bypass_image_hotlink]))
 		{
 			if (get_magic_quotes_gpc())
 			{
@@ -902,16 +902,16 @@ function embed_wmedia(width, height, link) {
 			exit;
 		}
 
-		if (!empty($this->feed_url) || !empty($this->raw_data))
+		if (!is_null($this->feed_url) || !is_null($this->raw_data))
 		{
 			$this->data = array();
 			$cache = false;
 
-			if (!empty($this->feed_url))
+			if (!is_null($this->feed_url))
 			{
-				$parsed_feed_url = parse_url($this->feed_url);
+				$parsed_feed_url = SimplePie_Misc::parse_url($this->feed_url);
 				// Decide whether to enable caching
-				if ($this->cache && !empty($parsed_feed_url['scheme']))
+				if ($this->cache && $parsed_feed_url['scheme'] !== '')
 				{
 					$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
 				}
@@ -935,7 +935,7 @@ function embed_wmedia(width, height, link) {
 							$this->data = array();
 						}
 						// If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
-						else if (!empty($this->data['feed_url']))
+						else if (isset($this->data['feed_url']))
 						{
 							// If the autodiscovery cache is still valid use it.
 							if ($cache->mtime() + $this->autodiscovery_cache_duration > time())
@@ -957,14 +957,14 @@ function embed_wmedia(width, height, link) {
 						else if ($cache->mtime() + $this->cache_duration < time())
 						{
 							// If we have last-modified and/or etag set
-							if (!empty($this->data['headers']['last-modified'][0]) || !empty($this->data['headers']['etag'][0]))
+							if (isset($this->data['headers']['last-modified'][0]) || isset($this->data['headers']['etag'][0]))
 							{
 								$headers = array();
-								if (!empty($this->data['headers']['last-modified'][0]))
+								if (isset($this->data['headers']['last-modified'][0]))
 								{
 									$headers['if-modified-since'] = $this->data['headers']['last-modified'][0];
 								}
-								if (!empty($this->data['headers']['etag'][0]))
+								if (isset($this->data['headers']['etag'][0]))
 								{
 									$headers['if-none-match'] = $this->data['headers']['etag'][0];
 								}
@@ -1061,12 +1061,12 @@ function embed_wmedia(width, height, link) {
 			}
 
 			// First check to see if input has been overridden.
-			if (!empty($this->input_encoding))
+			if (!is_null($this->input_encoding))
 			{
 				$encoding = $this->input_encoding;
 			}
 			// Second try HTTP headers
-			else if (!empty($headers['content-type'][0]) && preg_match('/;charset=([^;]*)/i', $headers['content-type'][0], $charset))
+			else if (isset($headers['content-type'][0]) && preg_match('/;charset=([^;]*)/i', $headers['content-type'][0], $charset))
 			{
 				$encoding = $charset[1];
 			}
@@ -1101,11 +1101,11 @@ function embed_wmedia(width, height, link) {
 				$encoding = 'UTF-8';
 			}
 			// Fallback to the default (US-ASCII for text/xml, ISO-8859-1 for text/* MIME types, UTF-8 otherwise)
-			else if (!empty($headers['content-type'][0]) && strtolower(SimplePie_Misc::parse_mime($headers['content-type'][0])) == 'text/xml')
+			else if (isset($headers['content-type'][0]) && strtolower(SimplePie_Misc::parse_mime($headers['content-type'][0])) == 'text/xml')
 			{
 				$encoding = 'US-ASCII';
 			}
-			else if (!empty($headers['content-type'][0]) && preg_match('/^text\//i', SimplePie_Misc::parse_mime($headers['content-type'][0])))
+			else if (isset($headers['content-type'][0]) && preg_match('/^text\//i', SimplePie_Misc::parse_mime($headers['content-type'][0])))
 			{
 				$encoding = 'ISO-8859-1';
 			}
@@ -1339,7 +1339,7 @@ function embed_wmedia(width, height, link) {
 	 */
 	function subscribe_url()
 	{
-		if (!empty($this->feed_url))
+		if (!is_null($this->feed_url))
 		{
 			return $this->feed_url;
 		}
@@ -1351,7 +1351,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_feed()
 	{
-		if (!empty($this->feed_url))
+		if (!is_null($this->feed_url))
 		{
 			return SimplePie_Misc::fix_protocol($this->feed_url, 2);
 		}
@@ -1363,7 +1363,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_outlook()
 	{
-		if (!empty($this->feed_url))
+		if (!is_null($this->feed_url))
 		{
 			return 'outlook' . SimplePie_Misc::fix_protocol($this->feed_url, 2);
 		}
@@ -1375,7 +1375,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_podcast()
 	{
-		if (!empty($this->feed_url))
+		if (!is_null($this->feed_url))
 		{
 			return SimplePie_Misc::fix_protocol($this->feed_url, 3);
 		}
@@ -1394,12 +1394,12 @@ function embed_wmedia(width, height, link) {
 	 * suffix to the feed URL)
 	 * @return mixed URL if feed exists, false otherwise
 	 */
-	function subscribe_service($feed_url, $site_url = '')
+	function subscribe_service($feed_url, $site_url = null)
 	{
 		if ($this->subscribe_url())
 		{
 			$return = $feed_url . rawurlencode($this->subscribe_url());
-			if (!empty($site_url) && $this->get_feed_link())
+			if (!is_null($site_url) && !is_null($this->get_feed_link())
 			{
 				$return .= $site_url . rawurlencode($this->get_feed_link());
 			}
@@ -2363,7 +2363,7 @@ class SimplePie_Item
 	function get_category($key = 0)
 	{
 		$categories = $this->get_categories();
-		if (!empty($categories[$key]))
+		if (isset($categories[$key]))
 		{
 			return $categories[$key];
 		}
@@ -2418,7 +2418,7 @@ class SimplePie_Item
 	function get_author($key = 0)
 	{
 		$authors = $this->get_authors();
-		if (!empty($authors[$key]))
+		if (isset($authors[$key]))
 		{
 			return $authors[$key];
 		}
@@ -2557,11 +2557,11 @@ class SimplePie_Item
 	{
 		$link = $this->get_link(0);
 		$enclosure = $this->get_enclosure(0);
-		if (!empty($link))
+		if (!is_null($link))
 		{
 			return $link;
 		}
-		else if (!empty($enclosure))
+		else if (!is_null($enclosure))
 		{
 			return $enclosure->get_link();
 		}
@@ -2574,7 +2574,7 @@ class SimplePie_Item
 	function get_link($key = 0, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
-		if (!empty($links[$key]))
+		if (is_null($links[$key]))
 		{
 			return $links[$key];
 		}
@@ -2648,7 +2648,7 @@ class SimplePie_Item
 				$this->data['links'][$key] = array_unique($this->data['links'][$key]);
 			}
 		}
-		if (!empty($this->data['links'][$rel]))
+		if (isset($this->data['links'][$rel]))
 		{
 			return $this->data['links'][$rel];
 		}
@@ -2661,7 +2661,7 @@ class SimplePie_Item
 	function get_enclosure($key = 0)
 	{
 		$enclosures = $this->get_enclosures();
-		if (!empty($enclosures[$key]))
+		if (isset($enclosures[$key]))
 		{
 			return $enclosures[$key];
 		}
@@ -2811,12 +2811,12 @@ class SimplePie_Item
 	 * (and suffix to the item permalink)
 	 * @return mixed URL if feed exists, false otherwise
 	 */
-	function add_to_service($feed_url, $title_url = '')
+	function add_to_service($feed_url, $title_url = null)
 	{
 		if ($this->get_permalink())
 		{
 			$return = $feed_url . rawurlencode($this->get_permalink());
-			if (!empty($title_url) && $this->get_title())
+			if (!is_null($title_url) && $this->get_title())
 			{
 				$return .= $title_url . rawurlencode($this->get_title());
 			}
