@@ -219,9 +219,14 @@ define('SIMPLEPIE_CONSTRUCT_XHTML', 4);
 define('SIMPLEPIE_CONSTRUCT_BASE64', 8);
 
 /**
+ * IRI construct
+ */
+define('SIMPLEPIE_CONSTRUCT_IRI', 16);
+
+/**
  * All constructs
  */
-define('SIMPLEPIE_CONSTRUCT_ALL', 15);
+define('SIMPLEPIE_CONSTRUCT_ALL', 31);
 
 /**
  * PCRE for HTML attributes
@@ -872,7 +877,7 @@ class SimplePie
 			}
 			header('Content-type: text/javascript; charset: UTF-8');
 			header('Cache-Control: must-revalidate');
-			header('Expires: ' .  gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
+			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
 			?>
 function embed_odeo(link) {
 	document.writeln('<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url='+link+'"></embed>');
@@ -1619,6 +1624,11 @@ function embed_wmedia(width, height, link) {
 			return $this->subscribe_url();
 		}
 	}
+	
+	function sanitize($data, $type, $base = '')
+	{
+		return $this->sanitize->sanitize($data, $type, $base);
+	}
 
 	/**
 	 * @todo Remove support for this function.  Use $feed->get_title() instead.  This should have died when we moved from get_item_title() to get_title().
@@ -1632,31 +1642,31 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($return = $this->get_channel_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/ATOM/NS#', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/RSS/1.0/', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -1712,7 +1722,7 @@ function embed_wmedia(width, height, link) {
 					if (isset($link['attribs']['']['HREF']))
 					{
 						$link_rel = (isset($link['attribs']['']['REL'])) ? $link['attribs']['']['REL'] : 'alternate';
-						$this->data['links'][$link_rel][] = $this->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+						$this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['HREF'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
 					}
 				}
 			}
@@ -1723,22 +1733,22 @@ function embed_wmedia(width, height, link) {
 					if (isset($link['attribs']['']['HREF']))
 					{
 						$link_rel = (isset($link['attribs']['']['REL'])) ? $link['attribs']['']['REL'] : 'alternate';
-						$this->data['links'][$link_rel][] = $this->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+						$this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['HREF'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
 
 					}
 				}
 			}
 			if ($links = $this->get_channel_tags('HTTP://PURL.ORG/RSS/1.0/', 'LINK'))
 			{
-				$this->data['links']['alternate'][] = $this->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
 			if ($links = $this->get_channel_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'LINK'))
 			{
-				$this->data['links']['alternate'][] = $this->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
 			if ($links = $this->get_channel_tags('', 'LINK'))
 			{
-				$this->data['links']['alternate'][] = $this->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
 
 			$keys = array_keys($this->data['links']);
@@ -1785,31 +1795,31 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($return = $this->get_channel_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'SUBTITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/ATOM/NS#', 'TAGLINE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/RSS/1.0/', 'DESCRIPTION'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'DESCRIPTION'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('', 'DESCRIPTION'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'DESCRIPTION'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'DESCRIPTION'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -1828,19 +1838,19 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($return = $this->get_channel_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'RIGHTS'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_channel_tags('', 'COPYRIGHT'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'RIGHTS'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'RIGHTS'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -1859,27 +1869,27 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($return = $this->get_channel_tags('', 'LANGUAGE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'LANGUAGE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_channel_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'LANGUAGE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if (isset($this->data['child']['HTTP://WWW.W3.ORG/2005/ATOM']['FEED'][0]['xml_lang']))
 		{
-			return $this->sanitize->sanitize($this->data['child']['HTTP://WWW.W3.ORG/2005/ATOM']['FEED'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($this->data['child']['HTTP://WWW.W3.ORG/2005/ATOM']['FEED'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if (isset($this->data['child']['HTTP://PURL.ORG/ATOM/NS#']['FEED'][0]['xml_lang']))
 		{
-			return $this->sanitize->sanitize($this->data['child']['HTTP://PURL.ORG/ATOM/NS#']['FEED'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($this->data['child']['HTTP://PURL.ORG/ATOM/NS#']['FEED'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if (isset($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['xml_lang']))
 		{
-			return $this->sanitize->sanitize($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -1891,23 +1901,23 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($return = $this->get_image_tags('HTTP://PURL.ORG/RSS/1.0/', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_image_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_image_tags('', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_image_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_image_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'TITLE'))
 		{
-			return $this->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -1915,30 +1925,27 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	/**
-	 * @todo Support relative URLs
-	 */
 	function get_image_url()
 	{
 		if ($return = $this->get_channel_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'LOGO'))
 		{
-			return $return[0]['data'];
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_channel_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'ICON'))
 		{
-			return $return[0]['data'];
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_image_tags('HTTP://PURL.ORG/RSS/1.0/', 'URL'))
 		{
-			return $return[0]['data'];
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_image_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'URL'))
 		{
-			return $return[0]['data'];
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_image_tags('', 'URL'))
 		{
-			return $return[0]['data'];
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
 		else
 		{
@@ -1946,22 +1953,19 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	/**
-	 * @todo Support relative URLs
-	 */
 	function get_image_link()
 	{
 		if ($return = $this->get_image_tags('HTTP://PURL.ORG/RSS/1.0/', 'LINK'))
 		{
-			return $return[0]['data'];
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_image_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'LINK'))
 		{
-			return $return[0]['data'];
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_image_tags('', 'LINK'))
 		{
-			return $return[0]['data'];
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
 		else
 		{
@@ -2094,6 +2098,10 @@ function embed_wmedia(width, height, link) {
 					usort($items, array(&$this, 'sort_items'));
 				}
 			}
+			else
+			{
+				$items = $this->data['items'];
+			}
 
 			// Slice the data as desired
 			if ($end == 0)
@@ -2196,6 +2204,16 @@ class SimplePie_Item
 			return null;
 		}
 	}
+	
+	function get_base($element = array())
+	{
+		return $this->feed->get_base($element);
+	}
+	
+	function sanitize($data, $type, $base = '')
+	{
+		return $this->feed->sanitize($data, $type, $base);
+	}
 
 	/**
 	 * @todo Create ID instead of returning false
@@ -2204,23 +2222,23 @@ class SimplePie_Item
 	{
 		if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'ID'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'ID'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('', 'GUID'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'IDENTIFIER'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'IDENTIFIER'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -2232,31 +2250,31 @@ class SimplePie_Item
 	{
 		if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'TITLE'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'TITLE'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'TITLE'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'TITLE'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('', 'TITLE'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'TITLE'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'TITLE'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -2268,43 +2286,43 @@ class SimplePie_Item
 	{
 		if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'SUMMARY'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'SUMMARY'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'CONTENT'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_content_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_content_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'CONTENT'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/MODULES/CONTENT/', 'ENCODED'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
 		else
 		{
@@ -2316,43 +2334,43 @@ class SimplePie_Item
 	{
 		if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'CONTENT'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_content_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_content_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'CONTENT'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/MODULES/CONTENT/', 'ENCODED'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'SUMMARY'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'SUMMARY'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->feed->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else if ($return = $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'DESCRIPTION'))
 		{
-			return $this->feed->sanitize->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -2384,24 +2402,24 @@ class SimplePie_Item
 		{
 			if (isset($category['attribs']['']['LABEL']))
 			{
-				$categories[] = $this->feed->sanitize->sanitize($category['attribs']['']['LABEL'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$categories[] = $this->sanitize($category['attribs']['']['LABEL'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			else if (isset($category['attribs']['']['TERM']))
 			{
-				$categories[] = $this->feed->sanitize->sanitize($category['attribs']['']['TERM'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$categories[] = $this->sanitize($category['attribs']['']['TERM'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 		}
 		foreach ((array) $this->get_item_tags('', 'CATEGORY') as $category)
 		{
-			$categories[] = $this->feed->sanitize->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			$categories[] = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'SUBJECT') as $category)
 		{
-			$categories[] = $this->feed->sanitize->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			$categories[] = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'SUBJECT') as $category)
 		{
-			$categories[] = $this->feed->sanitize->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			$categories[] = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 
 		if (!empty($categories))
@@ -2440,15 +2458,15 @@ class SimplePie_Item
 			$email = null;
 			if (isset($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['NAME'][0]['data']))
 			{
-				$name =  $this->feed->sanitize->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['NAME'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['NAME'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (isset($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['URI'][0]['data']))
 			{
-				$uri = $this->feed->sanitize->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['URI'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$uri = $this->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['URI'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['URI'][0]));
 			}
 			if (isset($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['EMAIL'][0]['data']))
 			{
-				$email = $this->feed->sanitize->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['EMAIL'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($author['child']['HTTP://WWW.W3.ORG/2005/ATOM']['EMAIL'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (!is_null($name) || !is_null($email) || !is_null($uri))
 			{
@@ -2462,15 +2480,15 @@ class SimplePie_Item
 			$email = null;
 			if (isset($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['NAME'][0]['data']))
 			{
-				$name = $this->feed->sanitize->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['NAME'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['NAME'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (isset($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['URL'][0]['data']))
 			{
-				$url = $this->feed->sanitize->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['URL'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$uri = $this->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['URL'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['URL'][0]));
 			}
 			if (isset($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['EMAIL'][0]['data']))
 			{
-				$email = $this->feed->sanitize->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['EMAIL'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($author[0]['child']['HTTP://PURL.ORG/ATOM/NS#']['EMAIL'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 			if (!is_null($name) || !is_null($email) || !is_null($url))
 			{
@@ -2479,15 +2497,15 @@ class SimplePie_Item
 		}
 		if ($author = $this->get_item_tags('', 'AUTHOR'))
 		{
-			$authors[] = new $this->feed->author_class(null, null, $this->feed->sanitize->sanitize($author[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+			$authors[] = new $this->feed->author_class(null, null, $this->sanitize($author[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
 		}
 		foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'CREATOR') as $author)
 		{
-			$authors[] = new $this->feed->author_class($this->feed->sanitize->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$authors[] = new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 		foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.0/', 'CREATOR') as $author)
 		{
-			$authors[] = new $this->feed->author_class($this->feed->sanitize->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$authors[] = new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 
 		if (!empty($authors))
@@ -2540,7 +2558,7 @@ class SimplePie_Item
 		}
 		if (!$date_format)
 		{
-			return $this->feed->sanitize->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -2596,7 +2614,7 @@ class SimplePie_Item
 		}
 		if (!$date_format)
 		{
-			return $this->feed->sanitize->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -2645,7 +2663,7 @@ class SimplePie_Item
 				if (isset($link['attribs']['']['HREF']))
 				{
 					$link_rel = (isset($link['attribs']['']['REL'])) ? $link['attribs']['']['REL'] : 'alternate';
-					$this->data['links'][$link_rel][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->feed->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+					$this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['HREF'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
 
 				}
 			}
@@ -2654,26 +2672,26 @@ class SimplePie_Item
 				if (isset($link['attribs']['']['HREF']))
 				{
 					$link_rel = (isset($link['attribs']['']['REL'])) ? $link['attribs']['']['REL'] : 'alternate';
-					$this->data['links'][$link_rel][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->feed->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+					$this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['HREF'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
 				}
 			}
 			if ($links = $this->get_item_tags('HTTP://PURL.ORG/RSS/1.0/', 'LINK'))
 			{
-				$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
 			if ($links = $this->get_item_tags('HTTP://MY.NETSCAPE.COM/RDF/SIMPLE/0.9/', 'LINK'))
 			{
-				$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
 			if ($links = $this->get_item_tags('', 'LINK'))
 			{
-				$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
 			if ($links = $this->get_item_tags('', 'GUID'))
 			{
 				if (!isset($links[0]['attribs']['']['ISPERMALINK']) || strtolower(trim($links[0]['attribs']['']['ISPERMALINK'])) == 'true')
 				{
-					$this->data['links']['alternate'][] = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($links[0]['data'], $this->feed->get_base($links[0])), SIMPLEPIE_CONSTRUCT_TEXT);
+					$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
 				}
 			}
 
@@ -2722,9 +2740,6 @@ class SimplePie_Item
 		}
 	}
 
-	/**
-	 * @todo Properly deal with the output encoding (attributes are in their original UTF-8 form)
-	 */
 	function get_enclosures()
 	{
 		if (!isset($this->data['enclosures']))
@@ -2737,10 +2752,10 @@ class SimplePie_Item
 					$url = null;
 					$type = null;
 					$length = null;
-					$url = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->feed->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+					$url = $this->sanitize($link['attribs']['']['HREF'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
 					if (isset($link['attribs']['']['TYPE']))
 					{
-						$type = $this->feed->sanitize->sanitize($link['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
+						$type = $this->sanitize($link['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
 					}
 					if (isset($link['attribs']['']['LENGTH']))
 					{
@@ -2756,10 +2771,10 @@ class SimplePie_Item
 					$url = null;
 					$type = null;
 					$length = null;
-					$url = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->feed->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+					$url = $this->sanitize($link['attribs']['']['HREF'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
 					if (isset($link['attribs']['']['TYPE']))
 					{
-						$type = $this->feed->sanitize->sanitize($link['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
+						$type = $this->sanitize($link['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
 					}
 					if (isset($link['attribs']['']['LENGTH']))
 					{
@@ -2775,10 +2790,10 @@ class SimplePie_Item
 					$url = null;
 					$type = null;
 					$length = null;
-					$url = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($enclosure[0]['attribs']['']['URL'], $this->feed->get_base($enclosure)), SIMPLEPIE_CONSTRUCT_TEXT);
+					$url = $this->sanitize($enclosure[0]['attribs']['']['URL'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($enclosure[0]));
 					if (isset($enclosure[0]['attribs']['']['TYPE']))
 					{
-						$type = $this->feed->sanitize->sanitize($enclosure[0]['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
+						$type = $this->sanitize($enclosure[0]['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
 					}
 					if (isset($enclosure[0]['attribs']['']['LENGTH']))
 					{
@@ -2813,9 +2828,9 @@ class SimplePie_Item
 		{
 			return false;
 		}
-    }
+	}
 
-    function get_longitude()
+	function get_longitude()
 	{
 		if ($return = $this->get_item_tags('HTTP://WWW.W3.ORG/2003/01/GEO/WGS84_POS#', 'LONG'))
 		{
@@ -2829,7 +2844,7 @@ class SimplePie_Item
 		{
 			return false;
 		}
-    }
+	}
 
 	/**
 	 * Creates the add_to_* methods' return data
@@ -3905,7 +3920,7 @@ class SimplePie_Misc
 				if (!empty($matches[$i][2][0]) && preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER))
 				{
 					$total_attribs = count($attribs);
-					for ($j = 0; $j < $total_attribs;  $j++)
+					for ($j = 0; $j < $total_attribs; $j++)
 					{
 						if (count($attribs[$j]) == 2)
 						{
@@ -5797,7 +5812,7 @@ class SimplePie_Misc
 						$day = $match[10];
 					}
 
-					//  Week Date
+					// Week Date
 					else if (!empty($match[13]))
 					{
 						// Week Day
@@ -6811,7 +6826,7 @@ class SimplePie_Sanitize
 	function sanitize($data, $type, $base = '')
 	{
 		$data = trim($data);
-		if ($data !== '')
+		if ($data !== '' || $type & SIMPLEPIE_CONSTRUCT_IRI)
 		{
 			if ($type & SIMPLEPIE_CONSTRUCT_BASE64)
 			{
@@ -6831,7 +6846,7 @@ class SimplePie_Sanitize
 				}
 			}
 
-			if ($type & SIMPLEPIE_CONSTRUCT_HTML | SIMPLEPIE_CONSTRUCT_XHTML)
+			if ($type & (SIMPLEPIE_CONSTRUCT_HTML | SIMPLEPIE_CONSTRUCT_XHTML))
 			{
 				// Strip comments
 				$data = SimplePie_Misc::strip_comments($data);
@@ -6906,8 +6921,13 @@ class SimplePie_Sanitize
 				// Having (possibly) taken stuff out, there may now be whitespace at the beginning/end of the data
 				$data = trim($data);
 			}
+			
+			if ($type & SIMPLEPIE_CONSTRUCT_IRI)
+			{
+				$data = SimplePie_Misc::absolutize_url($data, $base);
+			}
 
-			if ($type & SIMPLEPIE_CONSTRUCT_TEXT)
+			if ($type & (SIMPLEPIE_CONSTRUCT_TEXT | SIMPLEPIE_CONSTRUCT_IRI))
 			{
 				$data = htmlspecialchars($data, ENT_COMPAT, 'UTF-8');
 			}
