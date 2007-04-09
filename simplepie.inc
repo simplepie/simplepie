@@ -1891,6 +1891,10 @@ function embed_wmedia(width, height, link) {
 		{
 			return $this->sanitize($this->data['child']['HTTP://WWW.W3.ORG/1999/02/22-RDF-SYNTAX-NS#']['RDF'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
+		else if (isset($this->data['headers']['content-language'][0]))
+		{
+			return $this->sanitize($this->data['headers']['content-language'][0], SIMPLEPIE_CONSTRUCT_TEXT);
+		}
 		else
 		{
 			return null;
