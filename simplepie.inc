@@ -6443,17 +6443,11 @@ class SimplePie_Parser
 	var $current_column;
 	var $current_byte;
 	var $feed = false;
-	var $assume_namespace = '';
-	var $namespace = '';
-	var $namespaces = array('');
-	var $element = '';
-	var $elements = array('');
-	var $xml_base = '';
-	var $xml_bases = array('');
-	var $xml_base_explicit = false;
-	var $xml_base_explicits = array(false);
-	var $xml_lang = '';
-	var $xml_langs = array('');
+	var $namespace = array('');
+	var $element = array('');
+	var $xml_base = array('');
+	var $xml_base_explicit = array(false);
+	var $xml_lang = array('');
 	var $data = array();
 	var $datas = array(array());
 	var $current_xhtml_construct = null;
@@ -6583,13 +6577,7 @@ class SimplePie_Parser
 			$this->feed++;
 		}
 
-		list($this->namespace, $this->element) = $this->split_ns($tag);
-		if (empty($this->namespace) && !empty($this->assume_namespace))
-		{
-			$this->namespace = $this->assume_namespace;
-		}
-		$this->namespaces[] = $this->namespace;
-		$this->elements[] = $this->element;
+		list($this->namespace[], $this->element[]) = $this->split_ns($tag);
 
 		$attribs = array();
 		foreach ($attributes as $name => $value)
@@ -6608,33 +6596,30 @@ class SimplePie_Parser
 
 		if (!empty($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['BASE']))
 		{
-			$this->xml_base = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['BASE'], $this->xml_base);
-			$this->xml_bases[] = $this->xml_base;
-			$this->xml_base_explicit = true;
-			$this->xml_base_explicits[] = true;
+			$this->xml_base[] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['BASE'], end($this->xml_base));
+			$this->xml_base_explicit[] = true;
 		}
 		else
 		{
-			$this->xml_bases[] = $this->xml_base;
-			$this->xml_base_explicits[] = $this->xml_base_explicit;
+			$this->xml_base[] = end($this->xml_base);
+			$this->xml_base_explicit[] = end($this->xml_base_explicit);
 		}
 
 		if (!empty($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['LANG']))
 		{
-			$this->xml_lang = $attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['LANG'];
-			$this->xml_langs[] = $this->xml_lang;
+			$this->xml_lang[] = $attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['LANG'];
 		}
 		else
 		{
-			$this->xml_langs[] = $this->xml_lang;
+			$this->xml_lang[] = end($this->xml_lang);
 		}
 
 		if (!is_null($this->current_xhtml_construct))
 		{
 			$this->current_xhtml_construct++;
-			if ($this->namespace == 'HTTP://WWW.W3.ORG/1999/XHTML')
+			if (end($this->namespace) == 'HTTP://WWW.W3.ORG/1999/XHTML')
 			{
-				$this->data['data'] .= '<' . strtolower($this->element);
+				$this->data['data'] .= '<' . strtolower(end($this->element));
 				if (isset($attribs['']))
 				{
 					foreach ($attribs[''] as $name => $value)
@@ -6648,10 +6633,10 @@ class SimplePie_Parser
 		else
 		{
 			$this->datas[] =& $this->data;
-			$this->data =& $this->data['child'][$this->namespace][$this->element][];
-			$this->data = array('data' => '', 'attribs' => $attribs, 'xml_base' => $this->xml_base, 'xml_base_explicit' => $this->xml_base_explicit, 'xml_lang' => $this->xml_lang);
-			if (($this->namespace == 'HTTP://PURL.ORG/ATOM/NS#' && in_array($this->element, array('TITLE', 'TAGLINE', 'COPYRIGHT', 'INFO', 'SUMMARY', 'CONTENT')) && isset($attribs['']['MODE']) && $attribs['']['MODE'] == 'xml')
-			|| ($this->namespace == 'HTTP://WWW.W3.ORG/2005/ATOM' && in_array($this->element, array('RIGHTS', 'SUBTITLE', 'SUMMARY', 'INFO', 'TITLE', 'CONTENT')) && isset($attribs['']['TYPE']) && $attribs['']['TYPE'] == 'xhtml'))
+			$this->data =& $this->data['child'][end($this->namespace)][end($this->element)][];
+			$this->data = array('data' => '', 'attribs' => $attribs, 'xml_base' => end($this->xml_base), 'xml_base_explicit' => end($this->xml_base_explicit), 'xml_lang' => end($this->xml_lang));
+			if ((end($this->namespace) == 'HTTP://PURL.ORG/ATOM/NS#' && in_array(end($this->element), array('TITLE', 'TAGLINE', 'COPYRIGHT', 'INFO', 'SUMMARY', 'CONTENT')) && isset($attribs['']['MODE']) && $attribs['']['MODE'] == 'xml')
+			|| (end($this->namespace) == 'HTTP://WWW.W3.ORG/2005/ATOM' && in_array(end($this->element), array('RIGHTS', 'SUBTITLE', 'SUMMARY', 'INFO', 'TITLE', 'CONTENT')) && isset($attribs['']['TYPE']) && $attribs['']['TYPE'] == 'xhtml'))
 			{
 				$this->current_xhtml_construct = 0;
 			}
@@ -6680,9 +6665,9 @@ class SimplePie_Parser
 		if (!is_null($this->current_xhtml_construct))
 		{
 			$this->current_xhtml_construct--;
-			if ($this->namespace == 'HTTP://WWW.W3.ORG/1999/XHTML')
+			if (end($this->namespace) == 'HTTP://WWW.W3.ORG/1999/XHTML')
 			{
-				$this->data['data'] .= '</' . strtolower($this->element) . '>';
+				$this->data['data'] .= '</' . strtolower(end($this->element)) . '>';
 			}
 		}
 		if (is_null($this->current_xhtml_construct) || $this->current_xhtml_construct == -1)
@@ -6692,16 +6677,11 @@ class SimplePie_Parser
 			$this->current_xhtml_construct = null;
 		}
 
-		array_pop($this->elements);
-		$this->element = end($this->elements);
-		array_pop($this->namespaces);
-		$this->namespace = end($this->namespaces);
-		array_pop($this->xml_bases);
-		$this->xml_base = end($this->xml_bases);
-		array_pop($this->xml_base_explicits);
-		$this->xml_base_explicit = end($this->xml_base_explicits);
-		array_pop($this->xml_langs);
-		$this->xml_lang = end($this->xml_langs);
+		array_pop($this->element);
+		array_pop($this->namespace);
+		array_pop($this->xml_base);
+		array_pop($this->xml_base_explicit);
+		array_pop($this->xml_lang);
 		$this->feed--;
 	}
 
