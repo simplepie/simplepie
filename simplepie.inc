@@ -1061,7 +1061,7 @@ function embed_wmedia(width, height, link) {
 			}
 
 			// First check to see if input has been overridden.
-			if (!is_null($this->input_encoding))
+			if ($this->input_encoding !== false)
 			{
 				$encoding = $this->input_encoding;
 			}
@@ -1399,7 +1399,7 @@ function embed_wmedia(width, height, link) {
 		if ($this->subscribe_url())
 		{
 			$return = $feed_url . rawurlencode($this->subscribe_url());
-			if (!is_null($site_url) && !is_null($this->get_feed_link())
+			if (!is_null($site_url) && !is_null($this->get_feed_link()))
 			{
 				$return .= $site_url . rawurlencode($this->get_feed_link());
 			}
@@ -2479,7 +2479,7 @@ class SimplePie_Item
 		}
 		if ($author = $this->get_item_tags('', 'AUTHOR'))
 		{
-			$authors[] = new $this->feed->author_class(null, null, $this->feed->sanitize->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+			$authors[] = new $this->feed->author_class(null, null, $this->feed->sanitize->sanitize($author[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
 		}
 		foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/DC/ELEMENTS/1.1/', 'CREATOR') as $author)
 		{
@@ -2606,7 +2606,7 @@ class SimplePie_Item
 
 	function get_permalink()
 	{
-		$link = $this->get_link(0);
+		$link = $this->get_link();
 		$enclosure = $this->get_enclosure(0);
 		if (!is_null($link))
 		{
@@ -2618,26 +2618,26 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
 	function get_link($key = 0, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
-		if (is_null($links[$key]))
+		if (!is_null($links[$key]))
 		{
 			return $links[$key];
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
 	function get_links($rel = 'alternate')
 	{
-		if (empty($this->data['links']))
+		if (!isset($this->data['links']))
 		{
 			$this->data['links'] = array();
 			foreach ((array) $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'LINK') as $link)
@@ -2705,7 +2705,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2718,7 +2718,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2727,58 +2727,43 @@ class SimplePie_Item
 	 */
 	function get_enclosures()
 	{
-		if (empty($this->data['enclosures']))
+		if (!isset($this->data['enclosures']))
 		{
 			$this->data['enclosures'] = array();
-			$base = $this->feed->get_base();
 			foreach ((array) $this->get_item_tags('HTTP://WWW.W3.ORG/2005/ATOM', 'LINK') as $link)
 			{
-				if (!empty($link['attribs']['']['HREF']) && !empty($link['attribs']['']['REL']) && $link['attribs']['']['REL'] == 'enclosure')
+				if (isset($link['attribs']['']['HREF']) && !empty($link['attribs']['']['REL']) && $link['attribs']['']['REL'] == 'enclosure')
 				{
 					$url = null;
 					$type = null;
 					$length = null;
-					if ($link['xml_base_explicit'])
+					$url = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->feed->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+					if (isset($link['attribs']['']['TYPE']))
 					{
-						$url = SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $link['xml_base']);
+						$type = $this->feed->sanitize->sanitize($link['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
 					}
-					else
+					if (isset($link['attribs']['']['LENGTH']))
 					{
-						$url = SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $base);
-					}
-					if (!empty($link['attribs']['']['TYPE']))
-					{
-						$type = $link['attribs']['']['TYPE'];
-					}
-					if (!empty($link['attribs']['']['LENGTH']))
-					{
-						$length = $link['attribs']['']['LENGTH'];
+						$length = ceil($link['attribs']['']['LENGTH']);
 					}
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
 			}
 			foreach ((array) $this->get_item_tags('HTTP://PURL.ORG/ATOM/NS#', 'LINK') as $link)
 			{
-				if (!empty($link['attribs']['']['HREF']) && !empty($link['attribs']['']['REL']) && $link['attribs']['']['REL'] == 'enclosure')
+				if (isset($link['attribs']['']['HREF']) && !empty($link['attribs']['']['REL']) && $link['attribs']['']['REL'] == 'enclosure')
 				{
 					$url = null;
 					$type = null;
 					$length = null;
-					if ($link['xml_base_explicit'])
+					$url = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $this->feed->get_base($link)), SIMPLEPIE_CONSTRUCT_TEXT);
+					if (isset($link['attribs']['']['TYPE']))
 					{
-						$url = SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $link['xml_base']);
+						$type = $this->feed->sanitize->sanitize($link['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
 					}
-					else
+					if (isset($link['attribs']['']['LENGTH']))
 					{
-						$url = SimplePie_Misc::absolutize_url($link['attribs']['']['HREF'], $base);
-					}
-					if (!empty($link['attribs']['']['TYPE']))
-					{
-						$type = $link['attribs']['']['TYPE'];
-					}
-					if (!empty($link['attribs']['']['LENGTH']))
-					{
-						$length = $link['attribs']['']['LENGTH'];
+						$length = ceil($link['attribs']['']['LENGTH']);
 					}
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
@@ -2790,21 +2775,14 @@ class SimplePie_Item
 					$url = null;
 					$type = null;
 					$length = null;
-					if ($enclosure[0]['xml_base_explicit'])
+					$url = $this->feed->sanitize->sanitize(SimplePie_Misc::absolutize_url($enclosure[0]['attribs']['']['URL'], $this->feed->get_base($enclosure)), SIMPLEPIE_CONSTRUCT_TEXT);
+					if (isset($enclosure[0]['attribs']['']['TYPE']))
 					{
-						$url = SimplePie_Misc::absolutize_url($enclosure[0]['attribs']['']['URL'], $enclosure[0]['xml_base']);
+						$type = $this->feed->sanitize->sanitize($enclosure[0]['attribs']['']['TYPE'], SIMPLEPIE_CONSTRUCT_TEXT);
 					}
-					else
+					if (isset($enclosure[0]['attribs']['']['LENGTH']))
 					{
-						$url = SimplePie_Misc::absolutize_url($enclosure[0]['attribs']['']['URL'], $base);
-					}
-					if (!empty($enclosure[0]['attribs']['']['TYPE']))
-					{
-						$type = $enclosure[0]['attribs']['']['TYPE'];
-					}
-					if (!empty($enclosure[0]['attribs']['']['LENGTH']))
-					{
-						$length = $enclosure[0]['attribs']['']['LENGTH'];
+						$length = ceil($enclosure[0]['attribs']['']['LENGTH']);
 					}
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}

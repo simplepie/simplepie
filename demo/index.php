@@ -12,8 +12,8 @@ include_once('../idn/idna_convert.class.php');
 $feed = new SimplePie();
 
 // Make sure that page is getting passed a URL
-if (!empty($_GET['feed'])) {
-
+if (isset($_GET['feed']) && $_GET['feed'] !== '')
+{
 	// Strip slashes if magic quotes is enabled (which automatically escapes certain characters)
 	if (get_magic_quotes_gpc())
 	{
@@ -28,12 +28,14 @@ if (!empty($_GET['feed'])) {
 }
 
 // Allow us to change the input encoding from the URL string if we want to. (optional)
-if (!empty($_GET['input'])) {
+if (!empty($_GET['input']))
+{
 	$feed->set_input_encoding($_GET['input']);
 }
 
 // Allow us to snap into IHBB mode.
-if (!empty($_GET['image'])) {
+if (!empty($_GET['image']))
+{
 	$feed->bypass_image_hotlink('i');
 	$feed->bypass_image_hotlink_page('./ihbb.php');
 }
@@ -89,8 +91,8 @@ $feed->handle_content_type();
 
 			<?php
 			// Check to see if there are more than zero errors (i.e. if there are any errors at all)
-			if (isset($feed->error)) {
-
+			if (isset($feed->error))
+			{
 				// If so, start a <div> element with a classname so we can style it.
 				echo '<div class="sp_errors">' . "\r\n";
 
@@ -195,8 +197,8 @@ $feed->handle_content_type();
 
 						<?php
 						// Check for enclosures.  If an item has any, set the first one to the $enclosure variable.
-						if ($enclosure = $item->get_enclosure(0)) {
-
+						if ($enclosure = $item->get_enclosure(0))
+						{
 							// Use the embed() method to embed the enclosure into the page inline.
 							echo '<div align="center">';
 							echo '<p>' . $enclosure->embed(array(

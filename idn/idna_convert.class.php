@@ -1,9 +1,9 @@
 <?php
 /* ------------------------------------------------------------------------- */
 /* idna_convert.class.php - Encode / Decode Internationalized Domain Names   */
-/* (c) 2004-2005 phlyLabs, Berlin (http://phlylabs.de)                       */
+/* (c) 2004-2006 phlyLabs, Berlin (http://phlylabs.de)                       */
 /* All rights reserved                                                       */
-/* v0.4.2                                                                    */
+/* v0.4.4                                                                    */
 /* ------------------------------------------------------------------------- */
 
 // {{{ license
@@ -54,7 +54,7 @@
  * ACE input and output is always expected to be ASCII.
  *
  * @author  Matthias Sommerfeld <mso@phlylabs.de>
- * @version 0.4.2
+ * @version 0.4.3
  *
  */
 
@@ -454,11 +454,9 @@ class idna_convert
         // Copy all basic code points to output
         for ($i = 0; $i < $deco_len; ++$i) {
             $test = $decoded[$i];
-            // Will match [0-9a-zA-Z-]
-            if ((0x2F < $test && $test < 0x40)
-                    || (0x40 < $test && $test < 0x5B)
-                    || (0x60 < $test && $test <= 0x7B)
-                    || (0x2D == $test)) {
+            // Will match [-0-9a-zA-Z]
+            if ((0x2F < $test && $test < 0x40) || (0x40 < $test && $test < 0x5B)
+                    || (0x60 < $test && $test <= 0x7B) || (0x2D == $test)) {
                 $encoded .= chr($decoded[$i]);
                 $codecount++;
             }
@@ -498,7 +496,7 @@ class idna_convert
                                 (($k >= $bias + $this->_tmax) ? $this->_tmax : $k - $bias);
                         if ($q < $t) break;
                         $encoded .= $this->_encode_digit(ceil($t + (($q - $t) % ($this->_base - $t))));
-                        $q = ($q - $t) / ($this->_base - $t);
+                        $q = (int) (($q - $t) / ($this->_base - $t));
                     }
                     $encoded .= $this->_encode_digit($q);
                     $bias = $this->_adapt($delta, $codecount+1, $is_first);
@@ -602,6 +600,8 @@ class idna_convert
                 $output[] = $v;
             }
         }
+        // Before applying any Combining, try to rearrange any Hangul syllables
+        $output = $this->_hangul_compose($output);
         //
         // Combine code points
         //
@@ -610,7 +610,7 @@ class idna_convert
         $out_len      = count($output);
         for ($i = 0; $i < $out_len; ++$i) {
             $class = $this->_get_combining_class($output[$i]);
-            if ((!$last_class || $last_class != $class) && $class) {
+            if ((!$last_class || $last_class > $class) && $class) {
                 // Try to match
                 $seq_len = $i - $last_starter;
                 $out = $this->_combine(array_slice($output, $last_starter, $seq_len));
@@ -653,9 +653,9 @@ class idna_convert
             return array($char);
         }
         $result = array();
-        $T = $this->_tbase + $sindex % $this->_tcount;
+        $T = $this->_tbase + ($sindex % $this->_tcount);
         $result[] = (int) ($this->_lbase + $sindex / $this->_ncount);
-        $result[] = (int) ($this->_vbase + ($sindex % $this->_ncount) / $this->_tcount);
+        $result[] = (int) $this->_vbase + (($sindex % $this->_ncount) / $this->_tcount);
         if ($T != $this->_tbase) $result[] = $T;
         return $result;
     }
@@ -763,11 +763,6 @@ class idna_convert
     function _combine($input)
     {
         $inp_len = count($input);
-        // Is it a Hangul syllable?
-        if (1 != $inp_len) {
-            $hangul = $this->_hangul_compose($input);
-            if (count($hangul) != $inp_len) return $hangul; // This place is probably wrong
-        }
         foreach ($this->_np_['replacemaps'] as $np_src => $np_target) {
             if ($np_target[0] != $input[0]) continue;
             if (count($np_target) != $inp_len) continue;
@@ -882,7 +877,9 @@ class idna_convert
     function _ucs4_to_utf8($input)
     {
         $output = '';
+        $k = 0;
         foreach ($input as $v) {
+            ++$k;
             // $v = ord($v);
             if ($v < 128) { // 7bit are transferred literally
                 $output .= chr($v);
@@ -960,8 +957,7 @@ class idna_convert
 }
 
 /**
-* Adapter class for aligning the API of idna_convert with that of
-* Net_IDNA
+* Adapter class for aligning the API of idna_convert with that of Net_IDNA
 * @author  Matthias Sommerfeld <mso@phlylabs.de>
 */
 class Net_IDNA_php4 extends idna_convert
