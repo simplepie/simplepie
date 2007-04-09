@@ -6592,18 +6592,10 @@ class SimplePie_Parser
 		foreach ($attributes as $name => $value)
 		{
 			list($attrib_namespace, $attribute) = $this->split_ns($name);
-
-			if (!empty($attrib_namespace))
-			{
-				$attribs[$attrib_namespace][$attribute] = $value;
-			}
-			else
-			{
-				$attribs[''][$attribute] = $value;
-			}
+			$attribs[$attrib_namespace][$attribute] = $value;
 		}
 
-		if (!empty($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['BASE']))
+		if (isset($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['BASE']))
 		{
 			$this->xml_base[] = SimplePie_Misc::absolutize_url($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['BASE'], end($this->xml_base));
 			$this->xml_base_explicit[] = true;
@@ -6614,7 +6606,7 @@ class SimplePie_Parser
 			$this->xml_base_explicit[] = end($this->xml_base_explicit);
 		}
 
-		if (!empty($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['LANG']))
+		if (isset($attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['LANG']))
 		{
 			$this->xml_lang[] = $attribs['HTTP://WWW.W3.ORG/XML/1998/NAMESPACE']['LANG'];
 		}
