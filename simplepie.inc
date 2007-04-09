@@ -1624,7 +1624,7 @@ function embed_wmedia(width, height, link) {
 			return $this->subscribe_url();
 		}
 	}
-	
+
 	function sanitize($data, $type, $base = '')
 	{
 		return $this->sanitize->sanitize($data, $type, $base);
@@ -2204,15 +2204,20 @@ class SimplePie_Item
 			return null;
 		}
 	}
-	
+
 	function get_base($element = array())
 	{
 		return $this->feed->get_base($element);
 	}
-	
+
 	function sanitize($data, $type, $base = '')
 	{
 		return $this->feed->sanitize($data, $type, $base);
+	}
+
+	function get_feed()
+	{
+		return $this->feed;
 	}
 
 	/**
@@ -6901,7 +6906,7 @@ class SimplePie_Sanitize
 				// Having (possibly) taken stuff out, there may now be whitespace at the beginning/end of the data
 				$data = trim($data);
 			}
-			
+
 			if ($type & SIMPLEPIE_CONSTRUCT_IRI)
 			{
 				$data = SimplePie_Misc::absolutize_url($data, $base);
