@@ -48,31 +48,37 @@ which brings back the feed-level data as appropriate for the item.  Pretty sweet
 $apple = new SimplePie();
 $apple->set_feed_url('http://apple.com');
 $apple->set_favicon_handler('handler_favicon.php');
+$apple->set_image_handler('handler_favicon.php');
 $apple->init();
 
 $sp = new SimplePie();
 $sp->set_feed_url('http://simplepie.org/blog/feed/');
 $sp->set_favicon_handler('handler_favicon.php');
+$sp->set_image_handler('handler_favicon.php');
 $sp->init();
 
 $digg = new SimplePie();
 $digg->set_feed_url('http://digg.com/rss/index.xml');
 $digg->set_favicon_handler('handler_favicon.php');
+$digg->set_image_handler('handler_favicon.php');
 $digg->init();
 
 $tuaw = new SimplePie();
 $tuaw->set_feed_url('http://feeds.tuaw.com/weblogsinc/tuaw');
 $tuaw->set_favicon_handler('handler_favicon.php');
+$tuaw->set_image_handler('handler_favicon.php');
 $tuaw->init();
 
 $uneasy = new SimplePie();
 $uneasy->set_feed_url('http://feeds.uneasysilence.com/uneasysilence/blog/');
 $uneasy->set_favicon_handler('handler_favicon.php');
+$uneasy->set_image_handler('handler_favicon.php');
 $uneasy->init();
 
 $slashdot = new SimplePie();
 $slashdot->set_feed_url('http://rss.slashdot.org/Slashdot/slashdot');
 $slashdot->set_favicon_handler('handler_favicon.php');
+$slashdot->set_image_handler('handler_favicon.php');
 $slashdot->init();
 
 // Merge everything together (for now... this could/should be simplified as noted above)
@@ -127,10 +133,10 @@ $merged = SimplePie::merge_items(0, 0, $digg, $tuaw, $uneasy, $slashdot, $sp, $a
 			<h4 style="background-image:url(<?=$item->get_feed()->get_favicon()?>);"><a href="<?=$item->get_permalink()?>"><?=$item->get_title()?></a></h4>
 
 			<!-- get_description() now prefers summaries over full content -->
-			<?=$item->get_description()?>
+			<?//=$item->get_description()?>
 
 			<!-- get_content() prefers full content over summaries -->
-			<?//=$item->get_content()?>
+			<?=$item->get_content()?>
 
 			<? if ($enclosure = $item->get_enclosure()): ?>
 				<div>

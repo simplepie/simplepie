@@ -465,6 +465,13 @@ class SimplePie
 	var $favicon_handler = '';
 
 	/**
+	 * @var string Web-accessible path to the handler_image.php file.
+	 * @see SimplePie::set_image_handler()
+	 * @access private
+	 */
+	var $image_handler = '';
+
+	/**
 	 * The SimplePie class contains feed level data and options
 	 *
 	 * There are two ways that you can create a new SimplePie object. The first
@@ -817,16 +824,6 @@ class SimplePie
 		$this->max_checked_feeds = (int) $max;
 	}
 
-	function bypass_image_hotlink($get = false)
-	{
-		$this->sanitize->bypass_image_hotlink($get);
-	}
-
-	function bypass_image_hotlink_page($page = false)
-	{
-		$this->sanitize->bypass_image_hotlink_page($page);
-	}
-
 	function replace_headers($enable = false)
 	{
 		$this->sanitize->replace_headers($enable);
@@ -872,21 +869,25 @@ class SimplePie
 		$this->favicon_handler = $page . '?i=';
 	}
 
+	/**
+	 * Set the handler to enable the display of cached images.
+	 *
+	 * @access public
+	 * @param str $page Web-accessible path to the handler_image.php file.
+	 */
+	function set_image_handler($page = false)
+	{
+		$this->sanitize->set_image_handler($page . '?i=');
+		$this->sanitize->pass_cache_data($this->cache_location, $this->cache_name_function, $this->cache_class);
+		$this->sanitize->pass_file_data($this->file_class, $this->timeout, $this->useragent, $this->force_fsockopen);
+	}
+
 	function init()
 	{
 		if ((function_exists('version_compare') && version_compare(phpversion(), '4.3.2', '<')) || !extension_loaded('xml') || !extension_loaded('pcre'))
 		{
 			return false;
 		}
-		if ($this->sanitize->bypass_image_hotlink && isset($_GET[$this->sanitize->bypass_image_hotlink]))
-		{
-			if (get_magic_quotes_gpc())
-			{
-				$_GET[$this->sanitize->bypass_image_hotlink] = stripslashes($_GET[$this->sanitize->bypass_image_hotlink]);
-			}
-			SimplePie_Misc::display_file($_GET[$this->sanitize->bypass_image_hotlink], 10, $this->useragent);
-		}
-
 		if (isset($_GET[$this->javascript]))
 		{
 			if (function_exists('ob_gzhandler'))
@@ -1345,7 +1346,7 @@ function embed_wmedia(width, height, link) {
 		if ($this->get_feed_link())
 		{
 			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->get_feed_link());
-			$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'favicon');
+			$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'image');
 
 			if ($cache->load())
 			{
@@ -1353,26 +1354,29 @@ function embed_wmedia(width, height, link) {
 			}
 			else
 			{
-				$file =& new $this->file_class($favicon, $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
+				$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 				$headers = $file->headers();
 
 				if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
 				{
-					if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+					if ($this->favicon_handler)
 					{
-						return $this->favicon_handler . $favicon;
-					}
-					else
-					{
-						$this->error = "$cache->name is not writeable";
-						SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+						if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+						{
+							return $this->favicon_handler . $favicon;
+						}
+						else
+						{
+							$this->error = "$cache->name is not writeable";
+							SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+						}
 					}
 					return $favicon;
 				}
 				else
 				{
 					unset($file);
-					$file =& new $this->file_class($this->get_feed_link(), $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
+					$file =& new $this->file_class($this->get_feed_link(), $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 					$headers = $file->headers();
 
 					if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
@@ -1384,16 +1388,19 @@ function embed_wmedia(width, height, link) {
 							if (isset($m[2][0]) && !empty($m[0][0]))
 							{
 								unset($file);
-								$file =& new $this->file_class($m[2][0], $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
+								$file =& new $this->file_class($m[2][0], $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 
-								if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+								if ($this->favicon_handler)
 								{
-									return $this->favicon_handler . $favicon;
-								}
-								else
-								{
-									$this->error = "$cache->name is not writeable";
-									SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+									if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+									{
+										return $this->favicon_handler . $favicon;
+									}
+									else
+									{
+										$this->error = "$cache->name is not writeable";
+										SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+									}
 								}
 								return $m[2][0];
 							}
@@ -4062,16 +4069,40 @@ class SimplePie_Misc
 		return $message;
 	}
 
-	function display_file($url, $timeout = 10, $useragent = null)
+	/**
+	 * If a file has been cached, retrieve and display it.
+	 * 
+	 * This is most useful for caching images (get_favicon(), etc.), 
+	 * however it works for all cached files.  This WILL NOT display ANY 
+	 * file/image/page/whatever, but rather only display what has already 
+	 * been cached by SimplePie.
+	 *
+	 * @access public
+	 * @see SimplePie::get_favicon()
+	 * @param str $identifier_url URL that is used to identify the content.  
+	 * This may or may not be the actual URL of the live content.
+	 * @param str $cache_location Location of SimplePie's cache.  Defaults 
+	 * to './cache'.
+	 * @param str $cache_extension The file extension that the file was 
+	 * cached with.  Defaults to 'spc'.
+	 * @param str $cache_class Name of the cache-handling class being used 
+	 * in SimplePie.  Defaults to 'SimplePie_Cache', and should be left 
+	 * as-is unless you've overloaded the class.
+	 * @param str $cache_name_function Function that converts the filename 
+	 * for saving.  Defaults to 'sha1'.
+	 */
+	function display_cached_file($identifier_url, $cache_location = './cache', $cache_extension = 'spc', $cache_class = 'SimplePie_Cache', $cache_name_function = 'sha1')
 	{
-		$file =& new SimplePie_File($url, $timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $useragent);
-		$headers = $file->headers();
-		if ($file->body() !== false)
+		$cache = new $cache_class($cache_location, call_user_func($cache_name_function, $identifier_url), $cache_extension);
+
+		if ($file = $cache->load())
 		{
-			header('Content-type: ' . $headers['content-type'][0]);
-			echo $file->body();
+			header('Content-type:' . $file['headers']['Content-type']);
+			echo $file['body'];
 			exit;
 		}
+
+		die('Cached file for ' . $identifier_url . ' cannot be found.');
 	}
 
 	function fix_protocol($url, $http = 1)
@@ -6798,12 +6829,18 @@ class SimplePie_Sanitize
 	// Options
 	var $remove_div = true;
 	var $replace_headers = false;
-	var $bypass_image_hotlink = false;
-	var $bypass_image_hotlink_page = false;
+	var $image_handler = false;
 	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
 	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
 	var $output_encoding = 'UTF-8';
+	var $cache_location = './cache';
+	var $cache_name_function = 'sha1';
+	var $cache_class = 'SimplePie_Cache';
+	var $file_class = 'SimplePie_File';
+	var $timeout = 10;
+	var $useragent = '';
+	var $force_fsockopen = false;
 
 	function remove_div($enable = true)
 	{
@@ -6815,27 +6852,56 @@ class SimplePie_Sanitize
 		$this->enable_headers = (bool) $enable;
 	}
 
-	function bypass_image_hotlink($get = false)
-	{
-		if ($get)
-		{
-			$this->bypass_image_hotlink = (string) $get;
-		}
-		else
-		{
-			$this->bypass_image_hotlink = false;
-		}
-	}
-
-	function bypass_image_hotlink_page($page = false)
+	function set_image_handler($page = false)
 	{
 		if ($page)
 		{
-			$this->bypass_image_hotlink_page = (string) $page;
+			$this->image_handler = (string) $page;
 		}
 		else
 		{
-			$this->bypass_image_hotlink_page = false;
+			$this->image_handler = false;
+		}
+	}
+
+	function pass_cache_data($cache_location = './cache', $cache_name_function = 'sha1', $cache_class = 'SimplePie_Cache')
+	{
+		if ($cache_location)
+		{
+			$this->cache_location = (string) $cache_location;
+		}
+
+		if ($cache_name_function)
+		{
+			$this->cache_name_function = (string) $cache_name_function;
+		}
+
+		if ($cache_class)
+		{
+			$this->cache_class = (string) $cache_class;
+		}
+	}
+
+	function pass_file_data($file_class = 'SimplePie_File', $timeout = 10, $useragent = '', $force_fsockopen = false)
+	{
+		if ($file_class)
+		{
+			$this->file_class = (string) $file_class;
+		}
+
+		if ($timeout)
+		{
+			$this->timeout = (string) $timeout;
+		}
+
+		if ($useragent)
+		{
+			$this->useragent = (string) $useragent;
+		}
+
+		if ($force_fsockopen)
+		{
+			$this->force_fsockopen = (string) $force_fsockopen;
 		}
 	}
 
@@ -6962,22 +7028,38 @@ class SimplePie_Sanitize
 				$this->replace_urls($data, 'form', 'ACTION');
 				$this->replace_urls($data, 'input', 'SRC');
 
-				// If Bypass Image Hotlink is enabled, rewrite all the image tags.
-				if ($this->bypass_image_hotlink)
+				// If image handling (caching, etc.) is enabled, cache and rewrite all the image tags.
+				if ($this->image_handler)
 				{
 					$images = SimplePie_Misc::get_element('img', $data);
 					foreach ($images as $img)
 					{
 						if (!empty($img['attribs']['SRC']['data']))
 						{
-							$pre = '';
-							if ($this->bypass_image_hotlink_page)
+							$image_url = $img['attribs']['SRC']['data'];
+							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $image_url), 'image');
+
+							if ($cache->load())
 							{
-								$pre = $this->bypass_image_hotlink_page;
+								$img['attribs']['SRC']['data'] = $this->image_handler . rawurlencode($img['attribs']['SRC']['data']);
+								$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
 							}
-							$pre .= "?$this->bypass_image_hotlink=";
-							$img['attribs']['SRC']['data'] = $pre . rawurlencode($img['attribs']['SRC']['data']);
-							$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
+							else
+							{
+								$file =& new $this->file_class($image_url, $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+								$headers = $file->headers();
+
+								if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
+								{
+									if (!$cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+									{
+										$this->error = "$cache->name is not writeable";
+										SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+									}
+									$img['attribs']['SRC']['data'] = $this->image_handler . rawurlencode($img['attribs']['SRC']['data']);
+									$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
+								}
+							}
 						}
 					}
 				}
