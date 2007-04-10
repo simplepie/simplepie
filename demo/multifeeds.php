@@ -116,7 +116,7 @@ $merged = SimplePie::merge_items(0, 0, $digg, $tuaw, $uneasy, $slashdot, $sp, $a
 
 	<div class="chunk">
 		<h1>Quick-n-Dirty Multifeeds Demo</a></h1>
-		<p><i>Mashing SimplePie.org, Apple.com, Digg.com, Slashdot.org, and TUAW.com.</i></p>
+		<p><i>Mashing SimplePie, Apple, Digg, Slashdot, UNEASYsilence, and TUAW.</i></p>
 	</div>
 
 	<? //foreach($feed->get_items() as $item): ?>
