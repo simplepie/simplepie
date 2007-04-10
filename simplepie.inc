@@ -2167,21 +2167,25 @@ function embed_wmedia(width, height, link) {
 			// If we want to order it by date, check if all items have a date, and then sort it
 			if ($this->order_by_date)
 			{
-				$do_sort = true;
-				foreach ($this->data['items'] as $item)
+				if (!isset($this->data['ordered_items']))
 				{
-					if (!$item->get_date('U'))
+					$do_sort = true;
+					foreach ($this->data['items'] as $item)
 					{
-						$do_sort = false;
-						break;
+						if (!$item->get_date('U'))
+						{
+							$do_sort = false;
+							break;
+						}
+					}
+					$item = null;
+					$this->data['ordered_items'] = $this->data['items'];
+					if ($do_sort)
+					{
+						usort($this->data['ordered_items'], array(&$this, 'sort_items'));
 					}
 				}
-				$item = null;
-				$items = $this->data['items'];
-				if ($do_sort)
-				{
-					usort($items, array(&$this, 'sort_items'));
-				}
+				$items = $this->data['ordered_items'];
 			}
 			else
 			{
@@ -2206,14 +2210,7 @@ function embed_wmedia(width, height, link) {
 
 	function sort_items($a, $b)
 	{
-		if ($a->get_date('U') <= $b->get_date('U'))
-		{
-			return 1;
-		}
-		else
-		{
-			return -1;
-		}
+		return $a->get_date('U') <= $b->get_date('U');
 	}
 
 	function merge_items($start = 0, $end = 0)
