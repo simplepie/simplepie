@@ -1315,11 +1315,12 @@ function embed_wmedia(width, height, link) {
 		return $type;
 	}
 
-	function get_favicon($check = false)
+	function get_favicon($check = false, $alternate = '')
 	{
 		if ($this->get_feed_link())
 		{
 			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->get_feed_link());
+			$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'favicon');
 
 			if ($check)
 			{
@@ -1328,11 +1329,72 @@ function embed_wmedia(width, height, link) {
 
 				if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
 				{
+					if ($cache)
+					{
+						//if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())) && isset($this->favicon_handler) && !empty($this->favicon_handler))
+						if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+						{
+							// If we can cache it, and there's a handler to handle it, let's do just that.
+							return $this->favicon_handler . '?i=' . $favicon;
+						}
+						else
+						{
+							$this->error = "$cache->name is not writeable";
+							SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+						}
+					}
 					return $favicon;
+				}
+				else
+				{
+					unset($file);
+					$file =& new $this->file_class($this->get_feed_link(), $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
+					$headers = $file->headers();
+
+					if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
+					{
+						preg_match_all('/<link([^>]*)rel=("|\')shortcut icon("|\')([^>]*)>/i', $file->body(), $m);
+						if (isset($m[0][0]) && !empty($m[0][0]))
+						{
+							preg_match_all('/href=("|\')([^("|\')]*)("|\')/i', $m[0][0], $m);
+							if (isset($m[2][0]) && !empty($m[0][0]))
+							{
+								if ($cache)
+								{
+									unset($file);
+									$file =& new $this->file_class($m[2][0], $this->timeout/10, 5, null, $this->useragent, $this->force_fsockopen);
+
+									//if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())) && isset($this->favicon_handler) && !empty($this->favicon_handler))
+									if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+									{
+										// If we can cache it, and there's a handler to handle it, let's do just that.
+										return $this->favicon_handler . '?i=' . $favicon;
+									}
+									else
+									{
+										$this->error = "$cache->name is not writeable";
+										SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+									}
+								}
+								return $m[2][0];
+							}
+						}
+					}
+					else
+					{
+						return $alternate;
+					}
 				}
 			}
 			else
 			{
+				if ($cache)
+				{
+					if ($cache->load())
+					{
+						return $this->favicon_handler . '?i=' . $favicon;
+					}
+				}
 				return $favicon;
 			}
 		}
