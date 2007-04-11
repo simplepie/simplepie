@@ -6423,7 +6423,7 @@ class SimplePie_Locator
 
 	function autodiscovery()
 	{
-		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body()), SimplePie_Misc::get_element('a', $this->file->body()));
+		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body()), SimplePie_Misc::get_element('a', $this->file->body()), SimplePie_Misc::get_element('area', $this->file->body()));
 		$done = array();
 		foreach ($links as $link)
 		{
