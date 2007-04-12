@@ -3580,6 +3580,7 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_HEADER, 1);
 				curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
+				curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
 				curl_setopt($fp, CURLOPT_REFERER, $url);
 				curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
