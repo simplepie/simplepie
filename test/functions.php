@@ -274,13 +274,13 @@ function dive_into_mark_atom_autodiscovery($tests)
 				$feed->init();
 				$tests->run_test($file->url, $feed->get_feed_link() == $file->url);
 			}
-			$links = SimplePie_Misc::get_element('link', $file->body());
+			$links = SimplePie_Misc::get_element('link', $file->body);
 			foreach ($links as $link)
 			{
-				if (!empty($link['attribs']['HREF']['data']) && !empty($link['attribs']['REL']['data']))
+				if (!empty($link['attribs']['href']['data']) && !empty($link['attribs']['rel']['data']))
 				{
-					$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['REL']['data'])));
-					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['HREF']['data']), $file->url);
+					$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link['attribs']['rel']['data'])));
+					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $file->url);
 					if (!in_array($href, $done) && in_array('next', $rel))
 					{
 						$done[] = $url = $href;

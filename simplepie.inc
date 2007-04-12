@@ -995,7 +995,7 @@ function embed_wmedia(width, height, link) {
 								$file =& new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
 								if ($file->success)
 								{
-									$headers = $file->headers();
+									$headers = $file->headers;
 									if ($headers['status']['code'] == 304)
 									{
 										$cache->touch();
@@ -1075,8 +1075,8 @@ function embed_wmedia(width, height, link) {
 				}
 				$locate = null;
 
-				$headers = $file->headers();
-				$data = trim($file->body());
+				$headers = $file->headers;
+				$data = trim($file->body);
 				unset($file);
 			}
 			else
@@ -1355,13 +1355,13 @@ function embed_wmedia(width, height, link) {
 			else
 			{
 				$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
-				$headers = $file->headers();
+				$headers = $file->headers;
 
 				if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
 				{
 					if ($this->favicon_handler)
 					{
-						if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+						if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 						{
 							return $this->favicon_handler . $favicon;
 						}
@@ -1377,11 +1377,11 @@ function embed_wmedia(width, height, link) {
 				{
 					unset($file);
 					$file =& new $this->file_class($this->get_feed_link(), $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
-					$headers = $file->headers();
+					$headers = $file->headers;
 
 					if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
 					{
-						preg_match_all('/<link([^>]*)rel=("|\')shortcut icon("|\')([^>]*)>/i', $file->body(), $m);
+						preg_match_all('/<link([^>]*)rel=("|\')shortcut icon("|\')([^>]*)>/i', $file->body, $m);
 						if (isset($m[0][0]) && !empty($m[0][0]))
 						{
 							preg_match_all('/href=("|\')([^("|\')]*)("|\')/i', $m[0][0], $m);
@@ -1392,7 +1392,7 @@ function embed_wmedia(width, height, link) {
 
 								if ($this->favicon_handler)
 								{
-									if ($cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+									if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 									{
 										return $this->favicon_handler . $favicon;
 									}
@@ -1699,6 +1699,10 @@ function embed_wmedia(width, height, link) {
 		else if (!is_null($this->get_feed_link()))
 		{
 			return $this->get_feed_link();
+		}
+		else if (isset($this->data['headers']['content-location'][0]))
+		{
+			return SimplePie_Misc::absolutize($this->data['headers']['content-location'][0], $this->subscribe_url());
 		}
 		else
 		{
@@ -3721,30 +3725,6 @@ class SimplePie_File
 				$this->error = 'file_get_contents could not read the file';
 				$this->success = false;
 			}
-		}
-	}
-
-	function headers()
-	{
-		if (!is_null($this->headers))
-		{
-			return $this->headers;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	function body()
-	{
-		if (!is_null($this->body))
-		{
-			return $this->body;
-		}
-		else
-		{
-			return false;
 		}
 	}
 
@@ -6330,6 +6310,25 @@ class SimplePie_Misc
 	{
 		return (bool) preg_match('/^([A-Za-z0-9\-._~\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}!$&\'()*+,;=@]|(%[0-9ABCDEF]{2}))+$/u', $string);
 	}
+	
+	function space_seperated_tokens($string)
+	{
+		$space_characters = "\x20\x09\x0A\x0B\x0C\x0D";
+		$string_length = strlen($string);
+		
+		$position = strspn($string, $space_characters);
+		$tokens = array();
+		
+		while ($position < $string_length)
+		{
+			$len = strcspn($string, $space_characters, $position);
+			$tokens[] = substr($string, $position, $len);
+			$position += $len;
+			$position += strspn($string, $space_characters, $position);
+		}
+		
+		return $tokens;
+	}
 }
 
 class SimplePie_Locator
@@ -6341,6 +6340,7 @@ class SimplePie_Locator
 	var $elsewhere = array();
 	var $file_class = 'SimplePie_File';
 	var $cached_entities = array();
+	var $http_base;
 	var $base;
 	var $base_location = 0;
 	var $checked_feeds = 0;
@@ -6399,7 +6399,7 @@ class SimplePie_Locator
 
 	function is_feed(&$file)
 	{
-		$body = SimplePie_Misc::strip_comments($file->body());
+		$body = SimplePie_Misc::strip_comments($file->body);
 		if (preg_match('/<([^\s:]+:)?(rss|RDF|feed)' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/i', $body))
 		{
 			return true;
@@ -6409,13 +6409,21 @@ class SimplePie_Locator
 
 	function get_base()
 	{
-		$this->base = $this->file->url;
-		$elements = SimplePie_Misc::get_element('base', $this->file->body());
+		if (isset($this->file->headers['content-location'][0]))
+		{
+			$this->http_base = SimplePie_Misc::absolutize_url(trim($this->file->headers['content-location'][0]), $this->file->url);
+		}
+		else
+		{
+			$this->http_base = $this->file->url;
+		}
+		$this->base = $this->http_base;
+		$elements = SimplePie_Misc::get_element('base', $this->file->body);
 		foreach ($elements as $element)
 		{
-			if (!empty($element['attribs']['href']['data']))
+			if ($element['attribs']['href']['data'] !== '')
 			{
-				$this->base = SimplePie_Misc::absolutize_url(trim($element['attribs']['href']['data']), $this->file->url);
+				$this->base = SimplePie_Misc::absolutize_url(trim($element['attribs']['href']['data']), $this->http_base);
 				$this->base_location = $element['offset'];
 				break;
 			}
@@ -6424,7 +6432,7 @@ class SimplePie_Locator
 
 	function autodiscovery()
 	{
-		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body()), SimplePie_Misc::get_element('a', $this->file->body()), SimplePie_Misc::get_element('area', $this->file->body()));
+		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body), SimplePie_Misc::get_element('a', $this->file->body), SimplePie_Misc::get_element('area', $this->file->body));
 		$done = array();
 		foreach ($links as $link)
 		{
@@ -6434,7 +6442,7 @@ class SimplePie_Locator
 			}
 			if (!empty($link['attribs']['href']['data']) && !empty($link['attribs']['rel']['data']))
 			{
-				$rel = preg_split('/\s+/', strtolower(trim($link['attribs']['rel']['data'])));
+				$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link['attribs']['rel']['data'])));
 
 				if ($this->base_location < $link['offset'])
 				{
@@ -6442,7 +6450,7 @@ class SimplePie_Locator
 				}
 				else
 				{
-					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->file->url);
+					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->http_base);
 				}
 
 				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['type']['data']) && in_array(strtolower(SimplePie_Misc::parse_mime($link['attribs']['type']['data'])), array('application/rss+xml', 'application/atom+xml'))))
@@ -6462,7 +6470,7 @@ class SimplePie_Locator
 
 	function get_links()
 	{
-		$links = SimplePie_Misc::get_element('a', $this->file->body());
+		$links = SimplePie_Misc::get_element('a', $this->file->body);
 		foreach ($links as $link)
 		{
 			if (!empty($link['attribs']['href']['data']))
@@ -6477,7 +6485,7 @@ class SimplePie_Locator
 					}
 					else
 					{
-						$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->file->url);
+						$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->http_base);
 					}
 
 					$current = SimplePie_Misc::parse_url($this->file->url);
@@ -7046,11 +7054,11 @@ class SimplePie_Sanitize
 							else
 							{
 								$file =& new $this->file_class($image_url, $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
-								$headers = $file->headers();
+								$headers = $file->headers;
 
 								if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
 								{
-									if (!$cache->save(array('headers' => $file->headers(), 'body' => $file->body())))
+									if (!$cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 									{
 										$this->error = "$cache->name is not writeable";
 										SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
