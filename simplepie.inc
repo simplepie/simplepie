@@ -2373,7 +2373,7 @@ class SimplePie_Item
 		}
 	}
 
-	function get_description()
+	function get_description($description_only = false)
 	{
 		if ($return = $this->get_item_tags('http://www.w3.org/2005/Atom', 'summary'))
 		{
@@ -2403,17 +2403,9 @@ class SimplePie_Item
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
-		else if ($return = $this->get_item_tags('http://www.w3.org/2005/Atom', 'content'))
+		else if (!$description_only)
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_content_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/atom/ns#', 'content'))
-		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/rss/1.0/MODULES/CONTENT/', 'encoded'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+			return $this->get_content(true);
 		}
 		else
 		{
@@ -2421,7 +2413,7 @@ class SimplePie_Item
 		}
 	}
 
-	function get_content()
+	function get_content($content_only = false)
 	{
 		if ($return = $this->get_item_tags('http://www.w3.org/2005/Atom', 'content'))
 		{
@@ -2435,33 +2427,9 @@ class SimplePie_Item
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
-		else if ($return = $this->get_item_tags('http://www.w3.org/2005/Atom', 'summary'))
+		else if (!$content_only)
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/atom/ns#', 'summary'))
-		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/rss/1.0/', 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('http://my.netscape.com/rdf/simple/0.9/', 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('', 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/dc/elements/1.1/', 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/dc/elements/1.0/', 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->get_description(true);
 		}
 		else
 		{
