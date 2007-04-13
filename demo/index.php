@@ -172,10 +172,10 @@ $feed->handle_content_type();
 				<div class="chunk focus" align="center">
 
 					<!-- If the feed has a link back to the site that publishes it (which 99% of them do), link the feed's title to it. -->
-					<h3 class="header"><?php if ($feed->get_feed_link()) echo '<a href="' . $feed->get_feed_link() . '">'; echo $feed->get_feed_title(); if ($feed->get_feed_link()) echo '</a>'; ?></h3>
+					<h3 class="header"><?php if ($feed->get_link()) echo '<a href="' . $feed->get_link() . '">'; echo $feed->get_title(); if ($feed->get_link()) echo '</a>'; ?></h3>
 
 					<!-- If the feed has a description, display it. -->
-					<?php echo $feed->get_feed_description(); ?>
+					<?php echo $feed->get_description(); ?>
 
 				</div>
 

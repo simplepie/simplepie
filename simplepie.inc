@@ -1343,9 +1343,9 @@ function embed_wmedia(width, height, link) {
 	 */
 	function get_favicon($alternate = '')
 	{
-		if ($this->get_feed_link())
+		if ($this->get_link())
 		{
-			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->get_feed_link());
+			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->get_link());
 			$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'image');
 
 			if ($cache->load())
@@ -1376,7 +1376,7 @@ function embed_wmedia(width, height, link) {
 				else
 				{
 					unset($file);
-					$file =& new $this->file_class($this->get_feed_link(), $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+					$file =& new $this->file_class($this->get_link(), $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 					$headers = $file->headers;
 
 					if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
@@ -1485,9 +1485,9 @@ function embed_wmedia(width, height, link) {
 		if ($this->subscribe_url())
 		{
 			$return = $feed_url . rawurlencode($this->subscribe_url());
-			if ($site_url !== null && $this->get_feed_link() !== null)
+			if ($site_url !== null && $this->get_link() !== null)
 			{
-				$return .= $site_url . rawurlencode($this->get_feed_link());
+				$return .= $site_url . rawurlencode($this->get_link());
 			}
 			return $return;
 		}
@@ -1696,9 +1696,9 @@ function embed_wmedia(width, height, link) {
 		{
 			return $element['xml_base'];
 		}
-		else if ($this->get_feed_link() !== null)
+		else if ($this->get_link() !== null)
 		{
-			return $this->get_feed_link();
+			return $this->get_link();
 		}
 		else if (isset($this->data['headers']['content-location'][0]))
 		{
@@ -1713,14 +1713,6 @@ function embed_wmedia(width, height, link) {
 	function sanitize($data, $type, $base = '')
 	{
 		return $this->sanitize->sanitize($data, $type, $base);
-	}
-
-	/**
-	 * @todo Remove support for this function.  Use $feed->get_title() instead.  This should have died when we moved from get_item_title() to get_title().
-	 */
-	function get_feed_title()
-	{
-		return $this->get_title();
 	}
 
 	function get_title()
@@ -1759,13 +1751,6 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	/**
-	 * @todo Remove support for this function.  Use $feed->get_link() instead.  This should have died when we moved from get_item_title() to get_title().
-	 */
-	function get_feed_link($key = 0, $rel = 'alternate') {
-		return $this->get_link($key, $rel);
-	}
-
 	function get_link($key = 0, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
@@ -1785,14 +1770,6 @@ function embed_wmedia(width, height, link) {
 	function get_permalink()
 	{
 		return $this->get_link(0);
-	}
-
-	/**
-	 * @todo Remove support for this function.  Use $feed->get_links() instead.  This should have died when we moved from get_item_title() to get_title().
-	 */
-	function get_feed_links($rel = 'alternate')
-	{
-		return $this->get_links($rel);
 	}
 
 	function get_links($rel = 'alternate')
@@ -1869,13 +1846,6 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	/**
-	 * @todo Remove support for this function.  Use $feed->get_description() instead.  This should have died when we moved from get_item_title() to get_title().
-	 */
-	function get_feed_description() {
-		return $this->get_description();
-	}
-
 	function get_description()
 	{
 		if ($return = $this->get_channel_tags('http://www.w3.org/2005/Atom', 'subtitle'))
@@ -1912,13 +1882,6 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
-	/**
-	 * @todo Remove support for this function.  Use $feed->get_copyright() instead.  This should have died when we moved from get_item_title() to get_title().
-	 */
-	function get_feed_copyright() {
-		return $this->get_copyright();
-	}
-
 	function get_copyright()
 	{
 		if ($return = $this->get_channel_tags('http://www.w3.org/2005/Atom', 'rights'))
@@ -1941,13 +1904,6 @@ function embed_wmedia(width, height, link) {
 		{
 			return null;
 		}
-	}
-
-	/**
-	 * @todo Remove support for this function.  Use $feed->get_language() instead.  This should have died when we moved from get_item_title() to get_title().
-	 */
-	function get_feed_language() {
-		return $this->get_language();
 	}
 
 	function get_language()

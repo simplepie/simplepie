@@ -34,7 +34,7 @@ $feed->handle_content_type();
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title><?php echo (empty($_GET['feed'])) ? 'SimplePie' : 'SimplePie: ' . $feed->get_feed_title(); ?></title>
+<title><?php echo (empty($_GET['feed'])) ? 'SimplePie' : 'SimplePie: ' . $feed->get_title(); ?></title>
 
 <!-- META HTTP-EQUIV -->
 <meta http-equiv="content-type" content="text/html; charset=<?php echo ($feed->get_encoding()) ? $feed->get_encoding() : 'UTF-8'; ?>" />
@@ -105,7 +105,7 @@ form#sp_form input.text {
 </head>
 
 <body>
-	<h1><?php echo (empty($_GET['feed'])) ? 'SimplePie' : 'SimplePie: ' . $feed->get_feed_title(); ?></h1>
+	<h1><?php echo (empty($_GET['feed'])) ? 'SimplePie' : 'SimplePie: ' . $feed->get_title(); ?></h1>
 
 	<form action="" method="get" name="sp_form" id="sp_form">
 		<p><input type="text" name="feed" value="<?php echo ($feed->subscribe_url()) ? htmlspecialchars($feed->subscribe_url()) : 'http://'; ?>" class="text" id="feed_input" />&nbsp;<input type="submit" value="Read" class="button" /></p>

@@ -28,7 +28,7 @@ function feed_copyright_test($data)
 	$feed->set_raw_data($data);
 	$feed->enable_cache(false);
 	$feed->init();
-	return $feed->get_feed_copyright();
+	return $feed->get_copyright();
 }
 
 function feed_description_test($data)
@@ -37,7 +37,7 @@ function feed_description_test($data)
 	$feed->set_raw_data($data);
 	$feed->enable_cache(false);
 	$feed->init();
-	return $feed->get_feed_description();
+	return $feed->get_description();
 }
 
 function feed_image_height_test($data)
@@ -91,7 +91,7 @@ function feed_language_test($data)
 	$feed->set_raw_data($data);
 	$feed->enable_cache(false);
 	$feed->init();
-	return $feed->get_feed_language();
+	return $feed->get_language();
 }
 
 function feed_link_test($data)
@@ -100,7 +100,7 @@ function feed_link_test($data)
 	$feed->set_raw_data($data);
 	$feed->enable_cache(false);
 	$feed->init();
-	return $feed->get_feed_link();
+	return $feed->get_link();
 }
 
 function feed_title_test($data)
@@ -109,7 +109,7 @@ function feed_title_test($data)
 	$feed->set_raw_data($data);
 	$feed->enable_cache(false);
 	$feed->init();
-	return $feed->get_feed_title();
+	return $feed->get_title();
 }
 
 function first_item_author_name_test($data)
@@ -272,7 +272,7 @@ function dive_into_mark_atom_autodiscovery($tests)
 				$feed->set_file($file);
 				$feed->enable_cache(false);
 				$feed->init();
-				$tests->run_test($file->url, $feed->get_feed_link() == $file->url);
+				$tests->run_test($file->url, $feed->get_link() == $file->url);
 			}
 			$links = SimplePie_Misc::get_element('link', $file->body);
 			foreach ($links as $link)
