@@ -1222,24 +1222,11 @@ function embed_wmedia(width, height, link) {
 		return $this->data;
 	}
 
-	/**
-	 * @todo Need to re-add this functionality...
-	 */
 	function get_encoding()
 	{
-		if (!empty($this->data['feedinfo']['encoding']))
-		{
-			return $this->data['feedinfo']['encoding'];
-		}
-		else
-		{
-			return false;
-		}
+		return $this->sanitize->output_encoding;
 	}
 
-	/**
-	 * @todo Need to re-add this functionality...
-	 */
 	function handle_content_type($mime = 'text/html')
 	{
 		if (!headers_sent())
@@ -6483,9 +6470,6 @@ class SimplePie_Locator
 	}
 }
 
-/**
- * @todo External entities aren't supported, for some reason xml_set_external_entity_ref_handler()'s callback function isn't called
- */
 class SimplePie_Parser
 {
 	var $xml;
