@@ -498,18 +498,18 @@ class SimplePie
 		$this->sanitize =& new SimplePie_Sanitize;
 
 		// Set options if they're passed to the constructor
-		if (!is_null($cache_location))
+		if ($cache_location !== null)
 		{
 			$this->set_cache_location($cache_location);
 		}
 
-		if (!is_null($cache_duration))
+		if ($cache_duration !== null)
 		{
 			$this->set_cache_duration($cache_duration);
 		}
 
 		// Only init the script if we're passed a feed URL
-		if (!is_null($feed_url))
+		if ($feed_url !== null)
 		{
 			$this->set_feed_url($feed_url);
 			$this->init();
@@ -837,7 +837,7 @@ class SimplePie
 	function strip_htmltags($tags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'), $encode = null)
 	{
 		$this->sanitize->strip_htmltags($tags);
-		if (!is_null($encode))
+		if ($encode !== null)
 		{
 			$this->sanitize->encode_instead_of_strip($tags);
 		}
@@ -926,12 +926,12 @@ function embed_wmedia(width, height, link) {
 			exit;
 		}
 
-		if (!is_null($this->feed_url) || !is_null($this->raw_data))
+		if ($this->feed_url !== null || $this->raw_data !== null)
 		{
 			$this->data = array();
 			$cache = false;
 
-			if (!is_null($this->feed_url))
+			if ($this->feed_url !== null)
 			{
 				$parsed_feed_url = SimplePie_Misc::parse_url($this->feed_url);
 				// Decide whether to enable caching
@@ -1425,7 +1425,7 @@ function embed_wmedia(width, height, link) {
 	 */
 	function subscribe_url()
 	{
-		if (!is_null($this->feed_url))
+		if ($this->feed_url !== null)
 		{
 			return $this->feed_url;
 		}
@@ -1437,7 +1437,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_feed()
 	{
-		if (!is_null($this->feed_url))
+		if ($this->feed_url !== null)
 		{
 			return SimplePie_Misc::fix_protocol($this->feed_url, 2);
 		}
@@ -1449,7 +1449,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_outlook()
 	{
-		if (!is_null($this->feed_url))
+		if ($this->feed_url !== null)
 		{
 			return 'outlook' . SimplePie_Misc::fix_protocol($this->feed_url, 2);
 		}
@@ -1461,7 +1461,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_podcast()
 	{
-		if (!is_null($this->feed_url))
+		if ($this->feed_url !== null)
 		{
 			return SimplePie_Misc::fix_protocol($this->feed_url, 3);
 		}
@@ -1485,7 +1485,7 @@ function embed_wmedia(width, height, link) {
 		if ($this->subscribe_url())
 		{
 			$return = $feed_url . rawurlencode($this->subscribe_url());
-			if (!is_null($site_url) && !is_null($this->get_feed_link()))
+			if ($site_url !== null && $this->get_feed_link() !== null)
 			{
 				$return .= $site_url . rawurlencode($this->get_feed_link());
 			}
@@ -1696,7 +1696,7 @@ function embed_wmedia(width, height, link) {
 		{
 			return $element['xml_base'];
 		}
-		else if (!is_null($this->get_feed_link()))
+		else if ($this->get_feed_link() !== null)
 		{
 			return $this->get_feed_link();
 		}
@@ -2559,7 +2559,7 @@ class SimplePie_Item
 			{
 				$email = $this->sanitize($author['child']['http://www.w3.org/2005/Atom']['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (!is_null($name) || !is_null($email) || !is_null($uri))
+			if ($name !== null || $email !== null || $uri !== null)
 			{
 				$authors[] = new $this->feed->author_class($name, $uri, $email);
 			}
@@ -2581,7 +2581,7 @@ class SimplePie_Item
 			{
 				$email = $this->sanitize($author[0]['child']['http://purl.org/atom/ns#']['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (!is_null($name) || !is_null($email) || !is_null($url))
+			if ($name !== null || $email !== null || $uri !== null)
 			{
 				$authors[] = new $this->feed->author_class($name, $url, $email);
 			}
@@ -2722,11 +2722,11 @@ class SimplePie_Item
 	{
 		$link = $this->get_link();
 		$enclosure = $this->get_enclosure(0);
-		if (!is_null($link))
+		if ($link !== null)
 		{
 			return $link;
 		}
-		else if (!is_null($enclosure))
+		else if ($enclosure !== null)
 		{
 			return $enclosure->get_link();
 		}
@@ -2739,7 +2739,7 @@ class SimplePie_Item
 	function get_link($key = 0, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
-		if (!is_null($links[$key]))
+		if ($links[$key] !== null)
 		{
 			return $links[$key];
 		}
@@ -2953,10 +2953,10 @@ class SimplePie_Item
 	 */
 	function add_to_service($feed_url, $title_url = null)
 	{
-		if ($this->get_permalink())
+		if ($this->get_permalink() !== null)
 		{
 			$return = $feed_url . rawurlencode($this->get_permalink());
-			if (!is_null($title_url) && $this->get_title())
+			if ($title_url !== null && $this->get_title() !== null)
 			{
 				$return .= $title_url . rawurlencode($this->get_title());
 			}
@@ -3974,8 +3974,7 @@ class SimplePie_Misc
 		$name = preg_quote($realname, '/');
 		if (preg_match_all("/<($name)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "(>(.*)<\/$name>|(\/)?>)/siU", $string, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE))
 		{
-			$total_matches = count($matches);
-			for ($i = 0; $i < $total_matches; $i++)
+			for ($i = 0, $total_matches = count($matches); $i < $total_matches; $i++)
 			{
 				$return[$i]['tag'] = $realname;
 				$return[$i]['full'] = $matches[$i][0][0];
@@ -3992,14 +3991,13 @@ class SimplePie_Misc
 				$return[$i]['attribs'] = array();
 				if (!empty($matches[$i][2][0]) && preg_match_all('/((?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([a-z0-9\-._:]*)))?\s/U', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER))
 				{
-					$total_attribs = count($attribs);
-					for ($j = 0; $j < $total_attribs; $j++)
+					for ($j = 0, $total_attribs = count($attribs); $j < $total_attribs; $j++)
 					{
 						if (count($attribs[$j]) == 2)
 						{
 							$attribs[$j][2] = $attribs[$j][1];
 						}
-						$return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode($attribs[$j][count($attribs[$j])-1], 'UTF-8');
+						$return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode(end($attribs[$j]), 'UTF-8');
 					}
 				}
 			}
