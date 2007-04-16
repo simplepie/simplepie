@@ -1416,7 +1416,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -1428,7 +1428,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -1440,7 +1440,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -1452,7 +1452,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -1478,7 +1478,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2057,7 +2057,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2387,7 +2387,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2428,7 +2428,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2441,7 +2441,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2514,7 +2514,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2615,7 +2615,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 		if (!$date_format)
 		{
@@ -2815,7 +2815,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2831,7 +2831,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2847,7 +2847,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2873,7 +2873,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2980,7 +2980,7 @@ class SimplePie_Author
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -2992,7 +2992,7 @@ class SimplePie_Author
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -3004,7 +3004,7 @@ class SimplePie_Author
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 }
@@ -3044,7 +3044,7 @@ class SimplePie_Enclosure
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -3058,7 +3058,7 @@ class SimplePie_Enclosure
 				return pathinfo($url['path'], PATHINFO_EXTENSION);
 			}
 		}
-		return false;
+		return null;
 	}
 
 	function get_type()
@@ -3069,7 +3069,7 @@ class SimplePie_Enclosure
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -3081,7 +3081,7 @@ class SimplePie_Enclosure
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -3094,7 +3094,7 @@ class SimplePie_Enclosure
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -4556,104 +4556,6 @@ class SimplePie_Misc
 		}
 	}
 
-	/**
-	 * Converting a string to UTF-7 (RFC 2152)
-	 *
-	 * @author Tomas V.V.Cox <cox@idecnet.com>
-	 * @author Pierre-Alain Joye <pajoye@php.net>
-	 * @author Amir Mohammad Saied <amir@php.net>
-	 * @copyright 1997-2006 Pierre-Alain Joye,Tomas V.V.Cox,Amir Mohammad Saied
-	 * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
-	 * @version CVS: $Id: Validate.php,v 1.104 2006/11/17 16:32:06 amir Exp $
-	 * @link http://pear.php.net/package/Validate
-	 * @access public
-	 * @param $string string to be converted
-	 * @return string converted string
-	 */
-	function string_to_utf7($string)
-	{
-		$return = '';
-		$utf7 = array(
-						'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-						'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-						'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-						'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-						's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2',
-						'3', '4', '5', '6', '7', '8', '9', '+', ','
-					);
-
-		$state = 0;
-		if (!empty($string))
-		{
-			$i = 0;
-			while ($i <= strlen($string))
-			{
-				$char = substr($string, $i, 1);
-				if ($state == 0)
-				{
-					if ((ord($char) >= 0x7F) || (ord($char) <= 0x1F))
-					{
-						if ($char)
-						{
-							$return .= '&';
-						}
-						$state = 1;
-					}
-					else if ($char == '&')
-					{
-						$return .= '&-';
-					}
-					else
-					{
-						$return .= $char;
-					}
-				}
-				else if (($i == strlen($string) || !((ord($char) >= 0x7F)) || (ord($char) <= 0x1F)))
-				{
-					if ($state != 1)
-					{
-						if (ord($char) > 64)
-						{
-							$return .= '';
-						}
-						else
-						{
-							$return .= $utf7[ord($char)];
-						}
-					}
-					$return .= '-';
-					$state = 0;
-				}
-				else
-				{
-					switch($state)
-					{
-						case 1:
-							$return .= $utf7[ord($char) >> 2];
-							$residue = (ord($char) & 0x03) << 4;
-							$state = 2;
-							break;
-
-						case 2:
-							$return .= $utf7[$residue | (ord($char) >> 4)];
-							$residue = (ord($char) & 0x0F) << 2;
-							$state = 3;
-							break;
-
-						case 3:
-							$return .= $utf7[$residue | (ord($char) >> 6)];
-							$return .= $utf7[ord($char) & 0x3F];
-							$state = 1;
-							break;
-					}
-				}
-				$i++;
-			}
-			return $return;
-		}
-		return '';
-	}
-
 	function change_encoding($data, $input, $output)
 	{
 		$input = SimplePie_Misc::encoding($input);
@@ -4674,10 +4576,6 @@ class SimplePie_Misc
 		else if ($input == 'UTF-8' && $output == 'ISO-8859-1')
 		{
 			return utf8_decode($data);
-		}
-		else if ($output == 'UTF-7')
-		{
-			return SimplePie_Misc::string_to_utf7($data);
 		}
 		return $data;
 	}
@@ -6463,77 +6361,6 @@ class SimplePie_Misc
 		return preg_replace('/((?:(?:\\\\"|[^("])*(?:"(?:[^"\\\\\r]|\\\\.)*"\s*)?)*)((?<!\\\\)\((?:(?2)|.)*?(?<!\\\\)\))/', '$1', $data);
 	}
 
-	/**
-	 * Validate an email according to full RFC822 (inclusive human
-	 * readable part)
-	 *
-	 * @author Tomas V.V.Cox <cox@idecnet.com>
-	 * @author Pierre-Alain Joye <pajoye@php.net>
-	 * @author Amir Mohammad Saied <amir@php.net>
-	 * @copyright 1997-2006 Pierre-Alain Joye,Tomas V.V.Cox,Amir Mohammad Saied
-	 * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
-	 * @version CVS: $Id: Validate.php,v 1.104 2006/11/17 16:32:06 amir Exp $
-	 * @link http://pear.php.net/package/Validate
-	 * @access public
-	 * @param string $email email to validate
-	 * @return boolean true if valid email, false if not
-	 */
-	function validate_rfc822_email(&$email)
-	{
-		if (SimplePie_Misc::change_encoding($email, 'UTF-7', 'UTF-7') != $email)
-		{
-			return false;
-		}
-		static $address = null;
-		if (!$address)
-		{
-			// atom		   =  1*<any CHAR except specials, SPACE and CTLs>
-			$atom = '[^][()<>@,;:\\".\s\000-\037\177-\377]+\s*';
-			// qtext	   =  <any CHAR excepting <">,	   ; => may be folded
-			//		   "\" & CR, and including linear-white-space>
-			$qtext = '[^"\\\\\r]';
-			// quoted-pair =  "\" CHAR					   ; may quote any char
-			$quoted_pair = '\\\\.';
-			// quoted-string = <"> *(qtext/quoted-pair) <">; Regular qtext or
-			//											   ;   quoted chars.
-			$quoted_string = '"(?:' . $qtext . '|' . $quoted_pair . ')*"\s*';
-			// word		   =  atom / quoted-string
-			$word = '(?:' . $atom . '|' . $quoted_string . ')';
-			// local-part  =  word *("." word)			   ; uninterpreted
-			//											   ; case-preserved
-			$local_part = $word . '(?:\.\s*' . $word . ')*';
-			// dtext	   =  <any CHAR excluding "[",	   ; => may be folded
-			//		   "]", "\" & CR, & including linear-white-space>
-			$dtext = '[^][\\\\\r]';
-			// domain-literal =	 "[" *(dtext / quoted-pair) "]"
-			$domain_literal = '\[(?:' . $dtext . '|' . $quoted_pair . ')*\]\s*';
-			// sub-domain  =  domain-ref / domain-literal
-			// domain-ref  =  atom						   ; symbolic reference
-			$sub_domain = '(?:' . $atom . '|' . $domain_literal . ')';
-			// domain	   =  sub-domain *("." sub-domain)
-			$domain = $sub_domain . '(?:\.\s*' . $sub_domain . ')*';
-			// addr-spec   =  local-part "@" domain		   ; global address
-			$addr_spec = $local_part . '@\s*' . $domain;
-			// route	   =  1#("@" domain) ":"		   ; path-relative
-			$route = '@' . $domain . '(?:,@\s*' . $domain . ')*:\s*';
-			// route-addr  =  "<" [route] addr-spec ">"
-			$route_addr = '<\s*(?:' . $route . ')?' . $addr_spec . '>\s*';
-			// phrase	   =  1*word					   ; Sequence of words
-			$phrase = $word	 . '+';
-			// mailbox	   =  addr-spec					   ; simple address
-			//			   /  phrase route-addr			   ; name & addr-spec
-			$mailbox = '(?:' . $addr_spec . '|' . $phrase . $route_addr . ')';
-			// group	   =  phrase ":" [#mailbox] ";"
-			$group = $phrase . ':\s*(?:' . $mailbox . '(?:,\s*' . $mailbox . ')*)?;\s*';
-			//	   address	   =  mailbox					   ; one addressee
-			//				   /  group						   ; named list
-			$address = '/^\s*(?:' . $mailbox . '|' . $group . ')$/';
-		}
-		// strip comments
-		$email = SimplePie_Misc::uncomment_rfc822($email);
-		return (bool) preg_match($address, $email);
-	}
-
 	function parse_mime($mime)
 	{
 		if (($pos = strpos($mime, ';')) === false)
@@ -6735,7 +6562,7 @@ class SimplePie_Locator
 				return $working;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	function is_feed(&$file)
@@ -6806,7 +6633,7 @@ class SimplePie_Locator
 				$done[] = $href;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	function get_links()
@@ -6848,7 +6675,7 @@ class SimplePie_Locator
 		{
 			return true;
 		}
-		return false;
+		return null;
 	}
 
 	function extension(&$array)
@@ -6873,7 +6700,7 @@ class SimplePie_Locator
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 
 	function body(&$array)
@@ -6898,7 +6725,7 @@ class SimplePie_Locator
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 }
 
