@@ -261,7 +261,6 @@ else
  * @copyright 2004-2007 Ryan Parman, Geoffrey Sneddon
  * @author Ryan Parman
  * @author Geoffrey Sneddon
- * @todo Add geo namespace support at feed level
  * @todo Option for type of fetching (cache, not modified header, fetch, etc.)
  */
 class SimplePie
@@ -1927,6 +1926,42 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
+	function get_latitude()
+	{
+		if ($return = $this->get_channel_tags('http://www.w3.org/2003/01/geo/wgs84_pos#', 'lat'))
+		{
+			return (float) $return[0]['data'];
+		}
+		else if (($return = $this->get_channel_tags('http://www.georss.org/georss', 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', $return[0]['data'], $match))
+		{
+			return (float) $match[1];
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_longitude()
+	{
+		if ($return = $this->get_channel_tags('http://www.w3.org/2003/01/geo/wgs84_pos#', 'long'))
+		{
+			return (float) $return[0]['data'];
+		}
+		else if ($return = $this->get_channel_tags('http://www.w3.org/2003/01/geo/wgs84_pos#', 'lon'))
+		{
+			return (float) $return[0]['data'];
+		}
+		else if (($return = $this->get_channel_tags('http://www.georss.org/georss', 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', $return[0]['data'], $match))
+		{
+			return (float) $match[2];
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	function get_image_title()
 	{
 		if ($return = $this->get_image_tags('http://purl.org/rss/1.0/', 'title'))
@@ -2838,6 +2873,10 @@ class SimplePie_Item
 	function get_longitude()
 	{
 		if ($return = $this->get_item_tags('http://www.w3.org/2003/01/geo/wgs84_pos#', 'long'))
+		{
+			return (float) $return[0]['data'];
+		}
+		else if ($return = $this->get_item_tags('http://www.w3.org/2003/01/geo/wgs84_pos#', 'lon'))
 		{
 			return (float) $return[0]['data'];
 		}
