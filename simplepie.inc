@@ -262,7 +262,6 @@ else
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @todo Add geo namespace support at feed level
- * @todo Cache all HTTP headers
  * @todo Option for type of fetching (cache, not modified header, fetch, etc.)
  */
 class SimplePie
@@ -981,16 +980,16 @@ function embed_wmedia(width, height, link) {
 						else if ($cache->mtime() + $this->cache_duration < time())
 						{
 							// If we have last-modified and/or etag set
-							if (isset($this->data['headers']['last-modified'][0]) || isset($this->data['headers']['etag'][0]))
+							if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag']))
 							{
 								$headers = array();
-								if (isset($this->data['headers']['last-modified'][0]))
+								if (isset($this->data['headers']['last-modified']))
 								{
-									$headers['if-modified-since'] = $this->data['headers']['last-modified'][0];
+									$headers['if-modified-since'] = $this->data['headers']['last-modified'];
 								}
-								if (isset($this->data['headers']['etag'][0]))
+								if (isset($this->data['headers']['etag']))
 								{
-									$headers['if-none-match'] = $this->data['headers']['etag'][0];
+									$headers['if-none-match'] = $this->data['headers']['etag'];
 								}
 								$file =& new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
 								if ($file->success)
@@ -1090,7 +1089,7 @@ function embed_wmedia(width, height, link) {
 				$encoding = $this->input_encoding;
 			}
 			// Second try HTTP headers
-			else if (isset($headers['content-type'][0]) && preg_match('/;charset=([^;]*)/i', $headers['content-type'][0], $charset))
+			else if (isset($headers['content-type']) && preg_match('/;[\x09\x20]*charset=([^;]*)/i', $headers['content-type'], $charset))
 			{
 				$encoding = $charset[1];
 			}
@@ -1125,11 +1124,11 @@ function embed_wmedia(width, height, link) {
 				$encoding = 'UTF-8';
 			}
 			// Fallback to the default (US-ASCII for text/xml, ISO-8859-1 for text/* MIME types, UTF-8 otherwise)
-			else if (isset($headers['content-type'][0]) && strtolower(SimplePie_Misc::parse_mime($headers['content-type'][0])) == 'text/xml')
+			else if (isset($headers['content-type']) && strtolower(SimplePie_Misc::parse_mime($headers['content-type'])) == 'text/xml')
 			{
 				$encoding = 'US-ASCII';
 			}
-			else if (isset($headers['content-type'][0]) && preg_match('/^text\//i', SimplePie_Misc::parse_mime($headers['content-type'][0])))
+			else if (isset($headers['content-type']) && preg_match('/^text\//i', SimplePie_Misc::parse_mime($headers['content-type'])))
 			{
 				$encoding = 'ISO-8859-1';
 			}
@@ -1330,10 +1329,10 @@ function embed_wmedia(width, height, link) {
 	 */
 	function get_favicon($alternate = '')
 	{
-		if ($this->get_link())
+		if (($url = $this->get_link()) !== null && preg_match('/^http(s)?:\/\//i', $url))
 		{
-			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $this->get_link());
-			$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'image');
+			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
+			$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
 
 			if ($cache->load())
 			{
@@ -1342,9 +1341,8 @@ function embed_wmedia(width, height, link) {
 			else
 			{
 				$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
-				$headers = $file->headers;
 
-				if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
+				if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
 				{
 					if ($this->favicon_handler)
 					{
@@ -1687,9 +1685,9 @@ function embed_wmedia(width, height, link) {
 		{
 			return $this->get_link();
 		}
-		else if (isset($this->data['headers']['content-location'][0]))
+		else if (isset($this->data['headers']['content-location']))
 		{
-			return SimplePie_Misc::absolutize($this->data['headers']['content-location'][0], $this->subscribe_url());
+			return SimplePie_Misc::absolutize($this->data['headers']['content-location'], $this->subscribe_url());
 		}
 		else
 		{
@@ -1919,9 +1917,9 @@ function embed_wmedia(width, height, link) {
 		{
 			return $this->sanitize($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['xml_lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
-		else if (isset($this->data['headers']['content-language'][0]))
+		else if (isset($this->data['headers']['content-language']))
 		{
-			return $this->sanitize($this->data['headers']['content-language'][0], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($this->data['headers']['content-language'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -3455,6 +3453,7 @@ class SimplePie_File
 	var $success = true;
 	var $headers = array();
 	var $body;
+	var $status_code;
 	var $fp;
 	var $redirects = 0;
 	var $error;
@@ -3520,22 +3519,19 @@ class SimplePie_File
 				{
 					$info = curl_getinfo($fp);
 					curl_close($fp);
-					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 2);
-					if (count($this->headers) == $info['redirect_count'] + 1)
+					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 1);
+					$this->headers = array_pop($this->headers);
+					$parser = new SimplePie_HTTP_Parser($this->headers);
+					if ($parser->parse())
 					{
-						$this->headers = array_pop($this->headers);
-						$this->body = '';
-					}
-					else
-					{
-						$this->body = array_pop($this->headers);
-						$this->headers = array_pop($this->headers);
-					}
-					$this->headers = $this->parse_headers($this->headers);
-					if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location'][0]) && $this->redirects < $redirects)
-					{
-						$this->redirects++;
-						return $this->SimplePie_File($this->headers['location'][0], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+						$this->headers = $parser->headers;
+						$this->body = $parser->body;
+						$this->status_code = $parser->status_code;
+						if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && !empty($this->headers['location']) && $this->redirects < $redirects)
+						{
+							$this->redirects++;
+							return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+						}
 					}
 				}
 			}
@@ -3582,30 +3578,25 @@ class SimplePie_File
 					fwrite($this->fp, $out);
 
 					$info = stream_get_meta_data($this->fp);
-					$data = '';
-					while (strpos($data, "\r\n\r\n") === false && !$info['timed_out'])
+					while (!$info['eof'] && !$info['timed_out'])
 					{
-						$data .= fgets($this->fp, 1160);
+						$this->headers .= fread($this->fp, 1160);
 						$info = stream_get_meta_data($this->fp);
 					}
 					if (!$info['timed_out'])
 					{
-						$this->headers = $this->parse_headers($data);
-						if (($this->headers['status']['code'] == 300 || $this->headers['status']['code'] == 301 || $this->headers['status']['code'] == 302 || $this->headers['status']['code'] == 303 || $this->headers['status']['code'] == 307 || $this->headers['status']['code'] > 307 && $this->headers['status']['code'] < 400) && !empty($this->headers['location'][0]) && $this->redirects < $redirects)
+						$parser = new SimplePie_HTTP_Parser($this->headers);
+						if ($parser->parse())
 						{
-							$this->redirects++;
-							return $this->SimplePie_File($this->headers['location'][0], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
-						}
-						$this->body = '';
-						while (!$info['eof'] && !$info['timed_out'])
-						{
-							$this->body .= fread($this->fp, 1160);
-							$info = stream_get_meta_data($this->fp);
-						}
-						if (!$info['timed_out'])
-						{
-							$this->body = trim($this->body);
-							if (!empty($this->headers['content-encoding'][0]) && ($this->headers['content-encoding'][0] == 'gzip' || $this->headers['content-encoding'][0] == 'deflate'))
+							$this->headers = $parser->headers;
+							$this->body = $parser->body;
+							$this->status_code = $parser->status_code;
+							if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && !empty($this->headers['location']) && $this->redirects < $redirects)
+							{
+								$this->redirects++;
+								return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+							}
+							if (!empty($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
 							{
 								if (substr($this->body, 0, 8) == "\x1f\x8b\x08\x00\x00\x00\x00\x00")
 								{
@@ -3613,10 +3604,6 @@ class SimplePie_File
 								}
 								$this->body = gzinflate($this->body);
 							}
-						}
-						else
-						{
-							$this->body = null;
 						}
 					}
 					else
@@ -3638,34 +3625,479 @@ class SimplePie_File
 			}
 		}
 	}
+}
 
-	function parse_headers($headers)
+/**
+ * HTTP Response Parser
+ *
+ * @package SimplePie
+ * @todo Support HTTP Requests
+ */
+class SimplePie_HTTP_Parser
+{
+	/**
+	 * HTTP Version
+	 *
+	 * @access public
+	 * @var string
+	 */
+	var $http_version = '';
+	
+	/**
+	 * Status code
+	 *
+	 * @access public
+	 * @var string
+	 */
+	var $status_code = '';
+	
+	/**
+	 * Key/value pairs of the headers
+	 *
+	 * @access public
+	 * @var array
+	 */
+	var $headers = array();
+	
+	/**
+	 * Body of the response
+	 *
+	 * @access public
+	 * @var string
+	 */
+	var $body = '';
+	
+	/**
+	 * Current state of the state machine
+	 *
+	 * @access private
+	 * @var string
+	 */
+	var $state = 'start';
+	
+	/**
+	 * Input data
+	 *
+	 * @access private
+	 * @var string
+	 */
+	var $data = '';
+	
+	/**
+	 * Input data length (to avoid calling strlen() everytime this is needed)
+	 *
+	 * @access private
+	 * @var int
+	 */
+	var $data_length = 0;
+	
+	/**
+	 * Current position of the pointer
+	 *
+	 * @access private
+	 * @var int
+	 */
+	var $position = 0;
+	
+	/**
+	 * Name of the hedaer currently being parsed
+	 *
+	 * @access private
+	 * @var string
+	 */
+	var $name = '';
+	
+	/**
+	 * Value of the hedaer currently being parsed
+	 *
+	 * @access private
+	 * @var string
+	 */
+	var $value = '';
+	
+	/**
+	 * Create an instance of the class with the input data
+	 *
+	 * @access public
+	 * @param string $data Input data
+	 */
+	function SimplePie_HTTP_Parser($data)
 	{
-		$headers = explode("\r\n", trim($headers));
-		$status = array_shift($headers);
-		foreach ($headers as $header)
+		$this->data = $data;
+		$this->data_length = strlen($this->data);
+	}
+	
+	/**
+	 * Parse the input data
+	 *
+	 * @access public
+	 * @return bool true on success, false on failure
+	 */
+	function parse()
+	{
+		while ($this->state && $this->state != 'emit' && $this->has_data())
 		{
-			$data = explode(':', $header, 2);
-			$header_name = strtolower(trim($data[0]));
-			if (in_array($header_name, array('date', 'expires', 'if-range', 'if-unmodified-since', 'last-modified', 'retry-after')))
+			$state = $this->state;
+			$this->$state();
+		}
+		$this->data = '';
+		if ($this->state == 'emit')
+		{
+			return true;
+		}
+		else
+		{
+			$this->http_version = '';
+			$this->status_code = '';
+			$this->headers = array();
+			$this->body = '';
+			return false;
+		}
+	}
+	
+	/**
+	 * Check whether there is data beyond the pointer
+	 *
+	 * @access private
+	 * @return bool true if there is further data, false if not
+	 */
+	function has_data()
+	{
+		return (bool) ($this->position < $this->data_length);
+	}
+	
+	/**
+	 * See if the next character is LWS
+	 *
+	 * @access private
+	 * @return bool true if the next character is LWS, false if not
+	 */
+	function is_linear_whitespace()
+	{
+		return (bool) (substr($this->data, $this->position, 2) == "\r\n" && strspn($this->data, "\x09\x20", $this->position + 2, 1) || strspn($this->data, "\x09\x20", $this->position, 1));
+	}
+	
+	/**
+	 * See if the next character is a valid token character
+	 *
+	 * @access private
+	 * @return bool true if the next character is a valid token character, false if not
+	 */
+	function is_token()
+	{
+		return (bool) (strspn($this->data, '!#$%&\'*+-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz|~', $this->position, 1));
+	}
+	
+	/**
+	 * See if the next character is allowed in a header value, excluding quotation marks and LWS
+	 *
+	 * @access private
+	 * @return bool true if the next character is allowed in a header value, excluding quotation marks and LWS, false if not
+	 */
+	function is_value_no_quote()
+	{
+		return (bool) (strspn($this->data, '!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~', $this->position, 1));
+	}
+	
+	/**
+	 * See if the next character is allowed within quotation marks, excluding LWS
+	 *
+	 * @access private
+	 * @return bool true if the next character is allowed within quotation marks, excluding LWS, false if not
+	 */
+	function is_value_quote()
+	{
+		return (bool) (strcspn($this->data, "\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9\xA\xB\xC\xD\xE\xF\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x1A\x1B\x1C\x1D\x1E\x1F\x22\x5C", $this->position, 1));
+	}
+	
+	/**
+	 * The starting state of the state machine, see if the data is a response or request
+	 *
+	 * @access private
+	 */
+	function start()
+	{
+		$this->state = 'http_version_response';
+	}
+	
+	/**
+	 * Parse an HTTP-version string
+	 *
+	 * @access private
+	 */
+	function http_version()
+	{
+		if (substr($this->data, $this->position, 5) == 'HTTP/')
+		{
+			$this->position += 5;
+			if ($len = strspn($this->data, '1234567890', $this->position))
 			{
-				$head[$header_name][] = $data[1];
-			}
-			else
-			{
-				$head[$header_name][] = preg_replace('/(\r\n)?[\x09\x20]+/', '', $data[1]);
+				$this->http_version = substr($this->data, $this->position, $len);
+				$this->position += $len;
+				if ($this->data[$this->position] == '.')
+				{
+					$this->position++;
+					if ($len = strspn($this->data, '1234567890', $this->position))
+					{
+						$this->http_version .= '.' . substr($this->data, $this->position, $len);
+						$this->position += $len;
+						return true;
+					}
+				}
 			}
 		}
-		if (preg_match('/HTTP\/[0-9\.]+ ([0-9]+)(.*)$/i', $status, $matches))
+		$this->http_version = '';
+		return false;
+	}
+	
+	/**
+	 * Parse an HTTP-version string within a response
+	 *
+	 * @access private
+	 */
+	function http_version_response()
+	{
+		if ($this->http_version() && $this->data[$this->position] == "\x20")
 		{
-			if (isset($head['status']))
-			{
-				unset($head['status']);
-			}
-			$head['status']['code'] = $matches[1];
-			$head['status']['name'] = trim($matches[2]);
+			$this->state = 'status_code';
+			$this->position++;
 		}
-		return $head;
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	/**
+	 * Parse a status code
+	 *
+	 * @access private
+	 */
+	function status_code()
+	{
+		if (strspn($this->data, '1234567890', $this->position, 4) == 3)
+		{
+			$this->status_code = substr($this->data, $this->position, 3);
+			$this->state = 'reason_phrase';
+			$this->position += 3;
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	/**
+	 * Skip over the reason phrase (it has no normative value, and you can send absolutely anything here)
+	 *
+	 * @access private
+	 */
+	function reason_phrase()
+	{
+		if (($pos = strpos($this->data, "\r\n", $this->position)) !== false)
+		{
+			$this->position = $pos + 2;
+			$this->state = 'name';
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	/**
+	 * Parse a header name
+	 *
+	 * @access private
+	 */
+	function name()
+	{
+		$len = strspn($this->data, '!#$%&\'*+-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz|~', $this->position);
+		$this->name = substr($this->data, $this->position, $len);
+		$this->position += $len;
+		if ($this->data[$this->position] == ':')
+		{
+			$this->state = 'value_next';
+			$this->position++;
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	/**
+	 * See what state to move the state machine to while within non-quoted header values
+	 *
+	 * @access private
+	 */
+	function value_next()
+	{
+		if ($this->is_value_no_quote())
+		{
+			$this->state = 'value_no_quote';
+		}
+		else if ($this->is_linear_whitespace())
+		{
+			$this->state = 'value_linear_whitespace';
+		}
+		else if ($this->data[$this->position] == '"')
+		{
+			$this->state = 'value_quote_next';
+			$this->position++;
+		}
+		else if (substr($this->data, $this->position, 2) == "\r\n")
+		{
+			$this->state = 'end_crlf';
+			$this->position += 2;
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	/**
+	 * Parse a header value while outside quotes
+	 *
+	 * @access private
+	 */
+	function value_no_quote()
+	{
+		$len = strspn($this->data, '!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~', $this->position);
+		$this->value .= substr($this->data, $this->position, $len);
+		$this->state = 'value_next';
+		$this->position += $len;
+	}
+	
+	/**
+	 * Parse LWS, replacing consecutive characters with a single space
+	 *
+	 * @access private
+	 */
+	function value_linear_whitespace()
+	{
+		while ($this->is_linear_whitespace())
+		{
+			if (substr($this->data, $this->position, 2) == "\r\n")
+			{
+				$this->position += 2;
+			}
+			$this->position += strspn($this->data, "\x09\x20", $this->position);
+		}
+		$this->value .= "\x20";
+		$this->state = 'value_next';
+	}
+	
+	/**
+	 * See what state to move the state machine to while within quoted header values
+	 *
+	 * @access private
+	 */
+	function value_quote_next()
+	{
+		if ($this->is_value_quote())
+		{
+			$this->state = 'value_quote';
+		}
+		else if ($this->is_linear_whitespace())
+		{
+			$this->state = 'value_linear_whitespace_quote';
+		}
+		else
+		{
+			switch ($this->data[$this->position])
+			{
+				case '"':
+					$this->state = 'value_next';
+					$this->position++;
+					break;
+				
+				case '\\':
+					$this->state = 'value_quote_char';
+					$this->position++;
+					break;
+				
+				default:
+					$this->state = false;
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * Parse a header value while within quotes
+	 *
+	 * @access private
+	 */
+	function value_quote()
+	{
+		$len = strcspn($this->data, "\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9\xA\xB\xC\xD\xE\xF\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x1A\x1B\x1C\x1D\x1E\x1F\x22\x5C", $this->position);
+		$this->value .= substr($this->data, $this->position, $len);
+		$this->position += $len;
+		$this->state = 'value_quote_next';
+	}
+	
+	/**
+	 * Parse an escaped character within quotes
+	 *
+	 * @access private
+	 */
+	function value_quote_char()
+	{
+		$ord = ord($this->data[$this->position]);
+		if ($ord >= 0 && $ord <= 127)
+		{
+			$this->value .= $this->data[$this->position];
+			$this->state = 'value_quote_next';
+			$this->position++;
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	/**
+	 * Parse LWS within quotes
+	 *
+	 * @access private
+	 */
+	function value_linear_whitespace_quote()
+	{
+		$this->value_linear_whitespace();
+		$this->state = 'value_quote_next';
+	}
+	
+	/**
+	 * Parse a CRLF, and see whether we have a further header, or whether we are followed by the body
+	 *
+	 * @access private
+	 */
+	function end_crlf()
+	{
+		$this->name = strtolower($this->name);
+		$this->value = trim($this->value, "\x20");
+		if (isset($this->headers[$this->name]))
+		{
+			$this->headers[$this->name] .= ', ' . $this->value;
+		}
+		else
+		{
+			$this->headers[$this->name] = $this->value;
+		}
+		
+		if (substr($this->data, $this->position, 2) == "\r\n")
+		{
+			$this->body = substr($this->data, $this->position + 2);
+			$this->state = 'emit';
+		}
+		else
+		{
+			$this->name = '';
+			$this->value = '';
+			$this->state = 'name';
+		}
 	}
 }
 
@@ -3984,7 +4416,7 @@ class SimplePie_Misc
 
 		if ($file = $cache->load())
 		{
-			header('Content-type:' . $file['headers']['Content-type']);
+			header('Content-type:' . $file['headers']['content-type']);
 			echo $file['body'];
 			exit;
 		}
@@ -6318,9 +6750,9 @@ class SimplePie_Locator
 
 	function get_base()
 	{
-		if (isset($this->file->headers['content-location'][0]))
+		if (isset($this->file->headers['content-location']))
 		{
-			$this->http_base = SimplePie_Misc::absolutize_url(trim($this->file->headers['content-location'][0]), $this->file->url);
+			$this->http_base = SimplePie_Misc::absolutize_url(trim($this->file->headers['content-location']), $this->file->url);
 		}
 		else
 		{
