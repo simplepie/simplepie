@@ -2600,9 +2600,10 @@ class SimplePie_Item
 		}
 		if ($this->data['date'])
 		{
+			$date_format = (string) $date_format;
 			switch ($date_format)
 			{
-				case false:
+				case '':
 					return $this->sanitize($this->data['date']['raw'], SIMPLEPIE_CONSTRUCT_TEXT);
 				
 				case 'U':
@@ -2616,49 +2617,17 @@ class SimplePie_Item
 
 	function get_ftime($date_format = '%d %B %Y, %I:%M %p')
 	{
-		if ($return = $this->get_item_tags('http://www.w3.org/2005/Atom', 'published'))
+		if (!$date_format)
 		{
-			$date = $return[0]['data'];
+			return $this->sanitize($this->get_date(''), SIMPLEPIE_CONSTRUCT_TEXT);
 		}
-		else if ($return = $this->get_item_tags('http://www.w3.org/2005/Atom', 'updated'))
+		else if (($date = $this->get_date('U')) !== null)
 		{
-			$date = $return[0]['data'];
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/atom/ns#', 'issued'))
-		{
-			$date = $return[0]['data'];
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/atom/ns#', 'created'))
-		{
-			$date = $return[0]['data'];
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/atom/ns#', 'modified'))
-		{
-			$date = $return[0]['data'];
-		}
-		else if ($return = $this->get_item_tags('', 'pubDate'))
-		{
-			$date = $return[0]['data'];
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/dc/elements/1.1/', 'date'))
-		{
-			$date = $return[0]['data'];
-		}
-		else if ($return = $this->get_item_tags('http://purl.org/dc/elements/1.0/', 'date'))
-		{
-			$date = $return[0]['data'];
+			return strftime($date_format, SimplePie_Misc::parse_date($date));
 		}
 		else
 		{
 			return null;
-		}
-		if (!$date_format)
-		{
-			return $this->sanitize($date, SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		else
-		{
-			return strftime($date_format, SimplePie_Misc::parse_date($date));
 		}
 	}
 
