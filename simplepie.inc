@@ -1057,8 +1057,7 @@ function embed_wmedia(width, height, link) {
 						{
 							if (!$cache->save(array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD)))
 							{
-								$this->error = "$cache->name is not writeable";
-								SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+								trigger_error("$cache->name is not writeable", E_USER_WARNING);
 							}
 							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
 						}
@@ -1173,8 +1172,7 @@ function embed_wmedia(width, height, link) {
 					// Cache the file if caching is enabled
 					if ($cache && !$cache->save($this->data))
 					{
-						$this->error = "$cache->name is not writeable";
-						SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+						trigger_error("$cache->name is not writeable", E_USER_WARNING);
 					}
 					return true;
 				}
@@ -1351,8 +1349,7 @@ function embed_wmedia(width, height, link) {
 						}
 						else
 						{
-							$this->error = "$cache->name is not writeable";
-							SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+							trigger_error("$cache->name is not writeable", E_USER_WARNING);
 						}
 					}
 					return $favicon;
@@ -1382,8 +1379,7 @@ function embed_wmedia(width, height, link) {
 									}
 									else
 									{
-										$this->error = "$cache->name is not writeable";
-										SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+										trigger_error("$cache->name is not writeable", E_USER_WARNING);
 									}
 								}
 								return $m[2][0];
@@ -7233,8 +7229,7 @@ class SimplePie_Sanitize
 								{
 									if (!$cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 									{
-										$this->error = "$cache->name is not writeable";
-										SimplePie_Misc::error($this->error, E_USER_WARNING, __FILE__, __LINE__);
+										trigger_error("$cache->name is not writeable", E_USER_WARNING);
 									}
 									$img['attribs']['src']['data'] = $this->image_handler . rawurlencode($img['attribs']['src']['data']);
 									$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
