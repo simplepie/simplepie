@@ -2395,7 +2395,7 @@ class SimplePie_Item
 		{
 			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
-		else if ($return = $this->get_item_tags('http://purl.org/rss/1.0/MODULES/CONTENT/', 'encoded'))
+		else if ($return = $this->get_item_tags('http://purl.org/rss/1.0/modules/content/', 'encoded'))
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
