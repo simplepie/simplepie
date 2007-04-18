@@ -4568,7 +4568,11 @@ class SimplePie_Misc
 		$input = SimplePie_Misc::encoding($input);
 		$output = SimplePie_Misc::encoding($output);
 
-		if (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
+		if (function_exists('iconv') && ($return = @iconv($input, "$output//IGNORE", $data)))
+		{
+			return $return;
+		}
+		else if (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
 		{
 			return $return;
 		}
@@ -6868,7 +6872,6 @@ class SimplePie_Parser
 			{
 				case 'http://www.w3.org/2005/Atom:feed':
 				case 'http://purl.org/atom/ns#:feed':
-				case 'feed':
 				case 'rss':
 				case 'http://www.w3.org/1999/02/22-rdf-syntax-ns#:RDF':
 					$this->feed = 1;
