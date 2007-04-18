@@ -993,11 +993,14 @@ function embed_wmedia(width, height, link) {
 								$file =& new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
 								if ($file->success)
 								{
-									$headers = $file->headers;
-									if ($headers['status']['code'] == 304)
+									if ($file->status_code == 304)
 									{
 										$cache->touch();
 										return true;
+									}
+									else
+									{
+										$headers = $file->headers;
 									}
 								}
 								else
@@ -1360,7 +1363,7 @@ function embed_wmedia(width, height, link) {
 					$file =& new $this->file_class($this->get_link(), $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 					$headers = $file->headers;
 
-					if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
+					if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
 					{
 						preg_match_all('/<link([^>]*)rel=("|\')shortcut icon("|\')([^>]*)>/i', $file->body, $m);
 						if (isset($m[0][0]) && !empty($m[0][0]))
@@ -7225,7 +7228,7 @@ class SimplePie_Sanitize
 								$file =& new $this->file_class($image_url, $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 								$headers = $file->headers;
 
-								if ($file->success && ($headers['status']['code'] == 200 || ($headers['status']['code'] > 206 && $headers['status']['code'] < 300)))
+								if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
 								{
 									if (!$cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 									{
