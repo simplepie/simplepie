@@ -6887,11 +6887,7 @@ class SimplePie_Parser
 
 	function tag_open($parser, $tag, $attributes)
 	{
-		if ($this->feed === 0)
-		{
-			return;
-		}
-		else if ($this->feed == false)
+		if ($this->feed == false)
 		{
 			switch ($tag)
 			{
@@ -6972,7 +6968,7 @@ class SimplePie_Parser
 		{
 			$this->data['data'] .= htmlspecialchars($cdata, ENT_QUOTES, $this->encoding);
 		}
-		else if ($this->feed > 1)
+		else
 		{
 			$this->data['data'] .= $cdata;
 		}
@@ -6980,11 +6976,6 @@ class SimplePie_Parser
 
 	function tag_close($parser, $tag)
 	{
-		if ($this->feed == 0)
-		{
-			return;
-		}
-
 		if ($this->current_xhtml_construct >= 0)
 		{
 			$this->current_xhtml_construct--;
