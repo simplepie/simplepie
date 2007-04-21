@@ -3806,7 +3806,7 @@ class SimplePie_HTTP_Parser
 	 */
 	function is_linear_whitespace()
 	{
-		return (bool) (substr($this->data, $this->position, 2) == "\r\n" && strspn($this->data, "\x09\x20", $this->position + 2, 1) || strspn($this->data, "\x09\x20", $this->position, 1));
+		return (bool) (strspn($this->data, "\x09\x20", $this->position, 1) || (substr($this->data, $this->position, 2) == "\r\n" && strspn($this->data, "\x09\x20", $this->position + 2, 1)));
 	}
 	
 	/**
@@ -4009,14 +4009,14 @@ class SimplePie_HTTP_Parser
 	 */
 	function value_linear_whitespace()
 	{
-		while ($this->is_linear_whitespace())
+		do
 		{
 			if (substr($this->data, $this->position, 2) == "\r\n")
 			{
 				$this->position += 2;
 			}
 			$this->position += strspn($this->data, "\x09\x20", $this->position);
-		}
+		} while ($this->is_linear_whitespace());
 		$this->value .= "\x20";
 		$this->state = 'value_next';
 	}
