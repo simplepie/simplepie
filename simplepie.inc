@@ -810,6 +810,26 @@ class SimplePie
 			$this->javascript = false;
 		}
 	}
+	
+	/**
+	 * Set options to make SP a fast as possible
+	 *
+	 * @access public
+	 * @param bool $set Whether to set them or not
+	 */
+	function set_stupidly_fast($set = false)
+	{
+		if ($set)
+		{
+			$this->enable_order_by_date(false);
+			$this->remove_div(false);
+			$this->strip_comments(false);
+			$this->replace_headers(false);
+			$this->strip_htmltags(false);
+			$this->strip_attributes(false);
+			$this->set_image_handler(false);
+		}
+	}
 
 	/**
 	 * Set maximum number of feeds to check with autodiscovery
