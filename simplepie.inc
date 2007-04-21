@@ -856,6 +856,11 @@ class SimplePie
 		$this->sanitize->set_output_encoding($encoding);
 	}
 
+	function strip_comments($strip = false)
+	{
+		$this->sanitize->strip_comments($strip);
+	}
+
 	/**
 	 * Set the handler to enable the display of cached favicons.
 	 *
@@ -7015,6 +7020,7 @@ class SimplePie_Sanitize
 	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
 	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
+	var $strip_comments = false;
 	var $output_encoding = 'UTF-8';
 	var $cache_location = './cache';
 	var $cache_name_function = 'sha1';
@@ -7129,6 +7135,11 @@ class SimplePie_Sanitize
 			$this->strip_attributes = false;
 		}
 	}
+	
+	function strip_comments($strip = false)
+	{
+		$this->strip_comments = (bool) $strip;
+	}
 
 	function set_output_encoding($encoding = 'UTF-8')
 	{
@@ -7161,7 +7172,10 @@ class SimplePie_Sanitize
 			if ($type & (SIMPLEPIE_CONSTRUCT_HTML | SIMPLEPIE_CONSTRUCT_XHTML))
 			{
 				// Strip comments
-				$data = SimplePie_Misc::strip_comments($data);
+				if ($this->strip_comments)
+				{
+					$data = SimplePie_Misc::strip_comments($data);
+				}
 
 				// Replace H1, H2, and H3 tags with the less important H4 tags.
 				// This is because on a site, the more important headers might make sense,
