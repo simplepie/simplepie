@@ -653,16 +653,34 @@ class SimplePie
 		$this->autodiscovery_cache_duration = (int) $seconds;
 	}
 
+	/**
+	 * Set the file system location where the cached files should be stored.
+	 *
+	 * @access public
+	 * @param string $location The file system location.
+	 */
 	function set_cache_location($location = './cache')
 	{
 		$this->cache_location = (string) $location;
 	}
 
+	/**
+	 * Determines whether feed items should be sorted into reverse chronological order.
+	 *
+	 * @access public
+	 * @param bool $location Sort as reverse chronological order.
+	 */
 	function enable_order_by_date($enable = true)
 	{
 		$this->order_by_date = (bool) $enable;
 	}
 
+	/**
+	 * Allows you to override the character encoding reported by the feed.
+	 *
+	 * @access public
+	 * @param string $location Character encoding.
+	 */
 	function set_input_encoding($encoding = false)
 	{
 		if ($encoding)
@@ -694,6 +712,16 @@ class SimplePie
 		$this->autodiscovery = (int) $level;
 	}
 
+	/**
+	 * Allows you to change which class SimplePie uses for caching.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
+	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
+	 *
+	 * @access public
+	 * @param string $location Name of custom class.
+	 */
 	function set_cache_class($class = 'SimplePie_Cache')
 	{
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Cache'))
@@ -704,6 +732,16 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Allows you to change which class SimplePie uses for auto-discovery.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
+	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
+	 *
+	 * @access public
+	 * @param string $location Name of custom class.
+	 */
 	function set_locator_class($class = 'SimplePie_Locator')
 	{
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Locator'))
@@ -714,6 +752,16 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Allows you to change which class SimplePie uses for XML parsing.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
+	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
+	 *
+	 * @access public
+	 * @param string $location Name of custom class.
+	 */
 	function set_parser_class($class = 'SimplePie_Parser')
 	{
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Parser'))
@@ -724,6 +772,16 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Allows you to change which class SimplePie uses for remote file fetching.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
+	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
+	 *
+	 * @access public
+	 * @param string $location Name of custom class.
+	 */
 	function set_file_class($class = 'SimplePie_File')
 	{
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_File'))
@@ -734,6 +792,16 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Allows you to change which class SimplePie uses for data sanitization.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
+	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
+	 *
+	 * @access public
+	 * @param string $location Name of custom class.
+	 */
 	function set_sanitize_class($class = 'SimplePie_Sanitize')
 	{
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Sanitize'))
@@ -744,6 +812,16 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Allows you to change which class SimplePie uses for handling feed items.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
+	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
+	 *
+	 * @access public
+	 * @param string $location Name of custom class.
+	 */
 	function set_item_class($class = 'SimplePie_Item')
 	{
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Item'))
@@ -754,6 +832,16 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Allows you to change which class SimplePie uses for handling author data.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
+	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
+	 *
+	 * @access public
+	 * @param string $location Name of custom class.
+	 */
 	function set_author_class($class = 'SimplePie_Author')
 	{
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Author'))
@@ -764,6 +852,16 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Allows you to change which class SimplePie uses for feed enclosures.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
+	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
+	 *
+	 * @access public
+	 * @param string $location Name of custom class.
+	 */
 	function set_enclosure_class($class = 'SimplePie_Enclosure')
 	{
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Enclosure'))
@@ -774,6 +872,12 @@ class SimplePie
 		return false;
 	}
 
+	/**
+	 * Allows you to override the default user agent string.
+	 *
+	 * @access public
+	 * @param string $location New user agent string.
+	 */
 	function set_useragent($ua = SIMPLEPIE_USERAGENT)
 	{
 		$this->useragent = (string) $ua;
@@ -812,7 +916,8 @@ class SimplePie
 	}
 	
 	/**
-	 * Set options to make SP a fast as possible
+	 * Set options to make SP as fast as possible.  Forgoes a 
+	 * substantial amount of data sanitization in favor of speed.
 	 *
 	 * @access public
 	 * @param bool $set Whether to set them or not
@@ -919,7 +1024,7 @@ class SimplePie
 			}
 			header('Content-type: text/javascript; charset: UTF-8');
 			header('Cache-Control: must-revalidate');
-			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
+			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
 			?>
 function embed_odeo(link) {
 	document.writeln('<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url='+link+'"></embed>');
@@ -4448,6 +4553,8 @@ class SimplePie_Misc
 		if ($file = $cache->load())
 		{
 			header('Content-type:' . $file['headers']['content-type']);
+			header('Cache-Control: must-revalidate');
+			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
 			echo $file['body'];
 			exit;
 		}
