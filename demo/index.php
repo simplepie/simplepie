@@ -33,11 +33,20 @@ if (!empty($_GET['input']))
 	$feed->set_input_encoding($_GET['input']);
 }
 
+// Allow us to choose to not re-order the items by date. (optional)
+if (!empty($_GET['orderbydate']) && $_GET['orderbydate'] == 'false')
+{
+	$feed->enable_order_by_date(false);
+}
+
 // Allow us to cache images in feeds.  This will also bypass any hotlink blocking put in place by the website.
-if (!empty($_GET['image']))
+if (!empty($_GET['image']) && $_GET['image'] == 'true')
 {
 	$feed->set_image_handler('./handler_image.php');
 }
+
+// We'll enable the discovering and caching of favicons.
+$feed->set_favicon_handler('./handler_image.php');
 
 // Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and 
 // all that other good stuff.  The feed's information will not be available to SimplePie before 
@@ -56,9 +65,20 @@ $feed->handle_content_type();
 <head>
 <title>SimplePie: Demo</title>
 
-<link rel="stylesheet" href="./for_the_demo/simplepie.css" media="screen, projector" />
+<link rel="stylesheet" href="./for_the_demo/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="./for_the_demo/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" href="./for_the_demo/simplepie.css" type="text/css" media="screen, projector" />
+
 <script type="text/javascript" src="./for_the_demo/sifr.js"></script>
+<script type="text/javascript" src="./for_the_demo/sifr-config.js"></script>
 <script type="text/javascript" src="./for_the_demo/sleight.js"></script>
+
+<style type="text/css">
+#sp_results h4.title {
+	padding:0 0 0 20px;
+	background:transparent url(<?php echo $feed->get_favicon('./for_the_demo/alternate_favicon.png'); ?>) no-repeat 0 1px;
+}
+</style>
 
 </head>
 
@@ -125,16 +145,15 @@ $feed->handle_content_type();
 			<a href="?feed=http://del.icio.us/rss/#feed" title="The defacto social bookmarking site">del.icio.us</a>, 
 			<a href="?feed=http://digg.com/rss/index.xml#feed" title="Tech news.  Better than Slashdot.">Digg</a>, 
 			<a href="?feed=http://odeo.com/channel/rss/4565#feed" title="Tech and industry videocast.">Diggnation (Odeo)</a>, 
-			<a href="?feed=http://revision3.com/diggnation/feed/small.mov.xml#feed" title="Tech and industry videocast.">Diggnation (Video)</a>, 
+			<a href="?feed=http://revision3.com/diggnation/feed/quicktime-large#feed" title="Tech and industry videocast.">Diggnation (Video)</a>, 
 			<a href="?feed=http://odeo.com/channel/32022/rss#feed" title="Test: Embedded Odeo Player">Dominic Sagolla</a>, 
 			<a href="?feed=http://www.dooce.com/atom.xml#feed" title="Test: Ad Stripping">Dooce</a>, 
 			<a href="?feed=http://www.flickr.com/services/feeds/photos_public.gne?format=rss2#feed" title="Flickr Photos">Flickr</a>, 
 			<a href="?feed=http://news.google.com/?output=rss#feed" title="World News">Google News</a>, 
 			<a href="?feed=http://blogs.law.harvard.edu/home/feed/rdf/#feed" title="Test: Tag Stripping">Harvard Law</a>, 
 			<a href="?feed=http://hagada.org.il/hagada/html/backend.php#feed" title="Test: Window-1255 Encoding">Hebrew Language</a>, 
-			<a href="?feed=http://korfball.hu/rss_news.xml#feed" title="ISO-8859-2">Hungarian Language</a>, 
 			<a href="?feed=http://www.infoworld.com/rss/news.xml#feed" title="Test: Ad Stripping">InfoWorld</a>, 
-			<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml#feed" title="Test: Tag Stripping">iTunes</a>, 
+			<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml&orderbydate=false#feed" title="Test: Tag Stripping">iTunes</a>, 
 			<a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf#feed" title="Test: EUC-JP Encoding">Japanese Language</a>, 
 			<a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php&amp;input=EUC-KR#feed" title="Test: EUC-KR Encoding">Korean Language</a>, 
 			<a href="?feed=http://macnn.com/podcasts/macnn.rss#feed" title="Test: Embedded Enclosures">MacNN</a>, 
@@ -155,11 +174,12 @@ $feed->handle_content_type();
 			<a href="?feed=http://www.tbray.org/ongoing/ongoing.atom#feed" title="Test: Atom 1.0 Support">Tim Bray</a>, 
 			<a href="?feed=http://tuaw.com/rss.xml#feed" title="Test: Ad Stripping">TUAW</a>, 
 			<a href="?feed=http://www.tvgasm.com/atom.xml&amp;image=true#feed" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>, 
+			<a href="?feed=http://uneasysilence.com/feed/#feed" title="Interesting tech randomness">UNEASYsilence</a>, 
 			<a href="?feed=http://feeds.feedburner.com/web20Show#feed" title="Test: Embedded Enclosures">Web 2.0 Show</a>, 
 			<a href="?feed=http://whitecollarruckus.libsyn.com/rss#feed" title="Test: Embedded Enclosures">White Collar Ruckus</a>, 
 			<a href="?feed=http://blogs.technet.com/windowsvista/rss.xml#feed" title="Test: Tag Stripping">Windows Vista Blog</a>, 
 			<a href="?feed=http://rss.news.yahoo.com/rss/topstories#feed" title="World News">Yahoo! News</a>, 
-			<a href="?feed=http://youtube.com/rss/global/recently_added.rss#feed" title="Funny user-submitted videos">You Tube</a>, 
+			<a href="?feed=http://youtube.com/rss/global/top_favorites.rss#feed" title="Funny user-submitted videos">You Tube</a>, 
 			<a href="?feed=http://zeldman.com/rss/#feed" title="The father of the web standards movement">Zeldman</a></p>
 			<a name="feed"></a>
 		</div>
@@ -189,7 +209,7 @@ $feed->handle_content_type();
 					<div class="chunk">
 
 						<!-- If the item has a permalink back to the original post (which 99% of them do), link the item's title to it. -->
-						<h4><?php if ($item->get_permalink()) echo '<a href="' . $item->get_permalink() . '">'; echo $item->get_title(); if ($item->get_permalink()) echo '</a>'; ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y'); ?></span></h4>
+						<h4 class="title"><?php if ($item->get_permalink()) echo '<a href="' . $item->get_permalink() . '">'; echo $item->get_title(); if ($item->get_permalink()) echo '</a>'; ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y'); ?></span></h4>
 
 						<!-- Display the item's primary content. -->
 						<?php echo $item->get_content(); ?>
@@ -241,17 +261,6 @@ $feed->handle_content_type();
 	</div>
 
 </div>
-
-<script type="text/javascript">
-//<![CDATA[
-
-// Load the sIFR font for the feed's title.
-if(typeof sIFR == "function"){
-	sIFR.replaceElement(named({sSelector:"h3.header", sFlashSrc:"./for_the_demo/yanone-kaffeesatz-bold.swf", sColor:"#000000", sHoverColor:"#666666", sBgColor:"#EEFFEE", sFlashVars:"textalign=center"}));
-};
-
-//]]>
-</script>
 
 </body>
 </html>

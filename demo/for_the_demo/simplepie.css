@@ -276,37 +276,7 @@ div.focus {
 /*********************************************
 SIFR STYLES
 *********************************************/
-/* These are standard sIFR styles... do not modify */
-.sIFR-flash {
-	visibility: visible !important;
-	margin: 0;
-}
-
-.sIFR-replaced {
-	visibility: visible !important;
-}
-
-span.sIFR-alternate {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 0;
-	height: 0;
-	display: block;
-	overflow: hidden;
-}
-
-/* These "decoy" styles are used to hide the browser text before it is replaced.  
-The negative-letter spacing in this case is used to make the browser text metrics 
-match up with the sIFR text metrics since the sIFR text in this example is so 
-much narrower... your own settings may vary... any weird sizing issues you may 
-run into are usually fixed by tweaking these decoy styles */
-.sIFR-hasFlash h3.header {
-	visibility: hidden;
-	letter-spacing: -6px;
-	font-size:45px;
-	margin:0;
-	padding:0;
-	line-height:0;
-	height:50px;
+.sIFR-active h3.header {
+	visibility:hidden;
+	line-height:1em;
 }

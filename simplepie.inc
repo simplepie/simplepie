@@ -1356,7 +1356,8 @@ function embed_wmedia(width, height, link) {
 	{
 		if (($url = $this->get_link()) !== null && preg_match('/^http(s)?:\/\//i', $url))
 		{
-			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
+			$standard_favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
+			$favicon = $standard_favicon;
 			$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
 
 			if ($cache->load())
@@ -1394,7 +1395,7 @@ function embed_wmedia(width, height, link) {
 						if (isset($m[0][0]) && !empty($m[0][0]))
 						{
 							preg_match_all('/href=("|\')([^("|\')]*)("|\')/i', $m[0][0], $m);
-							if (isset($m[2][0]) && !empty($m[0][0]))
+							if (isset($m[2][0]) && !empty($m[0][0]) && $m[2][0] != $standard_favicon)
 							{
 								unset($file);
 								$file =& new $this->file_class($m[2][0], $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
@@ -1412,18 +1413,16 @@ function embed_wmedia(width, height, link) {
 								}
 								return $m[2][0];
 							}
-							else
-							{
-								return $alternate;
-							}
-						}
-						else
-						{
-							return $alternate;
 						}
 					}
 				}
 			}
+		}
+
+		// If it was successful, it would have returned something already.  This is a catch-all.
+		if ($alternate != '')
+		{
+			return $alternate;
 		}
 		return false;
 	}
@@ -7253,7 +7252,7 @@ class SimplePie_Sanitize
 						if (!empty($img['attribs']['src']['data']))
 						{
 							$image_url = $img['attribs']['src']['data'];
-							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $image_url), 'image');
+							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $image_url), 'spi');
 
 							if ($cache->load())
 							{
