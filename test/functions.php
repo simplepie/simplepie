@@ -4,12 +4,12 @@ require_once 'unit_test/unit_test.php';
 
 function on_success($file)
 {
-	echo "<tr class='pass'><td>✔</td><td>$file</td></tr>";
+	echo '<span title="' . htmlspecialchars($file, ENT_COMPAT, 'UTF-8') . '" class=pass>&#x2714;</span> ';
 }
 
 function on_fail($file)
 {
-	echo "<tr class='fail'><td>✘</td><td>$file</td></tr>";
+	echo '<span title="' . htmlspecialchars($file, ENT_COMPAT, 'UTF-8') . '" class=fail>&#x2718;</span> ';
 }
 
 function absolutize_test($relative, $base)

@@ -80,36 +80,12 @@ h3 {
 	color:#aaa;
 }
 
-table {
-	border-collapse:collapse;
-	width: 100%;
-}
-
-table tr {
+.pass {
 	color:green;
 }
 
-table tr.fail {
+.fail {
 	color:red;
-	background-color:#fee;
-}
-
-table th {
-	background-color:#eee;
-	padding:2px 3px;
-	border:1px solid #fff;
-}
-
-table td {
-	text-align:left;
-	padding:2px 3px;
-	border:1px solid #eee;
-}
-
-table td:first-child {
-	text-align:center;
-	padding:2px 3px;
-	border:1px solid #eee;
 }
 </style>
 
@@ -152,8 +128,7 @@ function fnLoadPngs() {
 	else echo '<a href="'.$_SERVER["PHP_SELF"].'?remote=true">Re-run with remote tests</a>';
 	?>
 	</p>
-	<table>
-		<tbody>
+	<p>
 <?php
 
 require_once '../simplepie.inc';
@@ -200,8 +175,7 @@ $mtime = $mtime[1] + $mtime[0];
 $time = $mtime - $starttime;
 
 ?>
-		</tbody>
-	</table>
+	</p>
 
 	<h3><a name="results"><?php echo floor($passed_percentage); ?>% passed!</a></h3>
 	<p>We ran <?php echo $tests->total(); ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time / $tests->total(), 3); ?> seconds per test) of which <?php echo $tests->passed(); ?> (<?php echo floor($passed_percentage); ?>%) were passed, and <?php echo $tests->failed(); ?> (<?php echo ceil($failed_percentage); ?>%) were failed.</p>
