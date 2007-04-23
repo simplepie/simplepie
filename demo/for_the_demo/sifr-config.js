@@ -2,6 +2,14 @@ var lucida_grande = {
 	src: './for_the_demo/lucida-grande-bold.swf'
 };
 
+var verdana = {
+	src: './for_the_demo/verdana.swf'
+};
+
+var yanone_kaffeesatz = {
+	src: './for_the_demo/yanone-kaffeesatz-bold.swf'
+};
+
 sIFR.activate(lucida_grande);
 
 sIFR.replace(lucida_grande, {
