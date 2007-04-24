@@ -2489,11 +2489,7 @@ class SimplePie_Item
 		}
 		else if ($return = $this->get_item_tags('http://purl.org/rss/1.0/', 'description'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		else if ($return = $this->get_item_tags('http://my.netscape.com/rdf/simple/0.9/', 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
 		}
 		else if ($return = $this->get_item_tags('', 'description'))
 		{
