@@ -2751,7 +2751,6 @@ class SimplePie_Item
 		}
 		else if (($date = $this->get_date('U')) !== null)
 		{
-			//return strftime($date_format, SimplePie_Misc::parse_date($date));
 			return strftime($date_format, $date);
 		}
 		else
@@ -3715,6 +3714,7 @@ class SimplePie_File
 					fwrite($this->fp, $out);
 
 					$info = stream_get_meta_data($this->fp);
+					$this->headers = '';
 					while (!$info['eof'] && !$info['timed_out'])
 					{
 						$this->headers .= fread($this->fp, 1160);
@@ -3748,7 +3748,7 @@ class SimplePie_File
 						$this->error = 'fsocket timed out';
 						$this->success = false;
 					}
-					fclose($fp);
+					fclose($this->fp);
 				}
 			}
 		}
