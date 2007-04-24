@@ -2743,7 +2743,7 @@ class SimplePie_Item
 		}
 	}
 
-	function get_ftime($date_format = '%d %B %Y, %I:%M %p')
+	function get_local_date($date_format = '%c')
 	{
 		if (!$date_format)
 		{
@@ -2751,7 +2751,8 @@ class SimplePie_Item
 		}
 		else if (($date = $this->get_date('U')) !== null)
 		{
-			return strftime($date_format, SimplePie_Misc::parse_date($date));
+			//return strftime($date_format, SimplePie_Misc::parse_date($date));
+			return strftime($date_format, $date);
 		}
 		else
 		{
