@@ -1,6 +1,16 @@
 <?php
 
-$date = 'Fri, 05 Nov 94 17:15:30 Q';
-$expected = 784041330;
+class SimplePie_Date_Test_RFC822_29 extends SimplePie_Date_Test
+{
+	function data()
+	{
+		$this->data = 'Fri, 05 Nov 94 17:15:30 Q';
+	}
+	
+	function expected()
+	{
+		$this->expected = 784041330;
+	}
+}
 
 ?>

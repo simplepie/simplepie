@@ -1,13 +1,21 @@
 <?php
 
-$data = <<<EOD
-<rss version="0.92">
+class SimplePie_Feed_Copyright_Test_RSS_092_Copyright extends SimplePie_Feed_Copyright_Test
+{
+	function data()
+	{
+		$this->data = 
+'<rss version="0.92">
 	<channel>
 		<copyright>LGPL</copyright>
 	</channel>
-</rss>
-EOD;
-
-$expected = 'LGPL';
+</rss>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'LGPL';
+	}
+}
 
 ?>

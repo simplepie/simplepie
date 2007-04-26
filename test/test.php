@@ -137,48 +137,110 @@ require_once 'functions.php';
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
 
-$tests = new Unit_Test('on_success', 'on_fail');
+$master = new Unit_Test2_Group('SimplePie Test Suite');
 
-$tests->do_test('absolutize_test', 'absolutize', array('relative', 'base'));
-$tests->do_test('date_test', 'date', 'date');
-$tests->do_test('feed_copyright_test', 'feed_copyright');
-$tests->do_test('feed_description_test', 'feed_description');
-$tests->do_test('feed_image_height_test', 'feed_image_height');
-$tests->do_test('feed_image_link_test', 'feed_image_link');
-$tests->do_test('feed_image_title_test', 'feed_image_title');
-$tests->do_test('feed_image_url_test', 'feed_image_url');
-$tests->do_test('feed_image_width_test', 'feed_image_width');
-$tests->do_test('feed_language_test', 'feed_language');
-$tests->do_test('feed_link_test', 'feed_link');
-$tests->do_test('feed_title_test', 'feed_title');
-$tests->do_test('first_item_author_name_test', 'first_item_author_name');
-$tests->do_test('first_item_category_test', 'first_item_category');
-$tests->do_test('first_item_content_test', 'first_item_content');
-$tests->do_test('first_item_date_test', 'first_item_date');
-$tests->do_test('first_item_description_test', 'first_item_description');
-$tests->do_test('first_item_id_test', 'first_item_id');
-$tests->do_test('first_item_latitude_test', 'first_item_latitude');
-$tests->do_test('first_item_longitude_test', 'first_item_longitude');
-$tests->do_test('first_item_permalink_test', 'first_item_permalink');
-$tests->do_test('first_item_title_test', 'first_item_title');
+$absolutize = new Unit_Test2_Group('Absolutize');
+$absolutize->load_folder('absolutize');
+$master->add($absolutize);
 
-if (isset($_GET['remote']))
-{
-	dive_into_mark_atom_autodiscovery($tests);
-}
+$date = new Unit_Test2_Group('Date');
+$date->load_folder('date');
+$master->add($date);
 
-$passed_percentage = $tests->passed() / $tests->total() * 100;
-$failed_percentage = $tests->failed() / $tests->total() * 100;
+$feed_copyright = new Unit_Test2_Group('Feed Copyright');
+$feed_copyright->load_folder('feed_copyright');
+$master->add($feed_copyright);
+
+$feed_description = new Unit_Test2_Group('Feed Description');
+$feed_description->load_folder('feed_description');
+$master->add($feed_description);
+
+$feed_image_height = new Unit_Test2_Group('Feed Image Height');
+$feed_image_height->load_folder('feed_image_height');
+$master->add($feed_image_height);
+
+$feed_image_link = new Unit_Test2_Group('Feed Image Link');
+$feed_image_link->load_folder('feed_image_link');
+$master->add($feed_image_link);
+
+$feed_image_title = new Unit_Test2_Group('Feed Image Title');
+$feed_image_title->load_folder('feed_image_title');
+$master->add($feed_image_title);
+
+$feed_image_url = new Unit_Test2_Group('Feed Image URL');
+$feed_image_url->load_folder('feed_image_url');
+$master->add($feed_image_url);
+
+$feed_image_width = new Unit_Test2_Group('Feed Image Width');
+$feed_image_width->load_folder('feed_image_width');
+$master->add($feed_image_width);
+
+$feed_language = new Unit_Test2_Group('Feed Language');
+$feed_language->load_folder('feed_language');
+$master->add($feed_language);
+
+$feed_link = new Unit_Test2_Group('Feed Link');
+$feed_link->load_folder('feed_link');
+$master->add($feed_link);
+
+$feed_title = new Unit_Test2_Group('Feed Title');
+$feed_title->load_folder('feed_title');
+$master->add($feed_title);
+
+$first_item_author_name = new Unit_Test2_Group('First Item Author Name');
+$first_item_author_name->load_folder('first_item_author_name');
+$master->add($first_item_author_name);
+
+$first_item_category = new Unit_Test2_Group('First Item Category');
+$first_item_category->load_folder('first_item_category');
+$master->add($first_item_category);
+
+$first_item_content = new Unit_Test2_Group('First Item Content');
+$first_item_content->load_folder('first_item_content');
+$master->add($first_item_content);
+
+$first_item_date = new Unit_Test2_Group('First Item Date');
+$first_item_date->load_folder('first_item_date');
+$master->add($first_item_date);
+
+$first_item_description = new Unit_Test2_Group('First Item Description');
+$first_item_description->load_folder('first_item_description');
+$master->add($first_item_description);
+
+$first_item_id = new Unit_Test2_Group('First Item ID');
+$first_item_id->load_folder('first_item_id');
+$master->add($first_item_id);
+
+$first_item_latitude = new Unit_Test2_Group('First Item Latitude');
+$first_item_latitude->load_folder('first_item_latitude');
+$master->add($first_item_latitude);
+
+$first_item_longitude = new Unit_Test2_Group('First Item Longitude');
+$first_item_longitude->load_folder('first_item_longitude');
+$master->add($first_item_longitude);
+
+$first_item_permalink = new Unit_Test2_Group('First Item Permalink');
+$first_item_permalink->load_folder('first_item_permalink');
+$master->add($first_item_permalink);
+
+$first_item_title = new Unit_Test2_Group('First Item Title');
+$first_item_title->load_folder('first_item_title');
+$master->add($first_item_title);
+
+$master->run();
 
 $mtime = explode(' ', microtime());
 $mtime = $mtime[1] + $mtime[0];
 $time = $mtime - $starttime;
 
+$passed_percentage = $master-> passes() / $master->total() * 100;
+$failed_percentage = $master-> fails() / $master->total() * 100;
+
 ?>
 	</p>
 
 	<h3><a name="results"><?php echo floor($passed_percentage); ?>% passed!</a></h3>
-	<p>We ran <?php echo $tests->total(); ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time / $tests->total(), 3); ?> seconds per test) of which <?php echo $tests->passed(); ?> (<?php echo floor($passed_percentage); ?>%) were passed, and <?php echo $tests->failed(); ?> (<?php echo ceil($failed_percentage); ?>%) were failed.</p>
+	<p>We ran <?php echo $master->total(); ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time / $master->total(), 3); ?> seconds per test) of which <?php echo $master-> passes(); ?> (<?php echo floor($passed_percentage); ?>%) were passed, and <?php echo $master-> fails(); ?> (<?php echo ceil($failed_percentage); ?>%) were failed.</p>
 	
 	<p class="footnote">Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
 

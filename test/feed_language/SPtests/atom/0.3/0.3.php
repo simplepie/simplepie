@@ -1,11 +1,19 @@
 <?php
 
-$data = <<<EOD
-<feed version="0.3" xmlns="http://purl.org/atom/ns#" xml:lang="en-GB">
+class SimplePie_Feed_Language_Test_Atom_03_xmllang extends SimplePie_Feed_Language_Test
+{
+	function data()
+	{
+		$this->data = 
+'<feed version="0.3" xmlns="http://purl.org/atom/ns#" xml:lang="en-GB">
 	<title>Feed Title</title>
-</feed>
-EOD;
-
-$expected = 'en-GB';
+</feed>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'en-GB';
+	}
+}
 
 ?>

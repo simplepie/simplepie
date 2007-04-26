@@ -1,13 +1,21 @@
 <?php
 
-$data = <<<EOD
-<rss version="0.92">
+class SimplePie_Feed_Title_Test_RSS_092_Title extends SimplePie_Feed_Title_Test
+{
+	function data()
+	{
+		$this->data = 
+'<rss version="0.92">
 	<channel>
 		<title>Feed Title</title>
 	</channel>
-</rss>
-EOD;
-
-$expected = 'Feed Title';
+</rss>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'Feed Title';
+	}
+}
 
 ?>

@@ -1,13 +1,21 @@
 <?php
 
-$data = <<<EOD
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
+class SimplePie_First_Item_Description_Test_RSS_090_Description extends SimplePie_First_Item_Description_Test
+{
+	function data()
+	{
+		$this->data = 
+'<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<item>
 		<description>Item Description</description>
 	</item>
-</rdf:RDF>
-EOD;
-
-$expected = 'Item Description';
+</rdf:RDF>';
+	}
+	
+	function expected()
+	{
+		$this->expected = NULL;
+	}
+}
 
 ?>

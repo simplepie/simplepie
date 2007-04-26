@@ -1,11 +1,19 @@
 <?php
 
-$data = <<<EOD
-<feed xmlns="http://www.w3.org/2005/Atom">
+class SimplePie_Feed_Description_Test_Atom_10_Subtitle extends SimplePie_Feed_Description_Test
+{
+	function data()
+	{
+		$this->data = 
+'<feed xmlns="http://www.w3.org/2005/Atom">
 	<subtitle>Feed Description</subtitle>
-</feed>
-EOD;
-
-$expected = 'Feed Description';
+</feed>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'Feed Description';
+	}
+}
 
 ?>

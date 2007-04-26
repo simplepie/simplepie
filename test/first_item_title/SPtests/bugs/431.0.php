@@ -1,7 +1,11 @@
 <?php
 
-$data = <<<EOD
-<rss version="2.0">
+class SimplePie_First_Item_Title_Test_Bug_431_Test_0 extends SimplePie_First_Item_Title_Test
+{
+	function data()
+	{
+		$this->data = 
+'<rss version="2.0">
 	<channel>
 		<item>
 			<title>Item title</title>
@@ -10,9 +14,13 @@ $data = <<<EOD
 			</image>
 		</item>
 	</channel>
-</rss>
-EOD;
-
-$expected = 'Item title';
+</rss>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'Item title';
+	}
+}
 
 ?>

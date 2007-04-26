@@ -1,7 +1,11 @@
 <?php
 
-$data = <<<EOD
-<feed xmlns="http://www.w3.org/2005/Atom">
+class SimplePie_First_Item_Author_Name_Atom_10_Inheritance_Source_Name extends SimplePie_First_Item_Author_Name_Test
+{
+	function data()
+	{
+		$this->data = 
+'<feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<source>
 			<author>
@@ -9,9 +13,13 @@ $data = <<<EOD
 			</author>
 		</source>
 	</entry>
-</feed>
-EOD;
-
-$expected = 'Item Author';
+</feed>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'Item Author';
+	}
+}
 
 ?>

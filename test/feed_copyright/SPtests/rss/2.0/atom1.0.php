@@ -1,13 +1,21 @@
 <?php
 
-$data = <<<EOD
-<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
+class SimplePie_Feed_Copyright_Test_RSS_20_Atom_10_Rights extends SimplePie_Feed_Copyright_Test
+{
+	function data()
+	{
+		$this->data = 
+'<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:rights>LGPL</a:rights>
 	</channel>
-</rss>
-EOD;
-
-$expected = 'LGPL';
+</rss>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'LGPL';
+	}
+}
 
 ?>

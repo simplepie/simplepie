@@ -1,15 +1,23 @@
 <?php
 
-$data = <<<EOD
-<rss version="2.0">
+class SimplePie_First_Item_Category_Test_RSS_20_Category extends SimplePie_First_Item_Category_Test
+{
+	function data()
+	{
+		$this->data = 
+'<rss version="2.0">
 	<channel>
 		<item>
 			<category>Item Category</category>
 		</item>
 	</channel>
-</rss>
-EOD;
-
-$expected = 'Item Category';
+</rss>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'Item Category';
+	}
+}
 
 ?>

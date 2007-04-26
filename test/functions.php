@@ -1,259 +1,302 @@
 <?php
 
-require_once 'unit_test/unit_test.php';
+require_once 'unit_test/unit_test2.php';
 
-function on_success($file)
-{
-	echo '<span title="' . htmlspecialchars($file, ENT_COMPAT, 'UTF-8') . '" class=pass>&#x2714;</span> ';
-}
+class xxxxxxx {}
 
-function on_fail($file)
+class SimplePie_Unit_Test2 extends Unit_Test2
 {
-	echo '<span title="' . htmlspecialchars($file, ENT_COMPAT, 'UTF-8') . '" class=fail>&#x2718;</span> ';
-}
-
-function absolutize_test($relative, $base)
-{
-	return SimplePie_Misc::absolutize_url($relative, $base);
-}
-
-function date_test($date)
-{
-	return SimplePie_Misc::parse_date($date);
-}
-
-function feed_copyright_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_copyright();
-}
-
-function feed_description_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_description();
-}
-
-function feed_image_height_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_image_height();
-}
-
-function feed_image_link_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_image_link();
-}
-
-function feed_image_title_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_image_title();
-}
-
-function feed_image_url_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_image_url();
-}
-
-function feed_image_width_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_image_width();
-}
-
-function feed_language_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_language();
-}
-
-function feed_link_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_link();
-}
-
-function feed_title_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	return $feed->get_title();
-}
-
-function first_item_author_name_test($data)
-{
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function SimplePie_Unit_Test2()
 	{
-		$author = $item->get_author();
-		if ($author)
+		parent::Unit_Test2();
+		if (strpos($this->name, 'SimplePie') === 0)
 		{
-			return $author->get_name();
+			$this->name = trim(substr_replace($this->name, '', 0, 9));
 		}
 	}
-	return false;
+	
+	function pass()
+	{
+		echo '<span title="' . htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8') . '" class=pass>&#x2714;</span> ';
+		parent::pass();
+	}
+	
+	function fail()
+	{
+		echo '<span title="' . htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8') . '" class=fail>&#x2718;</span> ';
+		parent::fail();
+	}
+	
+	function result()
+	{
+		if ($this->result === $this->expected)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail();
+		}
+	}
 }
 
-function first_item_category_test($data)
+class SimplePie_Feed_Test extends SimplePie_Unit_Test2
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function feed()
 	{
-		return $item->get_category();
+		$feed = new SimplePie();
+		$feed->set_raw_data($this->data);
+		$feed->enable_cache(false);
+		$feed->init();
+		return $feed;
 	}
-	return false;
 }
 
-function first_item_content_test($data)
+class SimplePie_First_Item_Test extends SimplePie_Feed_Test
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function first_item()
 	{
-		return $item->get_content();
+		$feed = $this->feed();
+		if ($item = $feed->get_item(0))
+		{
+			return $item;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	return false;
 }
 
-function first_item_date_test($data)
+class SimplePie_First_Item_Author_Test extends SimplePie_First_Item_Test
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function author()
 	{
-		return $item->get_date('U');
+		if ($item = $this->first_item())
+		{
+			if ($author = $item->get_author())
+			{
+				return $author;
+			}
+		}
+		return false;
 	}
-	return false;
 }
 
-function first_item_description_test($data)
+class SimplePie_Absolutize_Test extends SimplePie_Unit_Test2
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function test()
 	{
-		return $item->get_description();
+		$this->result = SimplePie_Misc::absolutize_url($this->data['relative'], $this->data['base']);
 	}
-	return false;
 }
 
-function first_item_id_test($data)
+class SimplePie_Date_Test extends SimplePie_Unit_Test2
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function test()
 	{
-		return $item->get_id();
+		$this->result = SimplePie_Misc::parse_date($this->data);
 	}
-	return false;
 }
 
-function first_item_latitude_test($data)
+class SimplePie_Feed_Copyright_Test extends SimplePie_Feed_Test
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function test()
 	{
-		return $item->get_latitude();
+		$feed = $this->feed();
+		$this->result = $feed->get_copyright();
 	}
-	return false;
 }
 
-function first_item_longitude_test($data)
+class SimplePie_Feed_Description_Test extends SimplePie_Feed_Test
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function test()
 	{
-		return $item->get_longitude();
+		$feed = $this->feed();
+		$this->result = $feed->get_description();
 	}
-	return false;
 }
 
-function first_item_permalink_test($data)
+class SimplePie_Feed_Image_Height_Test extends SimplePie_Feed_Test
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function test()
 	{
-		return $item->get_permalink();
+		$feed = $this->feed();
+		$this->result = $feed->get_image_height();
 	}
-	return false;
 }
 
-function first_item_title_test($data)
+class SimplePie_Feed_Image_Link_Test extends SimplePie_Feed_Test
 {
-	$feed = new SimplePie();
-	$feed->set_raw_data($data);
-	$feed->enable_cache(false);
-	$feed->init();
-	$item = $feed->get_item(0);
-	if ($item)
+	function test()
 	{
-		return $item->get_title();
+		$feed = $this->feed();
+		$this->result = $feed->get_image_link();
 	}
-	return false;
+}
+
+class SimplePie_Feed_Image_Title_Test extends SimplePie_Feed_Test
+{
+	function test()
+	{
+		$feed = $this->feed();
+		$this->result = $feed->get_image_title();
+	}
+}
+
+class SimplePie_Feed_Image_URL_Test extends SimplePie_Feed_Test
+{
+	function test()
+	{
+		$feed = $this->feed();
+		$this->result = $feed->get_image_url();
+	}
+}
+
+class SimplePie_Feed_Image_Width_Test extends SimplePie_Feed_Test
+{
+	function test()
+	{
+		$feed = $this->feed();
+		$this->result = $feed->get_image_width();
+	}
+}
+
+class SimplePie_Feed_Language_Test extends SimplePie_Feed_Test
+{
+	function test()
+	{
+		$feed = $this->feed();
+		$this->result = $feed->get_language();
+	}
+}
+
+class SimplePie_Feed_Link_Test extends SimplePie_Feed_Test
+{
+	function test()
+	{
+		$feed = $this->feed();
+		$this->result = $feed->get_link();
+	}
+}
+
+class SimplePie_Feed_Title_Test extends SimplePie_Feed_Test
+{
+	function test()
+	{
+		$feed = $this->feed();
+		$this->result = $feed->get_title();
+	}
+}
+
+class SimplePie_First_Item_Author_Name_Test extends SimplePie_First_Item_Author_Test
+{
+	function test()
+	{
+		if ($author = $this->author())
+		{
+			$this->result = $author->get_name();
+		}
+	}
+}
+
+class SimplePie_First_Item_Category_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_category();
+		}
+	}
+}
+
+class SimplePie_First_Item_Content_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_content();
+		}
+	}
+}
+
+class SimplePie_First_Item_Date_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_date('U');
+		}
+	}
+}
+
+class SimplePie_First_Item_Description_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_description();
+		}
+	}
+}
+
+class SimplePie_First_Item_ID_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_id();
+		}
+	}
+}
+
+class SimplePie_First_Item_Latitude_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_latitude();
+		}
+	}
+}
+
+class SimplePie_First_Item_Longitude_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_longitude();
+		}
+	}
+}
+
+class SimplePie_First_Item_Permalink_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_permalink();
+		}
+	}
+}
+
+class SimplePie_First_Item_Title_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			$this->result = $item->get_title();
+		}
+	}
 }
 
 function dive_into_mark_atom_autodiscovery($tests)

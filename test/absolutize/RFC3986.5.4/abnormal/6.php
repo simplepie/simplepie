@@ -1,6 +1,16 @@
 <?php
 
-$relative = '.g';
-$expected = 'http://a/b/c/.g';
+class SimplePie_Absolutize_Test_RFC3986_Abnormal_6 extends SimplePie_Absolutize_Test_RFC3986
+{
+	function data()
+	{
+		$this->data['relative'] = '.g';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'http://a/b/c/.g';
+	}
+}
 
 ?>

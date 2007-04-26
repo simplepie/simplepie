@@ -1,15 +1,23 @@
 <?php
 
-$data = <<<EOD
-<rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
+class SimplePie_First_Item_Description_Test_RSS_092_Atom_03_Summary extends SimplePie_First_Item_Description_Test
+{
+	function data()
+	{
+		$this->data = 
+'<rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
 		<item>
 			<a:summary>Item Description</a:summary>
 		</item>
 	</channel>
-</rss>
-EOD;
-
-$expected = 'Item Description';
+</rss>';
+	}
+	
+	function expected()
+	{
+		$this->expected = 'Item Description';
+	}
+}
 
 ?>

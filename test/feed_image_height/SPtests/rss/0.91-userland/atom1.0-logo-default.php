@@ -1,13 +1,21 @@
 <?php
 
-$data = <<<EOD
-<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+class SimplePie_Feed_Image_Height_Test_RSS_091_Userland_Atom_10_Logo extends SimplePie_Feed_Image_Height_Test
+{
+	function data()
+	{
+		$this->data = 
+'<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:logo>http://example.com/</a:logo>
 	</channel>
-</rss>
-EOD;
-
-$expected = null;
+</rss>';
+	}
+	
+	function expected()
+	{
+		$this->expected = NULL;
+	}
+}
 
 ?>

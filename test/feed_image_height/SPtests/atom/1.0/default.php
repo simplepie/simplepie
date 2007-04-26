@@ -1,11 +1,19 @@
 <?php
 
-$data = <<<EOD
-<feed xmlns="http://www.w3.org/2005/Atom">
+class SimplePie_Feed_Image_Height_Test_Atom_10 extends SimplePie_Feed_Image_Height_Test
+{
+	function data()
+	{
+		$this->data = 
+'<feed xmlns="http://www.w3.org/2005/Atom">
 	<logo>http://example.com/</logo>
-</feed>
-EOD;
-
-$expected = null;
+</feed>';
+	}
+	
+	function expected()
+	{
+		$this->expected = NULL;
+	}
+}
 
 ?>
