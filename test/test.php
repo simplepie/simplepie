@@ -230,6 +230,17 @@ $master->add($first_item_title);
 if (isset($_GET['remote']))
 {
 	$master->add(new diveintomark_Atom_Autodiscovery);
+	
+	$who_knows_a_title_from_a_hole_in_the_ground = new Unit_Test2_Group('Who knows a <title> from a hole in the ground?');
+	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_html_cdata);
+	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_html_entity);
+	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_html_ncr);
+	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_text_cdata);
+	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_text_entity);
+	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_text_ncr);
+	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_xhtml_entity);
+	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_xhtml_ncr);
+	$master->add($who_knows_a_title_from_a_hole_in_the_ground);
 }
 
 $master->run();
