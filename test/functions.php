@@ -2,8 +2,6 @@
 
 require_once 'unit_test/unit_test2.php';
 
-class xxxxxxx {}
-
 class SimplePie_Unit_Test2 extends Unit_Test2
 {
 	function SimplePie_Unit_Test2()
@@ -299,42 +297,55 @@ class SimplePie_First_Item_Title_Test extends SimplePie_First_Item_Test
 	}
 }
 
-function dive_into_mark_atom_autodiscovery($tests)
+class diveintomark_Atom_Autodiscovery extends SimplePie_Unit_Test2
 {
-	$url = 'http://diveintomark.org/tests/client/autodiscovery/';
-	$done = array();
-	for ($i = 0; $url; $i++)
+	var $data = array('url' => 'http://diveintomark.org/tests/client/autodiscovery/');
+	
+	function data()
 	{
-		$file = new SimplePie_File($url, 10, 5, null, SIMPLEPIE_USERAGENT);
-		$url = false;
-		if ($file->success)
+		$this->data['file'] =& new SimplePie_File($this->data['url'], 10, 5, null, SIMPLEPIE_USERAGENT);
+		$this->name = $this->data['url'];
+		$this->data['url'] = false;
+	}
+	
+	function expected()
+	{
+		$this->expected = $this->data['file']->url;
+	}
+	
+	function test()
+	{
+		$feed = new SimplePie();
+		$feed->set_file($this->data['file']);
+		$feed->enable_cache(false);
+		$feed->init();
+		$this->result = $feed->get_link();
+	}
+	
+	function result()
+	{
+		if ($this->data['file']->url != 'http://diveintomark.org/tests/client/autodiscovery/')
 		{
-			if ($i > 0)
+			parent::result();
+		}
+		static $done = array();
+		$links = SimplePie_Misc::get_element('link', $this->data['file']->body);
+		foreach ($links as $link)
+		{
+			if (!empty($link['attribs']['href']['data']) && !empty($link['attribs']['rel']['data']))
 			{
-				$feed = new SimplePie();
-				$feed->set_file($file);
-				$feed->enable_cache(false);
-				$feed->init();
-				$tests->run_test($file->url, $feed->get_link() == $file->url);
-			}
-			$links = SimplePie_Misc::get_element('link', $file->body);
-			foreach ($links as $link)
-			{
-				if (!empty($link['attribs']['href']['data']) && !empty($link['attribs']['rel']['data']))
+				$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link['attribs']['rel']['data'])));
+				$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->data['file']->url);
+				if (!in_array($href, $done) && in_array('next', $rel))
 				{
-					$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link['attribs']['rel']['data'])));
-					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $file->url);
-					if (!in_array($href, $done) && in_array('next', $rel))
-					{
-						$done[] = $url = $href;
-						break;
-					}
+					$done[] = $this->data['url'] = $href;
+					break;
 				}
 			}
 		}
-		else
+		if ($this->data['url'])
 		{
-			$tests->run_test($file->url, false);
+			$this->run();
 		}
 	}
 }

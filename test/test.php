@@ -227,6 +227,11 @@ $first_item_title = new Unit_Test2_Group('First Item Title');
 $first_item_title->load_folder('first_item_title');
 $master->add($first_item_title);
 
+if (isset($_GET['remote']))
+{
+	$master->add(new diveintomark_Atom_Autodiscovery);
+}
+
 $master->run();
 
 $mtime = explode(' ', microtime());
