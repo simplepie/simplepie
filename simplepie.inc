@@ -1817,7 +1817,7 @@ function embed_wmedia(width, height, link) {
 		}
 		else if (isset($this->data['headers']['content-location']))
 		{
-			return SimplePie_Misc::absolutize($this->data['headers']['content-location'], $this->subscribe_url());
+			return SimplePie_Misc::absolutize_url($this->data['headers']['content-location'], $this->subscribe_url());
 		}
 		else
 		{
