@@ -6876,6 +6876,7 @@ class SimplePie_Parser
 	var $current_line;
 	var $current_column;
 	var $current_byte;
+	var $separator = ' ';
 	var $feed = false;
 	var $namespace = array('');
 	var $element = array('');
@@ -6936,7 +6937,7 @@ class SimplePie_Parser
 		$return = true;
 
 		// Create the parser
-		$this->xml = xml_parser_create_ns($this->encoding);
+		$this->xml = xml_parser_create_ns($this->encoding, $this->separator);
 		xml_parser_set_option($this->xml, XML_OPTION_SKIP_WHITE, 1);
 		xml_parser_set_option($this->xml, XML_OPTION_CASE_FOLDING, 0);
 		xml_set_object($this->xml, $this);
@@ -6998,10 +6999,10 @@ class SimplePie_Parser
 		{
 			switch ($tag)
 			{
-				case 'http://www.w3.org/2005/Atom:feed':
-				case 'http://purl.org/atom/ns#:feed':
+				case 'http://www.w3.org/2005/Atom' . $this->separator . 'feed':
+				case 'http://purl.org/atom/ns#' . $this->separator . 'feed':
 				case 'rss':
-				case 'http://www.w3.org/1999/02/22-rdf-syntax-ns#:RDF':
+				case 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' . $this->separator . 'RDF':
 					$this->feed = 1;
 					break;
 			}
@@ -7115,9 +7116,14 @@ class SimplePie_Parser
 		static $cache = array();
 		if (!isset($cache[$string]))
 		{
-			if (preg_match('/^(.+)\:([^:]+)$/', $string, $match))
+			if ($pos = strpos($string, $this->separator))
 			{
-				$cache[$string] = array($match[1], $match[2]);
+				static $separator_length;
+				if (!$separator_length)
+				{
+					$separator_length = strlen($this->separator);
+				}
+				$cache[$string] = array(substr($string, 0, $pos), substr($string, $pos + $separator_length));
 			}
 			else
 			{
