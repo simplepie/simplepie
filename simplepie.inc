@@ -1375,79 +1375,82 @@ function embed_wmedia(width, height, link) {
 
 	function get_type()
 	{
-		$type = SIMPLEPIE_TYPE_ALL;
-		if (isset($this->data['child']['http://www.w3.org/2005/Atom']['feed']))
+		if (!isset($this->data['type']))
 		{
-			$type &= SIMPLEPIE_TYPE_ATOM_10;
-		}
-		else if (isset($this->data['child']['http://purl.org/atom/ns#']['feed']))
-		{
-			$type &= SIMPLEPIE_TYPE_ATOM_03;
-		}
-		else if (isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF']))
-		{
-			if (isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://purl.org/rss/1.0/']['channel'])
-			|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://purl.org/rss/1.0/']['image'])
-			|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://purl.org/rss/1.0/']['item'])
-			|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://purl.org/rss/1.0/']['textinput']))
+			$this->data['type'] = SIMPLEPIE_TYPE_ALL;
+			if (isset($this->data['child']['http://www.w3.org/2005/Atom']['feed']))
 			{
-				$type &= SIMPLEPIE_TYPE_RSS_10;
+				$this->data['type'] &= SIMPLEPIE_TYPE_ATOM_10;
 			}
-			if (isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://my.netscape.com/rdf/simple/0.9/']['channel'])
-			|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://my.netscape.com/rdf/simple/0.9/']['image'])
-			|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://my.netscape.com/rdf/simple/0.9/']['item'])
-			|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://my.netscape.com/rdf/simple/0.9/']['textinput']))
+			else if (isset($this->data['child']['http://purl.org/atom/ns#']['feed']))
 			{
-				$type &= SIMPLEPIE_TYPE_RSS_090;
+				$this->data['type'] &= SIMPLEPIE_TYPE_ATOM_03;
 			}
-		}
-		else if (isset($this->data['child']['']['rss']))
-		{
-			$type &= SIMPLEPIE_TYPE_RSS_ALL;
-			if (isset($this->data['child']['']['rss'][0]['attribs']['']['version']))
+			else if (isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF']))
 			{
-				switch (trim($this->data['child']['']['rss'][0]['attribs']['']['version']))
+				if (isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://purl.org/rss/1.0/']['channel'])
+				|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://purl.org/rss/1.0/']['image'])
+				|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://purl.org/rss/1.0/']['item'])
+				|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://purl.org/rss/1.0/']['textinput']))
 				{
-					case '0.91':
-						$type &= SIMPLEPIE_TYPE_RSS_091;
-						if (isset($this->data['child']['']['rss'][0]['child']['']['skiphours']['hour'][0]['data']))
-						{
-							switch (trim($this->data['child']['']['rss'][0]['child']['']['skiphours']['hour'][0]['data']))
-							{
-								case '0':
-									$type &= SIMPLEPIE_TYPE_RSS_091_NETSCAPE;
-									break;
-
-								case '24':
-									$type &= SIMPLEPIE_TYPE_RSS_091_USERLAND;
-									break;
-							}
-						}
-						break;
-
-					case '0.92':
-						$type &= SIMPLEPIE_TYPE_RSS_092;
-						break;
-
-					case '0.93':
-						$type &= SIMPLEPIE_TYPE_RSS_093;
-						break;
-
-					case '0.94':
-						$type &= SIMPLEPIE_TYPE_RSS_094;
-						break;
-
-					case '2.0':
-						$type &= SIMPLEPIE_TYPE_RSS_20;
-						break;
+					$this->data['type'] &= SIMPLEPIE_TYPE_RSS_10;
+				}
+				if (isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://my.netscape.com/rdf/simple/0.9/']['channel'])
+				|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://my.netscape.com/rdf/simple/0.9/']['image'])
+				|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://my.netscape.com/rdf/simple/0.9/']['item'])
+				|| isset($this->data['child']['http://www.w3.org/1999/02/22-rdf-syntax-ns#']['RDF'][0]['child']['http://my.netscape.com/rdf/simple/0.9/']['textinput']))
+				{
+					$this->data['type'] &= SIMPLEPIE_TYPE_RSS_090;
 				}
 			}
+			else if (isset($this->data['child']['']['rss']))
+			{
+				$this->data['type'] &= SIMPLEPIE_TYPE_RSS_ALL;
+				if (isset($this->data['child']['']['rss'][0]['attribs']['']['version']))
+				{
+					switch (trim($this->data['child']['']['rss'][0]['attribs']['']['version']))
+					{
+						case '0.91':
+							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_091;
+							if (isset($this->data['child']['']['rss'][0]['child']['']['skiphours']['hour'][0]['data']))
+							{
+								switch (trim($this->data['child']['']['rss'][0]['child']['']['skiphours']['hour'][0]['data']))
+								{
+									case '0':
+										$this->data['type'] &= SIMPLEPIE_TYPE_RSS_091_NETSCAPE;
+										break;
+	
+									case '24':
+										$this->data['type'] &= SIMPLEPIE_TYPE_RSS_091_USERLAND;
+										break;
+								}
+							}
+							break;
+	
+						case '0.92':
+							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_092;
+							break;
+	
+						case '0.93':
+							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_093;
+							break;
+	
+						case '0.94':
+							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_094;
+							break;
+	
+						case '2.0':
+							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_20;
+							break;
+					}
+				}
+			}
+			else
+			{
+				$this->data['type'] = SIMPLEPIE_TYPE_NONE;
+			}
 		}
-		else
-		{
-			$type = SIMPLEPIE_TYPE_NONE;
-		}
-		return $type;
+		return $this->data['type'];
 	}
 
 	/**
