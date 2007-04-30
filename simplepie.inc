@@ -2781,13 +2781,13 @@ class SimplePie_Item
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
+			if (!empty($this->data['date']['raw']))
+			{
+				$this->data['date']['parsed'] = SimplePie_Misc::parse_date($this->data['date']['raw']);
+			}
 			else
 			{
 				$this->data['date'] = null;
-			}
-			if ($this->data['date'])
-			{
-				$this->data['date']['parsed'] = SimplePie_Misc::parse_date($this->data['date']['raw']);
 			}
 		}
 		if ($this->data['date'])
