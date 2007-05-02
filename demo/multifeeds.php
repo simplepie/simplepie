@@ -18,72 +18,15 @@ Lots of this code is commented to help explain some of the new stuff.
 require_once('../simplepie.inc');
 require_once('../idn/idna_convert.class.php');
 
-// We don't HAVE to do this here, but let's just set some proper HTTP headers for the page.
-header('Content-type:text/html; charset=utf-8');
-
 // Initialize some feeds for use.
-/*
-Yes, this is functional, but I don't think it "feels" right.  We can do better than this.  Perhaps:
-
-$feeds = new SimplePie();
-$feeds->set_feed_url(array(
-	'http://apple.com',
-	'http://simplepie.org',
-	'http://digg.com',
-	'http://tuaw.com',
-	'http://slashdot.org',
-	'http://uneasysilence.com'
+$feed = new SimplePie();
+$feed->set_feed_url(array(
+	'http://rss.news.yahoo.com/rss/topstories',
+	'http://news.google.com/?output=atom',
+	'http://rss.cnn.com/rss/cnn_topstories.rss'
 ));
-$feeds->set_favicon_handler('handler_favicon.php');
-$feeds->set_cache_location('./cache');
-$feeds->init();
-$feeds->handle_content_type();
-
-// etc.
-
-Feed-level information would not be available (because we're mashing several feeds -- they'd all 
-conflict), although all of the item-level info would.  We've also introduced $item->get_feed(), 
-which brings back the feed-level data as appropriate for the item.  Pretty sweet.
-*/
-$apple = new SimplePie();
-$apple->set_feed_url('http://apple.com');
-$apple->set_favicon_handler('handler_favicon.php');
-$apple->set_image_handler('handler_favicon.php');
-$apple->init();
-
-$sp = new SimplePie();
-$sp->set_feed_url('http://simplepie.org/blog/feed/');
-$sp->set_favicon_handler('handler_favicon.php');
-$sp->set_image_handler('handler_favicon.php');
-$sp->init();
-
-$digg = new SimplePie();
-$digg->set_feed_url('http://digg.com/rss/index.xml');
-$digg->set_favicon_handler('handler_favicon.php');
-$digg->set_image_handler('handler_favicon.php');
-$digg->init();
-
-$tuaw = new SimplePie();
-$tuaw->set_feed_url('http://feeds.tuaw.com/weblogsinc/tuaw');
-$tuaw->set_favicon_handler('handler_favicon.php');
-$tuaw->set_image_handler('handler_favicon.php');
-$tuaw->init();
-
-$uneasy = new SimplePie();
-$uneasy->set_feed_url('http://feeds.uneasysilence.com/uneasysilence/blog/');
-$uneasy->set_favicon_handler('handler_favicon.php');
-$uneasy->set_image_handler('handler_favicon.php');
-$uneasy->init();
-
-$slashdot = new SimplePie();
-$slashdot->set_feed_url('http://rss.slashdot.org/Slashdot/slashdot');
-$slashdot->set_favicon_handler('handler_favicon.php');
-$slashdot->set_image_handler('handler_favicon.php');
-$slashdot->init();
-
-// Merge everything together (for now... this could/should be simplified as noted above)
-$merged = SimplePie::merge_items(0, 0, $digg, $tuaw, $uneasy, $slashdot, $sp, $apple);
-
+$feed->init();
+$feed->handle_content_type();
 
 // Begin the (X)HTML page.
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -122,15 +65,13 @@ $merged = SimplePie::merge_items(0, 0, $digg, $tuaw, $uneasy, $slashdot, $sp, $a
 
 	<div class="chunk">
 		<h1>Quick-n-Dirty Multifeeds Demo</a></h1>
-		<p><i>Mashing SimplePie, Apple, Digg, Slashdot, UNEASYsilence, and TUAW.</i></p>
 	</div>
 
-	<? //foreach($feed->get_items() as $item): ?>
-	<? foreach($merged as $item): ?>
+	<? foreach($feed->get_items() as $item): ?>
 
 		<div class="chunk">
 			<!-- Here (in the PHP code), we see some PHP5 "chaining" of methods, showing how to grab the appropriate favicon for the source of the item. -->
-			<h4 style="background-image:url(<?=$item->get_feed()->get_favicon()?>);"><a href="<?=$item->get_permalink()?>"><?=$item->get_title()?></a></h4>
+			<h4 style="background-image:url(<?=$item->get_feed()->get_favicon()?>);"><a href="<?=$item->get_permalink()?>"><?=html_entity_decode($item->get_title(), ENT_QUOTES, 'UTF-8')?></a></h4>
 
 			<!-- get_description() now prefers summaries over full content -->
 			<?//=$item->get_description()?>

@@ -535,6 +535,27 @@ class SimplePie
 	var $image_handler = '';
 
 	/**
+	 * @var array Stores the URLs when multiple feeds are being initialized.
+	 * @see SimplePie::set_feed_url()
+	 * @access private
+	 */
+	var $multifeed_url = array();
+
+	/**
+	 * @var array Stores the number of URLs that were passed in in cases where there are more than one.
+	 * @see SimplePie::set_feed_url()
+	 * @access private
+	 */
+	var $multifeed_url_length = 0;
+
+	/**
+	 * @var array Stores the get_object_vars() array for use with multifeeds.
+	 * @see SimplePie::set_feed_url()
+	 * @access private
+	 */
+	var $config_settings = null;
+
+	/**
 	 * The SimplePie class contains feed level data and options
 	 *
 	 * There are two ways that you can create a new SimplePie object. The first
@@ -586,6 +607,10 @@ class SimplePie
 	 * website you want to try to use auto-discovery on. This takes priority
 	 * over any set raw data.
 	 *
+	 * You can set multiple feeds to mash together by passing an array instead 
+	 * of a string for the $url. Remember that with each additional feed comes 
+	 * additional processing and resources.
+	 *
 	 * @access public
 	 * @since 1.0 Preview Release
 	 * @param string $url This is the URL of the feed you want to parse.
@@ -593,7 +618,20 @@ class SimplePie
 	 */
 	function set_feed_url($url)
 	{
-		$this->feed_url = SimplePie_Misc::fix_protocol($url, 1);
+		if (is_array($url))
+		{
+			$size = sizeof($url);
+			for ($x = 0; $x < $size; $x++)
+			{
+				$this->multifeed_url[$x] = SimplePie_Misc::fix_protocol($url[$x], 1);
+				$this->multifeed_url_length++;
+			}
+			unset($size);
+		}
+		else
+		{
+			$this->feed_url = SimplePie_Misc::fix_protocol($url, 1);
+		}
 	}
 
 	/**
@@ -1057,9 +1095,9 @@ class SimplePie
 	 * @access public
 	 * @param str $page Web-accessible path to the handler_favicon.php file.
 	 */
-	function set_favicon_handler($page = false)
+	function set_favicon_handler($page = false, $qs = 'i')
 	{
-		$this->favicon_handler = $page . '?i=';
+		$this->favicon_handler = $page . '?' . $qs . '=';
 	}
 
 	/**
@@ -1068,9 +1106,9 @@ class SimplePie
 	 * @access public
 	 * @param str $page Web-accessible path to the handler_image.php file.
 	 */
-	function set_image_handler($page = false)
+	function set_image_handler($page = false, $qs = 'i')
 	{
-		$this->sanitize->set_image_handler($page . '?i=');
+		$this->sanitize->set_image_handler($page . '?' . $qs . '=');
 		$this->sanitize->pass_cache_data($this->cache_location, $this->cache_name_function, $this->cache_class);
 		$this->sanitize->pass_file_data($this->file_class, $this->timeout, $this->useragent, $this->force_fsockopen);
 	}
@@ -1117,6 +1155,12 @@ function embed_wmedia(width, height, link) {
 }
 			<?php
 			exit;
+		}
+
+		// This should only happen once.
+		if ($this->config_settings === null)
+		{
+			$this->config_settings = get_object_vars($this);
 		}
 
 		if ($this->feed_url !== null || $this->raw_data !== null)
@@ -2294,7 +2338,53 @@ function embed_wmedia(width, height, link) {
 
 	function get_items($start = 0, $end = 0)
 	{
-		if (!isset($this->data['items']))
+		// If we have multiple feeds...
+		if ($this->multifeed_url_length > 0)
+		{
+			// Let's go through each feed URL
+			$multifeeds = array();
+			foreach ($this->multifeed_url as $url)
+			{
+				// Create a new SimplePie object for this single feed
+				$t = new SimplePie();
+
+				// This *should* always be an array.  Make sure to init() first.
+				if (is_array($this->config_settings))
+				{
+					// We grabbed this back in init().  Let's use it here.
+					// *NOTE:* This doesn't handle everything. Many options are in SimplePie_Sanitize().  Maybe we can use get_class_methods()? Ergh.
+					foreach ($this->config_settings as $key=>$value)
+					{
+						// Whatever settings were set in the initial new SimplePie() call, let's use those settings.
+						$t->$key = $value;
+					}
+				}
+				else
+				{
+					$this->error = "The init() method was not called before attempting to retreive the items.";
+					SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+				}
+
+				// Overwrite certain settings
+				$t->set_feed_url($url);
+				$t->multifeed_url = '';
+				$t->multifeed_url_length = 0;
+
+				// Init it!
+				$t->init();
+
+				// We'll pass this new SimplePie object to SimplePie::merge_items();
+				$multifeeds[] = $t;
+
+				// Clear the memory we just used.
+				unset($t);
+			}
+
+			// Return it.  Quitting is implied.
+			return $this->merge_items($multifeeds, $start, $end);
+		}
+
+		else if (!isset($this->data['items']))
 		{
 			if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'entry'))
 			{
@@ -2389,14 +2479,12 @@ function embed_wmedia(width, height, link) {
 		return $a->get_date('U') <= $b->get_date('U');
 	}
 
-	function merge_items($start = 0, $end = 0)
+	function merge_items($urls, $start = 0, $end = 0)
 	{
-		if (func_num_args() > 2)
+		if (is_array($urls) && sizeof($urls) > 0)
 		{
 			$items = array();
-			$args = func_get_args();
-			unset($args[0], $args[1]);
-			foreach ($args as $arg)
+			foreach ($urls as $arg)
 			{
 				if (is_a($arg, 'SimplePie'))
 				{
