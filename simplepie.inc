@@ -7248,7 +7248,7 @@ class SimplePie_Parser
 		if ($this->current_xhtml_construct >= 0)
 		{
 			$this->current_xhtml_construct--;
-			if (end($this->namespace) == SIMPLEPIE_NAMESPACE_XHTML)
+			if (end($this->namespace) == SIMPLEPIE_NAMESPACE_XHTML && !in_array(end($this->element), array('area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param')))
 			{
 				$this->data['data'] .= '</' . strtolower(end($this->element)) . '>';
 			}
