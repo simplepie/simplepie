@@ -819,11 +819,10 @@ class SimplePie
 	 * Allows you to change which class SimplePie uses for caching.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
-	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
-	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
-	 *
 	 * @access public
 	 * @param string $location Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	function set_cache_class($class = 'SimplePie_Cache')
 	{
@@ -839,11 +838,10 @@ class SimplePie
 	 * Allows you to change which class SimplePie uses for auto-discovery.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
-	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
-	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
-	 *
 	 * @access public
 	 * @param string $location Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	function set_locator_class($class = 'SimplePie_Locator')
 	{
@@ -859,11 +857,10 @@ class SimplePie
 	 * Allows you to change which class SimplePie uses for XML parsing.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
-	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
-	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
-	 *
 	 * @access public
 	 * @param string $location Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	function set_parser_class($class = 'SimplePie_Parser')
 	{
@@ -879,11 +876,10 @@ class SimplePie
 	 * Allows you to change which class SimplePie uses for remote file fetching.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
-	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
-	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
-	 *
 	 * @access public
 	 * @param string $location Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	function set_file_class($class = 'SimplePie_File')
 	{
@@ -899,11 +895,10 @@ class SimplePie
 	 * Allows you to change which class SimplePie uses for data sanitization.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
-	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
-	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
-	 *
 	 * @access public
 	 * @param string $location Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	function set_sanitize_class($class = 'SimplePie_Sanitize')
 	{
@@ -919,11 +914,10 @@ class SimplePie
 	 * Allows you to change which class SimplePie uses for handling feed items.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
-	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
-	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
-	 *
 	 * @access public
 	 * @param string $location Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	function set_item_class($class = 'SimplePie_Item')
 	{
@@ -939,11 +933,10 @@ class SimplePie
 	 * Allows you to change which class SimplePie uses for handling author data.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
-	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
-	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
-	 *
 	 * @access public
 	 * @param string $location Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	function set_author_class($class = 'SimplePie_Author')
 	{
@@ -959,11 +952,10 @@ class SimplePie
 	 * Allows you to change which class SimplePie uses for feed enclosures.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
-	 * http://us.php.net/manual/en/keyword.extends.php (PHP 4)
-	 * http://us.php.net/manual/en/language.oop5.overloading.php (PHP 5)
-	 *
 	 * @access public
 	 * @param string $location Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	function set_enclosure_class($class = 'SimplePie_Enclosure')
 	{
