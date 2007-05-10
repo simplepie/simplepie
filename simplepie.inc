@@ -1089,7 +1089,14 @@ class SimplePie
 	 */
 	function set_favicon_handler($page = false, $qs = 'i')
 	{
-		$this->favicon_handler = $page . '?' . $qs . '=';
+		if ($page != false)
+		{
+			$this->favicon_handler = $page . '?' . $qs . '=';
+		}
+		else
+		{
+			$this->favicon_handler = '';
+		}
 	}
 
 	/**
@@ -1100,9 +1107,14 @@ class SimplePie
 	 */
 	function set_image_handler($page = false, $qs = 'i')
 	{
-		$this->sanitize->set_image_handler($page . '?' . $qs . '=');
-		$this->sanitize->pass_cache_data($this->cache_location, $this->cache_name_function, $this->cache_class);
-		$this->sanitize->pass_file_data($this->file_class, $this->timeout, $this->useragent, $this->force_fsockopen);
+		if ($page != false)
+		{
+			$this->sanitize->set_image_handler($page . '?' . $qs . '=');
+		}
+		else
+		{
+			$this->image_handler = '';
+		}
 	}
 
 	function init()
@@ -1154,6 +1166,10 @@ function embed_wmedia(width, height, link) {
 		{
 			$this->config_settings = get_object_vars($this);
 		}
+
+		// Pass whatever was set with config options over to the sanitizer.
+		$this->sanitize->pass_cache_data($this->cache, $this->cache_location, $this->cache_name_function, $this->cache_class);
+		$this->sanitize->pass_file_data($this->file_class, $this->timeout, $this->useragent, $this->force_fsockopen);
 
 		if ($this->feed_url !== null || $this->raw_data !== null)
 		{
@@ -7286,12 +7302,13 @@ class SimplePie_Sanitize
 	// Options
 	var $remove_div = true;
 	var $replace_headers = false;
-	var $image_handler = false;
+	var $image_handler = '';
 	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
 	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
 	var $strip_comments = false;
 	var $output_encoding = 'UTF-8';
+	var $enable_cache = true;
 	var $cache_location = './cache';
 	var $cache_name_function = 'sha1';
 	var $cache_class = 'SimplePie_Cache';
@@ -7322,8 +7339,13 @@ class SimplePie_Sanitize
 		}
 	}
 
-	function pass_cache_data($cache_location = './cache', $cache_name_function = 'sha1', $cache_class = 'SimplePie_Cache')
+	function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'sha1', $cache_class = 'SimplePie_Cache')
 	{
+		if (isset($enable_cache))
+		{
+			$this->enable_cache = (bool) $enable_cache;
+		}
+
 		if ($cache_location)
 		{
 			$this->cache_location = (string) $cache_location;
@@ -7495,7 +7517,7 @@ class SimplePie_Sanitize
 				$this->replace_urls($data, 'input', 'src');
 
 				// If image handling (caching, etc.) is enabled, cache and rewrite all the image tags.
-				if ($this->image_handler)
+				if (isset($this->image_handler) && !empty($this->image_handler) && $this->enable_cache)
 				{
 					$images = SimplePie_Misc::get_element('img', $data);
 					foreach ($images as $img)
