@@ -1,6 +1,6 @@
 <?php
 
-class SimplePie_Feed_Image_Height_Test_RSS_10_Atom_10_Icon extends SimplePie_Feed_Image_Height_Test
+class SimplePie_Feed_Image_Height_Test_RSS_10_Atom_10_Icon_Default extends SimplePie_Feed_Image_Height_Test
 {
 	function data()
 	{

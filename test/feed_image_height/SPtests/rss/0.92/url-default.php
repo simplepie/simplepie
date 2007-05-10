@@ -1,6 +1,6 @@
 <?php
 
-class SimplePie_Feed_Image_Height_Test_RSS_092 extends SimplePie_Feed_Image_Height_Test
+class SimplePie_Feed_Image_Height_Test_RSS_092_URL_Default extends SimplePie_Feed_Image_Height_Test
 {
 	function data()
 	{
