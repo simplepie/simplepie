@@ -1,6 +1,6 @@
 <?php
 
-class SimplePie_Feed_Image_Height_Test_RSS_090_Atom_10_Logo extends SimplePie_Feed_Image_Height_Test
+class SimplePie_Feed_Image_Height_Test_RSS_090_Atom_10_Logo_Default extends SimplePie_Feed_Image_Height_Test
 {
 	function data()
 	{
