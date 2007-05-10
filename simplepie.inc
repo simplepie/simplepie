@@ -1553,64 +1553,71 @@ function embed_wmedia(width, height, link) {
 		{
 			$standard_favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
 			$favicon = $standard_favicon;
-			$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
 
-			if ($cache->load())
-			{
-				return $this->favicon_handler . $favicon;
-			}
-			else
-			{
-				$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+			if ($this->cache) {
+				$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
 
-				if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
+				if ($cache->load())
 				{
-					if ($this->favicon_handler)
-					{
-						if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
-						{
-							return $this->favicon_handler . $favicon;
-						}
-						else
-						{
-							trigger_error("$cache->name is not writeable", E_USER_WARNING);
-						}
-					}
-					return $favicon;
+					return $this->favicon_handler . $favicon;
 				}
 				else
 				{
-					unset($file);
-					$file =& new $this->file_class($this->get_link(), $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
-					$headers = $file->headers;
+					$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 
 					if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
 					{
-						preg_match_all('/<link([^>]*)rel=("|\')shortcut icon("|\')([^>]*)>/i', $file->body, $m);
-						if (isset($m[0][0]) && !empty($m[0][0]))
+						if ($this->favicon_handler)
 						{
-							preg_match_all('/href=("|\')([^("|\')]*)("|\')/i', $m[0][0], $m);
-							if (isset($m[2][0]) && !empty($m[0][0]) && $m[2][0] != $standard_favicon)
+							if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 							{
-								unset($file);
-								$file =& new $this->file_class($m[2][0], $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+								return $this->favicon_handler . $favicon;
+							}
+							else
+							{
+								trigger_error("$cache->name is not writeable", E_USER_WARNING);
+							}
+						}
+						return $favicon;
+					}
+					else
+					{
+						unset($file);
+						$file =& new $this->file_class($this->get_link(), $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+						$headers = $file->headers;
 
-								if ($this->favicon_handler)
+						if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
+						{
+							preg_match_all('/<link([^>]*)rel=("|\')shortcut icon("|\')([^>]*)>/i', $file->body, $m);
+							if (isset($m[0][0]) && !empty($m[0][0]))
+							{
+								preg_match_all('/href=("|\')([^("|\')]*)("|\')/i', $m[0][0], $m);
+								if (isset($m[2][0]) && !empty($m[0][0]) && $m[2][0] != $standard_favicon)
 								{
-									if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+									unset($file);
+									$file =& new $this->file_class($m[2][0], $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+
+									if ($this->favicon_handler)
 									{
-										return $this->favicon_handler . $favicon;
+										if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+										{
+											return $this->favicon_handler . $favicon;
+										}
+										else
+										{
+											trigger_error("$cache->name is not writeable", E_USER_WARNING);
+										}
 									}
-									else
-									{
-										trigger_error("$cache->name is not writeable", E_USER_WARNING);
-									}
+									return $m[2][0];
 								}
-								return $m[2][0];
 							}
 						}
 					}
 				}
+			}
+			else
+			{
+				return $favicon;
 			}
 		}
 
