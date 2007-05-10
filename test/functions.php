@@ -13,15 +13,20 @@ class SimplePie_Unit_Test2 extends Unit_Test2
 		}
 	}
 	
+	function output($title, $class, $content)
+	{
+		printf("<span title='%s' class='%s'>%s</span>\n", $title, $class, $content);
+	}
+	
 	function pass()
 	{
-		echo '<span title="' . htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8') . '" class=pass>&#x2714;</span> ';
+		$this->output(htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8'), 'pass', '&#x2714;');
 		parent::pass();
 	}
 	
 	function fail()
 	{
-		echo '<span title="' . htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8') . '" class=fail>&#x2718;</span> ';
+		$this->output(htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8'), 'fail', '&#x2718;');
 		parent::fail();
 	}
 	
