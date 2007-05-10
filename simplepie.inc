@@ -1438,20 +1438,6 @@ function embed_wmedia(width, height, link) {
 		return $this->error;
 	}
 
-	/**
-	 * Return the raw data array
-	 *
-	 * Warning: The structure of this array may change from release to
-	 * release without any warning
-	 *
-	 * @access public
-	 * @return array Raw Data
-	 */
-	function get_data()
-	{
-		return $this->data;
-	}
-
 	function get_encoding()
 	{
 		return $this->sanitize->output_encoding;
