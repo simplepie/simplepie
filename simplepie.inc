@@ -7203,12 +7203,12 @@ class SimplePie_Parser
 			$this->current_xhtml_construct++;
 			if (end($this->namespace) == SIMPLEPIE_NAMESPACE_XHTML)
 			{
-				$this->data['data'] .= '<' . strtolower(end($this->element));
+				$this->data['data'] .= '<' . end($this->element);
 				if (isset($attribs['']))
 				{
 					foreach ($attribs[''] as $name => $value)
 					{
-						$this->data['data'] .= ' ' . strtolower($name) . '="' . htmlspecialchars($value, ENT_COMPAT, $this->encoding) . '"';
+						$this->data['data'] .= ' ' . $name . '="' . htmlspecialchars($value, ENT_COMPAT, $this->encoding) . '"';
 					}
 				}
 				$this->data['data'] .= '>';
@@ -7251,7 +7251,7 @@ class SimplePie_Parser
 			$this->current_xhtml_construct--;
 			if (end($this->namespace) == SIMPLEPIE_NAMESPACE_XHTML && !in_array(end($this->element), array('area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param')))
 			{
-				$this->data['data'] .= '</' . strtolower(end($this->element)) . '>';
+				$this->data['data'] .= '</' . end($this->element) . '>';
 			}
 		}
 		if ($this->current_xhtml_construct == -1)
