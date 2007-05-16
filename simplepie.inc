@@ -7241,7 +7241,7 @@ class SimplePie_Parser
 
 	function tag_close($parser, $tag)
 	{
-		if ($this->feed == 0)
+		if (!$this->feed)
 		{
 			return;
 		}
@@ -7256,7 +7256,7 @@ class SimplePie_Parser
 		}
 		if ($this->current_xhtml_construct == -1)
 		{
-			$this->data =& $this->datas[count($this->datas)-1];
+			$this->data =& $this->datas[$this->feed];
 			array_pop($this->datas);
 		}
 
