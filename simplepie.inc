@@ -6654,7 +6654,14 @@ class SimplePie_Misc
 	 */
 	function uncomment_rfc822($data)
 	{
-		return preg_replace('/((?:(?:\\\\"|[^("])*(?:"(?:[^"\\\\\r]|\\\\.)*"\s*)?)*)((?<!\\\\)\((?:(?2)|.)*?(?<!\\\\)\))/', '$1', $data);
+		if ((version_compare(phpversion(), '4.4.6', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.2.2', '>='))
+		{
+			return $data;
+		}
+		else
+		{
+			return preg_replace('/((?:(?:\\\\"|[^("])*(?:"(?:[^"\\\\\r]|\\\\.)*"\s*)?)*)((?<!\\\\)\((?:(?2)|.)*?(?<!\\\\)\))/', '$1', $data);
+		}
 	}
 
 	function parse_mime($mime)
