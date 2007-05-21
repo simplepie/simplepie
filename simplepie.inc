@@ -4893,6 +4893,174 @@ class SimplePie_Misc
 			case 'CP367':
 			case 'CSASCII':
 				return 'US-ASCII';
+			case 'ISO_8859-1:1987':
+			case 'ISO-IR-100':
+			case 'ISO_8859-1':
+			case 'ISO-8859-1':
+			case 'LATIN1':
+			case 'L1':
+			case 'IBM819':
+			case 'CP819':
+			case 'CSISOLATIN1':
+				return 'ISO-8859-1';
+
+			case 'ISO_8859-2:1987':
+			case 'ISO-IR-101':
+			case 'ISO_8859-2':
+			case 'ISO-8859-2':
+			case 'LATIN2':
+			case 'L2':
+			case 'CSISOLATIN2':
+				return 'ISO-8859-2';
+
+			case 'ISO_8859-3:1988':
+			case 'ISO-IR-109':
+			case 'ISO_8859-3':
+			case 'ISO-8859-3':
+			case 'LATIN3':
+			case 'L3':
+			case 'CSISOLATIN3':
+				return 'ISO-8859-3';
+
+			case 'ISO_8859-4:1988':
+			case 'ISO-IR-110':
+			case 'ISO_8859-4':
+			case 'ISO-8859-4':
+			case 'LATIN4':
+			case 'L4':
+			case 'CSISOLATIN4':
+				return 'ISO-8859-4';
+
+			case 'ISO_8859-5:1988':
+			case 'ISO-IR-144':
+			case 'ISO_8859-5':
+			case 'ISO-8859-5':
+			case 'CYRILLIC':
+			case 'CSISOLATINCYRILLIC':
+				return 'ISO-8859-5';
+
+			case 'ISO_8859-6:1987':
+			case 'ISO-IR-127':
+			case 'ISO_8859-6':
+			case 'ISO-8859-6':
+			case 'ECMA-114':
+			case 'ASMO-708':
+			case 'ARABIC':
+			case 'CSISOLATINARABIC':
+				return 'ISO-8859-6';
+
+			case 'ISO_8859-7:1987':
+			case 'ISO-IR-126':
+			case 'ISO_8859-7':
+			case 'ISO-8859-7':
+			case 'ELOT_928':
+			case 'ECMA-118':
+			case 'GREEK':
+			case 'GREEK8':
+			case 'CSISOLATINGREEK':
+				return 'ISO-8859-7';
+
+			case 'ISO_8859-8:1988':
+			case 'ISO-IR-138':
+			case 'ISO_8859-8':
+			case 'ISO-8859-8':
+			case 'HEBREW':
+			case 'CSISOLATINHEBREW':
+				return 'ISO-8859-8';
+
+			case 'ISO_8859-9:1989':
+			case 'ISO-IR-148':
+			case 'ISO_8859-9':
+			case 'ISO-8859-9':
+			case 'LATIN5':
+			case 'L5':
+			case 'CSISOLATIN5':
+				return 'ISO-8859-9';
+
+			case 'ISO-8859-10':
+			case 'ISO-IR-157':
+			case 'L6':
+			case 'ISO_8859-10:1992':
+			case 'CSISOLATIN6':
+			case 'LATIN6':
+				return 'ISO-8859-10';
+
+			case 'ISO_6937-2-ADD':
+			case 'ISO-IR-142':
+			case 'CSISOTEXTCOMM':
+				return 'ISO_6937-2-add';
+
+			case 'JIS_X0201':
+			case 'X0201':
+			case 'CSHALFWIDTHKATAKANA':
+				return 'JIS_X0201';
+
+			case 'JIS_ENCODING':
+			case 'CSJISENCODING':
+				return 'JIS_Encoding';
+
+			case 'SHIFT_JIS':
+			case 'MS_KANJI':
+			case 'CSSHIFTJIS':
+				return 'Shift_JIS';
+
+			case 'EXTENDED_UNIX_CODE_PACKED_FORMAT_FOR_JAPANESE':
+			case 'CSEUCPKDFMTJAPANESE':
+			case 'EUC-JP':
+				return 'EUC-JP';
+
+			case 'EXTENDED_UNIX_CODE_FIXED_WIDTH_FOR_JAPANESE':
+			case 'CSEUCFIXWIDJAPANESE':
+				return 'Extended_UNIX_Code_Fixed_Width_for_Japanese';
+
+			case 'BS_4730':
+			case 'ISO-IR-4':
+			case 'ISO646-GB':
+			case 'GB':
+			case 'UK':
+			case 'CSISO4UNITEDKINGDOM':
+				return 'BS_4730';
+
+			case 'SEN_850200_C':
+			case 'ISO-IR-11':
+			case 'ISO646-SE2':
+			case 'SE2':
+			case 'CSISO11SWEDISHFORNAMES':
+				return 'SEN_850200_C';
+
+			case 'IT':
+			case 'ISO-IR-15':
+			case 'ISO646-IT':
+			case 'CSISO15ITALIAN':
+				return 'IT';
+
+			case 'ES':
+			case 'ISO-IR-17':
+			case 'ISO646-ES':
+			case 'CSISO17SPANISH':
+				return 'ES';
+
+			case 'DIN_66003':
+			case 'ISO-IR-21':
+			case 'DE':
+			case 'ISO646-DE':
+			case 'CSISO21GERMAN':
+				return 'DIN_66003';
+
+			case 'NS_4551-1':
+			case 'ISO-IR-60':
+			case 'ISO646-NO':
+			case 'NO':
+			case 'CSISO60DANISHNORWEGIAN':
+			case 'CSISO60NORWEGIAN1':
+				return 'NS_4551-1';
+
+			case 'NF_Z_62-010':
+			case 'ISO-IR-69':
+			case 'ISO646-FR':
+			case 'FR':
+			case 'CSISO69FRENCH':
+				return 'NF_Z_62-010';
 
 			case 'ISO-10646-UTF-1':
 			case 'CSISO10646UTF1':
@@ -4912,14 +5080,6 @@ class SimplePie_Misc
 			case 'IRV':
 			case 'CSISO2INTLREFVERSION':
 				return 'ISO_646.irv:1983';
-
-			case 'BS_4730':
-			case 'ISO-IR-4':
-			case 'ISO646-GB':
-			case 'GB':
-			case 'UK':
-			case 'CSISO4UNITEDKINGDOM':
-				return 'BS_4730';
 
 			case 'NATS-SEFI':
 			case 'ISO-IR-8-1':
@@ -4950,13 +5110,6 @@ class SimplePie_Misc
 			case 'CSISO10SWEDISH':
 				return 'SEN_850200_B';
 
-			case 'SEN_850200_C':
-			case 'ISO-IR-11':
-			case 'ISO646-SE2':
-			case 'SE2':
-			case 'CSISO11SWEDISHFORNAMES':
-				return 'SEN_850200_C';
-
 			case 'KS_C_5601-1987':
 			case 'ISO-IR-149':
 			case 'KS_C_5601-1989':
@@ -4981,12 +5134,6 @@ class SimplePie_Misc
 			case 'CSISO2022JP2':
 				return 'ISO-2022-JP-2';
 
-			case 'ISO-2022-CN':
-				return 'ISO-2022-CN';
-
-			case 'ISO-2022-CN-EXT':
-				return 'ISO-2022-CN-EXT';
-
 			case 'JIS_C6220-1969-JP':
 			case 'JIS_C6220-1969':
 			case 'ISO-IR-13':
@@ -5002,23 +5149,11 @@ class SimplePie_Misc
 			case 'CSISO14JISC6220RO':
 				return 'JIS_C6220-1969-ro';
 
-			case 'IT':
-			case 'ISO-IR-15':
-			case 'ISO646-IT':
-			case 'CSISO15ITALIAN':
-				return 'IT';
-
 			case 'PT':
 			case 'ISO-IR-16':
 			case 'ISO646-PT':
 			case 'CSISO16PORTUGUESE':
 				return 'PT';
-
-			case 'ES':
-			case 'ISO-IR-17':
-			case 'ISO646-ES':
-			case 'CSISO17SPANISH':
-				return 'ES';
 
 			case 'GREEK7-OLD':
 			case 'ISO-IR-18':
@@ -5029,13 +5164,6 @@ class SimplePie_Misc
 			case 'ISO-IR-19':
 			case 'CSISO19LATINGREEK':
 				return 'latin-greek';
-
-			case 'DIN_66003':
-			case 'ISO-IR-21':
-			case 'DE':
-			case 'ISO646-DE':
-			case 'CSISO21GERMAN':
-				return 'DIN_66003';
 
 			case 'NF_Z_62-010_(1973)':
 			case 'ISO-IR-25':
@@ -5101,27 +5229,12 @@ class SimplePie_Misc
 			case 'CSISO58GB231280':
 				return 'GB_2312-80';
 
-			case 'NS_4551-1':
-			case 'ISO-IR-60':
-			case 'ISO646-NO':
-			case 'NO':
-			case 'CSISO60DANISHNORWEGIAN':
-			case 'CSISO60NORWEGIAN1':
-				return 'NS_4551-1';
-
 			case 'NS_4551-2':
 			case 'ISO646-NO2':
 			case 'ISO-IR-61':
 			case 'NO2':
 			case 'CSISO61NORWEGIAN2':
 				return 'NS_4551-2';
-
-			case 'NF_Z_62-010':
-			case 'ISO-IR-69':
-			case 'ISO646-FR':
-			case 'FR':
-			case 'CSISO69FRENCH':
-				return 'NF_Z_62-010';
 
 			case 'VIDEOTEX-SUPPL':
 			case 'ISO-IR-70':
@@ -5219,26 +5332,6 @@ class SimplePie_Misc
 			case 'CSISO99NAPLPS':
 				return 'ANSI_X3.110-1983';
 
-			case 'ISO_8859-1:1987':
-			case 'ISO-IR-100':
-			case 'ISO_8859-1':
-			case 'ISO-8859-1':
-			case 'LATIN1':
-			case 'L1':
-			case 'IBM819':
-			case 'CP819':
-			case 'CSISOLATIN1':
-				return 'ISO-8859-1';
-
-			case 'ISO_8859-2:1987':
-			case 'ISO-IR-101':
-			case 'ISO_8859-2':
-			case 'ISO-8859-2':
-			case 'LATIN2':
-			case 'L2':
-			case 'CSISOLATIN2':
-				return 'ISO-8859-2';
-
 			case 'T.61-7BIT':
 			case 'ISO-IR-102':
 			case 'CSISO102T617BIT':
@@ -5249,24 +5342,6 @@ class SimplePie_Misc
 			case 'ISO-IR-103':
 			case 'CSISO103T618BIT':
 				return 'T.61-8bit';
-
-			case 'ISO_8859-3:1988':
-			case 'ISO-IR-109':
-			case 'ISO_8859-3':
-			case 'ISO-8859-3':
-			case 'LATIN3':
-			case 'L3':
-			case 'CSISOLATIN3':
-				return 'ISO-8859-3';
-
-			case 'ISO_8859-4:1988':
-			case 'ISO-IR-110':
-			case 'ISO_8859-4':
-			case 'ISO-8859-4':
-			case 'LATIN4':
-			case 'L4':
-			case 'CSISOLATIN4':
-				return 'ISO-8859-4';
 
 			case 'ECMA-CYRILLIC':
 			case 'ISO-IR-111':
@@ -5294,16 +5369,6 @@ class SimplePie_Misc
 			case 'CSISO123CSAZ24341985GR':
 				return 'CSA_Z243.4-1985-gr';
 
-			case 'ISO_8859-6:1987':
-			case 'ISO-IR-127':
-			case 'ISO_8859-6':
-			case 'ISO-8859-6':
-			case 'ECMA-114':
-			case 'ASMO-708':
-			case 'ARABIC':
-			case 'CSISOLATINARABIC':
-				return 'ISO-8859-6';
-
 			case 'ISO_8859-6-E':
 			case 'CSISO88596E':
 			case 'ISO-8859-6-E':
@@ -5314,29 +5379,10 @@ class SimplePie_Misc
 			case 'ISO-8859-6-I':
 				return 'ISO-8859-6-I';
 
-			case 'ISO_8859-7:1987':
-			case 'ISO-IR-126':
-			case 'ISO_8859-7':
-			case 'ISO-8859-7':
-			case 'ELOT_928':
-			case 'ECMA-118':
-			case 'GREEK':
-			case 'GREEK8':
-			case 'CSISOLATINGREEK':
-				return 'ISO-8859-7';
-
 			case 'T.101-G2':
 			case 'ISO-IR-128':
 			case 'CSISO128T101G2':
 				return 'T.101-G2';
-
-			case 'ISO_8859-8:1988':
-			case 'ISO-IR-138':
-			case 'ISO_8859-8':
-			case 'ISO-8859-8':
-			case 'HEBREW':
-			case 'CSISOLATINHEBREW':
-				return 'ISO-8859-8';
 
 			case 'ISO_8859-8-E':
 			case 'CSISO88598E':
@@ -5361,23 +5407,10 @@ class SimplePie_Misc
 			case 'CSISO141JUSIB1002':
 				return 'JUS_I.B1.002';
 
-			case 'ISO_6937-2-ADD':
-			case 'ISO-IR-142':
-			case 'CSISOTEXTCOMM':
-				return 'ISO_6937-2-add';
-
 			case 'IEC_P27-1':
 			case 'ISO-IR-143':
 			case 'CSISO143IECP271':
 				return 'IEC_P27-1';
-
-			case 'ISO_8859-5:1988':
-			case 'ISO-IR-144':
-			case 'ISO_8859-5':
-			case 'ISO-8859-5':
-			case 'CYRILLIC':
-			case 'CSISOLATINCYRILLIC':
-				return 'ISO-8859-5';
 
 			case 'JUS_I.B1.003-SERB':
 			case 'ISO-IR-146':
@@ -5390,15 +5423,6 @@ class SimplePie_Misc
 			case 'ISO-IR-147':
 			case 'CSISO147MACEDONIAN':
 				return 'JUS_I.B1.003-mac';
-
-			case 'ISO_8859-9:1989':
-			case 'ISO-IR-148':
-			case 'ISO_8859-9':
-			case 'ISO-8859-9':
-			case 'LATIN5':
-			case 'L5':
-			case 'CSISOLATIN5':
-				return 'ISO-8859-9';
 
 			case 'GREEK-CCITT':
 			case 'ISO-IR-150':
@@ -5435,14 +5459,6 @@ class SimplePie_Misc
 			case 'CSISO10367BOX':
 				return 'ISO_10367-box';
 
-			case 'ISO-8859-10':
-			case 'ISO-IR-157':
-			case 'L6':
-			case 'ISO_8859-10:1992':
-			case 'CSISOLATIN6':
-			case 'LATIN6':
-				return 'ISO-8859-10';
-
 			case 'LATIN-LAP':
 			case 'LAP':
 			case 'ISO-IR-158':
@@ -5470,15 +5486,78 @@ class SimplePie_Misc
 			case 'CSDKUS':
 				return 'dk-us';
 
-			case 'JIS_X0201':
-			case 'X0201':
-			case 'CSHALFWIDTHKATAKANA':
-				return 'JIS_X0201';
-
 			case 'KSC5636':
 			case 'ISO646-KR':
 			case 'CSKSC5636':
 				return 'KSC5636';
+
+			case 'UNICODE-1-1-UTF-7':
+			case 'CSUNICODE11UTF7':
+				return 'UNICODE-1-1-UTF-7';
+
+			case 'ISO-2022-CN':
+				return 'ISO-2022-CN';
+
+			case 'ISO-2022-CN-EXT':
+				return 'ISO-2022-CN-EXT';
+
+			case 'UTF-8':
+				return 'UTF-8';
+
+			case 'ISO-8859-13':
+				return 'ISO-8859-13';
+
+			case 'ISO-8859-14':
+			case 'ISO-IR-199':
+			case 'ISO_8859-14:1998':
+			case 'ISO_8859-14':
+			case 'LATIN8':
+			case 'ISO-CELTIC':
+			case 'L8':
+				return 'ISO-8859-14';
+
+			case 'ISO-8859-15':
+			case 'ISO_8859-15':
+			case 'LATIN-9':
+				return 'ISO-8859-15';
+
+			case 'ISO-8859-16':
+			case 'ISO-IR-226':
+			case 'ISO_8859-16:2001':
+			case 'ISO_8859-16':
+			case 'LATIN10':
+			case 'L10':
+				return 'ISO-8859-16';
+
+			case 'GBK':
+			case 'CP936':
+			case 'MS936':
+			case 'WINDOWS-936':
+				return 'GBK';
+
+			case 'GB18030':
+				return 'GB18030';
+
+			case 'OSD_EBCDIC_DF04_15':
+				return 'OSD_EBCDIC_DF04_15';
+
+			case 'OSD_EBCDIC_DF03_IRV':
+				return 'OSD_EBCDIC_DF03_IRV';
+
+			case 'OSD_EBCDIC_DF04_1':
+				return 'OSD_EBCDIC_DF04_1';
+
+			case 'ISO-11548-1':
+			case 'ISO_11548-1':
+			case 'ISO_TR_11548-1':
+			case 'CSISO115481':
+				return 'ISO-11548-1';
+
+			case 'KZ-1048':
+			case 'STRK1048-2002':
+			case 'RK1048':
+			case 'CSKZ1048':
+				return 'KZ-1048';
 
 			case 'ISO-10646-UCS-2':
 			case 'CSUNICODE':
@@ -5488,16 +5567,180 @@ class SimplePie_Misc
 			case 'CSUCS4':
 				return 'ISO-10646-UCS-4';
 
-			case 'DEC-MCS':
-			case 'DEC':
-			case 'CSDECMCS':
-				return 'DEC-MCS';
+			case 'ISO-10646-UCS-BASIC':
+			case 'CSUNICODEASCII':
+				return 'ISO-10646-UCS-Basic';
+
+			case 'ISO-10646-UNICODE-LATIN1':
+			case 'CSUNICODELATIN1':
+			case 'ISO-10646':
+				return 'ISO-10646-Unicode-Latin1';
+
+			case 'ISO-10646-J-1':
+				return 'ISO-10646-J-1';
+
+			case 'ISO-UNICODE-IBM-1261':
+			case 'CSUNICODEIBM1261':
+				return 'ISO-Unicode-IBM-1261';
+
+			case 'ISO-UNICODE-IBM-1268':
+			case 'CSUNICODEIBM1268':
+				return 'ISO-Unicode-IBM-1268';
+
+			case 'ISO-UNICODE-IBM-1276':
+			case 'CSUNICODEIBM1276':
+				return 'ISO-Unicode-IBM-1276';
+
+			case 'ISO-UNICODE-IBM-1264':
+			case 'CSUNICODEIBM1264':
+				return 'ISO-Unicode-IBM-1264';
+
+			case 'ISO-UNICODE-IBM-1265':
+			case 'CSUNICODEIBM1265':
+				return 'ISO-Unicode-IBM-1265';
+
+			case 'UNICODE-1-1':
+			case 'CSUNICODE11':
+				return 'UNICODE-1-1';
+
+			case 'SCSU':
+				return 'SCSU';
+
+			case 'UTF-7':
+				return 'UTF-7';
+
+			case 'UTF-16BE':
+				return 'UTF-16BE';
+
+			case 'UTF-16LE':
+				return 'UTF-16LE';
+
+			case 'UTF-16':
+				return 'UTF-16';
+
+			case 'CESU-8':
+			case 'CSCESU-8':
+				return 'CESU-8';
+
+			case 'UTF-32':
+				return 'UTF-32';
+
+			case 'UTF-32BE':
+				return 'UTF-32BE';
+
+			case 'UTF-32LE':
+				return 'UTF-32LE';
+
+			case 'BOCU-1':
+			case 'CSBOCU-1':
+				return 'BOCU-1';
+
+			case 'ISO-8859-1-WINDOWS-3.0-LATIN-1':
+			case 'CSWINDOWS30LATIN1':
+				return 'ISO-8859-1-Windows-3.0-Latin-1';
+
+			case 'ISO-8859-1-WINDOWS-3.1-LATIN-1':
+			case 'CSWINDOWS31LATIN1':
+				return 'ISO-8859-1-Windows-3.1-Latin-1';
+
+			case 'ISO-8859-2-WINDOWS-LATIN-2':
+			case 'CSWINDOWS31LATIN2':
+				return 'ISO-8859-2-Windows-Latin-2';
+
+			case 'ISO-8859-9-WINDOWS-LATIN-5':
+			case 'CSWINDOWS31LATIN5':
+				return 'ISO-8859-9-Windows-Latin-5';
 
 			case 'HP-ROMAN8':
 			case 'ROMAN8':
 			case 'R8':
 			case 'CSHPROMAN8':
 				return 'hp-roman8';
+
+			case 'ADOBE-STANDARD-ENCODING':
+			case 'CSADOBESTANDARDENCODING':
+				return 'Adobe-Standard-Encoding';
+
+			case 'VENTURA-US':
+			case 'CSVENTURAUS':
+				return 'Ventura-US';
+
+			case 'VENTURA-INTERNATIONAL':
+			case 'CSVENTURAINTERNATIONAL':
+				return 'Ventura-International';
+
+			case 'DEC-MCS':
+			case 'DEC':
+			case 'CSDECMCS':
+				return 'DEC-MCS';
+
+			case 'IBM850':
+			case 'CP850':
+			case '850':
+			case 'CSPC850MULTILINGUAL':
+				return 'IBM850';
+
+			case 'PC8-DANISH-NORWEGIAN':
+			case 'CSPC8DANISHNORWEGIAN':
+				return 'PC8-Danish-Norwegian';
+
+			case 'IBM862':
+			case 'CP862':
+			case '862':
+			case 'CSPC862LATINHEBREW':
+				return 'IBM862';
+
+			case 'PC8-TURKISH':
+			case 'CSPC8TURKISH':
+				return 'PC8-Turkish';
+
+			case 'IBM-SYMBOLS':
+			case 'CSIBMSYMBOLS':
+				return 'IBM-Symbols';
+
+			case 'IBM-THAI':
+			case 'CSIBMTHAI':
+				return 'IBM-Thai';
+
+			case 'HP-LEGAL':
+			case 'CSHPLEGAL':
+				return 'HP-Legal';
+
+			case 'HP-PI-FONT':
+			case 'CSHPPIFONT':
+				return 'HP-Pi-font';
+
+			case 'HP-MATH8':
+			case 'CSHPMATH8':
+				return 'HP-Math8';
+
+			case 'ADOBE-SYMBOL-ENCODING':
+			case 'CSHPPSMATH':
+				return 'Adobe-Symbol-Encoding';
+
+			case 'HP-DESKTOP':
+			case 'CSHPDESKTOP':
+				return 'HP-DeskTop';
+
+			case 'VENTURA-MATH':
+			case 'CSVENTURAMATH':
+				return 'Ventura-Math';
+
+			case 'MICROSOFT-PUBLISHING':
+			case 'CSMICROSOFTPUBLISHING':
+				return 'Microsoft-Publishing';
+
+			case 'WINDOWS-31J':
+			case 'CSWINDOWS31J':
+				return 'Windows-31J';
+
+			case 'GB2312':
+			case 'CSGB2312':
+				return 'GB2312';
+
+			case 'BIG5':
+			case 'CSBIG5':
+				return 'Big5';
 
 			case 'MACINTOSH':
 			case 'MAC':
@@ -5616,17 +5859,6 @@ class SimplePie_Misc
 			case 'CSIBM500':
 				return 'IBM500';
 
-			case 'IBM775':
-			case 'CP775':
-			case 'CSPC775BALTIC':
-				return 'IBM775';
-
-			case 'IBM850':
-			case 'CP850':
-			case '850':
-			case 'CSPC850MULTILINGUAL':
-				return 'IBM850';
-
 			case 'IBM851':
 			case 'CP851':
 			case '851':
@@ -5664,12 +5896,6 @@ class SimplePie_Misc
 			case 'CSIBM861':
 				return 'IBM861';
 
-			case 'IBM862':
-			case 'CP862':
-			case '862':
-			case 'CSPC862LATINHEBREW':
-				return 'IBM862';
-
 			case 'IBM863':
 			case 'CP863':
 			case '863':
@@ -5686,12 +5912,6 @@ class SimplePie_Misc
 			case '865':
 			case 'CSIBM865':
 				return 'IBM865';
-
-			case 'IBM866':
-			case 'CP866':
-			case '866':
-			case 'CSIBM866':
-				return 'IBM866';
 
 			case 'IBM868':
 			case 'CP868':
@@ -5842,6 +6062,20 @@ class SimplePie_Misc
 			case 'CSKOI8R':
 				return 'KOI8-R';
 
+			case 'HZ-GB-2312':
+				return 'HZ-GB-2312';
+
+			case 'IBM866':
+			case 'CP866':
+			case '866':
+			case 'CSIBM866':
+				return 'IBM866';
+
+			case 'IBM775':
+			case 'CP775':
+			case 'CSPC775BALTIC':
+				return 'IBM775';
+
 			case 'KOI8-U':
 				return 'KOI8-U';
 
@@ -5942,225 +6176,13 @@ class SimplePie_Misc
 			case 'KOI7-SWITCHED':
 				return 'KOI7-switched';
 
-			case 'UNICODE-1-1':
-			case 'CSUNICODE11':
-				return 'UNICODE-1-1';
+			case 'BRF':
+			case 'CSBRF':
+				return 'BRF';
 
-			case 'SCSU':
-				return 'SCSU';
-
-			case 'UTF-7':
-				return 'UTF-7';
-
-			case 'UTF-16BE':
-				return 'UTF-16BE';
-
-			case 'UTF-16LE':
-				return 'UTF-16LE';
-
-			case 'UTF-16':
-				return 'UTF-16';
-
-			case 'CESU-8':
-			case 'CSCESU-8':
-				return 'CESU-8';
-
-			case 'UTF-32':
-				return 'UTF-32';
-
-			case 'UTF-32BE':
-				return 'UTF-32BE';
-
-			case 'UTF-32LE':
-				return 'UTF-32LE';
-
-			case 'BOCU-1':
-			case 'CSBOCU-1':
-				return 'BOCU-1';
-
-			case 'UNICODE-1-1-UTF-7':
-			case 'CSUNICODE11UTF7':
-				return 'UNICODE-1-1-UTF-7';
-
-			case 'UTF-8':
-				return 'UTF-8';
-
-			case 'ISO-8859-13':
-				return 'ISO-8859-13';
-
-			case 'ISO-8859-14':
-			case 'ISO-IR-199':
-			case 'ISO_8859-14:1998':
-			case 'ISO_8859-14':
-			case 'LATIN8':
-			case 'ISO-CELTIC':
-			case 'L8':
-				return 'ISO-8859-14';
-
-			case 'ISO-8859-15':
-			case 'ISO_8859-15':
-			case 'LATIN-9':
-				return 'ISO-8859-15';
-
-			case 'ISO-8859-16':
-			case 'ISO-IR-226':
-			case 'ISO_8859-16:2001':
-			case 'ISO_8859-16':
-			case 'LATIN10':
-			case 'L10':
-				return 'ISO-8859-16';
-
-			case 'GBK':
-			case 'CP936':
-			case 'MS936':
-			case 'WINDOWS-936':
-				return 'GBK';
-
-			case 'GB18030':
-				return 'GB18030';
-
-			case 'OSD_EBCDIC_DF04_15':
-				return 'OSD_EBCDIC_DF04_15';
-
-			case 'OSD_EBCDIC_DF03_IRV':
-				return 'OSD_EBCDIC_DF03_IRV';
-
-			case 'OSD_EBCDIC_DF04_1':
-				return 'OSD_EBCDIC_DF04_1';
-
-			case 'JIS_ENCODING':
-			case 'CSJISENCODING':
-				return 'JIS_Encoding';
-
-			case 'SHIFT_JIS':
-			case 'MS_KANJI':
-			case 'CSSHIFTJIS':
-				return 'Shift_JIS';
-
-			case 'EXTENDED_UNIX_CODE_PACKED_FORMAT_FOR_JAPANESE':
-			case 'CSEUCPKDFMTJAPANESE':
-			case 'EUC-JP':
-				return 'EUC-JP';
-
-			case 'EXTENDED_UNIX_CODE_FIXED_WIDTH_FOR_JAPANESE':
-			case 'CSEUCFIXWIDJAPANESE':
-				return 'Extended_UNIX_Code_Fixed_Width_for_Japanese';
-
-			case 'ISO-10646-UCS-BASIC':
-			case 'CSUNICODEASCII':
-				return 'ISO-10646-UCS-Basic';
-
-			case 'ISO-10646-UNICODE-LATIN1':
-			case 'CSUNICODELATIN1':
-			case 'ISO-10646':
-				return 'ISO-10646-Unicode-Latin1';
-
-			case 'ISO-10646-J-1':
-				return 'ISO-10646-J-1';
-
-			case 'ISO-UNICODE-IBM-1261':
-			case 'CSUNICODEIBM1261':
-				return 'ISO-Unicode-IBM-1261';
-
-			case 'ISO-UNICODE-IBM-1268':
-			case 'CSUNICODEIBM1268':
-				return 'ISO-Unicode-IBM-1268';
-
-			case 'ISO-UNICODE-IBM-1276':
-			case 'CSUNICODEIBM1276':
-				return 'ISO-Unicode-IBM-1276';
-
-			case 'ISO-UNICODE-IBM-1264':
-			case 'CSUNICODEIBM1264':
-				return 'ISO-Unicode-IBM-1264';
-
-			case 'ISO-UNICODE-IBM-1265':
-			case 'CSUNICODEIBM1265':
-				return 'ISO-Unicode-IBM-1265';
-
-			case 'ISO-8859-1-WINDOWS-3.0-LATIN-1':
-			case 'CSWINDOWS30LATIN1':
-				return 'ISO-8859-1-Windows-3.0-Latin-1';
-
-			case 'ISO-8859-1-WINDOWS-3.1-LATIN-1':
-			case 'CSWINDOWS31LATIN1':
-				return 'ISO-8859-1-Windows-3.1-Latin-1';
-
-			case 'ISO-8859-2-WINDOWS-LATIN-2':
-			case 'CSWINDOWS31LATIN2':
-				return 'ISO-8859-2-Windows-Latin-2';
-
-			case 'ISO-8859-9-WINDOWS-LATIN-5':
-			case 'CSWINDOWS31LATIN5':
-				return 'ISO-8859-9-Windows-Latin-5';
-
-			case 'ADOBE-STANDARD-ENCODING':
-			case 'CSADOBESTANDARDENCODING':
-				return 'Adobe-Standard-Encoding';
-
-			case 'VENTURA-US':
-			case 'CSVENTURAUS':
-				return 'Ventura-US';
-
-			case 'VENTURA-INTERNATIONAL':
-			case 'CSVENTURAINTERNATIONAL':
-				return 'Ventura-International';
-
-			case 'PC8-DANISH-NORWEGIAN':
-			case 'CSPC8DANISHNORWEGIAN':
-				return 'PC8-Danish-Norwegian';
-
-			case 'PC8-TURKISH':
-			case 'CSPC8TURKISH':
-				return 'PC8-Turkish';
-
-			case 'IBM-SYMBOLS':
-			case 'CSIBMSYMBOLS':
-				return 'IBM-Symbols';
-
-			case 'IBM-THAI':
-			case 'CSIBMTHAI':
-				return 'IBM-Thai';
-
-			case 'HP-LEGAL':
-			case 'CSHPLEGAL':
-				return 'HP-Legal';
-
-			case 'HP-PI-FONT':
-			case 'CSHPPIFONT':
-				return 'HP-Pi-font';
-
-			case 'HP-MATH8':
-			case 'CSHPMATH8':
-				return 'HP-Math8';
-
-			case 'ADOBE-SYMBOL-ENCODING':
-			case 'CSHPPSMATH':
-				return 'Adobe-Symbol-Encoding';
-
-			case 'HP-DESKTOP':
-			case 'CSHPDESKTOP':
-				return 'HP-DeskTop';
-
-			case 'VENTURA-MATH':
-			case 'CSVENTURAMATH':
-				return 'Ventura-Math';
-
-			case 'MICROSOFT-PUBLISHING':
-			case 'CSMICROSOFTPUBLISHING':
-				return 'Microsoft-Publishing';
-
-			case 'WINDOWS-31J':
-			case 'CSWINDOWS31J':
-				return 'Windows-31J';
-
-			case 'GB2312':
-			case 'CSGB2312':
-				return 'GB2312';
-
-			case 'BIG5':
-			case 'CSBIG5':
-				return 'Big5';
+			case 'TSCII':
+			case 'CSTSCII':
+				return 'TSCII';
 
 			case 'WINDOWS-1250':
 				return 'windows-1250';
@@ -6188,24 +6210,6 @@ class SimplePie_Misc
 
 			case 'WINDOWS-1258':
 				return 'windows-1258';
-
-			case 'TIS-620':
-				return 'TIS-620';
-
-			case 'HZ-GB-2312':
-				return 'HZ-GB-2312';
-
-			case 'ISO-11548-1':
-			case 'ISO_11548-1':
-			case 'ISO_TR_11548-1':
-			case 'CSISO115481':
-				return 'ISO-11548-1';
-
-			case 'KZ-1048':
-			case 'STRK1048-2002':
-			case 'RK1048':
-			case 'CSKZ1048':
-				return 'KZ-1048';
 
 			default:
 				return (string) $encoding;
