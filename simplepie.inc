@@ -771,7 +771,7 @@ class SimplePie
 	 * Determines whether feed items should be sorted into reverse chronological order.
 	 *
 	 * @access public
-	 * @param bool $location Sort as reverse chronological order.
+	 * @param bool $enable Sort as reverse chronological order.
 	 */
 	function enable_order_by_date($enable = true)
 	{
@@ -782,7 +782,7 @@ class SimplePie
 	 * Allows you to override the character encoding reported by the feed.
 	 *
 	 * @access public
-	 * @param string $location Character encoding.
+	 * @param string $encoding Character encoding.
 	 */
 	function set_input_encoding($encoding = false)
 	{
@@ -820,7 +820,7 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
 	 * @access public
-	 * @param string $location Name of custom class.
+	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
@@ -839,7 +839,7 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
 	 * @access public
-	 * @param string $location Name of custom class.
+	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
@@ -858,7 +858,7 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
 	 * @access public
-	 * @param string $location Name of custom class.
+	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
@@ -877,7 +877,7 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
 	 * @access public
-	 * @param string $location Name of custom class.
+	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
@@ -896,7 +896,7 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
 	 * @access public
-	 * @param string $location Name of custom class.
+	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
@@ -915,7 +915,7 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
 	 * @access public
-	 * @param string $location Name of custom class.
+	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
@@ -934,7 +934,7 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
 	 * @access public
-	 * @param string $location Name of custom class.
+	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
@@ -953,7 +953,7 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 * 
 	 * @access public
-	 * @param string $location Name of custom class.
+	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
@@ -971,7 +971,7 @@ class SimplePie
 	 * Allows you to override the default user agent string.
 	 *
 	 * @access public
-	 * @param string $location New user agent string.
+	 * @param string $ua New user agent string.
 	 */
 	function set_useragent($ua = SIMPLEPIE_USERAGENT)
 	{
@@ -1086,6 +1086,7 @@ class SimplePie
 	 *
 	 * @access public
 	 * @param str $page Web-accessible path to the handler_favicon.php file.
+	 * @param str $qs The query string that the value should be passed to.
 	 */
 	function set_favicon_handler($page = false, $qs = 'i')
 	{
@@ -1104,6 +1105,7 @@ class SimplePie
 	 *
 	 * @access public
 	 * @param str $page Web-accessible path to the handler_image.php file.
+	 * @param str $qs The query string that the value should be passed to.
 	 */
 	function set_image_handler($page = false, $qs = 'i')
 	{
