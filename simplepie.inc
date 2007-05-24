@@ -556,6 +556,20 @@ class SimplePie
 	var $config_settings = null;
 
 	/**
+	 * @var array Stores the default attributes to be stripped by strip_attributes().
+	 * @see SimplePie::strip_attributes()
+	 * @access private
+	 */
+	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
+
+	/**
+	 * @var array Stores the default tags to be stripped by strip_htmltags().
+	 * @see SimplePie::strip_htmltags()
+	 * @access private
+	 */
+	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
+
+	/**
 	 * The SimplePie class contains feed level data and options
 	 *
 	 * There are two ways that you can create a new SimplePie object. The first
@@ -1052,8 +1066,12 @@ class SimplePie
 		$this->sanitize->remove_div($enable);
 	}
 
-	function strip_htmltags($tags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'), $encode = null)
+	function strip_htmltags($tags = '', $encode = null)
 	{
+		if ($tags === '')
+		{
+			$tags = $this->strip_htmltags;
+		}
 		$this->sanitize->strip_htmltags($tags);
 		if ($encode !== null)
 		{
@@ -1066,8 +1084,12 @@ class SimplePie
 		$this->sanitize->encode_instead_of_strip($enable);
 	}
 
-	function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'))
+	function strip_attributes($attribs = '')
 	{
+		if ($attribs === '')
+		{
+			$attribs = $this->strip_attributes;
+		}
 		$this->sanitize->strip_attributes($attribs);
 	}
 
