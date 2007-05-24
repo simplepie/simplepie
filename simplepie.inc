@@ -1038,7 +1038,6 @@ class SimplePie
 			$this->enable_order_by_date(false);
 			$this->remove_div(false);
 			$this->strip_comments(false);
-			$this->replace_headers(false);
 			$this->strip_htmltags(false);
 			$this->strip_attributes(false);
 			$this->set_image_handler(false);
@@ -1054,11 +1053,6 @@ class SimplePie
 	function set_max_checked_feeds($max = 10)
 	{
 		$this->max_checked_feeds = (int) $max;
-	}
-
-	function replace_headers($enable = false)
-	{
-		$this->sanitize->replace_headers($enable);
 	}
 
 	function remove_div($enable = true)
@@ -7336,7 +7330,6 @@ class SimplePie_Sanitize
 
 	// Options
 	var $remove_div = true;
-	var $replace_headers = false;
 	var $image_handler = '';
 	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
@@ -7355,11 +7348,6 @@ class SimplePie_Sanitize
 	function remove_div($enable = true)
 	{
 		$this->remove_div = (bool) $enable;
-	}
-
-	function replace_headers($enable = false)
-	{
-		$this->enable_headers = (bool) $enable;
 	}
 
 	function set_image_handler($page = false)
@@ -7502,15 +7490,6 @@ class SimplePie_Sanitize
 				if ($this->strip_comments)
 				{
 					$data = SimplePie_Misc::strip_comments($data);
-				}
-
-				// Replace H1, H2, and H3 tags with the less important H4 tags.
-				// This is because on a site, the more important headers might make sense,
-				// but it most likely doesn't fit in the context of RSS-in-a-webpage.
-				if ($this->replace_headers)
-				{
-					$data = preg_replace('/<h[1-3]' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>/i', '<h4\\1>', $data);
-					$data = preg_replace('/<\/h[1-3]' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>/i', '</h4>', $data);
 				}
 
 				// Strip out HTML tags and attributes that might cause various security problems.
