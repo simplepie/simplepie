@@ -86,6 +86,21 @@ class SimplePie_First_Item_Author_Test extends SimplePie_First_Item_Test
 	}
 }
 
+class SimplePie_First_Item_Category_Test extends SimplePie_First_Item_Test
+{
+	function category()
+	{
+		if ($item = $this->first_item())
+		{
+			if ($category = $item->get_category())
+			{
+				return $category;
+			}
+		}
+		return false;
+	}
+}
+
 class who_knows_a_title_from_a_hole_in_the_ground extends SimplePie_Unit_Test2
 {
 	function expected()
@@ -223,13 +238,13 @@ class SimplePie_First_Item_Author_Name_Test extends SimplePie_First_Item_Author_
 	}
 }
 
-class SimplePie_First_Item_Category_Test extends SimplePie_First_Item_Test
+class SimplePie_First_Item_Category_Label_Test extends SimplePie_First_Item_Category_Test
 {
 	function test()
 	{
-		if ($item = $this->first_item())
+		if ($category = $this->category())
 		{
-			$this->result = $item->get_category();
+			$this->result = $category->get_label();
 		}
 	}
 }

@@ -499,6 +499,13 @@ class SimplePie
 	var $author_class = 'SimplePie_Author';
 
 	/**
+	 * @var string Class used for categories
+	 * @see SimplePie::set_category_class()
+	 * @access private
+	 */
+	var $category_class = 'SimplePie_Category';
+
+	/**
 	 * @var string Class used for enclosures
 	 * @see SimplePie::set_enclosures_class()
 	 * @access private
@@ -957,6 +964,25 @@ class SimplePie
 		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Author'))
 		{
 			$this->author_class = $class;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Allows you to change which class SimplePie uses for handling category data.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 * 
+	 * @access public
+	 * @param string $class Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
+	 */
+	function set_category_class($class = 'SimplePie_Category')
+	{
+		if (SimplePie_Misc::is_a_class($class, 'SimplePie_Category'))
+		{
+			$this->category_class = $class;
 			return true;
 		}
 		return false;
@@ -2725,35 +2751,40 @@ class SimplePie_Item
 		}
 	}
 
-	/**
-	 * @todo Move categories into an object, allowing access to label/term/scheme
-	 */
 	function get_categories()
 	{
 		$categories = array();
 
 		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'category') as $category)
 		{
+			$term = null;
+			$scheme = null;
+			$label = null;
+			if (isset($category['attribs']['']['term']))
+			{
+				$term = $this->sanitize($category['attribs']['']['term'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			if (isset($category['attribs']['']['scheme']))
+			{
+				$scheme = $this->sanitize($category['attribs']['']['scheme'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 			if (isset($category['attribs']['']['label']))
 			{
-				$categories[] = $this->sanitize($category['attribs']['']['label'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$label = $this->sanitize($category['attribs']['']['label'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			else if (isset($category['attribs']['']['term']))
-			{
-				$categories[] = $this->sanitize($category['attribs']['']['term'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			$categories[] = new $this->feed->category_class($term, $scheme, $label);
 		}
 		foreach ((array) $this->get_item_tags('', 'category') as $category)
 		{
-			$categories[] = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			$categories[] = new $this->feed->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'subject') as $category)
 		{
-			$categories[] = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			$categories[] = new $this->feed->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'subject') as $category)
 		{
-			$categories[] = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			$categories[] = new $this->feed->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 
 		if (!empty($categories))
@@ -3312,6 +3343,62 @@ class SimplePie_Author
 		else
 		{
 			return null;
+		}
+	}
+}
+
+class SimplePie_Category
+{
+	var $term;
+	var $scheme;
+	var $email;
+
+	// Constructor, used to input the data
+	function SimplePie_Category($term, $scheme, $label)
+	{
+		$this->term = $term;
+		$this->scheme = $scheme;
+		$this->label = $label;
+	}
+
+	function __toString()
+	{
+		return sha1(serialize($this));
+	}
+
+	function get_term()
+	{
+		if ($this->term !== null)
+		{
+			return $this->term;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_scheme()
+	{
+		if ($this->scheme !== null)
+		{
+			return $this->scheme;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_label()
+	{
+		if ($this->label !== null)
+		{
+			return $this->label;
+		}
+		else
+		{
+			return $this->get_term();
 		}
 	}
 }
@@ -6821,6 +6908,48 @@ class SimplePie_Misc
 		}
 		
 		return $tokens;
+	}
+	
+	function array_unique($array)
+	{
+		if (version_compare(phpversion(), '5.2', '>='))
+		{
+			return array_unique($array);
+		}
+		else
+		{
+			$array = (array) $array;
+			$new_array = array();
+			$new_array_strings = array();
+			foreach ($array as $key => $value)
+			{
+				if (is_object($value))
+				{
+					if (method_exists($value, '__toString'))
+					{
+						$cmp = $value->__toString();
+					}
+					else
+					{
+						trigger_error('Object of class ' . get_class($value) . ' could not be converted to string', E_USER_ERROR);
+					}
+				}
+				else if (is_array($value))
+				{
+					$cmp = (string) reset($value);
+				}
+				else
+				{
+					$cmp = (string) $value;
+				}
+				if (!in_array($cmp, $new_array_strings))
+				{
+					$new_array[$key] = $value;
+					$new_array_strings[] = $cmp;
+				}
+			}
+			return $new_array;
+		}
 	}
 }
 

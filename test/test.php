@@ -191,9 +191,9 @@ $first_item_author_name = new Unit_Test2_Group('First Item Author Name');
 $first_item_author_name->load_folder('first_item_author_name');
 $master->add($first_item_author_name);
 
-$first_item_category = new Unit_Test2_Group('First Item Category');
-$first_item_category->load_folder('first_item_category');
-$master->add($first_item_category);
+$first_item_category_label = new Unit_Test2_Group('First Item Category Label');
+$first_item_category_label->load_folder('first_item_category_label');
+$master->add($first_item_category_label);
 
 $first_item_content = new Unit_Test2_Group('First Item Content');
 $first_item_content->load_folder('first_item_content');
