@@ -122,7 +122,7 @@ function fnLoadPngs() {
 
 <div id="site">
 	<h2><img src="<?php echo $_SERVER['PHP_SELF']; ?>?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test"></h2>
-	<p align="center"><a href="#results">Skip to the results</a> | 
+	<p><a href="#results">Skip to the results</a> | 
 	<?php
 	if (isset($_GET['remote'])) echo '<a href="'.$_SERVER["PHP_SELF"].'">Re-run without remote tests</a>';
 	else echo '<a href="'.$_SERVER["PHP_SELF"].'?remote=true">Re-run with remote tests</a>';
@@ -134,98 +134,42 @@ function fnLoadPngs() {
 require_once '../simplepie.inc';
 require_once 'functions.php';
 
+$tests = array(
+	'absolutize',
+	'date',
+	'feed_copyright',
+	'feed_description',
+	'feed_image_height',
+	'feed_image_link',
+	'feed_image_title',
+	'feed_image_url',
+	'feed_image_width',
+	'feed_language',
+	'feed_link',
+	'feed_title',
+	'first_item_author_name',
+	'first_item_category_label',
+	'first_item_content',
+	'first_item_date',
+	'first_item_description',
+	'first_item_id',
+	'first_item_latitude',
+	'first_item_longitude',
+	'first_item_permalink',
+	'first_item_title',
+);
+
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
 
 $master = new Unit_Test2_Group('SimplePie Test Suite');
 
-$absolutize = new Unit_Test2_Group('Absolutize');
-$absolutize->load_folder('absolutize');
-$master->add($absolutize);
-
-$date = new Unit_Test2_Group('Date');
-$date->load_folder('date');
-$master->add($date);
-
-$feed_copyright = new Unit_Test2_Group('Feed Copyright');
-$feed_copyright->load_folder('feed_copyright');
-$master->add($feed_copyright);
-
-$feed_description = new Unit_Test2_Group('Feed Description');
-$feed_description->load_folder('feed_description');
-$master->add($feed_description);
-
-$feed_image_height = new Unit_Test2_Group('Feed Image Height');
-$feed_image_height->load_folder('feed_image_height');
-$master->add($feed_image_height);
-
-$feed_image_link = new Unit_Test2_Group('Feed Image Link');
-$feed_image_link->load_folder('feed_image_link');
-$master->add($feed_image_link);
-
-$feed_image_title = new Unit_Test2_Group('Feed Image Title');
-$feed_image_title->load_folder('feed_image_title');
-$master->add($feed_image_title);
-
-$feed_image_url = new Unit_Test2_Group('Feed Image URL');
-$feed_image_url->load_folder('feed_image_url');
-$master->add($feed_image_url);
-
-$feed_image_width = new Unit_Test2_Group('Feed Image Width');
-$feed_image_width->load_folder('feed_image_width');
-$master->add($feed_image_width);
-
-$feed_language = new Unit_Test2_Group('Feed Language');
-$feed_language->load_folder('feed_language');
-$master->add($feed_language);
-
-$feed_link = new Unit_Test2_Group('Feed Link');
-$feed_link->load_folder('feed_link');
-$master->add($feed_link);
-
-$feed_title = new Unit_Test2_Group('Feed Title');
-$feed_title->load_folder('feed_title');
-$master->add($feed_title);
-
-$first_item_author_name = new Unit_Test2_Group('First Item Author Name');
-$first_item_author_name->load_folder('first_item_author_name');
-$master->add($first_item_author_name);
-
-$first_item_category_label = new Unit_Test2_Group('First Item Category Label');
-$first_item_category_label->load_folder('first_item_category_label');
-$master->add($first_item_category_label);
-
-$first_item_content = new Unit_Test2_Group('First Item Content');
-$first_item_content->load_folder('first_item_content');
-$master->add($first_item_content);
-
-$first_item_date = new Unit_Test2_Group('First Item Date');
-$first_item_date->load_folder('first_item_date');
-$master->add($first_item_date);
-
-$first_item_description = new Unit_Test2_Group('First Item Description');
-$first_item_description->load_folder('first_item_description');
-$master->add($first_item_description);
-
-$first_item_id = new Unit_Test2_Group('First Item ID');
-$first_item_id->load_folder('first_item_id');
-$master->add($first_item_id);
-
-$first_item_latitude = new Unit_Test2_Group('First Item Latitude');
-$first_item_latitude->load_folder('first_item_latitude');
-$master->add($first_item_latitude);
-
-$first_item_longitude = new Unit_Test2_Group('First Item Longitude');
-$first_item_longitude->load_folder('first_item_longitude');
-$master->add($first_item_longitude);
-
-$first_item_permalink = new Unit_Test2_Group('First Item Permalink');
-$first_item_permalink->load_folder('first_item_permalink');
-$master->add($first_item_permalink);
-
-$first_item_title = new Unit_Test2_Group('First Item Title');
-$first_item_title->load_folder('first_item_title');
-$master->add($first_item_title);
+foreach ($tests as $test)
+{
+	$test_group = new Unit_Test2_Group(ucwords(str_replace('_', ' ', $test)));
+	$test_group->load_folder($test);
+	$master->add($test_group);
+}
 
 if (isset($_GET['remote']))
 {
@@ -249,8 +193,8 @@ $mtime = explode(' ', microtime());
 $mtime = $mtime[1] + $mtime[0];
 $time = $mtime - $starttime;
 
-$passed_percentage = $master-> passes() / $master->total() * 100;
-$failed_percentage = $master-> fails() / $master->total() * 100;
+$passed_percentage = $master->passes() / $master->total() * 100;
+$failed_percentage = $master->fails() / $master->total() * 100;
 
 ?>
 	</p>

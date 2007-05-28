@@ -116,7 +116,7 @@ class who_knows_a_title_from_a_hole_in_the_ground extends SimplePie_Unit_Test2
 		$feed->init();
 		if ($item = $feed->get_item(0))
 		{
-			$this->result = html_entity_decode($item->get_title(), ENT_QUOTES, 'UTF-8');
+			$this->result = html_entity_decode(strip_tags($item->get_title()), ENT_QUOTES, 'UTF-8');
 		}
 	}
 }
