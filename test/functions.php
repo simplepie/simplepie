@@ -2,6 +2,26 @@
 
 require_once 'unit_test/unit_test2.php';
 
+class SimplePie_Unit_Test2_Group extends Unit_Test2_Group
+{
+	function pre()
+	{
+		ob_start();
+	}
+	
+	function post()
+	{
+		$output = ob_get_clean();
+		
+		$passed_percentage = floor($this->passes() / $this->total() * 100);
+		$failed_percentage = ceil($this->fails() / $this->total() * 100);
+		
+		echo '<h2 class=' . (($passed_percentage == 100) ? 'pass' : 'fail') . '>' . htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8') . ': ' . $passed_percentage . "% passed!</h2>\n";
+		echo "<p>\n$output\n</p>\n";
+		echo '<p>We ran ' . $this->total() . ' tests in ' . round($this->time(), 3) . ' seconds of which ' . $this->passes() . ' were passed, and ' . $this->fails() . ' were failed.</p>';
+	}
+}
+
 class SimplePie_Unit_Test2 extends Unit_Test2
 {
 	function SimplePie_Unit_Test2()
@@ -20,13 +40,13 @@ class SimplePie_Unit_Test2 extends Unit_Test2
 	
 	function pass()
 	{
-		$this->output(htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8'), 'pass', '&#x2714;');
+		$this->output(htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8'), 'pass', '&#x2714;');
 		parent::pass();
 	}
 	
 	function fail()
 	{
-		$this->output(htmlspecialchars($this->name, ENT_COMPAT, 'UTF-8'), 'fail', '&#x2718;');
+		$this->output(htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8'), 'fail', '&#x2718;');
 		parent::fail();
 	}
 	
@@ -98,26 +118,6 @@ class SimplePie_First_Item_Category_Test extends SimplePie_First_Item_Test
 			}
 		}
 		return false;
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground extends SimplePie_Unit_Test2
-{
-	function expected()
-	{
-		$this->expected = '<title>';
-	}
-	
-	function test()
-	{
-		$feed = new SimplePie();
-		$feed->set_feed_url($this->data);
-		$feed->enable_cache(false);
-		$feed->init();
-		if ($item = $feed->get_item(0))
-		{
-			$this->result = html_entity_decode(strip_tags($item->get_title()), ENT_QUOTES, 'UTF-8');
-		}
 	}
 }
 
@@ -387,70 +387,6 @@ class diveintomark_Atom_Autodiscovery extends SimplePie_Unit_Test2
 		{
 			$this->run();
 		}
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground_html_cdata extends who_knows_a_title_from_a_hole_in_the_ground
-{
-	function data()
-	{
-		$this->name = $this->data = 'http://atomtests.philringnalda.com/tests/item/title/html-cdata.atom';
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground_html_entity extends who_knows_a_title_from_a_hole_in_the_ground
-{
-	function data()
-	{
-		$this->name = $this->data = 'http://atomtests.philringnalda.com/tests/item/title/html-entity.atom';
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground_html_ncr extends who_knows_a_title_from_a_hole_in_the_ground
-{
-	function data()
-	{
-		$this->name = $this->data = 'http://atomtests.philringnalda.com/tests/item/title/html-ncr.atom';
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground_text_cdata extends who_knows_a_title_from_a_hole_in_the_ground
-{
-	function data()
-	{
-		$this->name = $this->data = 'http://atomtests.philringnalda.com/tests/item/title/text-cdata.atom';
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground_text_entity extends who_knows_a_title_from_a_hole_in_the_ground
-{
-	function data()
-	{
-		$this->name = $this->data = 'http://atomtests.philringnalda.com/tests/item/title/text-entity.atom';
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground_text_ncr extends who_knows_a_title_from_a_hole_in_the_ground
-{
-	function data()
-	{
-		$this->name = $this->data = 'http://atomtests.philringnalda.com/tests/item/title/text-ncr.atom';
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground_xhtml_entity extends who_knows_a_title_from_a_hole_in_the_ground
-{
-	function data()
-	{
-		$this->name = $this->data = 'http://atomtests.philringnalda.com/tests/item/title/xhtml-entity.atom';
-	}
-}
-
-class who_knows_a_title_from_a_hole_in_the_ground_xhtml_ncr extends who_knows_a_title_from_a_hole_in_the_ground
-{
-	function data()
-	{
-		$this->name = $this->data = 'http://atomtests.philringnalda.com/tests/item/title/xhtml-ncr.atom';
 	}
 }
 

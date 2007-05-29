@@ -26,66 +26,72 @@ else
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
 <style type="text/css">
-body {
-	font:12px/18px Verdana, sans-serif;
-	letter-spacing:0px;
-	color:#333;
-	margin:0;
-	padding:0;
-	background:#fff url(<?php echo $_SERVER['PHP_SELF']; ?>?background) repeat-x top left;
+* {
+	margin: 0;
+	padding: 0;
 }
 
-div#site {
-	width:500px;
-	margin:20px auto;
+body {
+	font: 12px/18px Verdana, sans-serif;
+	color: #333;
+	background: #fff url(?background) repeat-x top left;
+}
+
+#site {
+	width: 500px;
+	margin: 20px auto;
 }
 
 a {
-	color:#000;
-	text-decoration:underline;
-	padding:0 1px;
+	color: #000;
+	text-decoration: underline;
 }
 
 a:hover {
-	color:#fff;
-	background-color:#333;
-	text-decoration:none;
-	padding:0 1px;
+	color: #fff;
+	background-color: #333;
+	text-decoration: none;
+}
+
+h1 {
+	font-size: 18px;
+	margin: 30px 0 10px 0;
+	text-align: center;
+}
+
+h1 + p {
+	text-align: center;
 }
 
 h2 {
-	font-size:18px;
-	padding:0;
-	margin:30px 0 10px 0;
-	text-align:center;
+	font-size: 16px;
+	margin: 20px 0 5px 0;
+	padding-top: 20px;
+	border-top: 1px solid #ccc;
 }
 
-h3 {
-	font-size:16px;
-	padding:0;
-	margin:20px 0 5px 0;
-	padding-top:20px;
-	border-top:1px solid #ccc;
+h2 + p + p, h2 + p + p a {
+	font-size: 10px;
+	line-height: 12px;
+	color: #666;
 }
 
-.footnote {
-	margin:20px 0 0 0;
-	padding-top:10px;
-	border-top:1px solid #ccc;
+#summary + p + p {
+	margin: 20px 0 0 0;
+	padding-top: 10px;
+	border-top: 1px solid #ccc;
 }
 
-.footnote,
-.footnote a {
-	font:10px/12px verdana, sans-serif;
-	color:#aaa;
+small {
+	font-size: 10px;
 }
 
 .pass {
-	color:green;
+	color: green;
 }
 
 .fail {
-	color:red;
+	color: red;
 }
 </style>
 
@@ -121,14 +127,13 @@ function fnLoadPngs() {
 <body>
 
 <div id="site">
-	<h2><img src="<?php echo $_SERVER['PHP_SELF']; ?>?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test"></h2>
-	<p><a href="#results">Skip to the results</a> | 
+	<h1><img src="?logopng" alt="SimplePie Compatibility Test" title="SimplePie Compatibility Test"></h1>
+	<p><a href="#summary">Skip to the results</a> | 
 	<?php
-	if (isset($_GET['remote'])) echo '<a href="'.$_SERVER["PHP_SELF"].'">Re-run without remote tests</a>';
-	else echo '<a href="'.$_SERVER["PHP_SELF"].'?remote=true">Re-run with remote tests</a>';
+	if (isset($_GET['remote'])) echo '<a href="?">Re-run without remote tests</a>';
+	else echo '<a href="?remote=true">Re-run with remote tests</a>';
 	?>
 	</p>
-	<p>
 <?php
 
 require_once '../simplepie.inc';
@@ -159,50 +164,34 @@ $tests = array(
 	'first_item_title',
 );
 
-$starttime = explode(' ', microtime());
-$starttime = $starttime[1] + $starttime[0];
-
 $master = new Unit_Test2_Group('SimplePie Test Suite');
 
 foreach ($tests as $test)
 {
-	$test_group = new Unit_Test2_Group(ucwords(str_replace('_', ' ', $test)));
+	$test_group = new SimplePie_Unit_Test2_Group(ucwords(str_replace('_', ' ', $test)));
 	$test_group->load_folder($test);
 	$master->add($test_group);
 }
 
+$who_knows_a_title_from_a_hole_in_the_ground = new SimplePie_Unit_Test2_Group('Who knows a <title> from a hole in the ground?');
+$who_knows_a_title_from_a_hole_in_the_ground->load_folder('who_knows_a_title_from_a_hole_in_the_ground');
+$master->add($who_knows_a_title_from_a_hole_in_the_ground);
+
 if (isset($_GET['remote']))
 {
 	$master->add(new diveintomark_Atom_Autodiscovery);
-	
-	$who_knows_a_title_from_a_hole_in_the_ground = new Unit_Test2_Group('Who knows a <title> from a hole in the ground?');
-	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_html_cdata);
-	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_html_entity);
-	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_html_ncr);
-	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_text_cdata);
-	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_text_entity);
-	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_text_ncr);
-	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_xhtml_entity);
-	$who_knows_a_title_from_a_hole_in_the_ground->add(new who_knows_a_title_from_a_hole_in_the_ground_xhtml_ncr);
-	$master->add($who_knows_a_title_from_a_hole_in_the_ground);
 }
 
 $master->run();
 
-$mtime = explode(' ', microtime());
-$mtime = $mtime[1] + $mtime[0];
-$time = $mtime - $starttime;
-
-$passed_percentage = $master->passes() / $master->total() * 100;
-$failed_percentage = $master->fails() / $master->total() * 100;
+$passed_percentage = floor($master->passes() / $master->total() * 100);
+$failed_percentage = ceil($master->fails() / $master->total() * 100);
 
 ?>
-	</p>
-
-	<h3><a name="results"><?php echo floor($passed_percentage); ?>% passed!</a></h3>
-	<p>We ran <?php echo $master->total(); ?> tests in <?php echo round($time, 3); ?> seconds (<?php echo round($time / $master->total(), 3); ?> seconds per test) of which <?php echo $master-> passes(); ?> (<?php echo floor($passed_percentage); ?>%) were passed, and <?php echo $master-> fails(); ?> (<?php echo ceil($failed_percentage); ?>%) were failed.</p>
+	<h2 id="summary" class=<?php echo ($passed_percentage == 100) ? 'pass' : 'fail'; ?>><?php echo $passed_percentage; ?>% passed!</h2>
+	<?php echo '<p>We ran ' . $master->total() . ' tests in ' . round($master->time(), 3) . ' seconds (' . round($master->time() / $master->total(), 3) . ' seconds per test) of which ' . $master->passes() . ' (' . $passed_percentage . '%) were passed, and ' . $master->fails() . ' (' . $failed_percentage . '%) were failed.</p>'; ?>
 	
-	<p class="footnote">Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</p>
+	<p><small>Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</small></p>
 
 </div>
 
