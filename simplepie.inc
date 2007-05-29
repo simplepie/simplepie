@@ -2641,20 +2641,17 @@ class SimplePie_Item
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
+		else if ($this->get_link(0) !== null)
+		{
+			return $this->get_link(0);
+		}
+		else if ($this->get_title() !== null)
+		{
+			return $this->get_title();
+		}
 		else
 		{
-			if ($this->get_link(0))
-			{
-				return $this->get_link(0);
-			}
-			else if ($this->get_title())
-			{
-				return $this->get_title();
-			}
-			else
-			{
-				return self::__toString();
-			}
+			return self::__toString();
 		}
 	}
 
@@ -4828,7 +4825,6 @@ class SimplePie_Misc
 		if ($file = $cache->load())
 		{
 			header('Content-type:' . $file['headers']['content-type']);
-			header('Content-type:text/plain');
 			header('Cache-Control: must-revalidate');
 			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
 			echo $file['body'];
