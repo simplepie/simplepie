@@ -173,13 +173,15 @@ foreach ($tests as $test)
 	$master->add($test_group);
 }
 
-$who_knows_a_title_from_a_hole_in_the_ground = new SimplePie_Unit_Test2_Group('Who knows a <title> from a hole in the ground?');
-$who_knows_a_title_from_a_hole_in_the_ground->load_folder('who_knows_a_title_from_a_hole_in_the_ground');
-$master->add($who_knows_a_title_from_a_hole_in_the_ground);
+$test_group = new SimplePie_Unit_Test2_Group('Who knows a <title> from a hole in the ground?');
+$test_group->load_folder('who_knows_a_title_from_a_hole_in_the_ground');
+$master->add($test_group);
 
 if (isset($_GET['remote']))
 {
-	$master->add(new diveintomark_Atom_Autodiscovery);
+	$test_group = new SimplePie_Unit_Test2_Group('Atom autodiscovery test suite');
+	$test_group->add(new diveintomark_Atom_Autodiscovery);
+	$master->add($test_group);
 }
 
 $master->run();
