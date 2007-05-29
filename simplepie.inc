@@ -294,6 +294,21 @@ define('SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO', 'http://www.w3.org/2003/01/geo/wgs84
 define('SIMPLEPIE_NAMESPACE_GEORSS', 'http://www.georss.org/georss');
 
 /**
+ * Media RSS Namespace
+ */
+define('SIMPLEPIE_NAMESPACE_MEDIARSS', 'http://search.yahoo.com/mrss');
+
+/**
+ * iTunes RSS Namespace
+ */
+define('SIMPLEPIE_NAMESPACE_ITUNES', 'http://www.itunes.com/dtds/podcast-1.0.dtd');
+
+/**
+ * Google Namespace
+ */
+define('SIMPLEPIE_NAMESPACE_GOOGLE', 'http://schemas.google.com/g/2005');
+
+/**
  * XHTML Namespace
  */
 define('SIMPLEPIE_NAMESPACE_XHTML', 'http://www.w3.org/1999/xhtml');
