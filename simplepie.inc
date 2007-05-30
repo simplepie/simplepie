@@ -2666,7 +2666,7 @@ class SimplePie_Item
 		}
 		else
 		{
-			return self::__toString();
+			return $this->__toString();
 		}
 	}
 
