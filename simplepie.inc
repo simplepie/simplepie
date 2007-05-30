@@ -2656,13 +2656,13 @@ class SimplePie_Item
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
-		else if ($this->get_link(0) !== null)
+		else if (($return = $this->get_permalink()) !== null)
 		{
-			return $this->get_link(0);
+			return $return;
 		}
-		else if ($this->get_title() !== null)
+		else if (($return = $this->get_title()) !== null)
 		{
-			return $this->get_title();
+			return $return;
 		}
 		else
 		{
