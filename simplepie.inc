@@ -296,7 +296,7 @@ define('SIMPLEPIE_NAMESPACE_GEORSS', 'http://www.georss.org/georss');
 /**
  * Media RSS Namespace
  */
-define('SIMPLEPIE_NAMESPACE_MEDIARSS', 'http://search.yahoo.com/mrss');
+define('SIMPLEPIE_NAMESPACE_MEDIARSS', 'http://search.yahoo.com/mrss/');
 
 /**
  * iTunes RSS Namespace
