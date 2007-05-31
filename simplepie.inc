@@ -564,11 +564,10 @@ class SimplePie
 	var $multifeed_url = array();
 
 	/**
-	 * @var array Stores the number of URLs that were passed in in cases where there are more than one.
-	 * @see SimplePie::set_feed_url()
+	 * @var array Stores SimplePie objects when multiple feeds initialized.
 	 * @access private
 	 */
-	var $multifeed_url_length = 0;
+	var $multifeed_objects = array();
 
 	/**
 	 * @var array Stores the get_object_vars() array for use with multifeeds.
@@ -656,13 +655,11 @@ class SimplePie
 	{
 		if (is_array($url))
 		{
-			$size = sizeof($url);
-			for ($x = 0; $x < $size; $x++)
+			$this->multifeed_url = array();
+			foreach ($url as $value)
 			{
-				$this->multifeed_url[$x] = SimplePie_Misc::fix_protocol($url[$x], 1);
-				$this->multifeed_url_length++;
+				$this->multifeed_url[] = SimplePie_Misc::fix_protocol($value, 1);
 			}
-			unset($size);
 		}
 		else
 		{
@@ -1220,12 +1217,6 @@ function embed_wmedia(width, height, link) {
 			exit;
 		}
 
-		// This should only happen once.
-		if ($this->config_settings === null)
-		{
-			$this->config_settings = get_object_vars($this);
-		}
-
 		// Pass whatever was set with config options over to the sanitizer.
 		$this->sanitize->pass_cache_data($this->cache, $this->cache_location, $this->cache_name_function, $this->cache_class);
 		$this->sanitize->pass_file_data($this->file_class, $this->timeout, $this->useragent, $this->force_fsockopen);
@@ -1233,6 +1224,7 @@ function embed_wmedia(width, height, link) {
 		if ($this->feed_url !== null || $this->raw_data !== null)
 		{
 			$this->data = array();
+			$this->multifeed_objects = array();
 			$cache = false;
 
 			if ($this->feed_url !== null)
@@ -1499,6 +1491,28 @@ function embed_wmedia(width, height, link) {
 				SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
 				return false;
 			}
+		}
+		elseif (!empty($this->multifeed_url))
+		{
+			$i = 0;
+			$success = 0;
+			$this->multifeed_objects = array();
+			foreach ($this->multifeed_url as $url)
+			{
+				if (SIMPLEPIE_PHP5)
+				{
+					// This keyword needs to defy coding standards for PHP4 compatibility
+					$this->multifeed_objects[$i] = clone($this);
+				}
+				else
+				{
+					$this->multifeed_objects[$i] = $this;
+				}
+				$this->multifeed_objects[$i]->set_feed_url($url);
+				$success |= $this->multifeed_objects[$i]->init();
+				$i++;
+			}
+			return (bool) $success;
 		}
 	}
 
@@ -2398,53 +2412,11 @@ function embed_wmedia(width, height, link) {
 
 	function get_items($start = 0, $end = 0)
 	{
-		// If we have multiple feeds...
-		if ($this->multifeed_url_length > 0)
+		if (!empty($this->multifeed_objects))
 		{
-			// Let's go through each feed URL
-			$multifeeds = array();
-			foreach ($this->multifeed_url as $url)
-			{
-				// Create a new SimplePie object for this single feed
-				$t = new SimplePie();
-
-				// This *should* always be an array.  Make sure to init() first.
-				if (is_array($this->config_settings))
-				{
-					// We grabbed this back in init().  Let's use it here.
-					// *NOTE:* This doesn't handle everything. Many options are in SimplePie_Sanitize().  Maybe we can use get_class_methods()? Ergh.
-					foreach ($this->config_settings as $key=>$value)
-					{
-						// Whatever settings were set in the initial new SimplePie() call, let's use those settings.
-						$t->$key = $value;
-					}
-				}
-				else
-				{
-					$this->error = "The init() method was not called before attempting to retreive the items.";
-					SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
-				}
-
-				// Overwrite certain settings
-				$t->set_feed_url($url);
-				$t->multifeed_url = '';
-				$t->multifeed_url_length = 0;
-
-				// Init it!
-				$t->init();
-
-				// We'll pass this new SimplePie object to SimplePie::merge_items();
-				$multifeeds[] = $t;
-
-				// Clear the memory we just used.
-				unset($t);
-			}
-
-			// Return it.  Quitting is implied.
-			return $this->merge_items($multifeeds, $start, $end);
+			return SimplePie::merge_items($this->multifeed_objects, $start, $end);
 		}
-
-		else if (!isset($this->data['items']))
+		elseif (!isset($this->data['items']))
 		{
 			if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'entry'))
 			{
