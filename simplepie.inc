@@ -1514,6 +1514,10 @@ function embed_wmedia(width, height, link) {
 			}
 			return (bool) $success;
 		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
