@@ -648,7 +648,7 @@ class SimplePie
 	 *
 	 * @access public
 	 * @since 1.0 Preview Release
-	 * @param string $url This is the URL of the feed you want to parse.
+	 * @param mixed $url This is the URL (or array of URLs) that you want to parse.
 	 * @see SimplePie::set_raw_data()
 	 */
 	function set_feed_url($url)
@@ -1647,7 +1647,8 @@ function embed_wmedia(width, height, link) {
 			$standard_favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
 			$favicon = $standard_favicon;
 
-			if ($this->cache) {
+			if ($this->cache)
+			{
 				$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
 
 				if ($cache->load())
