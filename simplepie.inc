@@ -1725,6 +1725,7 @@ function embed_wmedia(width, height, link) {
 
 	/**
 	 * @todo If we have a perm redirect we should return the new URL
+	 * @todo When we make the above change, let's support <itunes:new-feed-url> as well.
 	 */
 	function subscribe_url()
 	{
@@ -3497,12 +3498,17 @@ class SimplePie_Enclosure
 		}
 	}
 
+	function get_handler()
+	{
+		return $this->embed('', false, true);
+	}
+
 	function native_embed($options='')
 	{
 		return $this->embed($options, true);
 	}
 
-	function embed($options = '', $native = false)
+	function embed($options = '', $native = false, $get_handler = false)
 	{
 		// Set up defaults
 		$audio = '';
@@ -3514,6 +3520,22 @@ class SimplePie_Enclosure
 		$height = 'auto';
 		$bgcolor = '#ffffff';
 		$mediaplayer = '';
+		$widescreen = false;
+		$handler = null;
+
+		// Mime-types by handler.
+		$types_flash = array('application/x-shockwave-flash', 'application/futuresplash'); // Flash
+		$types_fmedia = array('audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg', 'video/flv', 'video/x-flv'); // Flash Media Player
+		$types_quicktime = array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video'); // QuickTime
+		$types_wmedia = array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx'); // Windows Media
+		$types_mp3 = array('audio/mp3', 'audio/x-mp3'); // MP3
+
+		// Usage defaults
+		$use_odeo = false;
+		$use_flash = false;
+		$use_fmedia = false;
+		$use_quicktime = false;
+		$use_wmedia = false;
 
 		// Process options and reassign values as necessary
 		if (is_array($options))
@@ -3567,6 +3589,10 @@ class SimplePie_Enclosure
 						case 'mediaplayer':
 							$mediaplayer = $opt[1];
 							break;
+
+						case 'widescreen':
+							$widescreen = $opt[1];
+							break;
 					}
 				}
 			}
@@ -3575,7 +3601,7 @@ class SimplePie_Enclosure
 		$type = strtolower($this->get_type());
 
 		// If we encounter an unsupported mime-type, check the file extension and guess intelligently.
-		if (!in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp3', 'audio/x-mp3', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/flv', 'video/x-flv', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video', 'application/x-shockwave-flash', 'application/futuresplash', 'application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
+		if (!in_array($type, array_merge($types_flash, $types_fmedia, $types_quicktime, $types_wmedia, $types_mp3)))
 		{
 			switch (strtolower($this->get_extension()))
 			{
@@ -3698,6 +3724,38 @@ class SimplePie_Enclosure
 			}
 		}
 
+		// Determine the handler
+		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com')
+		{
+			$use_odeo = true;
+			$handler = 'odeo';
+		}
+		else if (in_array($type, $types_flash))
+		{
+			$use_flash = true;
+			$handler = 'flash';
+		}
+		else if (in_array($type, $types_fmedia) || (in_array($type, $types_mp3) && $mediaplayer != ''))
+		{
+			$use_fmedia = true;
+			$handler = 'fmedia';
+		}
+		else if (in_array($type, $types_quicktime) || (in_array($type, $types_mp3) && $mediaplayer == ''))
+		{
+			$use_quicktime = true;
+			$handler = 'quicktime';
+		}
+		else if (in_array($type, $types_wmedia))
+		{
+			$use_wmedia = true;
+			$handler = 'wmedia';
+		}
+
+		if ($get_handler)
+		{
+			return $handler;
+		}
+
 		$mime = explode('/', $type, 2);
 		$mime = $mime[0];
 
@@ -3706,7 +3764,21 @@ class SimplePie_Enclosure
 		{
 			if ($mime == 'video')
 			{
-				$width = '480';
+				if ($height == 'auto')
+				{
+					$width = 480;
+				}
+				else
+				{
+					if ($widescreen)
+					{
+						$width = round((intval($height)/9)*16);
+					}
+					else
+					{
+						$width = round((intval($height)/3)*4);
+					}
+				}
 			}
 			else
 			{
@@ -3718,22 +3790,43 @@ class SimplePie_Enclosure
 		{
 			if ($mime == 'audio')
 			{
-				$height = '0';
+				$height = 0;
 			}
 			else if ($mime == 'video')
 			{
-				$height = '360';
+				if ($width == 'auto')
+				{
+					if ($widescreen)
+					{
+						$height = 270;
+					}
+					else
+					{
+						$height = 360;
+					}
+				}
+				else
+				{
+					if ($widescreen)
+					{
+						$height = round((intval($width)/16)*9);
+					}
+					else
+					{
+						$height = round((intval($width)/4)*3);
+					}
+				}
 			}
 			else
 			{
-				$height = '376';
+				$height = 376;
 			}
 		}
 		else
 		{
 			if ($mime == 'audio')
 			{
-				$height = '0';
+				$height = 0;
 			}
 		}
 
@@ -3761,7 +3854,7 @@ class SimplePie_Enclosure
 		}
 
 		// Odeo Feed MP3's
-		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com')
+		if ($use_odeo)
 		{
 			if ($native)
 			{
@@ -3774,7 +3867,7 @@ class SimplePie_Enclosure
 		}
 
 		// Flash
-		else if (in_array($type, array('application/x-shockwave-flash', 'application/futuresplash')))
+		else if ($use_flash)
 		{
 			if ($native)
 			{
@@ -3788,7 +3881,7 @@ class SimplePie_Enclosure
 
 		// Flash Media Player file types.
 		// Preferred handler for MP3 file types.
-		else if (in_array($type, array('audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg', 'video/flv', 'video/x-flv')) && ($mediaplayer != ''))
+		else if ($use_fmedia)
 		{
 			$height += 20;
 			if ($native)
@@ -3803,7 +3896,7 @@ class SimplePie_Enclosure
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
 		// Only handle MP3's if the Flash Media Player is not present.
-		else if (in_array($type, array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video')) || (in_array($type, array('audio/mp3', 'audio/x-mp3')) && $mediaplayer == ''))
+		else if ($use_quicktime)
 		{
 			$height += 16;
 			if ($native)
@@ -3812,7 +3905,7 @@ class SimplePie_Enclosure
 					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" href=\"" . $this->get_link() . "\" src=\"$placeholder\" width=\"$width\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"false\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://apple.com/quicktime/download/\"></embed>";
 				}
 				else {
-					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" src=\"" . $this->get_link() . "\" width=\"$width+\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"true\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://apple.com/quicktime/download/\"></embed>";
+					$embed .= "<embed type=\"$type\" style=\"cursor:hand; cursor:pointer;\" src=\"" . $this->get_link() . "\" width=\"$width\" height=\"$height\" autoplay=\"false\" target=\"myself\" controller=\"true\" loop=\"$loop\" scale=\"aspect\" bgcolor=\"$bgcolor\" pluginspage=\"http://apple.com/quicktime/download/\"></embed>";
 				}
 			}
 			else
@@ -3822,7 +3915,7 @@ class SimplePie_Enclosure
 		}
 
 		// Windows Media
-		else if (in_array($type, array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx')))
+		else if ($use_wmedia)
 		{
 			$height += 45;
 			if ($native)
