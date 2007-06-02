@@ -2609,9 +2609,6 @@ class SimplePie_Item
 		return $this->feed;
 	}
 
-	/**
-	 * @todo Create ID instead of returning false
-	 */
 	function get_id()
 	{
 		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'id'))
@@ -3072,7 +3069,10 @@ class SimplePie_Item
 		}
 	}
 
-	function get_enclosure($key = 0)
+	/**
+	 * @todo Add ability to prefer one type of content over another (in a media group).
+	 */
+	function get_enclosure($key = 0, $prefer = null)
 	{
 		$enclosures = $this->get_enclosures();
 		if (isset($enclosures[$key]))
@@ -3085,8 +3085,110 @@ class SimplePie_Item
 		}
 	}
 
+	/**
+	 * Grabs all available enclosures (podcasts, etc.)
+	 *
+	 * (Will soon) Supports the <enclosure> RSS tag, as well as Media RSS and iTunes RSS.
+	 * 
+	 * First look for a <media:group>. If one is set to the default, use it.  Otherwise default to the first one.
+	 * Next, look for a <media:content>.  This should (I believe) be treated the same way as a standard <enclosure>, so that if we have a <media:content> AND an <enclosure> they count as two rather than one.
+	 * If we can't find any media: namespaced content, then we'll fall back to the standard <enclosure> tag.
+	 *
+	 * @todo Add support for multiple <media:group>s in the same way as we support multiple <enclosure>s.
+	 * @todo Add support for end-user defined sorting of enclosures by type/handler (so we can prefer the faster-loading FLV over MP4).
+	 * @todo Add support for all of the other bits of metadata that are available.
+	 * @todo Add support for itunes: tags.  These should be relatively simple compared to media:.
+	 * @todo Create more classes to handle all of the various bits of metadata available from Media RSS. SimplePie_Enclosure_Restriction (among others)?
+	 * @todo Still have a crapload of work to do, but I'm tired and want to go to sleep.
+	 */
 	function get_enclosures()
 	{
+		$media_group = $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'group');
+		$media_content = $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'content');
+
+		// Let's check to see if there's a media:group here
+		if ($media_group !== null)
+		{
+			// We'll narrow the definition of the media:group
+			$media_group = $media_group[0]['child'][SIMPLEPIE_NAMESPACE_MEDIARSS];
+
+			// As long as we have media:content...
+			if (isset($media_group['content']))
+			{
+				// Loop through each media:content
+				foreach ($media_group['content'] as $content)
+				{
+					// If one of them has isDefault="true", we'll use that one.
+					if (isset($content['attribs']['']['isDefault']) && $content['attribs']['']['isDefault'] == 'true')
+					{
+						$default = $content['attribs'][''];
+						break;
+					}
+				}
+
+				// Let's use what we found, if anything.
+				if (isset($default['url']))
+				{
+					$url = null;
+					$type = null;
+					$length = null;
+					$url = $this->sanitize($default['url'], SIMPLEPIE_CONSTRUCT_IRI);
+					if (isset($default['type']))
+					{
+						$type = $this->sanitize($default['type'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($default['length']))
+					{
+						$length = ceil($default['length']);
+					}
+					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
+				}
+
+				// No? Then we'll use the first piece of content in the group.
+				else if (isset($media_group['content'][0]['attribs']['']['url']))
+				{
+					$url = null;
+					$type = null;
+					$length = null;
+					$url = $this->sanitize($media_group['content'][0]['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+					if (isset($media_group['content'][0]['attribs']['']['type']))
+					{
+						$type = $this->sanitize($media_group['content'][0]['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($media_group['content'][0]['attribs']['']['length']))
+					{
+						$length = ceil($media_group['content'][0]['attribs']['']['length']);
+					}
+					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
+				}
+			}
+		}
+
+		// If there's no media:group, but there is media:content, use it.
+		if ($media_group === null && isset($media_content) && !empty($media_content))
+		{
+			foreach ($media_content as $content)
+			{
+				if (isset($content['attribs']['']['url']))
+				{
+					$url = null;
+					$type = null;
+					$length = null;
+					$url = $this->sanitize($content['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+					if (isset($content['attribs']['']['type']))
+					{
+						$type = $this->sanitize($content['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['length']))
+					{
+						$length = ceil($content['attribs']['']['length']);
+					}
+					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
+				}
+			}
+		}
+
+		// I believe these are where the standard enclosures come into play.
 		if (!isset($this->data['enclosures']))
 		{
 			$this->data['enclosures'] = array();
@@ -3109,6 +3211,7 @@ class SimplePie_Item
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
 			}
+
 			foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'link') as $link)
 			{
 				if (isset($link['attribs']['']['href']) && !empty($link['attribs']['']['rel']) && $link['attribs']['']['rel'] == 'enclosure')
@@ -3128,6 +3231,7 @@ class SimplePie_Item
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
 			}
+
 			if ($enclosure = $this->get_item_tags('', 'enclosure'))
 			{
 				if (isset($enclosure[0]['attribs']['']['url']))
@@ -3440,7 +3544,7 @@ class SimplePie_Enclosure
 	{
 		if (!empty($this->link))
 		{
-			return $this->link;
+			return urldecode($this->link);
 		}
 		else
 		{
@@ -3498,30 +3602,13 @@ class SimplePie_Enclosure
 		}
 	}
 
-	function get_handler()
+	function get_real_type($find_handler = false)
 	{
-		return $this->embed('', false, true);
-	}
-
-	function native_embed($options='')
-	{
-		return $this->embed($options, true);
-	}
-
-	function embed($options = '', $native = false, $get_handler = false)
-	{
-		// Set up defaults
-		$audio = '';
-		$video = '';
-		$alt = '';
-		$altclass = '';
-		$loop = 'false';
-		$width = 'auto';
-		$height = 'auto';
-		$bgcolor = '#ffffff';
-		$mediaplayer = '';
-		$widescreen = false;
-		$handler = null;
+		// If it's Odeo, let's get it out of the way.
+		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com')
+		{
+			return 'odeo';
+		}
 
 		// Mime-types by handler.
 		$types_flash = array('application/x-shockwave-flash', 'application/futuresplash'); // Flash
@@ -3530,75 +3617,14 @@ class SimplePie_Enclosure
 		$types_wmedia = array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx'); // Windows Media
 		$types_mp3 = array('audio/mp3', 'audio/x-mp3'); // MP3
 
-		// Usage defaults
-		$use_odeo = false;
-		$use_flash = false;
-		$use_fmedia = false;
-		$use_quicktime = false;
-		$use_wmedia = false;
-
-		// Process options and reassign values as necessary
-		if (is_array($options))
+		if (!empty($this->type))
 		{
-			extract($options);
+			$type = strtolower($this->type);
 		}
 		else
 		{
-			$options = explode(',', $options);
-			foreach($options as $option)
-			{
-				$opt = explode(':', $option, 2);
-				if (isset($opt[0], $opt[1]))
-				{
-					$opt[0] = trim($opt[0]);
-					$opt[1] = trim($opt[1]);
-					switch ($opt[0])
-					{
-						case 'audio':
-							$audio = $opt[1];
-							break;
-
-						case 'video':
-							$video = $opt[1];
-							break;
-
-						case 'alt':
-							$alt = $opt[1];
-							break;
-
-						case 'altclass':
-							$altclass = $opt[1];
-							break;
-
-						case 'loop':
-							$loop = $opt[1];
-							break;
-
-						case 'width':
-							$width = $opt[1];
-							break;
-
-						case 'height':
-							$height = $opt[1];
-							break;
-
-						case 'bgcolor':
-							$bgcolor = $opt[1];
-							break;
-
-						case 'mediaplayer':
-							$mediaplayer = $opt[1];
-							break;
-
-						case 'widescreen':
-							$widescreen = $opt[1];
-							break;
-					}
-				}
-			}
+			$type = null;
 		}
-
-		$type = strtolower($this->get_type());
 
 		// If we encounter an unsupported mime-type, check the file extension and guess intelligently.
 		if (!in_array($type, array_merge($types_flash, $types_fmedia, $types_quicktime, $types_wmedia, $types_mp3)))
@@ -3724,36 +3750,120 @@ class SimplePie_Enclosure
 			}
 		}
 
-		// Determine the handler
-		if (substr(strtolower($this->get_link()), 0, 15) == 'http://odeo.com')
+		if ($find_handler)
 		{
-			$use_odeo = true;
-			$handler = 'odeo';
+			if (in_array($type, $types_flash))
+			{
+				return 'flash';
+			}
+			else if (in_array($type, $types_fmedia))
+			{
+				return 'fmedia';
+			}
+			else if (in_array($type, $types_quicktime))
+			{
+				return 'quicktime';
+			}
+			else if (in_array($type, $types_wmedia))
+			{
+				return 'wmedia';
+			}
+			else if (in_array($type, $types_mp3))
+			{
+				return 'mp3';
+			}
 		}
-		else if (in_array($type, $types_flash))
+		else
 		{
-			$use_flash = true;
-			$handler = 'flash';
+			return $type;
 		}
-		else if (in_array($type, $types_fmedia) || (in_array($type, $types_mp3) && $mediaplayer != ''))
-		{
-			$use_fmedia = true;
-			$handler = 'fmedia';
-		}
-		else if (in_array($type, $types_quicktime) || (in_array($type, $types_mp3) && $mediaplayer == ''))
-		{
-			$use_quicktime = true;
-			$handler = 'quicktime';
-		}
-		else if (in_array($type, $types_wmedia))
-		{
-			$use_wmedia = true;
-			$handler = 'wmedia';
-		}
+	}
 
-		if ($get_handler)
+	function get_handler()
+	{
+		return $this->get_real_type(true);
+	}
+
+	function native_embed($options='')
+	{
+		return $this->embed($options, true);
+	}
+
+	function embed($options = '', $native = false)
+	{
+		// Set up defaults
+		$audio = '';
+		$video = '';
+		$alt = '';
+		$altclass = '';
+		$loop = 'false';
+		$width = 'auto';
+		$height = 'auto';
+		$bgcolor = '#ffffff';
+		$mediaplayer = '';
+		$widescreen = false;
+		$handler = $this->get_handler();
+		$type = $this->get_real_type();
+
+		// Process options and reassign values as necessary
+		if (is_array($options))
 		{
-			return $handler;
+			extract($options);
+		}
+		else
+		{
+			$options = explode(',', $options);
+			foreach($options as $option)
+			{
+				$opt = explode(':', $option, 2);
+				if (isset($opt[0], $opt[1]))
+				{
+					$opt[0] = trim($opt[0]);
+					$opt[1] = trim($opt[1]);
+					switch ($opt[0])
+					{
+						case 'audio':
+							$audio = $opt[1];
+							break;
+
+						case 'video':
+							$video = $opt[1];
+							break;
+
+						case 'alt':
+							$alt = $opt[1];
+							break;
+
+						case 'altclass':
+							$altclass = $opt[1];
+							break;
+
+						case 'loop':
+							$loop = $opt[1];
+							break;
+
+						case 'width':
+							$width = $opt[1];
+							break;
+
+						case 'height':
+							$height = $opt[1];
+							break;
+
+						case 'bgcolor':
+							$bgcolor = $opt[1];
+							break;
+
+						case 'mediaplayer':
+							$mediaplayer = $opt[1];
+							break;
+
+						case 'widescreen':
+							$widescreen = $opt[1];
+							break;
+					}
+				}
+			}
 		}
 
 		$mime = explode('/', $type, 2);
@@ -3854,7 +3964,7 @@ class SimplePie_Enclosure
 		}
 
 		// Odeo Feed MP3's
-		if ($use_odeo)
+		if ($handler == 'odeo')
 		{
 			if ($native)
 			{
@@ -3867,7 +3977,7 @@ class SimplePie_Enclosure
 		}
 
 		// Flash
-		else if ($use_flash)
+		else if ($handler == 'flash')
 		{
 			if ($native)
 			{
@@ -3881,22 +3991,22 @@ class SimplePie_Enclosure
 
 		// Flash Media Player file types.
 		// Preferred handler for MP3 file types.
-		else if ($use_fmedia)
+		else if ($handler == 'fmedia' || ($handler == 'mp3' && $mediaplayer != ''))
 		{
 			$height += 20;
 			if ($native)
 			{
-				$embed .= "<embed src=\"$mediaplayer\" pluginspage=\"http://adobe.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
+				$embed .= "<embed src=\"$mediaplayer\" pluginspage=\"http://adobe.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link().'&file_extension=.'.$this->get_extension()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
 			}
 			else
 			{
-				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link()) . "', '$placeholder', '$loop', '$mediaplayer');</script>";
+				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link().'&file_extension=.'.$this->get_extension()) . "', '$placeholder', '$loop', '$mediaplayer');</script>";
 			}
 		}
 
 		// QuickTime 7 file types.  Need to test with QuickTime 6.
 		// Only handle MP3's if the Flash Media Player is not present.
-		else if ($use_quicktime)
+		else if ($handler == 'quicktime' || ($handler == 'mp3' && $mediaplayer == ''))
 		{
 			$height += 16;
 			if ($native)
@@ -3915,7 +4025,7 @@ class SimplePie_Enclosure
 		}
 
 		// Windows Media
-		else if ($use_wmedia)
+		else if ($handler == 'wmedia')
 		{
 			$height += 45;
 			if ($native)
