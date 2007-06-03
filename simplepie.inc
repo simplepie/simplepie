@@ -3090,11 +3090,8 @@ class SimplePie_Item
 	 *
 	 * (Will soon) Supports the <enclosure> RSS tag, as well as Media RSS and iTunes RSS.
 	 * 
-	 * First look for a <media:group>. If one is set to the default, use it.  Otherwise default to the first one.
-	 * Next, look for a <media:content>.  This should (I believe) be treated the same way as a standard <enclosure>, so that if we have a <media:content> AND an <enclosure> they count as two rather than one.
-	 * If we can't find any media: namespaced content, then we'll fall back to the standard <enclosure> tag.
+	 * All instances of <media:content> and <enclosure> are treated as separate enclosures.
 	 *
-	 * @todo Add support for multiple <media:group>s in the same way as we support multiple <enclosure>s.
 	 * @todo Add support for end-user defined sorting of enclosures by type/handler (so we can prefer the faster-loading FLV over MP4).
 	 * @todo Add support for all of the other bits of metadata that are available.
 	 * @todo Add support for itunes: tags.  These should be relatively simple compared to media:.
@@ -3103,71 +3100,38 @@ class SimplePie_Item
 	 */
 	function get_enclosures()
 	{
-		$media_group = $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'group');
-		$media_content = $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'content');
-
-		// Let's check to see if there's a media:group here
-		if ($media_group !== null)
+		// I believe these are where the standard enclosures come into play.
+		if (!isset($this->data['enclosures']))
 		{
-			// We'll narrow the definition of the media:group
-			$media_group = $media_group[0]['child'][SIMPLEPIE_NAMESPACE_MEDIARSS];
+			$this->data['enclosures'] = array();
 
-			// As long as we have media:content...
-			if (isset($media_group['content']))
+			// If we have media:group tags, loop through them.
+			foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'group') as $group)
 			{
-				// Loop through each media:content
-				foreach ($media_group['content'] as $content)
+				// If we have media:content tags, loop through them.
+				foreach ((array) $group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['content'] as $content)
 				{
-					// If one of them has isDefault="true", we'll use that one.
-					if (isset($content['attribs']['']['isDefault']) && $content['attribs']['']['isDefault'] == 'true')
+					if (isset($content['attribs']['']['url']))
 					{
-						$default = $content['attribs'][''];
-						break;
+						$url = null;
+						$type = null;
+						$length = null;
+						$url = $this->sanitize($content['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+						if (isset($content['attribs']['']['type']))
+						{
+							$type = $this->sanitize($content['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['fileSize']))
+						{
+							$length = ceil($content['attribs']['']['fileSize']);
+						}
+						$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 					}
-				}
-
-				// Let's use what we found, if anything.
-				if (isset($default['url']))
-				{
-					$url = null;
-					$type = null;
-					$length = null;
-					$url = $this->sanitize($default['url'], SIMPLEPIE_CONSTRUCT_IRI);
-					if (isset($default['type']))
-					{
-						$type = $this->sanitize($default['type'], SIMPLEPIE_CONSTRUCT_TEXT);
-					}
-					if (isset($default['length']))
-					{
-						$length = ceil($default['length']);
-					}
-					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
-				}
-
-				// No? Then we'll use the first piece of content in the group.
-				else if (isset($media_group['content'][0]['attribs']['']['url']))
-				{
-					$url = null;
-					$type = null;
-					$length = null;
-					$url = $this->sanitize($media_group['content'][0]['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
-					if (isset($media_group['content'][0]['attribs']['']['type']))
-					{
-						$type = $this->sanitize($media_group['content'][0]['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
-					}
-					if (isset($media_group['content'][0]['attribs']['']['length']))
-					{
-						$length = ceil($media_group['content'][0]['attribs']['']['length']);
-					}
-					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
 			}
-		}
 
-		// If there's no media:group, but there is media:content, use it.
-		if ($media_group === null && isset($media_content) && !empty($media_content))
-		{
-			foreach ($media_content as $content)
+			// If we have standalone media:content tags, loop through them.
+			foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'content') as $content)
 			{
 				if (isset($content['attribs']['']['url']))
 				{
@@ -3179,19 +3143,14 @@ class SimplePie_Item
 					{
 						$type = $this->sanitize($content['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
 					}
-					if (isset($content['attribs']['']['length']))
+					if (isset($content['attribs']['']['fileSize']))
 					{
-						$length = ceil($content['attribs']['']['length']);
+						$length = ceil($content['attribs']['']['fileSize']);
 					}
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
 			}
-		}
 
-		// I believe these are where the standard enclosures come into play.
-		if (!isset($this->data['enclosures']))
-		{
-			$this->data['enclosures'] = array();
 			foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'link') as $link)
 			{
 				if (isset($link['attribs']['']['href']) && !empty($link['attribs']['']['rel']) && $link['attribs']['']['rel'] == 'enclosure')
@@ -3251,7 +3210,8 @@ class SimplePie_Item
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
 			}
-			$this->data['enclosures'] = array_unique($this->data['enclosures']);
+			$this->data['enclosures'] = SimplePie_Misc::array_unique($this->data['enclosures']);
+			$this->data['enclosures'] = SimplePie_Misc::array_compact($this->data['enclosures']);
 		}
 		if (!empty($this->data['enclosures']))
 		{
@@ -3515,18 +3475,42 @@ class SimplePie_Category
 
 class SimplePie_Enclosure
 {
-	var $link;
-	var $type;
-	var $length;
+	var $bitrate;
+	var $channels;
+	var $duration;
+	var $expression;
+	var $framerate;
+	var $handler;
+	var $height;
+	var $isdefault;
 	var $javascript;
+	var $lang;
+	var $length;
+	var $link;
+	var $medium;
+	var $samplingrate;
+	var $type;
+	var $width;
 
 	// Constructor, used to input the data
-	function SimplePie_Enclosure($link, $type, $length, $javascript)
+	function SimplePie_Enclosure($link = null, $type = null, $length = null, $javascript = null, $bitrate = null, $channels = null, $duration = null, $expression = null, $framerate = null, $height = null, $isdefault = null, $lang = null, $medium = null, $samplingrate = null, $width = null)
 	{
-		$this->link = $link;
-		$this->type = $type;
-		$this->length = $length;
+		$this->bitrate = $bitrate;
+		$this->channels = $channels;
+		$this->duration = $duration;
+		$this->expression = $expression;
+		$this->framerate = $framerate;
+		$this->handler = $this->get_handler();
+		$this->height = $height;
+		$this->isdefault = $isdefault;
 		$this->javascript = $javascript;
+		$this->lang = $lang;
+		$this->length = $length;
+		$this->link = $link;
+		$this->medium = $medium;
+		$this->samplingrate = $samplingrate;
+		$this->type = $type;
+		$this->width = $width;
 		if (class_exists('idna_convert'))
 		{
 			$idn =& new idna_convert;
@@ -3540,15 +3524,51 @@ class SimplePie_Enclosure
 		return sha1(serialize($this));
 	}
 
-	function get_link()
+	function get_bitrate()
 	{
-		if (!empty($this->link))
+		if (!empty($this->bitrate))
 		{
-			return urldecode($this->link);
+			return $this->bitrate;
 		}
 		else
 		{
 			return null;
+		}
+	}
+
+	function get_channels()
+	{
+		if (!empty($this->channels))
+		{
+			return $this->channels;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_duration()
+	{
+		if (!empty($this->duration))
+		{
+			return $this->duration;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_expression()
+	{
+		if (!empty($this->expression))
+		{
+			return $this->expression;
+		}
+		else
+		{
+			return 'full';
 		}
 	}
 
@@ -3565,11 +3585,52 @@ class SimplePie_Enclosure
 		return null;
 	}
 
-	function get_type()
+	function get_framerate()
 	{
-		if (!empty($this->type))
+		if (!empty($this->framerate))
 		{
-			return $this->type;
+			return $this->framerate;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_handler()
+	{
+		return $this->get_real_type(true);
+	}
+
+	function get_height()
+	{
+		if (!empty($this->height))
+		{
+			return $this->height;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_isdefault()
+	{
+		if (!empty($this->isdefault))
+		{
+			return $this->isdefault;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_lang()
+	{
+		if (!empty($this->lang))
+		{
+			return $this->lang;
 		}
 		else
 		{
@@ -3589,12 +3650,23 @@ class SimplePie_Enclosure
 		}
 	}
 
-	function get_size()
+	function get_link()
 	{
-		$length = $this->get_length();
-		if (!empty($length))
+		if (!empty($this->link))
 		{
-			return round($length/1048576, 2);
+			return urldecode($this->link);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_medium()
+	{
+		if (!empty($this->medium))
+		{
+			return $this->medium;
 		}
 		else
 		{
@@ -3779,9 +3851,53 @@ class SimplePie_Enclosure
 		}
 	}
 
-	function get_handler()
+	function get_sampling_rate()
 	{
-		return $this->get_real_type(true);
+		if (!empty($this->samplingrate))
+		{
+			return $this->samplingrate;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_size()
+	{
+		$length = $this->get_length();
+		if (!empty($length))
+		{
+			return round($length/1048576, 2);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_type()
+	{
+		if (!empty($this->type))
+		{
+			return $this->type;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_width()
+	{
+		if (!empty($this->width))
+		{
+			return $this->width;
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	function native_embed($options='')
@@ -7178,6 +7294,23 @@ class SimplePie_Misc
 			}
 			return $new_array;
 		}
+	}
+
+	/**
+	 * Remove all the empty array locations by re-keying the array numerically and sequentially.
+	 *
+	 * @access public
+	 * @param array $array The array to compress and re-key.
+	 * @return array The re-keyed, compressed array.
+	 */
+	function array_compact($array)
+	{
+		$new_array = array();
+		foreach ($array as $iterator)
+		{
+			$new_array[] = $iterator;
+		}
+		return $new_array;
 	}
 }
 
