@@ -3113,19 +3113,71 @@ class SimplePie_Item
 				{
 					if (isset($content['attribs']['']['url']))
 					{
-						$url = null;
-						$type = null;
+						$bitrate = null;
+						$channels = null;
+						$duration = null;
+						$expression = null;
+						$framerate = null;
+						$height = null;
+						$javascript = null;
+						$lang = null;
 						$length = null;
-						$url = $this->sanitize($content['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
-						if (isset($content['attribs']['']['type']))
+						$medium = null;
+						$samplingrate = null;
+						$type = null;
+						$url = null;
+						$width = null;
+
+						if (isset($content['attribs']['']['bitrate']))
 						{
-							$type = $this->sanitize($content['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
+							$bitrate = $this->sanitize($content['attribs']['']['bitrate'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['channels']))
+						{
+							$channels = $this->sanitize($content['attribs']['']['channels'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['duration']))
+						{
+							$duration = $this->sanitize($content['attribs']['']['duration'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['expression']))
+						{
+							$expression = $this->sanitize($content['attribs']['']['expression'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['framerate']))
+						{
+							$framerate = $this->sanitize($content['attribs']['']['framerate'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['height']))
+						{
+							$height = $this->sanitize($content['attribs']['']['height'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['lang']))
+						{
+							$lang = $this->sanitize($content['attribs']['']['lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['fileSize']))
 						{
 							$length = ceil($content['attribs']['']['fileSize']);
 						}
-						$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
+						if (isset($content['attribs']['']['medium']))
+						{
+							$medium = $this->sanitize($content['attribs']['']['medium'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['samplingrate']))
+						{
+							$samplingrate = $this->sanitize($content['attribs']['']['samplingrate'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['type']))
+						{
+							$type = $this->sanitize($content['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						if (isset($content['attribs']['']['width']))
+						{
+							$width = $this->sanitize($content['attribs']['']['width'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						$url = $this->sanitize($content['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+						$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $channels, $duration, $expression, $framerate, $height, $lang, $medium, $samplingrate, $width);
 					}
 				}
 			}
@@ -3135,19 +3187,71 @@ class SimplePie_Item
 			{
 				if (isset($content['attribs']['']['url']))
 				{
-					$url = null;
-					$type = null;
+					$bitrate = null;
+					$channels = null;
+					$duration = null;
+					$expression = null;
+					$framerate = null;
+					$height = null;
+					$javascript = null;
+					$lang = null;
 					$length = null;
-					$url = $this->sanitize($content['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
-					if (isset($content['attribs']['']['type']))
+					$medium = null;
+					$samplingrate = null;
+					$type = null;
+					$url = null;
+					$width = null;
+
+					if (isset($content['attribs']['']['bitrate']))
 					{
-						$type = $this->sanitize($content['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
+						$bitrate = $this->sanitize($content['attribs']['']['bitrate'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['channels']))
+					{
+						$channels = $this->sanitize($content['attribs']['']['channels'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['duration']))
+					{
+						$duration = $this->sanitize($content['attribs']['']['duration'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['expression']))
+					{
+						$expression = $this->sanitize($content['attribs']['']['expression'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['framerate']))
+					{
+						$framerate = $this->sanitize($content['attribs']['']['framerate'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['height']))
+					{
+						$height = $this->sanitize($content['attribs']['']['height'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['lang']))
+					{
+						$lang = $this->sanitize($content['attribs']['']['lang'], SIMPLEPIE_CONSTRUCT_TEXT);
 					}
 					if (isset($content['attribs']['']['fileSize']))
 					{
 						$length = ceil($content['attribs']['']['fileSize']);
 					}
-					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
+					if (isset($content['attribs']['']['medium']))
+					{
+						$medium = $this->sanitize($content['attribs']['']['medium'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['samplingrate']))
+					{
+						$samplingrate = $this->sanitize($content['attribs']['']['samplingrate'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['type']))
+					{
+						$type = $this->sanitize($content['attribs']['']['type'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					if (isset($content['attribs']['']['width']))
+					{
+						$width = $this->sanitize($content['attribs']['']['width'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					$url = $this->sanitize($content['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $channels, $duration, $expression, $framerate, $height, $lang, $medium, $samplingrate, $width);
 				}
 			}
 
@@ -3493,16 +3597,14 @@ class SimplePie_Enclosure
 	var $width;
 
 	// Constructor, used to input the data
-	function SimplePie_Enclosure($link = null, $type = null, $length = null, $javascript = null, $bitrate = null, $channels = null, $duration = null, $expression = null, $framerate = null, $height = null, $isdefault = null, $lang = null, $medium = null, $samplingrate = null, $width = null)
+	function SimplePie_Enclosure($link = null, $type = null, $length = null, $javascript = null, $bitrate = null, $channels = null, $duration = null, $expression = null, $framerate = null, $height = null, $lang = null, $medium = null, $samplingrate = null, $width = null)
 	{
 		$this->bitrate = $bitrate;
 		$this->channels = $channels;
 		$this->duration = $duration;
 		$this->expression = $expression;
 		$this->framerate = $framerate;
-		$this->handler = $this->get_handler();
 		$this->height = $height;
-		$this->isdefault = $isdefault;
 		$this->javascript = $javascript;
 		$this->lang = $lang;
 		$this->length = $length;
@@ -3517,6 +3619,7 @@ class SimplePie_Enclosure
 			$parsed = SimplePie_Misc::parse_url($link);
 			$this->link = SimplePie_Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
 		}
+		$this->handler = $this->get_handler(); // Needs to load last
 	}
 
 	function __toString()
@@ -3614,18 +3717,6 @@ class SimplePie_Enclosure
 		}
 	}
 
-	function get_isdefault()
-	{
-		if (!empty($this->isdefault))
-		{
-			return $this->isdefault;
-		}
-		else
-		{
-			return null;
-		}
-	}
-
 	function get_lang()
 	{
 		if (!empty($this->lang))
@@ -3684,10 +3775,10 @@ class SimplePie_Enclosure
 
 		// Mime-types by handler.
 		$types_flash = array('application/x-shockwave-flash', 'application/futuresplash'); // Flash
-		$types_fmedia = array('audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg', 'video/flv', 'video/x-flv'); // Flash Media Player
-		$types_quicktime = array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mpeg', 'audio/x-mpeg', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video'); // QuickTime
+		$types_fmedia = array('video/flv', 'video/x-flv'); // Flash Media Player
+		$types_quicktime = array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video'); // QuickTime
 		$types_wmedia = array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx'); // Windows Media
-		$types_mp3 = array('audio/mp3', 'audio/x-mp3'); // MP3
+		$types_mp3 = array('audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg'); // MP3
 
 		if (!empty($this->type))
 		{
@@ -3843,6 +3934,10 @@ class SimplePie_Enclosure
 			else if (in_array($type, $types_mp3))
 			{
 				return 'mp3';
+			}
+			else
+			{
+				return null;
 			}
 		}
 		else
