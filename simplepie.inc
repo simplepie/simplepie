@@ -3995,11 +3995,166 @@ class SimplePie_Enclosure
 		}
 	}
 
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_caption()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_captions()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_category()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_categories()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_copyright()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_credit()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_credits()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_description()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_hash()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_hashes()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_keyword()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_keywords()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_player()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_rating()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_ratings()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_restriction()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_restrictions()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_thumbnail()
+	{
+		return null;
+	}
+
+	/**
+	 * @todo Make this method work.
+	 */
+	function get_title()
+	{
+		return null;
+	}
+
 	function native_embed($options='')
 	{
 		return $this->embed($options, true);
 	}
 
+	/**
+	 * @todo If the dimensions for media:content are defined, use them when width/height are set to 'auto'.
+	 */
 	function embed($options = '', $native = false)
 	{
 		// Set up defaults
@@ -4253,6 +4408,66 @@ class SimplePie_Enclosure
 		else $embed .= '<a href="' . $this->get_link() . '" class="' . $altclass . '">' . $alt . '</a>';
 
 		return $embed;
+	}
+}
+
+/**
+ * @todo Make this class work.
+ * @todo Add set_*_class() config option for this class.
+ */
+class SimplePie_Caption
+{
+	function SimplePie_Caption()
+	{
+		return null;
+	}
+}
+
+/**
+ * @todo Make this class work.
+ * @todo Add set_*_class() config option for this class.
+ */
+class SimplePie_Credit
+{
+	function SimplePie_Credit()
+	{
+		return null;
+	}
+}
+
+/**
+ * @todo Make this class work.
+ * @todo Add set_*_class() config option for this class.
+ */
+class SimplePie_Copyright
+{
+	function SimplePie_Copyright()
+	{
+		return null;
+	}
+}
+
+/**
+ * @todo Make this class work.
+ * @todo Add set_*_class() config option for this class.
+ */
+class SimplePie_Rating
+{
+	function SimplePie_Rating()
+	{
+		return null;
+	}
+}
+
+/**
+ * @todo Make this class work.
+ * @todo Add set_*_class() config option for this class.
+ */
+class SimplePie_Restriction
+{
+	function SimplePie_Restriction()
+	{
+		return null;
 	}
 }
 
