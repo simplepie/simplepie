@@ -3314,8 +3314,7 @@ class SimplePie_Item
 					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript);
 				}
 			}
-			$this->data['enclosures'] = SimplePie_Misc::array_unique($this->data['enclosures']);
-			$this->data['enclosures'] = SimplePie_Misc::array_compact($this->data['enclosures']);
+			$this->data['enclosures'] = array_values(SimplePie_Misc::array_unique($this->data['enclosures']));
 		}
 		if (!empty($this->data['enclosures']))
 		{
@@ -7604,23 +7603,6 @@ class SimplePie_Misc
 			}
 			return $new_array;
 		}
-	}
-
-	/**
-	 * Remove all the empty array locations by re-keying the array numerically and sequentially.
-	 *
-	 * @access public
-	 * @param array $array The array to compress and re-key.
-	 * @return array The re-keyed, compressed array.
-	 */
-	function array_compact($array)
-	{
-		$new_array = array();
-		foreach ($array as $iterator)
-		{
-			$new_array[] = $iterator;
-		}
-		return $new_array;
 	}
 }
 
