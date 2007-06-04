@@ -3895,10 +3895,7 @@ class SimplePie_Item
 								{
 									$label = $this->sanitize($category['attribs']['']['label'], SIMPLEPIE_CONSTRUCT_TEXT);
 								}
-								if (is_array($categories))
-								{
-									$categories[] = new $this->feed->category_class($term, $scheme, $label);
-								}
+								$categories[] = new $this->feed->category_class($term, $scheme, $label);
 							}
 						}
 						if (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['category']))
@@ -3924,10 +3921,7 @@ class SimplePie_Item
 								{
 									$label = $this->sanitize($category['attribs']['']['label'], SIMPLEPIE_CONSTRUCT_TEXT);
 								}
-								if (is_array($categories))
-								{
-									$categories[] = new $this->feed->category_class($term, $scheme, $label);
-								}
+								$categories[] = new $this->feed->category_class($term, $scheme, $label);
 							}
 						}
 						if (is_array($categories) && is_array($categories_parent))
