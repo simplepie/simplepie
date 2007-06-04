@@ -6025,7 +6025,7 @@ class SimplePie_Caption
 		return sha1(serialize($this));
 	}
 
-	function get_endTime()
+	function get_endtime()
 	{
 		if (!empty($this->endTime))
 		{
@@ -6039,9 +6039,9 @@ class SimplePie_Caption
 
 	function get_language()
 	{
-		if (!empty($this->thumbnail))
+		if (!empty($this->language))
 		{
-			return $this->thumbnail;
+			return $this->language;
 		}
 		else
 		{
@@ -6049,11 +6049,11 @@ class SimplePie_Caption
 		}
 	}
 
-	function get_startTime()
+	function get_starttime()
 	{
-		if (!empty($this->thumbnail))
+		if (!empty($this->startTime))
 		{
-			return $this->thumbnail;
+			return $this->startTime;
 		}
 		else
 		{
@@ -6063,9 +6063,9 @@ class SimplePie_Caption
 
 	function get_text()
 	{
-		if (!empty($this->thumbnail))
+		if (!empty($this->text))
 		{
-			return $this->thumbnail;
+			return $this->text;
 		}
 		else
 		{
@@ -6075,9 +6075,9 @@ class SimplePie_Caption
 
 	function get_type()
 	{
-		if (!empty($this->thumbnail))
+		if (!empty($this->type))
 		{
-			return $this->thumbnail;
+			return $this->type;
 		}
 		else
 		{
@@ -6171,7 +6171,7 @@ class SimplePie_Copyright
 		}
 	}
 
-	function get_label()
+	function get_attribution()
 	{
 		if (!empty($this->label))
 		{
