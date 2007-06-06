@@ -1789,7 +1789,7 @@ function embed_wmedia(width, height, link) {
 				{
 					$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 
-					if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
+					if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
 					{
 						if ($this->favicon_handler)
 						{
@@ -1819,13 +1819,23 @@ function embed_wmedia(width, height, link) {
 								if (isset($m[2][0]) && !empty($m[0][0]) && $m[2][0] != $standard_favicon)
 								{
 									unset($file);
-									$file =& new $this->file_class($m[2][0], $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+									$favicon = SimplePie_Misc::absolutize_url($m[2][0], $this->get_link());
+									$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 
-									if ($this->favicon_handler)
+									if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
 									{
-										if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+										if ($this->favicon_handler)
 										{
-											return $this->favicon_handler . $favicon;
+											$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
+
+											if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+											{
+												return $this->favicon_handler . $favicon;
+											}
+											else
+											{
+												trigger_error("$cache->name is not writeable", E_USER_WARNING);
+											}
 										}
 										else
 										{
@@ -6377,11 +6387,11 @@ class SimplePie_File
 					curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
 				}
 
-				$this->headers = trim(curl_exec($fp));
+				$this->headers = curl_exec($fp);
 				if (curl_errno($fp) == 23 || curl_errno($fp) == 61)
 				{
 					curl_setopt($fp, CURLOPT_ENCODING, 'none');
-					$this->headers = trim(curl_exec($fp));
+					$this->headers = curl_exec($fp);
 				}
 				if (curl_errno($fp))
 				{
