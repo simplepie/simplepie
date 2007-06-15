@@ -2932,7 +2932,7 @@ class SimplePie_Item
 
 		if (!empty($categories))
 		{
-			return array_unique($categories);
+			return SimplePie_Misc::array_unique($categories);
 		}
 		else
 		{
@@ -3018,7 +3018,7 @@ class SimplePie_Item
 
 		if (!empty($authors))
 		{
-			return array_unique($authors);
+			return SimplePie_Misc::array_unique($authors);
 		}
 		else
 		{
