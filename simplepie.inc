@@ -1191,7 +1191,7 @@ class SimplePie
 			$this->javascript = false;
 		}
 	}
-	
+
 	/**
 	 * Set options to make SP as fast as possible.  Forgoes a 
 	 * substantial amount of data sanitization in favor of speed.
@@ -1263,6 +1263,19 @@ class SimplePie
 	function strip_comments($strip = false)
 	{
 		$this->sanitize->strip_comments($strip);
+	}
+
+	/**
+	 * Set element/attribute key/value pairs of HTML attributes
+	 * containing URLs that need to be resolved relative to the feed
+	 *
+	 * @access public
+	 * @since 1.0
+	 * @param array $element_attribute Element/attribute key/value pairs
+	 */
+	function set_url_replacements($element_attribute = array('blockquote' => 'cite', 'ins' => 'cite', 'del' => 'cite', 'a' => 'href', 'q' => 'cite', 'img' => 'src', 'img' => 'longdesc', 'area' => 'href', 'form' => 'action', 'input' => 'src'))
+	{
+		$this->sanitize->set_url_replacements($element_attribute);
 	}
 
 	/**
@@ -1729,26 +1742,26 @@ function embed_wmedia(width, height, link) {
 									case '0':
 										$this->data['type'] &= SIMPLEPIE_TYPE_RSS_091_NETSCAPE;
 										break;
-	
+
 									case '24':
 										$this->data['type'] &= SIMPLEPIE_TYPE_RSS_091_USERLAND;
 										break;
 								}
 							}
 							break;
-	
+
 						case '0.92':
 							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_092;
 							break;
-	
+
 						case '0.93':
 							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_093;
 							break;
-	
+
 						case '0.94':
 							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_094;
 							break;
-	
+
 						case '2.0':
 							$this->data['type'] &= SIMPLEPIE_TYPE_RSS_20;
 							break;
@@ -3078,10 +3091,10 @@ class SimplePie_Item
 			{
 				case '':
 					return $this->sanitize($this->data['date']['raw'], SIMPLEPIE_CONSTRUCT_TEXT);
-				
+
 				case 'U':
 					return $this->data['date']['parsed'];
-				
+
 				default:
 					return date($date_format, $this->data['date']['parsed']);
 			}
@@ -6526,7 +6539,7 @@ class SimplePie_HTTP_Parser
 	 * @var string
 	 */
 	var $http_version = '';
-	
+
 	/**
 	 * Status code
 	 *
@@ -6534,7 +6547,7 @@ class SimplePie_HTTP_Parser
 	 * @var string
 	 */
 	var $status_code = '';
-	
+
 	/**
 	 * Key/value pairs of the headers
 	 *
@@ -6542,7 +6555,7 @@ class SimplePie_HTTP_Parser
 	 * @var array
 	 */
 	var $headers = array();
-	
+
 	/**
 	 * Body of the response
 	 *
@@ -6550,7 +6563,7 @@ class SimplePie_HTTP_Parser
 	 * @var string
 	 */
 	var $body = '';
-	
+
 	/**
 	 * Current state of the state machine
 	 *
@@ -6558,7 +6571,7 @@ class SimplePie_HTTP_Parser
 	 * @var string
 	 */
 	var $state = 'start';
-	
+
 	/**
 	 * Input data
 	 *
@@ -6566,7 +6579,7 @@ class SimplePie_HTTP_Parser
 	 * @var string
 	 */
 	var $data = '';
-	
+
 	/**
 	 * Input data length (to avoid calling strlen() everytime this is needed)
 	 *
@@ -6574,7 +6587,7 @@ class SimplePie_HTTP_Parser
 	 * @var int
 	 */
 	var $data_length = 0;
-	
+
 	/**
 	 * Current position of the pointer
 	 *
@@ -6582,7 +6595,7 @@ class SimplePie_HTTP_Parser
 	 * @var int
 	 */
 	var $position = 0;
-	
+
 	/**
 	 * Name of the hedaer currently being parsed
 	 *
@@ -6590,7 +6603,7 @@ class SimplePie_HTTP_Parser
 	 * @var string
 	 */
 	var $name = '';
-	
+
 	/**
 	 * Value of the hedaer currently being parsed
 	 *
@@ -6598,7 +6611,7 @@ class SimplePie_HTTP_Parser
 	 * @var string
 	 */
 	var $value = '';
-	
+
 	/**
 	 * Create an instance of the class with the input data
 	 *
@@ -6610,7 +6623,7 @@ class SimplePie_HTTP_Parser
 		$this->data = $data;
 		$this->data_length = strlen($this->data);
 	}
-	
+
 	/**
 	 * Parse the input data
 	 *
@@ -6638,7 +6651,7 @@ class SimplePie_HTTP_Parser
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Check whether there is data beyond the pointer
 	 *
@@ -6649,7 +6662,7 @@ class SimplePie_HTTP_Parser
 	{
 		return (bool) ($this->position < $this->data_length);
 	}
-	
+
 	/**
 	 * See if the next character is LWS
 	 *
@@ -6660,7 +6673,7 @@ class SimplePie_HTTP_Parser
 	{
 		return (bool) (strspn($this->data, "\x09\x20", $this->position, 1) || (substr($this->data, $this->position, 2) == "\r\n" && strspn($this->data, "\x09\x20", $this->position + 2, 1)));
 	}
-	
+
 	/**
 	 * See if the next character is a valid token character
 	 *
@@ -6671,7 +6684,7 @@ class SimplePie_HTTP_Parser
 	{
 		return (bool) (strspn($this->data, '!#$%&\'*+-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz|~', $this->position, 1));
 	}
-	
+
 	/**
 	 * See if the next character is allowed in a header value, excluding quotation marks and LWS
 	 *
@@ -6682,7 +6695,7 @@ class SimplePie_HTTP_Parser
 	{
 		return (bool) (strspn($this->data, '!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~', $this->position, 1));
 	}
-	
+
 	/**
 	 * See if the next character is allowed within quotation marks, excluding LWS
 	 *
@@ -6693,7 +6706,7 @@ class SimplePie_HTTP_Parser
 	{
 		return (bool) (strcspn($this->data, "\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9\xA\xB\xC\xD\xE\xF\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x1A\x1B\x1C\x1D\x1E\x1F\x22\x5C", $this->position, 1));
 	}
-	
+
 	/**
 	 * The starting state of the state machine, see if the data is a response or request
 	 *
@@ -6703,7 +6716,7 @@ class SimplePie_HTTP_Parser
 	{
 		$this->state = 'http_version_response';
 	}
-	
+
 	/**
 	 * Parse an HTTP-version string
 	 *
@@ -6733,7 +6746,7 @@ class SimplePie_HTTP_Parser
 		$this->http_version = '';
 		return false;
 	}
-	
+
 	/**
 	 * Parse an HTTP-version string within a response
 	 *
@@ -6751,7 +6764,7 @@ class SimplePie_HTTP_Parser
 			$this->state = false;
 		}
 	}
-	
+
 	/**
 	 * Parse a status code
 	 *
@@ -6770,7 +6783,7 @@ class SimplePie_HTTP_Parser
 			$this->state = false;
 		}
 	}
-	
+
 	/**
 	 * Skip over the reason phrase (it has no normative value, and you can send absolutely anything here)
 	 *
@@ -6788,7 +6801,7 @@ class SimplePie_HTTP_Parser
 			$this->state = false;
 		}
 	}
-	
+
 	/**
 	 * Parse a header name
 	 *
@@ -6809,7 +6822,7 @@ class SimplePie_HTTP_Parser
 			$this->state = false;
 		}
 	}
-	
+
 	/**
 	 * See what state to move the state machine to while within non-quoted header values
 	 *
@@ -6840,7 +6853,7 @@ class SimplePie_HTTP_Parser
 			$this->state = false;
 		}
 	}
-	
+
 	/**
 	 * Parse a header value while outside quotes
 	 *
@@ -6853,7 +6866,7 @@ class SimplePie_HTTP_Parser
 		$this->state = 'value_next';
 		$this->position += $len;
 	}
-	
+
 	/**
 	 * Parse LWS, replacing consecutive characters with a single space
 	 *
@@ -6872,7 +6885,7 @@ class SimplePie_HTTP_Parser
 		$this->value .= "\x20";
 		$this->state = 'value_next';
 	}
-	
+
 	/**
 	 * See what state to move the state machine to while within quoted header values
 	 *
@@ -6896,19 +6909,19 @@ class SimplePie_HTTP_Parser
 					$this->state = 'value_next';
 					$this->position++;
 					break;
-				
+
 				case '\\':
 					$this->state = 'value_quote_char';
 					$this->position++;
 					break;
-				
+
 				default:
 					$this->state = false;
 					break;
 			}
 		}
 	}
-	
+
 	/**
 	 * Parse a header value while within quotes
 	 *
@@ -6921,7 +6934,7 @@ class SimplePie_HTTP_Parser
 		$this->position += $len;
 		$this->state = 'value_quote_next';
 	}
-	
+
 	/**
 	 * Parse an escaped character within quotes
 	 *
@@ -6941,7 +6954,7 @@ class SimplePie_HTTP_Parser
 			$this->state = false;
 		}
 	}
-	
+
 	/**
 	 * Parse LWS within quotes
 	 *
@@ -6952,7 +6965,7 @@ class SimplePie_HTTP_Parser
 		$this->value_linear_whitespace();
 		$this->state = 'value_quote_next';
 	}
-	
+
 	/**
 	 * Parse a CRLF, and see whether we have a further header, or whether we are followed by the body
 	 *
@@ -6970,7 +6983,7 @@ class SimplePie_HTTP_Parser
 		{
 			$this->headers[$this->name] = $this->value;
 		}
-		
+
 		if (substr($this->data, $this->position, 2) == "\r\n")
 		{
 			$this->body = substr($this->data, $this->position + 2);
@@ -8970,7 +8983,7 @@ class SimplePie_Misc
 				$minute = 0;
 				$second = 0;
 				$timezone = false;
-	
+
 				// RFC 822
 				if (!empty($match[1]))
 				{
@@ -8987,47 +9000,47 @@ class SimplePie_Misc
 						case 'jan':
 							$month = 1;
 							break;
-	
+
 						case 'feb':
 							$month = 2;
 							break;
-	
+
 						case 'mar':
 							$month = 3;
 							break;
-	
+
 						case 'apr':
 							$month = 4;
 							break;
-	
+
 						case 'may':
 							$month = 5;
 							break;
-	
+
 						case 'jun':
 							$month = 6;
 							break;
-	
+
 						case 'jul':
 							$month = 7;
 							break;
-	
+
 						case 'aug':
 							$month = 8;
 							break;
-	
+
 						case 'sep':
 							$month = 9;
 							break;
-	
+
 						case 'oct':
 							$month = 10;
 							break;
-	
+
 						case 'nov':
 							$month = 11;
 							break;
-	
+
 						case 'dec':
 							$month = 12;
 							break;
@@ -9041,7 +9054,7 @@ class SimplePie_Misc
 					if (!empty($match[7]))
 					{
 						$year = "$match[6]$match[7]";
-	
+
 						// Two Digit Month/Day
 						if (!empty($match[11]))
 						{
@@ -9051,20 +9064,20 @@ class SimplePie_Misc
 								$day = $match[12];
 							}
 						}
-	
+
 						// Four Digit Month/Day
 						elseif (!empty($match[8]))
 						{
 							$month = $match[8];
 							$day = $match[9];
 						}
-	
+
 						// Ordinal Day
 						elseif (!empty($match[10]))
 						{
 							$day = $match[10];
 						}
-	
+
 						// Week Date
 						elseif (!empty($match[13]))
 						{
@@ -9073,13 +9086,13 @@ class SimplePie_Misc
 							{
 								$day = $match[14];
 							}
-	
+
 							$first_day_of_year = date('w', mktime(0, 0, 0, 1, 1, $year));
 							if ($first_day_of_year == 0)
 							{
 								$first_day_of_year = 7;
 							}
-	
+
 							$day = 7 * ($match[13] - 1) + $day - ($first_day_of_year - 1);
 						}
 					}
@@ -9098,7 +9111,7 @@ class SimplePie_Misc
 							$match[$i] = '';
 						}
 					}
-	
+
 					$time = 0;
 					$time += ($match[16] + ('.' . $match[17])) * 3600;
 					$time += ($match[18] + ('.' . $match[19])) * 60;
@@ -9108,7 +9121,7 @@ class SimplePie_Misc
 					$minute = floor($time / 60);
 					$time -= $minute * 60;
 					$second = round($time);
-	
+
 					// Timezone
 					if (!empty($match[22]))
 					{
@@ -9125,12 +9138,12 @@ class SimplePie_Misc
 								else
 								{
 									$timezone = ord(strtoupper($match[28]));
-	
+
 									if ($timezone > 74)
 									{
 										$timezone--;
 									}
-	
+
 									if ($timezone <= 76)
 									{
 										$timezone = -($timezone - 64);
@@ -9139,7 +9152,7 @@ class SimplePie_Misc
 									{
 										$timezone -= 76;
 									}
-	
+
 									$timezone *= 3600;
 								}
 							}
@@ -9153,35 +9166,35 @@ class SimplePie_Misc
 									case 'GMT':
 										$timezone = 0;
 										break;
-	
+
 									case 'EST':
 										$timezone = -18000;
 										break;
-	
+
 									case 'CST':
 										$timezone = -21600;
 										break;
-	
+
 									case 'MST':
 										$timezone = -25200;
 										break;
-	
+
 									case 'PST':
 										$timezone = -28800;
 										break;
-	
+
 									case 'EDT':
 										$timezone = -14400;
 										break;
-	
+
 									case 'CDT':
 										$timezone = -18000;
 										break;
-	
+
 									case 'MDT':
 										$timezone = -21600;
 										break;
-	
+
 									case 'PDT':
 										$timezone = -25200;
 										break;
@@ -9198,12 +9211,12 @@ class SimplePie_Misc
 									$match[$i] = '';
 								}
 							}
-	
+
 							$timezone = 0;
 							$timezone += ($match[24] + ('.' . $match[25])) * 3600;
 							$timezone += ($match[26] + ('.' . $match[27])) * 60;
 							$timezone = (int) round($timezone);
-	
+
 							if ($match[23] == '-')
 							{
 								$timezone = -$timezone;
@@ -9399,15 +9412,15 @@ class SimplePie_Misc
 	{
 		return (bool) preg_match('/^([A-Za-z0-9\-._~\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}!$&\'()*+,;=@]|(%[0-9ABCDEF]{2}))+$/u', $string);
 	}
-	
+
 	function space_seperated_tokens($string)
 	{
 		$space_characters = "\x20\x09\x0A\x0B\x0C\x0D";
 		$string_length = strlen($string);
-		
+
 		$position = strspn($string, $space_characters);
 		$tokens = array();
-		
+
 		while ($position < $string_length)
 		{
 			$len = strcspn($string, $space_characters, $position);
@@ -9415,10 +9428,10 @@ class SimplePie_Misc
 			$position += $len;
 			$position += strspn($string, $space_characters, $position);
 		}
-		
+
 		return $tokens;
 	}
-	
+
 	function array_unique($array)
 	{
 		if (version_compare(phpversion(), '5.2', '>='))
@@ -9982,7 +9995,7 @@ class SimplePie_Sanitize
 	var $timeout = 10;
 	var $useragent = '';
 	var $force_fsockopen = false;
-	
+
 	var $replace_url_attributes = array(
 		'blockquote' => 'cite',
 		'ins' => 'cite',
@@ -10101,7 +10114,7 @@ class SimplePie_Sanitize
 			$this->strip_attributes = false;
 		}
 	}
-	
+
 	function strip_comments($strip = false)
 	{
 		$this->strip_comments = (bool) $strip;
@@ -10110,6 +10123,19 @@ class SimplePie_Sanitize
 	function set_output_encoding($encoding = 'UTF-8')
 	{
 		$this->output_encoding = (string) $encoding;
+	}
+
+	/**
+	 * Set element/attribute key/value pairs of HTML attributes
+	 * containing URLs that need to be resolved relative to the feed
+	 *
+	 * @access public
+	 * @since 1.0
+	 * @param array $element_attribute Element/attribute key/value pairs
+	 */
+	function set_url_replacements($element_attribute = array('blockquote' => 'cite', 'ins' => 'cite', 'del' => 'cite', 'a' => 'href', 'q' => 'cite', 'img' => 'src', 'img' => 'longdesc', 'area' => 'href', 'form' => 'action', 'input' => 'src'))
+	{
+		$this->set_url_replacements = (array) $element_attribute;
 	}
 
 	function sanitize($data, $type, $base = '')
