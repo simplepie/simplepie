@@ -186,7 +186,6 @@ $feed->handle_content_type();
 
 		<div id="sp_results">
 
-
 			<!-- As long as the feed has data to work with... -->
 			<?php if ($success): ?>
 				<div class="chunk focus" align="center">
@@ -198,7 +197,6 @@ $feed->handle_content_type();
 					<?php echo $feed->get_description(); ?>
 
 				</div>
-
 
 				<!-- Add subscribe links for several different aggregation services -->
 				<p class="subscribe"><strong>Subscribe:</strong> <a href="<?php echo $feed->subscribe_bloglines(); ?>">Bloglines</a>, <a href="<?php echo $feed->subscribe_google(); ?>">Google Reader</a>, <a href="<?php echo $feed->subscribe_msn(); ?>">My MSN</a>, <a href="<?php echo $feed->subscribe_netvibes(); ?>">Netvibes</a>, <a href="<?php echo $feed->subscribe_newsburst(); ?>">Newsburst</a><br /><a href="<?php echo $feed->subscribe_newsgator(); ?>">Newsgator</a>, <a href="<?php echo $feed->subscribe_odeo(); ?>">Odeo</a>, <a href="<?php echo $feed->subscribe_podnova(); ?>">Podnova</a>, <a href="<?php echo $feed->subscribe_rojo(); ?>">Rojo</a>, <a href="<?php echo $feed->subscribe_yahoo(); ?>">My Yahoo!</a>, <a href="<?php echo $feed->subscribe_feed(); ?>">Desktop Reader</a></p>
