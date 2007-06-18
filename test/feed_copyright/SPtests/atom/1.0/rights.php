@@ -6,13 +6,13 @@ class SimplePie_Feed_Copyright_Test_Atom_10_Rights extends SimplePie_Feed_Copyri
 	{
 		$this->data = 
 '<feed xmlns="http://www.w3.org/2005/Atom">
-	<rights>LGPL</rights>
+	<rights>Example Copyright Information</rights>
 </feed>';
 	}
 	
 	function expected()
 	{
-		$this->expected = 'LGPL';
+		$this->expected = 'Example Copyright Information';
 	}
 }
 

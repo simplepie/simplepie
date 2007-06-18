@@ -8,14 +8,14 @@ class SimplePie_Feed_Copyright_Test_RSS_091_Netscape_Copyright extends SimplePie
 '<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
 	<channel>
-		<copyright>LGPL</copyright>
+		<copyright>Example Copyright Information</copyright>
 	</channel>
 </rss>';
 	}
 	
 	function expected()
 	{
-		$this->expected = 'LGPL';
+		$this->expected = 'Example Copyright Information';
 	}
 }
 

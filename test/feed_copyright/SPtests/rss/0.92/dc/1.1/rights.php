@@ -7,14 +7,14 @@ class SimplePie_Feed_Copyright_Test_RSS_092_DC_11_Rights extends SimplePie_Feed_
 		$this->data = 
 '<rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
-		<dc:rights>LGPL</dc:rights>
+		<dc:rights>Example Copyright Information</dc:rights>
 	</channel>
 </rss>';
 	}
 	
 	function expected()
 	{
-		$this->expected = 'LGPL';
+		$this->expected = 'Example Copyright Information';
 	}
 }
 
