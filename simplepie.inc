@@ -1985,11 +1985,6 @@ function embed_wmedia(width, height, link) {
 		return $this->subscribe_service('http://www.feedfeeds.com/add?feed=');
 	}
 
-	function subscribe_feedlounge()
-	{
-		return $this->subscribe_service('http://my.feedlounge.com/external/subscribe?url=');
-	}
-
 	function subscribe_feedster()
 	{
 		return $this->subscribe_service('http://www.feedster.com/myfeedster.php?action=addrss&amp;confirm=no&amp;rssurl=');
