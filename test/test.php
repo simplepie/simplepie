@@ -193,7 +193,7 @@ $failed_percentage = ceil($master->fails() / $master->total() * 100);
 	<h2 id="summary" class=<?php echo ($passed_percentage == 100) ? 'pass' : 'fail'; ?>><?php echo $passed_percentage; ?>% passed!</h2>
 	<?php echo '<p>We ran ' . $master->total() . ' tests in ' . round($master->time(), 3) . ' seconds (' . round($master->time() / $master->total(), 3) . ' seconds per test) of which ' . $master->passes() . ' (' . $passed_percentage . '%) were passed, and ' . $master->fails() . ' (' . $failed_percentage . '%) were failed.</p>'; ?>
 	
-	<p><small>Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, <a href="http://www.skyzyx.com">Skyzyx Technologies</a>, and licensed under the <a href="http://creativecommons.org/licenses/LGPL/2.1/">LGPL</a>.</small></p>
+	<p><small>Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, Ryan Parman and Geoffrey Sneddon, and licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.</small></p>
 
 </div>
 
