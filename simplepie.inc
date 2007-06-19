@@ -1939,6 +1939,18 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
+	function subscribe_itunes()
+	{
+		if ($this->feed_url !== null)
+		{
+			return SimplePie_Misc::fix_protocol($this->feed_url, 4);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	/**
 	 * Creates the subscribe_* methods' return data
 	 *
@@ -7344,6 +7356,10 @@ class SimplePie_Misc
 		elseif ($http == 3 && strtolower($parsed['scheme']) == 'http')
 		{
 			return substr_replace($url, 'podcast', 0, 4);
+		}
+		elseif ($http == 4 && strtolower($parsed['scheme']) == 'http')
+		{
+			return substr_replace($url, 'itpc', 0, 4);
 		}
 		else
 		{
