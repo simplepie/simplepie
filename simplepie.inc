@@ -4988,11 +4988,6 @@ class SimplePie_Item
 		return $this->add_to_service('http://www.simpy.com/simpy/LinkAdd.do?href=', '&amp;title=');
 	}
 
-	function add_to_smarking()
-	{
-		return $this->add_to_service('http://smarking.com/editbookmark/?url=');
-	}
-
 	function add_to_spurl()
 	{
 		return $this->add_to_service('http://www.spurl.net/spurl.php?v=3&amp;url=', '&amp;title=');
