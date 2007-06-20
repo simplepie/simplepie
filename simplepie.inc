@@ -5501,29 +5501,7 @@ class SimplePie_Enclosure
 		{
 			if ($convert)
 			{
-				$time = '';
-
-				$hours = floor($this->duration / 3600);
-				$remainder = $this->duration % 3600;
-				if ($hours > 0)
-				{
-					$time .= $hours.':';
-				}
-
-				$minutes = floor($remainder / 60);
-				$seconds = $remainder % 60;
-				if ($minutes < 10 && $hours > 0)
-				{
-					$minutes = '0' . $minutes;
-				}
-				if ($seconds < 10)
-				{
-					$seconds = '0' . $seconds;
-				}
-
-				$time .= $minutes.':';
-				$time .= $seconds;
-
+				$time = SimplePie_Misc::time_hms($this->duration);
 				return $time;
 			}
 			else
@@ -7290,6 +7268,34 @@ class SimplePie_Cache
 
 class SimplePie_Misc
 {
+	function time_hms($seconds)
+	{
+		$time = '';
+
+		$hours = floor($seconds / 3600);
+		$remainder = $seconds % 3600;
+		if ($hours > 0)
+		{
+			$time .= $hours.':';
+		}
+
+		$minutes = floor($remainder / 60);
+		$seconds = $remainder % 60;
+		if ($minutes < 10 && $hours > 0)
+		{
+			$minutes = '0' . $minutes;
+		}
+		if ($seconds < 10)
+		{
+			$seconds = '0' . $seconds;
+		}
+
+		$time .= $minutes.':';
+		$time .= $seconds;
+
+		return $time;
+	}
+
 	function absolutize_url($relative, $base)
 	{
 		if ($relative !== '')
