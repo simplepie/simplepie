@@ -2792,9 +2792,13 @@ class SimplePie_Item
 		return $this->feed;
 	}
 
-	function get_id()
+	function get_id($hash = false)
 	{
-		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'id'))
+		if ($hash)
+		{
+			return $this->__toString();
+		}
+		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'id'))
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
@@ -7536,7 +7540,6 @@ class SimplePie_Misc
 		if ($file = $cache->load())
 		{
 			header('Content-type:' . $file['headers']['content-type']);
-			header('Cache-Control: must-revalidate');
 			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
 			echo $file['body'];
 			exit;
