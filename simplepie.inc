@@ -3068,14 +3068,7 @@ class SimplePie_Item
 		}
 		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
 		{
-			if (stristr($author['data'], '@') && stristr($author['data'], '.'))
-			{
-				$authors[] =& new $this->feed->author_class(null, null, $this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT));
-			}
-			else
-			{
-				$authors[] =& new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
-			}
+			$authors[] =& new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
 		}
 
 		if (!empty($authors))
