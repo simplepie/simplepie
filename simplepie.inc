@@ -2351,6 +2351,14 @@ function embed_wmedia(width, height, link) {
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
+		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'summary'))
+		{
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+		}
+		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle'))
+		{
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+		}
 		else
 		{
 			return null;
@@ -2483,7 +2491,11 @@ function embed_wmedia(width, height, link) {
 
 	function get_image_url()
 	{
-		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'logo'))
+		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'image'))
+		{
+			return $this->sanitize($return[0]['attribs']['']['href'], SIMPLEPIE_CONSTRUCT_IRI);
+		}
+		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'logo'))
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
 		}
@@ -2878,6 +2890,14 @@ class SimplePie_Item
 		{
 			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
+		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'summary'))
+		{
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+		}
+		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle'))
+		{
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+		}
 		elseif (!$description_only)
 		{
 			return $this->get_content(true);
@@ -3045,6 +3065,17 @@ class SimplePie_Item
 		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $author)
 		{
 			$authors[] =& new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+		}
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
+		{
+			if (stristr($author['data'], '@') && stristr($author['data'], '.'))
+			{
+				$authors[] =& new $this->feed->author_class(null, null, $this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+			}
+			else
+			{
+				$authors[] =& new $this->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			}
 		}
 
 		if (!empty($authors))
@@ -3279,6 +3310,7 @@ class SimplePie_Item
 			$copyrights_parent = null;
 			$credits_parent = null;
 			$description_parent = null;
+			$duration_parent = null;
 			$hashes_parent = null;
 			$keywords_parent = null;
 			$player_parent = null;
@@ -3407,6 +3439,31 @@ class SimplePie_Item
 				}
 				$categories_parent[] =& new $this->feed->category_class($term, $scheme, $label);
 			}
+			foreach ((array) $parent->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'category') as $category)
+			{
+				print_r($category);
+
+				$term = null;
+				$scheme = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
+				$label = null;
+				if (isset($category['attribs']['']['text']))
+				{
+					$label = $this->sanitize($category['attribs']['']['text'], SIMPLEPIE_CONSTRUCT_TEXT);
+				}
+				$categories_parent[] =& new $this->feed->category_class($term, $scheme, $label);
+
+				if (isset($category['child'][SIMPLEPIE_NAMESPACE_ITUNES]['category']))
+				{
+					foreach ((array) $category['child'][SIMPLEPIE_NAMESPACE_ITUNES]['category'] as $subcategory)
+					{
+						if (isset($subcategory['attribs']['']['text']))
+						{
+							$label = $this->sanitize($subcategory['attribs']['']['text'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						$categories_parent[] =& new $this->feed->category_class($term, $scheme, $label);
+					}
+				}
+			}
 			if (is_array($categories_parent))
 			{
 				$categories_parent = array_values(SimplePie_Misc::array_unique($categories_parent));
@@ -3516,6 +3573,34 @@ class SimplePie_Item
 				}
 			}
 
+			// DURATION
+			if ($duration_parent = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'duration'))
+			{
+				$seconds = null;
+				$minutes = null;
+				$hours = null;
+				if (isset($duration_parent[0]['data']))
+				{
+					$temp = explode(':', $this->sanitize($duration_parent[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+					if (sizeof($temp) > 0)
+					{
+						(int) $seconds = array_pop($temp);
+					}
+					if (sizeof($temp) > 0)
+					{
+						(int) $minutes = array_pop($temp);
+						$seconds += $minutes * 60;
+					}
+					if (sizeof($temp) > 0)
+					{
+						(int) $hours = array_pop($temp);
+						$seconds += $hours * 3600;
+					}
+					unset($temp);
+					$duration_parent = $seconds;
+				}
+			}
+
 			// HASHES
 			if ($hashes_iterator = $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'hash'))
 			{
@@ -3577,7 +3662,31 @@ class SimplePie_Item
 				}
 				unset($temp);
 			}
+			elseif ($keywords = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'keywords'))
+			{
+				if (isset($keywords[0]['data']))
+				{
+					$temp = explode(',', $this->sanitize($keywords[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+					foreach ($temp as $word)
+					{
+						$keywords_parent[] = trim($word);
+					}
+				}
+				unset($temp);
+			}
 			elseif ($keywords = $parent->get_channel_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'keywords'))
+			{
+				if (isset($keywords[0]['data']))
+				{
+					$temp = explode(',', $this->sanitize($keywords[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+					foreach ($temp as $word)
+					{
+						$keywords_parent[] = trim($word);
+					}
+				}
+				unset($temp);
+			}
+			elseif ($keywords = $parent->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'keywords'))
 			{
 				if (isset($keywords[0]['data']))
 				{
@@ -3632,6 +3741,19 @@ class SimplePie_Item
 					$ratings_parent[] =& new $this->feed->rating_class($rating_scheme, $rating_value);
 				}
 			}
+			elseif ($ratings = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'explicit'))
+			{
+				foreach ($ratings as $rating)
+				{
+					$rating_scheme = 'urn:itunes';
+					$rating_value = null;
+					if (isset($rating['data']))
+					{
+						$rating_value = $this->sanitize($rating['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					$ratings_parent[] =& new $this->feed->rating_class($rating_scheme, $rating_value);
+				}
+			}
 			elseif ($ratings = $parent->get_channel_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'rating'))
 			{
 				foreach ($ratings as $rating)
@@ -3646,6 +3768,19 @@ class SimplePie_Item
 					{
 						$rating_scheme = 'urn:simple';
 					}
+					if (isset($rating['data']))
+					{
+						$rating_value = $this->sanitize($rating['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					$ratings_parent[] =& new $this->feed->rating_class($rating_scheme, $rating_value);
+				}
+			}
+			elseif ($ratings = $parent->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'explicit'))
+			{
+				foreach ($ratings as $rating)
+				{
+					$rating_scheme = 'urn:itunes';
+					$rating_value = null;
 					if (isset($rating['data']))
 					{
 						$rating_value = $this->sanitize($rating['data'], SIMPLEPIE_CONSTRUCT_TEXT);
@@ -3681,6 +3816,20 @@ class SimplePie_Item
 					$restrictions_parent[] =& new $this->feed->restriction_class($restriction_relationship, $restriction_type, $restriction_value);
 				}
 			}
+			elseif ($restrictions = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'block'))
+			{
+				foreach ($restrictions as $restriction)
+				{
+					$restriction_relationship = 'allow';
+					$restriction_type = null;
+					$restriction_value = 'itunes';
+					if (isset($restriction['data']) && strtolower($restriction['data']) == 'yes')
+					{
+						$restriction_relationship = 'deny';
+					}
+					$restrictions_parent[] =& new $this->feed->restriction_class($restriction_relationship, $restriction_type, $restriction_value);
+				}
+			}
 			elseif ($restrictions = $parent->get_channel_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'restriction'))
 			{
 				foreach ($restrictions as $restriction)
@@ -3699,6 +3848,20 @@ class SimplePie_Item
 					if (isset($restriction['data']))
 					{
 						$restriction_value = $this->sanitize($restriction['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					$restrictions_parent[] =& new $this->feed->restriction_class($restriction_relationship, $restriction_type, $restriction_value);
+				}
+			}
+			elseif ($restrictions = $parent->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'block'))
+			{
+				foreach ($restrictions as $restriction)
+				{
+					$restriction_relationship = 'allow';
+					$restriction_type = null;
+					$restriction_value = 'itunes';
+					if (isset($restriction['data']) && strtolower($restriction['data']) == 'yes')
+					{
+						$restriction_relationship = 'deny';
 					}
 					$restrictions_parent[] =& new $this->feed->restriction_class($restriction_relationship, $restriction_type, $restriction_value);
 				}
@@ -3799,6 +3962,10 @@ class SimplePie_Item
 						if (isset($content['attribs']['']['duration']))
 						{
 							$duration = $this->sanitize($content['attribs']['']['duration'], SIMPLEPIE_CONSTRUCT_TEXT);
+						}
+						else
+						{
+							$duration = $duration_parent;
 						}
 						if (isset($content['attribs']['']['expression']))
 						{
@@ -4417,6 +4584,10 @@ class SimplePie_Item
 						{
 							$duration = $this->sanitize($content['attribs']['']['duration'], SIMPLEPIE_CONSTRUCT_TEXT);
 						}
+						else
+						{
+							$duration = $duration_parent;
+						}
 						if (isset($content['attribs']['']['expression']))
 						{
 							$expression = $this->sanitize($content['attribs']['']['expression'], SIMPLEPIE_CONSTRUCT_TEXT);
@@ -4798,7 +4969,7 @@ class SimplePie_Item
 					}
 
 					// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-					$this->data['enclosures'][] =& new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
+					$this->data['enclosures'][] =& new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
 				}
 			}
 
@@ -4833,7 +5004,7 @@ class SimplePie_Item
 					}
 
 					// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-					$this->data['enclosures'][] =& new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
+					$this->data['enclosures'][] =& new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
 				}
 			}
 
@@ -4868,7 +5039,7 @@ class SimplePie_Item
 					}
 
 					// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-					$this->data['enclosures'][] =& new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
+					$this->data['enclosures'][] =& new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
 				}
 			}
 			$this->data['enclosures'] = array_values(SimplePie_Misc::array_unique($this->data['enclosures']));
@@ -5324,11 +5495,41 @@ class SimplePie_Enclosure
 		}
 	}
 
-	function get_duration()
+	function get_duration($convert = false)
 	{
 		if (!empty($this->duration))
 		{
-			return $this->duration;
+			if ($convert)
+			{
+				$time = '';
+
+				$hours = floor($this->duration / 3600);
+				$remainder = $this->duration % 3600;
+				if ($hours > 0)
+				{
+					$time .= $hours.':';
+				}
+
+				$minutes = floor($remainder / 60);
+				$seconds = $remainder % 60;
+				if ($minutes < 10 && $hours > 0)
+				{
+					$minutes = '0' . $minutes;
+				}
+				if ($seconds < 10)
+				{
+					$seconds = '0' . $seconds;
+				}
+
+				$time .= $minutes.':';
+				$time .= $seconds;
+
+				return $time;
+			}
+			else
+			{
+				return $this->duration;
+			}
 		}
 		else
 		{
@@ -5525,20 +5726,29 @@ class SimplePie_Enclosure
 		}
 	}
 
-	/**
-	 * @todo Make this method work.
-	 */
-	function get_restriction()
+	function get_restriction($key = 0)
 	{
-		return null;
+		$restrictions = $this->get_restrictions();
+		if (isset($restrictions[$key]))
+		{
+			return $restrictions[$key];
+		}
+		else
+		{
+			return null;
+		}
 	}
 
-	/**
-	 * @todo Make this method work.
-	 */
 	function get_restrictions()
 	{
-		return null;
+		if (!empty($this->restrictions))
+		{
+			return $this->restrictions;
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	function get_sampling_rate()
