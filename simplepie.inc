@@ -315,11 +315,6 @@ define('SIMPLEPIE_NAMESPACE_MEDIARSS', 'http://search.yahoo.com/mrss/');
 define('SIMPLEPIE_NAMESPACE_ITUNES', 'http://www.itunes.com/dtds/podcast-1.0.dtd');
 
 /**
- * Google Namespace
- */
-define('SIMPLEPIE_NAMESPACE_GOOGLE', 'http://schemas.google.com/g/2005');
-
-/**
  * XHTML Namespace
  */
 define('SIMPLEPIE_NAMESPACE_XHTML', 'http://www.w3.org/1999/xhtml');
