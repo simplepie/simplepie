@@ -3438,8 +3438,6 @@ class SimplePie_Item
 			}
 			foreach ((array) $parent->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'category') as $category)
 			{
-				print_r($category);
-
 				$term = null;
 				$scheme = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
 				$label = null;
