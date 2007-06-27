@@ -41,7 +41,6 @@
  * @link http://simplepie.org/support/ Please submit all bug reports and feature requests to the SimplePie forums
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  * @todo phpDoc comments
- * @todo Add support for itunes namespaces
  * @todo Check all regular expressions
  */
 
@@ -10357,7 +10356,7 @@ class SimplePie_Sanitize
 	 */
 	function set_url_replacements($element_attribute = array('blockquote' => 'cite', 'ins' => 'cite', 'del' => 'cite', 'a' => 'href', 'q' => 'cite', 'img' => 'src', 'img' => 'longdesc', 'area' => 'href', 'form' => 'action', 'input' => 'src'))
 	{
-		$this->set_url_replacements = (array) $element_attribute;
+		$this->replace_url_attributes = (array) $element_attribute;
 	}
 
 	function sanitize($data, $type, $base = '')
