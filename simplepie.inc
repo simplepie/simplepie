@@ -7,29 +7,29 @@
  *
  * Copyright (c) 2004-2007, Ryan Parman and Geoffrey Sneddon
  * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, are 
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
- * 	* Redistributions of source code must retain the above copyright notice, this list of 
+ *
+ * 	* Redistributions of source code must retain the above copyright notice, this list of
  * 	  conditions and the following disclaimer.
- * 
- * 	* Redistributions in binary form must reproduce the above copyright notice, this list 
- * 	  of conditions and the following disclaimer in the documentation and/or other materials 
+ *
+ * 	* Redistributions in binary form must reproduce the above copyright notice, this list
+ * 	  of conditions and the following disclaimer in the documentation and/or other materials
  * 	  provided with the distribution.
- * 
- * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used 
- * 	  to endorse or promote products derived from this software without specific prior 
+ *
+ * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used
+ * 	  to endorse or promote products derived from this software without specific prior
  * 	  written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS 
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY 
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS 
- * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
+ * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
@@ -682,8 +682,8 @@ class SimplePie
 	 * website you want to try to use auto-discovery on. This takes priority
 	 * over any set raw data.
 	 *
-	 * You can set multiple feeds to mash together by passing an array instead 
-	 * of a string for the $url. Remember that with each additional feed comes 
+	 * You can set multiple feeds to mash together by passing an array instead
+	 * of a string for the $url. Remember that with each additional feed comes
 	 * additional processing and resources.
 	 *
 	 * @access public
@@ -891,7 +891,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for caching.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -910,7 +910,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for auto-discovery.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -929,7 +929,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for XML parsing.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -948,7 +948,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for remote file fetching.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -967,7 +967,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for data sanitization.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -986,7 +986,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for handling feed items.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1005,7 +1005,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for handling author data.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1024,7 +1024,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for handling category data.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1043,7 +1043,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for feed enclosures.
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1062,7 +1062,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for <media:text> captions
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1081,7 +1081,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for <media:copyright>
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1100,7 +1100,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for <media:credit>
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1119,7 +1119,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for <media:rating>
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1138,7 +1138,7 @@ class SimplePie
 	/**
 	 * Allows you to change which class SimplePie uses for <media:restriction>
 	 * Useful when you are overloading or extending SimplePie's default classes.
-	 * 
+	 *
 	 * @access public
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
@@ -1198,7 +1198,7 @@ class SimplePie
 	}
 
 	/**
-	 * Set options to make SP as fast as possible.  Forgoes a 
+	 * Set options to make SP as fast as possible.  Forgoes a
 	 * substantial amount of data sanitization in favor of speed.
 	 *
 	 * @access public
@@ -1786,14 +1786,16 @@ function embed_wmedia(width, height, link) {
 	 *
 	 * @access public
 	 * @since 1.0
-	 * @param string $alternate This is the image that will be used if no other favicons are found.
 	 */
-	function get_favicon($alternate = '')
+	function get_favicon()
 	{
-		if (($url = $this->get_link()) !== null && preg_match('/^http(s)?:\/\//i', $url))
+		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'icon'))
 		{
-			$standard_favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
-			$favicon = $standard_favicon;
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
+		}
+		elseif (($url = $this->get_link()) !== null && preg_match('/^http(s)?:\/\//i', $url))
+		{
+			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
 
 			if ($this->cache)
 			{
@@ -1801,95 +1803,44 @@ function embed_wmedia(width, height, link) {
 
 				if ($cache->load())
 				{
-					return $this->favicon_handler . $favicon;
+					return $this->sanitize($this->favicon_handler . rawurlencode($favicon), SIMPLEPIE_CONSTRUCT_IRI);
 				}
-				else
+				elseif ($this->favicon_handler)
 				{
-					$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+					$file =& new $this->file_class($favicon, $this->timeout / 10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 
 					if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
 					{
-						if ($this->favicon_handler)
+						if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 						{
-							if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
-							{
-								return $this->favicon_handler . $favicon;
-							}
-							else
-							{
-								trigger_error("$cache->name is not writeable", E_USER_WARNING);
-							}
+							return $this->sanitize($this->favicon_handler . rawurlencode($favicon), SIMPLEPIE_CONSTRUCT_IRI);
 						}
-						return $favicon;
-					}
-					else
-					{
-						unset($file);
-						$file =& new $this->file_class($this->get_link(), $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
-						$headers = $file->headers;
-
-						if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
+						else
 						{
-							preg_match_all('/<link([^>]*)rel=("|\')shortcut icon("|\')([^>]*)>/i', $file->body, $m);
-							if (isset($m[0][0]) && !empty($m[0][0]))
-							{
-								preg_match_all('/href=("|\')([^("|\')]*)("|\')/i', $m[0][0], $m);
-								if (isset($m[2][0]) && !empty($m[0][0]) && $m[2][0] != $standard_favicon)
-								{
-									unset($file);
-									$favicon = SimplePie_Misc::absolutize_url($m[2][0], $this->get_link());
-									$file =& new $this->file_class($favicon, $this->timeout/10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
-
-									if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
-									{
-										if ($this->favicon_handler)
-										{
-											$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
-
-											if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
-											{
-												return $this->favicon_handler . $favicon;
-											}
-											else
-											{
-												trigger_error("$cache->name is not writeable", E_USER_WARNING);
-											}
-										}
-										else
-										{
-											trigger_error("$cache->name is not writeable", E_USER_WARNING);
-										}
-									}
-									return $m[2][0];
-								}
-							}
+							trigger_error("$cache->name is not writeable", E_USER_WARNING);
+							return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
 						}
 					}
 				}
 			}
 			else
 			{
-				return $favicon;
+				return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
 			}
-		}
-
-		// If it was successful, it would have returned something already.  This is a catch-all.
-		if ($alternate != '')
-		{
-			return $alternate;
 		}
 		return false;
 	}
 
 	/**
 	 * @todo If we have a perm redirect we should return the new URL
-	 * @todo When we make the above change, let's support <itunes:new-feed-url> as well.
+	 * @todo When we make the above change, let's support <itunes:new-feed-url> as well
+	 * @todo Also, |atom:link|@rel=self
 	 */
 	function subscribe_url()
 	{
 		if ($this->feed_url !== null)
 		{
-			return $this->feed_url;
+			return $this->sanitize($this->feed_url, SIMPLEPIE_CONSTRUCT_IRI);
 		}
 		else
 		{
@@ -1901,7 +1852,7 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($this->feed_url !== null)
 		{
-			return SimplePie_Misc::fix_protocol($this->feed_url, 2);
+			return $this->sanitize(SimplePie_Misc::fix_protocol($this->feed_url, 2), SIMPLEPIE_CONSTRUCT_IRI);
 		}
 		else
 		{
@@ -1913,7 +1864,7 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($this->feed_url !== null)
 		{
-			return 'outlook' . SimplePie_Misc::fix_protocol($this->feed_url, 2);
+			return 'outlook' . $this->sanitize(SimplePie_Misc::fix_protocol($this->feed_url, 2), SIMPLEPIE_CONSTRUCT_IRI);
 		}
 		else
 		{
@@ -1925,7 +1876,7 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($this->feed_url !== null)
 		{
-			return SimplePie_Misc::fix_protocol($this->feed_url, 3);
+			return $this->sanitize(SimplePie_Misc::fix_protocol($this->feed_url, 3), SIMPLEPIE_CONSTRUCT_IRI);
 		}
 		else
 		{
@@ -1937,7 +1888,7 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($this->feed_url !== null)
 		{
-			return SimplePie_Misc::fix_protocol($this->feed_url, 4);
+			return $this->sanitize(SimplePie_Misc::fix_protocol($this->feed_url, 4), SIMPLEPIE_CONSTRUCT_IRI);
 		}
 		else
 		{
@@ -3282,7 +3233,7 @@ class SimplePie_Item
 	 * Grabs all available enclosures (podcasts, etc.)
 	 *
 	 * Supports the <enclosure> RSS tag, as well as Media RSS and iTunes RSS.
-	 * 
+	 *
 	 * At this point, we're pretty much assuming that all enclosures for an item are the same content.  Anything else is too complicated to properly support.
 	 *
 	 * @todo Add support for end-user defined sorting of enclosures by type/handler (so we can prefer the faster-loading FLV over MP4).
@@ -7505,24 +7456,24 @@ class SimplePie_Misc
 
 	/**
 	 * If a file has been cached, retrieve and display it.
-	 * 
-	 * This is most useful for caching images (get_favicon(), etc.), 
-	 * however it works for all cached files.  This WILL NOT display ANY 
-	 * file/image/page/whatever, but rather only display what has already 
+	 *
+	 * This is most useful for caching images (get_favicon(), etc.),
+	 * however it works for all cached files.  This WILL NOT display ANY
+	 * file/image/page/whatever, but rather only display what has already
 	 * been cached by SimplePie.
 	 *
 	 * @access public
 	 * @see SimplePie::get_favicon()
-	 * @param str $identifier_url URL that is used to identify the content.  
+	 * @param str $identifier_url URL that is used to identify the content.
 	 * This may or may not be the actual URL of the live content.
-	 * @param str $cache_location Location of SimplePie's cache.  Defaults 
+	 * @param str $cache_location Location of SimplePie's cache.  Defaults
 	 * to './cache'.
-	 * @param str $cache_extension The file extension that the file was 
+	 * @param str $cache_extension The file extension that the file was
 	 * cached with.  Defaults to 'spc'.
-	 * @param str $cache_class Name of the cache-handling class being used 
-	 * in SimplePie.  Defaults to 'SimplePie_Cache', and should be left 
+	 * @param str $cache_class Name of the cache-handling class being used
+	 * in SimplePie.  Defaults to 'SimplePie_Cache', and should be left
 	 * as-is unless you've overloaded the class.
-	 * @param str $cache_name_function Function that converts the filename 
+	 * @param str $cache_name_function Function that converts the filename
 	 * for saving.  Defaults to 'sha1'.
 	 */
 	function display_cached_file($identifier_url, $cache_location = './cache', $cache_extension = 'spc', $cache_class = 'SimplePie_Cache', $cache_name_function = 'sha1')
