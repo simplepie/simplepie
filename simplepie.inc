@@ -338,6 +338,21 @@ else
 	define('SIMPLEPIE_PHP5', false);
 }
 
+if (version_compare(phpversion(), '4.3.0', '>='))
+{
+	/**
+	 * We're running on PHP4.3
+	 */
+	define('SIMPLEPIE_PHP43', true);
+}
+else
+{
+	/**
+	 * We're not running on PHP4.3
+	 */
+	define('SIMPLEPIE_PHP43', false);
+}
+
 /**
  * SimplePie
  *
@@ -656,6 +671,12 @@ class SimplePie
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize =& new SimplePie_Sanitize;
 
+		// Change the cache filename callback away from sha1() if we're on less than PHP4.3 (when it was added)
+		if (!SIMPLEPIE_PHP43)
+		{
+			$this->set_cache_name_function('md5');
+		}
+
 		// Set options if they're passed to the constructor
 		if ($cache_location !== null)
 		{
@@ -673,6 +694,14 @@ class SimplePie
 			$this->set_feed_url($feed_url);
 			$this->init();
 		}
+	}
+
+	/**
+	 * Used for converting object to a string
+	 */
+	function __toString()
+	{
+		return crc32(serialize($this));
 	}
 
 	/**
@@ -2707,7 +2736,7 @@ class SimplePie_Item
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_item_tags($namespace, $tag)
@@ -5143,7 +5172,7 @@ class SimplePie_Author
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_name()
@@ -5199,7 +5228,7 @@ class SimplePie_Category
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_term()
@@ -5309,7 +5338,7 @@ class SimplePie_Enclosure
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_bitrate()
@@ -6220,7 +6249,7 @@ class SimplePie_Caption
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_endtime()
@@ -6300,7 +6329,7 @@ class SimplePie_Credit
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_role()
@@ -6354,7 +6383,7 @@ class SimplePie_Copyright
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_url()
@@ -6396,7 +6425,7 @@ class SimplePie_Rating
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_scheme()
@@ -6440,7 +6469,7 @@ class SimplePie_Restriction
 
 	function __toString()
 	{
-		return sha1(serialize($this));
+		return crc32(serialize($this));
 	}
 
 	function get_relationship()
@@ -6491,7 +6520,6 @@ class SimplePie_File
 	var $headers = array();
 	var $body;
 	var $status_code;
-	var $fp;
 	var $redirects = 0;
 	var $error;
 	var $method;
@@ -6585,15 +6613,22 @@ class SimplePie_File
 				{
 					$url_parts['port'] = 80;
 				}
-				$this->fp = fsockopen($url_parts['host'], $url_parts['port'], $errno, $errstr, $timeout);
-				if (!$this->fp)
+				$fp = fsockopen($url_parts['host'], $url_parts['port'], $errno, $errstr, $timeout);
+				if (!$fp)
 				{
 					$this->error = 'fsockopen error: ' . $errstr;
 					$this->success = false;
 				}
 				else
 				{
-					stream_set_timeout($this->fp, $timeout);
+					if (SIMPLEPIE_PHP43)
+					{
+						stream_set_timeout($fp, $timeout);
+					}
+					else
+					{
+						socket_set_timeout($fp, $timeout);
+					}
 					$get = (isset($url_parts['query'])) ? "$url_parts[path]?$url_parts[query]" : $url_parts['path'];
 					$out = "GET $get HTTP/1.0\r\n";
 					$out .= "Host: $url_parts[host]\r\n";
@@ -6612,14 +6647,29 @@ class SimplePie_File
 						$out .= "$key: $value\r\n";
 					}
 					$out .= "Connection: Close\r\n\r\n";
-					fwrite($this->fp, $out);
+					fwrite($fp, $out);
 
-					$info = stream_get_meta_data($this->fp);
+					if (SIMPLEPIE_PHP43)
+					{
+						$info = stream_get_meta_data($fp);
+					}
+					else
+					{
+						$info = socket_get_status($fp);
+					}
+
 					$this->headers = '';
 					while (!$info['eof'] && !$info['timed_out'])
 					{
-						$this->headers .= fread($this->fp, 1160);
-						$info = stream_get_meta_data($this->fp);
+						$this->headers .= fread($fp, 1160);
+						if (SIMPLEPIE_PHP43)
+						{
+							$info = stream_get_meta_data($fp);
+						}
+						else
+						{
+							$info = socket_get_status($fp);
+						}
 					}
 					if (!$info['timed_out'])
 					{
@@ -6649,17 +6699,35 @@ class SimplePie_File
 						$this->error = 'fsocket timed out';
 						$this->success = false;
 					}
-					fclose($this->fp);
+					fclose($fp);
 				}
 			}
 		}
-		else
+		elseif (SIMPLEPIE_PHP43)
 		{
 			$this->method = 'file_get_contents';
 			if (!$this->body = file_get_contents($url))
 			{
 				$this->error = 'file_get_contents could not read the file';
 				$this->success = false;
+			}
+		}
+		else
+		{
+			$this->method = 'fopen';
+			if (($fp = fopen($url, 'rb')) === false)
+			{
+				$this->error = 'failed to open stream: No such file or directory';
+				$this->success = false;
+			}
+			else
+			{
+				$this->body = '';
+				while (!feof($fp))
+				{
+					$this->body .= fread($fp, 8192);
+				}
+				fclose($fp);
 			}
 		}
 	}
