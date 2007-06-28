@@ -323,7 +323,7 @@ define('SIMPLEPIE_NAMESPACE_XHTML', 'http://www.w3.org/1999/xhtml');
  */
 define('SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY', 'http://www.iana.org/assignments/relation/');
 
-if (version_compare(phpversion(), '5.0.0', '>='))
+if (version_compare(PHP_VERSION, '5.0.0', '>='))
 {
 	/**
 	 * We're running on PHP5
@@ -338,7 +338,7 @@ else
 	define('SIMPLEPIE_PHP5', false);
 }
 
-if (version_compare(phpversion(), '4.3.0', '>='))
+if (version_compare(PHP_VERSION, '4.3.0', '>='))
 {
 	/**
 	 * We're running on PHP4.3
@@ -1352,7 +1352,7 @@ class SimplePie
 
 	function init()
 	{
-		if ((function_exists('version_compare') && version_compare(phpversion(), '4.3.2', '<')) || !extension_loaded('xml') || !extension_loaded('pcre'))
+		if ((function_exists('version_compare') && version_compare(PHP_VERSION, '4.3.2', '<')) || !extension_loaded('xml') || !extension_loaded('pcre'))
 		{
 			return false;
 		}
@@ -9088,7 +9088,7 @@ class SimplePie_Misc
 		}
 		else
 		{
-			if (version_compare(phpversion(), '5.0.3', '>=') || is_object($class1))
+			if (version_compare(PHP_VERSION, '5.0.3', '>=') || is_object($class1))
 			{
 				return is_subclass_of($class1, $class2);
 			}
@@ -9525,7 +9525,7 @@ class SimplePie_Misc
 	 */
 	function uncomment_rfc822($data)
 	{
-		if ((version_compare(phpversion(), '4.4.6', '>=') && version_compare(phpversion(), '5', '<')) || version_compare(phpversion(), '5.2.2', '>='))
+		if ((version_compare(PHP_VERSION, '4.4.6', '>=') && version_compare(PHP_VERSION, '5', '<')) || version_compare(PHP_VERSION, '5.2.2', '>='))
 		{
 			return $data;
 		}
@@ -9674,7 +9674,7 @@ class SimplePie_Misc
 
 	function array_unique($array)
 	{
-		if (version_compare(phpversion(), '5.2', '>='))
+		if (version_compare(PHP_VERSION, '5.2', '>='))
 		{
 			return array_unique($array);
 		}
