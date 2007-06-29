@@ -99,7 +99,7 @@ $feed->handle_content_type();
 		do centered floats purely with CSS. The table box model allows for a dynamic width while centered, while the 
 		CSS box model for DIVs doesn't allow for it. :( -->
 		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
-<ul><li id="demo"><a href="">SimplePie Demo</a></li><li><a href="http://simplepie.org/wiki/faq/start">FAQ/Troubleshooting</a></li><li><a href="http://simplepie.org/support/">Support Forums</a></li><li><a href="http://simplepie.org/wiki/reference/start">API Reference</a></li><li><a href="http://simplepie.org/blog/">Weblog</a></li><li><a href="../test/test.php">Unit Tests</a></li></ul>
+<ul><li id="demo"><a href="./">SimplePie Demo</a></li><li><a href="http://simplepie.org/wiki/faq/start">FAQ/Troubleshooting</a></li><li><a href="http://simplepie.org/support/">Support Forums</a></li><li><a href="http://simplepie.org/wiki/reference/start">API Reference</a></li><li><a href="http://simplepie.org/blog/">Weblog</a></li><li><a href="../test/test.php">Unit Tests</a></li></ul>
 
 			<div class="clearLeft"></div>
 		</td></tr></tbody></table>
@@ -230,7 +230,7 @@ $feed->handle_content_type();
 						?>
 
 						<!-- If the item has a permalink back to the original post (which 99% of them do), link the item's title to it. -->
-						<h4><img src="<?php echo $favicon; ?>" alt="Favicon" class="favicon" /><?php if ($item->get_permalink()) echo '<a href="' . $item->get_permalink() . '">'; echo $item->get_title(); if ($item->get_permalink()) echo '</a>'; ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y, g:i a'); ?></span></h4>
+						<h4><img src="<?php echo $favicon; ?>" alt="Favicon" class="favicon" /><?php if ($item->get_permalink()) echo '<a href="' . $item->get_permalink() . '">'; echo $item->get_title(true); if ($item->get_permalink()) echo '</a>'; ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y, g:i a'); ?></span></h4>
 
 						<!-- Display the item's primary content. -->
 						<?php echo $item->get_content(); ?>

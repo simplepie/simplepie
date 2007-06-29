@@ -2164,35 +2164,84 @@ function embed_wmedia(width, height, link) {
 		return $this->sanitize->sanitize($data, $type, $base);
 	}
 
-	function get_title()
+	function get_title($decode = false)
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			}
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			}
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		elseif ($return = $this->get_channel_tags('', 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_10, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		else
 		{
@@ -2806,35 +2855,84 @@ class SimplePie_Item
 		}
 	}
 
-	function get_title()
+	function get_title($decode = false)
 	{
 		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			}
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			}
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		elseif ($return = $this->get_item_tags('', 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if ($decode)
+			{
+				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 		}
 		else
 		{
