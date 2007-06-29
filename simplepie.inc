@@ -701,7 +701,7 @@ class SimplePie
 	 */
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	/**
@@ -2736,7 +2736,7 @@ class SimplePie_Item
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_item_tags($namespace, $tag)
@@ -5172,7 +5172,7 @@ class SimplePie_Author
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_name()
@@ -5228,7 +5228,7 @@ class SimplePie_Category
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_term()
@@ -5338,7 +5338,7 @@ class SimplePie_Enclosure
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_bitrate()
@@ -6249,7 +6249,7 @@ class SimplePie_Caption
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_endtime()
@@ -6329,7 +6329,7 @@ class SimplePie_Credit
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_role()
@@ -6383,7 +6383,7 @@ class SimplePie_Copyright
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_url()
@@ -6425,7 +6425,7 @@ class SimplePie_Rating
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_scheme()
@@ -6469,7 +6469,7 @@ class SimplePie_Restriction
 
 	function __toString()
 	{
-		return crc32(serialize($this));
+		return (string) crc32(serialize($this));
 	}
 
 	function get_relationship()

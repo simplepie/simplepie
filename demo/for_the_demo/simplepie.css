@@ -1,48 +1,69 @@
 /*
 Theme Name: SimplePie
-Theme URI: http://www.simplepie.org
-Description: A simple, yet beautiful theme inspired by (but not stolen from) 37Signals' Backpack and Basecamp websites.
-Version: 1.0
+Theme URI: http://simplepie.org
+Description: A simple, yet beautiful theme inspired by several cleanly designed websites.
+Version: 1.4
 Author: Ryan Parman
-Author URI: http://www.skyzyx.com
-Updated: 30 March 2007
+Author URI: http://skyzyx.com
+Updated: 21 June 2007
 */
+
+
+/*********************************************
+HYPERLINK STYLES
+*********************************************/
+a {
+	color:#369;
+	text-decoration:underline;
+	padding:0 1px;
+}
+
+a:hover {
+	color:#fff !important;
+	background-color:#333;
+	text-decoration:none;
+	padding:0 1px;
+}
+
+a.nohover {
+	text-decoration:none;
+	border:none;
+}
+
+a.nohover:hover {
+	background-color:transparent;
+	border:none;
+}
+
+a.namelink {
+	padding:0;
+	margin:0;
+	overflow:hidden;
+	height:1px;
+}
+
+h4 a,
+.sample_feeds a {
+	color:#000;
+}
 
 
 /*********************************************
 GENERAL STYLES
 *********************************************/
 body {
-	font:12px/18px verdana, sans-serif;
+	/*font:12px/18px Verdana, sans-serif;*/
+	font:14px/1.5em "Lucida Grande", Tahoma, sans-serif;
 	letter-spacing:0px;
 	color:#333;
-	background:#fff url(top_gradient.gif) repeat-x top left;
+	background-color:#fff;
 	margin:0;
 	padding:0;
 }
 
 div#site {
-	width:550px;
-	margin:20px auto 0 auto;
-}
-
-a {
-	color:#000;
-	text-decoration:underline;
-	padding:0 1px;
-}
-
-a:hover {
-	color:#fff;
-	background-color:#333;
-	text-decoration:none;
-	padding:0 1px;
-}
-
-div#punwrap a:hover {
-	color:#fff !important;
-	background-color:#333 !important;
-	text-decoration:none !important;
+	width:600px;
+	margin:50px auto 0 auto;
 }
 
 h1#logo {
@@ -67,13 +88,26 @@ h2.image {
 h3 {
 	margin:20px 0 0 0;
 	padding:0;
-	font-size:18px;
+	font-size:1.5em;
 }
 
 h4 {
 	margin:20px 0 0 0;
 	padding:0;
-	font-size:14px;
+	font-size:1.2em;
+	letter-spacing:-1px;
+}
+
+h5 {
+	margin:10px 0 0 0;
+	padding:0;
+	font-size:1em;
+	font-weight:bold;
+}
+
+em {
+	font-style:normal;
+	background-color:#ffc;
 }
 
 p {
@@ -97,14 +131,9 @@ form {
 }
 
 code {
-	font-size:1.1em;
+	font-size:1em;
 	background-color:#f3f3ff;
 	color:#000;
-}
-
-pre {
-	font-size:12px !important;
-	font-family:monospace !important;
 }
 
 div#site pre {
@@ -116,7 +145,7 @@ div#site pre {
 }
 
 blockquote {
-	font-size:11px;
+	font-size:1em;
 	color:#666;
 	border-left:4px solid #666;
 	margin:10px 0 10px 30px;
@@ -125,7 +154,8 @@ blockquote {
 }
 
 input, select, textarea {
-	font:11px/16px verdana, sans-serif;
+	font-size:12px;
+	line-height:1.2em;
 	padding:2px;
 }
 
@@ -138,66 +168,112 @@ input[type=text]:focus, select:focus, textarea:focus {
 	background-color:#ffe;
 }
 
-div#sp_input input#feed_input {
-	border:1px solid #999;
-	background:#e9f5ff url(feed.png) no-repeat 4px 50%;
-	width:75%;
-	padding:2px 2px 2px 28px;
-	font:18px/22px "Lucida Grande", Verdana, sans-serif;
-	font-weight:bold;
-	letter-spacing:-1px;
-}
-
-table#chart {
-	border-collapse:collapse;
-}
-
-table#chart th {
-	background-color:#eee;
-	padding:2px 3px;
-	border:1px solid #fff;
-}
-
-table#chart td {
-	text-align:center;
-	padding:2px 3px;
-	border:1px solid #eee;
-}
-
-table#chart td.left {
-	text-align:left;
-}
+.clearLeft {clear:left;}
+.clearRight {clear:right;}
+.clearBoth {clear:both;}
+.hide {display:none;}
 
 
 /*********************************************
 NAVIGATION STYLES
 *********************************************/
-ul#menu {
-	display:block;
-	margin:20px 0 0 0;
-	padding:0;
-	color:#aaa;
-	text-align:center;
-	font-size:11px;
-}
-
-ul#menu li {
-	display:inline;
-	list-style:none;
-	padding:0;
+div#header {
+	background:#fff url(top_gradient.gif) repeat-x top left;
 	margin:0;
+	padding:0;
 }
 
-ul#menu li a {
-	padding:2px 4px;
-	margin:0 2px;
-	font-weight:bold;
+div#header form {
+	margin:0;
+	padding:0;
 }
 
-body#bodydemo ul#menu li#demo a {
-	color:#fff;
-	background-color:#333;
+div#header div#headerInner {
+	margin:0;
+	padding:0;
+}
+
+div#header div#headerInner div#logoContainer {}
+
+div#header div#headerInner div#logoContainerInner {
+	width:550px;
+	margin:0 auto;
+	padding:20px;
+}
+
+div#header div#headerInner div#logoContainer div#logo {
+	float:left;
+	width:200px;
+}
+
+div#header div#headerInner div#logoContainer div#logo a,
+div#header div#headerInner div#logoContainer div#logo a:hover {
+	border:none;
+	background:none;
+}
+
+div#header div#headerInner div#logoContainer div#feed {
+	float:right;
+	width:300px;
+	text-align:right;
+	padding:10px 0 0 0;
+}
+
+div#header div#headerInner div#logoContainer div#feed input.text {
+	width:60%;
+}
+
+div#header div#headerInner div#menu {
+	background:#eee url(background_menuitem_shadow.gif) repeat-x top left;
+	border-top:2px solid #ccc;
+	border-bottom:1px solid #ddd;
+	text-align:center;
+}
+
+div#header div#headerInner div#menu table {
+	width:auto;
+	margin:0 auto;
+}
+
+div#header div#headerInner div#menu ul {
+	display:block;
+	width:100%;
+	margin:0 auto;
+	padding:0;
+	font-size:12px;
+}
+
+div#header div#headerInner div#menu ul li {
+	display:block;
+	float:left;
+}
+
+div#header div#headerInner div#menu ul li a {
+	display:block;
+	margin:-2px 0 0 0;
+	padding:5px 7px 8px 7px;
 	text-decoration:none;
+	color:#666 !important;
+	background-color:transparent;
+}
+
+div#header div#headerInner div#menu ul li a:hover {
+	display:block;
+	margin:-2px 0 0 0;
+	padding:5px 7px 8px 7px;
+	text-decoration:none;
+	color:#666;
+	background:#fff url(background_menuitem_off.gif) no-repeat bottom right;
+}
+
+body#bodydemo div#header div#headerInner div#menu ul li#demo a {
+	display:block;
+	margin:-2px 0 0 0;
+	padding:5px 7px 8px 7px;
+	text-decoration:none;
+	color:#333;
+	font-weight:bold;
+	background:#fff url(background_menuitem.gif) no-repeat bottom right;
 }
 
 
@@ -210,9 +286,14 @@ div.chunk {
 	border-bottom:1px solid #ccc;
 }
 
+div.topchunk {
+	margin:0 !important;
+}
+
 .footnote,
 .footnote a {
-	font:10px/12px verdana, sans-serif;
+	font-size:12px;
+	line-height:1.3em;
 	color:#aaa;
 }
 
@@ -221,27 +302,44 @@ div.chunk {
 	font-style:italic;
 }
 
+.footnote code {
+	background-color:transparent;
+	font:11px/14px monospace;
+	color:#aaa;
+}
+
 p.subscribe {
 	background-color:#f3f3f3;
-	font-size:11px;
+	font-size:12px;
 	text-align:center;
 }
 
 p.highlight {
 	background-color:#ffc;
-	font-size:11px;
+	font-size:12px;
 	text-align:center;
 }
 
 p.sample_feeds {
-	font:11px/14px verdana, sans-serif;
+	font-size:12px;
+	line-height:1.2em;
 }
 
 div.sp_errors {
 	background-color:#eee;
 	padding:5px;
 	text-align:center;
-	font-size:11px;
+	font-size:12px;
+}
+
+.noborder {
+	border:none !important;
+}
+
+img.favicon {
+	margin:0 4px -2px 0;
+	width:16px;
+	height:16px;
 }
 
 
@@ -257,9 +355,12 @@ div#sp_input {
 
 div#sp_input input.text {
 	border:1px solid #999;
-	background-color:#e9f5ff;
-	width:65%;
-	padding:2px;
+	background:#e9f5ff url(feed.png) no-repeat 4px 50%;
+	width:75%;
+	padding:2px 2px 2px 28px;
+	font:18px/22px "Lucida Grande", Verdana, sans-serif;
+	font-weight:bold;
+	letter-spacing:-1px;
 }
 
 form#sp_form {
@@ -270,6 +371,10 @@ div.focus {
 	margin:0;
 	padding:10px 20px;
 	background-color:#efe;
+}
+
+p.sample_feeds {
+	text-align:justify;
 }
 
 
