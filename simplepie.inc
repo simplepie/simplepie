@@ -467,7 +467,7 @@ class SimplePie
 	 * @see SimplePie::set_cache_name_function()
 	 * @access private
 	 */
-	var $cache_name_function = 'sha1';
+	var $cache_name_function = 'md5';
 
 	/**
 	 * @var bool Reorder feed by date descending
@@ -671,12 +671,6 @@ class SimplePie
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize =& new SimplePie_Sanitize;
 
-		// Change the cache filename callback away from sha1() if we're on less than PHP4.3 (when it was added)
-		if (!SIMPLEPIE_PHP43)
-		{
-			$this->set_cache_name_function('md5');
-		}
-
 		// Set options if they're passed to the constructor
 		if ($cache_location !== null)
 		{
@@ -701,7 +695,7 @@ class SimplePie
 	 */
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	/**
@@ -1200,7 +1194,7 @@ class SimplePie
 	 * @access public
 	 * @param mixed $function Callback function
 	 */
-	function set_cache_name_function($function = 'sha1')
+	function set_cache_name_function($function = 'md5')
 	{
 		if (is_callable($function))
 		{
@@ -2785,7 +2779,7 @@ class SimplePie_Item
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_item_tags($namespace, $tag)
@@ -5270,7 +5264,7 @@ class SimplePie_Author
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_name()
@@ -5326,7 +5320,7 @@ class SimplePie_Category
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_term()
@@ -5436,7 +5430,7 @@ class SimplePie_Enclosure
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_bitrate()
@@ -6347,7 +6341,7 @@ class SimplePie_Caption
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_endtime()
@@ -6427,7 +6421,7 @@ class SimplePie_Credit
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_role()
@@ -6481,7 +6475,7 @@ class SimplePie_Copyright
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_url()
@@ -6523,7 +6517,7 @@ class SimplePie_Rating
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_scheme()
@@ -6567,7 +6561,7 @@ class SimplePie_Restriction
 
 	function __toString()
 	{
-		return (string) crc32(serialize($this));
+		return md5(serialize($this));
 	}
 
 	function get_relationship()
@@ -7640,9 +7634,9 @@ class SimplePie_Misc
 	 * in SimplePie.  Defaults to 'SimplePie_Cache', and should be left
 	 * as-is unless you've overloaded the class.
 	 * @param str $cache_name_function Function that converts the filename
-	 * for saving.  Defaults to 'sha1'.
+	 * for saving.  Defaults to 'md5'.
 	 */
-	function display_cached_file($identifier_url, $cache_location = './cache', $cache_extension = 'spc', $cache_class = 'SimplePie_Cache', $cache_name_function = 'sha1')
+	function display_cached_file($identifier_url, $cache_location = './cache', $cache_extension = 'spc', $cache_class = 'SimplePie_Cache', $cache_name_function = 'md5')
 	{
 		$cache =& new $cache_class($cache_location, call_user_func($cache_name_function, $identifier_url), $cache_extension);
 
@@ -10327,7 +10321,7 @@ class SimplePie_Sanitize
 	var $output_encoding = 'UTF-8';
 	var $enable_cache = true;
 	var $cache_location = './cache';
-	var $cache_name_function = 'sha1';
+	var $cache_name_function = 'md5';
 	var $cache_class = 'SimplePie_Cache';
 	var $file_class = 'SimplePie_File';
 	var $timeout = 10;
@@ -10364,7 +10358,7 @@ class SimplePie_Sanitize
 		}
 	}
 
-	function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'sha1', $cache_class = 'SimplePie_Cache')
+	function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = 'SimplePie_Cache')
 	{
 		if (isset($enable_cache))
 		{
