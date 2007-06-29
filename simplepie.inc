@@ -234,9 +234,14 @@ define('SIMPLEPIE_CONSTRUCT_BASE64', 8);
 define('SIMPLEPIE_CONSTRUCT_IRI', 16);
 
 /**
+ * A construct that might be HTML
+ */
+define('SIMPLEPIE_CONSTRUCT_MAYBE_HTML', 32);
+
+/**
  * All constructs
  */
-define('SIMPLEPIE_CONSTRUCT_ALL', 31);
+define('SIMPLEPIE_CONSTRUCT_ALL', 63);
 
 /**
  * PCRE for HTML attributes
@@ -2158,84 +2163,35 @@ function embed_wmedia(width, height, link) {
 		return $this->sanitize->sanitize($data, $type, $base);
 	}
 
-	function get_title($decode = false)
+	function get_title()
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-			}
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-			}
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_channel_tags('', 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_10, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -2849,84 +2805,35 @@ class SimplePie_Item
 		}
 	}
 
-	function get_title($decode = false)
+	function get_title()
 	{
 		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-			}
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
-			}
+			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_item_tags('', 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'title'))
 		{
-			if ($decode)
-			{
-				return $this->sanitize(html_entity_decode($return[0]['data'], ENT_QUOTES, 'UTF-8'), SIMPLEPIE_CONSTRUCT_TEXT);
-			}
-			else
-			{
-				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-			}
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 		}
 		else
 		{
@@ -2946,7 +2853,7 @@ class SimplePie_Item
 		}
 		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'description'))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_item_tags('', 'description'))
 		{
@@ -10475,6 +10382,18 @@ class SimplePie_Sanitize
 		$data = trim($data);
 		if ($data !== '' || $type & SIMPLEPIE_CONSTRUCT_IRI)
 		{
+			if ($type & SIMPLEPIE_CONSTRUCT_MAYBE_HTML)
+			{
+				if (preg_match('/(&(#(x[0-9a-fA-F]+|[0-9]+)|[a-zA-Z0-9]+)|<\/(\w+)' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>)/', $data))
+				{
+					$type &= SIMPLEPIE_CONSTRUCT_HTML;
+				}
+				else
+				{
+					$type &= SIMPLEPIE_CONSTRUCT_TEXT;
+				}
+			}
+			
 			if ($type & SIMPLEPIE_CONSTRUCT_BASE64)
 			{
 				$data = base64_decode($data);
