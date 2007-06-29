@@ -342,6 +342,16 @@ img.favicon {
 	height:16px;
 }
 
+p.favicons a,
+p.favicons a:hover {
+	border:none;
+	background-color:transparent;
+}
+
+p.favicons img {
+	border:none;
+}
+
 
 /*********************************************
 DEMO STYLES

@@ -259,7 +259,21 @@ $feed->handle_content_type();
 						?>
 
 						<!-- Add links to add this post to one of a handful of services. -->
-						<p class="footnote" align="center"><a href="<?php echo $item->add_to_blinklist(); ?>" title="Add post to Blinklist">Blinklist</a> | <a href="<?php echo $item->add_to_delicious(); ?>" title="Add post to del.icio.us">Del.icio.us</a> | <a href="<?php echo $item->add_to_digg(); ?>" title="Digg this!">Digg</a> | <a href="<?php echo $item->add_to_furl(); ?>" title="Add post to Furl">Furl</a> | <a href="<?php echo $item->add_to_magnolia(); ?>" title="Add post to Ma.gnolia">Ma.gnolia</a> | <a href="<?php echo $item->add_to_newsvine(); ?>" title="Add post to Newsvine">Newsvine</a> | <a href="<?php echo $item->add_to_spurl(); ?>" title="Add post to Spurl">Spurl</a> | <a href="<?php echo $item->search_technorati(); ?>" title="Who's linking to this post?">Technorati</a></p>
+						<p class="footnote favicons" align="center">
+							<a href="<?php echo $item->add_to_blinklist(); ?>" title="Add post to Blinklist"><img src="./for_the_demo/favicons/blinklist.png" alt="Blinklist" /></a>
+							<a href="<?php echo $item->add_to_blogmarks(); ?>" title="Add post to Blogmarks"><img src="./for_the_demo/favicons/blogmarks.png" alt="Blogmarks" /></a>
+							<a href="<?php echo $item->add_to_delicious(); ?>" title="Add post to del.icio.us"><img src="./for_the_demo/favicons/delicious.png" alt="del.icio.us" /></a>
+							<a href="<?php echo $item->add_to_digg(); ?>" title="Digg this!"><img src="./for_the_demo/favicons/digg.png" alt="Digg" /></a>
+							<a href="<?php echo $item->add_to_magnolia(); ?>" title="Add post to Ma.gnolia"><img src="./for_the_demo/favicons/magnolia.png" alt="Ma.gnolia" /></a>
+							<a href="<?php echo $item->add_to_myweb20(); ?>" title="Add post to My Web 2.0"><img src="./for_the_demo/favicons/myweb2.png" alt="My Web 2.0" /></a>
+							<a href="<?php echo $item->add_to_newsvine(); ?>" title="Add post to Newsvine"><img src="./for_the_demo/favicons/newsvine.png" alt="Newsvine" /></a>
+							<a href="<?php echo $item->add_to_reddit(); ?>" title="Add post to Reddit"><img src="./for_the_demo/favicons/reddit.png" alt="Reddit" /></a>
+							<a href="<?php echo $item->add_to_segnalo(); ?>" title="Add post to Segnalo"><img src="./for_the_demo/favicons/segnalo.png" alt="Segnalo" /></a>
+							<a href="<?php echo $item->add_to_simpy(); ?>" title="Add post to Simpy"><img src="./for_the_demo/favicons/simpy.png" alt="Simpy" /></a>
+							<a href="<?php echo $item->add_to_spurl(); ?>" title="Add post to Spurl"><img src="./for_the_demo/favicons/spurl.png" alt="Spurl" /></a>
+							<a href="<?php echo $item->add_to_wists(); ?>" title="Add post to Wists"><img src="./for_the_demo/favicons/wists.png" alt="Wists" /></a>
+							<a href="<?php echo $item->search_technorati(); ?>" title="Who's linking to this post?"><img src="./for_the_demo/favicons/technorati.png" alt="Technorati" /></a>
+						</p>
 
 					</div>
 
