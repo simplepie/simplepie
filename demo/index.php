@@ -225,7 +225,7 @@ $feed->handle_content_type();
 						// Let's add a favicon for each item. If one doesn't exist, we'll use an alternate one.
 						if (!$favicon = $feed->get_favicon())
 						{
-							$favicon = './for_the_demo/alternate_favicon.png';
+							$favicon = './for_the_demo/favicons/alternate.png';
 						}
 						?>
 
