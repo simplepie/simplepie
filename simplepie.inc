@@ -6757,6 +6757,14 @@ class SimplePie_HTTP_Parser
 	var $status_code = '';
 
 	/**
+	 * Reason phrase
+	 *
+	 * @access public
+	 * @var string
+	 */
+	var $reason = '';
+
+	/**
 	 * Key/value pairs of the headers
 	 *
 	 * @access public
@@ -6879,40 +6887,9 @@ class SimplePie_HTTP_Parser
 	 */
 	function is_linear_whitespace()
 	{
-		return (bool) (strspn($this->data, "\x09\x20", $this->position, 1) || (substr($this->data, $this->position, 2) == "\r\n" && strspn($this->data, "\x09\x20", $this->position + 2, 1)));
-	}
-
-	/**
-	 * See if the next character is a valid token character
-	 *
-	 * @access private
-	 * @return bool true if the next character is a valid token character, false if not
-	 */
-	function is_token()
-	{
-		return (bool) (strspn($this->data, '!#$%&\'*+-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz|~', $this->position, 1));
-	}
-
-	/**
-	 * See if the next character is allowed in a header value, excluding quotation marks and LWS
-	 *
-	 * @access private
-	 * @return bool true if the next character is allowed in a header value, excluding quotation marks and LWS, false if not
-	 */
-	function is_value_no_quote()
-	{
-		return (bool) (strspn($this->data, '!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~', $this->position, 1));
-	}
-
-	/**
-	 * See if the next character is allowed within quotation marks, excluding LWS
-	 *
-	 * @access private
-	 * @return bool true if the next character is allowed within quotation marks, excluding LWS, false if not
-	 */
-	function is_value_quote()
-	{
-		return (bool) (strcspn($this->data, "\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9\xA\xB\xC\xD\xE\xF\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x1A\x1B\x1C\x1D\x1E\x1F\x22\x5C", $this->position, 1));
+		return (bool) (strspn($this->data, "\x09\x20", $this->position, 1)
+			|| (substr($this->data, $this->position, 2) == "\r\n" && strspn($this->data, "\x09\x20", $this->position + 2, 1))
+			|| (strspn($this->data, "\r\n", $this->position, 1) && strspn($this->data, "\x09\x20", $this->position + 1, 1)));
 	}
 
 	/**
@@ -6932,27 +6909,38 @@ class SimplePie_HTTP_Parser
 	 */
 	function http_version()
 	{
-		if (substr($this->data, $this->position, 5) == 'HTTP/')
+		if (preg_match('/^HTTP\/([0-9]+\.[0-9]+)/i', substr($this->data, $this->position, strcspn($this->data, "\r\n", $this->position)), $match))
 		{
-			$this->position += 5;
-			if ($len = strspn($this->data, '1234567890', $this->position))
-			{
-				$this->http_version = substr($this->data, $this->position, $len);
-				$this->position += $len;
-				if ($this->data[$this->position] == '.')
-				{
-					$this->position++;
-					if ($len = strspn($this->data, '1234567890', $this->position))
-					{
-						$this->http_version .= '.' . substr($this->data, $this->position, $len);
-						$this->position += $len;
-						return true;
-					}
-				}
-			}
+			$this->position += strlen($match[0]);
+			$this->http_version = $match[1];
+			return true;
 		}
-		$this->http_version = '';
-		return false;
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Parse LWS, replacing consecutive characters with a single space
+	 *
+	 * @access private
+	 */
+	function linear_whitespace()
+	{
+		do
+		{
+			if (substr($this->data, $this->position, 2) == "\r\n")
+			{
+				$this->position += 2;
+			}
+			elseif (strspn($this->data, "\r\n", $this->position, 1))
+			{
+				$this->position++;
+			}
+			$this->position += strspn($this->data, "\x09\x20", $this->position);
+		} while ($this->is_linear_whitespace());
+		$this->value .= "\x20";
 	}
 
 	/**
@@ -6980,7 +6968,7 @@ class SimplePie_HTTP_Parser
 	 */
 	function status_code()
 	{
-		if (strspn($this->data, '1234567890', $this->position, 4) == 3)
+		if (strspn($this->data, '1234567890', $this->position, 3) == 3)
 		{
 			$this->status_code = substr($this->data, $this->position, 3);
 			$this->state = 'reason_phrase';
@@ -6999,14 +6987,20 @@ class SimplePie_HTTP_Parser
 	 */
 	function reason_phrase()
 	{
-		if (($pos = strpos($this->data, "\r\n", $this->position)) !== false)
+		$len = strcspn($this->data, "\r\n", $this->position);
+		$this->reason = substr($this->data, $this->position, $len);
+		$this->position += $len;
+		if ($this->has_data())
 		{
-			$this->position = $pos + 2;
+			if (substr($this->data, $this->position, 2) == "\r\n")
+			{
+				$this->position += 2;
+			}
+			elseif (strspn($this->data, "\r\n", $this->position, 1))
+			{
+				$this->position++;
+			}
 			$this->state = 'name';
-		}
-		else
-		{
-			$this->state = false;
 		}
 	}
 
@@ -7017,10 +7011,11 @@ class SimplePie_HTTP_Parser
 	 */
 	function name()
 	{
-		$len = strspn($this->data, '!#$%&\'*+-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz|~', $this->position);
+		$len = strcspn($this->data, ':', $this->position);
 		$this->name = substr($this->data, $this->position, $len);
 		$this->position += $len;
-		if ($this->data[$this->position] == ':')
+
+		if ($this->has_data() && $this->data[$this->position] == ':')
 		{
 			$this->state = 'value_next';
 			$this->position++;
@@ -7038,11 +7033,7 @@ class SimplePie_HTTP_Parser
 	 */
 	function value_next()
 	{
-		if ($this->is_value_no_quote())
-		{
-			$this->state = 'value_no_quote';
-		}
-		elseif ($this->is_linear_whitespace())
+		if ($this->is_linear_whitespace())
 		{
 			$this->state = 'value_linear_whitespace';
 		}
@@ -7056,9 +7047,14 @@ class SimplePie_HTTP_Parser
 			$this->state = 'end_crlf';
 			$this->position += 2;
 		}
+		elseif (strspn($this->data, "\r\n", $this->position, 1))
+		{
+			$this->state = 'end_crlf';
+			$this->position++;
+		}
 		else
 		{
-			$this->state = false;
+			$this->state = 'value_no_quote';
 		}
 	}
 
@@ -7069,28 +7065,20 @@ class SimplePie_HTTP_Parser
 	 */
 	function value_no_quote()
 	{
-		$len = strspn($this->data, '!#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~', $this->position);
+		$len = strcspn($this->data, "\x09\x20\r\n\"", $this->position);
 		$this->value .= substr($this->data, $this->position, $len);
 		$this->state = 'value_next';
 		$this->position += $len;
 	}
 
 	/**
-	 * Parse LWS, replacing consecutive characters with a single space
+	 * Parse LWS outside quotes
 	 *
 	 * @access private
 	 */
 	function value_linear_whitespace()
 	{
-		do
-		{
-			if (substr($this->data, $this->position, 2) == "\r\n")
-			{
-				$this->position += 2;
-			}
-			$this->position += strspn($this->data, "\x09\x20", $this->position);
-		} while ($this->is_linear_whitespace());
-		$this->value .= "\x20";
+		$this->linear_whitespace();
 		$this->state = 'value_next';
 	}
 
@@ -7101,11 +7089,7 @@ class SimplePie_HTTP_Parser
 	 */
 	function value_quote_next()
 	{
-		if ($this->is_value_quote())
-		{
-			$this->state = 'value_quote';
-		}
-		elseif ($this->is_linear_whitespace())
+		if ($this->is_linear_whitespace())
 		{
 			$this->state = 'value_linear_whitespace_quote';
 		}
@@ -7124,7 +7108,7 @@ class SimplePie_HTTP_Parser
 					break;
 
 				default:
-					$this->state = false;
+					$this->state = 'value_quote';
 					break;
 			}
 		}
@@ -7137,7 +7121,7 @@ class SimplePie_HTTP_Parser
 	 */
 	function value_quote()
 	{
-		$len = strcspn($this->data, "\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9\xA\xB\xC\xD\xE\xF\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x1A\x1B\x1C\x1D\x1E\x1F\x22\x5C", $this->position);
+		$len = strcspn($this->data, "\x09\x20\r\n\"\\", $this->position);
 		$this->value .= substr($this->data, $this->position, $len);
 		$this->position += $len;
 		$this->state = 'value_quote_next';
@@ -7150,17 +7134,9 @@ class SimplePie_HTTP_Parser
 	 */
 	function value_quote_char()
 	{
-		$ord = ord($this->data[$this->position]);
-		if ($ord >= 0 && $ord <= 127)
-		{
-			$this->value .= $this->data[$this->position];
-			$this->state = 'value_quote_next';
-			$this->position++;
-		}
-		else
-		{
-			$this->state = false;
-		}
+		$this->value .= $this->data[$this->position];
+		$this->state = 'value_quote_next';
+		$this->position++;
 	}
 
 	/**
@@ -7170,7 +7146,7 @@ class SimplePie_HTTP_Parser
 	 */
 	function value_linear_whitespace_quote()
 	{
-		$this->value_linear_whitespace();
+		$this->linear_whitespace();
 		$this->state = 'value_quote_next';
 	}
 
@@ -7195,6 +7171,11 @@ class SimplePie_HTTP_Parser
 		if (substr($this->data, $this->position, 2) == "\r\n")
 		{
 			$this->body = substr($this->data, $this->position + 2);
+			$this->state = 'emit';
+		}
+		elseif (strspn($this->data, "\r\n", $this->position, 1))
+		{
+			$this->body = substr($this->data, $this->position + 1);
 			$this->state = 'emit';
 		}
 		else
@@ -10393,7 +10374,7 @@ class SimplePie_Sanitize
 					$type |= SIMPLEPIE_CONSTRUCT_TEXT;
 				}
 			}
-			
+
 			if ($type & SIMPLEPIE_CONSTRUCT_BASE64)
 			{
 				$data = base64_decode($data);
