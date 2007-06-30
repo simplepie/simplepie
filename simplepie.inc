@@ -1306,7 +1306,7 @@ class SimplePie
 	 * @since 1.0
 	 * @param array $element_attribute Element/attribute key/value pairs
 	 */
-	function set_url_replacements($element_attribute = array('blockquote' => 'cite', 'ins' => 'cite', 'del' => 'cite', 'a' => 'href', 'q' => 'cite', 'img' => 'src', 'img' => 'longdesc', 'area' => 'href', 'form' => 'action', 'input' => 'src'))
+	function set_url_replacements($element_attribute = array('a' => 'href', 'area' => 'href', 'blockquote' => 'cite', 'del' => 'cite', 'form' => 'action', 'img' => array('longdesc', 'src'), 'input' => 'src', 'ins' => 'cite', 'q' => 'cite'))
 	{
 		$this->sanitize->set_url_replacements($element_attribute);
 	}
@@ -10217,16 +10217,15 @@ class SimplePie_Sanitize
 	var $force_fsockopen = false;
 
 	var $replace_url_attributes = array(
-		'blockquote' => 'cite',
-		'ins' => 'cite',
-		'del' => 'cite',
 		'a' => 'href',
-		'q' => 'cite',
-		'img' => 'src',
-		'img' => 'longdesc',
 		'area' => 'href',
+		'blockquote' => 'cite',
+		'del' => 'cite',
 		'form' => 'action',
+		'img' => array('longdesc', 'src'),
 		'input' => 'src',
+		'ins' => 'cite',
+		'q' => 'cite'
 	);
 
 	function remove_div($enable = true)
@@ -10353,7 +10352,7 @@ class SimplePie_Sanitize
 	 * @since 1.0
 	 * @param array $element_attribute Element/attribute key/value pairs
 	 */
-	function set_url_replacements($element_attribute = array('blockquote' => 'cite', 'ins' => 'cite', 'del' => 'cite', 'a' => 'href', 'q' => 'cite', 'img' => 'src', 'img' => 'longdesc', 'area' => 'href', 'form' => 'action', 'input' => 'src'))
+	function set_url_replacements($element_attribute = array('a' => 'href', 'area' => 'href', 'blockquote' => 'cite', 'del' => 'cite', 'form' => 'action', 'img' => array('longdesc', 'src'), 'input' => 'src', 'ins' => 'cite', 'q' => 'cite'))
 	{
 		$this->replace_url_attributes = (array) $element_attribute;
 	}
@@ -10428,12 +10427,9 @@ class SimplePie_Sanitize
 
 				// Replace relative URLs
 				$this->base = $base;
-				foreach ($this->replace_url_attributes as $element => $attribute)
+				foreach ($this->replace_url_attributes as $element => $attributes)
 				{
-					if ((!is_array($this->strip_htmltags) || !in_array($element, $this->strip_htmltags)) && (!is_array($this->strip_attributes) || !in_array($attribute, $this->strip_attributes)))
-					{
-						$data = $this->replace_urls($data, $element, $attribute);
-					}
+					$data = $this->replace_urls($data, $element, $attributes);
 				}
 
 				// If image handling (caching, etc.) is enabled, cache and rewrite all the image tags.
@@ -10493,15 +10489,32 @@ class SimplePie_Sanitize
 		return $data;
 	}
 
-	function replace_urls($data, $tag, $attribute)
+	function replace_urls($data, $tag, $attributes)
 	{
-		$elements = SimplePie_Misc::get_element($tag, $data);
-		foreach ($elements as $element)
+		if (!is_array($this->strip_htmltags) || !in_array($tag, $this->strip_htmltags))
 		{
-			if (isset($element['attribs'][$attribute]['data']))
+			$elements = SimplePie_Misc::get_element($tag, $data);
+			foreach ($elements as $element)
 			{
-				$element['attribs'][$attribute]['data'] = SimplePie_Misc::absolutize_url($element['attribs'][$attribute]['data'], $this->base);
-				$data = str_replace($element['full'], SimplePie_Misc::element_implode($element), $data);
+				if (is_array($attributes))
+				{
+					foreach ($attributes as $attribute)
+					{
+						if (isset($element['attribs'][$attribute]['data']))
+						{
+							$element['attribs'][$attribute]['data'] = SimplePie_Misc::absolutize_url($element['attribs'][$attribute]['data'], $this->base);
+							$data = str_replace($element['full'], SimplePie_Misc::element_implode($element), $data);
+						}
+					}
+				}
+				else
+				{
+					if (isset($element['attribs'][$attributes]['data']))
+					{
+						$element['attribs'][$attributes]['data'] = SimplePie_Misc::absolutize_url($element['attribs'][$attributes]['data'], $this->base);
+						$data = str_replace($element['full'], SimplePie_Misc::element_implode($element), $data);
+					}
+				}
 			}
 		}
 		return $data;
