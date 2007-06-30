@@ -10386,11 +10386,11 @@ class SimplePie_Sanitize
 			{
 				if (preg_match('/(&(#(x[0-9a-fA-F]+|[0-9]+)|[a-zA-Z0-9]+)|<\/(\w+)' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>)/', $data))
 				{
-					$type &= SIMPLEPIE_CONSTRUCT_HTML;
+					$type |= SIMPLEPIE_CONSTRUCT_HTML;
 				}
 				else
 				{
-					$type &= SIMPLEPIE_CONSTRUCT_TEXT;
+					$type |= SIMPLEPIE_CONSTRUCT_TEXT;
 				}
 			}
 			
