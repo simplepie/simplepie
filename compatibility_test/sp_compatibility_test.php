@@ -31,7 +31,7 @@ function get_curl_version()
 	return $curl;
 }
 
-$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '4.3.2', '>='));
+$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '4.3.0', '>='));
 $xml_ok = extension_loaded('xml');
 $pcre_ok = extension_loaded('pcre');
 $curl_ok = (extension_loaded('curl') && version_compare(get_curl_version(), '7.10.5', '>='));
@@ -212,7 +212,7 @@ function fnLoadPngs() {
 				<tbody>
 					<tr class="<?php echo ($php_ok) ? 'enabled' : 'disabled'; ?>">
 						<td>PHP</td>
-						<td>4.3.2 or higher</td>
+						<td>4.3.0 or higher</td>
 						<td><?php echo phpversion(); ?></td>
 					</tr>
 					<tr class="<?php echo ($xml_ok) ? 'enabled' : 'disabled'; ?>">
