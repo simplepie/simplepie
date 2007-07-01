@@ -9711,7 +9711,7 @@ class SimplePie_Misc
 			}
 		}
 	}
-	
+
 	/**
 	 * Support is_a() on older PHP versions
 	 *
