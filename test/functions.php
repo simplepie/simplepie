@@ -11,7 +11,12 @@ class SimplePie_Unit_Test2_Group extends Unit_Test2_Group
 	
 	function post()
 	{
-		$output = ob_get_clean();
+		$output = ob_get_contents();
+		
+		if ($output !== false)
+		{
+			ob_end_clean();
+		}
 		
 		$passed_percentage = floor($this->passes() / $this->total() * 100);
 		$failed_percentage = ceil($this->fails() / $this->total() * 100);
