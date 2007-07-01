@@ -744,7 +744,7 @@ class SimplePie
 	 */
 	function set_file(&$file)
 	{
-		if (is_a($file, 'SimplePie_File'))
+		if (SimplePie_Misc::is_a($file, 'SimplePie_File'))
 		{
 			$this->feed_url = $file->url;
 			$this->file =& $file;
@@ -1499,7 +1499,7 @@ function embed_wmedia(width, height, link) {
 				// If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
 				if (!isset($file))
 				{
-					if (is_a($this->file, 'SimplePie_File') && $this->file->url == $this->feed_url)
+					if (SimplePie_Misc::is_a($this->file, 'SimplePie_File') && $this->file->url == $this->feed_url)
 					{
 						$file =& $this->file;
 					}
@@ -2680,7 +2680,7 @@ function embed_wmedia(width, height, link) {
 			$items = array();
 			foreach ($urls as $arg)
 			{
-				if (is_a($arg, 'SimplePie'))
+				if (SimplePie_Misc::is_a($arg, 'SimplePie'))
 				{
 					$items = array_merge($items, $arg->get_items());
 				}
@@ -7221,7 +7221,23 @@ class SimplePie_Cache
 	{
 		if (file_exists($this->name) && is_readable($this->name))
 		{
-			return unserialize(file_get_contents($this->name));
+			if (SIMPLEPIE_PHP43)
+			{
+				return unserialize(file_get_contents($this->name));
+			}
+			else
+			{
+				if (($fp = fopen($this->name, 'rb')) !== false)
+				{
+					$data = '';
+					while (!feof($fp))
+					{
+						$data .= fread($fp, 8192);
+					}
+					fclose($fp);
+					return unserialize($data);
+				}
+			}
 		}
 		return false;
 	}
@@ -9653,6 +9669,8 @@ class SimplePie_Misc
 	/**
 	 * Converts a unicode codepoint to a UTF-8 character
 	 *
+	 * @static
+	 * @access public
 	 * @param int $codepoint Unicode codepoint
 	 * @return string UTF-8 character
 	 */
@@ -9693,6 +9711,35 @@ class SimplePie_Misc
 			}
 		}
 	}
+	
+	/**
+	 * Support is_a() on older PHP versions
+	 *
+	 * @static
+	 * @access public
+	 * @param object $object The tested object
+	 * @param string $class_name The class name
+	 * @return bool Returns true if the object is of this class or has this class as one of its parents, false otherwise
+	 */
+	 function is_a($object, $class_name)
+	 {
+	 	if (function_exists('is_a'))
+	 	{
+	 		return is_a($object, $class_name);
+	 	}
+	 	elseif (!is_object($object))
+	 	{
+	 		return false;
+	 	}
+	 	elseif (get_class($object) == strtolower($class_name))
+	 	{
+	 		return true;
+	 	}
+	 	else
+	 	{
+	 		return is_subclass_of($object, $class_name);
+	 	}
+	 }
 }
 
 /**
