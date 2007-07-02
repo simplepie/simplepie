@@ -1618,11 +1618,8 @@ function embed_wmedia(width, height, link) {
 				$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 			}
 
-			// Strip illegal characters (if on less than PHP5, as on PHP5's XML extension can manage fine, thereby breaking the XML spec)
-			if (!SIMPLEPIE_PHP5)
-			{
-				$data = SimplePie_Misc::utf8_bad_replace($data);
-			}
+			// Strip illegal characters
+			$data = SimplePie_Misc::utf8_bad_replace($data);
 
 			$parser =& new $this->parser_class();
 			$parser->pre_process($data, 'UTF-8');
@@ -3094,6 +3091,7 @@ class SimplePie_Item
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
+
 			if (!empty($this->data['date']['raw']))
 			{
 				$this->data['date']['parsed'] = SimplePie_Misc::parse_date($this->data['date']['raw']);
@@ -3117,6 +3115,10 @@ class SimplePie_Item
 				default:
 					return date($date_format, $this->data['date']['parsed']);
 			}
+		}
+		else
+		{
+			return null;
 		}
 	}
 
