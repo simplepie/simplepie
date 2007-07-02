@@ -328,35 +328,10 @@ define('SIMPLEPIE_NAMESPACE_XHTML', 'http://www.w3.org/1999/xhtml');
  */
 define('SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY', 'http://www.iana.org/assignments/relation/');
 
-if (version_compare(PHP_VERSION, '5.0.0', '>='))
-{
-	/**
-	 * We're running on PHP5
-	 */
-	define('SIMPLEPIE_PHP5', true);
-}
-else
-{
-	/**
-	 * We're not running on PHP5
-	 */
-	define('SIMPLEPIE_PHP5', false);
-}
-
-if (version_compare(PHP_VERSION, '4.3.0', '>='))
-{
-	/**
-	 * We're running on PHP4.3
-	 */
-	define('SIMPLEPIE_PHP43', true);
-}
-else
-{
-	/**
-	 * We're not running on PHP4.3
-	 */
-	define('SIMPLEPIE_PHP43', false);
-}
+/**
+ * Whether we're running on PHP5
+ */
+define('SIMPLEPIE_PHP5', version_compare(PHP_VERSION, '5.0.0', '>='));
 
 /**
  * SimplePie
@@ -1603,7 +1578,7 @@ function embed_wmedia(width, height, link) {
 			{
 				$encoding = 'US-ASCII';
 			}
-			elseif (isset($headers['content-type']) && preg_match('/^text\//i', SimplePie_Misc::parse_mime($headers['content-type'])))
+			elseif (isset($headers['content-type']) && SimplePie_Misc::stripos(SimplePie_Misc::parse_mime($headers['content-type']), 'text/') === 0)
 			{
 				$encoding = 'ISO-8859-1';
 			}
@@ -6622,7 +6597,7 @@ class SimplePie_File
 				}
 				else
 				{
-					if (SIMPLEPIE_PHP43)
+					if (function_exists('stream_set_timeout'))
 					{
 						stream_set_timeout($fp, $timeout);
 					}
@@ -6650,7 +6625,7 @@ class SimplePie_File
 					$out .= "Connection: Close\r\n\r\n";
 					fwrite($fp, $out);
 
-					if (SIMPLEPIE_PHP43)
+					if (function_exists('stream_get_meta_data'))
 					{
 						$info = stream_get_meta_data($fp);
 					}
@@ -6663,7 +6638,7 @@ class SimplePie_File
 					while (!$info['eof'] && !$info['timed_out'])
 					{
 						$this->headers .= fread($fp, 1160);
-						if (SIMPLEPIE_PHP43)
+						if (function_exists('stream_get_meta_data'))
 						{
 							$info = stream_get_meta_data($fp);
 						}
@@ -6704,7 +6679,7 @@ class SimplePie_File
 				}
 			}
 		}
-		elseif (SIMPLEPIE_PHP43)
+		elseif (function_exists('file_get_contents'))
 		{
 			$this->method = 'file_get_contents';
 			if (!$this->body = file_get_contents($url))
@@ -7223,7 +7198,7 @@ class SimplePie_Cache
 	{
 		if (file_exists($this->name) && is_readable($this->name))
 		{
-			if (SIMPLEPIE_PHP43)
+			if (function_exists('file_get_contents'))
 			{
 				return unserialize(file_get_contents($this->name));
 			}
@@ -9715,7 +9690,7 @@ class SimplePie_Misc
 	}
 
 	/**
-	 * Support is_a() on older PHP versions
+	 * Re-implementation of PHP 4.2.0's is_a()
 	 *
 	 * @static
 	 * @access public
@@ -9740,6 +9715,49 @@ class SimplePie_Misc
 	 	else
 	 	{
 	 		return is_subclass_of($object, $class_name);
+	 	}
+	 }
+
+	/**
+	 * Re-implementation of PHP 5's stripos()
+	 *
+	 * Returns the numeric position of the first occurrence of needle in the
+	 * haystack string.
+	 *
+	 * @static
+	 * @access string
+	 * @param object $haystack
+	 * @param string $needle Note that the needle may be a string of one or more
+	 *     characters. If needle is not a string, it is converted to an integer
+	 *     and applied as the ordinal value of a character.
+	 * @param int $offset The optional offset parameter allows you to specify which
+	 *     character in haystack to start searching. The position returned is still
+	 *     relative to the beginning of haystack.
+	 * @return bool If needle is not found, stripos() will return boolean false.
+	 */
+	 function stripos($haystack, $needle, $offset = 0)
+	 {
+	 	if (function_exists('stripos'))
+	 	{
+	 		return stripos($haystack, $needle, $offset);
+	 	}
+	 	else
+	 	{
+	 		if (is_string($needle))
+	 		{
+	 			$needle = strtolower($needle);
+	 		}
+	 		elseif (is_int($needle) || is_bool($needle) || is_double($needle))
+	 		{
+	 			$needle = strtolower(chr($needle));
+	 		}
+	 		else
+	 		{
+	 			trigger_error('needle is not a string or an integer', E_USER_WARNING);
+	 			return false;
+	 		}
+	 		
+	 		return strpos(strtolower($haystack), $needle, $offset);
 	 	}
 	 }
 }
