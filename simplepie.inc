@@ -52,13 +52,15 @@ define('SIMPLEPIE_NAME', 'SimplePie');
 /**
  * SimplePie Version
  */
-define('SIMPLEPIE_VERSION', 'Razzleberry++');
+//define('SIMPLEPIE_VERSION', 'Razzleberry++');
+define('SIMPLEPIE_VERSION', '1.0');
 
 /**
  * SimplePie Build
  * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
  */
-define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date('$Date$')));
+//define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date('$Date$')));
+define('SIMPLEPIE_BUILD', '20070702060436');
 
 /**
  * SimplePie Website URL
@@ -1618,11 +1620,8 @@ function embed_wmedia(width, height, link) {
 				$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
 			}
 
-			// Strip illegal characters (if on less than PHP5, as on PHP5's XML extension can manage fine, thereby breaking the XML spec)
-			if (!SIMPLEPIE_PHP5)
-			{
-				$data = SimplePie_Misc::utf8_bad_replace($data);
-			}
+			// Strip illegal characters
+			$data = SimplePie_Misc::utf8_bad_replace($data);
 
 			$parser =& new $this->parser_class();
 			$parser->pre_process($data, 'UTF-8');
@@ -3094,6 +3093,7 @@ class SimplePie_Item
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
+
 			if (!empty($this->data['date']['raw']))
 			{
 				$this->data['date']['parsed'] = SimplePie_Misc::parse_date($this->data['date']['raw']);
@@ -3117,6 +3117,10 @@ class SimplePie_Item
 				default:
 					return date($date_format, $this->data['date']['parsed']);
 			}
+		}
+		else
+		{
+			return null;
 		}
 	}
 
@@ -5998,11 +6002,11 @@ class SimplePie_Enclosure
 			$height += 20;
 			if ($native)
 			{
-				$embed .= "<embed src=\"$mediaplayer\" pluginspage=\"http://adobe.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link().'&file_extension=.'.$this->get_extension()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
+				$embed .= "<embed src=\"$mediaplayer\" pluginspage=\"http://adobe.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" quality=\"high\" width=\"$width\" height=\"$height\" wmode=\"transparent\" flashvars=\"file=" . rawurlencode($this->get_link().'?file_extension=.'.$this->get_extension()) . "&autostart=false&repeat=$loop&showdigits=true&showfsbutton=false\"></embed>";
 			}
 			else
 			{
-				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link().'&file_extension=.'.$this->get_extension()) . "', '$placeholder', '$loop', '$mediaplayer');</script>";
+				$embed .= "<script type='text/javascript'>embed_flv('$width', '$height', '" . rawurlencode($this->get_link().'?file_extension=.'.$this->get_extension()) . "', '$placeholder', '$loop', '$mediaplayer');</script>";
 			}
 		}
 
