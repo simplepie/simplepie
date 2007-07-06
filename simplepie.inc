@@ -9090,6 +9090,12 @@ class SimplePie_Misc
 			*/
 			if (preg_match('/(?:(([0-9]{1,2})\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*([0-9]{4}|[0-9]{2}))|(([0-9]{2})(?:([0-9]{2})(?:(?:-|\s)*(?:([0-9]{2})([0-9]{2})|([0-9]{3})|([0-9]{2})(?:(?:-|\s)*([0-9]{2}))?|W([0-9]{2})(?:(?:-|\s)*([0-9]))?))?)?))((?:T|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*([0-9]{2})(?:(?:,|\.)([0-9]*))?)?)?(?:\s)*((?:(\+|-)([0-9]{2})(?:(?:,|\.)([0-9]*)|(?:\:|\s)*(?:([0-9]{2})(?:(?:,|\.)([0-9]*))?))?)|(UTC|GMT|EST|CST|MST|PST|EDT|CDT|MDT|PDT|UT|[A-IK-Z]))?)?/i', $dt, $match))
 			{
+				// Fill all matches
+				for ($i = count($match); $i <= 28; $i++)
+				{
+					$match[$i] = '';
+				}
+				
 				// Set blank vars
 				$year = 1970;
 				$month = 1;
@@ -9166,38 +9172,38 @@ class SimplePie_Misc
 				else
 				{
 					// Year
-					if (isset($match[7]) && $match[7] !== '')
+					if ($match[7] !== '')
 					{
 						$year = "$match[6]$match[7]";
 
 						// Two Digit Month/Day
-						if (isset($match[11]) !== '')
+						if ($match[11] !== '')
 						{
 							$month = $match[11];
-							if (isset($match[12]) && $match[12] !== '')
+							if ($match[12] !== '')
 							{
 								$day = $match[12];
 							}
 						}
 
 						// Four Digit Month/Day
-						elseif (isset($match[8]) && $match[8] !== '')
+						elseif ($match[8] !== '')
 						{
 							$month = $match[8];
 							$day = $match[9];
 						}
 
 						// Ordinal Day
-						elseif (isset($match[10]) !== '')
+						elseif ($match[10] !== '')
 						{
 							$day = $match[10];
 						}
 
 						// Week Date
-						elseif (isset($match[13]) && $match[13] !== '')
+						elseif ($match[13] !== '')
 						{
 							// Week Day
-							if (isset($match[14]) && $match[14] !== '')
+							if ($match[14] !== '')
 							{
 								$day = $match[14];
 							}
@@ -9217,16 +9223,8 @@ class SimplePie_Misc
 					}
 				}
 				// Time
-				if (isset($match[15]) && $match[15] !== '')
+				if ($match[15] !== '')
 				{
-					for ($i = count($match); $i <= 21; $i++)
-					{
-						if (!isset($match[$i]))
-						{
-							$match[$i] = '';
-						}
-					}
-
 					$time = 0;
 					$time += ($match[16] + ('.' . $match[17])) * 3600;
 					$time += ($match[18] + ('.' . $match[19])) * 60;
@@ -9319,14 +9317,6 @@ class SimplePie_Misc
 						// Timezone difference from UTC
 						else
 						{
-							for ($i = count($match); $i <= 27; $i++)
-							{
-								if (!isset($match[$i]))
-								{
-									$match[$i] = '';
-								}
-							}
-
 							$timezone = 0;
 							$timezone += ($match[24] + ('.' . $match[25])) * 3600;
 							$timezone += ($match[26] + ('.' . $match[27])) * 60;
