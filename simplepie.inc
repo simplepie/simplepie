@@ -7131,12 +7131,19 @@ class SimplePie_Cache
 	{
 		if (file_exists($this->name) && is_writeable($this->name) || file_exists($this->location) && is_writeable($this->location))
 		{
-			$fp = fopen($this->name, 'w');
-			if ($fp)
+			if (function_exists('file_put_contents'))
 			{
-				fwrite($fp, serialize($data));
-				fclose($fp);
-				return true;
+				return (bool) file_put_contents($this->name, serialize($data));
+			}
+			else
+			{
+				$fp = fopen($this->name, 'w');
+				if ($fp)
+				{
+					fwrite($fp, serialize($data));
+					fclose($fp);
+					return true;
+				}
 			}
 		}
 		return false;
