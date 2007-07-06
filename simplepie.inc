@@ -1908,10 +1908,10 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($this->subscribe_url())
 		{
-			$return = $feed_url . rawurlencode($this->subscribe_url());
+			$return = $this->sanitize($feed_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->subscribe_url());
 			if ($site_url !== null && $this->get_link() !== null)
 			{
-				$return .= $site_url . rawurlencode($this->get_link());
+				$return .= $this->sanitize($site_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_link());
 			}
 			return $return;
 		}
@@ -1943,7 +1943,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_feedster()
 	{
-		return $this->subscribe_service('http://www.feedster.com/myfeedster.php?action=addrss&amp;confirm=no&amp;rssurl=');
+		return $this->subscribe_service('http://www.feedster.com/myfeedster.php?action=addrss&confirm=no&rssurl=');
 	}
 
 	function subscribe_google()
@@ -1958,7 +1958,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_msn()
 	{
-		return $this->subscribe_service('http://my.msn.com/addtomymsn.armx?id=rss&amp;ut=', '&amp;ru=');
+		return $this->subscribe_service('http://my.msn.com/addtomymsn.armx?id=rss&ut=', '&ru=');
 	}
 
 	function subscribe_netvibes()
@@ -1983,7 +1983,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_podnova()
 	{
-		return $this->subscribe_service('http://www.podnova.com/index_your_podcasts.srf?action=add&amp;url=');
+		return $this->subscribe_service('http://www.podnova.com/index_your_podcasts.srf?action=add&url=');
 	}
 
 	function subscribe_rojo()
@@ -4996,19 +4996,19 @@ class SimplePie_Item
 	 * Creates the add_to_* methods' return data
 	 *
 	 * @access private
-	 * @param string $feed_url String to prefix to the item permalink
+	 * @param string $item_url String to prefix to the item permalink
 	 * @param string $title_url String to prefix to the item title
 	 * (and suffix to the item permalink)
 	 * @return mixed URL if feed exists, false otherwise
 	 */
-	function add_to_service($feed_url, $title_url = null)
+	function add_to_service($item_url, $title_url = null)
 	{
 		if ($this->get_permalink() !== null)
 		{
-			$return = $feed_url . rawurlencode($this->get_permalink());
+			$return = $this->sanitize($item_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_permalink());
 			if ($title_url !== null && $this->get_title() !== null)
 			{
-				$return .= $title_url . rawurlencode($this->get_title());
+				$return .= $this->sanitize($title_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_title());
 			}
 			return $return;
 		}
@@ -5020,67 +5020,67 @@ class SimplePie_Item
 
 	function add_to_blinklist()
 	{
-		return $this->add_to_service('http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=', '&amp;Title=');
+		return $this->add_to_service('http://www.blinklist.com/index.php?Action=Blink/addblink.php&Description=&Url=', '&Title=');
 	}
 
 	function add_to_blogmarks()
 	{
-		return $this->add_to_service('http://blogmarks.net/my/new.php?mini=1&amp;simple=1&amp;url=', '&amp;title=');
+		return $this->add_to_service('http://blogmarks.net/my/new.php?mini=1&simple=1&url=', '&title=');
 	}
 
 	function add_to_delicious()
 	{
-		return $this->add_to_service('http://del.icio.us/post/?v=3&amp;url=', '&amp;title=');
+		return $this->add_to_service('http://del.icio.us/post/?v=3&url=', '&title=');
 	}
 
 	function add_to_digg()
 	{
-		return $this->add_to_service('http://digg.com/submit?phase=2&amp;URL=');
+		return $this->add_to_service('http://digg.com/submit?phase=2&URL=');
 	}
 
 	function add_to_furl()
 	{
-		return $this->add_to_service('http://www.furl.net/storeIt.jsp?u=', '&amp;t=');
+		return $this->add_to_service('http://www.furl.net/storeIt.jsp?u=', '&t=');
 	}
 
 	function add_to_magnolia()
 	{
-		return $this->add_to_service('http://ma.gnolia.com/bookmarklet/add?url=', '&amp;title=');
+		return $this->add_to_service('http://ma.gnolia.com/bookmarklet/add?url=', '&title=');
 	}
 
 	function add_to_myweb20()
 	{
-		return $this->add_to_service('http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&amp;t=');
+		return $this->add_to_service('http://myweb2.search.yahoo.com/myresults/bookmarklet?u=', '&t=');
 	}
 
 	function add_to_newsvine()
 	{
-		return $this->add_to_service('http://www.newsvine.com/_wine/save?u=', '&amp;h=');
+		return $this->add_to_service('http://www.newsvine.com/_wine/save?u=', '&h=');
 	}
 
 	function add_to_reddit()
 	{
-		return $this->add_to_service('http://reddit.com/submit?url=', '&amp;title=');
+		return $this->add_to_service('http://reddit.com/submit?url=', '&title=');
 	}
 
 	function add_to_segnalo()
 	{
-		return $this->add_to_service('http://segnalo.com/post.html.php?url=', '&amp;title=');
+		return $this->add_to_service('http://segnalo.com/post.html.php?url=', '&title=');
 	}
 
 	function add_to_simpy()
 	{
-		return $this->add_to_service('http://www.simpy.com/simpy/LinkAdd.do?href=', '&amp;title=');
+		return $this->add_to_service('http://www.simpy.com/simpy/LinkAdd.do?href=', '&title=');
 	}
 
 	function add_to_spurl()
 	{
-		return $this->add_to_service('http://www.spurl.net/spurl.php?v=3&amp;url=', '&amp;title=');
+		return $this->add_to_service('http://www.spurl.net/spurl.php?v=3&url=', '&title=');
 	}
 
 	function add_to_wists()
 	{
-		return $this->add_to_service('http://wists.com/r.php?c=&amp;r=', '&amp;title=');
+		return $this->add_to_service('http://wists.com/r.php?c=&r=', '&title=');
 	}
 
 	function search_technorati()
@@ -7598,7 +7598,11 @@ class SimplePie_Misc
 		}
 		elseif (preg_match_all('/([\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})/', $str, $matches))
 		{
-			return implode('', $matches[0]);
+			return implode("\xEF\xBF\xBD", $matches[0]);
+		}
+		elseif ($str !== '')
+		{
+			return "\xEF\xBF\xBD";
 		}
 		else
 		{
