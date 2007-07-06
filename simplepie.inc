@@ -41,7 +41,6 @@
  * @link http://simplepie.org/support/ Please submit all bug reports and feature requests to the SimplePie forums
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  * @todo phpDoc comments
- * @todo Check all regular expressions
  */
 
 /**
@@ -7652,6 +7651,7 @@ class SimplePie_Misc
 			case 'CP367':
 			case 'CSASCII':
 				return 'US-ASCII';
+
 			case 'ISO_8859-1:1987':
 			case 'ISO-IR-100':
 			case 'ISO_8859-1':
@@ -9689,7 +9689,7 @@ class SimplePie_Misc
 	 			trigger_error('needle is not a string or an integer', E_USER_WARNING);
 	 			return false;
 	 		}
-	 		
+	 
 	 		return strpos(strtolower($haystack), $needle, $offset);
 	 	}
 	 }
