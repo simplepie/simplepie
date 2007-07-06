@@ -5096,7 +5096,7 @@ class SimplePie_Author
 	var $email;
 
 	// Constructor, used to input the data
-	function SimplePie_Author($name, $link, $email)
+	function SimplePie_Author($name = null, $link = null, $email = null)
 	{
 		$this->name = $name;
 		$this->link = $link;
@@ -5110,7 +5110,7 @@ class SimplePie_Author
 
 	function get_name()
 	{
-		if (!empty($this->name))
+		if ($this->name !== null)
 		{
 			return $this->name;
 		}
@@ -5122,7 +5122,7 @@ class SimplePie_Author
 
 	function get_link()
 	{
-		if (!empty($this->link))
+		if ($this->link !== null)
 		{
 			return $this->link;
 		}
@@ -5134,7 +5134,7 @@ class SimplePie_Author
 
 	function get_email()
 	{
-		if (!empty($this->email))
+		if ($this->email !== null)
 		{
 			return $this->email;
 		}
@@ -5152,7 +5152,7 @@ class SimplePie_Category
 	var $label;
 
 	// Constructor, used to input the data
-	function SimplePie_Category($term, $scheme, $label)
+	function SimplePie_Category($term = null, $scheme = null, $label = null)
 	{
 		$this->term = $term;
 		$this->scheme = $scheme;
@@ -5276,7 +5276,7 @@ class SimplePie_Enclosure
 
 	function get_bitrate()
 	{
-		if (!empty($this->bitrate))
+		if ($this->bitrate !== null)
 		{
 			return $this->bitrate;
 		}
@@ -5301,7 +5301,7 @@ class SimplePie_Enclosure
 
 	function get_captions()
 	{
-		if (!empty($this->captions))
+		if ($this->captions !== null)
 		{
 			return $this->captions;
 		}
@@ -5326,7 +5326,7 @@ class SimplePie_Enclosure
 
 	function get_categories()
 	{
-		if (!empty($this->categories))
+		if ($this->categories !== null)
 		{
 			return $this->categories;
 		}
@@ -5338,7 +5338,7 @@ class SimplePie_Enclosure
 
 	function get_channels()
 	{
-		if (!empty($this->channels))
+		if ($this->channels !== null)
 		{
 			return $this->channels;
 		}
@@ -5350,7 +5350,7 @@ class SimplePie_Enclosure
 
 	function get_copyright()
 	{
-		if (!empty($this->copyright))
+		if ($this->copyright !== null)
 		{
 			return $this->copyright;
 		}
@@ -5375,7 +5375,7 @@ class SimplePie_Enclosure
 
 	function get_credits()
 	{
-		if (!empty($this->credits))
+		if ($this->credits !== null)
 		{
 			return $this->credits;
 		}
@@ -5387,7 +5387,7 @@ class SimplePie_Enclosure
 
 	function get_description()
 	{
-		if (!empty($this->description))
+		if ($this->description !== null)
 		{
 			return $this->description;
 		}
@@ -5399,7 +5399,7 @@ class SimplePie_Enclosure
 
 	function get_duration($convert = false)
 	{
-		if (!empty($this->duration))
+		if ($this->duration !== null)
 		{
 			if ($convert)
 			{
@@ -5419,7 +5419,7 @@ class SimplePie_Enclosure
 
 	function get_expression()
 	{
-		if (!empty($this->expression))
+		if ($this->expression !== null)
 		{
 			return $this->expression;
 		}
@@ -5431,10 +5431,10 @@ class SimplePie_Enclosure
 
 	function get_extension()
 	{
-		if (!empty($this->link))
+		if ($this->link !== null)
 		{
-			$url = parse_url($this->link);
-			if (!empty($url['path']))
+			$url = SimplePie_Misc::parse_url($this->link);
+			if ($url['path'] !== '')
 			{
 				return pathinfo($url['path'], PATHINFO_EXTENSION);
 			}
@@ -5444,7 +5444,7 @@ class SimplePie_Enclosure
 
 	function get_framerate()
 	{
-		if (!empty($this->framerate))
+		if ($this->framerate !== null)
 		{
 			return $this->framerate;
 		}
@@ -5474,7 +5474,7 @@ class SimplePie_Enclosure
 
 	function get_hashes()
 	{
-		if (!empty($this->hashes))
+		if ($this->hashes !== null)
 		{
 			return $this->hashes;
 		}
@@ -5486,7 +5486,7 @@ class SimplePie_Enclosure
 
 	function get_height()
 	{
-		if (!empty($this->height))
+		if ($this->height !== null)
 		{
 			return $this->height;
 		}
@@ -5498,7 +5498,7 @@ class SimplePie_Enclosure
 
 	function get_language()
 	{
-		if (!empty($this->lang))
+		if ($this->lang !== null)
 		{
 			return $this->lang;
 		}
@@ -5523,7 +5523,7 @@ class SimplePie_Enclosure
 
 	function get_keywords()
 	{
-		if (!empty($this->keywords))
+		if ($this->keywords !== null)
 		{
 			return $this->keywords;
 		}
@@ -5535,7 +5535,7 @@ class SimplePie_Enclosure
 
 	function get_length()
 	{
-		if (!empty($this->length))
+		if ($this->length !== null)
 		{
 			return $this->length;
 		}
@@ -5547,7 +5547,7 @@ class SimplePie_Enclosure
 
 	function get_link()
 	{
-		if (!empty($this->link))
+		if ($this->link !== null)
 		{
 			return urldecode($this->link);
 		}
@@ -5559,7 +5559,7 @@ class SimplePie_Enclosure
 
 	function get_medium()
 	{
-		if (!empty($this->medium))
+		if ($this->medium !== null)
 		{
 			return $this->medium;
 		}
@@ -5571,7 +5571,7 @@ class SimplePie_Enclosure
 
 	function get_player()
 	{
-		if (!empty($this->player))
+		if ($this->player !== null)
 		{
 			return $this->player;
 		}
@@ -5596,7 +5596,7 @@ class SimplePie_Enclosure
 
 	function get_ratings()
 	{
-		if (!empty($this->ratings))
+		if ($this->ratings !== null)
 		{
 			return $this->ratings;
 		}
@@ -5621,7 +5621,7 @@ class SimplePie_Enclosure
 
 	function get_restrictions()
 	{
-		if (!empty($this->restrictions))
+		if ($this->restrictions !== null)
 		{
 			return $this->restrictions;
 		}
@@ -5633,7 +5633,7 @@ class SimplePie_Enclosure
 
 	function get_sampling_rate()
 	{
-		if (!empty($this->samplingrate))
+		if ($this->samplingrate !== null)
 		{
 			return $this->samplingrate;
 		}
@@ -5646,7 +5646,7 @@ class SimplePie_Enclosure
 	function get_size()
 	{
 		$length = $this->get_length();
-		if (!empty($length))
+		if ($length !== null)
 		{
 			return round($length/1048576, 2);
 		}
@@ -5671,7 +5671,7 @@ class SimplePie_Enclosure
 
 	function get_thumbnails()
 	{
-		if (!empty($this->thumbnails))
+		if ($this->thumbnails !== null)
 		{
 			return $this->thumbnails;
 		}
@@ -5683,7 +5683,7 @@ class SimplePie_Enclosure
 
 	function get_title()
 	{
-		if (!empty($this->title))
+		if ($this->title !== null)
 		{
 			return $this->title;
 		}
@@ -5695,7 +5695,7 @@ class SimplePie_Enclosure
 
 	function get_type()
 	{
-		if (!empty($this->type))
+		if ($this->type !== null)
 		{
 			return $this->type;
 		}
@@ -5707,7 +5707,7 @@ class SimplePie_Enclosure
 
 	function get_width()
 	{
-		if (!empty($this->width))
+		if ($this->width !== null)
 		{
 			return $this->width;
 		}
@@ -5986,7 +5986,7 @@ class SimplePie_Enclosure
 		$types_wmedia = array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx'); // Windows Media
 		$types_mp3 = array('audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg'); // MP3
 
-		if (!empty($this->type))
+		if ($this->get_type() !== null)
 		{
 			$type = strtolower($this->type);
 		}
@@ -6178,7 +6178,7 @@ class SimplePie_Caption
 
 	function get_endtime()
 	{
-		if (!empty($this->endTime))
+		if ($this->endTime !== null)
 		{
 			return $this->endTime;
 		}
@@ -6190,7 +6190,7 @@ class SimplePie_Caption
 
 	function get_language()
 	{
-		if (!empty($this->language))
+		if ($this->language !== null)
 		{
 			return $this->language;
 		}
@@ -6202,7 +6202,7 @@ class SimplePie_Caption
 
 	function get_starttime()
 	{
-		if (!empty($this->startTime))
+		if ($this->startTime !== null)
 		{
 			return $this->startTime;
 		}
@@ -6214,7 +6214,7 @@ class SimplePie_Caption
 
 	function get_text()
 	{
-		if (!empty($this->text))
+		if ($this->text !== null)
 		{
 			return $this->text;
 		}
@@ -6226,7 +6226,7 @@ class SimplePie_Caption
 
 	function get_type()
 	{
-		if (!empty($this->type))
+		if ($this->type !== null)
 		{
 			return $this->type;
 		}
@@ -6258,7 +6258,7 @@ class SimplePie_Credit
 
 	function get_role()
 	{
-		if (!empty($this->role))
+		if ($this->role !== null)
 		{
 			return $this->role;
 		}
@@ -6270,7 +6270,7 @@ class SimplePie_Credit
 
 	function get_scheme()
 	{
-		if (!empty($this->scheme))
+		if ($this->scheme !== null)
 		{
 			return $this->scheme;
 		}
@@ -6282,7 +6282,7 @@ class SimplePie_Credit
 
 	function get_name()
 	{
-		if (!empty($this->name))
+		if ($this->name !== null)
 		{
 			return $this->name;
 		}
@@ -6312,7 +6312,7 @@ class SimplePie_Copyright
 
 	function get_url()
 	{
-		if (!empty($this->url))
+		if ($this->url !== null)
 		{
 			return $this->url;
 		}
@@ -6324,7 +6324,7 @@ class SimplePie_Copyright
 
 	function get_attribution()
 	{
-		if (!empty($this->label))
+		if ($this->label !== null)
 		{
 			return $this->label;
 		}
@@ -6354,7 +6354,7 @@ class SimplePie_Rating
 
 	function get_scheme()
 	{
-		if (!empty($this->scheme))
+		if ($this->scheme !== null)
 		{
 			return $this->scheme;
 		}
@@ -6366,7 +6366,7 @@ class SimplePie_Rating
 
 	function get_value()
 	{
-		if (!empty($this->value))
+		if ($this->value !== null)
 		{
 			return $this->value;
 		}
@@ -6398,7 +6398,7 @@ class SimplePie_Restriction
 
 	function get_relationship()
 	{
-		if (!empty($this->relationship))
+		if ($this->relationship !== null)
 		{
 			return $this->relationship;
 		}
@@ -6410,7 +6410,7 @@ class SimplePie_Restriction
 
 	function get_type()
 	{
-		if (!empty($this->type))
+		if ($this->type !== null)
 		{
 			return $this->type;
 		}
@@ -6422,7 +6422,7 @@ class SimplePie_Restriction
 
 	function get_value()
 	{
-		if (!empty($this->value))
+		if ($this->value !== null)
 		{
 			return $this->value;
 		}
@@ -9100,7 +9100,7 @@ class SimplePie_Misc
 				$timezone = false;
 
 				// RFC 822
-				if (!empty($match[1]))
+				if ($match[1] !== '')
 				{
 					if (strlen($match[4]) == 2)
 					{
@@ -9166,38 +9166,38 @@ class SimplePie_Misc
 				else
 				{
 					// Year
-					if (!empty($match[7]))
+					if (isset($match[7]) && $match[7] !== '')
 					{
 						$year = "$match[6]$match[7]";
 
 						// Two Digit Month/Day
-						if (!empty($match[11]))
+						if (isset($match[11]) !== '')
 						{
 							$month = $match[11];
-							if (!empty($match[12]))
+							if (isset($match[12]) && $match[12] !== '')
 							{
 								$day = $match[12];
 							}
 						}
 
 						// Four Digit Month/Day
-						elseif (!empty($match[8]))
+						elseif (isset($match[8]) && $match[8] !== '')
 						{
 							$month = $match[8];
 							$day = $match[9];
 						}
 
 						// Ordinal Day
-						elseif (!empty($match[10]))
+						elseif (isset($match[10]) !== '')
 						{
 							$day = $match[10];
 						}
 
 						// Week Date
-						elseif (!empty($match[13]))
+						elseif (isset($match[13]) && $match[13] !== '')
 						{
 							// Week Day
-							if (!empty($match[14]))
+							if (isset($match[14]) && $match[14] !== '')
 							{
 								$day = $match[14];
 							}
@@ -9217,7 +9217,7 @@ class SimplePie_Misc
 					}
 				}
 				// Time
-				if (!empty($match[15]))
+				if (isset($match[15]) && $match[15] !== '')
 				{
 					for ($i = count($match); $i <= 21; $i++)
 					{
@@ -9238,10 +9238,10 @@ class SimplePie_Misc
 					$second = round($time);
 
 					// Timezone
-					if (!empty($match[22]))
+					if ($match[22] !== '')
 					{
 						// Alphabetic Timezone
-						if (!empty($match[28]))
+						if ($match[28] !== '')
 						{
 							// Military
 							if (strlen($match[28]) == 1)
@@ -10010,7 +10010,7 @@ class SimplePie_Locator
 			{
 				break;
 			}
-			if (!empty($link['attribs']['href']['data']) && !empty($link['attribs']['rel']['data']))
+			if (isset($link['attribs']['href']['data']) && isset($link['attribs']['rel']['data']))
 			{
 				$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link['attribs']['rel']['data'])));
 
@@ -10043,11 +10043,11 @@ class SimplePie_Locator
 		$links = SimplePie_Misc::get_element('a', $this->file->body);
 		foreach ($links as $link)
 		{
-			if (!empty($link['attribs']['href']['data']))
+			if (isset($link['attribs']['href']['data']))
 			{
 				$href = trim($link['attribs']['href']['data']);
 				$parsed = SimplePie_Misc::parse_url($href);
-				if (empty($parsed['scheme']) || preg_match('/^(http(s)|feed)?$/i', $parsed['scheme']))
+				if ($parsed['scheme'] === '' || preg_match('/^(http(s)|feed)?$/i', $parsed['scheme']))
 				{
 					if ($this->base_location < $link['offset'])
 					{
@@ -10060,7 +10060,7 @@ class SimplePie_Locator
 
 					$current = SimplePie_Misc::parse_url($this->file->url);
 
-					if (empty($parsed['authority']) || $parsed['authority'] == $current['authority'])
+					if ($parsed['authority'] === '' || $parsed['authority'] == $current['authority'])
 					{
 						$this->local[] = $href;
 					}
@@ -10639,12 +10639,12 @@ class SimplePie_Sanitize
 				}
 
 				// If image handling (caching, etc.) is enabled, cache and rewrite all the image tags.
-				if (isset($this->image_handler) && !empty($this->image_handler) && $this->enable_cache)
+				if (isset($this->image_handler) && ((string) $this->image_handler) !== '' && $this->enable_cache)
 				{
 					$images = SimplePie_Misc::get_element('img', $data);
 					foreach ($images as $img)
 					{
-						if (!empty($img['attribs']['src']['data']))
+						if (isset($img['attribs']['src']['data']))
 						{
 							$image_url = $img['attribs']['src']['data'];
 							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $image_url), 'spi');
