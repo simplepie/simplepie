@@ -7137,7 +7137,7 @@ class SimplePie_Cache
 			}
 			else
 			{
-				$fp = fopen($this->name, 'w');
+				$fp = fopen($this->name, 'wb');
 				if ($fp)
 				{
 					fwrite($fp, serialize($data));
