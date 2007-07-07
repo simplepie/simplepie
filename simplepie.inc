@@ -8992,9 +8992,9 @@ class SimplePie_Misc
 		{
 			$curl = $curl['version'];
 		}
-		elseif (preg_match('/curl\/(\S+)(\s|$)/', $curl, $match))
+		elseif (substr($curl, 0, 5) == 'curl/')
 		{
-			$curl = $match[1];
+			$curl = substr($curl, 5, strcspn($curl, "\x09\x0A\x0B\x0C\x0D", 5));
 		}
 		else
 		{
