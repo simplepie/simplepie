@@ -8996,6 +8996,10 @@ class SimplePie_Misc
 		{
 			$curl = substr($curl, 5, strcspn($curl, "\x09\x0A\x0B\x0C\x0D", 5));
 		}
+		elseif (substr($curl, 0, 8) == 'libcurl/')
+		{
+			$curl = substr($curl, 8, strcspn($curl, "\x09\x0A\x0B\x0C\x0D", 8));
+		}
 		else
 		{
 			$curl = 0;
