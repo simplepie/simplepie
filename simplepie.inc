@@ -1928,7 +1928,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_bloglines()
 	{
-		return $this->subscribe_service('http://www.bloglines.com/sub/');
+		return urldecode($this->subscribe_service('http://www.bloglines.com/sub/'));
 	}
 
 	function subscribe_eskobo()
@@ -7534,11 +7534,11 @@ class SimplePie_Misc
 		$return = '';
 		if ($scheme !== '')
 		{
-			$return .= "$scheme:";
+			$return .= "$scheme://";
 		}
 		if ($authority !== '')
 		{
-			$return .= "//$authority";
+			$return .= "$authority";
 		}
 		if ($path !== '')
 		{
