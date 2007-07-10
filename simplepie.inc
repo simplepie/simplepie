@@ -7487,9 +7487,14 @@ class SimplePie_Misc
 	{
 		$url = SimplePie_Misc::normalize_url($url);
 		$parsed = SimplePie_Misc::parse_url($url);
-		if ($parsed['scheme'] !== '' && $parsed['scheme'] != 'http' && $parsed['scheme'] != 'https' || $parsed['scheme'] === '' && !file_exists($url))
+		if ($parsed['scheme'] !== '' && $parsed['scheme'] != 'http' && $parsed['scheme'] != 'https')
 		{
 			return SimplePie_Misc::fix_protocol(SimplePie_Misc::compress_parse_url('http', $parsed['authority'], $parsed['path'], $parsed['query'], $parsed['fragment']), $http);
+		}
+		
+		if ($parsed['scheme'] === '' && $parsed['authority'] === '')
+		{
+			return SimplePie_Misc::fix_protocol(SimplePie_Misc::compress_parse_url('http', $parsed['path'], '', $parsed['query'], $parsed['fragment']), $http);
 		}
 
 		if ($http == 2 && $parsed['scheme'] !== '')
@@ -7536,11 +7541,11 @@ class SimplePie_Misc
 		$return = '';
 		if ($scheme !== '')
 		{
-			$return .= "$scheme://";
+			$return .= "$scheme:";
 		}
 		if ($authority !== '')
 		{
-			$return .= "$authority";
+			$return .= "//$authority";
 		}
 		if ($path !== '')
 		{
