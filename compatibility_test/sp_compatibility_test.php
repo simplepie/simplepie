@@ -14,27 +14,10 @@ else if (isset($_GET['background']))
 	exit;
 }
 
-function get_curl_version()
-{
-	if (is_array($curl = curl_version()))
-	{
-		$curl = $curl['version'];
-	}
-	else if (preg_match('/curl\/(\S+)(\s|$)/', $curl, $match))
-	{
-		$curl = $match[1];
-	}
-	else
-	{
-		$curl = 0;
-	}
-	return $curl;
-}
-
 $php_ok = (function_exists('version_compare') && version_compare(phpversion(), '4.1.0', '>='));
 $xml_ok = extension_loaded('xml');
 $pcre_ok = extension_loaded('pcre');
-$curl_ok = (extension_loaded('curl') && version_compare(get_curl_version(), '7.10.5', '>='));
+$curl_ok = (extension_loaded('curl'));
 $zlib_ok = extension_loaded('zlib');
 $mbstring_ok = extension_loaded('mbstring');
 $iconv_ok = extension_loaded('iconv');
@@ -227,8 +210,8 @@ function fnLoadPngs() {
 					</tr>
 					<tr class="<?php echo ($curl_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/curl">cURL</a></td>
-						<td>7.10.5 or higher</td>
-						<td><?php echo (extension_loaded('curl')) ? get_curl_version() : 'Disabled'; ?></td>
+						<td>Enabled</td>
+						<td><?php echo (extension_loaded('curl')) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
 					<tr class="<?php echo ($zlib_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/zlib">Zlib</a></td>
@@ -262,9 +245,9 @@ function fnLoadPngs() {
 							<?php if ($pcre_ok): ?>
 								<li><strong>PCRE:</strong> You have PCRE support installed. <em>No problems here.</em></li>
 								<?php if ($curl_ok): ?>
-									<li><strong>cURL:</strong> You have <code>cURL</code> 7.10.5 or newer installed.  <em>No problems here.</em></li>
+									<li><strong>cURL:</strong> You have <code>cURL</code> support installed.  <em>No problems here.</em></li>
 								<?php else: ?>
-									<li><strong>cURL:</strong> The <code>cURL</code> extension is either not available, or is an unsupported version.  SimplePie will use <code>fsockopen</code> instead.</li>
+									<li><strong>cURL:</strong> The <code>cURL</code> extension is not available.  SimplePie will use <code>fsockopen</code> instead.</li>
 								<?php endif; ?>
 	
 								<?php if ($zlib_ok): ?>

@@ -6469,7 +6469,7 @@ class SimplePie_File
 			{
 				$headers = array();
 			}
-			if (extension_loaded('curl') && version_compare(SimplePie_Misc::get_curl_version(), '7.10.5', '>=') && !$force_fsockopen)
+			if (!$force_fsockopen && extension_loaded('curl'))
 			{
 				$this->method = 'curl';
 				$fp = curl_init();
@@ -6478,7 +6478,10 @@ class SimplePie_File
 				{
 					$headers2[] = "$key: $value";
 				}
-				curl_setopt($fp, CURLOPT_ENCODING, '');
+				if (version_compare(SimplePie_Misc::get_curl_version(), '7.10.5', '>='))
+				{
+					curl_setopt($fp, CURLOPT_ENCODING, '');
+				}
 				curl_setopt($fp, CURLOPT_URL, $url);
 				curl_setopt($fp, CURLOPT_HEADER, 1);
 				curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
@@ -6487,7 +6490,7 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_REFERER, $url);
 				curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
-				if (!ini_get('open_basedir') && !ini_get('safe_mode'))
+				if (!ini_get('open_basedir') && !ini_get('safe_mode') && version_compare(SimplePie_Misc::get_curl_version(), '7.15.2', '>='))
 				{
 					curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
 					curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
