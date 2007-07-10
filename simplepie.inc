@@ -51,13 +51,15 @@ define('SIMPLEPIE_NAME', 'SimplePie');
 /**
  * SimplePie Version
  */
-define('SIMPLEPIE_VERSION', 'Razzleberry++');
+//define('SIMPLEPIE_VERSION', 'Razzleberry++');
+define('SIMPLEPIE_VERSION', '1.0');
 
 /**
  * SimplePie Build
  * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
  */
-define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date$', 7, 25))));
+//define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date$', 7, 25))));
+define('SIMPLEPIE_BUILD', '20070710163925');
 
 /**
  * SimplePie Website URL
@@ -1928,7 +1930,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_bloglines()
 	{
-		return $this->subscribe_service('http://www.bloglines.com/sub/');
+		return urldecode($this->subscribe_service('http://www.bloglines.com/sub/'));
 	}
 
 	function subscribe_eskobo()
