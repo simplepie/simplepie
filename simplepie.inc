@@ -58,7 +58,7 @@ define('SIMPLEPIE_VERSION', '1.0');
  * SimplePie Build
  * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
  */
-//define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date$', 7, 25))));
+//define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date:2007-07-10 11:07:50 -0700 (Tue, 10 Jul 2007) $', 7, 25))));
 define('SIMPLEPIE_BUILD', '20070710163925');
 
 /**
@@ -7536,11 +7536,11 @@ class SimplePie_Misc
 		$return = '';
 		if ($scheme !== '')
 		{
-			$return .= "$scheme:";
+			$return .= "$scheme://";
 		}
 		if ($authority !== '')
 		{
-			$return .= "//$authority";
+			$return .= "$authority";
 		}
 		if ($path !== '')
 		{
