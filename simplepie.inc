@@ -1796,7 +1796,7 @@ function embed_wmedia(width, height, link) {
 		{
 			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
 
-			if ($this->cache)
+			if ($this->cache && $this->favicon_handler)
 			{
 				$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
 
@@ -1804,7 +1804,7 @@ function embed_wmedia(width, height, link) {
 				{
 					return $this->sanitize($this->favicon_handler . rawurlencode($favicon), SIMPLEPIE_CONSTRUCT_IRI);
 				}
-				elseif ($this->favicon_handler)
+				else
 				{
 					$file =& new $this->file_class($favicon, $this->timeout / 10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 
