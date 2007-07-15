@@ -6522,7 +6522,15 @@ class SimplePie_File
 						if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects)
 						{
 							$this->redirects++;
-							return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+							if (isset($this->headers['content-location']))
+							{
+								$location = SimplePie_Misc::absolutize_url($this->headers['location'], SimplePie_Misc::absolutize_url($this->headers['content-location'], $url));
+							}
+							else
+							{
+								$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
+							}
+							return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 						}
 					}
 				}
@@ -6609,7 +6617,15 @@ class SimplePie_File
 							if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects)
 							{
 								$this->redirects++;
-								return $this->SimplePie_File($this->headers['location'], $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+								if (isset($this->headers['content-location']))
+								{
+									$location = SimplePie_Misc::absolutize_url($this->headers['location'], SimplePie_Misc::absolutize_url($this->headers['content-location'], $url));
+								}
+								else
+								{
+									$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
+								}
+								return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 							}
 							if (isset($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
 							{
