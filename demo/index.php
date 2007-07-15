@@ -73,13 +73,6 @@ $feed->handle_content_type();
 <script type="text/javascript" src="./for_the_demo/sifr-config.js"></script>
 <script type="text/javascript" src="./for_the_demo/sleight.js"></script>
 
-<style type="text/css">
-#sp_results h4.title {
-	padding:0 0 0 20px;
-	background:transparent url(<?php echo $feed->get_favicon('./for_the_demo/alternate_favicon.png'); ?>) no-repeat 0 1px;
-}
-</style>
-
 </head>
 
 <body id="bodydemo">
@@ -126,13 +119,13 @@ $feed->handle_content_type();
 
 			<?php
 			// Check to see if there are more than zero errors (i.e. if there are any errors at all)
-			if (isset($feed->error))
+			if ($feed->error())
 			{
 				// If so, start a <div> element with a classname so we can style it.
 				echo '<div class="sp_errors">' . "\r\n";
 
 					// ... and display it.
-					echo '<p>' . htmlspecialchars($feed->error) . "</p>\r\n";
+					echo '<p>' . htmlspecialchars($feed->error()) . "</p>\r\n";
 
 				// Close the <div> element we opened.
 				echo '</div>' . "\r\n";
