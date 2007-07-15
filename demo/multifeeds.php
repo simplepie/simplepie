@@ -6,11 +6,9 @@ Nothing too exciting here.  Just a sample page that demos integrated
 Multifeeds support as well as cached favicons and perhaps a few other 
 things.
 
-The code on this page may or may not work with your configuration 
-(PHP short tags, some PHP5-only syntax), and is certainly not optimal, 
-but it will definitely get cleaned up in time for the 1.0 release.
-
-Lots of this code is commented to help explain some of the new stuff.
+Lots of this code is commented to help explain some of the new stuff.  
+Code was tested in PHP 5.2.2, but *should* also work with earlier 
+versions of PHP, as supported by SimplePie (PHP 4.1).
 
 ********************************************************************/
 
@@ -25,7 +23,15 @@ $feed->set_feed_url(array(
 	'http://news.google.com/?output=atom',
 	'http://rss.cnn.com/rss/cnn_topstories.rss'
 ));
+
+// When we set these, we need to make sure that the handler_image.php file is also trying to read from the same cache directory that we are.
+$feed->set_favicon_handler('./handler_image.php');
+$feed->set_image_handler('./handler_image.php');
+
+// Initialize the feed.
 $feed->init();
+
+// Make sure the page is being served with the UTF-8 headers.
 $feed->handle_content_type();
 
 // Begin the (X)HTML page.
@@ -59,40 +65,41 @@ $feed->handle_content_type();
 <body>
 <div id="site">
 
-	<? if ($feed->error): ?>
+	<?php if ($feed->error): ?>
 		<p><?=$feed->error()?></p>
-	<? endif ?>
+	<?php endif ?>
 
 	<div class="chunk">
 		<h1>Quick-n-Dirty Multifeeds Demo</a></h1>
 	</div>
 
-	<? foreach($feed->get_items() as $item): ?>
+	<?php
+	// Let's loop through each item in the feed.
+	foreach($feed->get_items() as $item):
+
+	// Let's give ourselves a reference to the parent $feed object for this particular item.
+	$feed = $item->get_feed();
+	?>
 
 		<div class="chunk">
-			<!-- Here (in the PHP code), we see some PHP5 "chaining" of methods, showing how to grab the appropriate favicon for the source of the item. -->
-			<h4 style="background-image:url(<?=$item->get_feed()->get_favicon()?>);"><a href="<?=$item->get_permalink()?>"><?=html_entity_decode($item->get_title(), ENT_QUOTES, 'UTF-8')?></a></h4>
-
-			<!-- get_description() now prefers summaries over full content -->
-			<?//=$item->get_description()?>
+			<h4 style="background-image:url(<?php echo $feed->get_favicon(); ?>);"><a href="<?php echo $item->get_permalink(); ?>"><?php echo html_entity_decode($item->get_title(), ENT_QUOTES, 'UTF-8'); ?></a></h4>
 
 			<!-- get_content() prefers full content over summaries -->
-			<?=$item->get_content()?>
+			<?php echo $item->get_content(); ?>
 
-			<? if ($enclosure = $item->get_enclosure()): ?>
+			<?php if ($enclosure = $item->get_enclosure()): ?>
 				<div>
-				<?=$enclosure->native_embed(array(
+				<?php echo $enclosure->native_embed(array(
 					// New 'mediaplayer' attribute shows off Flash-based MP3 and FLV playback.
 					'mediaplayer' => '../demo/for_the_demo/mediaplayer.swf'
-				))?>
+				)); ?>
 				</div>
-			<? endif ?>
+			<?php endif; ?>
 
-			<!-- Here's more of that PHP5 chaining with $item->get_feed()->get_permalink() to get the source feed's permalink -->
-			<p class="footnote">Source: <a href="<?=$item->get_feed()->get_permalink()?>"><?=$item->get_feed()->get_title()?></a> | <?=$item->get_date('j M Y | g:i a')?></p>
+			<p class="footnote">Source: <a href="<?php echo $feed->get_permalink(); ?>"><?php echo $feed->get_title(); ?></a> | <?php echo $item->get_date('j M Y | g:i a'); ?></p>
 		</div>
 
-	<? endforeach ?>
+	<?php endforeach ?>
 
 	<p class="footnote">This is a test of the emergency broadcast system.  This is only a test&hellip; beeeeeeeeeeeeeeeeeeeeeeeeeep!</p>
 
