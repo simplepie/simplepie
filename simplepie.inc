@@ -6605,7 +6605,21 @@ class SimplePie_File
 					{
 						socket_set_timeout($fp, $timeout);
 					}
-					$get = (isset($url_parts['query'])) ? "$url_parts[path]?$url_parts[query]" : $url_parts['path'];
+					if (isset($url_parts['path']))
+					{
+						if (isset($url_parts['query']))
+						{
+							$get = "$url_parts[path]?$url_parts[query]";
+						}
+						else
+						{
+							$get $url_parts['path'];
+						}
+					}
+					else
+					{
+						$get = '/';
+					}
 					$out = "GET $get HTTP/1.0\r\n";
 					$out .= "Host: $url_parts[host]\r\n";
 					$out .= "User-Agent: $useragent\r\n";
@@ -7547,7 +7561,7 @@ class SimplePie_Misc
 			return SimplePie_Misc::fix_protocol(SimplePie_Misc::compress_parse_url('http', $parsed['authority'], $parsed['path'], $parsed['query'], $parsed['fragment']), $http);
 		}
 		
-		if ($parsed['scheme'] === '' && $parsed['authority'] === '')
+		if ($parsed['scheme'] === '' && $parsed['authority'] === '' && !file_exists($url))
 		{
 			return SimplePie_Misc::fix_protocol(SimplePie_Misc::compress_parse_url('http', $parsed['path'], '', $parsed['query'], $parsed['fragment']), $http);
 		}
