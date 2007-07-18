@@ -6614,7 +6614,7 @@ class SimplePie_File
 						}
 						else
 						{
-							$get $url_parts['path'];
+							$get = $url_parts['path'];
 						}
 					}
 					else
