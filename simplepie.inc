@@ -674,7 +674,7 @@ class SimplePie
 	 */
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	/**
@@ -2706,7 +2706,7 @@ class SimplePie_Item
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_item_tags($namespace, $tag)
@@ -5146,7 +5146,7 @@ class SimplePie_Author
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_name()
@@ -5202,7 +5202,7 @@ class SimplePie_Category
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_term()
@@ -5312,7 +5312,7 @@ class SimplePie_Enclosure
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_bitrate()
@@ -6214,7 +6214,7 @@ class SimplePie_Caption
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_endtime()
@@ -6294,7 +6294,7 @@ class SimplePie_Credit
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_role()
@@ -6348,7 +6348,7 @@ class SimplePie_Copyright
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_url()
@@ -6390,7 +6390,7 @@ class SimplePie_Rating
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_scheme()
@@ -6434,7 +6434,7 @@ class SimplePie_Restriction
 
 	function __toString()
 	{
-		return md5(serialize($this));
+		return md5(serialize($this->data));
 	}
 
 	function get_relationship()
@@ -6613,7 +6613,7 @@ class SimplePie_File
 						}
 						else
 						{
-							$get $url_parts['path'];
+							$get = $url_parts['path'];
 						}
 					}
 					else
