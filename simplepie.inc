@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version "Razzleberry"
+ * @version "Blackberry"
  * @copyright 2004-2007 Ryan Parman, Geoffrey Sneddon
  * @author Ryan Parman
  * @author Geoffrey Sneddon
@@ -5146,7 +5146,8 @@ class SimplePie_Author
 
 	function __toString()
 	{
-		return md5(serialize($this->data));
+		// There is no $this->data here
+		return md5(serialize($this));
 	}
 
 	function get_name()
@@ -5202,7 +5203,8 @@ class SimplePie_Category
 
 	function __toString()
 	{
-		return md5(serialize($this->data));
+		// There is no $this->data here
+		return md5(serialize($this));
 	}
 
 	function get_term()
@@ -5312,7 +5314,8 @@ class SimplePie_Enclosure
 
 	function __toString()
 	{
-		return md5(serialize($this->data));
+		// There is no $this->data here
+		return md5(serialize($this));
 	}
 
 	function get_bitrate()
@@ -6214,7 +6217,8 @@ class SimplePie_Caption
 
 	function __toString()
 	{
-		return md5(serialize($this->data));
+		// There is no $this->data here
+		return md5(serialize($this));
 	}
 
 	function get_endtime()
@@ -6294,7 +6298,8 @@ class SimplePie_Credit
 
 	function __toString()
 	{
-		return md5(serialize($this->data));
+		// There is no $this->data here
+		return md5(serialize($this));
 	}
 
 	function get_role()
@@ -6348,7 +6353,8 @@ class SimplePie_Copyright
 
 	function __toString()
 	{
-		return md5(serialize($this->data));
+		// There is no $this->data here
+		return md5(serialize($this));
 	}
 
 	function get_url()
@@ -6390,7 +6396,8 @@ class SimplePie_Rating
 
 	function __toString()
 	{
-		return md5(serialize($this->data));
+		// There is no $this->data here
+		return md5(serialize($this));
 	}
 
 	function get_scheme()
@@ -6434,7 +6441,8 @@ class SimplePie_Restriction
 
 	function __toString()
 	{
-		return md5(serialize($this->data));
+		// There is no $this->data here
+		return md5(serialize($this));
 	}
 
 	function get_relationship()
