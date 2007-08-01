@@ -2738,37 +2738,40 @@ class SimplePie_Item
 
 	function get_id($hash = false)
 	{
-		if ($hash)
+		if (!$hash)
 		{
-			return md5(serialize($this->data));
+			if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'id'))
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'id'))
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			elseif ($return = $this->get_item_tags('', 'guid'))
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'identifier'))
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'identifier'))
+			{
+				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			elseif (($return = $this->get_permalink()) !== null)
+			{
+				return $return;
+			}
+			elseif (($return = $this->get_title()) !== null)
+			{
+				return $return;
+			}
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'id'))
+		if ($this->get_permalink() !== null || $this->get_title() !== null)
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'id'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		elseif ($return = $this->get_item_tags('', 'guid'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'identifier'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'identifier'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		elseif (($return = $this->get_permalink()) !== null)
-		{
-			return $return;
-		}
-		elseif (($return = $this->get_title()) !== null)
-		{
-			return $return;
+			return md5($this->get_permalink() . $this->get_title());
 		}
 		else
 		{
