@@ -7342,29 +7342,23 @@ class SimplePie_Misc
 						{
 							$target['path'] = $relative['path'];
 						}
-						elseif (($target['path'] = dirname("$base[path].")) == '/')
+						elseif ($base['authority'] !== '' && $base['path'] === '')
 						{
-							$target['path'] .= $relative['path'];
+							$target['path'] = '/' . $relative['path'];
+						}
+						elseif (($last_segment = strrpos($base['path'], '/')) !== false)
+						{
+							$target['path'] = substr($base['path'], 0, $last_segment + 1) . $relative['path'];
 						}
 						else
 						{
-							$target['path'] .= '/' . $relative['path'];
+							$target['path'] = $relative['path'];
 						}
-						if ($relative['query'] !== '')
-						{
-							$target['query'] = $relative['query'];
-						}
+						$target['query'] = $relative['query'];
 					}
 					else
 					{
-						if ($base['path'] !== '')
-						{
-							$target['path'] = $base['path'];
-						}
-						else
-						{
-							$target['path'] = '/';
-						}
+						$target['path'] = $base['path'];
 						if ($relative['query'] !== '')
 						{
 							$target['query'] = $relative['query'];
@@ -7375,10 +7369,7 @@ class SimplePie_Misc
 						}
 					}
 				}
-				if ($relative['fragment'] !== '')
-				{
-					$target['fragment'] = $relative['fragment'];
-				}
+				$target['fragment'] = $relative['fragment'];
 			}
 			else
 			{
