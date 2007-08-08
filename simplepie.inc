@@ -1506,7 +1506,8 @@ function embed_wmedia(width, height, link) {
 					{
 						if ($cache)
 						{
-							if (!$cache->save(array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD)))
+							$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
+							if (!$cache->save($this))
 							{
 								trigger_error("$cache->name is not writeable", E_USER_WARNING);
 							}
