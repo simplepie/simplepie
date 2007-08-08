@@ -2170,6 +2170,65 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
+	function get_category($key = 0)
+	{
+		$categories = $this->get_categories();
+		if (isset($categories[$key]))
+		{
+			return $categories[$key];
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_categories()
+	{
+		$categories = array();
+
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'category') as $category)
+		{
+			$term = null;
+			$scheme = null;
+			$label = null;
+			if (isset($category['attribs']['']['term']))
+			{
+				$term = $this->sanitize($category['attribs']['']['term'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			if (isset($category['attribs']['']['scheme']))
+			{
+				$scheme = $this->sanitize($category['attribs']['']['scheme'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			if (isset($category['attribs']['']['label']))
+			{
+				$label = $this->sanitize($category['attribs']['']['label'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			$categories[] =& new $this->category_class($term, $scheme, $label);
+		}
+		foreach ((array) $this->get_channel_tags('', 'category') as $category)
+		{
+			$categories[] =& new $this->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+		}
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'subject') as $category)
+		{
+			$categories[] =& new $this->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+		}
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_10, 'subject') as $category)
+		{
+			$categories[] =& new $this->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+		}
+
+		if (!empty($categories))
+		{
+			return SimplePie_Misc::array_unique($categories);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	function get_author($key = 0)
 	{
 		$authors = $this->get_authors();
