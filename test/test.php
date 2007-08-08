@@ -139,6 +139,7 @@ $tests = array(
 	'first_item_author_name',
 	'first_item_category_label',
 	'first_item_content',
+	'first_item_contributor_name',
 	'first_item_date',
 	'first_item_description',
 	'first_item_id',

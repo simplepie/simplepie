@@ -2278,13 +2278,13 @@ function embed_wmedia(width, height, link) {
 			}
 			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$uri = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
 			}
 			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
 				$email = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if ($name !== null || $email !== null || $uri !== null)
+			if ($name !== null || $email !== null || $url !== null)
 			{
 				$authors[] =& new $this->author_class($name, $url, $email);
 			}
@@ -2355,19 +2355,19 @@ function embed_wmedia(width, height, link) {
 			$name = null;
 			$url = null;
 			$email = null;
-			if (isset($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
+			if (isset($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
 			{
-				$name = $this->sanitize($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (isset($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
+			if (isset($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$uri = $this->sanitize($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
 			}
-			if (isset($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
+			if (isset($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
-				$email = $this->sanitize($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if ($name !== null || $email !== null || $uri !== null)
+			if ($name !== null || $email !== null || $url !== null)
 			{
 				$contributors[] =& new $this->author_class($name, $url, $email);
 			}
@@ -3211,19 +3211,19 @@ class SimplePie_Item
 			$name = null;
 			$url = null;
 			$email = null;
-			if (isset($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
+			if (isset($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
 			{
-				$name = $this->sanitize($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if (isset($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
+			if (isset($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$uri = $this->sanitize($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
 			}
-			if (isset($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
+			if (isset($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
-				$email = $this->sanitize($contributor[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($contributor['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if ($name !== null || $email !== null || $uri !== null)
+			if ($name !== null || $email !== null || $url !== null)
 			{
 				$contributors[] =& new $this->feed->author_class($name, $url, $email);
 			}
@@ -3278,13 +3278,13 @@ class SimplePie_Item
 			}
 			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$uri = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
 			}
 			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
 				$email = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			if ($name !== null || $email !== null || $uri !== null)
+			if ($name !== null || $email !== null || $url !== null)
 			{
 				$authors[] =& new $this->feed->author_class($name, $url, $email);
 			}
