@@ -125,6 +125,7 @@ require_once 'functions.php';
 $tests = array(
 	'absolutize',
 	'date',
+	'feed_category_label',
 	'feed_copyright',
 	'feed_description',
 	'feed_image_height',
