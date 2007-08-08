@@ -2170,6 +2170,89 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
+	function get_author($key = 0)
+	{
+		$authors = $this->get_authors();
+		if (isset($authors[$key]))
+		{
+			return $authors[$key];
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function get_authors()
+	{
+		$authors = array();
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'author') as $author)
+		{
+			$name = null;
+			$uri = null;
+			$email = null;
+			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
+			{
+				$name = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
+			{
+				$uri = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
+			}
+			if (isset($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
+			{
+				$email = $this->sanitize($author['child'][SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			if ($name !== null || $email !== null || $uri !== null)
+			{
+				$authors[] =& new $this->author_class($name, $uri, $email);
+			}
+		}
+		if ($author = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
+		{
+			$name = null;
+			$url = null;
+			$email = null;
+			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
+			{
+				$name = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
+			{
+				$uri = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+			}
+			if (isset($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
+			{
+				$email = $this->sanitize($author[0]['child'][SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			if ($name !== null || $email !== null || $uri !== null)
+			{
+				$authors[] =& new $this->author_class($name, $url, $email);
+			}
+		}
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $author)
+		{
+			$authors[] =& new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+		}
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $author)
+		{
+			$authors[] =& new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+		}
+		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
+		{
+			$authors[] =& new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+		}
+
+		if (!empty($authors))
+		{
+			return SimplePie_Misc::array_unique($authors);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	function get_link($key = 0, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
@@ -3025,6 +3108,10 @@ class SimplePie_Item
 		if (!empty($authors))
 		{
 			return SimplePie_Misc::array_unique($authors);
+		}
+		elseif ($authors = $this->feed->get_authors())
+		{
+			return $authors;
 		}
 		else
 		{
