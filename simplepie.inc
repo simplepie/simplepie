@@ -1383,7 +1383,7 @@ function embed_wmedia(width, height, link) {
 				// Decide whether to enable caching
 				if ($this->cache && $parsed_feed_url['scheme'] !== '')
 				{
-					$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
+					$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
 				}
 				// If it's enabled and we don't want an XML dump, use the cache
 				if ($cache && !$this->xml_dump)
@@ -1511,7 +1511,7 @@ function embed_wmedia(width, height, link) {
 							{
 								trigger_error("$cache->name is not writeable", E_USER_WARNING);
 							}
-							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
+							$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
 						}
 						$this->feed_url = $file->url;
 					}
@@ -1799,7 +1799,7 @@ function embed_wmedia(width, height, link) {
 
 			if ($this->cache && $this->favicon_handler)
 			{
-				$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
+				$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
 
 				if ($cache->load())
 				{
@@ -7491,12 +7491,36 @@ class SimplePie_HTTP_Parser
 
 class SimplePie_Cache
 {
+	/**
+	 * Don't call the constructor. Please.
+	 *
+	 * @access private
+	 */
+	function SimplePie_Cache()
+	{
+		trigger_error('Please call SimplePie_Cache::create() instead of the constructor', E_USER_ERROR);
+	}
+	
+	/**
+	 * Create a new SimplePie_Cache object
+	 *
+	 * @static
+	 * @access public
+	 */
+	function create($location, $filename, $extension)
+	{
+		return new SimplePie_Cache_File($location, $filename, $extension);
+	}
+}
+
+class SimplePie_Cache_File
+{
 	var $location;
 	var $filename;
 	var $extension;
 	var $name;
 
-	function SimplePie_Cache($location, $filename, $extension)
+	function SimplePie_Cache_File($location, $filename, $extension)
 	{
 		$this->location = $location;
 		$this->filename = rawurlencode($filename);
@@ -7840,7 +7864,7 @@ class SimplePie_Misc
 	 */
 	function display_cached_file($identifier_url, $cache_location = './cache', $cache_extension = 'spc', $cache_class = 'SimplePie_Cache', $cache_name_function = 'md5')
 	{
-		$cache =& new $cache_class($cache_location, call_user_func($cache_name_function, $identifier_url), $cache_extension);
+		$cache = call_user_func(array($cache_class, 'create'), $cache_location, call_user_func($cache_name_function, $identifier_url), $cache_extension);
 
 		if ($file = $cache->load())
 		{
@@ -11028,7 +11052,7 @@ class SimplePie_Sanitize
 						if (isset($img['attribs']['src']['data']))
 						{
 							$image_url = $img['attribs']['src']['data'];
-							$cache =& new $this->cache_class($this->cache_location, call_user_func($this->cache_name_function, $image_url), 'spi');
+							$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $image_url), 'spi');
 
 							if ($cache->load())
 							{
