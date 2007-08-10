@@ -7995,13 +7995,13 @@ class SimplePie_Misc
 	 */
 	function utf8_bad_replace($str)
 	{
-		if (function_exists('iconv'))
+		if (function_exists('iconv') && ($return = @iconv('UTF-8', 'UTF-8//IGNORE', $str))
 		{
-			return iconv('UTF-8', 'UTF-8//IGNORE', $str);
+			return $return;
 		}
-		elseif (function_exists('mb_convert_encoding'))
+		elseif (function_exists('mb_convert_encoding') && ($return = @mb_convert_encoding($str, 'UTF-8', 'UTF-8')))
 		{
-			return mb_convert_encoding($str, 'UTF-8', 'UTF-8');
+			return $return;
 		}
 		elseif (preg_match_all('/([\x00-\x7F]|[\xC2-\xDF][\x80-\xBF]|\xE0[\xA0-\xBF][\x80-\xBF]|[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}|\xED[\x80-\x9F][\x80-\xBF]|\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})/', $str, $matches))
 		{
