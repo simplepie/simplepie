@@ -7228,7 +7228,7 @@ class SimplePie_HTTP_Parser
 	 */
 	function http_version()
 	{
-		if (strpos($this->data, "\x0A") !== false && stripos($this->data, 'HTTP/') === 0)
+		if (strpos($this->data, "\x0A") !== false && substr($this->data, 0, 5) === 'HTTP/')
 		{
 			$len = strspn($this->data, '0123456789.', 5);
 			$this->http_version = substr($this->data, 5, $len);
