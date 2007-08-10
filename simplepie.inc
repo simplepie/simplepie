@@ -7105,7 +7105,7 @@ class SimplePie_HTTP_Parser
 	 * @var string
 	 */
 	var $body = '';
-	
+
 	/**
 	 * Current state of the state machine
 	 *
@@ -7220,7 +7220,7 @@ class SimplePie_HTTP_Parser
 				&& isset($this->data[$this->position + 1])
 				&& ($this->data[$this->position + 1] === "\x09" || $this->data[$this->position + 1] === "\x20")));
 	}
-	
+
 	/**
 	 * Parse the HTTP version
 	 *
@@ -7249,7 +7249,7 @@ class SimplePie_HTTP_Parser
 			$this->state = false;
 		}
 	}
-	
+
 	/**
 	 * Parse the status code
 	 *
@@ -7268,7 +7268,7 @@ class SimplePie_HTTP_Parser
 			$this->state = false;
 		}
 	}
-	
+
 	/**
 	 * Parse the reason phrase
 	 *
@@ -7281,7 +7281,7 @@ class SimplePie_HTTP_Parser
 		$this->position += $len + 1;
 		$this->state = 'new_line';
 	}
-	
+
 	/**
 	 * Deal with a new line, shifting data around as needed
 	 *
@@ -7319,7 +7319,7 @@ class SimplePie_HTTP_Parser
 			$this->state = 'name';
 		}
 	}
-	
+
 	/**
 	 * Parse a header name
 	 *
@@ -7369,7 +7369,7 @@ class SimplePie_HTTP_Parser
 		} while ($this->has_data() && $this->is_linear_whitespace());
 		$this->value .= "\x20";
 	}
-	
+
 	/**
 	 * See what state to move to while within non-quoted header values
 	 *
@@ -7389,19 +7389,19 @@ class SimplePie_HTTP_Parser
 					$this->position++;
 					$this->state = 'quote';
 					break;
-				
+
 				case "\x0A":
 					$this->position++;
 					$this->state = 'new_line';
 					break;
-				
+
 				default:
 					$this->state = 'value_char';
 					break;
 			}
 		}
 	}
-	
+
 	/**
 	 * Parse a header value while outside quotes
 	 *
@@ -7414,7 +7414,7 @@ class SimplePie_HTTP_Parser
 		$this->position += $len;
 		$this->state = 'value';
 	}
-	
+
 	/**
 	 * See what state to move to while within quoted header values
 	 *
@@ -7434,24 +7434,24 @@ class SimplePie_HTTP_Parser
 					$this->position++;
 					$this->state = 'value';
 					break;
-				
+
 				case "\x0A":
 					$this->position++;
 					$this->state = 'new_line';
 					break;
-				
+
 				case '\\':
 					$this->position++;
 					$this->state = 'quote_escaped';
 					break;
-				
+
 				default:
 					$this->state = 'quote_char';
 					break;
 			}
 		}
 	}
-	
+
 	/**
 	 * Parse a header value while within quotes
 	 *
@@ -7464,7 +7464,7 @@ class SimplePie_HTTP_Parser
 		$this->position += $len;
 		$this->state = 'value';
 	}
-	
+
 	/**
 	 * Parse an escaped character within quotes
 	 *
@@ -7476,7 +7476,7 @@ class SimplePie_HTTP_Parser
 		$this->position++;
 		$this->state = 'quote';
 	}
-	
+
 	/**
 	 * Parse the body
 	 *
@@ -7500,7 +7500,7 @@ class SimplePie_Cache
 	{
 		trigger_error('Please call SimplePie_Cache::create() instead of the constructor', E_USER_ERROR);
 	}
-	
+
 	/**
 	 * Create a new SimplePie_Cache object
 	 *
@@ -7536,9 +7536,9 @@ class SimplePie_Cache_File
 			{
 				$data = $data->data;
 			}
-			
+
 			$data = serialize($data);
-			
+
 			if (function_exists('file_put_contents'))
 			{
 				return (bool) file_put_contents($this->name, $data);
@@ -7885,7 +7885,7 @@ class SimplePie_Misc
 		{
 			return SimplePie_Misc::fix_protocol(SimplePie_Misc::compress_parse_url('http', $parsed['authority'], $parsed['path'], $parsed['query'], $parsed['fragment']), $http);
 		}
-		
+
 		if ($parsed['scheme'] === '' && $parsed['authority'] === '' && !file_exists($url))
 		{
 			return SimplePie_Misc::fix_protocol(SimplePie_Misc::compress_parse_url('http', $parsed['path'], '', $parsed['query'], $parsed['fragment']), $http);
@@ -9510,7 +9510,7 @@ class SimplePie_Misc
 				{
 					$match[$i] = '';
 				}
-				
+
 				// Set blank vars
 				$year = 1970;
 				$month = 1;
@@ -10036,25 +10036,25 @@ class SimplePie_Misc
 	 * @param string $class_name The class name
 	 * @return bool Returns true if the object is of this class or has this class as one of its parents, false otherwise
 	 */
-	 function is_a($object, $class_name)
-	 {
-	 	if (function_exists('is_a'))
-	 	{
-	 		return is_a($object, $class_name);
-	 	}
-	 	elseif (!is_object($object))
-	 	{
-	 		return false;
-	 	}
-	 	elseif (get_class($object) == strtolower($class_name))
-	 	{
-	 		return true;
-	 	}
-	 	else
-	 	{
-	 		return is_subclass_of($object, $class_name);
-	 	}
-	 }
+	function is_a($object, $class_name)
+	{
+		if (function_exists('is_a'))
+		{
+			return is_a($object, $class_name);
+		}
+		elseif (!is_object($object))
+		{
+			return false;
+		}
+		elseif (get_class($object) == strtolower($class_name))
+		{
+			return true;
+		}
+		else
+		{
+			return is_subclass_of($object, $class_name);
+		}
+	}
 
 	/**
 	 * Re-implementation of PHP 5's stripos()
@@ -10073,31 +10073,63 @@ class SimplePie_Misc
 	 *     relative to the beginning of haystack.
 	 * @return bool If needle is not found, stripos() will return boolean false.
 	 */
-	 function stripos($haystack, $needle, $offset = 0)
-	 {
-	 	if (function_exists('stripos'))
-	 	{
-	 		return stripos($haystack, $needle, $offset);
-	 	}
-	 	else
-	 	{
-	 		if (is_string($needle))
-	 		{
-	 			$needle = strtolower($needle);
-	 		}
-	 		elseif (is_int($needle) || is_bool($needle) || is_double($needle))
-	 		{
-	 			$needle = strtolower(chr($needle));
-	 		}
-	 		else
-	 		{
-	 			trigger_error('needle is not a string or an integer', E_USER_WARNING);
-	 			return false;
-	 		}
-	 
-	 		return strpos(strtolower($haystack), $needle, $offset);
-	 	}
-	 }
+	function stripos($haystack, $needle, $offset = 0)
+	{
+		if (function_exists('stripos'))
+		{
+			return stripos($haystack, $needle, $offset);
+		}
+		else
+		{
+			if (is_string($needle))
+			{
+				$needle = strtolower($needle);
+			}
+			elseif (is_int($needle) || is_bool($needle) || is_double($needle))
+			{
+				$needle = strtolower(chr($needle));
+			}
+			else
+			{
+				trigger_error('needle is not a string or an integer', E_USER_WARNING);
+				return false;
+			}
+	
+			return strpos(strtolower($haystack), $needle, $offset);
+		}
+	}
+
+	/**
+	 * Similar to parse_str()
+	 *
+	 * Returns an associative array of name/value pairs, where the value is an
+	 * array of values that have used the same name
+	 *
+	 * @static
+	 * @access string
+	 * @param string $str The input string.
+	 * @return array
+	 */
+	function parse_str($str)
+	{
+		$return = array();
+		$str = explode('&', $str);
+
+		foreach ($str as $section)
+		{
+			if (strpos($section, '=') !== false)
+			{
+				list($name, $value) = explode('=', $section, 2);
+				$return[urldecode($name)][] = urldecode($value);
+			}
+			else
+			{
+				$return[urldecode($section)][] = null;
+			}
+		}
+
+		return $return;
+	}
 }
 
 /**
