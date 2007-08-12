@@ -7868,7 +7868,14 @@ class SimplePie_Misc
 
 		if ($file = $cache->load())
 		{
-			header('Content-type:' . $file['headers']['content-type']);
+			if (isset($file['headers']['content-type']))
+			{
+				header('Content-type:' . $file['headers']['content-type']);
+			}
+			else
+			{
+				header('Content-type: application/octet-stream');
+			}
 			header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
 			echo $file['body'];
 			exit;
