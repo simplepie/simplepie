@@ -1909,7 +1909,7 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($this->subscribe_url())
 		{
-			$return = $this->sanitize($feed_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->subscribe_url());
+			$return = $this->sanitize($feed_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->feed_url);
 			if ($site_url !== null && $this->get_link() !== null)
 			{
 				$return .= $this->sanitize($site_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_link());
@@ -2119,10 +2119,6 @@ function embed_wmedia(width, height, link) {
 		elseif ($this->get_link() !== null)
 		{
 			return $this->get_link();
-		}
-		elseif (isset($this->data['headers']['content-location']))
-		{
-			return SimplePie_Misc::absolutize_url($this->data['headers']['content-location'], $this->subscribe_url());
 		}
 		else
 		{
@@ -6891,14 +6887,7 @@ class SimplePie_File
 						if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects)
 						{
 							$this->redirects++;
-							if (isset($this->headers['content-location']))
-							{
-								$location = SimplePie_Misc::absolutize_url($this->headers['location'], SimplePie_Misc::absolutize_url($this->headers['content-location'], $url));
-							}
-							else
-							{
-								$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-							}
+							$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
 							return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 						}
 					}
@@ -7000,14 +6989,7 @@ class SimplePie_File
 							if (($this->status_code == 300 || $this->status_code == 301 || $this->status_code == 302 || $this->status_code == 303 || $this->status_code == 307 || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects)
 							{
 								$this->redirects++;
-								if (isset($this->headers['content-location']))
-								{
-									$location = SimplePie_Misc::absolutize_url($this->headers['location'], SimplePie_Misc::absolutize_url($this->headers['content-location'], $url));
-								}
-								else
-								{
-									$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-								}
+								$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
 								return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 							}
 							if (isset($this->headers['content-encoding']) && ($this->headers['content-encoding'] == 'gzip' || $this->headers['content-encoding'] == 'deflate'))
@@ -10423,14 +10405,7 @@ class SimplePie_Locator
 
 	function get_base()
 	{
-		if (isset($this->file->headers['content-location']))
-		{
-			$this->http_base = SimplePie_Misc::absolutize_url(trim($this->file->headers['content-location']), $this->file->url);
-		}
-		else
-		{
-			$this->http_base = $this->file->url;
-		}
+		$this->http_base = $this->file->url;
 		$this->base = $this->http_base;
 		$elements = SimplePie_Misc::get_element('base', $this->file->body);
 		foreach ($elements as $element)
