@@ -9771,27 +9771,62 @@ class SimplePie_Misc
 	/**
 	 * Remove RFC822 comments
 	 *
-	 * @author Tomas V.V.Cox <cox@idecnet.com>
-	 * @author Pierre-Alain Joye <pajoye@php.net>
-	 * @author Amir Mohammad Saied <amir@php.net>
-	 * @copyright 1997-2006 Pierre-Alain Joye,Tomas V.V.Cox,Amir Mohammad Saied
-	 * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
-	 * @version CVS: $Id: Validate.php,v 1.104 2006/11/17 16:32:06 amir Exp $
-	 * @link http://pear.php.net/package/Validate
 	 * @access public
 	 * @param string $data Data to strip comments from
 	 * @return string Comment stripped string
 	 */
-	function uncomment_rfc822($data)
+	function uncomment_rfc822($string)
 	{
-		if ((version_compare(PHP_VERSION, '4.4.6', '>=') && version_compare(PHP_VERSION, '5', '<')) || version_compare(PHP_VERSION, '5.2.2', '>='))
+		$string = (string) $string;
+		$position = 0;
+		$length = strlen($string);
+		$depth = 0;
+		
+		$output = '';
+		
+		while ($position < $length && ($pos = strpos($string, '(', $position)) !== false)
 		{
-			return $data;
+			$output .= substr($string, $position, $pos - $position);
+			$position = $pos + 1;
+			if ($string[$pos - 1] !== '\\')
+			{
+				$depth++;
+				while ($depth && $position < $length)
+				{
+					$position += strcspn($string, '()', $position);
+					if ($string[$position - 1] === '\\')
+					{
+						$position++;
+						continue;
+					}
+					elseif (isset($string[$position]))
+					{
+						switch ($string[$position])
+						{
+							case '(':
+								$depth++;
+								break;
+							
+							case ')':
+								$depth--;
+								break;
+						}
+						$position++;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				$output .= '(';
+			}
 		}
-		else
-		{
-			return preg_replace('/((?:(?:\\\\"|[^("])*(?:"(?:[^"\\\\\r]|\\\\.)*"\s*)?)*)((?<!\\\\)\((?:(?2)|.)*?(?<!\\\\)\))/', '$1', $data);
-		}
+		$output .= substr($string, $position);
+		
+		return $output;
 	}
 
 	function parse_mime($mime)
