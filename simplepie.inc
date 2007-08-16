@@ -7211,7 +7211,7 @@ class SimplePie_HTTP_Parser
 	 */
 	function http_version()
 	{
-		if (strpos($this->data, "\x0A") !== false && substr($this->data, 0, 5) === 'HTTP/')
+		if (strpos($this->data, "\x0A") !== false && strtoupper(substr($this->data, 0, 5)) === 'HTTP/')
 		{
 			$len = strspn($this->data, '0123456789.', 5);
 			$this->http_version = substr($this->data, 5, $len);
@@ -10590,7 +10590,7 @@ class SimplePie_Parse_Date
 		
 			foreach ($all_methods as $method)
 			{
-				if (stripos($method, 'date_') === 0)
+				if (strtolower(substr($method, 0, 5)) === 'date_')
 				{
 					$cache[get_class($this)][] = $method;
 				}
