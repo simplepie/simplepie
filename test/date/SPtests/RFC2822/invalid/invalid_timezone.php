@@ -1,6 +1,6 @@
 <?php
 
-class SimplePie_Date_Test_RFC822_Invalid_Timezone extends SimplePie_Date_Test
+class SimplePie_Date_Test_RFC2822_Invalid_Timezone extends SimplePie_Date_Test
 {
 	function data()
 	{

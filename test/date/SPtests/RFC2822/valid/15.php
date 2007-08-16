@@ -1,10 +1,10 @@
 <?php
 
-class SimplePie_Date_Test_RFC822_15 extends SimplePie_Date_Test
+class SimplePie_Date_Test_RFC2822_15 extends SimplePie_Date_Test
 {
 	function data()
 	{
-		$this->data = 'Fri, 05 Nov 94 11:15:30 B';
+		$this->data = 'Fri, 05 Nov 94 13:15:30 B';
 	}
 	
 	function expected()

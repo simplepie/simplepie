@@ -3384,7 +3384,7 @@ class SimplePie_Item
 
 			if (!empty($this->data['date']['raw']))
 			{
-				$parser = Parse_Date::get();
+				$parser = SimplePie_Parse_Date::get();
 				$this->data['date']['parsed'] = $parser->parse($this->data['date']['raw']);
 			}
 			else
@@ -9458,7 +9458,7 @@ class SimplePie_Misc
 
 	function parse_date($dt)
 	{
-		$parser = Parse_Date::get();
+		$parser = SimplePie_Parse_Date::get();
 		return $parser->parse($dt);
 	}
 
@@ -10075,7 +10075,7 @@ class SimplePie_Decode_HTML_Entities
  *
  * @package SimplePie
  */
-class Parse_Date
+class SimplePie_Parse_Date
 {
 	/**
 	 * Input data
@@ -10524,14 +10524,14 @@ class Parse_Date
 	);
 
 	/**
-	 * Cached PCRE for Parse_Date::$day
+	 * Cached PCRE for SimplePie_Parse_Date::$day
 	 *
 	 * @var string
 	 */
 	protected $day_pcre;
 
 	/**
-	 * Cached PCRE for Parse_Date::$month
+	 * Cached PCRE for SimplePie_Parse_Date::$month
 	 *
 	 * @var string
 	 */
@@ -10552,7 +10552,7 @@ class Parse_Date
 	private $user = array();
 
 	/**
-	 * Create new Parse_Date object, with specific date string
+	 * Create new SimplePie_Parse_Date object, with specific date string
 	 *
 	 * @param string $date Date string to parse
 	 */
@@ -10602,7 +10602,7 @@ class Parse_Date
 		static $object;
 		if (!$object)
 		{
-			$object = new Parse_Date;
+			$object = new SimplePie_Parse_Date;
 		}
 		return $object;
 	}

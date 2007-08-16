@@ -1,6 +1,6 @@
 <?php
 
-class SimplePie_Date_Test_RFC822_Mismatch_Name_Of_Day extends SimplePie_Date_Test
+class SimplePie_Date_Test_RFC2822_Mismatch_Name_Of_Day extends SimplePie_Date_Test
 {
 	function data()
 	{

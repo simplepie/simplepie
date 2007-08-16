@@ -1,6 +1,6 @@
 <?php
 
-class SimplePie_Date_Test_RFC822_3 extends SimplePie_Date_Test
+class SimplePie_Date_Test_RFC2822_3 extends SimplePie_Date_Test
 {
 	function data()
 	{
