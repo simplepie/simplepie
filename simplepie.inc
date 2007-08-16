@@ -10080,16 +10080,18 @@ class SimplePie_Parse_Date
 	/**
 	 * Input data
 	 *
+	 * @access protected
 	 * @var string
 	 */
-	protected $date;
+	var $date;
 
 	/**
 	 * List of days, calendar day name => ordinal day number in the week
 	 *
+	 * @access protected
 	 * @var array
 	 */
-	protected $day = array(
+	var $day = array(
 		// English
 		'mon' => 1,
 		'monday' => 1,
@@ -10175,9 +10177,10 @@ class SimplePie_Parse_Date
 	/**
 	 * List of months, calendar month name => calendar month number
 	 *
+	 * @access protected
 	 * @var array
 	 */
-	protected $month = array(
+	var $month = array(
 		// English
 		'jan' => 1,
 		'january' => 1,
@@ -10319,9 +10322,10 @@ class SimplePie_Parse_Date
 	/**
 	 * List of timezones, abbreviation => offset from UTC
 	 *
+	 * @access protected
 	 * @var array
 	 */
-	protected $timezone = array(
+	var $timezone = array(
 		'ACDT' => 37800,
 		'ACIT' => 28800,
 		'ACST' => 34200,
@@ -10526,37 +10530,42 @@ class SimplePie_Parse_Date
 	/**
 	 * Cached PCRE for SimplePie_Parse_Date::$day
 	 *
+	 * @access protected
 	 * @var string
 	 */
-	protected $day_pcre;
+	var $day_pcre;
 
 	/**
 	 * Cached PCRE for SimplePie_Parse_Date::$month
 	 *
+	 * @access protected
 	 * @var string
 	 */
-	protected $month_pcre;
+	var $month_pcre;
 
 	/**
 	 * Array of user-added callback methods
 	 *
+	 * @access private
 	 * @var array
 	 */
-	private $built_in = array();
+	var $built_in = array();
 
 	/**
 	 * Array of user-added callback methods
 	 *
+	 * @access private
 	 * @var array
 	 */
-	private $user = array();
+	var $user = array();
 
 	/**
-	 * Create new SimplePie_Parse_Date object, with specific date string
+	 * Create new SimplePie_Parse_Date object, and set self::day_pcre,
+	 * self::month_pcre, and self::built_in
 	 *
-	 * @param string $date Date string to parse
+	 * @access private
 	 */
-	private function __construct()
+	function SimplePie_Parse_Date()
 	{
 		$this->day_pcre = '(' . implode(array_keys($this->day), '|') . ')';
 		$this->month_pcre = '(' . implode(array_keys($this->month), '|') . ')';
@@ -10596,8 +10605,10 @@ class SimplePie_Parse_Date
 	
 	/**
 	 * Get the object
+	 *
+	 * @access public
 	 */
-	public function get()
+	function get()
 	{
 		static $object;
 		if (!$object)
@@ -10608,11 +10619,14 @@ class SimplePie_Parse_Date
 	}
 
 	/**
-	 * Parse the date
+	 * Parse a date
 	 *
+	 * @final
+	 * @access public
+	 * @param string $date Date to parse
 	 * @return int Timestamp corresponding to date string, or false on failure
 	 */
-	final public function parse($date)
+	function parse($date)
 	{
 		foreach ($this->user as $method)
 		{
@@ -10636,9 +10650,11 @@ class SimplePie_Parse_Date
 	/**
 	 * Add a callback method to parse a date
 	 *
+	 * @final
+	 * @access public
 	 * @param callback $callback
 	 */
-	final public function add_callback($callback)
+	function add_callback($callback)
 	{
 		if (is_callable($callback))
 		{
@@ -10646,7 +10662,7 @@ class SimplePie_Parse_Date
 		}
 		else
 		{
-			throw new Exception('Callback is not callable');
+			trigger_error('User-supplied function must be a valid callback', E_USER_WARNING);
 		}
 	}
 
@@ -10655,9 +10671,10 @@ class SimplePie_Parse_Date
 	 * well as allowing any of upper or lower case "T", horizontal tabs, or
 	 * spaces to be used as the time seperator (including more than one))
 	 *
+	 * @access protected
 	 * @return int Timestamp
 	 */
-	protected function date_w3cdtf($date)
+	function date_w3cdtf($date)
 	{
 		static $pcre;
 		if (!$pcre)
@@ -10725,10 +10742,11 @@ class SimplePie_Parse_Date
 	/**
 	 * Remove RFC822 comments
 	 *
+	 * @access protected
 	 * @param string $data Data to strip comments from
 	 * @return string Comment stripped string
 	 */
-	protected function remove_rfc2822_comments($string)
+	function remove_rfc2822_comments($string)
 	{
 		$string = (string) $string;
 		$position = 0;
@@ -10785,9 +10803,10 @@ class SimplePie_Parse_Date
 	/**
 	 * Parse RFC2822's date format
 	 *
+	 * @access protected
 	 * @return int Timestamp
 	 */
-	protected function date_rfc2822($date)
+	function date_rfc2822($date)
 	{
 		static $pcre;
 		if (!$pcre)
@@ -10877,9 +10896,10 @@ class SimplePie_Parse_Date
 	/**
 	 * Parse RFC850's date format
 	 *
+	 * @access protected
 	 * @return int Timestamp
 	 */
-	protected function date_rfc850($date)
+	function date_rfc850($date)
 	{
 		static $pcre;
 		if (!$pcre)
@@ -10941,9 +10961,10 @@ class SimplePie_Parse_Date
 	/**
 	 * Parse C99's asctime()'s date format
 	 *
+	 * @access protected
 	 * @return int Timestamp
 	 */
-	protected function date_asctime($date)
+	function date_asctime($date)
 	{
 		static $pcre;
 		if (!$pcre)
@@ -10982,9 +11003,10 @@ class SimplePie_Parse_Date
 	/**
 	 * Parse dates using strtotime()
 	 *
+	 * @access protected
 	 * @return int Timestamp
 	 */
-	protected function date_strtotime($date)
+	function date_strtotime($date)
 	{
 		$strtotime = strtotime($date);
 		if ($strtotime === -1 || $strtotime === false)
