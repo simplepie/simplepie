@@ -718,7 +718,7 @@ class SimplePie
 	 */
 	function set_file(&$file)
 	{
-		if (SimplePie_Misc::is_a($file, 'SimplePie_File'))
+		if (is_a($file, 'SimplePie_File'))
 		{
 			$this->feed_url = $file->url;
 			$this->file =& $file;
@@ -1473,7 +1473,7 @@ function embed_wmedia(width, height, link) {
 				// If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
 				if (!isset($file))
 				{
-					if (SimplePie_Misc::is_a($this->file, 'SimplePie_File') && $this->file->url == $this->feed_url)
+					if (is_a($this->file, 'SimplePie_File') && $this->file->url == $this->feed_url)
 					{
 						$file =& $this->file;
 					}
@@ -2865,7 +2865,7 @@ function embed_wmedia(width, height, link) {
 			$items = array();
 			foreach ($urls as $arg)
 			{
-				if (SimplePie_Misc::is_a($arg, 'SimplePie'))
+				if (is_a($arg, 'SimplePie'))
 				{
 					$items = array_merge($items, $arg->get_items());
 				}
@@ -6915,14 +6915,7 @@ class SimplePie_File
 				}
 				else
 				{
-					if (function_exists('stream_set_timeout'))
-					{
-						stream_set_timeout($fp, $timeout);
-					}
-					else
-					{
-						socket_set_timeout($fp, $timeout);
-					}
+					stream_set_timeout($fp, $timeout);
 					if (isset($url_parts['path']))
 					{
 						if (isset($url_parts['query']))
@@ -6957,27 +6950,13 @@ class SimplePie_File
 					$out .= "Connection: Close\r\n\r\n";
 					fwrite($fp, $out);
 
-					if (function_exists('stream_get_meta_data'))
-					{
-						$info = stream_get_meta_data($fp);
-					}
-					else
-					{
-						$info = socket_get_status($fp);
-					}
+					$info = stream_get_meta_data($fp);
 
 					$this->headers = '';
 					while (!$info['eof'] && !$info['timed_out'])
 					{
 						$this->headers .= fread($fp, 1160);
-						if (function_exists('stream_get_meta_data'))
-						{
-							$info = stream_get_meta_data($fp);
-						}
-						else
-						{
-							$info = socket_get_status($fp);
-						}
+						$info = stream_get_meta_data($fp);
 					}
 					if (!$info['timed_out'])
 					{
@@ -7012,31 +6991,13 @@ class SimplePie_File
 				}
 			}
 		}
-		elseif (function_exists('file_get_contents'))
+		else
 		{
 			$this->method = 'file_get_contents';
 			if (!$this->body = file_get_contents($url))
 			{
 				$this->error = 'file_get_contents could not read the file';
 				$this->success = false;
-			}
-		}
-		else
-		{
-			$this->method = 'fopen';
-			if (($fp = fopen($url, 'rb')) === false)
-			{
-				$this->error = 'failed to open stream: No such file or directory';
-				$this->success = false;
-			}
-			else
-			{
-				$this->body = '';
-				while (!feof($fp))
-				{
-					$this->body .= fread($fp, 8192);
-				}
-				fclose($fp);
 			}
 		}
 	}
@@ -7522,20 +7483,7 @@ class SimplePie_Cache_File
 
 			$data = serialize($data);
 
-			if (function_exists('file_put_contents'))
-			{
-				return (bool) file_put_contents($this->name, $data);
-			}
-			else
-			{
-				$fp = fopen($this->name, 'wb');
-				if ($fp)
-				{
-					fwrite($fp, $data);
-					fclose($fp);
-					return true;
-				}
-			}
+			return (bool) file_put_contents($this->name, $data);
 		}
 		return false;
 	}
@@ -7544,20 +7492,7 @@ class SimplePie_Cache_File
 	{
 		if (file_exists($this->name) && is_readable($this->name))
 		{
-			if (function_exists('file_get_contents'))
-			{
-				return unserialize(file_get_contents($this->name));
-			}
-			elseif (($fp = fopen($this->name, 'rb')) !== false)
-			{
-				$data = '';
-				while (!feof($fp))
-				{
-					$data .= fread($fp, 8192);
-				}
-				fclose($fp);
-				return unserialize($data);
-			}
+			return unserialize(file_get_contents($this->name));
 		}
 		return false;
 	}
@@ -9756,35 +9691,6 @@ class SimplePie_Misc
 		{
 			// U+FFFD REPLACEMENT CHARACTER
 			return $cache[$codepoint] = "\xEF\xBF\xBD";
-		}
-	}
-
-	/**
-	 * Re-implementation of PHP 4.2.0's is_a()
-	 *
-	 * @static
-	 * @access public
-	 * @param object $object The tested object
-	 * @param string $class_name The class name
-	 * @return bool Returns true if the object is of this class or has this class as one of its parents, false otherwise
-	 */
-	function is_a($object, $class_name)
-	{
-		if (function_exists('is_a'))
-		{
-			return is_a($object, $class_name);
-		}
-		elseif (!is_object($object))
-		{
-			return false;
-		}
-		elseif (get_class($object) == strtolower($class_name))
-		{
-			return true;
-		}
-		else
-		{
-			return is_subclass_of($object, $class_name);
 		}
 	}
 
