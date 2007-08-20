@@ -68,7 +68,7 @@ define('SIMPLEPIE_URL', 'http://simplepie.org/');
  * SimplePie Useragent
  * @see SimplePie::set_useragent()
  */
-define('SIMPLEPIE_USERAGENT', SIMPLEPIE_NAME . '/' . SIMPLEPIE_VERSION . ' (Feed Parser; ' . SIMPLEPIE_URL . '; Allow like Gecko) Build/' . SIMPLEPIE_BUILD);
+define('SIMPLEPIE_USERAGENT', SIMPLEPIE_NAME . '/' . SIMPLEPIE_VERSION . ' (Feed Parser; Allow like Gecko) Build/' . SIMPLEPIE_BUILD);
 
 /**
  * SimplePie Linkback
