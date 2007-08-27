@@ -7483,7 +7483,20 @@ class SimplePie_Cache_File
 
 			$data = serialize($data);
 
-			return (bool) file_put_contents($this->name, $data);
+			if (function_exists('file_put_contents'))
+			{
+				return (bool) file_put_contents($this->name, $data);
+			}
+			else
+			{
+				$fp = fopen($this->name, 'wb');
+				if ($fp)
+				{
+					fwrite($fp, $data);
+					fclose($fp);
+					return true;
+				}
+			}
 		}
 		return false;
 	}
