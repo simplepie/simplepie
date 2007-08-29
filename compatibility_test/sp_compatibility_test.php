@@ -17,7 +17,7 @@ else if (isset($_GET['background']))
 $php_ok = (function_exists('version_compare') && version_compare(phpversion(), '4.3.0', '>='));
 $xml_ok = extension_loaded('xml');
 $pcre_ok = extension_loaded('pcre');
-$curl_ok = (extension_loaded('curl'));
+$curl_ok = function_exists('curl_exec');
 $zlib_ok = extension_loaded('zlib');
 $mbstring_ok = extension_loaded('mbstring');
 $iconv_ok = extension_loaded('iconv');

@@ -6835,7 +6835,7 @@ class SimplePie_File
 			{
 				$headers = array();
 			}
-			if (!$force_fsockopen && extension_loaded('curl'))
+			if (!$force_fsockopen && function_exists('curl_exec'))
 			{
 				$this->method = 'curl';
 				$fp = curl_init();
