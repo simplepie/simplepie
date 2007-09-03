@@ -11430,7 +11430,13 @@ class SimplePie_Parser
 				{
 					$separator_length = strlen($this->separator);
 				}
-				$cache[$string] = array(substr($string, 0, $pos), substr($string, $pos + $separator_length));
+				$namespace = substr($string, 0, $pos);
+				$local_name = substr($string, $pos + $separator_length);
+				if (strtolower($namespace) === SIMPLEPIE_NAMESPACE_ITUNES)
+				{
+					$namespace = SIMPLEPIE_NAMESPACE_ITUNES;
+				}
+				$cache[$string] = array($namespace, $local_name);
 			}
 			else
 			{
