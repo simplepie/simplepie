@@ -1525,120 +1525,110 @@ function embed_wmedia(width, height, link) {
 				$locate = null;
 
 				$headers = $file->headers;
-				$data = trim($file->body);
-				unset($file);
+				$data = $file->body;
+				$sniffer = new SimplePie_Content_Type_Sniffer($file);
+				$sniffed = $sniffer->get_type();
 			}
 			else
 			{
 				$data = $this->raw_data;
 			}
+			
+			// Set up array of possible encodings
+			$encodings = array();
 
 			// First check to see if input has been overridden.
 			if ($this->input_encoding !== false)
 			{
-				$encoding = $this->input_encoding;
+				$encodings[] = $this->input_encoding;
 			}
-			// Second try HTTP headers
-			elseif (isset($headers['content-type']) && preg_match('/;[\x09\x20]*charset=([^;]*)/i', $headers['content-type'], $charset))
+			
+			$application_types = array('application/xml', 'application/xml-dtd', 'application/xml-external-parsed-entity');
+			$text_types = array('text/xml', 'text/xml-external-parsed-entity');
+			
+			// RFC 3023
+			if (in_array($sniffed, $application_types) || substr($sniffed, 0, 12) === 'application/' && substr($sniffed, -4) === '+xml')
 			{
-				$encoding = $charset[1];
+				if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
+				{
+					$encodings[] = strtoupper($charset[1]);
+				}
+				$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
+				$encodings[] = 'UTF-8';
 			}
-			// Then prolog, if at the very start of the document
-			elseif (preg_match("/^<\?xml[\x20\x9\xD\xA]+version([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"1.0\"|'1.0'|\"1.1\"|'1.1')[\x20\x9\xD\xA]+encoding([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"[A-Za-z][A-Za-z0-9._\-]*\"|'[A-Za-z][A-Za-z0-9._\-]*')([\x20\x9\xD\xA]+standalone([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"(yes|no)\"|'(yes|no)'))?([\x20\x9\xD\xA]+)?\?>/", $data, $prolog))
+			elseif (in_array($sniffed, $text_types) || substr($sniffed, 0, 5) === 'text/' && substr($sniffed, -4) === '+xml')
 			{
-				$encoding = substr($prolog[6], 1, -1);
+				if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
+				{
+					$encodings[] = $charset[1];
+				}
+				$encodings[] = 'US-ASCII';
 			}
-			// UTF-32 Big Endian BOM
-			elseif (strpos($data, "\x0\x0\xFE\xFF") === 0)
+			// Text MIME-type default
+			elseif (substr($sniffed, 0, 5) === 'text/')
 			{
-				$encoding = 'UTF-32be';
+				$encodings[] = 'US-ASCII';
 			}
-			// UTF-32 Little Endian BOM
-			elseif (strpos($data, "\xFF\xFE\x0\x0") === 0)
-			{
-				$encoding = 'UTF-32';
-			}
-			// UTF-16 Big Endian BOM
-			elseif (strpos($data, "\xFE\xFF") === 0)
-			{
-				$encoding = 'UTF-16be';
-			}
-			// UTF-16 Little Endian BOM
-			elseif (strpos($data, "\xFF\xFE") === 0)
-			{
-				$encoding = 'UTF-16le';
-			}
-			// UTF-8 BOM
-			elseif (strpos($data, "\xEF\xBB\xBF") === 0)
-			{
-				$encoding = 'UTF-8';
-			}
-			// Fallback to the default (US-ASCII for text/xml, ISO-8859-1 for text/* MIME types, UTF-8 otherwise)
-			elseif (isset($headers['content-type']) && strtolower(SimplePie_Misc::parse_mime($headers['content-type'])) == 'text/xml')
-			{
-				$encoding = 'US-ASCII';
-			}
-			elseif (isset($headers['content-type']) && SimplePie_Misc::stripos(SimplePie_Misc::parse_mime($headers['content-type']), 'text/') === 0)
-			{
-				$encoding = 'ISO-8859-1';
-			}
-			else
-			{
-				$encoding = 'UTF-8';
-			}
-
-			// Change the encoding to UTF-8 (as we always use UTF-8 internally)
-			if ($encoding != 'UTF-8')
-			{
-				$data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
-			}
-
-			// Strip illegal characters
-			$data = SimplePie_Misc::utf8_bad_replace($data);
-
-			$parser =& new $this->parser_class();
-			$parser->pre_process($data, 'UTF-8');
-			// If we want the XML, just output that and quit
+			
+			// Fallback to XML 1.0 Appendix F.1/UTF-8/ISO-8859-1
+			$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
+			$encodings[] = 'UTF-8';
+			$encodings[] = 'ISO-8859-1';
+			
+			// There's no point in trying an encoding twice
+			$encodings = array_unique($encodings);
+			
+			// If we want the XML, just output that with the most likely encoding and quit
 			if ($this->xml_dump)
 			{
-				header('Content-type: text/xml; charset=UTF-8');
+				header('Content-type: text/xml; charset=' . $encodings[0]);
 				echo $data;
 				exit;
 			}
-			// If it's parsed fine
-			elseif ($parser->parse($data))
+			
+			// Loop through each possible encoding, till we return something, or run out of possibilities
+			foreach ($encodings as $encoding)
 			{
-				unset($data);
-				$this->data = $parser->get_data();
-				if (isset($this->data['child']))
-				{
-					if (isset($headers))
-					{
-						$this->data['headers'] = $headers;
-					}
-					$this->data['build'] = SIMPLEPIE_BUILD;
+				// Change the encoding to UTF-8 (as we always use UTF-8 internally)
+				$utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
+	
+				// Strip illegal characters
+				$utf8_data = SimplePie_Misc::utf8_bad_replace($utf8_data);
 
-					// Cache the file if caching is enabled
-					if ($cache && !$cache->save($this))
-					{
-						trigger_error("$cache->name is not writeable", E_USER_WARNING);
-					}
-					return true;
-				}
-				else
+				// Create new parser
+				$parser =& new $this->parser_class();
+				
+				// If it's parsed fine
+				if ($parser->parse($utf8_data, 'UTF-8'))
 				{
-					$this->error = "A feed could not be found at $this->feed_url";
-					SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
-					return false;
+					$this->data = $parser->get_data();
+					if (isset($this->data['child']))
+					{
+						if (isset($headers))
+						{
+							$this->data['headers'] = $headers;
+						}
+						$this->data['build'] = SIMPLEPIE_BUILD;
+	
+						// Cache the file if caching is enabled
+						if ($cache && !$cache->save($this))
+						{
+							trigger_error("$cache->name is not writeable", E_USER_WARNING);
+						}
+						return true;
+					}
+					else
+					{
+						$this->error = "A feed could not be found at $this->feed_url";
+						SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+						return false;
+					}
 				}
 			}
-			// If we have an error, just set SimplePie::error to it and quit
-			else
-			{
-				$this->error = sprintf('XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
-				SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
-				return false;
-			}
+			// We have an error, just set SimplePie::error to it and quit
+			$this->error = sprintf('XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
+			SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+			return false;
 		}
 		elseif (!empty($this->multifeed_url))
 		{
@@ -7975,11 +7965,7 @@ class SimplePie_Misc
 		$input = SimplePie_Misc::encoding($input);
 		$output = SimplePie_Misc::encoding($output);
 
-		if (function_exists('iconv') && ($return = @iconv($input, "$output//IGNORE", $data)))
-		{
-			return $return;
-		}
-		elseif (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
+		if (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
 		{
 			return $return;
 		}
@@ -9794,6 +9780,113 @@ class SimplePie_Misc
 
 		return $return;
 	}
+	
+	/**
+	 * Detect XML encoding, as per XML 1.0 Appendix F.1
+	 *
+	 * @todo Add support for EBCDIC
+	 * @param string $data XML data
+	 * @return array Possible encodings
+	 */
+	function xml_encoding($data)
+	{
+		// UTF-32 Big Endian BOM
+		if (substr($data, 0, 4) === "\x00\x00\xFE\xFF")
+		{
+			$encoding[] = 'UTF-32BE';
+		}
+		// UTF-32 Little Endian BOM
+		elseif (substr($data, 0, 4) === "\xFF\xFE\x00\x00")
+		{
+			$encoding[] = 'UTF-32LE';
+		}
+		// UTF-16 Big Endian BOM
+		elseif (substr($data, 0, 2) === "\xFE\xFF")
+		{
+			$encoding[] = 'UTF-16BE';
+		}
+		// UTF-16 Little Endian BOM
+		elseif (substr($data, 0, 2) === "\xFF\xFE")
+		{
+			$encoding[] = 'UTF-16LE';
+		}
+		// UTF-8 BOM
+		elseif (substr($data, 0, 3) === "\xEF\xBB\xBF")
+		{
+			$encoding[] = 'UTF-8';
+		}
+		// UTF-32 Big Endian Without BOM
+		elseif (substr($data, 0, 20) === "\x00\x00\x00\x3C\x00\x00\x00\x3F\x00\x00\x00\x78\x00\x00\x00\x6D\x00\x00\x00\x6C")
+		{
+			if ($pos = strpos($data, "\x00\x00\x00\x3F\x00\x00\x00\x3E"))
+			{
+				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8'));
+				if ($parser->parse())
+				{
+					$encoding[] = $parser->encoding;
+				}
+			}
+			$encoding[] = 'UTF-32BE';
+		}
+		// UTF-32 Little Endian Without BOM
+		elseif (substr($data, 0, 20) === "\x3C\x00\x00\x00\x3F\x00\x00\x00\x78\x00\x00\x00\x6D\x00\x00\x00\x6C\x00\x00\x00")
+		{
+			if ($pos = strpos($data, "\x3F\x00\x00\x00\x3E\x00\x00\x00"))
+			{
+				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8'));
+				if ($parser->parse())
+				{
+					$encoding[] = $parser->encoding;
+				}
+			}
+			$encoding[] = 'UTF-32LE';
+		}
+		// UTF-16 Big Endian Without BOM
+		elseif (substr($data, 0, 10) === "\x00\x3C\x00\x3F\x00\x78\x00\x6D\x00\x6C")
+		{
+			if ($pos = strpos($data, "\x00\x3F\x00\x3E"))
+			{
+				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8'));
+				if ($parser->parse())
+				{
+					$encoding[] = $parser->encoding;
+				}
+			}
+			$encoding[] = 'UTF-16BE';
+		}
+		// UTF-16 Little Endian Without BOM
+		elseif (substr($data, 0, 10) === "\x3C\x00\x3F\x00\x78\x00\x6D\x00\x6C\x00")
+		{
+			if ($pos = strpos($data, "\x3F\x00\x3E\x00"))
+			{
+				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8'));
+				if ($parser->parse())
+				{
+					$encoding[] = $parser->encoding;
+				}
+			}
+			$encoding[] = 'UTF-16LE';
+		}
+		// US-ASCII (or superset)
+		elseif (substr($data, 0, 5) === "\x3C\x3F\x78\x6D\x6C")
+		{
+			if ($pos = strpos($data, "\x3F\x3E"))
+			{
+				$parser = new SimplePie_XML_Declaration_Parser(substr($data, 5, $pos - 5));
+				if ($parser->parse())
+				{
+					$encoding[] = $parser->encoding;
+				}
+			}
+			$encoding[] = 'UTF-8';
+		}
+		// Fallback to UTF-8
+		else
+		{
+			$encoding[] = 'UTF-8';
+		}
+		return $encoding;
+	}
 }
 
 /**
@@ -10952,6 +11045,599 @@ class SimplePie_Parse_Date
 	}
 }
 
+/**
+ * Content-type sniffing
+ *
+ * @package SimplePie
+ */
+class SimplePie_Content_Type_Sniffer
+{
+	/**
+	 * File object
+	 *
+	 * @var SimplePie_File
+	 * @access private
+	 */
+	var $file;
+	
+	/**
+	 * Create an instance of the class with the input file
+	 *
+	 * @access public
+	 * @param SimplePie_Content_Type_Sniffer $file Input file
+	 */
+	function SimplePie_Content_Type_Sniffer($file)
+	{
+		$this->file = $file;
+	}
+	
+	/**
+	 * Get the Content-Type of the specified file
+	 *
+	 * @access public
+	 * @return string Actual Content-Type
+	 */
+	public function get_type()
+	{
+		if (isset($this->file->headers['content-type']))
+		{
+			if (!isset($this->file->headers['content-encoding'])
+				&& ($this->file->headers['content-type'] === 'text/plain'
+					|| $this->file->headers['content-type'] === 'text/plain; charset=ISO-8859-1'
+					|| $this->file->headers['content-type'] === 'text/plain; charset=iso-8859-1'))
+			{
+				return $this->text_or_binary();
+			}
+			
+			if (($pos = strpos($this->file->headers['content-type'], ';')) !== false)
+			{ 
+				$official = substr($this->file->headers['content-type'], 0, $pos);
+			}
+			else
+			{
+				$official = $this->file->headers['content-type'];
+			}
+			$official = strtolower($official);
+			
+			if ($official === 'unknown/unknown'
+				|| $official === 'application/unknown')
+			{
+				return $this->unknown();
+			}
+			elseif (substr($official, -4) === '+xml'
+				|| $official === 'text/xml'
+				|| $official === 'application/xml')
+			{
+				return $official;
+			}
+			elseif (substr($official, 0, 6) === 'image/')
+			{
+				if ($return = $this->image())
+				{
+					return $return;
+				}
+				else
+				{
+					return $official;
+				}
+			}
+			elseif ($official === 'text/html')
+			{
+				return $this->feed_or_html();
+			}
+			else
+			{
+				return $official;
+			}
+		}
+		else
+		{
+			return $this->unknown();
+		}
+	}
+	
+	/**
+	 * Sniff text or binary
+	 *
+	 * @access private
+	 * @return string Actual Content-Type
+	 */
+	function text_or_binary()
+	{
+		if (substr($this->file->body, 0, 2) === "\xFE\xFF"
+			|| substr($this->file->body, 0, 2) === "\xFF\xFE"
+			|| substr($this->file->body, 0, 4) === "\x00\x00\xFE\xFF"
+			|| substr($this->file->body, 0, 3) === "\xEF\xBB\xBF")
+		{
+			return 'text/plain';
+		}
+		elseif (preg_match('/[\x00-\x08\x0E-\x1A\x1C-\x1F]/', $this->file->body))
+		{
+			return 'application/octect-stream';
+		}
+		else
+		{
+			return 'text/plain';
+		}
+	}
+	
+	/**
+	 * Sniff unknown
+	 *
+	 * @access private
+	 * @return string Actual Content-Type
+	 */
+	function unknown()
+	{
+		$ws = strspn($this->file->body, "\x09\x0A\x0B\x0C\x0D\x20");
+		if (strtolower(substr($this->file->body, $ws, 14)) === '<!doctype html'
+			|| strtolower(substr($this->file->body, $ws, 5)) === '<html'
+			|| strtolower(substr($this->file->body, $ws, 7)) === '<script')
+		{
+			return 'text/html';
+		}
+		elseif (substr($this->file->body, 0, 5) === '%PDF-')
+		{
+			return 'application/pdf';
+		}
+		elseif (substr($this->file->body, 0, 11) === '%!PS-Adobe-')
+		{
+			return 'application/postscript';
+		}
+		elseif (substr($this->file->body, 0, 6) === 'GIF87a'
+			|| substr($this->file->body, 0, 6) === 'GIF89a')
+		{
+			return 'image/gif';
+		}
+		elseif (substr($this->file->body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A")
+		{
+			return 'image/png';
+		}
+		elseif (substr($this->file->body, 0, 3) === "\xFF\xD8\xFF")
+		{
+			return 'image/jpeg';
+		}
+		elseif (substr($this->file->body, 0, 2) === "\x42\x4D")
+		{
+			return 'image/bmp';
+		}
+		else
+		{
+			return $this->text_or_binary();
+		}
+	}
+	
+	/**
+	 * Sniff images
+	 *
+	 * @access private
+	 * @return string Actual Content-Type
+	 */
+	function image()
+	{
+		if (substr($this->file->body, 0, 6) === 'GIF87a'
+			|| substr($this->file->body, 0, 6) === 'GIF89a')
+		{
+			return 'image/gif';
+		}
+		elseif (substr($this->file->body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A")
+		{
+			return 'image/png';
+		}
+		elseif (substr($this->file->body, 0, 3) === "\xFF\xD8\xFF")
+		{
+			return 'image/jpeg';
+		}
+		elseif (substr($this->file->body, 0, 2) === "\x42\x4D")
+		{
+			return 'image/bmp';
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * Sniff HTML
+	 *
+	 * @access private
+	 * @return string Actual Content-Type
+	 */
+	function feed_or_html()
+	{
+		$len = strlen($this->file->body);
+		$pos = strspn($this->file->body, "\x09\x0A\x0D\x20");
+		
+		while ($pos < $len)
+		{
+			switch ($this->file->body[$pos])
+			{
+				case "\x09":
+				case "\x0A":
+				case "\x0D":
+				case "\x20":
+					$pos += strspn($this->file->body, "\x09\x0A\x0D\x20", $pos);
+					continue 2;
+				
+				case '<':
+					$pos++;
+					break;
+				
+				default:
+					return 'text/html';
+			}
+			
+			if (substr($this->file->body, $pos, 3) === '!--')
+			{
+				$pos += 3;
+				if ($pos < $len && ($pos = strpos($this->file->body, '-->', $pos)) !== false)
+				{
+					$pos += 3;
+				}
+				else
+				{
+					return 'text/html';
+				}
+			}
+			elseif (substr($this->file->body, $pos, 1) === '!')
+			{
+				if ($pos < $len && ($pos = strpos($this->file->body, '>', $pos)) !== false)
+				{
+					$pos++;
+				}
+				else
+				{
+					return 'text/html';
+				}
+			}
+			elseif (substr($this->file->body, $pos, 1) === '?')
+			{
+				if ($pos < $len && ($pos = strpos($this->file->body, '?>', $pos)) !== false)
+				{
+					$pos += 2;
+				}
+				else
+				{
+					return 'text/html';
+				}
+			}
+			elseif (substr($this->file->body, $pos, 3) === 'rss'
+				|| substr($this->file->body, $pos, 7) === 'rdf:RDF')
+			{
+				return 'application/rss+xml';
+			}
+			elseif (substr($this->file->body, $pos, 4) === 'feed')
+			{
+				return 'application/atom+xml';
+			}
+			else
+			{
+				return 'text/html';
+			}
+		}
+		
+		return 'text/html';
+	}
+}
+
+/**
+ * Parses the XML Declaration
+ *
+ * @package SimplePie
+ */
+class SimplePie_XML_Declaration_Parser
+{
+	/**
+	 * XML Version
+	 *
+	 * @access public
+	 * @var string
+	 */
+	var $version = '1.0';
+	
+	/**
+	 * Encoding
+	 *
+	 * @access public
+	 * @var string
+	 */
+	var $encoding = 'UTF-8';
+	
+	/**
+	 * Standalone
+	 *
+	 * @access public
+	 * @var bool
+	 */
+	var $standalone = false;
+
+	/**
+	 * Current state of the state machine
+	 *
+	 * @access private
+	 * @var string
+	 */
+	var $state = 'before_version_name';
+	
+	/**
+	 * Input data
+	 *
+	 * @access private
+	 * @var string
+	 */
+	var $data = '';
+
+	/**
+	 * Input data length (to avoid calling strlen() everytime this is needed)
+	 *
+	 * @access private
+	 * @var int
+	 */
+	var $data_length = 0;
+
+	/**
+	 * Current position of the pointer
+	 *
+	 * @var int
+	 * @access private
+	 */
+	var $position = 0;
+	
+	/**
+	 * Create an instance of the class with the input data
+	 *
+	 * @access public
+	 * @param string $data Input data
+	 */
+	function SimplePie_XML_Declaration_Parser($data)
+	{
+		$this->data = $data;
+		$this->data_length = strlen($this->data);
+	}
+
+	/**
+	 * Parse the input data
+	 *
+	 * @access public
+	 * @return bool true on success, false on failure
+	 */
+	function parse()
+	{
+		while ($this->state && $this->state !== 'emit' && $this->has_data())
+		{
+			$state = $this->state;
+			$this->$state();
+		}
+		$this->data = '';
+		if ($this->state === 'emit')
+		{
+			return true;
+		}
+		else
+		{
+			$this->version = '';
+			$this->encoding = '';
+			$this->standalone = '';
+			return false;
+		}
+	}
+
+	/**
+	 * Check whether there is data beyond the pointer
+	 *
+	 * @access private
+	 * @return bool true if there is further data, false if not
+	 */
+	function has_data()
+	{
+		return (bool) ($this->position < $this->data_length);
+	}
+	
+	/**
+	 * Advance past any whitespace
+	 *
+	 * @return int Number of whitespace characters passed
+	 */
+	function skip_whitespace()
+	{
+		$whitespace = strspn($this->data, "\x09\x0A\x0D\x20", $this->position);
+		$this->position += $whitespace;
+		return $whitespace;
+	}
+	
+	/**
+	 * Read value
+	 */
+	function get_value()
+	{
+		$quote = substr($this->data, $this->position, 1);
+		if ($quote === '"' || $quote === "'")
+		{
+			$this->position++;
+			$len = strcspn($this->data, $quote, $this->position);
+			if ($this->has_data())
+			{
+				$value = substr($this->data, $this->position, $len);
+				$this->position += $len + 1;
+				return $value;
+			}
+		}
+		return false;
+	}
+	
+	function before_version_name()
+	{
+		if ($this->skip_whitespace())
+		{
+			$this->state = 'version_name';
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	function version_name()
+	{
+		if (substr($this->data, $this->position, 7) === 'version')
+		{
+			$this->position += 7;
+			$this->skip_whitespace();
+			$this->state = 'version_equals';
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	function version_equals()
+	{
+		if (substr($this->data, $this->position, 1) === '=')
+		{
+			$this->position++;
+			$this->skip_whitespace();
+			$this->state = 'version_value';
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	function version_value()
+	{
+		if ($this->version = $this->get_value())
+		{
+			$this->skip_whitespace();
+			if ($this->has_data())
+			{
+				$this->state = 'encoding_name';
+			}
+			else
+			{
+				$this->state = 'emit';
+			}
+		}
+		else
+		{
+			$this->state = 'standalone_name';
+		}
+	}
+	
+	function encoding_name()
+	{
+		if (substr($this->data, $this->position, 8) === 'encoding')
+		{
+			$this->position += 8;
+			$this->skip_whitespace();
+			$this->state = 'encoding_equals';
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	function encoding_equals()
+	{
+		if (substr($this->data, $this->position, 1) === '=')
+		{
+			$this->position++;
+			$this->skip_whitespace();
+			$this->state = 'encoding_value';
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	function encoding_value()
+	{
+		if ($this->encoding = $this->get_value())
+		{
+			$this->skip_whitespace();
+			if ($this->has_data())
+			{
+				$this->state = 'standalone_name';
+			}
+			else
+			{
+				$this->state = 'emit';
+			}
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	function standalone_name()
+	{
+		if (substr($this->data, $this->position, 10) === 'standalone')
+		{
+			$this->position += 10;
+			$this->skip_whitespace();
+			$this->state = 'standalone_equals';
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	function standalone_equals()
+	{
+		if (substr($this->data, $this->position, 1) === '=')
+		{
+			$this->position++;
+			$this->skip_whitespace();
+			$this->state = 'standalone_value';
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+	
+	function standalone_value()
+	{
+		if ($standalone = $this->get_value())
+		{
+			switch ($standalone)
+			{
+				case 'yes':
+					$this->standalone = true;
+					break;
+				
+				case 'no':
+					$this->standalone = false;
+					break;
+				
+				default:
+					$this->state = false;
+					return;
+			}
+			
+			$this->skip_whitespace();
+			if ($this->has_data())
+			{
+				$this->state = false;
+			}
+			else
+			{
+				$this->state = 'emit';
+			}
+		}
+		else
+		{
+			$this->state = false;
+		}
+	}
+}
+
 class SimplePie_Locator
 {
 	var $useragent;
@@ -11020,12 +11706,16 @@ class SimplePie_Locator
 
 	function is_feed(&$file)
 	{
-		$body = SimplePie_Misc::strip_comments($file->body);
-		if (preg_match('/<([^\s:]+:)?(rss|RDF|feed)' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/i', $body))
+		$sniffer = new SimplePie_Content_Type_Sniffer($file);
+		$sniffed = $sniffer->get_type();
+		if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml')))
 		{
 			return true;
 		}
-		return false;
+		else
+		{
+			return false;
+		}
 	}
 
 	function get_base()
@@ -11177,7 +11867,6 @@ class SimplePie_Locator
 
 class SimplePie_Parser
 {
-	var $xml;
 	var $error_code;
 	var $error_string;
 	var $current_line;
@@ -11195,7 +11884,7 @@ class SimplePie_Parser
 	var $current_xhtml_construct = -1;
 	var $encoding;
 
-	function pre_process(&$data, $encoding)
+	function parse(&$data, $encoding)
 	{
 		// Use UTF-8 if we get passed US-ASCII, as every US-ASCII character is a UTF-8 character
 		if (strtoupper($encoding) == 'US-ASCII')
@@ -11209,60 +11898,66 @@ class SimplePie_Parser
 
 		// Strip BOM:
 		// UTF-32 Big Endian BOM
-		if (strpos($data, "\x0\x0\xFE\xFF") === 0)
+		if (substr($data, 0, 4) === "\x00\x00\xFE\xFF")
 		{
 			$data = substr($data, 4);
 		}
 		// UTF-32 Little Endian BOM
-		elseif (strpos($data, "\xFF\xFE\x0\x0") === 0)
+		elseif (substr($data, 0, 4) === "\xFF\xFE\x00\x00")
 		{
 			$data = substr($data, 4);
 		}
 		// UTF-16 Big Endian BOM
-		elseif (strpos($data, "\xFE\xFF") === 0)
+		elseif (substr($data, 0, 2) === "\xFE\xFF")
 		{
 			$data = substr($data, 2);
 		}
 		// UTF-16 Little Endian BOM
-		elseif (strpos($data, "\xFF\xFE") === 0)
+		elseif (substr($data, 0, 2) === "\xFF\xFE")
 		{
 			$data = substr($data, 2);
 		}
 		// UTF-8 BOM
-		elseif (strpos($data, "\xEF\xBB\xBF") === 0)
+		elseif (substr($data, 0, 3) === "\xEF\xBB\xBF")
 		{
 			$data = substr($data, 3);
 		}
-
-		// Make sure the XML prolog is sane and has the correct encoding
-		$data = preg_replace("/^<\?xml[\x20\x9\xD\xA]+version([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"1.0\"|'1.0'|\"1.1\"|'1.1')([\x20\x9\xD\xA]+encoding([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"[A-Za-z][A-Za-z0-9._\-]*\"|'[A-Za-z][A-Za-z0-9._\-]*'))?([\x20\x9\xD\xA]+standalone([\x20\x9\xD\xA]+)?=([\x20\x9\xD\xA]+)?(\"(yes|no)\"|'(yes|no)'))?([\x20\x9\xD\xA]+)?\?>/", '', $data);
-		$data = "<?xml version='1.0' encoding='$encoding'?>\n" . $data;
-	}
-
-	function parse(&$data)
-	{
+		
+		if (substr($data, 0, 5) === '<?xml' && ($pos = strpos($data, '?>')) !== false)
+		{
+			$declaration = new SimplePie_XML_Declaration_Parser(substr($data, 5, $pos - 5));
+			if ($declaration->parse())
+			{
+				$data = substr($data, $pos + 2);
+				$data = '<?xml version="' . $declaration->version . '" encoding="' . $encoding . '" standalone="' . (($declaration->standalone) ? 'yes' : 'no') . '"?>' . $data;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
 		$return = true;
 
 		// Create the parser
-		$this->xml = xml_parser_create_ns($this->encoding, $this->separator);
-		xml_parser_set_option($this->xml, XML_OPTION_SKIP_WHITE, 1);
-		xml_parser_set_option($this->xml, XML_OPTION_CASE_FOLDING, 0);
-		xml_set_object($this->xml, $this);
-		xml_set_character_data_handler($this->xml, 'cdata');
-		xml_set_element_handler($this->xml, 'tag_open', 'tag_close');
+		$xml = xml_parser_create_ns($this->encoding, $this->separator);
+		xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE, 1);
+		xml_parser_set_option($xml, XML_OPTION_CASE_FOLDING, 0);
+		xml_set_object($xml, $this);
+		xml_set_character_data_handler($xml, 'cdata');
+		xml_set_element_handler($xml, 'tag_open', 'tag_close');
 
 		// Parse!
-		if (!xml_parse($this->xml, $data, true))
+		if (!xml_parse($xml, $data, true))
 		{
-			$this->data = null;
-			$this->error_code = xml_get_error_code($this->xml);
+			$this->error_code = xml_get_error_code($xml);
 			$this->error_string = xml_error_string($this->error_code);
 			$return = false;
 		}
-		$this->current_line = xml_get_current_line_number($this->xml);
-		$this->current_column = xml_get_current_column_number($this->xml);
-		$this->current_byte = xml_get_current_byte_index($this->xml);
-		xml_parser_free($this->xml);
+		$this->current_line = xml_get_current_line_number($xml);
+		$this->current_column = xml_get_current_column_number($xml);
+		$this->current_byte = xml_get_current_byte_index($xml);
+		xml_parser_free($xml);
 		return $return;
 	}
 
