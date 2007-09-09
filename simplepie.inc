@@ -1774,6 +1774,7 @@ function embed_wmedia(width, height, link) {
 	/**
 	 * Returns the URL for the favicon of the feed's website.
 	 *
+	 * @todo Cache atom:icon
 	 * @access public
 	 * @since 1.0
 	 */
@@ -1801,14 +1802,18 @@ function embed_wmedia(width, height, link) {
 
 					if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
 					{
-						if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+						$sniffer = new SimplePie_Content_Type_Sniffer($file);
+						if (substr($sniffer->get_type(), 0, 6) === 'image/')
 						{
-							return $this->sanitize($this->favicon_handler . rawurlencode($favicon), SIMPLEPIE_CONSTRUCT_IRI);
-						}
-						else
-						{
-							trigger_error("$cache->name is not writeable", E_USER_WARNING);
-							return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
+							if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+							{
+								return $this->sanitize($this->favicon_handler . rawurlencode($favicon), SIMPLEPIE_CONSTRUCT_IRI);
+							}
+							else
+							{
+								trigger_error("$cache->name is not writeable", E_USER_WARNING);
+								return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
+							}
 						}
 					}
 				}
