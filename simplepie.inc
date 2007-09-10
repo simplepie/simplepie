@@ -333,6 +333,36 @@ define('SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY', 'http://www.iana.org/assignment
 define('SIMPLEPIE_PHP5', version_compare(PHP_VERSION, '5.0.0', '>='));
 
 /**
+ * No file source
+ */
+define('SIMPLEPIE_FILE_SOURCE_NONE', 0);
+
+/**
+ * Remote file source
+ */
+define('SIMPLEPIE_FILE_SOURCE_REMOTE', 1);
+
+/**
+ * Local file source
+ */
+define('SIMPLEPIE_FILE_SOURCE_LOCAL', 2);
+
+/**
+ * fsockopen() file source
+ */
+define('SIMPLEPIE_FILE_SOURCE_FSOCKOPEN', 4);
+
+/**
+ * cURL file source
+ */
+define('SIMPLEPIE_FILE_SOURCE_CURL', 8);
+
+/**
+ * file_get_contents() file source
+ */
+define('SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS', 16);
+
+/**
  * SimplePie
  *
  * @package SimplePie
@@ -6807,7 +6837,7 @@ class SimplePie_File
 	var $status_code;
 	var $redirects = 0;
 	var $error;
-	var $method;
+	var $method = SIMPLEPIE_FILE_SOURCE_NONE;
 
 	function SimplePie_File($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
 	{
@@ -6832,7 +6862,7 @@ class SimplePie_File
 			}
 			if (!$force_fsockopen && function_exists('curl_exec'))
 			{
-				$this->method = 'curl';
+				$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE | SIMPLEPIE_FILE_SOURCE_CURL;
 				$fp = curl_init();
 				$headers2 = array();
 				foreach ($headers as $key => $value)
@@ -6891,7 +6921,7 @@ class SimplePie_File
 			}
 			else
 			{
-				$this->method = 'fsockopen';
+				$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE | SIMPLEPIE_FILE_SOURCE_FSOCKOPEN;
 				$url_parts = parse_url($url);
 				if (isset($url_parts['scheme']) && strtolower($url_parts['scheme']) == 'https')
 				{
@@ -6988,7 +7018,7 @@ class SimplePie_File
 		}
 		else
 		{
-			$this->method = 'file_get_contents';
+			$this->method = SIMPLEPIE_FILE_SOURCE_LOCAL | SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS;
 			if (!$this->body = file_get_contents($url))
 			{
 				$this->error = 'file_get_contents could not read the file';
@@ -11711,9 +11741,20 @@ class SimplePie_Locator
 
 	function is_feed(&$file)
 	{
-		$sniffer = new SimplePie_Content_Type_Sniffer($file);
-		$sniffed = $sniffer->get_type();
-		if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml')))
+		if ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
+		{
+			$sniffer = new SimplePie_Content_Type_Sniffer($file);
+			$sniffed = $sniffer->get_type();
+			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml')))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		elseif ($file->method & SIMPLEPIE_FILE_SOURCE_LOCAL)
 		{
 			return true;
 		}
