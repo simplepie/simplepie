@@ -11928,7 +11928,7 @@ class SimplePie_Parser
 			$data = substr($data, 3);
 		}
 		
-		if (substr($data, 0, 5) === '<?xml' && ($pos = strpos($data, '?>')) !== false)
+		if (substr($data, 0, 5) === '<?xml' && strspn(substr($data, 5, 1), "\x09\x0A\x0D\x20") && ($pos = strpos($data, '?>')) !== false)
 		{
 			$declaration = new SimplePie_XML_Declaration_Parser(substr($data, 5, $pos - 5));
 			if ($declaration->parse())
@@ -11938,6 +11938,7 @@ class SimplePie_Parser
 			}
 			else
 			{
+				$this->error_string = 'SimplePie bug! Please report this!';
 				return false;
 			}
 		}
