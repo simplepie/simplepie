@@ -592,6 +592,34 @@ class SimplePie
 	var $restriction_class = 'SimplePie_Restriction';
 
 	/**
+	 * @var string Class used for content-type sniffing
+	 * @see SimplePie::set_content_type_sniffer_class()
+	 * @access private
+	 */
+	var $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
+
+	/**
+	 * @var string Class used for decoding HTML entities.
+	 * @see SimplePie::set_decode_html_entities_class()
+	 * @access private
+	 */
+	var $decode_html_entities_class = 'SimplePie_Decode_HTML_Entities';
+
+	/**
+	 * @var string Class used for parsing dates.
+	 * @see SimplePie::set_parse_date_class()
+	 * @access private
+	 */
+	var $parse_date_class = 'SimplePie_Parse_Date';
+
+	/**
+	 * @var string Class used for parsing the XML declaration.
+	 * @see SimplePie::set_xml_declaration_parser_class()
+	 * @access private
+	 */
+	var $xml_declaration_parser_class = 'SimplePie_XML_Declaration_Parser';
+
+	/**
 	 * @var mixed Set javascript query string parameter (false, or
 	 * anything type-cast to false, disables this feature)
 	 * @see SimplePie::set_javascript()
@@ -1181,6 +1209,82 @@ class SimplePie
 		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Restriction'))
 		{
 			$this->restriction_class = $class;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Allows you to change which class SimplePie uses for content-type sniffing.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 *
+	 * @access public
+	 * @param string $class Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
+	 */
+	function set_content_type_sniffer_class($class = 'SimplePie_Content_Type_Sniffer')
+	{
+		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Content_Type_Sniffer'))
+		{
+			$this->content_type_sniffer_class = $class;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Allows you to change which class SimplePie uses for decoding HTML entities.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 *
+	 * @access public
+	 * @param string $class Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
+	 */
+	function set_decode_html_entities_class($class = 'SimplePie_Decode_HTML_Entities')
+	{
+		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Decode_HTML_Entities'))
+		{
+			$this->decode_html_entities_class = $class;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Allows you to change which class SimplePie uses for parsing dates.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 *
+	 * @access public
+	 * @param string $class Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
+	 */
+	function set_parse_date_class($class = 'SimplePie_Parse_Date')
+	{
+		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Parse_Date'))
+		{
+			$this->parse_date_class = $class;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Allows you to change which class SimplePie uses for parsing XML declarations.
+	 * Useful when you are overloading or extending SimplePie's default classes.
+	 *
+	 * @access public
+	 * @param string $class Name of custom class.
+	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
+	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
+	 */
+	function set_xml_declaration_parser_class($class = 'SimplePie_Parse_Date')
+	{
+		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Parse_Date'))
+		{
+			$this->xml_declaration_parser_class = $class;
 			return true;
 		}
 		return false;
