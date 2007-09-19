@@ -11807,6 +11807,15 @@ class SimplePie_Locator
 		{
 			return $this->file;
 		}
+		
+		if ($this->file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
+		{
+			$sniffer = new SimplePie_Content_Type_Sniffer($this->file);
+			if ($sniffer->get_type() !== 'text/html')
+			{
+				return null;
+			}
+		}
 
 		if ($type & ~SIMPLEPIE_LOCATOR_NONE)
 		{
