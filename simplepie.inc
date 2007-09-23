@@ -1680,28 +1680,31 @@ function embed_wmedia(width, height, link) {
 			$application_types = array('application/xml', 'application/xml-dtd', 'application/xml-external-parsed-entity');
 			$text_types = array('text/xml', 'text/xml-external-parsed-entity');
 			
-			// RFC 3023
-			if (in_array($sniffed, $application_types) || substr($sniffed, 0, 12) === 'application/' && substr($sniffed, -4) === '+xml')
+			// RFC 3023 (only applies to sniffed content)
+			if (isset($sniffed))
 			{
-				if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
+				if (in_array($sniffed, $application_types) || substr($sniffed, 0, 12) === 'application/' && substr($sniffed, -4) === '+xml')
 				{
-					$encodings[] = strtoupper($charset[1]);
+					if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
+					{
+						$encodings[] = strtoupper($charset[1]);
+					}
+					$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
+					$encodings[] = 'UTF-8';
 				}
-				$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
-				$encodings[] = 'UTF-8';
-			}
-			elseif (in_array($sniffed, $text_types) || substr($sniffed, 0, 5) === 'text/' && substr($sniffed, -4) === '+xml')
-			{
-				if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
+				elseif (in_array($sniffed, $text_types) || substr($sniffed, 0, 5) === 'text/' && substr($sniffed, -4) === '+xml')
 				{
-					$encodings[] = $charset[1];
+					if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
+					{
+						$encodings[] = $charset[1];
+					}
+					$encodings[] = 'US-ASCII';
 				}
-				$encodings[] = 'US-ASCII';
-			}
-			// Text MIME-type default
-			elseif (substr($sniffed, 0, 5) === 'text/')
-			{
-				$encodings[] = 'US-ASCII';
+				// Text MIME-type default
+				elseif (substr($sniffed, 0, 5) === 'text/')
+				{
+					$encodings[] = 'US-ASCII';
+				}
 			}
 			
 			// Fallback to XML 1.0 Appendix F.1/UTF-8/ISO-8859-1
