@@ -15,7 +15,7 @@ $feed = new SimplePie();
 if (isset($_GET['feed']) && $_GET['feed'] !== '')
 {
 	// Strip slashes if magic quotes is enabled (which automatically escapes certain characters)
-	if (get_magic_quotes_gpc())
+	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
 	{
 		$_GET['feed'] = stripslashes($_GET['feed']);
 	}
