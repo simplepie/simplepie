@@ -11841,7 +11841,7 @@ class SimplePie_Content_Type_Sniffer
 	 * @access public
 	 * @return string Actual Content-Type
 	 */
-	public function get_type()
+	function get_type()
 	{
 		if (isset($this->file->headers['content-type']))
 		{
@@ -12483,7 +12483,7 @@ class SimplePie_Locator
 		{
 			$sniffer = new SimplePie_Content_Type_Sniffer($file);
 			$sniffed = $sniffer->get_type();
-			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml')))
+			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/plain')))
 			{
 				return true;
 			}
