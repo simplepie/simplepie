@@ -13239,7 +13239,9 @@ class SimplePie_Sanitize
 						if (isset($element['attribs'][$attribute]['data']))
 						{
 							$element['attribs'][$attribute]['data'] = SimplePie_Misc::absolutize_url($element['attribs'][$attribute]['data'], $this->base);
-							$data = str_replace($element['full'], SimplePie_Misc::element_implode($element), $data);
+							$new_element = SimplePie_Misc::element_implode($element);
+							$data = str_replace($element['full'], $new_element, $data);
+							$element['full'] = $new_element;
 						}
 					}
 				}
