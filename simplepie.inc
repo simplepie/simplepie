@@ -437,6 +437,14 @@ class SimplePie
 	var $force_fsockopen = false;
 
 	/**
+	 * @var bool Force the given data/URL to be treated as a feed no matter what
+	 * it appears like
+	 * @see SimplePie::force_feed()
+	 * @access private
+	 */
+	var $force_feed = false;
+
+	/**
 	 * @var bool Enable/Disable XML dump
 	 * @see SimplePie::enable_xml_dump()
 	 * @access private
@@ -763,6 +771,19 @@ class SimplePie
 			}
 			unset($this->data['ordered_items']);
 		}
+	}
+	
+	/**
+	 * Force the given data/URL to be treated as a feed no matter what it
+	 * appears like
+	 *
+	 * @access public
+	 * @since 1.1
+	 * @param bool $enable Force the given data/URL to be treated as a feed
+	 */
+	function force_feed($enable = false)
+	{
+		$this->force_feed = (bool) $enable;
 	}
 
 	/**
@@ -1680,33 +1701,36 @@ function embed_wmedia(width, height, link) {
 					}
 				}
 
-				// Check if the supplied URL is a feed, if it isn't, look for it.
-				$locate =& new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds);
-				if (!$locate->is_feed($file))
+				if (!$force_feed)
 				{
-					// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
-					unset($file);
-					if ($file = $locate->find($this->autodiscovery))
+					// Check if the supplied URL is a feed, if it isn't, look for it.
+					$locate =& new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds);
+					if (!$locate->is_feed($file))
 					{
-						if ($cache)
+						// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
+						unset($file);
+						if ($file = $locate->find($this->autodiscovery))
 						{
-							$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
-							if (!$cache->save($this))
+							if ($cache)
 							{
-								trigger_error("$cache->name is not writeable", E_USER_WARNING);
+								$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
+								if (!$cache->save($this))
+								{
+									trigger_error("$cache->name is not writeable", E_USER_WARNING);
+								}
+								$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
 							}
-							$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
+							$this->feed_url = $file->url;
 						}
-						$this->feed_url = $file->url;
+						else
+						{
+							$this->error = "A feed could not be found at $this->feed_url";
+							SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+							return false;
+						}
 					}
-					else
-					{
-						$this->error = "A feed could not be found at $this->feed_url";
-						SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
-						return false;
-					}
+					$locate = null;
 				}
-				$locate = null;
 
 				$headers = $file->headers;
 				$data = $file->body;
