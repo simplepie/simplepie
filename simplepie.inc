@@ -2001,11 +2001,12 @@ function embed_wmedia(width, height, link) {
 
 			if ($this->cache && $this->favicon_handler)
 			{
-				$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $favicon), 'spi');
+				$favicon_filename = call_user_func($this->cache_name_function, $favicon);
+				$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $favicon_filename, 'spi');
 
 				if ($cache->load())
 				{
-					return $this->sanitize($this->favicon_handler . rawurlencode($favicon), SIMPLEPIE_CONSTRUCT_IRI);
+					return $this->sanitize($this->favicon_handler . $favicon_filename, SIMPLEPIE_CONSTRUCT_IRI);
 				}
 				else
 				{
@@ -2018,7 +2019,7 @@ function embed_wmedia(width, height, link) {
 						{
 							if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 							{
-								return $this->sanitize($this->favicon_handler . rawurlencode($favicon), SIMPLEPIE_CONSTRUCT_IRI);
+								return $this->sanitize($this->favicon_handler . $favicon_filename, SIMPLEPIE_CONSTRUCT_IRI);
 							}
 							else
 							{
@@ -8568,12 +8569,12 @@ class SimplePie_Misc
 	 * @param str $cache_class Name of the cache-handling class being used
 	 * in SimplePie.  Defaults to 'SimplePie_Cache', and should be left
 	 * as-is unless you've overloaded the class.
-	 * @param str $cache_name_function Function that converts the filename
-	 * for saving.  Defaults to 'md5'.
+	 * @param str $cache_name_function Obsolete. Exists for backwards
+	 * compatibility reasons only.
 	 */
 	function display_cached_file($identifier_url, $cache_location = './cache', $cache_extension = 'spc', $cache_class = 'SimplePie_Cache', $cache_name_function = 'md5')
 	{
-		$cache = call_user_func(array($cache_class, 'create'), $cache_location, call_user_func($cache_name_function, $identifier_url), $cache_extension);
+		$cache = call_user_func(array($cache_class, 'create'), $cache_location, $identifier_url, $cache_extension);
 
 		if ($file = $cache->load())
 		{
@@ -13200,27 +13201,30 @@ class SimplePie_Sanitize
 					{
 						if (isset($img['attribs']['src']['data']))
 						{
-							$image_url = $img['attribs']['src']['data'];
-							$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $image_url), 'spi');
+							$image_url = call_user_func($this->cache_name_function, $img['attribs']['src']['data']);
+							$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $image_url, 'spi');
 
 							if ($cache->load())
 							{
-								$img['attribs']['src']['data'] = $this->image_handler . rawurlencode($img['attribs']['src']['data']);
+								$img['attribs']['src']['data'] = $this->image_handler . $image_url;
 								$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
 							}
 							else
 							{
-								$file =& new $this->file_class($image_url, $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+								$file =& new $this->file_class($img['attribs']['src']['data'], $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 								$headers = $file->headers;
 
 								if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)))
 								{
-									if (!$cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+									if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
+									{
+										$img['attribs']['src']['data'] = $this->image_handler . $image_url;
+										$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
+									}
+									else
 									{
 										trigger_error("$cache->name is not writeable", E_USER_WARNING);
 									}
-									$img['attribs']['src']['data'] = $this->image_handler . rawurlencode($img['attribs']['src']['data']);
-									$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
 								}
 							}
 						}
