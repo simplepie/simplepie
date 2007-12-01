@@ -245,7 +245,7 @@ define('SIMPLEPIE_CONSTRUCT_ALL', 63);
 /**
  * PCRE for HTML attributes
  */
-define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', '((?:[\x09\x0A\x0B\x0C\x0D]+[A-Za-z]+(?:[\x09\x0A\x0B\x0C\x0D]*=[\x09\x0A\x0B\x0C\x0D]*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?)*)[\x09\x0A\x0B\x0C\x0D]*');
+define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', '((?:[\x09\x0A\x0B\x0C\x0D]+[^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3D\x3E]*(?:[\x09\x0A\x0B\x0C\x0D]*=[\x09\x0A\x0B\x0C\x0D]*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?)*)[\x09\x0A\x0B\x0C\x0D]*');
 
 /**
  * PCRE for XML attributes
@@ -13136,7 +13136,7 @@ class SimplePie_Sanitize
 		{
 			if ($type & SIMPLEPIE_CONSTRUCT_MAYBE_HTML)
 			{
-				if (preg_match('/(&(#(x[0-9a-fA-F]+|[0-9]+)|[a-zA-Z0-9]+)|<\/(\w+)' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>)/', $data))
+				if (preg_match('/(&(#(x[0-9a-fA-F]+|[0-9]+)|[a-zA-Z0-9]+)|<\/[A-Za-z][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E]*' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>)/', $data))
 				{
 					$type |= SIMPLEPIE_CONSTRUCT_HTML;
 				}
@@ -13191,7 +13191,7 @@ class SimplePie_Sanitize
 				{
 					foreach ($this->strip_attributes as $attrib)
 					{
-						$data = preg_replace('/<[A-Za-z]+' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . trim($attrib) . '(?:\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>/', '', $data);
+						$data = preg_replace('/<[A-Za-z][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E]*' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . trim($attrib) . '(?:\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>/', '', $data);
 					}
 				}
 
