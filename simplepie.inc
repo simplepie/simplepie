@@ -1802,9 +1802,6 @@ function embed_wmedia(width, height, link) {
 			{
 				// Change the encoding to UTF-8 (as we always use UTF-8 internally)
 				$utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
-	
-				// Strip illegal characters
-				$utf8_data = SimplePie_Misc::utf8_bad_replace($utf8_data);
 
 				// Create new parser
 				$parser =& new $this->parser_class();
@@ -8753,6 +8750,20 @@ class SimplePie_Misc
 	{
 		$input = SimplePie_Misc::encoding($input);
 		$output = SimplePie_Misc::encoding($output);
+		
+		// We fail to fail on non US-ASCII bytes
+		if ($input === 'US-ASCII')
+		{
+			static $non_ascii_octects = '';
+			if (!$non_ascii_octects)
+			{
+				for ($i = 0x80; $i <= 0xFF; $i++)
+				{
+					$non_ascii_octects .= chr($i);
+				}
+			}
+			$data = substr($data, 0, strcspn($data, $non_ascii_octects));
+		}
 
 		if (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
 		{
