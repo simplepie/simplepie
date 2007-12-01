@@ -110,7 +110,7 @@ $feed->handle_content_type();
 
 
 					<!-- If a feed has already been passed through the form, then make sure that the URL remains in the form field. -->
-					<p><input type="text" name="feed" value="<?php if ($feed->subscribe_url()) echo htmlspecialchars($feed->subscribe_url()); ?>" class="text" id="feed_input" />&nbsp;<input type="submit" value="Read" class="button" /></p>
+					<p><input type="text" name="feed" value="<?php if ($feed->subscribe_url()) echo $feed->subscribe_url(); ?>" class="text" id="feed_input" />&nbsp;<input type="submit" value="Read" class="button" /></p>
 
 
 				</div>
