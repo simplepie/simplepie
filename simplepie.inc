@@ -1701,7 +1701,7 @@ function embed_wmedia(width, height, link) {
 					}
 				}
 
-				if (!$force_feed)
+				if (!$this->force_feed)
 				{
 					// Check if the supplied URL is a feed, if it isn't, look for it.
 					$locate =& new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds);
