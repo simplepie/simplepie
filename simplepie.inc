@@ -245,7 +245,7 @@ define('SIMPLEPIE_CONSTRUCT_ALL', 63);
 /**
  * PCRE for HTML attributes
  */
-define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', '((?:\s+(?:(?:[^\s:]+:)?[^\s:]+)(?:\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?)*)\s*');
+define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', '((?:[\x09\x0A\x0B\x0C\x0D]+[A-Za-z]+(?:[\x09\x0A\x0B\x0C\x0D]*=[\x09\x0A\x0B\x0C\x0D]*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?)*)[\x09\x0A\x0B\x0C\x0D]*');
 
 /**
  * PCRE for XML attributes
@@ -13191,9 +13191,7 @@ class SimplePie_Sanitize
 				{
 					foreach ($this->strip_attributes as $attrib)
 					{
-						$data = preg_replace('/ '. trim($attrib) .'=("|&quot;)(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\'|&apos;|<|>|\+|{|})*("|&quot;)/i', '', $data);
-						$data = preg_replace('/ '. trim($attrib) .'=(\'|&apos;)(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|"|&quot;|<|>|\+|{|})*(\'|&apos;)/i', '', $data);
-						$data = preg_replace('/ '. trim($attrib) .'=(\w|\s|=|-|:|;|\/|\.|\?|&|,|#|!|\(|\)|\+|{|})*/i', '', $data);
+						$data = preg_replace('/<[A-Za-z]+' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . trim($attrib) . '(?:\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[a-z0-9\-._:]*)))?' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>/', '', $data);
 					}
 				}
 
