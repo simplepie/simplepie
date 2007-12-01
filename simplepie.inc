@@ -7683,7 +7683,7 @@ class SimplePie_File
 				{
 					$url_parts['port'] = 80;
 				}
-				$fp = fsockopen($url_parts['host'], $url_parts['port'], $errno, $errstr, $timeout);
+				$fp = @fsockopen($url_parts['host'], $url_parts['port'], $errno, $errstr, $timeout);
 				if (!$fp)
 				{
 					$this->error = 'fsockopen error: ' . $errstr;
