@@ -8775,7 +8775,7 @@ class SimplePie_Misc
 		}
 		elseif ($input == 'windows-1252' && $output == 'UTF-8')
 		{
-			return SimplePie_Misc::windows1252_to_utf8($data);
+			return SimplePie_Misc::windows_1252_to_utf8($data);
 		}
 		elseif ($input == 'UTF-8' && $output == 'windows-1252')
 		{
