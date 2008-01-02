@@ -41,6 +41,7 @@ if (!empty($encodings))
 {
 	$encodings['windows-1252'] = array_merge($encodings['windows-1252'], $encodings['ISO-8859-1']);
 	unset($encodings['ISO-8859-1']);
+	$encodings['US-ASCII'][] = 'ANSI';
 	ksort($encodings);
 ?>
 function encoding($encoding)
@@ -61,6 +62,8 @@ function encoding($encoding)
 		echo "\t\t\treturn " . var_export($preferred, true) . ";\n\n";
 	}
 ?>
+		default:
+			return $encoding;
 	}
 }
 <?php

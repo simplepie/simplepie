@@ -9912,6 +9912,7 @@ class SimplePie_Misc
 			case 'UNKNOWN-8BIT':
 				return 'UNKNOWN-8BIT';
 	
+			case 'ANSI':
 			case 'ANSI_X3.4-1968':
 			case 'ANSI_X3.4-1986':
 			case 'ASCII':
@@ -10063,7 +10064,7 @@ class SimplePie_Misc
 	
 			case 'WINDOWS-1258':
 				return 'windows-1258';
-			
+	
 			default:
 				return $encoding;
 		}
