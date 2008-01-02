@@ -10163,7 +10163,7 @@ class SimplePie_Misc
 	 * @param string $data Input data
 	 * @return string Output data
 	 */
-	function entities_decode($data
+	function entities_decode($data)
 	{
 		$decoder = new SimplePie_Decode_HTML_Entities($data);
 		return $decoder->parse();
