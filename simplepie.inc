@@ -62,13 +62,13 @@ define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$D
 /**
  * SimplePie Website URL
  */
-define('SIMPLEPIE_URL', 'http://simplepie.org/');
+define('SIMPLEPIE_URL', 'http://simplepie.org');
 
 /**
  * SimplePie Useragent
  * @see SimplePie::set_useragent()
  */
-define('SIMPLEPIE_USERAGENT', SIMPLEPIE_NAME . '/' . SIMPLEPIE_VERSION . ' (Feed Parser; Allow like Gecko) Build/' . SIMPLEPIE_BUILD);
+define('SIMPLEPIE_USERAGENT', SIMPLEPIE_NAME . '/' . SIMPLEPIE_VERSION . ' (Feed Parser; ' . SIMPLEPIE_URL . '; Allow like Gecko) Build/' . SIMPLEPIE_BUILD);
 
 /**
  * SimplePie Linkback
@@ -607,27 +607,6 @@ class SimplePie
 	var $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
 
 	/**
-	 * @var string Class used for decoding HTML entities.
-	 * @see SimplePie::set_decode_html_entities_class()
-	 * @access private
-	 */
-	var $decode_html_entities_class = 'SimplePie_Decode_HTML_Entities';
-
-	/**
-	 * @var string Class used for parsing dates.
-	 * @see SimplePie::set_parse_date_class()
-	 * @access private
-	 */
-	var $parse_date_class = 'SimplePie_Parse_Date';
-
-	/**
-	 * @var string Class used for parsing the XML declaration.
-	 * @see SimplePie::set_xml_declaration_parser_class()
-	 * @access private
-	 */
-	var $xml_declaration_parser_class = 'SimplePie_XML_Declaration_Parser';
-
-	/**
 	 * @var string Class used for item sources.
 	 * @see SimplePie::set_source_class()
 	 * @access private
@@ -682,6 +661,13 @@ class SimplePie
 	 * @access private
 	 */
 	var $config_settings = null;
+
+	/**
+	 * @var integer Stores the number of items to return per-feed with multifeeds.
+	 * @see SimplePie::set_item_limit()
+	 * @access private
+	 */
+	var $item_limit = 0;
 
 	/**
 	 * @var array Stores the default attributes to be stripped by strip_attributes().
@@ -1285,64 +1271,6 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for decoding HTML entities.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
-	 */
-	function set_decode_html_entities_class($class = 'SimplePie_Decode_HTML_Entities')
-	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Decode_HTML_Entities'))
-		{
-			$this->decode_html_entities_class = $class;
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Allows you to change which class SimplePie uses for parsing dates.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
-	 */
-	function set_parse_date_class($class = 'SimplePie_Parse_Date')
-	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Parse_Date'))
-		{
-			$this->parse_date_class = $class;
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Allows you to change which class SimplePie uses for parsing XML declarations.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/keyword.extends.php PHP4 extends documentation
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
-	 */
-	function set_xml_declaration_parser_class($class = 'SimplePie_Parse_Date')
-	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Parse_Date'))
-		{
-			$this->xml_declaration_parser_class = $class;
-			return true;
-		}
-		return false;
-	}
-		
-
-	/**
 	 * Allows you to change which class SimplePie uses item sources.
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 *
@@ -1528,6 +1456,17 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Set the limit for items returned per-feed with multifeeds.
+	 *
+	 * @access public
+	 * @param integer $limit The maximum number of items to return.
+	 */
+	function set_item_limit($limit = 0)
+	{
+		$this->item_limit = (int) $limit;
+	}
+
 	function init()
 	{
 		if ((function_exists('version_compare') && version_compare(PHP_VERSION, '4.3.0', '<')) || !extension_loaded('xml') || !extension_loaded('pcre'))
@@ -1704,7 +1643,7 @@ function embed_wmedia(width, height, link) {
 				if (!$this->force_feed)
 				{
 					// Check if the supplied URL is a feed, if it isn't, look for it.
-					$locate =& new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds);
+					$locate =& new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds, $this->content_type_sniffer_class);
 					if (!$locate->is_feed($file))
 					{
 						// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
@@ -1734,7 +1673,7 @@ function embed_wmedia(width, height, link) {
 
 				$headers = $file->headers;
 				$data = $file->body;
-				$sniffer = new SimplePie_Content_Type_Sniffer($file);
+				$sniffer = new $this->content_type_sniffer_class($file);
 				$sniffed = $sniffer->get_type();
 			}
 			else
@@ -2011,7 +1950,7 @@ function embed_wmedia(width, height, link) {
 
 					if ($file->success && ($file->status_code == 200 || ($file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
 					{
-						$sniffer = new SimplePie_Content_Type_Sniffer($file);
+						$sniffer = new $this->content_type_sniffer_class($file);
 						if (substr($sniffer->get_type(), 0, 6) === 'image/')
 						{
 							if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
@@ -2965,7 +2904,7 @@ function embed_wmedia(width, height, link) {
 	{
 		if (!empty($this->multifeed_objects))
 		{
-			return SimplePie::merge_items($this->multifeed_objects, $start, $end);
+			return SimplePie::merge_items($this->multifeed_objects, $start, $end, $this->item_limit);
 		}
 		elseif (!isset($this->data['items']))
 		{
@@ -3062,7 +3001,7 @@ function embed_wmedia(width, height, link) {
 		return $a->get_date('U') <= $b->get_date('U');
 	}
 
-	function merge_items($urls, $start = 0, $end = 0)
+	function merge_items($urls, $start = 0, $end = 0, $limit = 0)
 	{
 		if (is_array($urls) && sizeof($urls) > 0)
 		{
@@ -3071,7 +3010,7 @@ function embed_wmedia(width, height, link) {
 			{
 				if (is_a($arg, 'SimplePie'))
 				{
-					$items = array_merge($items, $arg->get_items());
+					$items = array_merge($items, $arg->get_items(0, $limit));
 				}
 				else
 				{
@@ -5623,7 +5562,7 @@ class SimplePie_Item
 
 	function add_to_delicious()
 	{
-		return $this->add_to_service('http://del.icio.us/post/?v=3&url=', '&title=');
+		return $this->add_to_service('http://del.icio.us/post/?v=4&url=', '&title=');
 	}
 
 	function add_to_digg()
@@ -10224,7 +10163,7 @@ class SimplePie_Misc
 	 * @param string $data Input data
 	 * @return string Output data
 	 */
-	function entities_decode($data)
+	function entities_decode($data
 	{
 		$decoder = new SimplePie_Decode_HTML_Entities($data);
 		return $decoder->parse();
@@ -12459,14 +12398,16 @@ class SimplePie_Locator
 	var $base_location = 0;
 	var $checked_feeds = 0;
 	var $max_checked_feeds = 10;
+	var $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
 
-	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds = 10)
+	function SimplePie_Locator(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds = 10, $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer')
 	{
 		$this->file =& $file;
 		$this->file_class = $file_class;
 		$this->useragent = $useragent;
 		$this->timeout = $timeout;
 		$this->max_checked_feeds = $max_checked_feeds;
+		$this->content_type_sniffer_class;
 	}
 
 	function find($type = SIMPLEPIE_LOCATOR_ALL)
@@ -12478,7 +12419,7 @@ class SimplePie_Locator
 		
 		if ($this->file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = new SimplePie_Content_Type_Sniffer($this->file);
+			$sniffer = new $this->content_type_sniffer_class($this->file);
 			if ($sniffer->get_type() !== 'text/html')
 			{
 				return null;
@@ -12524,7 +12465,7 @@ class SimplePie_Locator
 	{
 		if ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = new SimplePie_Content_Type_Sniffer($file);
+			$sniffer = new $this->content_type_sniffer_class($file);
 			$sniffed = $sniffer->get_type();
 			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/plain')))
 			{
