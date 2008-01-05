@@ -4327,6 +4327,22 @@ class SimplePie_Item
 			// Clear the memory
 			unset($parent);
 
+			// Attributes
+			$bitrate = null;
+			$channels = null;
+			$duration = null;
+			$expression = null;
+			$framerate = null;
+			$height = null;
+			$javascript = null;
+			$lang = null;
+			$length = null;
+			$medium = null;
+			$samplingrate = null;
+			$type = null;
+			$url = null;
+			$width = null;
+
 			// If we have media:group tags, loop through them.
 			foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'group') as $group)
 			{
