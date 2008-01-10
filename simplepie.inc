@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2007, Ryan Parman and Geoffrey Sneddon
+ * Copyright (c) 2004-2008, Ryan Parman and Geoffrey Sneddon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -382,7 +382,7 @@ define('SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS', 16);
  *
  * @package SimplePie
  * @version "Razzleberry"
- * @copyright 2004-2007 Ryan Parman, Geoffrey Sneddon
+ * @copyright 2004-2008 Ryan Parman, Geoffrey Sneddon
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @todo Option for type of fetching (cache, not modified header, fetch, etc.)
