@@ -328,6 +328,11 @@ define('SIMPLEPIE_NAMESPACE_GEORSS', 'http://www.georss.org/georss');
 define('SIMPLEPIE_NAMESPACE_MEDIARSS', 'http://search.yahoo.com/mrss/');
 
 /**
+ * Wrong Media RSS Namespace
+ */
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG', 'http://search.yahoo.com/mrss');
+
+/**
  * iTunes RSS Namespace
  */
 define('SIMPLEPIE_NAMESPACE_ITUNES', 'http://www.itunes.com/dtds/podcast-1.0.dtd');
@@ -5508,7 +5513,7 @@ class SimplePie_Item
 				}
 			}
 
-			if (sizeof($this->data['enclosures']) == 0 && ($url || $type || $length || $this->feed->javascript || $bitrate || $captions_parent || $categories_parent || $channels || $copyrights_parent || $credits_parent || $description_parent || $duration_parent || $expression || $framerate || $hashes_parent || $height || $keywords_parent || $lang || $medium || $player_parent || $ratings_parent || $restrictions_parent || $samplingrate || $thumbnails_parent || $title_parent || $width))
+			if (sizeof($this->data['enclosures']) == 0 && ($url || $type || $length || $bitrate || $captions_parent || $categories_parent || $channels || $copyrights_parent || $credits_parent || $description_parent || $duration_parent || $expression || $framerate || $hashes_parent || $height || $keywords_parent || $lang || $medium || $player_parent || $ratings_parent || $restrictions_parent || $samplingrate || $thumbnails_parent || $title_parent || $width))
 			{
 				// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
 				$this->data['enclosures'][] =& new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
@@ -13790,7 +13795,7 @@ class SimplePie_Locator
 		$this->useragent = $useragent;
 		$this->timeout = $timeout;
 		$this->max_checked_feeds = $max_checked_feeds;
-		$this->content_type_sniffer_class;
+		$this->content_type_sniffer_class = $content_type_sniffer_class;
 	}
 
 	function find($type = SIMPLEPIE_LOCATOR_ALL)
@@ -13850,7 +13855,7 @@ class SimplePie_Locator
 		{
 			$sniffer = new $this->content_type_sniffer_class($file);
 			$sniffed = $sniffer->get_type();
-			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/plain')))
+			if (in_array(strtolower($sniffed), array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/plain')))
 			{
 				return true;
 			}
@@ -14283,6 +14288,12 @@ class SimplePie_Parser
 				{
 					$namespace = SIMPLEPIE_NAMESPACE_ITUNES;
 				}
+
+				// Normalize the Media RSS namespaces
+				if (strtolower($namespace) === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG)
+				{
+					$namespace = SIMPLEPIE_NAMESPACE_MEDIARSS;
+				}
 				$cache[$string] = array($namespace, $local_name);
 			}
 			else
@@ -14295,7 +14306,7 @@ class SimplePie_Parser
 }
 
 /**
- * @todo Move to using an actual HTML parser (this will allow tags to be properly stripped, and to switch between HTML and XHTML), this will also make it easier to shortern a string while preserving HTML tags
+ * @todo Move to using an actual HTML parser (this will allow tags to be properly stripped, and to switch between HTML and XHTML), this will also make it easier to shorten a string while preserving HTML tags
  */
 class SimplePie_Sanitize
 {
