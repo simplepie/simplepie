@@ -13855,7 +13855,7 @@ class SimplePie_Locator
 		{
 			$sniffer = new $this->content_type_sniffer_class($file);
 			$sniffed = $sniffer->get_type();
-			if (in_array(strtolower($sniffed), array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/plain')))
+			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml')))
 			{
 				return true;
 			}
@@ -14290,7 +14290,7 @@ class SimplePie_Parser
 				}
 
 				// Normalize the Media RSS namespaces
-				if (strtolower($namespace) === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG)
+				if ($namespace === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG)
 				{
 					$namespace = SIMPLEPIE_NAMESPACE_MEDIARSS;
 				}
