@@ -11,8 +11,7 @@ c';
 	
 	function expected()
 	{
-		$this->expected = 'http://a/b/b
-c';
+		$this->expected = 'http://a/b/b%0Ac';
 	}
 }
 
