@@ -8719,74 +8719,8 @@ class SimplePie_Misc
 
 	function absolutize_url($relative, $base)
 	{
-		if ($relative !== '')
-		{
-			$relative = SimplePie_Misc::parse_url($relative);
-			if ($relative['scheme'] !== '')
-			{
-				$target = $relative;
-			}
-			elseif ($base !== '')
-			{
-				$base = SimplePie_Misc::parse_url($base);
-				$target = SimplePie_Misc::parse_url('');
-				if ($relative['authority'] !== '')
-				{
-					$target = $relative;
-					$target['scheme'] = $base['scheme'];
-				}
-				else
-				{
-					$target['scheme'] = $base['scheme'];
-					$target['authority'] = $base['authority'];
-					if ($relative['path'] !== '')
-					{
-						if (strpos($relative['path'], '/') === 0)
-						{
-							$target['path'] = $relative['path'];
-						}
-						elseif ($base['authority'] !== '' && $base['path'] === '')
-						{
-							$target['path'] = '/' . $relative['path'];
-						}
-						elseif (($last_segment = strrpos($base['path'], '/')) !== false)
-						{
-							$target['path'] = substr($base['path'], 0, $last_segment + 1) . $relative['path'];
-						}
-						else
-						{
-							$target['path'] = $relative['path'];
-						}
-						$target['query'] = $relative['query'];
-					}
-					else
-					{
-						$target['path'] = $base['path'];
-						if ($relative['query'] !== '')
-						{
-							$target['query'] = $relative['query'];
-						}
-						elseif ($base['query'] !== '')
-						{
-							$target['query'] = $base['query'];
-						}
-					}
-				}
-				$target['fragment'] = $relative['fragment'];
-			}
-			else
-			{
-				// No base URL, just return the relative URL
-				$target = $relative;
-			}
-			$return = SimplePie_Misc::compress_parse_url($target['scheme'], $target['authority'], $target['path'], $target['query'], $target['fragment']);
-		}
-		else
-		{
-			$return = $base;
-		}
-		$return = SimplePie_Misc::normalize_url($return);
-		return $return;
+		$iri = SimplePie_IRI::absolutize(new SimplePie_IRI($base), $relative);
+		return $iri->get_iri();
 	}
 
 	function remove_dot_segments($input)
@@ -11382,7 +11316,7 @@ class SimplePie_IRI
 		$relative = (string) $relative;
 		if ($relative !== '')
 		{
-			$relative = new IRI($relative);
+			$relative = new SimplePie_IRI($relative);
 			if ($relative->get_scheme() !== null)
 			{
 				$target = $relative;
@@ -11609,8 +11543,9 @@ class SimplePie_IRI
 			// If we have an invalid character, change into its pct-encoded form
 			else
 			{
-				$string = str_replace($string[$position], '%' . strtoupper(dechex(ord($string[$position]))), $string, $count);
-				$strlen += 2 * $count;
+				$replacement = sprintf("%%%02X", ord($string[$position]));
+				$string = str_replace($string[$position], $replacement, $string);
+				$strlen = strlen($string);
 			}
 		}
 		return $string;
