@@ -386,11 +386,6 @@ define('SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS', 16);
  * SimplePie
  *
  * @package SimplePie
- * @version "Razzleberry"
- * @copyright 2004-2008 Ryan Parman, Geoffrey Sneddon
- * @author Ryan Parman
- * @author Geoffrey Sneddon
- * @todo Option for type of fetching (cache, not modified header, fetch, etc.)
  */
 class SimplePie
 {
