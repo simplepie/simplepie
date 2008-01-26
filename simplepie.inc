@@ -1647,7 +1647,7 @@ function embed_wmedia(width, height, link) {
 					}
 				}
 				// If the file connection has an error, set SimplePie::error to that and quit
-				if (!$file->success && !($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))
+				if (!$file->success && !($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
 				{
 					$this->error = $file->error;
 					if (!empty($this->data))
@@ -1968,7 +1968,7 @@ function embed_wmedia(width, height, link) {
 				{
 					$file =& new $this->file_class($favicon, $this->timeout / 10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 
-					if ($file->success && ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300) && strlen($file->body) > 0)
+					if ($file->success && ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
 					{
 						$sniffer = new $this->content_type_sniffer_class($file);
 						if (substr($sniffer->get_type(), 0, 6) === 'image/')
@@ -13859,7 +13859,7 @@ class SimplePie_Locator
 				{
 					$this->checked_feeds++;
 					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
-					if ($feed->success && ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300) && $this->is_feed($feed))
+					if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 					{
 						return $feed;
 					}
@@ -13924,7 +13924,7 @@ class SimplePie_Locator
 			{
 				$this->checked_feeds++;
 				$feed =& new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
-				if ($feed->success && ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300) && $this->is_feed($feed))
+				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return $feed;
 				}
@@ -13949,7 +13949,7 @@ class SimplePie_Locator
 			{
 				$this->checked_feeds++;
 				$feed =& new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
-				if ($feed->success && ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300) && $this->is_feed($feed))
+				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return $feed;
 				}
@@ -14507,7 +14507,7 @@ class SimplePie_Sanitize
 								$file =& new $this->file_class($img['attribs']['src']['data'], $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
 								$headers = $file->headers;
 
-								if ($file->success && ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))
+								if ($file->success && ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
 								{
 									if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 									{
