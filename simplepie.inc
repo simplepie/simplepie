@@ -11294,12 +11294,16 @@ class SimplePie_IRI
 	 */
 	function SimplePie_IRI($iri)
 	{
-		$parsed = $this->parse_iri((string) $iri);
-		$this->set_scheme($parsed['scheme']);
-		$this->set_authority($parsed['authority']);
-		$this->set_path($parsed['path']);
-		$this->set_query($parsed['query']);
-		$this->set_fragment($parsed['fragment']);
+		$iri = (string) $iri;
+		if ($iri !== '')
+		{
+			$parsed = $this->parse_iri($iri);
+			$this->set_scheme($parsed['scheme']);
+			$this->set_authority($parsed['authority']);
+			$this->set_path($parsed['path']);
+			$this->set_query($parsed['query']);
+			$this->set_fragment($parsed['fragment']);
+		}
 	}
 
 	/**
@@ -11504,7 +11508,7 @@ class SimplePie_IRI
 			if ($string[$position] === '%')
 			{
 				// If we have a pct-encoded section
-				if ($position + 2 < $strlen && strspn($string, '0123456789ABCDEFabcdef', $position + 1, 2))
+				if ($position + 2 < $strlen && strspn($string, '0123456789ABCDEFabcdef', $position + 1, 2) === 2)
 				{
 					// Get the the represented character
 					$chr = chr(hexdec(substr($string, $position + 1, 2)));
