@@ -1978,10 +1978,10 @@ function embed_wmedia(width, height, link) {
 								return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
 							}
 						}
+						// not an image
 						else
 						{
-							trigger_error("$this->cache_location is not writeable", E_USER_WARNING);
-							return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
+							return false;
 						}
 					}
 				}
