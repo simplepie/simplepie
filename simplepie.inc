@@ -7861,7 +7861,7 @@ class SimplePie_HTTP_Parser
 			$this->$state();
 		}
 		$this->data = '';
-		if ($this->state === 'emit')
+		if ($this->state === 'emit' || $this->state === 'body')
 		{
 			return true;
 		}
