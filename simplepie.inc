@@ -2027,7 +2027,7 @@ function embed_wmedia(width, height, link) {
 	{
 		if ($this->feed_url !== null)
 		{
-			return 'outlook' . $this->sanitize(SimplePie_Misc::fix_protocol($this->feed_url, 2), SIMPLEPIE_CONSTRUCT_IRI);
+			return $this->sanitize('outlook' . SimplePie_Misc::fix_protocol($this->feed_url, 2), SIMPLEPIE_CONSTRUCT_IRI);
 		}
 		else
 		{
