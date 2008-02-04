@@ -2092,7 +2092,7 @@ function embed_wmedia(width, height, link) {
 
 	function subscribe_bloglines()
 	{
-		return urldecode($this->subscribe_service('http://www.bloglines.com/sub/'));
+		return $this->subscribe_service('http://www.bloglines.com/sub/');
 	}
 
 	function subscribe_eskobo()
