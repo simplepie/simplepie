@@ -3416,9 +3416,6 @@ class SimplePie_Item
 		}
 	}
 
-	/**
-	 * @todo Atom inheritance (item author, source author, feed author)
-	 */
 	function get_authors()
 	{
 		$authors = array();
