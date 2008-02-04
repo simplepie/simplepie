@@ -840,7 +840,7 @@ class SimplePie
 	 */
 	function set_raw_data($data)
 	{
-		$this->raw_data = trim($data);
+		$this->raw_data = $data;
 	}
 
 	/**
