@@ -2929,6 +2929,7 @@ function embed_wmedia(width, height, link) {
 		}
 		elseif (!isset($this->data['items']))
 		{
+			$this->data['items'] = array();
 			if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'entry'))
 			{
 				$keys = array_keys($items);
