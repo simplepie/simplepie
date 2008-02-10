@@ -2923,51 +2923,54 @@ function embed_wmedia(width, height, link) {
 
 	function get_items($start = 0, $end = 0)
 	{
-		if (!empty($this->multifeed_objects))
+		if (!isset($this->data['items']))
 		{
-			return SimplePie::merge_items($this->multifeed_objects, $start, $end, $this->item_limit);
-		}
-		elseif (!isset($this->data['items']))
-		{
-			$this->data['items'] = array();
-			if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'entry'))
+			if (!empty($this->multifeed_objects))
 			{
-				$keys = array_keys($items);
-				foreach ($keys as $key)
-				{
-					$this->data['items'][] =& new $this->item_class($this, $items[$key]);
-				}
+				$this->data['items'] = SimplePie::merge_items($this->multifeed_objects, $start, $end, $this->item_limit);
 			}
-			if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'entry'))
+			else
 			{
-				$keys = array_keys($items);
-				foreach ($keys as $key)
+				$this->data['items'] = array();
+				if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'entry'))
 				{
-					$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					$keys = array_keys($items);
+					foreach ($keys as $key)
+					{
+						$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					}
 				}
-			}
-			if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'item'))
-			{
-				$keys = array_keys($items);
-				foreach ($keys as $key)
+				if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'entry'))
 				{
-					$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					$keys = array_keys($items);
+					foreach ($keys as $key)
+					{
+						$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					}
 				}
-			}
-			if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'item'))
-			{
-				$keys = array_keys($items);
-				foreach ($keys as $key)
+				if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'item'))
 				{
-					$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					$keys = array_keys($items);
+					foreach ($keys as $key)
+					{
+						$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					}
 				}
-			}
-			if ($items = $this->get_channel_tags('', 'item'))
-			{
-				$keys = array_keys($items);
-				foreach ($keys as $key)
+				if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'item'))
 				{
-					$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					$keys = array_keys($items);
+					foreach ($keys as $key)
+					{
+						$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					}
+				}
+				if ($items = $this->get_channel_tags('', 'item'))
+				{
+					$keys = array_keys($items);
+					foreach ($keys as $key)
+					{
+						$this->data['items'][] =& new $this->item_class($this, $items[$key]);
+					}
 				}
 			}
 		}
@@ -2975,7 +2978,7 @@ function embed_wmedia(width, height, link) {
 		if (!empty($this->data['items']))
 		{
 			// If we want to order it by date, check if all items have a date, and then sort it
-			if ($this->order_by_date)
+			if ($this->order_by_date && empty($this->multifeed_objects))
 			{
 				if (!isset($this->data['ordered_items']))
 				{
