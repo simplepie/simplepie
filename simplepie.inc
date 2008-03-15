@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2007, Ryan Parman and Geoffrey Sneddon
+ * Copyright (c) 2004-2008, Ryan Parman and Geoffrey Sneddon
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,8 +33,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.1
- * @copyright 2004-2007 Ryan Parman, Geoffrey Sneddon
+ * @version 1.1.1
+ * @copyright 2004-2008 Ryan Parman, Geoffrey Sneddon
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @link http://simplepie.org/ SimplePie
@@ -51,12 +51,14 @@ define('SIMPLEPIE_NAME', 'SimplePie');
 /**
  * SimplePie Version
  */
-define('SIMPLEPIE_VERSION', '1.1');
+define('SIMPLEPIE_VERSION', '1.1.1');
 
 /**
  * SimplePie Build
+ * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
  */
-define('SIMPLEPIE_BUILD', 20080102221556);
+define('SIMPLEPIE_BUILD', 20080315205903);
+//define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) ? SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) : filemtime(__FILE__)));
 
 /**
  * SimplePie Website URL
@@ -5567,7 +5569,7 @@ class SimplePie_Item
 	 * (and suffix to the item permalink)
 	 * @return mixed URL if feed exists, false otherwise
 	 */
-	function add_to_service($item_url, $title_url = null)
+	function add_to_service($item_url, $title_url = null, $summary_url = null)
 	{
 		if ($this->get_permalink() !== null)
 		{
@@ -5575,6 +5577,10 @@ class SimplePie_Item
 			if ($title_url !== null && $this->get_title() !== null)
 			{
 				$return .= $this->sanitize($title_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_title());
+			}
+			if ($summary_url !== null && $this->get_description() !== null)
+			{
+				$return .= $this->sanitize($summary_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_description());
 			}
 			return $return;
 		}
@@ -5601,7 +5607,7 @@ class SimplePie_Item
 
 	function add_to_digg()
 	{
-		return $this->add_to_service('http://digg.com/submit?phase=2&URL=');
+		return $this->add_to_service('http://digg.com/submit?url=', '&title=', '&bodytext=');
 	}
 
 	function add_to_furl()
