@@ -51,13 +51,14 @@ define('SIMPLEPIE_NAME', 'SimplePie');
 /**
  * SimplePie Version
  */
-define('SIMPLEPIE_VERSION', '1.1');
+define('SIMPLEPIE_VERSION', '1.1.1');
 
 /**
  * SimplePie Build
  * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
  */
-define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) ? SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) : filemtime(__FILE__)));
+define('SIMPLEPIE_BUILD', 20080315205903);
+//define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) ? SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) : filemtime(__FILE__)));
 
 /**
  * SimplePie Website URL
