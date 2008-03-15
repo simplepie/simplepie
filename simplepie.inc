@@ -5585,7 +5585,7 @@ class SimplePie_Item
 	 * (and suffix to the item permalink)
 	 * @return mixed URL if feed exists, false otherwise
 	 */
-	function add_to_service($item_url, $title_url = null)
+	function add_to_service($item_url, $title_url = null, $summary_url = null)
 	{
 		if ($this->get_permalink() !== null)
 		{
@@ -5593,6 +5593,10 @@ class SimplePie_Item
 			if ($title_url !== null && $this->get_title() !== null)
 			{
 				$return .= $this->sanitize($title_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_title());
+			}
+			if ($summary_url !== null && $this->get_description() !== null)
+			{
+				$return .= $this->sanitize($summary_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_description());
 			}
 			return $return;
 		}
@@ -5619,7 +5623,7 @@ class SimplePie_Item
 
 	function add_to_digg()
 	{
-		return $this->add_to_service('http://digg.com/submit?phase=2&URL=');
+		return $this->add_to_service('http://digg.com/submit?url=', '&title=', '&bodytext=');
 	}
 
 	function add_to_furl()
