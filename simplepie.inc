@@ -57,8 +57,7 @@ define('SIMPLEPIE_VERSION', '1.1.1');
  * SimplePie Build
  * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
  */
-define('SIMPLEPIE_BUILD', 20080315205903);
-//define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) ? SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) : filemtime(__FILE__)));
+define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) ? SimplePie_Misc::parse_date(substr('$Date$', 7, 25)) : filemtime(__FILE__)));
 
 /**
  * SimplePie Website URL
@@ -12508,7 +12507,7 @@ class SimplePie_Locator
 		{
 			$sniffer = new $this->content_type_sniffer_class($file);
 			$sniffed = $sniffer->get_type();
-			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/plain')))
+			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'application/atom+xml', 'application/rdf+xml', 'text/xml', 'application/xml')))
 			{
 				return true;
 			}
