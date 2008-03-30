@@ -11,6 +11,8 @@ include_once('../idn/idna_convert.class.php');
 // Create a new instance of the SimplePie object
 $feed = new SimplePie();
 
+//$feed->force_fsockopen(true);
+
 // Make sure that page is getting passed a URL
 if (isset($_GET['feed']) && $_GET['feed'] !== '')
 {
@@ -145,17 +147,11 @@ $feed->handle_content_type();
 			<a href="?feed=http://newsrss.bbc.co.uk/rss/arabic/news/rss.xml" title="Test: Windows-1256 Encoding">BBC Arabic</a>, 
 			<a href="?feed=http://newsrss.bbc.co.uk/rss/chinese/simp/news/rss.xml" title="Test: GB2312 Encoding">BBC China</a>, 
 			<a href="?feed=http://newsrss.bbc.co.uk/rss/russian/news/rss.xml" title="Test: Windows-1251 Encoding">BBC Russia</a>, 
-			<a href="?feed=http://blogdigger.com/media/mov.xml" title="Test: Multiple Issues">Blogdigger</a>, 
 			<a href="?feed=http://inessential.com/xml/rss.xml" title="Developer of NetNewsWire">Brent Simmons</a>, 
 			<a href="?feed=http://www.channelfrederator.com/rss" title="Test: Embedded Enclosures">Channel Frederator</a>, 
 			<a href="?feed=http://rss.cnn.com/rss/cnn_topstories.rss" title="World News">CNN</a>, 
-			<a href="?feed=http://www.crazyapplerumors.com/?feed=rss2" title="Hilarity at its best">Crazy Apple Rumors</a>, 
-			<a href="?feed=http://del.icio.us/rss/" title="The defacto social bookmarking site">del.icio.us</a>, 
-			<a href="?feed=http://digg.com/rss/index.xml" title="Tech news.  Better than Slashdot.">Digg</a>, 
-			<a href="?feed=http://odeo.com/channel/rss/4565" title="Tech and industry videocast.">Diggnation (Odeo)</a>, 
-			<a href="?feed=http://revision3.com/diggnation/feed/quicktime-large" title="Tech and industry videocast.">Diggnation (Video)</a>, 
-			<a href="?feed=http://odeo.com/channel/32022/rss" title="Test: Embedded Odeo Player">Dominic Sagolla</a>, 
-			<a href="?feed=http://www.dooce.com/atom.xml" title="Test: Ad Stripping">Dooce</a>, 
+			<a href="?feed=http://digg.com/rss/index.xml" title="Tech news. Better than Slashdot.">Digg</a>, 
+			<a href="?feed=http://revision3.com/diggnation/feed/quicktime-large" title="Tech and industry videocast.">Diggnation</a>, 
 			<a href="?feed=http://www.flickr.com/services/feeds/photos_public.gne?format=rss2" title="Flickr Photos">Flickr</a>, 
 			<a href="?feed=http://news.google.com/?output=rss" title="World News">Google News</a>, 
 			<a href="?feed=http://video.google.com/videofeed?type=top100new&num=20&output=rss" title="Test: Media RSS Support">Google Video</a>, 
@@ -165,27 +161,25 @@ $feed->handle_content_type();
 			<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml&orderbydate=false" title="Test: Tag Stripping">iTunes</a>, 
 			<a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf" title="Test: EUC-JP Encoding">Japanese Language</a>, 
 			<a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php&amp;input=EUC-KR" title="Test: EUC-KR Encoding">Korean Language</a>, 
-			<a href="?feed=http://macnn.com/podcasts/macnn.rss" title="Test: Embedded Enclosures">MacNN</a>, 
 			<a href="?feed=http://mir.aculo.us/xml/rss/feed.xml" title="Weblog for the developer of Scriptaculous">mir.aculo.us</a>, 
 			<a href="?feed=http://images.apple.com/trailers/rss/newtrailers.rss" title="Apple's QuickTime movie trailer site">Movie Trailers</a>, 
+			<a href="?feed=http://www.newspond.com/rss/main.xml" title="Tech and Science News">Newspond</a>, 
 			<a href="?feed=http://nick.typepad.com/blog/index.rss" title="Developer of TopStyle and FeedDemon">Nick Bradbury</a>, 
 			<a href="?feed=http://feeds.feedburner.com/ok-cancel" title="Usability comics and commentary">OK/Cancel</a>, 
 			<a href="?feed=http://osnews.com/files/recent.rdf" title="News about every OS ever">OS News</a>, 
 			<a href="?feed=http://weblog.philringnalda.com/feed/" title="Test: Atom 1.0 Support">Phil Ringnalda</a>, 
-			<a href="?feed=http://photocast.mac.com/turboderek/iPhoto/top-rides/index.rss" title="Test: iPhoto 6 Photocasting">Photocast</a>, 
 			<a href="?feed=http://kabili.libsyn.com/rss" title="Test: Improved enclosure type sniffing">Photoshop Videocast</a>, 
 			<a href="?feed=http://www.pariurisportive.com/blog/xmlsrv/rss2.php?blog=2" title="Test: ISO-8859-1 Encoding">Romanian Language</a>, 
 			<a href="?feed=http://www.erased.info/rss2.php" title="Test: KOI8-R Encoding">Russian Language</a>, 
 			<a href="?feed=http://www.upsaid.com/isis/index.rdf" title="Test: BIG5 Encoding">Traditional Chinese Language</a>, 
 			<a href="?feed=http://technorati.com/watchlists/rss.html?wid=29290" title="Technorati watch for SimplePie">Technorati</a>, 
-			<a href="?feed=http://thinksecret.com/rss.xml" title="Apple Rumors">Think Secret</a>, 
 			<a href="?feed=http://www.tbray.org/ongoing/ongoing.atom" title="Test: Atom 1.0 Support">Tim Bray</a>, 
-			<a href="?feed=http://tuaw.com/rss.xml" title="Test: Ad Stripping">TUAW</a>, 
+			<a href="?feed=http://tuaw.com/rss.xml" title="Apple News">TUAW</a>, 
 			<a href="?feed=http://www.tvgasm.com/atom.xml&amp;image=true" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>, 
 			<a href="?feed=http://uneasysilence.com/feed/" title="Interesting tech randomness">UNEASYsilence</a>, 
 			<a href="?feed=http://feeds.feedburner.com/web20Show" title="Test: Embedded Enclosures">Web 2.0 Show</a>, 
-			<a href="?feed=http://whitecollarruckus.libsyn.com/rss" title="Test: Embedded Enclosures">White Collar Ruckus</a>, 
-			<a href="?feed=http://blogs.technet.com/windowsvista/rss.xml" title="Test: Tag Stripping">Windows Vista Blog</a>, 
+			<a href="?feed=http://windowsvistablog.com/blogs/MainFeed.aspx" title="Test: Tag Stripping">Windows Vista Blog</a>, 
+			<a href="?feed=http://xkcd.com/rss.xml" title="Test: LightHTTPd and GZipping">XKCD</a>, 
 			<a href="?feed=http://rss.news.yahoo.com/rss/topstories" title="World News">Yahoo! News</a>, 
 			<a href="?feed=http://youtube.com/rss/global/top_favorites.rss" title="Funny user-submitted videos">You Tube</a>, 
 			<a href="?feed=http://zeldman.com/rss/" title="The father of the web standards movement">Zeldman</a></p>
@@ -238,15 +232,22 @@ $feed->handle_content_type();
 								'audio' => './for_the_demo/place_audio.png',
 								'video' => './for_the_demo/place_video.png',
 								'mediaplayer' => './for_the_demo/mediaplayer.swf',
-								'alt' => '<img src="./for_the_demo/mini_podcast.png" class="download" border="0" title="Download the Podcast (' . $enclosure->get_extension() . '; ' . $enclosure->get_size() . ' MB)" />',
 								'altclass' => 'download'
 							)) . '</p>';
-							echo '<p class="footnote" align="center">(' . $enclosure->get_type();
-							if ($enclosure->get_size())
+
+							if ($enclosure->get_link() && $enclosure->get_type())
 							{
-								echo '; ' . $enclosure->get_size() . ' MB';								
+								echo '<p class="footnote" align="center">(' . $enclosure->get_type();
+								if ($enclosure->get_size())
+								{
+									echo '; ' . $enclosure->get_size() . ' MB';								
+								}
+								echo ')</p>';
 							}
-							echo ')</p>';
+							if ($enclosure->get_thumbnail())
+							{
+								echo '<div><img src="' . $enclosure->get_thumbnail() . '" alt="" /></div>';
+							}
 							echo '</div>';
 						}
 						?>

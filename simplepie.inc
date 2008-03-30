@@ -7754,11 +7754,46 @@ class SimplePie_File
 							}
 							if (isset($this->headers['content-encoding']) && ($this->headers['content-encoding'] === 'gzip' || $this->headers['content-encoding'] === 'deflate'))
 							{
-								if (substr($this->body, 0, 8) === "\x1f\x8b\x08\x00\x00\x00\x00\x00")
+								// if (substr($this->body, 0, 8) === "\x1f\x8b\x08\x00\x00\x00\x00\x00")
+								// {
+								// 	$this->body = substr($this->body, 10);
+								// }
+								// $this->body = gzinflate($this->body);
+
+								/**
+								 * Improved gzip decoding.
+								 * Author: patatraboum at free dot fr <http://us.php.net/manual/en/function.gzinflate.php#77336>
+								 */
+								if (substr($this->body, 0, 3) === "\x1f\x8b\x08")
 								{
-									$this->body = substr($this->body, 10);
+									$i = 10;
+									$flg = ord(substr($this->body, 3, 1));
+								
+									if ($flg > 0)
+									{
+										if ($flg & 4)
+										{
+											list($xlen) = unpack('v', substr($this->body, $i, 2));
+											$i = $i + 2 + $xlen;
+										}
+										if ($flg & 8)
+										{
+											$i = strpos($this->body, "\0", $i) +1;
+										}
+										if ($flg & 16)
+										{
+											$i = strpos($this->body, "\0", $i) +1;
+										}
+										if ($flg & 2)
+										{
+											$i = $i + 2;
+										}
+									}
+								
+									$this->body = gzinflate(substr($this->body, $i, -8));
 								}
-								$this->body = gzinflate($this->body);
+
+
 							}
 						}
 					}
