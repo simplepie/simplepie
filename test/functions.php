@@ -412,6 +412,24 @@ class SimplePie_First_Item_Title_Test extends SimplePie_First_Item_Test
 	}
 }
 
+class SimplePie_iTunesRSS_Channel_Block_Test extends SimplePie_First_Item_Test
+{
+	function test()
+	{
+		if ($item = $this->first_item())
+		{
+			if ($enclosure = $item->get_enclosure())
+			{
+				if ($restriction = $enclosure->get_restriction())
+				{
+					return $restriction->get_relationship();
+				}
+			}
+		}
+		return false;
+	}
+}
+
 class diveintomark_Atom_Autodiscovery extends SimplePie_Unit_Test2
 {
 	var $data = array('url' => 'http://diveintomark.org/tests/client/autodiscovery/');

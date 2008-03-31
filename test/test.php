@@ -162,6 +162,10 @@ $test_group = new SimplePie_Unit_Test2_Group('Who knows a <title> from a hole in
 $test_group->load_folder('who_knows_a_title_from_a_hole_in_the_ground');
 $master->add($test_group);
 
+$test_group = new SimplePie_Unit_Test2_Group('iTunesRSS');
+$test_group->load_folder('itunes_rss');
+$master->add($test_group);
+
 if (isset($_GET['remote']))
 {
 	$test_group = new SimplePie_Unit_Test2_Group('Atom autodiscovery test suite');
