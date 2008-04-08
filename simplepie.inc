@@ -1764,7 +1764,7 @@ function embed_wmedia(width, height, link) {
 				if ($parser->parse($utf8_data, 'UTF-8'))
 				{
 					$this->data = $parser->get_data();
-					if (isset($this->data['child']))
+					if ($this->get_type() & ~SIMPLEPIE_TYPE_NONE)
 					{
 						if (isset($headers))
 						{
@@ -14006,7 +14006,6 @@ class SimplePie_Parser
 	var $current_column;
 	var $current_byte;
 	var $separator = ' ';
-	var $feed = false;
 	var $namespace = array('');
 	var $element = array('');
 	var $xml_base = array('');
@@ -14127,27 +14126,6 @@ class SimplePie_Parser
 
 	function tag_open($parser, $tag, $attributes)
 	{
-		if ($this->feed === 0)
-		{
-			return;
-		}
-		elseif ($this->feed === false)
-		{
-			if (in_array($tag, array(
-				SIMPLEPIE_NAMESPACE_ATOM_10 . $this->separator . 'feed',
-				SIMPLEPIE_NAMESPACE_ATOM_03 . $this->separator . 'feed',
-				'rss',
-				SIMPLEPIE_NAMESPACE_RDF . $this->separator . 'RDF'
-			)))
-			{
-					$this->feed = 1;
-			}
-		}
-		else
-		{
-			$this->feed++;
-		}
-
 		list($this->namespace[], $this->element[]) = $this->split_ns($tag);
 
 		$attribs = array();
@@ -14212,7 +14190,7 @@ class SimplePie_Parser
 		{
 			$this->data['data'] .= htmlspecialchars($cdata, ENT_QUOTES, $this->encoding);
 		}
-		elseif ($this->feed > 1)
+		else
 		{
 			$this->data['data'] .= $cdata;
 		}
@@ -14220,11 +14198,6 @@ class SimplePie_Parser
 
 	function tag_close($parser, $tag)
 	{
-		if (!$this->feed)
-		{
-			return;
-		}
-
 		if ($this->current_xhtml_construct >= 0)
 		{
 			$this->current_xhtml_construct--;
@@ -14235,7 +14208,7 @@ class SimplePie_Parser
 		}
 		if ($this->current_xhtml_construct === -1)
 		{
-			$this->data =& $this->datas[$this->feed];
+			$this->data =& $this->datas[count($this->datas) - 1];
 			array_pop($this->datas);
 		}
 
@@ -14244,7 +14217,6 @@ class SimplePie_Parser
 		array_pop($this->xml_base);
 		array_pop($this->xml_base_explicit);
 		array_pop($this->xml_lang);
-		$this->feed--;
 	}
 
 	function split_ns($string)
