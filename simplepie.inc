@@ -303,6 +303,12 @@ define('SIMPLEPIE_NAMESPACE_RSS_10', 'http://purl.org/rss/1.0/');
 define('SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT', 'http://purl.org/rss/1.0/modules/content/');
 
 /**
+ * RSS 2.0 Namespace
+ * (Stupid, I know, but I'm certain it will confuse people less with support.)
+ */
+define('SIMPLEPIE_NAMESPACE_RSS_20', '');
+
+/**
  * DC 1.0 Namespace
  */
 define('SIMPLEPIE_NAMESPACE_DC_10', 'http://purl.org/dc/elements/1.0/');
