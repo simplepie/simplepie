@@ -14167,28 +14167,63 @@ class SimplePie_Parser
 			$this->xml_lang[] = end($this->xml_lang);
 		}
 
-		$this->datas[] =& $this->data;
-		$this->data =& $this->data['child'][end($this->namespace)][end($this->element)][];
-		$this->data = array('data' => '', 'attribs' => $attribs, 'xml_base' => end($this->xml_base), 'xml_base_explicit' => end($this->xml_base_explicit), 'xml_lang' => end($this->xml_lang));
+		if ($this->current_xhtml_construct >= 0)
+		{
+			$this->current_xhtml_construct++;
+			if (end($this->namespace) === SIMPLEPIE_NAMESPACE_XHTML)
+			{
+				$this->data['data'] .= '<' . end($this->element);
+				if (isset($attribs['']))
+				{
+					foreach ($attribs[''] as $name => $value)
+					{
+						$this->data['data'] .= ' ' . $name . '="' . htmlspecialchars($value, ENT_COMPAT, $this->encoding) . '"';
+					}
+				}
+				$this->data['data'] .= '>';
+			}
+		}
+		else
+		{
+			$this->datas[] =& $this->data;
+			$this->data =& $this->data['child'][end($this->namespace)][end($this->element)][];
+			$this->data = array('data' => '', 'attribs' => $attribs, 'xml_base' => end($this->xml_base), 'xml_base_explicit' => end($this->xml_base_explicit), 'xml_lang' => end($this->xml_lang));
+			if ((end($this->namespace) === SIMPLEPIE_NAMESPACE_ATOM_03 && in_array(end($this->element), array('title', 'tagline', 'copyright', 'info', 'summary', 'content')) && isset($attribs['']['mode']) && $attribs['']['mode'] === 'xml')
+			|| (end($this->namespace) === SIMPLEPIE_NAMESPACE_ATOM_10 && in_array(end($this->element), array('rights', 'subtitle', 'summary', 'info', 'title', 'content')) && isset($attribs['']['type']) && $attribs['']['type'] === 'xhtml'))
+			{
+				$this->current_xhtml_construct = 0;
+			}
+		}
 	}
 
 	function cdata($parser, $cdata)
 	{
-		if (is_string(end($this->data['child'])))
+		if ($this->current_xhtml_construct >= 0)
 		{
-			$this->data['child'][count($this->data['child']) - 1] .= $cdata;
+			$this->data['data'] .= htmlspecialchars($cdata, ENT_QUOTES, $this->encoding);
 		}
 		else
 		{
-			$this->data['child'][] = $cdata;
+			$this->data['data'] .= $cdata;
 		}
-		$this->data['data'] .= $cdata;
 	}
 
 	function tag_close($parser, $tag)
 	{
-		$this->data =& $this->datas[count($this->datas) - 1];
-		array_pop($this->datas);
+		if ($this->current_xhtml_construct >= 0)
+		{
+			$this->current_xhtml_construct--;
+			if (end($this->namespace) === SIMPLEPIE_NAMESPACE_XHTML && !in_array(end($this->element), array('area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param')))
+			{
+				$this->data['data'] .= '</' . end($this->element) . '>';
+			}
+		}
+		if ($this->current_xhtml_construct === -1)
+		{
+			$this->data =& $this->datas[count($this->datas) - 1];
+			array_pop($this->datas);
+		}
+
 		array_pop($this->element);
 		array_pop($this->namespace);
 		array_pop($this->xml_base);
