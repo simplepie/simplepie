@@ -3027,11 +3027,17 @@ function embed_wmedia(width, height, link) {
 		}
 	}
 
+	/**
+	 * @static
+	 */
 	function sort_items($a, $b)
 	{
 		return $a->get_date('U') <= $b->get_date('U');
 	}
 
+	/**
+	 * @static
+	 */
 	function merge_items($urls, $start = 0, $end = 0, $limit = 0)
 	{
 		if (is_array($urls) && sizeof($urls) > 0)
