@@ -1,71 +1,163 @@
 <?php
 
-$lines = file('http://www.iana.org/assignments/character-sets');
-$names = array();
-$preferred = '';
-$encodings = array();
+require_once 'simplepie.inc';
 
-foreach ($lines as $line)
+function normalize_character_set($charset)
 {
-	if (strpos($line, 'Name:') === 0)
+	return strtolower(preg_replace('/[\x09-\x0D\x20-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/', '', $charset));
+}
+
+function build_character_set_list()
+{
+	$file = new SimplePie_File('http://www.iana.org/assignments/character-sets');
+	if (!$file->success && !($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
 	{
-		if (!empty($names))
-		{
-			$encodings[$preferred] = $names;
-			$names = array();
-			$preferred = '';
-		}
-		if (preg_match('/^Name:\s*(\S+)/i', $line, $match))
-		{
-			$names[] = strtoupper($match[1]);
-			$preferred = $match[1];
-		}
+		return false;
 	}
-	else if (strpos($line, 'Alias:') === 0)
+	else
 	{
-		if (preg_match('/^Alias:\s*(\S+)\s*(\(preferred MIME name\))?/i', $line, $match))
+		$data = explode("\n", $file->body);
+		unset($file);
+		
+		foreach ($data as $line)
 		{
-			if ($match[1] != 'None')
+			// New character set
+			if (substr($line, 0, 5) === 'Name:')
 			{
-				$names[] = $match[1];
-				if (isset($match[2]))
+				// If we already have one, push it on to the array
+				if (isset($aliases))
 				{
-					$preferred = $match[1];
+					natcasesort($aliases);
+					for ($i = 0, $count = count($aliases); $i < $count; $i++)
+					{
+						$aliases[$i] = normalize_character_set($aliases[$i]);
+					}
+					$charsets[$preferred] = $aliases;
+				}
+				
+				$start = 5 + strspn($line, "\x09\x0A\x0B\xC\x0D\x20", 5);
+				$chars = strcspn($line, "\x09\x0A\x0B\xC\x0D\x20", $start);
+				$aliases = array(substr($line, $start, $chars));
+				$preferred = end($aliases);
+			}
+			// Another alias
+			elseif(substr($line, 0, 6) === 'Alias:')
+			{
+				$start = 7 + strspn($line, "\x09\x0A\x0B\xC\x0D\x20", 7);
+				$chars = strcspn($line, "\x09\x0A\x0B\xC\x0D\x20", $start);
+				$aliases[] = substr($line, $start, $chars);
+				
+				if (end($aliases) === 'None')
+				{
+					array_pop($aliases);
+				}
+				elseif (substr($line, 7 + $chars + 1, 21) === '(preferred MIME name)')
+				{
+					$preferred = end($aliases);
 				}
 			}
 		}
+		
+		// Compatibility replacements
+		$compat = array(
+			'EUC-KR' => 'Windows-949',
+			'GB2312' => 'GBK',
+			'GB_2312-80' => 'GBK',
+			'ISO-8859-1' => 'Windows-1252',
+			'ISO-8859-9' => 'Windows-1254',
+			'ISO-8859-11' => 'Windows-874',
+			'KS_C_5601-1987' => 'Windows-949',
+			'TIS-620' => 'Windows-874',
+			'x-x-big5' => 'Big5',
+		);
+		
+		foreach ($compat as $real => $replace)
+		{
+			if (isset($charsets[$real]) && isset($charsets[$replace]))
+			{
+				$charsets[$replace] = array_merge($charsets[$replace], $charsets[$real]);
+				unset($charsets[$real]);
+			}
+			elseif (isset($charsets[$real]))
+			{
+				$charsets[$replace] = $charsets[$real];
+				$charsets[$replace][] = normalize_character_set($replace);
+				$charsets[$replace] = array_unique($charsets[$replace]);
+				unset($charsets[$real]);
+			}
+			else
+			{
+				$charsets[$replace][] = normalize_character_set($real);
+			}
+		}
+		
+		// Sort it
+		uksort($charsets, 'strnatcasecmp');
+		
+		// And we're done!
+		return $charsets;
 	}
 }
 
-if (!empty($encodings))
+function charset($charset)
 {
-	$encodings['windows-1252'] = array_merge($encodings['windows-1252'], $encodings['ISO-8859-1']);
-	unset($encodings['ISO-8859-1']);
-	$encodings['US-ASCII'][] = 'ANSI';
-	ksort($encodings);
-?>
-function encoding($encoding)
-{
-	// Character sets are case-insensitive (though we'll return them in the form given in their registration)
-	switch (strtoupper($encoding))
+	$normalized_charset = normalize_character_set($charset);
+	if ($charsets = build_character_set_list())
 	{
-<?php
-	foreach ($encodings as $preferred => $encoding)
-	{
-		natcasesort($encoding);
-		
-		foreach ($encoding as $name)
+		foreach ($charsets as $preferred => $aliases)
 		{
-			echo "\t\tcase " . var_export(strtoupper($name), true) . ":\n";
+			if (in_array($normalized_charset, $aliases))
+			{
+				return $preferred;
+			}
 		}
-		
-		echo "\t\t\treturn " . var_export($preferred, true) . ";\n\n";
+		return $charset;
 	}
-?>
+	else
+	{
+		return false;
+	}
+}
+
+function build_function()
+{
+	if ($charsets = build_character_set_list())
+	{
+		$return = <<<EOF
+function charset(\$charset)
+{
+	/* Character sets are case-insensitive, and also need some further
+	normalization in the real world (though we'll return them in the form given
+	in their registration). */
+	switch (strtolower(preg_replace('/[\\x09-\\x0D\\x20-\\x2F\\x3A-\\x40\\x5B-\\x60\\x7B-\\x7E]/', '', \$charset)))
+	{
+
+EOF;
+		foreach ($charsets as $preferred => $aliases)
+		{
+			foreach ($aliases as $alias)
+			{
+				$return .= "\t\tcase " . var_export($alias, true) . ":\n";
+			}
+			$return .= "\t\t\treturn " . var_export($preferred, true) . ";\n\n";
+		}
+		$return .= <<<EOF
 		default:
-			return $encoding;
+			return \$charset;
 	}
 }
-<?php
+EOF;
+		return $return;
+	}
+	else
+	{
+		return false;
+	}
 }
+
+if (php_sapi_name() === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
+{
+	echo build_function();
+}
+
 ?>
