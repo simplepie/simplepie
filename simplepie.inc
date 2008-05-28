@@ -8281,23 +8281,18 @@ class SimplePie_Cache
 	function create($location, $filename, $extension)
 	{
 		$location_iri = new SimplePie_IRI($location);
-		if ($location_iri->is_valid())
+		switch ($location_iri->get_scheme())
 		{
-			switch ($location_iri->get_scheme())
-			{
-				case 'mysql':
-					if (extension_loaded('mysql'))
-					{
-						return new SimplePie_Cache_MySQL($location_iri, $filename, $extension);
-					}
-					break;
+			case 'mysql':
+				if (extension_loaded('mysql'))
+				{
+					return new SimplePie_Cache_MySQL($location_iri, $filename, $extension);
+				}
+				break;
 
-				default:
-					return new SimplePie_Cache_File($location, $filename, $extension);
-					break;
-			}
+			default:
+				return new SimplePie_Cache_File($location, $filename, $extension);
 		}
-		return null;
 	}
 }
 
@@ -8311,8 +8306,8 @@ class SimplePie_Cache_File
 	function SimplePie_Cache_File($location, $filename, $extension)
 	{
 		$this->location = $location;
-		$this->filename = rawurlencode($filename);
-		$this->extension = rawurlencode($extension);
+		$this->filename = $filename;
+		$this->extension = $extension;
 		$this->name = "$this->location/$this->filename.$this->extension";
 	}
 
