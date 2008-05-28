@@ -8466,7 +8466,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 	function SimplePie_Cache_MySQL($mysql_location, $name, $extension)
 	{
 		$host = $mysql_location->get_host();
-		if (stripos($host, 'unix(') === 0 && substr($host, -1) === ')')
+		if (SimplePie_Misc::stripos($host, 'unix(') === 0 && substr($host, -1) === ')')
 		{
 			$server = ':' . substr($host, 5, -1);
 		}
