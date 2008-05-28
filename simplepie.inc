@@ -8292,7 +8292,7 @@ class SimplePie_Cache
 					}
 					break;
 
-				case '':
+				default:
 					if ($location->get_authority() === null)
 					{
 						return new SimplePie_Cache_File($location, $filename, $extension);
