@@ -1761,35 +1761,36 @@ function embed_wmedia(width, height, link) {
 			foreach ($encodings as $encoding)
 			{
 				// Change the encoding to UTF-8 (as we always use UTF-8 internally)
-				$utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8');
-
-				// Create new parser
-				$parser =& new $this->parser_class();
-
-				// If it's parsed fine
-				if ($parser->parse($utf8_data, 'UTF-8'))
+				if ($utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8'))
 				{
-					$this->data = $parser->get_data();
-					if ($this->get_type() & ~SIMPLEPIE_TYPE_NONE)
+					// Create new parser
+					$parser =& new $this->parser_class();
+	
+					// If it's parsed fine
+					if ($parser->parse($utf8_data, 'UTF-8'))
 					{
-						if (isset($headers))
+						$this->data = $parser->get_data();
+						if ($this->get_type() & ~SIMPLEPIE_TYPE_NONE)
 						{
-							$this->data['headers'] = $headers;
+							if (isset($headers))
+							{
+								$this->data['headers'] = $headers;
+							}
+							$this->data['build'] = SIMPLEPIE_BUILD;
+	
+							// Cache the file if caching is enabled
+							if ($cache && !$cache->save($this))
+							{
+								trigger_error("$cache->name is not writeable", E_USER_WARNING);
+							}
+							return true;
 						}
-						$this->data['build'] = SIMPLEPIE_BUILD;
-
-						// Cache the file if caching is enabled
-						if ($cache && !$cache->save($this))
+						else
 						{
-							trigger_error("$cache->name is not writeable", E_USER_WARNING);
+							$this->error = "A feed could not be found at $this->feed_url";
+							SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+							return false;
 						}
-						return true;
-					}
-					else
-					{
-						$this->error = "A feed could not be found at $this->feed_url";
-						SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
-						return false;
 					}
 				}
 			}
@@ -9126,11 +9127,7 @@ class SimplePie_Misc
 		{
 			return SimplePie_Misc::windows_1252_to_utf8($data);
 		}
-		elseif ($input === 'UTF-8' && $output === 'windows-1252')
-		{
-			return utf8_decode($data);
-		}
-		return $data;
+		return false;
 	}
 
 	function encoding($charset)
