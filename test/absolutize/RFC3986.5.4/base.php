@@ -10,7 +10,7 @@ class SimplePie_Absolutize_Test_RFC3986 extends SimplePie_Absolutize_Test
 			$this->test = false;
 		}
 		// Only call the parent constructor if it exists
-		if (is_callable('parent', 'SimplePie_Absolutize_Test'))
+		if (is_callable(array('parent', 'SimplePie_Absolutize_Test')))
 		{
 			parent::SimplePie_Absolutize_Test();
 		}
