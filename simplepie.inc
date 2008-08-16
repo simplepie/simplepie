@@ -9115,19 +9115,26 @@ class SimplePie_Misc
 			$data = substr($data, 0, strcspn($data, $non_ascii_octects));
 		}
 
-		if (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
+		// This is first, as behaviour of this is completely predictable
+		if ($input === 'Windows-1252' && $output === 'UTF-8')
 		{
-			return $return;
+			return SimplePie_Misc::windows_1252_to_utf8($data);
 		}
+		// This is second, as behaviour of this varies only with PHP version
 		elseif (function_exists('mb_convert_encoding') && ($return = @mb_convert_encoding($data, $output, $input)))
 		{
 			return $return;
 		}
-		elseif ($input === 'windows-1252' && $output === 'UTF-8')
+		// This is last, as behaviour of this varies with OS userland and PHP version
+		elseif (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
 		{
-			return SimplePie_Misc::windows_1252_to_utf8($data);
+			return $return;
 		}
-		return false;
+		// If we can't do anything, just fail
+		else
+		{
+			return false;
+		}
 	}
 
 	function encoding($charset)
