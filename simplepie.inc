@@ -8921,7 +8921,7 @@ class SimplePie_Misc
 	 */
 	function display_cached_file($identifier_url, $cache_location = './cache', $cache_extension = 'spc', $cache_class = 'SimplePie_Cache', $cache_name_function = 'md5')
 	{
-		$cache = call_user_func(array($cache_class, 'create'), $cache_location, $identifier_url, $cache_extension);
+		$cache = call_user_func(array($cache_class, 'create'), $cache_location, call_user_func($cache_name_function,$identifier_url), $cache_extension);
 
 		if ($file = $cache->load())
 		{
