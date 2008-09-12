@@ -8878,22 +8878,25 @@ class SimplePie_Misc
 
 	function error($message, $level, $file, $line)
 	{
-		switch ($level)
+		if ((ini_get('error_reporting') & constant($level)) > 0)
 		{
-			case E_USER_ERROR:
-				$note = 'PHP Error';
-				break;
-			case E_USER_WARNING:
-				$note = 'PHP Warning';
-				break;
-			case E_USER_NOTICE:
-				$note = 'PHP Notice';
-				break;
-			default:
-				$note = 'Unknown Error';
-				break;
+			switch ($level)
+			{
+				case E_USER_ERROR:
+					$note = 'PHP Error';
+					break;
+				case E_USER_WARNING:
+					$note = 'PHP Warning';
+					break;
+				case E_USER_NOTICE:
+					$note = 'PHP Notice';
+					break;
+				default:
+					$note = 'Unknown Error';
+					break;
+			}
+			error_log("$note: $message in $file on line $line", 0);
 		}
-		error_log("$note: $message in $file on line $line", 0);
 		return $message;
 	}
 
