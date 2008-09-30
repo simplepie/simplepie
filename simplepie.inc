@@ -1448,7 +1448,7 @@ class SimplePie
 	 */
 	function set_favicon_handler($page = false, $qs = 'i')
 	{
-		if ($page != false)
+		if ($page !== false)
 		{
 			$this->favicon_handler = $page . '?' . $qs . '=';
 		}
@@ -1467,7 +1467,7 @@ class SimplePie
 	 */
 	function set_image_handler($page = false, $qs = 'i')
 	{
-		if ($page != false)
+		if ($page !== false)
 		{
 			$this->sanitize->set_image_handler($page . '?' . $qs . '=');
 		}
