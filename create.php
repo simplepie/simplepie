@@ -68,6 +68,7 @@ function build_character_set_list()
 			'ISO-8859-11' => 'Windows-874',
 			'KS_C_5601-1987' => 'Windows-949',
 			'TIS-620' => 'Windows-874',
+			//'US-ASCII' => 'Windows-1252',
 			'x-x-big5' => 'Big5',
 		);
 		
