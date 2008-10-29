@@ -14083,6 +14083,16 @@ class SimplePie_Parser
 				return false;
 			}
 		}
+		
+		// Work around libxml 2.7.0/2.7.1 bug, at least when in PHP 5.1+
+		if (version_compare(PHP_VERSION, '5.1', '>=') && (LIBXML_VERSION === 20700 || LIBXML_VERSION === 20701))
+		{
+			$data = str_replace('&lt;', '&#60;', $data);
+			$data = str_replace('&gt;', '&#62;', $data);
+			$data = str_replace('&amp;', '&#38;', $data);
+			$data = str_replace('&apos;', '&#39;', $data);
+			$data = str_replace('&quot;', '&#34;', $data);
+		}
 
 		$return = true;
 
