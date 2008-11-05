@@ -7727,9 +7727,9 @@ class SimplePie_File
 					$out = "GET $get HTTP/1.0\r\n";
 					$out .= "Host: $url_parts[host]\r\n";
 					$out .= "User-Agent: $useragent\r\n";
-					if (function_exists('gzinflate'))
+					if (extension_loaded('zlib'))
 					{
-						$out .= "Accept-Encoding: gzip,deflate\r\n";
+						$out .= "Accept-Encoding: x-gzip,gzip,deflate\r\n";
 					}
 
 					if (isset($url_parts['user']) && isset($url_parts['pass']))
@@ -7765,49 +7765,38 @@ class SimplePie_File
 								$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
 								return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 							}
-							if (isset($this->headers['content-encoding']) && ($this->headers['content-encoding'] === 'gzip' || $this->headers['content-encoding'] === 'deflate'))
+							if (isset($this->headers['content-encoding']))
 							{
-								// if (substr($this->body, 0, 8) === "\x1f\x8b\x08\x00\x00\x00\x00\x00")
-								// {
-								// 	$this->body = substr($this->body, 10);
-								// }
-								// $this->body = gzinflate($this->body);
-
-								/**
-								 * Improved gzip decoding.
-								 * Author: patatraboum at free dot fr <http://us.php.net/manual/en/function.gzinflate.php#77336>
-								 */
-								if (substr($this->body, 0, 3) === "\x1f\x8b\x08")
+                                 // Hey, we act dumb elsewhere, so let's do that here too
+								switch(strtolower(trim($this->headers['content-encoding'], "\x09\x0A\x0D\x20")))
 								{
-									$i = 10;
-									$flg = ord(substr($this->body, 3, 1));
-								
-									if ($flg > 0)
-									{
-										if ($flg & 4)
-										{
-											list($xlen) = unpack('v', substr($this->body, $i, 2));
-											$i = $i + 2 + $xlen;
-										}
-										if ($flg & 8)
-										{
-											$i = strpos($this->body, "\0", $i) +1;
-										}
-										if ($flg & 16)
-										{
-											$i = strpos($this->body, "\0", $i) +1;
-										}
-										if ($flg & 2)
-										{
-											$i = $i + 2;
-										}
-									}
-								
-									$this->body = gzinflate(substr($this->body, $i, -8));
-								}
-
-
-							}
+								    case 'gzip':
+								    case 'x-gzip':
+								        $decoder = new SimplePie_gzdecode($this->body);
+								        if (!$decoder->parse())
+								        {
+								            $this->error = 'Unable to decode HTTP "gzip" stream';
+								            $this->success = false;
+								        }
+								        break;
+								    
+								    case 'deflate':
+								        if (($body = gzuncompress($this->body)) === false)
+								        {
+								            if (($body = gzinflate($this->body)) === false)
+								            {
+                                                $this->error = 'Unable to decode HTTP "deflate" stream';
+                                                $this->success = false;
+                                            }
+                                        }
+                                        $this->body = $body;
+                                        break;
+                                    
+                                    default:
+                                        $this->error = 'Unknown content coding';
+                                        $this->success = false;
+                                }
+                            }
 						}
 					}
 					else
@@ -8258,6 +8247,316 @@ class SimplePie_HTTP_Parser
 	{
 		$this->body = substr($this->data, $this->position);
 		$this->state = 'emit';
+	}
+}
+
+/**
+ * gzdecode
+ *
+ * @package SimplePie
+ */
+class SimplePie_gzdecode
+{
+	/**
+	 * Compressed data
+	 *
+	 * @access private
+	 * @see gzdecode::$data
+	 */
+	var $compressed_data;
+	
+	/**
+	 * Size of compressed data
+	 *
+	 * @access private
+	 */
+	var $compressed_size;
+	
+	/**
+	 * Minimum size of a valid gzip string
+	 *
+	 * @access private
+	 */
+	var $min_compressed_size = 18;
+	
+	/**
+	 * Current position of pointer
+	 *
+	 * @access private
+	 */
+	var $position = 0;
+	
+	/**
+	 * Flags (FLG)
+	 *
+	 * @access private
+	 */
+	var $flags;
+	
+	/**
+	 * Uncompressed data
+	 *
+	 * @access public
+	 * @see gzdecode::$compressed_data
+	 */
+	var $data;
+	
+	/**
+	 * Modified time
+	 *
+	 * @access public
+	 */
+	var $MTIME;
+	
+	/**
+	 * Extra Flags
+	 *
+	 * @access public
+	 */
+	var $XFL;
+	
+	/**
+	 * Operating System
+	 *
+	 * @access public
+	 */
+	var $OS;
+	
+	/**
+	 * Subfield ID 1
+	 *
+	 * @access public
+	 * @see gzdecode::$extra_field
+	 * @see gzdecode::$SI2
+	 */
+	var $SI1;
+	
+	/**
+	 * Subfield ID 2
+	 *
+	 * @access public
+	 * @see gzdecode::$extra_field
+	 * @see gzdecode::$SI1
+	 */
+	var $SI2;
+	
+	/**
+	 * Extra field content
+	 *
+	 * @access public
+	 * @see gzdecode::$SI1
+	 * @see gzdecode::$SI2
+	 */
+	var $extra_field;
+	
+	/**
+	 * Original filename
+	 *
+	 * @access public
+	 */
+	var $filename;
+	
+	/**
+	 * Human readable comment
+	 *
+	 * @access public
+	 */
+	var $comment;
+	
+	/**
+	 * Don't allow anything to be set
+	 *
+	 * @access public
+	 */
+	function __set($name, $value)
+	{
+		trigger_error("Cannot write property $name", E_USER_ERROR);
+	}
+	
+	/**
+	 * Set the compressed string and related properties
+	 *
+	 * @access public
+	 */
+	function __construct($data)
+	{
+		$this->compressed_data = $data;
+		$this->compressed_size = strlen($data);
+	}
+	
+	/**
+	 * Decode the GZIP stream
+	 *
+	 * @access public
+	 */
+	function parse()
+	{
+		if ($this->compressed_size >= $this->min_compressed_size)
+		{
+			// Check ID1, ID2, and CM
+			if (substr($this->compressed_data, 0, 3) !== "\x1F\x8B\x08")
+			{
+				return false;
+			}
+			
+			// Get the FLG (FLaGs)
+			$this->flags = ord($this->compressed_data[3]);
+		
+			// FLG bits above (1 << 4) are reserved
+			if ($flg > 0x1F)
+			{
+				return false;
+			}
+			
+			// Advance the pointer after the above
+			$this->position += 4;
+			
+			// MTIME
+			$mtime = substr($this->compressed_data, $this->position, 4);
+			// Reverse the string if we're on a big-endian arch because l is the only signed long and is machine endianness
+			if (current(unpack('S', "\x00\x01")) === 1)
+			{
+				$mtime = strrev($mtime);
+			}
+			$this->MITME = current(unpack('l', $mtime));
+			$this->position += 4;
+			
+			// Get the XFL (eXtra FLags)
+			$this->XFL = ord($this->compressed_data[$this->position++]);
+		
+			// Get the OS (Operating System)
+			$this->OS = ord($this->compressed_data[$this->position++]);
+			
+			// Parse the FEXTRA
+			if ($this->flags & 4)
+			{
+				// Read subfield IDs
+				$this->SI1 = $this->compressed_data[$this->position++];
+				$this->SI2 = $this->compressed_data[$this->position++];
+				
+				// SI2 set to zero is reserved for future use
+				if ($this->SI2 === "\x00")
+				{
+					return false;
+				}
+				
+				// Get the length of the extra field
+				$len = current(unpack('v', substr($this->compressed_data, $this->position, 2)));
+				$position += 2;
+				
+				// Check the length of the string is still valid
+				$this->min_compressed_size += $len + 4;
+				if ($this->compressed_size >= $this->min_compressed_size)
+				{
+					// Set the extra field to the given data
+					$this->extra_field = substr($this->compressed_data, $this->position, $len);
+					$this->position += $len;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			// Parse the FNAME
+			if ($this->flags & 8)
+			{
+				// Get the length of the filename
+				$len = strspn($this->compressed_data, "\x00", $this->position);
+				
+				// Check the length of the string is still valid
+				$this->min_compressed_size += $len + 1;
+				if ($this->compressed_size >= $this->min_compressed_size)
+				{
+					// Set the original filename to the given string
+					$this->filename = substr($this->compressed_data, $this->position, $len);
+					$this->position += $len + 1;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			// Parse the FCOMMENT
+			if ($this->flags & 16)
+			{
+				// Get the length of the comment
+				$len = strspn($this->compressed_data, "\x00", $this->position);
+				
+				// Check the length of the string is still valid
+				$this->min_compressed_size += $len + 1;
+				if ($this->compressed_size >= $this->min_compressed_size)
+				{
+					// Set the original comment to the given string
+					$this->comment = substr($this->compressed_data, $this->position, $len);
+					$this->position += $len + 1;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			// Parse the FHCRC
+			if ($this->flags & 2)
+			{
+				// Check the length of the string is still valid
+				$this->min_compressed_size += $len + 2;
+				if ($this->compressed_size >= $this->min_compressed_size)
+				{
+					// Read the CRC
+					$crc = current(unpack('v', substr($this->compressed_data, $this->position, 2)));
+					
+					// Check the CRC matches
+					if ((crc32(substr($this->compressed_data, 0, $this->position)) & 0xFFFF) === $crc)
+					{
+						$this->position += 2;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			// Decompress the actual data
+			if ($this->data = gzinflate(substr($this->compressed_data, $this->position, -8)) === false)
+			{
+				return false;
+			}
+			else
+			{
+				$this->position = $this->compressed_size - 8;
+			}
+			
+			// Check CRC of data
+			$crc = current(unpack('N', substr($this->compressed_data, $this->position, 4)));
+			$this->position += 4;
+			if (crc32($this->data) !== $crc)
+			{
+				return false;
+			}
+			
+			// Check ISIZE of data
+			$isize = current(unpack('N', substr($this->compressed_data, $this->position, 4)));
+			$this->position += 4;
+			if (strlen($this->data) & 0xFFFFFFFF !== $isize)
+			{
+				return false;
+			}
+			
+			// Wow, against all odds, we've actually got a valid gzip string
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
 
