@@ -8382,7 +8382,7 @@ class SimplePie_gzdecode
 	 *
 	 * @access public
 	 */
-	function __construct($data)
+	function SimplePie_gzdecode($data)
 	{
 		$this->compressed_data = $data;
 		$this->compressed_size = strlen($data);
