@@ -8541,7 +8541,7 @@ class SimplePie_gzdecode
 			// Check CRC of data
 			$crc = current(unpack('N', substr($this->compressed_data, $this->position, 4)));
 			$this->position += 4;
-			if (function_exists('hash') && hexdec(hash('crc32b', $this->data)) !== $crc)
+			if (extension_loaded('hash') && hexdec(hash('crc32b', $this->data)) !== $crc)
 			{
 				return false;
 			}
