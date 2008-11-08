@@ -7778,6 +7778,10 @@ class SimplePie_File
 								            $this->error = 'Unable to decode HTTP "gzip" stream';
 								            $this->success = false;
 								        }
+								        else
+								        {
+								        	$this->body = $decoder->data;
+								        }
 								        break;
 								    
 								    case 'deflate':
@@ -8525,7 +8529,7 @@ class SimplePie_gzdecode
 			}
 			
 			// Decompress the actual data
-			if ($this->data = gzinflate(substr($this->compressed_data, $this->position, -8)) === false)
+			if (($this->data = gzinflate(substr($this->compressed_data, $this->position, -8))) === false)
 			{
 				return false;
 			}
@@ -8537,7 +8541,7 @@ class SimplePie_gzdecode
 			// Check CRC of data
 			$crc = current(unpack('N', substr($this->compressed_data, $this->position, 4)));
 			$this->position += 4;
-			if (crc32($this->data) !== $crc)
+			if (function_exists('hash') && hexdec(hash('crc32b', $this->data)) !== $crc)
 			{
 				return false;
 			}
