@@ -8418,7 +8418,7 @@ class SimplePie_gzdecode
 			{
 				$mtime = strrev($mtime);
 			}
-			$this->MITME = current(unpack('l', $mtime));
+			$this->MTIME = current(unpack('l', $mtime));
 			$this->position += 4;
 			
 			// Get the XFL (eXtra FLags)
