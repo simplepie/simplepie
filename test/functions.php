@@ -23,7 +23,7 @@ class SimplePie_Unit_Test2_Group extends Unit_Test2_Group
 		
 		echo '<h2 class=' . (($passed_percentage == 100) ? 'pass' : 'fail') . '>' . htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8') . ': ' . $passed_percentage . "% passed!</h2>\n";
 		echo "<p>\n$output\n</p>\n";
-		echo '<p>We ran ' . $this->total() . ' tests in ' . round($this->time(), 3) . ' seconds of which ' . $this->passes() . ' were passed, and ' . $this->fails() . ' were failed.</p>';
+		echo '<p>We ran ' . $this->total() . ' tests in ' . round($this->time(), 3) . ' seconds of which ' . $this->passes() . ' passed, and ' . $this->fails() . ' failed.</p>';
 		flush();
 	}
 }
