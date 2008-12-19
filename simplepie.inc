@@ -7103,7 +7103,7 @@ class SimplePie_Enclosure
 
 		// Mime-types by handler.
 		$types_flash = array('application/x-shockwave-flash', 'application/futuresplash'); // Flash
-		$types_fmedia = array('video/flv', 'video/x-flv','flv-application/octet-stream');  // Flash Media Player
+		$types_fmedia = array('video/flv', 'video/x-flv','flv-application/octet-stream'); // Flash Media Player
 		$types_quicktime = array('audio/3gpp', 'audio/3gpp2', 'audio/aac', 'audio/x-aac', 'audio/aiff', 'audio/x-aiff', 'audio/mid', 'audio/midi', 'audio/x-midi', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/wav', 'audio/x-wav', 'video/3gpp', 'video/3gpp2', 'video/m4v', 'video/x-m4v', 'video/mp4', 'video/mpeg', 'video/x-mpeg', 'video/quicktime', 'video/sd-video'); // QuickTime
 		$types_wmedia = array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx'); // Windows Media
 		$types_mp3 = array('audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg'); // MP3
@@ -7735,40 +7735,40 @@ class SimplePie_File
 							}
 							if (isset($this->headers['content-encoding']))
 							{
-                                 // Hey, we act dumb elsewhere, so let's do that here too
-								switch(strtolower(trim($this->headers['content-encoding'], "\x09\x0A\x0D\x20")))
+								// Hey, we act dumb elsewhere, so let's do that here too
+								switch (strtolower(trim($this->headers['content-encoding'], "\x09\x0A\x0D\x20")))
 								{
-								    case 'gzip':
-								    case 'x-gzip':
-								        $decoder = new SimplePie_gzdecode($this->body);
-								        if (!$decoder->parse())
-								        {
-								            $this->error = 'Unable to decode HTTP "gzip" stream';
-								            $this->success = false;
-								        }
-								        else
-								        {
-								        	$this->body = $decoder->data;
-								        }
-								        break;
-								
-								    case 'deflate':
-								        if (($body = gzuncompress($this->body)) === false)
-								        {
-								            if (($body = gzinflate($this->body)) === false)
-								            {
-                                                $this->error = 'Unable to decode HTTP "deflate" stream';
-                                                $this->success = false;
-                                            }
-                                        }
-                                        $this->body = $body;
-                                        break;
+									case 'gzip':
+									case 'x-gzip':
+										$decoder = new SimplePie_gzdecode($this->body);
+										if (!$decoder->parse())
+										{
+											$this->error = 'Unable to decode HTTP "gzip" stream';
+											$this->success = false;
+										}
+										else
+										{
+											$this->body = $decoder->data;
+										}
+										break;
 
-                                    default:
-                                        $this->error = 'Unknown content coding';
-                                        $this->success = false;
-                                }
-                            }
+									case 'deflate':
+										if (($body = gzuncompress($this->body)) === false)
+										{
+											if (($body = gzinflate($this->body)) === false)
+											{
+												$this->error = 'Unable to decode HTTP "deflate" stream';
+												$this->success = false;
+											}
+										}
+										$this->body = $body;
+										break;
+
+									default:
+										$this->error = 'Unknown content coding';
+										$this->success = false;
+								}
+							}
 						}
 					}
 					else
@@ -12358,7 +12358,7 @@ class SimplePie_Net_IPv6
 	 * function expects an valid IPv6 address and expands the '::' to
 	 * the required zeros.
 	 *
-	 * Example:	 FF01::101	->  FF01:0:0:0:0:0:0:101
+	 * Example:	 FF01::101	->	FF01:0:0:0:0:0:0:101
 	 *			 ::1		->	0:0:0:0:0:0:0:1
 	 *
 	 * @access public
@@ -12380,7 +12380,7 @@ class SimplePie_Net_IPv6
 			}
 			else
 			{
-			   	$pos = 0;
+				$pos = 0;
 				if (($pos = substr_count($ip1, ':')) > 0)
 				{
 					$c1 = $pos;
