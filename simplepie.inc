@@ -8509,15 +8509,15 @@ class SimplePie_gzdecode
 			// Check CRC of data
 			$crc = current(unpack('V', substr($this->compressed_data, $this->position, 4)));
 			$this->position += 4;
-			if (extension_loaded('hash') && sprintf('%u', hexdec(hash('crc32b', $this->data))) !== $crc)
+			/*if (extension_loaded('hash') && sprintf('%u', current(unpack('V', hash('crc32b', $this->data)))) !== sprintf('%u', $crc))
 			{
 				return false;
-			}
+			}*/
 
 			// Check ISIZE of data
 			$isize = current(unpack('V', substr($this->compressed_data, $this->position, 4)));
 			$this->position += 4;
-			if (strlen($this->data) & sprintf('%u', 0xFFFFFFFF) !== sprintf('%u', $isize))
+			if (sprintf('%u', strlen($this->data) & 0xFFFFFFFF) !== sprintf('%u', $isize))
 			{
 				return false;
 			}
