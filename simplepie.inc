@@ -1490,10 +1490,28 @@ class SimplePie
 
 	function init()
 	{
+		// Check absolute bare minimum requirements.
 		if ((function_exists('version_compare') && version_compare(PHP_VERSION, '4.3.0', '<')) || !extension_loaded('xml') || !extension_loaded('pcre'))
 		{
 			return false;
 		}
+		// Then check the xml extension is sane (i.e., libxml 2.7.x issue on PHP < 5.2.9 and libxml 2.7.0 to 2.7.2 on any version).
+		else
+		{
+			static $xml_is_sane = null;
+			if ($xml_is_sane === null)
+			{
+				$parser = xml_parser_create();
+				xml_parse_into_struct($parser, '<foo>&amp;</foo>', $values);
+				xml_parser_free($parser);
+				$xml_is_sane = isset($values[0]['value']);
+			}
+			if (!$xml_is_sane)
+			{
+				return false;
+			}
+		}
+		
 		if (isset($_GET[$this->javascript]))
 		{
 			SimplePie_Misc::output_javascript();
@@ -14391,13 +14409,6 @@ class SimplePie_Parser
 				return false;
 			}
 		}
-
-		// Work around libxml bug
-		$data = str_replace('&lt;', '&#60;', $data);
-		$data = str_replace('&gt;', '&#62;', $data);
-		$data = str_replace('&amp;', '&#38;', $data);
-		$data = str_replace('&apos;', '&#39;', $data);
-		$data = str_replace('&quot;', '&#34;', $data);
 
 		$return = true;
 
