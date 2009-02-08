@@ -762,21 +762,28 @@ class SimplePie
 	 */
 	function __destruct()
 	{
-		if (!empty($this->data['items']))
+		if (version_compare(PHP_VERSION, '5.3', '<'))
 		{
-			foreach ($this->data['items'] as $item)
+			if (!empty($this->data['items']))
 			{
-				$item->__destruct();
+				foreach ($this->data['items'] as $item)
+				{
+					$item->__destruct();
+				}
+				unset($item, $this->data['items']);
 			}
-			unset($this->data['items']);
+			if (!empty($this->data['ordered_items']))
+			{
+				foreach ($this->data['ordered_items'] as $item)
+				{
+					$item->__destruct();
+				}
+				unset($item, $this->data['ordered_items']);
+			}
 		}
-		if (!empty($this->data['ordered_items']))
+		elseif (gc_enabled())
 		{
-			foreach ($this->data['ordered_items'] as $item)
-			{
-				$item->__destruct();
-			}
-			unset($this->data['ordered_items']);
+			gc_collect_cycles();
 		}
 	}
 
@@ -3095,7 +3102,14 @@ class SimplePie_Item
 	 */
 	function __destruct()
 	{
-		unset($this->feed);
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			unset($this->feed);
+		}
+		elseif (gc_enabled())
+		{
+			gc_collect_cycles();
+		}
 	}
 
 	function get_item_tags($namespace, $tag)
@@ -5697,7 +5711,14 @@ class SimplePie_Source
 	 */
 	function __destruct()
 	{
-		unset($this->item);
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			unset($this->item);
+		}
+		elseif (gc_enabled())
+		{
+			gc_collect_cycles();
+		}
 	}
 
 	function get_source_tags($namespace, $tag)
