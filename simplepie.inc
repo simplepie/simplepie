@@ -5706,21 +5706,6 @@ class SimplePie_Source
 		return md5(serialize($this->data));
 	}
 
-	/**
-	 * Remove items that link back to this before destroying this object
-	 */
-	function __destruct()
-	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			unset($this->item);
-		}
-		elseif (gc_enabled())
-		{
-			gc_collect_cycles();
-		}
-	}
-
 	function get_source_tags($namespace, $tag)
 	{
 		if (isset($this->data['child'][$namespace][$tag]))
