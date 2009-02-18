@@ -781,10 +781,6 @@ class SimplePie
 				unset($item, $this->data['ordered_items']);
 			}
 		}
-		elseif (gc_enabled())
-		{
-			gc_collect_cycles();
-		}
 	}
 
 	/**
@@ -3105,10 +3101,6 @@ class SimplePie_Item
 		if (version_compare(PHP_VERSION, '5.3', '<'))
 		{
 			unset($this->feed);
-		}
-		elseif (gc_enabled())
-		{
-			gc_collect_cycles();
 		}
 	}
 
