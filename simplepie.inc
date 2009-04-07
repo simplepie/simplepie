@@ -9265,23 +9265,12 @@ class SimplePie_Misc
 
 	function parse_url($url)
 	{
-		static $cache = array();
-		if (isset($cache[$url]))
+		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/', $url, $match);
+		for ($i = count($match); $i <= 9; $i++)
 		{
-			return $cache[$url];
+			$match[$i] = '';
 		}
-		elseif (preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/', $url, $match))
-		{
-			for ($i = count($match); $i <= 9; $i++)
-			{
-				$match[$i] = '';
-			}
-			return $cache[$url] = array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
-		}
-		else
-		{
-			return $cache[$url] = array('scheme' => '', 'authority' => '', 'path' => '', 'query' => '', 'fragment' => '');
-		}
+		return array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
 	}
 
 	function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
@@ -11120,36 +11109,31 @@ class SimplePie_Misc
 	 */
 	function codepoint_to_utf8($codepoint)
 	{
-		static $cache = array();
 		$codepoint = (int) $codepoint;
-		if (isset($cache[$codepoint]))
+		if ($codepoint < 0)
 		{
-			return $cache[$codepoint];
-		}
-		elseif ($codepoint < 0)
-		{
-			return $cache[$codepoint] = false;
+			return false;
 		}
 		else if ($codepoint <= 0x7f)
 		{
-			return $cache[$codepoint] = chr($codepoint);
+			return chr($codepoint);
 		}
 		else if ($codepoint <= 0x7ff)
 		{
-			return $cache[$codepoint] = chr(0xc0 | ($codepoint >> 6)) . chr(0x80 | ($codepoint & 0x3f));
+			return chr(0xc0 | ($codepoint >> 6)) . chr(0x80 | ($codepoint & 0x3f));
 		}
 		else if ($codepoint <= 0xffff)
 		{
-			return $cache[$codepoint] = chr(0xe0 | ($codepoint >> 12)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
+			return chr(0xe0 | ($codepoint >> 12)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
 		}
 		else if ($codepoint <= 0x10ffff)
 		{
-			return $cache[$codepoint] = chr(0xf0 | ($codepoint >> 18)) . chr(0x80 | (($codepoint >> 12) & 0x3f)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
+			return chr(0xf0 | ($codepoint >> 18)) . chr(0x80 | (($codepoint >> 12) & 0x3f)) . chr(0x80 | (($codepoint >> 6) & 0x3f)) . chr(0x80 | ($codepoint & 0x3f));
 		}
 		else
 		{
 			// U+FFFD REPLACEMENT CHARACTER
-			return $cache[$codepoint] = "\xEF\xBF\xBD";
+			return "\xEF\xBF\xBD";
 		}
 	}
 
@@ -11772,23 +11756,12 @@ class SimplePie_IRI
 	 */
 	function parse_iri($iri)
 	{
-		static $cache = array();
-		if (isset($cache[$iri]))
+		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/', $iri, $match);
+		for ($i = count($match); $i <= 9; $i++)
 		{
-			return $cache[$iri];
+			$match[$i] = '';
 		}
-		elseif (preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/', $iri, $match))
-		{
-			for ($i = count($match); $i <= 9; $i++)
-			{
-				$match[$i] = '';
-			}
-			return $cache[$iri] = array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
-		}
-		else
-		{
-			return $cache[$iri] = array('scheme' => '', 'authority' => '', 'path' => '', 'query' => '', 'fragment' => '');
-		}
+		return array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
 	}
 
 	/**
