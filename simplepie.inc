@@ -1504,9 +1504,9 @@ class SimplePie
 			static $xml_is_sane = null;
 			if ($xml_is_sane === null)
 			{
-				$parser = xml_parser_create();
-				xml_parse_into_struct($parser, '<foo>&amp;</foo>', $values);
-				xml_parser_free($parser);
+				$parser_check = xml_parser_create();
+				xml_parse_into_struct($parser_check, '<foo>&amp;</foo>', $values);
+				xml_parser_free($parser_check);
 				$xml_is_sane = isset($values[0]['value']);
 			}
 			if (!$xml_is_sane)
@@ -1746,7 +1746,6 @@ class SimplePie
 				exit;
 			}
 
-			$parser = false;
 			// Loop through each possible encoding, till we return something, or run out of possibilities
 			foreach ($encodings as $encoding)
 			{
@@ -1784,11 +1783,16 @@ class SimplePie
 					}
 				}
 			}
-			if(is_a($parser, $this->parser_class)) {
-				// We have an error, just set SimplePie::error to it and quit
+			if(isset($parser))
+			{
+				// We have an error, just set SimplePie_Misc::error to it and quit
 				$this->error = sprintf('XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
-				SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
 			}
+			else
+			{
+				$this->error = 'The data could not be converted to UTF-8';
+			}
+			SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
 			return false;
 		}
 		elseif (!empty($this->multifeed_url))
