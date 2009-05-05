@@ -4,7 +4,7 @@ require_once 'simplepie.inc';
 
 function normalize_character_set($charset)
 {
-	return strtolower(preg_replace('/[\x09-\x0D\x20-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/', '', $charset));
+	return strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset));
 }
 
 function build_character_set_list()
@@ -27,12 +27,12 @@ function build_character_set_list()
 				// If we already have one, push it on to the array
 				if (isset($aliases))
 				{
-					natcasesort($aliases);
 					for ($i = 0, $count = count($aliases); $i < $count; $i++)
 					{
 						$aliases[$i] = normalize_character_set($aliases[$i]);
 					}
-					$charsets[$preferred] = $aliases;
+					$charsets[$preferred] = array_unique($aliases);
+					natsort($charsets[$preferred]);
 				}
 				
 				$start = 5 + strspn($line, "\x09\x0A\x0B\xC\x0D\x20", 5);
@@ -83,13 +83,13 @@ function build_character_set_list()
 			{
 				$charsets[$replace] = $charsets[$real];
 				$charsets[$replace][] = normalize_character_set($replace);
-				$charsets[$replace] = array_unique($charsets[$replace]);
 				unset($charsets[$real]);
 			}
 			else
 			{
 				$charsets[$replace][] = normalize_character_set($real);
 			}
+			$charsets[$replace] = array_unique($charsets[$replace]);
 		}
 		
 		// Sort it
@@ -127,10 +127,8 @@ function build_function()
 		$return = <<<EOF
 function charset(\$charset)
 {
-	/* Character sets are case-insensitive, and also need some further
-	normalization in the real world (though we'll return them in the form given
-	in their registration). */
-	switch (strtolower(preg_replace('/[\\x09-\\x0D\\x20-\\x2F\\x3A-\\x40\\x5B-\\x60\\x7B-\\x7E]/', '', \$charset)))
+	// Normalization from UTS #22
+	switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\\1', \$charset)))
 	{
 
 EOF;
