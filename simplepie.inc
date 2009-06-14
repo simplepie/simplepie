@@ -1498,8 +1498,8 @@ class SimplePie
 		{
 			return false;
 		}
-		// Then check the xml extension is sane (i.e., libxml 2.7.x issue on PHP < 5.2.9 and libxml 2.7.0 to 2.7.2 on any version).
-		else
+		// Then check the xml extension is sane (i.e., libxml 2.7.x issue on PHP < 5.2.9 and libxml 2.7.0 to 2.7.2 on any version) if we don't have xmlreader.
+		elseif (!extension_loaded('xmlreader'))
 		{
 			static $xml_is_sane = null;
 			if ($xml_is_sane === null)
@@ -14389,27 +14389,106 @@ class SimplePie_Parser
 		}
 
 		$return = true;
+				
+		static $xml_is_sane = null;
+		if ($xml_is_sane === null)
+		{
+			$parser_check = xml_parser_create();
+			xml_parse_into_struct($parser_check, '<foo>&amp;</foo>', $values);
+			xml_parser_free($parser_check);
+			$xml_is_sane = isset($values[0]['value']);
+		}
 
 		// Create the parser
-		$xml = xml_parser_create_ns($this->encoding, $this->separator);
-		xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE, 1);
-		xml_parser_set_option($xml, XML_OPTION_CASE_FOLDING, 0);
-		xml_set_object($xml, $this);
-		xml_set_character_data_handler($xml, 'cdata');
-		xml_set_element_handler($xml, 'tag_open', 'tag_close');
-
-		// Parse!
-		if (!xml_parse($xml, $data, true))
+		if ($xml_is_sane)
 		{
-			$this->error_code = xml_get_error_code($xml);
-			$this->error_string = xml_error_string($this->error_code);
-			$return = false;
+			$xml = xml_parser_create_ns($this->encoding, $this->separator);
+			xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE, 1);
+			xml_parser_set_option($xml, XML_OPTION_CASE_FOLDING, 0);
+			xml_set_object($xml, $this);
+			xml_set_character_data_handler($xml, 'cdata');
+			xml_set_element_handler($xml, 'tag_open', 'tag_close');
+	
+			// Parse!
+			if (!xml_parse($xml, $data, true))
+			{
+				$this->error_code = xml_get_error_code($xml);
+				$this->error_string = xml_error_string($this->error_code);
+				$return = false;
+			}
+			$this->current_line = xml_get_current_line_number($xml);
+			$this->current_column = xml_get_current_column_number($xml);
+			$this->current_byte = xml_get_current_byte_index($xml);
+			xml_parser_free($xml);
+			return $return;
 		}
-		$this->current_line = xml_get_current_line_number($xml);
-		$this->current_column = xml_get_current_column_number($xml);
-		$this->current_byte = xml_get_current_byte_index($xml);
-		xml_parser_free($xml);
-		return $return;
+		else
+		{
+			$xml = new XMLReader();
+			$xml->xml($data);
+			while (@$xml->read())
+			{
+				switch ($xml->nodeType)
+				{ 
+					case XMLReader::END_ELEMENT:
+						if ($xml->namespaceURI !== '')
+						{
+							$tagName = "{$xml->namespaceURI}{$this->separator}{$xml->localName}";
+						}
+						else
+						{
+							$tagName = $xml->localName;
+						}
+						$this->tag_close(null, $tagName);
+						break;
+					case XMLReader::ELEMENT:
+						$empty = $xml->isEmptyElement;
+						if ($xml->namespaceURI !== '')
+						{
+							$tagName = "{$xml->namespaceURI}{$this->separator}{$xml->localName}";
+						}
+						else
+						{
+							$tagName = $xml->localName;
+						}
+						$attributes = array();
+						while ($xml->moveToNextAttribute())
+						{
+							if ($xml->namespaceURI !== '')
+							{
+								$attrName = "{$xml->namespaceURI}{$this->separator}{$xml->localName}";
+							}
+							else
+							{
+								$attrName = $xml->localName;
+							}
+							$attributes[$attrName] = $xml->value;
+						}
+						$this->tag_open(null, $tagName, $attributes);
+						if ($empty)
+						{
+							$this->tag_close(null, $tagName);
+						}
+						break;
+					case XMLReader::TEXT: 
+					case XMLReader::CDATA:
+						$this->cdata(null, $xml->value);
+						break;
+				}
+			}
+			if ($error = libxml_get_last_error())
+			{
+				$this->error_code = $error->code;
+				$this->error_string = $error->message;
+				$this->current_line = $error->line;
+				$this->current_column = $error->column;
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
 	}
 
 	function get_error_code()
