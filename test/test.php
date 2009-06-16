@@ -1,5 +1,20 @@
 <?php
 
+if (version_compare(PHP_VERSION, '5.3', '>='))
+{
+	error_reporting(E_ALL ^ E_DEPRECATED ^ E_USER_DEPRECATED);
+}
+else
+{
+	error_reporting(E_ALL);
+}
+
+if (version_compare(PHP_VERSION, '5.1', '>='))
+{
+	$tz = timezone_identifiers_list();
+	date_default_timezone_set($tz[array_rand($tz)]);
+}
+
 header('Content-type: text/html; charset=UTF-8');
 
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
