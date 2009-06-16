@@ -762,7 +762,7 @@ class SimplePie
 	 */
 	function __destruct()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
+		if (version_compare(PHP_VERSION, '5.3', '<') || !gc_enabled())
 		{
 			if (!empty($this->data['items']))
 			{
@@ -3105,7 +3105,7 @@ class SimplePie_Item
 	 */
 	function __destruct()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
+		if (version_compare(PHP_VERSION, '5.3', '<') || !gc_enabled())
 		{
 			unset($this->feed);
 		}
