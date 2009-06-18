@@ -63,12 +63,12 @@ function build_character_set_list()
 			'EUC-KR' => 'Windows-949',
 			'GB2312' => 'GBK',
 			'GB_2312-80' => 'GBK',
-			'ISO-8859-1' => 'Windows-1252',
-			'ISO-8859-9' => 'Windows-1254',
-			'ISO-8859-11' => 'Windows-874',
-			'KS_C_5601-1987' => 'Windows-949',
-			'TIS-620' => 'Windows-874',
-			//'US-ASCII' => 'Windows-1252',
+			'ISO-8859-1' => 'windows-1252',
+			'ISO-8859-9' => 'windows-1254',
+			'ISO-8859-11' => 'windows-874',
+			'KS_C_5601-1987' => 'windows-949',
+			'TIS-620' => 'windows-874',
+			//'US-ASCII' => 'windows-1252',
 			'x-x-big5' => 'Big5',
 		);
 		
@@ -90,6 +90,7 @@ function build_character_set_list()
 				$charsets[$replace][] = normalize_character_set($real);
 			}
 			$charsets[$replace] = array_unique($charsets[$replace]);
+			natsort($charsets[$replace]);
 		}
 		
 		// Sort it

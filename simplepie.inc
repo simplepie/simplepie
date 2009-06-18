@@ -9458,10 +9458,8 @@ class SimplePie_Misc
 
 	function encoding($charset)
 	{
-		/* Character sets are case-insensitive, and also need some further
-		normalization in the real world (though we'll return them in the form given
-		in their registration). */
-		switch (strtolower(preg_replace('/[\x09-\x0D\x20-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/', '', $charset)))
+		// Normalization from UTS #22
+		switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset)))
 		{
 			case 'adobestandardencoding':
 			case 'csadobestandardencoding':
@@ -9472,8 +9470,6 @@ class SimplePie_Misc
 				return 'Adobe-Symbol-Encoding';
 
 			case 'ami1251':
-			case 'ami1251':
-			case 'amiga1251':
 			case 'amiga1251':
 				return 'Amiga-1251';
 
@@ -9487,8 +9483,8 @@ class SimplePie_Misc
 			case 'arabic7':
 			case 'asmo449':
 			case 'csiso89asmo449':
-			case 'isoir89':
 			case 'iso9036':
+			case 'isoir89':
 				return 'ASMO_449';
 
 			case 'big5':
@@ -9510,8 +9506,8 @@ class SimplePie_Misc
 			case 'bs4730':
 			case 'csiso4unitedkingdom':
 			case 'gb':
-			case 'isoir4':
 			case 'iso646gb':
+			case 'isoir4':
 			case 'uk':
 				return 'BS_4730';
 
@@ -9528,15 +9524,15 @@ class SimplePie_Misc
 			case 'csa71':
 			case 'csaz243419851':
 			case 'csiso121canadian1':
-			case 'isoir121':
 			case 'iso646ca':
+			case 'isoir121':
 				return 'CSA_Z243.4-1985-1';
 
 			case 'csa72':
 			case 'csaz243419852':
 			case 'csiso122canadian2':
-			case 'isoir122':
 			case 'iso646ca2':
+			case 'isoir122':
 				return 'CSA_Z243.4-1985-2';
 
 			case 'csaz24341985gr':
@@ -9557,8 +9553,8 @@ class SimplePie_Misc
 			case 'csiso21german':
 			case 'de':
 			case 'din66003':
-			case 'isoir21':
 			case 'iso646de':
+			case 'isoir21':
 				return 'DIN_66003';
 
 			case 'csdkus':
@@ -9567,7 +9563,6 @@ class SimplePie_Misc
 
 			case 'csiso646danish':
 			case 'dk':
-			case 'ds2089':
 			case 'ds2089':
 			case 'iso646dk':
 				return 'DS_2089';
@@ -9640,14 +9635,14 @@ class SimplePie_Misc
 
 			case 'csiso17spanish':
 			case 'es':
-			case 'isoir17':
 			case 'iso646es':
+			case 'isoir17':
 				return 'ES';
 
 			case 'csiso85spanish2':
 			case 'es2':
-			case 'isoir85':
 			case 'iso646es2':
+			case 'isoir85':
 				return 'ES2';
 
 			case 'cseucfixwidjapanese':
@@ -9662,23 +9657,23 @@ class SimplePie_Misc
 			case 'gb18030':
 				return 'GB18030';
 
+			case 'chinese':
 			case 'cp936':
+			case 'csgb2312':
+			case 'csiso58gb231280':
+			case 'gb2312':
+			case 'gb231280':
 			case 'gbk':
+			case 'isoir58':
 			case 'ms936':
 			case 'windows936':
-			case 'csgb2312':
-			case 'gb2312':
-			case 'chinese':
-			case 'csiso58gb231280':
-			case 'gb231280':
-			case 'isoir58':
 				return 'GBK';
 
 			case 'cn':
 			case 'csiso57gb1988':
 			case 'gb198880':
-			case 'isoir57':
 			case 'iso646cn':
+			case 'isoir57':
 				return 'GB_1988-80';
 
 			case 'csiso153gost1976874':
@@ -9736,93 +9731,93 @@ class SimplePie_Misc
 			case 'ibmthai':
 				return 'IBM-Thai';
 
-			case 'ccsid00858':
-			case 'cp00858':
-			case 'ibm00858':
+			case 'ccsid858':
+			case 'cp858':
+			case 'ibm858':
 			case 'pcmultilingual850euro':
 				return 'IBM00858';
 
-			case 'ccsid00924':
-			case 'cp00924':
+			case 'ccsid924':
+			case 'cp924':
 			case 'ebcdiclatin9euro':
-			case 'ibm00924':
+			case 'ibm924':
 				return 'IBM00924';
 
-			case 'ccsid01140':
-			case 'cp01140':
+			case 'ccsid1140':
+			case 'cp1140':
 			case 'ebcdicus37euro':
-			case 'ibm01140':
+			case 'ibm1140':
 				return 'IBM01140';
 
-			case 'ccsid01141':
-			case 'cp01141':
+			case 'ccsid1141':
+			case 'cp1141':
 			case 'ebcdicde273euro':
-			case 'ibm01141':
+			case 'ibm1141':
 				return 'IBM01141';
 
-			case 'ccsid01142':
-			case 'cp01142':
+			case 'ccsid1142':
+			case 'cp1142':
 			case 'ebcdicdk277euro':
 			case 'ebcdicno277euro':
-			case 'ibm01142':
+			case 'ibm1142':
 				return 'IBM01142';
 
-			case 'ccsid01143':
-			case 'cp01143':
+			case 'ccsid1143':
+			case 'cp1143':
 			case 'ebcdicfi278euro':
 			case 'ebcdicse278euro':
-			case 'ibm01143':
+			case 'ibm1143':
 				return 'IBM01143';
 
-			case 'ccsid01144':
-			case 'cp01144':
+			case 'ccsid1144':
+			case 'cp1144':
 			case 'ebcdicit280euro':
-			case 'ibm01144':
+			case 'ibm1144':
 				return 'IBM01144';
 
-			case 'ccsid01145':
-			case 'cp01145':
+			case 'ccsid1145':
+			case 'cp1145':
 			case 'ebcdices284euro':
-			case 'ibm01145':
+			case 'ibm1145':
 				return 'IBM01145';
 
-			case 'ccsid01146':
-			case 'cp01146':
+			case 'ccsid1146':
+			case 'cp1146':
 			case 'ebcdicgb285euro':
-			case 'ibm01146':
+			case 'ibm1146':
 				return 'IBM01146';
 
-			case 'ccsid01147':
-			case 'cp01147':
+			case 'ccsid1147':
+			case 'cp1147':
 			case 'ebcdicfr297euro':
-			case 'ibm01147':
+			case 'ibm1147':
 				return 'IBM01147';
 
-			case 'ccsid01148':
-			case 'cp01148':
+			case 'ccsid1148':
+			case 'cp1148':
 			case 'ebcdicinternational500euro':
-			case 'ibm01148':
+			case 'ibm1148':
 				return 'IBM01148';
 
-			case 'ccsid01149':
-			case 'cp01149':
+			case 'ccsid1149':
+			case 'cp1149':
 			case 'ebcdicis871euro':
-			case 'ibm01149':
+			case 'ibm1149':
 				return 'IBM01149';
 
-			case 'cp037':
-			case 'csibm037':
+			case 'cp37':
+			case 'csibm37':
 			case 'ebcdiccpca':
 			case 'ebcdiccpnl':
 			case 'ebcdiccpus':
 			case 'ebcdiccpwt':
-			case 'ibm037':
+			case 'ibm37':
 				return 'IBM037';
 
-			case 'cp038':
-			case 'csibm038':
+			case 'cp38':
+			case 'csibm38':
 			case 'ebcdicint':
-			case 'ibm038':
+			case 'ibm38':
 				return 'IBM038';
 
 			case 'cp273':
@@ -9964,8 +9959,8 @@ class SimplePie_Misc
 				return 'IBM860';
 
 			case '861':
-			case 'cpis':
 			case 'cp861':
+			case 'cpis':
 			case 'csibm861':
 			case 'ibm861':
 				return 'IBM861';
@@ -9999,15 +9994,15 @@ class SimplePie_Misc
 			case 'ibm866':
 				return 'IBM866';
 
-			case 'cpar':
 			case 'cp868':
+			case 'cpar':
 			case 'csibm868':
 			case 'ibm868':
 				return 'IBM868';
 
 			case '869':
-			case 'cpgr':
 			case 'cp869':
+			case 'cpgr':
 			case 'csibm869':
 			case 'ibm869':
 				return 'IBM869';
@@ -10065,7 +10060,6 @@ class SimplePie_Misc
 				return 'IBM1026';
 
 			case 'ibm1047':
-			case 'ibm1047':
 				return 'IBM1047';
 
 			case 'csiso143iecp271':
@@ -10120,9 +10114,8 @@ class SimplePie_Misc
 
 			case 'csisolatin2':
 			case 'iso88592':
-			case 'isoir101':
-			case 'iso88592':
 			case 'iso885921987':
+			case 'isoir101':
 			case 'l2':
 			case 'latin2':
 				return 'ISO-8859-2';
@@ -10133,18 +10126,16 @@ class SimplePie_Misc
 
 			case 'csisolatin3':
 			case 'iso88593':
-			case 'isoir109':
-			case 'iso88593':
 			case 'iso885931988':
+			case 'isoir109':
 			case 'l3':
 			case 'latin3':
 				return 'ISO-8859-3';
 
 			case 'csisolatin4':
 			case 'iso88594':
-			case 'isoir110':
-			case 'iso88594':
 			case 'iso885941988':
+			case 'isoir110':
 			case 'l4':
 			case 'latin4':
 				return 'ISO-8859-4';
@@ -10152,9 +10143,8 @@ class SimplePie_Misc
 			case 'csisolatincyrillic':
 			case 'cyrillic':
 			case 'iso88595':
-			case 'isoir144':
-			case 'iso88595':
 			case 'iso885951988':
+			case 'isoir144':
 				return 'ISO-8859-5';
 
 			case 'arabic':
@@ -10162,18 +10152,15 @@ class SimplePie_Misc
 			case 'csisolatinarabic':
 			case 'ecma114':
 			case 'iso88596':
-			case 'isoir127':
-			case 'iso88596':
 			case 'iso885961987':
+			case 'isoir127':
 				return 'ISO-8859-6';
 
 			case 'csiso88596e':
 			case 'iso88596e':
-			case 'iso88596e':
 				return 'ISO-8859-6-E';
 
 			case 'csiso88596i':
-			case 'iso88596i':
 			case 'iso88596i':
 				return 'ISO-8859-6-I';
 
@@ -10183,26 +10170,22 @@ class SimplePie_Misc
 			case 'greek':
 			case 'greek8':
 			case 'iso88597':
-			case 'isoir126':
-			case 'iso88597':
 			case 'iso885971987':
+			case 'isoir126':
 				return 'ISO-8859-7';
 
 			case 'csisolatinhebrew':
 			case 'hebrew':
 			case 'iso88598':
-			case 'isoir138':
-			case 'iso88598':
 			case 'iso885981988':
+			case 'isoir138':
 				return 'ISO-8859-8';
 
 			case 'csiso88598e':
 			case 'iso88598e':
-			case 'iso88598e':
 				return 'ISO-8859-8-E';
 
 			case 'csiso88598i':
-			case 'iso88598i':
 			case 'iso88598i':
 				return 'ISO-8859-8-I';
 
@@ -10212,8 +10195,8 @@ class SimplePie_Misc
 
 			case 'csisolatin6':
 			case 'iso885910':
-			case 'isoir157':
 			case 'iso8859101992':
+			case 'isoir157':
 			case 'l6':
 			case 'latin6':
 				return 'ISO-8859-10';
@@ -10222,23 +10205,20 @@ class SimplePie_Misc
 				return 'ISO-8859-13';
 
 			case 'iso885914':
+			case 'iso8859141998':
 			case 'isoceltic':
 			case 'isoir199':
-			case 'iso885914':
-			case 'iso8859141998':
 			case 'l8':
 			case 'latin8':
 				return 'ISO-8859-14';
 
 			case 'iso885915':
-			case 'iso885915':
 			case 'latin9':
 				return 'ISO-8859-15';
 
 			case 'iso885916':
-			case 'isoir226':
-			case 'iso885916':
 			case 'iso8859162001':
+			case 'isoir226':
 			case 'l10':
 			case 'latin10':
 				return 'ISO-8859-16';
@@ -10268,7 +10248,6 @@ class SimplePie_Misc
 				return 'ISO-10646-UTF-1';
 
 			case 'csiso115481':
-			case 'iso115481':
 			case 'iso115481':
 			case 'isotr115481':
 				return 'ISO-11548-1';
@@ -10304,55 +10283,55 @@ class SimplePie_Misc
 
 			case 'csiso2intlrefversion':
 			case 'irv':
-			case 'isoir2':
 			case 'iso646irv1983':
+			case 'isoir2':
 				return 'ISO_646.irv:1983';
 
 			case 'csiso2033':
 			case 'e13b':
-			case 'isoir98':
 			case 'iso20331983':
+			case 'isoir98':
 				return 'ISO_2033-1983';
 
 			case 'csiso5427cyrillic':
-			case 'isoir37':
 			case 'iso5427':
+			case 'isoir37':
 				return 'ISO_5427';
 
-			case 'isoir54':
 			case 'iso5427cyrillic1981':
 			case 'iso54271981':
+			case 'isoir54':
 				return 'ISO_5427:1981';
 
 			case 'csiso5428greek':
-			case 'isoir55':
 			case 'iso54281980':
+			case 'isoir55':
 				return 'ISO_5428:1980';
 
 			case 'csiso6937add':
-			case 'isoir152':
 			case 'iso6937225':
+			case 'isoir152':
 				return 'ISO_6937-2-25';
 
 			case 'csisotextcomm':
-			case 'isoir142':
 			case 'iso69372add':
+			case 'isoir142':
 				return 'ISO_6937-2-add';
 
 			case 'csiso8859supp':
-			case 'isoir154':
 			case 'iso8859supp':
+			case 'isoir154':
 			case 'latin125':
 				return 'ISO_8859-supp';
 
 			case 'csiso10367box':
-			case 'isoir155':
 			case 'iso10367box':
+			case 'isoir155':
 				return 'ISO_10367-box';
 
 			case 'csiso15italian':
-			case 'isoir15':
 			case 'iso646it':
+			case 'isoir15':
 			case 'it':
 				return 'IT';
 
@@ -10361,12 +10340,12 @@ class SimplePie_Misc
 			case 'jisc62201969':
 			case 'jisc62201969jp':
 			case 'katakana':
-			case 'x02017':
+			case 'x2017':
 				return 'JIS_C6220-1969-jp';
 
 			case 'csiso14jisc6220ro':
-			case 'isoir14':
 			case 'iso646jp':
+			case 'isoir14':
 			case 'jisc62201969ro':
 			case 'jp':
 				return 'JIS_C6220-1969-ro';
@@ -10376,11 +10355,11 @@ class SimplePie_Misc
 			case 'jisc62261978':
 				return 'JIS_C6226-1978';
 
-			case 'csiso87jisx0208':
+			case 'csiso87jisx208':
 			case 'isoir87':
 			case 'jisc62261983':
-			case 'jisx02081983':
-			case 'x0208':
+			case 'jisx2081983':
+			case 'x208':
 				return 'JIS_C6226-1983';
 
 			case 'csiso91jisc62291984a':
@@ -10390,8 +10369,8 @@ class SimplePie_Misc
 				return 'JIS_C6229-1984-a';
 
 			case 'csiso92jisc62991984b':
-			case 'isoir92':
 			case 'iso646jpocrb':
+			case 'isoir92':
 			case 'jisc62291984b':
 			case 'jpocrb':
 				return 'JIS_C6229-1984-b';
@@ -10424,19 +10403,19 @@ class SimplePie_Misc
 				return 'JIS_Encoding';
 
 			case 'cshalfwidthkatakana':
-			case 'jisx0201':
-			case 'x0201':
+			case 'jisx201':
+			case 'x201':
 				return 'JIS_X0201';
 
-			case 'csiso159jisx02121990':
+			case 'csiso159jisx2121990':
 			case 'isoir159':
-			case 'jisx02121990':
-			case 'x0212':
+			case 'jisx2121990':
+			case 'x212':
 				return 'JIS_X0212-1990';
 
 			case 'csiso141jusib1002':
-			case 'isoir141':
 			case 'iso646yu':
+			case 'isoir141':
 			case 'js':
 			case 'jusib1002':
 			case 'yu':
@@ -10510,8 +10489,8 @@ class SimplePie_Misc
 
 			case 'csiso86hungarian':
 			case 'hu':
-			case 'isoir86':
 			case 'iso646hu':
+			case 'isoir86':
 			case 'msz77953':
 				return 'MSZ_7795.3';
 
@@ -10537,46 +10516,46 @@ class SimplePie_Misc
 
 			case 'csiso151cuba':
 			case 'cuba':
-			case 'isoir151':
 			case 'iso646cu':
-			case 'ncnc001081':
+			case 'isoir151':
+			case 'ncnc1081':
 				return 'NC_NC00-10:81';
 
 			case 'csiso69french':
 			case 'fr':
-			case 'isoir69':
 			case 'iso646fr':
+			case 'isoir69':
 			case 'nfz62010':
 				return 'NF_Z_62-010';
 
 			case 'csiso25french':
-			case 'isoir25':
 			case 'iso646fr1':
+			case 'isoir25':
 			case 'nfz620101973':
 				return 'NF_Z_62-010_(1973)';
 
 			case 'csiso60danishnorwegian':
 			case 'csiso60norwegian1':
-			case 'isoir60':
 			case 'iso646no':
+			case 'isoir60':
 			case 'no':
 			case 'ns45511':
 				return 'NS_4551-1';
 
 			case 'csiso61norwegian2':
-			case 'isoir61':
 			case 'iso646no2':
+			case 'isoir61':
 			case 'no2':
 			case 'ns45512':
 				return 'NS_4551-2';
 
-			case 'osdebcdicdf03irv':
+			case 'osdebcdicdf3irv':
 				return 'OSD_EBCDIC_DF03_IRV';
 
-			case 'osdebcdicdf041':
+			case 'osdebcdicdf41':
 				return 'OSD_EBCDIC_DF04_1';
 
-			case 'osdebcdicdf0415':
+			case 'osdebcdicdf415':
 				return 'OSD_EBCDIC_DF04_15';
 
 			case 'cspc8danishnorwegian':
@@ -10588,14 +10567,14 @@ class SimplePie_Misc
 				return 'PC8-Turkish';
 
 			case 'csiso16portuguese':
-			case 'isoir16':
 			case 'iso646pt':
+			case 'isoir16':
 			case 'pt':
 				return 'PT';
 
 			case 'csiso84portuguese2':
-			case 'isoir84':
 			case 'iso646pt2':
+			case 'isoir84':
 			case 'pt2':
 				return 'PT2';
 
@@ -10611,16 +10590,16 @@ class SimplePie_Misc
 
 			case 'csiso10swedish':
 			case 'fi':
-			case 'isoir10':
 			case 'iso646fi':
 			case 'iso646se':
+			case 'isoir10':
 			case 'se':
 			case 'sen850200b':
 				return 'SEN_850200_B';
 
 			case 'csiso11swedishfornames':
-			case 'isoir11':
 			case 'iso646se2':
+			case 'isoir11':
 			case 'se2':
 			case 'sen850200c':
 				return 'SEN_850200_C';
@@ -10668,9 +10647,9 @@ class SimplePie_Misc
 			case 'cp367':
 			case 'csascii':
 			case 'ibm367':
-			case 'isoir6':
-			case 'iso646us':
 			case 'iso646irv1991':
+			case 'iso646us':
+			case 'isoir6':
 			case 'us':
 			case 'usascii':
 				return 'US-ASCII';
@@ -10734,17 +10713,20 @@ class SimplePie_Misc
 
 			case 'iso885911':
 			case 'tis620':
-				return 'Windows-874';
+				return 'windows-874';
 
-			case 'cseuckr':
-			case 'euckr':
-			case 'windows949':
 			case 'csksc56011987':
 			case 'isoir149':
 			case 'korean':
 			case 'ksc5601':
 			case 'ksc56011987':
 			case 'ksc56011989':
+			case 'windows949':
+				return 'windows-949';
+
+			case 'cseuckr':
+			case 'euckr':
+			case 'windows949':
 				return 'Windows-949';
 
 			case 'windows1250':
@@ -10757,13 +10739,10 @@ class SimplePie_Misc
 			case 'csisolatin1':
 			case 'ibm819':
 			case 'iso88591':
-			case 'isoir100':
 			case 'iso885911987':
+			case 'isoir100':
 			case 'l1':
 			case 'latin1':
-			case 'windows1252':
-				return 'Windows-1252';
-
 			case 'windows1252':
 				return 'windows-1252';
 
@@ -10772,13 +10751,10 @@ class SimplePie_Misc
 
 			case 'csisolatin5':
 			case 'iso88599':
-			case 'isoir148':
 			case 'iso885991989':
+			case 'isoir148':
 			case 'l5':
 			case 'latin5':
-			case 'windows1254':
-				return 'Windows-1254';
-
 			case 'windows1254':
 				return 'windows-1254';
 
