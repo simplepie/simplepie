@@ -2371,7 +2371,18 @@ class SimplePie
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'category') as $category)
 		{
-			$categories[] =& new $this->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			// This is really the label, but keep this as the term also for BC.
+			// Label will also work on retrieving because that falls back to term.
+			$term = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if (isset($category['attribs']['']['domain']))
+			{
+				$scheme = $this->sanitize($category['attribs']['']['domain'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				$scheme = null;
+			}
+			$categories[] =& new $this->category_class($term, $scheme, null);
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'subject') as $category)
 		{
@@ -3327,7 +3338,18 @@ class SimplePie_Item
 		}
 		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'category') as $category)
 		{
-			$categories[] =& new $this->feed->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			// This is really the label, but keep this as the term also for BC.
+			// Label will also work on retrieving because that falls back to term.
+			$term = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if (isset($category['attribs']['']['domain']))
+			{
+				$scheme = $this->sanitize($category['attribs']['']['domain'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				$scheme = null;
+			}
+			$categories[] =& new $this->feed->category_class($term, $scheme, null);
 		}
 		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'subject') as $category)
 		{
@@ -5806,7 +5828,18 @@ class SimplePie_Source
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'category') as $category)
 		{
-			$categories[] =& new $this->item->feed->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			// This is really the label, but keep this as the term also for BC.
+			// Label will also work on retrieving because that falls back to term.
+			$term = $this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			if (isset($category['attribs']['']['domain']))
+			{
+				$scheme = $this->sanitize($category['attribs']['']['domain'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
+			else
+			{
+				$scheme = null;
+			}
+			$categories[] =& new $this->item->feed->category_class($term, $scheme, null);
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_11, 'subject') as $category)
 		{
