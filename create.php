@@ -60,7 +60,7 @@ function build_character_set_list()
 		
 		// Compatibility replacements
 		$compat = array(
-			'EUC-KR' => 'Windows-949',
+			'EUC-KR' => 'windows-949',
 			'GB2312' => 'GBK',
 			'GB_2312-80' => 'GBK',
 			'ISO-8859-1' => 'windows-1252',
@@ -95,6 +95,21 @@ function build_character_set_list()
 		
 		// Sort it
 		uksort($charsets, 'strnatcasecmp');
+		
+		// Check that nothing matches more than one
+		$all = call_user_func_array('array_merge', $charsets);
+		$all_count = array_count_values($all);
+		if (max($all_count) > 1)
+		{
+			echo "Duplicated charsets:\n";
+			foreach ($all_count as $charset => $count)
+			{
+				if ($count > 1)
+				{
+					echo "$charset\n";
+				}
+			}
+		}
 		
 		// And we're done!
 		return $charsets;

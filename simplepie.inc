@@ -10715,7 +10715,9 @@ class SimplePie_Misc
 			case 'tis620':
 				return 'windows-874';
 
+			case 'cseuckr':
 			case 'csksc56011987':
+			case 'euckr':
 			case 'isoir149':
 			case 'korean':
 			case 'ksc5601':
@@ -10723,11 +10725,6 @@ class SimplePie_Misc
 			case 'ksc56011989':
 			case 'windows949':
 				return 'windows-949';
-
-			case 'cseuckr':
-			case 'euckr':
-			case 'windows949':
-				return 'Windows-949';
 
 			case 'windows1250':
 				return 'windows-1250';
