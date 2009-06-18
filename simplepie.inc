@@ -14424,6 +14424,7 @@ class SimplePie_Parser
 		}
 		else
 		{
+			libxml_clear_errors();
 			$xml = new XMLReader();
 			$xml->xml($data);
 			while (@$xml->read())
