@@ -9305,51 +9305,31 @@ class SimplePie_Misc
 
 	function parse_url($url)
 	{
-		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/', $url, $match);
-		for ($i = count($match); $i <= 9; $i++)
-		{
-			$match[$i] = '';
-		}
-		return array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
+		$iri = new SimplePie_IRI($url);
+		return array(
+			'scheme' => (string) $iri->get_scheme(),
+			'authority' => (string) $iri->get_authority(),
+			'path' => (string) $iri->get_path(),
+			'query' => (string) $iri->get_query(),
+			'fragment' => (string) $iri->get_fragment()
+		);
 	}
 
 	function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
 	{
-		$return = '';
-		if ($scheme !== '')
-		{
-			$return .= "$scheme:";
-		}
-		if ($authority !== '')
-		{
-			$return .= "//$authority";
-		}
-		if ($path !== '')
-		{
-			$return .= $path;
-		}
-		if ($query !== '')
-		{
-			$return .= "?$query";
-		}
-		if ($fragment !== '')
-		{
-			$return .= "#$fragment";
-		}
-		return $return;
+		$iri = new SimplePie_IRI('');
+		$iri->set_scheme($scheme);
+		$iri->set_authority($authority);
+		$iri->set_path($path);
+		$iri->set_query($query);
+		$iri->set_fragment($fragment);
+		return $iri->get_iri();
 	}
 
 	function normalize_url($url)
 	{
-		$url = preg_replace_callback('/%([0-9A-Fa-f]{2})/', array('SimplePie_Misc', 'percent_encoding_normalization'), $url);
-		$url = SimplePie_Misc::parse_url($url);
-		$url['scheme'] = strtolower($url['scheme']);
-		if ($url['authority'] !== '')
-		{
-			$url['authority'] = strtolower($url['authority']);
-			$url['path'] = SimplePie_Misc::remove_dot_segments($url['path']);
-		}
-		return SimplePie_Misc::compress_parse_url($url['scheme'], $url['authority'], $url['path'], $url['query'], $url['fragment']);
+		$iri = new SimplePie_IRI($url);
+		return $iri->get_iri();
 	}
 
 	function percent_encoding_normalization($match)
