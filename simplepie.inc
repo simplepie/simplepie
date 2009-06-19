@@ -8490,7 +8490,7 @@ class SimplePie_gzdecode
 			if ($this->flags & 8)
 			{
 				// Get the length of the filename
-				$len = strspn($this->compressed_data, "\x00", $this->position);
+				$len = strcspn($this->compressed_data, "\x00", $this->position);
 
 				// Check the length of the string is still valid
 				$this->min_compressed_size += $len + 1;
@@ -8510,7 +8510,7 @@ class SimplePie_gzdecode
 			if ($this->flags & 16)
 			{
 				// Get the length of the comment
-				$len = strspn($this->compressed_data, "\x00", $this->position);
+				$len = strcspn($this->compressed_data, "\x00", $this->position);
 
 				// Check the length of the string is still valid
 				$this->min_compressed_size += $len + 1;
