@@ -650,6 +650,13 @@ class SimplePie
 	var $max_checked_feeds = 10;
 
 	/**
+	 * @var array All the feeds found during the autodiscovery process
+	 * @see SimplePie::get_all_discovered_feeds()
+	 * @access private
+	 */
+	var $all_discovered_feeds = array();
+
+	/**
 	 * @var string Web-accessible path to the handler_favicon.php file.
 	 * @see SimplePie::set_favicon_handler()
 	 * @access private
@@ -1658,7 +1665,7 @@ class SimplePie
 					{
 						// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
 						unset($file);
-						if ($file = $locate->find($this->autodiscovery))
+						if ($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds))
 						{
 							if ($cache)
 							{
@@ -2650,6 +2657,11 @@ class SimplePie
 		{
 			return null;
 		}
+	}
+
+	function get_all_discovered_feeds()
+	{
+		return $this->all_discovered_feeds;
 	}
 
 	function get_description()
@@ -14079,7 +14091,7 @@ class SimplePie_Locator
 		$this->content_type_sniffer_class = $content_type_sniffer_class;
 	}
 
-	function find($type = SIMPLEPIE_LOCATOR_ALL)
+	function find($type = SIMPLEPIE_LOCATOR_ALL, array &$working)
 	{
 		if ($this->is_feed($this->file))
 		{
@@ -14102,7 +14114,7 @@ class SimplePie_Locator
 
 		if ($type & SIMPLEPIE_LOCATOR_AUTODISCOVERY && $working = $this->autodiscovery())
 		{
-			return $working;
+			return $working[0];
 		}
 
 		if ($type & (SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | SIMPLEPIE_LOCATOR_LOCAL_BODY | SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | SIMPLEPIE_LOCATOR_REMOTE_BODY) && $this->get_links())
@@ -14175,6 +14187,7 @@ class SimplePie_Locator
 	{
 		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body), SimplePie_Misc::get_element('a', $this->file->body), SimplePie_Misc::get_element('area', $this->file->body));
 		$done = array();
+		$feeds = array();
 		foreach ($links as $link)
 		{
 			if ($this->checked_feeds === $this->max_checked_feeds)
@@ -14194,19 +14207,26 @@ class SimplePie_Locator
 					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->http_base);
 				}
 
-				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['type']['data']) && in_array(strtolower(SimplePie_Misc::parse_mime($link['attribs']['type']['data'])), array('application/rss+xml', 'application/atom+xml'))))
+				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['type']['data']) && in_array(strtolower(SimplePie_Misc::parse_mime($link['attribs']['type']['data'])), array('application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href]))
 				{
 					$this->checked_feeds++;
 					$feed =& new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
 					if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 					{
-						return $feed;
+						$feeds[$href] = $feed;
 					}
 				}
 				$done[] = $href;
 			}
 		}
-		return null;
+
+		if (!empty($feeds))
+		{
+			return array_values($feeds);
+		}
+		else {
+			return null;
+		}
 	}
 
 	function get_links()
