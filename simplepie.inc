@@ -2082,12 +2082,12 @@ class SimplePie
 	{
 		if ($this->subscribe_url())
 		{
-			$return = $this->sanitize($feed_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->feed_url);
+			$return = $feed_url . rawurlencode($this->feed_url);
 			if ($site_url !== null && $this->get_link() !== null)
 			{
-				$return .= $this->sanitize($site_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_link());
+				$return .= $site_url . rawurlencode($this->get_link());
 			}
-			return $return;
+			return $this->sanitize($return, SIMPLEPIE_CONSTRUCT_IRI);
 		}
 		else
 		{
@@ -5635,16 +5635,16 @@ class SimplePie_Item
 	{
 		if ($this->get_permalink() !== null)
 		{
-			$return = $this->sanitize($item_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_permalink());
+			$return = $item_url . rawurlencode($this->get_permalink());
 			if ($title_url !== null && $this->get_title() !== null)
 			{
-				$return .= $this->sanitize($title_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_title());
+				$return .= $title_url . rawurlencode($this->get_title());
 			}
 			if ($summary_url !== null && $this->get_description() !== null)
 			{
-				$return .= $this->sanitize($summary_url, SIMPLEPIE_CONSTRUCT_IRI) . rawurlencode($this->get_description());
+				$return .= $summary_url . rawurlencode($this->get_description());
 			}
-			return $return;
+			return $this->sanitize($return, SIMPLEPIE_CONSTRUCT_IRI);
 		}
 		else
 		{
