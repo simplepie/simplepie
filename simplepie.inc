@@ -1690,7 +1690,7 @@ class SimplePie
 
 				$headers = $file->headers;
 				$data = $file->body;
-				$sniffer = new $this->content_type_sniffer_class($file);
+				$sniffer =& new $this->content_type_sniffer_class($file);
 				$sniffed = $sniffer->get_type();
 			}
 			else
@@ -1975,7 +1975,7 @@ class SimplePie
 
 					if ($file->success && ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
 					{
-						$sniffer = new $this->content_type_sniffer_class($file);
+						$sniffer =& new $this->content_type_sniffer_class($file);
 						if (substr($sniffer->get_type(), 0, 6) === 'image/')
 						{
 							if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
@@ -7808,7 +7808,7 @@ class SimplePie_File
 								{
 									case 'gzip':
 									case 'x-gzip':
-										$decoder = new SimplePie_gzdecode($this->body);
+										$decoder =& new SimplePie_gzdecode($this->body);
 										if (!$decoder->parse())
 										{
 											$this->error = 'Unable to decode HTTP "gzip" stream';
@@ -8620,7 +8620,7 @@ class SimplePie_Cache
 	 */
 	function create($location, $filename, $extension)
 	{
-		$location_iri = new SimplePie_IRI($location);
+		$location_iri =& new SimplePie_IRI($location);
 		switch ($location_iri->get_scheme())
 		{
 			case 'mysql':
@@ -9317,7 +9317,7 @@ class SimplePie_Misc
 
 	function parse_url($url)
 	{
-		$iri = new SimplePie_IRI($url);
+		$iri =& new SimplePie_IRI($url);
 		return array(
 			'scheme' => (string) $iri->get_scheme(),
 			'authority' => (string) $iri->get_authority(),
@@ -9329,7 +9329,7 @@ class SimplePie_Misc
 
 	function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
 	{
-		$iri = new SimplePie_IRI('');
+		$iri =& new SimplePie_IRI('');
 		$iri->set_scheme($scheme);
 		$iri->set_authority($authority);
 		$iri->set_path($path);
@@ -9340,7 +9340,7 @@ class SimplePie_Misc
 
 	function normalize_url($url)
 	{
-		$iri = new SimplePie_IRI($url);
+		$iri =& new SimplePie_IRI($url);
 		return $iri->get_iri();
 	}
 
@@ -10860,7 +10860,7 @@ class SimplePie_Misc
 	 */
 	function entities_decode($data)
 	{
-		$decoder = new SimplePie_Decode_HTML_Entities($data);
+		$decoder =& new SimplePie_Decode_HTML_Entities($data);
 		return $decoder->parse();
 	}
 
@@ -11256,7 +11256,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x00\x00\x00\x3F\x00\x00\x00\x3E"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8'));
+				$parser =& new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8'));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -11269,7 +11269,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x3F\x00\x00\x00\x3E\x00\x00\x00"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8'));
+				$parser =& new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8'));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -11282,7 +11282,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x00\x3F\x00\x3E"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8'));
+				$parser =& new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8'));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -11295,7 +11295,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x3F\x00\x3E\x00"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8'));
+				$parser =& new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8'));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -11308,7 +11308,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x3F\x3E"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(substr($data, 5, $pos - 5));
+				$parser =& new SimplePie_XML_Declaration_Parser(substr($data, 5, $pos - 5));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -11685,7 +11685,7 @@ class SimplePie_IRI
 		$relative = (string) $relative;
 		if ($relative !== '')
 		{
-			$relative = new SimplePie_IRI($relative);
+			$relative =& new SimplePie_IRI($relative);
 			if ($relative->get_scheme() !== null)
 			{
 				$target = $relative;
@@ -11699,7 +11699,7 @@ class SimplePie_IRI
 				}
 				else
 				{
-					$target = new SimplePie_IRI('');
+					$target =& new SimplePie_IRI('');
 					$target->set_scheme($base->get_scheme());
 					$target->set_userinfo($base->get_userinfo());
 					$target->set_host($base->get_host());
@@ -13027,10 +13027,10 @@ class SimplePie_Parse_Date
 		{
 			if (extension_loaded('Reflection'))
 			{
-				$class = new ReflectionClass(get_class($this));
+				$class =& new ReflectionClass(get_class($this));
 				$methods = $class->getMethods();
 				$all_methods = array();
-				foreach ($methods as $method)
+				foreach ($methods as &$method)
 				{
 					$all_methods[] = $method->getName();
 				}
@@ -13065,7 +13065,7 @@ class SimplePie_Parse_Date
 		static $object;
 		if (!$object)
 		{
-			$object = new SimplePie_Parse_Date;
+			$object =& new SimplePie_Parse_Date;
 		}
 		return $object;
 	}
@@ -14100,7 +14100,7 @@ class SimplePie_Locator
 
 		if ($this->file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = new $this->content_type_sniffer_class($this->file);
+			$sniffer =& new $this->content_type_sniffer_class($this->file);
 			if ($sniffer->get_type() !== 'text/html')
 			{
 				return null;
@@ -14146,7 +14146,7 @@ class SimplePie_Locator
 	{
 		if ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = new $this->content_type_sniffer_class($file);
+			$sniffer =& new $this->content_type_sniffer_class($file);
 			$sniffed = $sniffer->get_type();
 			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'text/rdf', 'application/atom+xml', 'text/xml', 'application/xml')))
 			{
@@ -14381,7 +14381,7 @@ class SimplePie_Parser
 
 		if (substr($data, 0, 5) === '<?xml' && strspn(substr($data, 5, 1), "\x09\x0A\x0D\x20") && ($pos = strpos($data, '?>')) !== false)
 		{
-			$declaration = new SimplePie_XML_Declaration_Parser(substr($data, 5, $pos - 5));
+			$declaration =& new SimplePie_XML_Declaration_Parser(substr($data, 5, $pos - 5));
 			if ($declaration->parse())
 			{
 				$data = substr($data, $pos + 2);
@@ -14431,7 +14431,7 @@ class SimplePie_Parser
 		else
 		{
 			libxml_clear_errors();
-			$xml = new XMLReader();
+			$xml =& new XMLReader();
 			$xml->xml($data);
 			while (@$xml->read())
 			{
