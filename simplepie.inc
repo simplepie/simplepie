@@ -11438,7 +11438,6 @@ class SimplePie_Decode_HTML_Entities
 		}
 		else
 		{
-			$this->consumed = false;
 			return false;
 		}
 	}
@@ -11461,7 +11460,6 @@ class SimplePie_Decode_HTML_Entities
 		}
 		else
 		{
-			$this->consumed = false;
 			return false;
 		}
 	}
@@ -11535,7 +11533,7 @@ class SimplePie_Decode_HTML_Entities
 						$replacement = SimplePie_Misc::codepoint_to_utf8($codepoint);
 					}
 
-					if ($this->consume() !== ';')
+					if (!in_array($this->consume(), array(';', false), true))
 					{
 						$this->unconsume();
 					}
