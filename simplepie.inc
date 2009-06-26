@@ -769,7 +769,7 @@ class SimplePie
 	 */
 	function __destruct()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<') || !gc_enabled())
+		if ((version_compare(PHP_VERSION, '5.3', '<') || !gc_enabled()) && !ini_get('zend.ze1_compatibility_mode'))
 		{
 			if (!empty($this->data['items']))
 			{
@@ -3128,7 +3128,7 @@ class SimplePie_Item
 	 */
 	function __destruct()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<') || !gc_enabled())
+		if ((version_compare(PHP_VERSION, '5.3', '<') || !gc_enabled()) && !ini_get('zend.ze1_compatibility_mode'))
 		{
 			unset($this->feed);
 		}
