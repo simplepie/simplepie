@@ -1521,7 +1521,7 @@ class SimplePie
 				return false;
 			}
 		}
-		
+
 		if (isset($_GET[$this->javascript]))
 		{
 			SimplePie_Misc::output_javascript();
@@ -12519,7 +12519,6 @@ class SimplePie_Net_IPv6
 	}
 }
 
-
 /**
  * Date Parser
  *
@@ -14380,7 +14379,7 @@ class SimplePie_Parser
 		}
 
 		$return = true;
-				
+
 		static $xml_is_sane = null;
 		if ($xml_is_sane === null)
 		{
@@ -14399,7 +14398,7 @@ class SimplePie_Parser
 			xml_set_object($xml, $this);
 			xml_set_character_data_handler($xml, 'cdata');
 			xml_set_element_handler($xml, 'tag_open', 'tag_close');
-	
+
 			// Parse!
 			if (!xml_parse($xml, $data, true))
 			{
@@ -14421,7 +14420,8 @@ class SimplePie_Parser
 			while (@$xml->read())
 			{
 				switch ($xml->nodeType)
-				{ 
+				{
+
 					case constant('XMLReader::END_ELEMENT'):
 						if ($xml->namespaceURI !== '')
 						{
@@ -14462,7 +14462,8 @@ class SimplePie_Parser
 							$this->tag_close(null, $tagName);
 						}
 						break;
-					case constant('XMLReader::TEXT'): 
+					case constant('XMLReader::TEXT'):
+
 					case constant('XMLReader::CDATA'):
 						$this->cdata(null, $xml->value);
 						break;
