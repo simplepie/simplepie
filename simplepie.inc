@@ -14422,7 +14422,7 @@ class SimplePie_Parser
 			{
 				switch ($xml->nodeType)
 				{ 
-					case XMLReader::END_ELEMENT:
+					case constant('XMLReader::END_ELEMENT'):
 						if ($xml->namespaceURI !== '')
 						{
 							$tagName = "{$xml->namespaceURI}{$this->separator}{$xml->localName}";
@@ -14433,7 +14433,7 @@ class SimplePie_Parser
 						}
 						$this->tag_close(null, $tagName);
 						break;
-					case XMLReader::ELEMENT:
+					case constant('XMLReader::ELEMENT'):
 						$empty = $xml->isEmptyElement;
 						if ($xml->namespaceURI !== '')
 						{
@@ -14462,8 +14462,8 @@ class SimplePie_Parser
 							$this->tag_close(null, $tagName);
 						}
 						break;
-					case XMLReader::TEXT: 
-					case XMLReader::CDATA:
+					case constant('XMLReader::TEXT'): 
+					case constant('XMLReader::CDATA'):
 						$this->cdata(null, $xml->value);
 						break;
 				}
