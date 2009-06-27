@@ -14076,7 +14076,7 @@ class SimplePie_Locator
 		$this->content_type_sniffer_class = $content_type_sniffer_class;
 	}
 
-	function find($type = SIMPLEPIE_LOCATOR_ALL, array &$working)
+	function find($type = SIMPLEPIE_LOCATOR_ALL, &$working)
 	{
 		if ($this->is_feed($this->file))
 		{
