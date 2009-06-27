@@ -13023,20 +13023,7 @@ class SimplePie_Parse_Date
 		static $cache;
 		if (!isset($cache[get_class($this)]))
 		{
-			if (extension_loaded('Reflection'))
-			{
-				$class =& new ReflectionClass(get_class($this));
-				$methods = $class->getMethods();
-				$all_methods = array();
-				foreach ($methods as &$method)
-				{
-					$all_methods[] = $method->getName();
-				}
-			}
-			else
-			{
-				$all_methods = get_class_methods($this);
-			}
+			$all_methods = get_class_methods($this);
 
 			foreach ($all_methods as $method)
 			{
