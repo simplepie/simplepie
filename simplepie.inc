@@ -9234,7 +9234,17 @@ class SimplePie_Misc
 					$note = 'Unknown Error';
 					break;
 			}
-			error_log("$note: $message in $file on line $line", 0);
+
+			$log_error = true;
+			if (!function_exists('error_log'))
+					$log_error = false;
+
+			$log_file = @ini_get('error_log');
+			if (!empty($log_file) && ('syslog' != $log_file) && !@is_writable($log_file))
+					$log_error = false;
+
+			if ( $log_error )
+					@error_log("$note: $message in $file on line $line", 0);
 		}
 		return $message;
 	}
