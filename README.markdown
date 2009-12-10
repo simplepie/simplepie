@@ -1,6 +1,6 @@
 # SimplePie
 
-## Authors and contributors
+## Notable Authors and contributors
 
 * [Ryan Parman](http://ryanparman.com)
 * [Geoffrey Sneddon](http://gsnedders.com)
@@ -8,6 +8,15 @@
 * [Michael Shipley](http://michaelpshipley.com)
 * [Steve Minutillo](http://minutillo.com/steve/)
 
+
+## Requirements
+* PHP 5.0 or newer
+* libxml2 (certain 2.7.x releases are too buggy, and will crash)
+* Either the iconv or mbstring extension
+* cURL 7.15 or newer
+* PCRE support
+
+Note: Using `E_STRICT` will cause SimplePie to explode in really terrible ways.
 
 ## License
 
