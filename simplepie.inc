@@ -334,9 +334,29 @@ define('SIMPLEPIE_NAMESPACE_GEORSS', 'http://www.georss.org/georss');
 define('SIMPLEPIE_NAMESPACE_MEDIARSS', 'http://search.yahoo.com/mrss/');
 
 /**
- * Wrong Media RSS Namespace
+ * Wrong Media RSS Namespace. Caused by a long-standing typo in the spec.
  */
 define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG', 'http://search.yahoo.com/mrss');
+
+/**
+ * Wrong Media RSS Namespace #2. New namespace introduced in Media RSS 1.5.
+ */
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG2', 'http://video.search.yahoo.com/mrss');
+
+/**
+ * Wrong Media RSS Namespace #3. A possible typo of the Media RSS 1.5 namespace.
+ */
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG3', 'http://video.search.yahoo.com/mrss/');
+
+/**
+ * Wrong Media RSS Namespace #4. New spec location after the RSS Advisory Board takes it over, but not a valid namespace.
+ */
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG4', 'http://www.rssboard.org/media-rss');
+
+/**
+ * Wrong Media RSS Namespace #5. A possible typo of the RSS Advisory Board URL.
+ */
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG5', 'http://www.rssboard.org/media-rss/');
 
 /**
  * iTunes RSS Namespace
@@ -655,13 +675,6 @@ class SimplePie
 	 * @access private
 	 */
 	public $all_discovered_feeds = array();
-
-	/**
-	 * @var string Web-accessible path to the handler_favicon.php file.
-	 * @see SimplePie::set_favicon_handler()
-	 * @access private
-	 */
-	public $favicon_handler = '';
 
 	/**
 	 * @var string Web-accessible path to the handler_image.php file.
@@ -1404,25 +1417,6 @@ class SimplePie
 	}
 
 	/**
-	 * Set the handler to enable the display of cached favicons.
-	 *
-	 * @access public
-	 * @param str $page Web-accessible path to the handler_favicon.php file.
-	 * @param str $qs The query string that the value should be passed to.
-	 */
-	public function set_favicon_handler($page = false, $qs = 'i')
-	{
-		if ($page !== false)
-		{
-			$this->favicon_handler = $page . '?' . $qs . '=';
-		}
-		else
-		{
-			$this->favicon_handler = '';
-		}
-	}
-
-	/**
 	 * Set the handler to enable the display of cached images.
 	 *
 	 * @access public
@@ -1905,67 +1899,6 @@ class SimplePie
 	}
 
 	/**
-	 * Returns the URL for the favicon of the feed's website.
-	 *
-	 * @todo Cache atom:icon
-	 * @access public
-	 * @since 1.0
-	 */
-	public function get_favicon()
-	{
-		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'icon'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($return[0]));
-		}
-		elseif (($url = $this->get_link()) !== null && preg_match('/^http(s)?:\/\//i', $url))
-		{
-			$favicon = SimplePie_Misc::absolutize_url('/favicon.ico', $url);
-
-			if ($this->cache && $this->favicon_handler)
-			{
-				$favicon_filename = call_user_func($this->cache_name_function, $favicon);
-				$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $favicon_filename, 'spi');
-
-				if ($cache->load())
-				{
-					return $this->sanitize($this->favicon_handler . $favicon_filename, SIMPLEPIE_CONSTRUCT_IRI);
-				}
-				else
-				{
-					$file = new $this->file_class($favicon, $this->timeout / 10, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
-
-					if ($file->success && ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)) && strlen($file->body) > 0)
-					{
-						$sniffer = new $this->content_type_sniffer_class($file);
-						if (substr($sniffer->get_type(), 0, 6) === 'image/')
-						{
-							if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
-							{
-								return $this->sanitize($this->favicon_handler . $favicon_filename, SIMPLEPIE_CONSTRUCT_IRI);
-							}
-							else
-							{
-								trigger_error("$cache->name is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
-								return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
-							}
-						}
-						// not an image
-						else
-						{
-							return false;
-						}
-					}
-				}
-			}
-			else
-			{
-				return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * @todo If we have a perm redirect we should return the new URL
 	 * @todo When we make the above change, let's support <itunes:new-feed-url> as well
 	 * @todo Also, |atom:link|@rel=self
@@ -1980,155 +1913,6 @@ class SimplePie
 		{
 			return null;
 		}
-	}
-
-	public function subscribe_feed()
-	{
-		if ($this->feed_url !== null)
-		{
-			return $this->sanitize(SimplePie_Misc::fix_protocol($this->feed_url, 2), SIMPLEPIE_CONSTRUCT_IRI);
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	public function subscribe_outlook()
-	{
-		if ($this->feed_url !== null)
-		{
-			return $this->sanitize('outlook' . SimplePie_Misc::fix_protocol($this->feed_url, 2), SIMPLEPIE_CONSTRUCT_IRI);
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	public function subscribe_podcast()
-	{
-		if ($this->feed_url !== null)
-		{
-			return $this->sanitize(SimplePie_Misc::fix_protocol($this->feed_url, 3), SIMPLEPIE_CONSTRUCT_IRI);
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	public function subscribe_itunes()
-	{
-		if ($this->feed_url !== null)
-		{
-			return $this->sanitize(SimplePie_Misc::fix_protocol($this->feed_url, 4), SIMPLEPIE_CONSTRUCT_IRI);
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	/**
-	 * Creates the subscribe_* methods' return data
-	 *
-	 * @access private
-	 * @param string $feed_url String to prefix to the feed URL
-	 * @param string $site_url String to prefix to the site URL (and
-	 * suffix to the feed URL)
-	 * @return mixed URL if feed exists, false otherwise
-	 */
-	public function subscribe_service($feed_url, $site_url = null)
-	{
-		if ($this->subscribe_url())
-		{
-			$return = $feed_url . rawurlencode($this->feed_url);
-			if ($site_url !== null && $this->get_link() !== null)
-			{
-				$return .= $site_url . rawurlencode($this->get_link());
-			}
-			return $this->sanitize($return, SIMPLEPIE_CONSTRUCT_IRI);
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	public function subscribe_aol()
-	{
-		return $this->subscribe_service('http://feeds.my.aol.com/add.jsp?url=');
-	}
-
-	public function subscribe_bloglines()
-	{
-		return $this->subscribe_service('http://www.bloglines.com/sub/');
-	}
-
-	public function subscribe_eskobo()
-	{
-		return $this->subscribe_service('http://www.eskobo.com/?AddToMyPage=');
-	}
-
-	public function subscribe_feedfeeds()
-	{
-		return $this->subscribe_service('http://www.feedfeeds.com/add?feed=');
-	}
-
-	public function subscribe_feedster()
-	{
-		return $this->subscribe_service('http://www.feedster.com/myfeedster.php?action=addrss&confirm=no&rssurl=');
-	}
-
-	public function subscribe_google()
-	{
-		return $this->subscribe_service('http://fusion.google.com/add?feedurl=');
-	}
-
-	public function subscribe_gritwire()
-	{
-		return $this->subscribe_service('http://my.gritwire.com/feeds/addExternalFeed.aspx?FeedUrl=');
-	}
-
-	public function subscribe_msn()
-	{
-		return $this->subscribe_service('http://my.msn.com/addtomymsn.armx?id=rss&ut=', '&ru=');
-	}
-
-	public function subscribe_netvibes()
-	{
-		return $this->subscribe_service('http://www.netvibes.com/subscribe.php?url=');
-	}
-
-	public function subscribe_newsburst()
-	{
-		return $this->subscribe_service('http://www.newsburst.com/Source/?add=');
-	}
-
-	public function subscribe_newsgator()
-	{
-		return $this->subscribe_service('http://www.newsgator.com/ngs/subscriber/subext.aspx?url=');
-	}
-
-	public function subscribe_odeo()
-	{
-		return $this->subscribe_service('http://www.odeo.com/listen/subscribe?feed=');
-	}
-
-	public function subscribe_podnova()
-	{
-		return $this->subscribe_service('http://www.podnova.com/index_your_podcasts.srf?action=add&url=');
-	}
-
-	public function subscribe_rojo()
-	{
-		return $this->subscribe_service('http://www.rojo.com/add-subscription?resource=');
-	}
-
-	public function subscribe_yahoo()
-	{
-		return $this->subscribe_service('http://add.my.yahoo.com/rss?url=');
 	}
 
 	public function get_feed_tags($namespace, $tag)
@@ -14433,7 +14217,11 @@ class SimplePie_Parser
 				}
 
 				// Normalize the Media RSS namespaces
-				if ($namespace === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG)
+				if ($namespace === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG ||
+					$namespace === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG2 ||
+					$namespace === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG3 ||
+					$namespace === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG4 ||
+					$namespace === SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG5 )
 				{
 					$namespace = SIMPLEPIE_NAMESPACE_MEDIARSS;
 				}

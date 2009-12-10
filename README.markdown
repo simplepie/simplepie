@@ -78,4 +78,8 @@ The following have recently been removed:
 * Parameters for SimplePie::__construct()
 * add_to_*
 * display_cached_file
+* enable_xml_dump
+* get_favicon
+* set_favicon_handler
+* subscribe_* (except subscribe_url)
 * utf8_bad_replace
