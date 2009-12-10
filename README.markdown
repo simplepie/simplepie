@@ -13,6 +13,7 @@
 
 ### Contributors
 For a complete list of contributors:
+
 1. Pull down the latest SimplePie code
 2. In the `simplepie` directory, run `git shortlog -ns`
 
