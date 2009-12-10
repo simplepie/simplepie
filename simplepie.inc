@@ -731,6 +731,12 @@ class SimplePie
 	 */
 	public function __construct()
 	{
+		if (version_compare(PHP_VERSION, '5.0', '<'))
+		{
+			trigger_error('PHP 4.x is no longer supported. Please upgrade to PHP 5.2 or newer.');
+			die();
+		}
+
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize =& new SimplePie_Sanitize;
 
@@ -743,7 +749,7 @@ class SimplePie
 	/**
 	 * Used for converting object to a string
 	 */
-	function __toString()
+	public function __toString()
 	{
 		return md5(serialize($this->data));
 	}
@@ -751,7 +757,7 @@ class SimplePie
 	/**
 	 * Remove items that link back to this before destroying this object
 	 */
-	function __destruct()
+	public function __destruct()
 	{
 		if ((version_compare(PHP_VERSION, '5.3', '<') || !gc_enabled()) && !ini_get('zend.ze1_compatibility_mode'))
 		{
