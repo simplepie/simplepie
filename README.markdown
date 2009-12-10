@@ -69,3 +69,13 @@ For bug reports and feature requests, visit:
 
 Support mailing list -- powered by users, for users.
 [http://tech.groups.yahoo.com/group/simplepie-support/](http://tech.groups.yahoo.com/group/simplepie-support/)
+
+
+## Recently removed
+
+The following have recently been removed:
+
+* Parameters for SimplePie::__construct()
+* add_to_*
+* display_cached_file
+* utf8_bad_replace
