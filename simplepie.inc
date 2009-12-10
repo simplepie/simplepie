@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman and Geoffrey Sneddon
+ * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -34,11 +34,11 @@
  *
  * @package SimplePie
  * @version 1.3-dev
- * @copyright 2004-2009 Ryan Parman, Geoffrey Sneddon
+ * @copyright 2004-2009 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
+ * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
- * @link http://simplepie.org/support/ Please submit all bug reports and feature requests to the SimplePie forums
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  * @todo phpDoc comments
  */
@@ -51,7 +51,7 @@ define('SIMPLEPIE_NAME', 'SimplePie');
 /**
  * SimplePie Version
  */
-define('SIMPLEPIE_VERSION', '1.2.1-dev');
+define('SIMPLEPIE_VERSION', '1.3-dev');
 
 /**
  * SimplePie Build
@@ -399,55 +399,55 @@ class SimplePie
 	 * @var array Raw data
 	 * @access private
 	 */
-	var $data = array();
+	private $data = array();
 
 	/**
 	 * @var mixed Error string
 	 * @access private
 	 */
-	var $error;
+	private $error;
 
 	/**
 	 * @var object Instance of SimplePie_Sanitize (or other class)
 	 * @see SimplePie::set_sanitize_class()
 	 * @access private
 	 */
-	var $sanitize;
+	private $sanitize;
 
 	/**
 	 * @var string SimplePie Useragent
 	 * @see SimplePie::set_useragent()
 	 * @access private
 	 */
-	var $useragent = SIMPLEPIE_USERAGENT;
+	private $useragent = SIMPLEPIE_USERAGENT;
 
 	/**
 	 * @var string Feed URL
 	 * @see SimplePie::set_feed_url()
 	 * @access private
 	 */
-	var $feed_url;
+	private $feed_url;
 
 	/**
 	 * @var object Instance of SimplePie_File to use as a feed
 	 * @see SimplePie::set_file()
 	 * @access private
 	 */
-	var $file;
+	private $file;
 
 	/**
 	 * @var string Raw feed data
 	 * @see SimplePie::set_raw_data()
 	 * @access private
 	 */
-	var $raw_data;
+	private $raw_data;
 
 	/**
 	 * @var int Timeout for fetching remote files
 	 * @see SimplePie::set_timeout()
 	 * @access private
 	 */
-	var $timeout = 10;
+	private $timeout = 10;
 
 	/**
 	 * @var bool Forces fsockopen() to be used for remote files instead
@@ -455,7 +455,7 @@ class SimplePie
 	 * @see SimplePie::force_fsockopen()
 	 * @access private
 	 */
-	var $force_fsockopen = false;
+	private $force_fsockopen = false;
 
 	/**
 	 * @var bool Force the given data/URL to be treated as a feed no matter what
@@ -463,56 +463,56 @@ class SimplePie
 	 * @see SimplePie::force_feed()
 	 * @access private
 	 */
-	var $force_feed = false;
+	private $force_feed = false;
 
 	/**
 	 * @var bool Enable/Disable XML dump
 	 * @see SimplePie::enable_xml_dump()
 	 * @access private
 	 */
-	var $xml_dump = false;
+	private $xml_dump = false;
 
 	/**
 	 * @var bool Enable/Disable Caching
 	 * @see SimplePie::enable_cache()
 	 * @access private
 	 */
-	var $cache = true;
+	private $cache = true;
 
 	/**
 	 * @var int Cache duration (in seconds)
 	 * @see SimplePie::set_cache_duration()
 	 * @access private
 	 */
-	var $cache_duration = 3600;
+	private $cache_duration = 3600;
 
 	/**
 	 * @var int Auto-discovery cache duration (in seconds)
 	 * @see SimplePie::set_autodiscovery_cache_duration()
 	 * @access private
 	 */
-	var $autodiscovery_cache_duration = 604800; // 7 Days.
+	private $autodiscovery_cache_duration = 604800; // 7 Days.
 
 	/**
 	 * @var string Cache location (relative to executing script)
 	 * @see SimplePie::set_cache_location()
 	 * @access private
 	 */
-	var $cache_location = './cache';
+	private $cache_location = './cache';
 
 	/**
 	 * @var string Function that creates the cache filename
 	 * @see SimplePie::set_cache_name_function()
 	 * @access private
 	 */
-	var $cache_name_function = 'md5';
+	private $cache_name_function = 'md5';
 
 	/**
 	 * @var bool Reorder feed by date descending
 	 * @see SimplePie::enable_order_by_date()
 	 * @access private
 	 */
-	var $order_by_date = true;
+	private $order_by_date = true;
 
 	/**
 	 * @var mixed Force input encoding to be set to the follow value
@@ -520,119 +520,119 @@ class SimplePie
 	 * @see SimplePie::set_input_encoding()
 	 * @access private
 	 */
-	var $input_encoding = false;
+	private $input_encoding = false;
 
 	/**
 	 * @var int Feed Autodiscovery Level
 	 * @see SimplePie::set_autodiscovery_level()
 	 * @access private
 	 */
-	var $autodiscovery = SIMPLEPIE_LOCATOR_ALL;
+	private $autodiscovery = SIMPLEPIE_LOCATOR_ALL;
 
 	/**
 	 * @var string Class used for caching feeds
 	 * @see SimplePie::set_cache_class()
 	 * @access private
 	 */
-	var $cache_class = 'SimplePie_Cache';
+	private $cache_class = 'SimplePie_Cache';
 
 	/**
 	 * @var string Class used for locating feeds
 	 * @see SimplePie::set_locator_class()
 	 * @access private
 	 */
-	var $locator_class = 'SimplePie_Locator';
+	private $locator_class = 'SimplePie_Locator';
 
 	/**
 	 * @var string Class used for parsing feeds
 	 * @see SimplePie::set_parser_class()
 	 * @access private
 	 */
-	var $parser_class = 'SimplePie_Parser';
+	private $parser_class = 'SimplePie_Parser';
 
 	/**
 	 * @var string Class used for fetching feeds
 	 * @see SimplePie::set_file_class()
 	 * @access private
 	 */
-	var $file_class = 'SimplePie_File';
+	private $file_class = 'SimplePie_File';
 
 	/**
 	 * @var string Class used for items
 	 * @see SimplePie::set_item_class()
 	 * @access private
 	 */
-	var $item_class = 'SimplePie_Item';
+	private $item_class = 'SimplePie_Item';
 
 	/**
 	 * @var string Class used for authors
 	 * @see SimplePie::set_author_class()
 	 * @access private
 	 */
-	var $author_class = 'SimplePie_Author';
+	private $author_class = 'SimplePie_Author';
 
 	/**
 	 * @var string Class used for categories
 	 * @see SimplePie::set_category_class()
 	 * @access private
 	 */
-	var $category_class = 'SimplePie_Category';
+	private $category_class = 'SimplePie_Category';
 
 	/**
 	 * @var string Class used for enclosures
 	 * @see SimplePie::set_enclosures_class()
 	 * @access private
 	 */
-	var $enclosure_class = 'SimplePie_Enclosure';
+	private $enclosure_class = 'SimplePie_Enclosure';
 
 	/**
 	 * @var string Class used for Media RSS <media:text> captions
 	 * @see SimplePie::set_caption_class()
 	 * @access private
 	 */
-	var $caption_class = 'SimplePie_Caption';
+	private $caption_class = 'SimplePie_Caption';
 
 	/**
 	 * @var string Class used for Media RSS <media:copyright>
 	 * @see SimplePie::set_copyright_class()
 	 * @access private
 	 */
-	var $copyright_class = 'SimplePie_Copyright';
+	private $copyright_class = 'SimplePie_Copyright';
 
 	/**
 	 * @var string Class used for Media RSS <media:credit>
 	 * @see SimplePie::set_credit_class()
 	 * @access private
 	 */
-	var $credit_class = 'SimplePie_Credit';
+	private $credit_class = 'SimplePie_Credit';
 
 	/**
 	 * @var string Class used for Media RSS <media:rating>
 	 * @see SimplePie::set_rating_class()
 	 * @access private
 	 */
-	var $rating_class = 'SimplePie_Rating';
+	private $rating_class = 'SimplePie_Rating';
 
 	/**
 	 * @var string Class used for Media RSS <media:restriction>
 	 * @see SimplePie::set_restriction_class()
 	 * @access private
 	 */
-	var $restriction_class = 'SimplePie_Restriction';
+	private $restriction_class = 'SimplePie_Restriction';
 
 	/**
 	 * @var string Class used for content-type sniffing
 	 * @see SimplePie::set_content_type_sniffer_class()
 	 * @access private
 	 */
-	var $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
+	private $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
 
 	/**
 	 * @var string Class used for item sources.
 	 * @see SimplePie::set_source_class()
 	 * @access private
 	 */
-	var $source_class = 'SimplePie_Source';
+	private $source_class = 'SimplePie_Source';
 
 	/**
 	 * @var mixed Set javascript query string parameter (false, or
@@ -640,76 +640,76 @@ class SimplePie
 	 * @see SimplePie::set_javascript()
 	 * @access private
 	 */
-	var $javascript = 'js';
+	private $javascript = 'js';
 
 	/**
 	 * @var int Maximum number of feeds to check with autodiscovery
 	 * @see SimplePie::set_max_checked_feeds()
 	 * @access private
 	 */
-	var $max_checked_feeds = 10;
+	private $max_checked_feeds = 10;
 
 	/**
 	 * @var array All the feeds found during the autodiscovery process
 	 * @see SimplePie::get_all_discovered_feeds()
 	 * @access private
 	 */
-	var $all_discovered_feeds = array();
+	private $all_discovered_feeds = array();
 
 	/**
 	 * @var string Web-accessible path to the handler_favicon.php file.
 	 * @see SimplePie::set_favicon_handler()
 	 * @access private
 	 */
-	var $favicon_handler = '';
+	private $favicon_handler = '';
 
 	/**
 	 * @var string Web-accessible path to the handler_image.php file.
 	 * @see SimplePie::set_image_handler()
 	 * @access private
 	 */
-	var $image_handler = '';
+	private $image_handler = '';
 
 	/**
 	 * @var array Stores the URLs when multiple feeds are being initialized.
 	 * @see SimplePie::set_feed_url()
 	 * @access private
 	 */
-	var $multifeed_url = array();
+	private $multifeed_url = array();
 
 	/**
 	 * @var array Stores SimplePie objects when multiple feeds initialized.
 	 * @access private
 	 */
-	var $multifeed_objects = array();
+	private $multifeed_objects = array();
 
 	/**
 	 * @var array Stores the get_object_vars() array for use with multifeeds.
 	 * @see SimplePie::set_feed_url()
 	 * @access private
 	 */
-	var $config_settings = null;
+	private $config_settings = null;
 
 	/**
 	 * @var integer Stores the number of items to return per-feed with multifeeds.
 	 * @see SimplePie::set_item_limit()
 	 * @access private
 	 */
-	var $item_limit = 0;
+	private $item_limit = 0;
 
 	/**
 	 * @var array Stores the default attributes to be stripped by strip_attributes().
 	 * @see SimplePie::strip_attributes()
 	 * @access private
 	 */
-	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
+	private $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
 
 	/**
 	 * @var array Stores the default tags to be stripped by strip_htmltags().
 	 * @see SimplePie::strip_htmltags()
 	 * @access private
 	 */
-	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
+	private $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 
 	/**
 	 * The SimplePie class contains feed level data and options
@@ -729,7 +729,7 @@ class SimplePie
 	 * @access public
 	 * @since 1.0 Preview Release
 	 */
-	function SimplePie()
+	public function __construct()
 	{
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize =& new SimplePie_Sanitize;
@@ -1518,6 +1518,7 @@ class SimplePie
 
 		if ($this->feed_url !== null || $this->raw_data !== null)
 		{
+			$this->error = null;
 			$this->data = array();
 			$this->multifeed_objects = array();
 			$cache = false;
