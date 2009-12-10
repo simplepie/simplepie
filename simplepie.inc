@@ -728,31 +728,15 @@ class SimplePie
 	 *
 	 * @access public
 	 * @since 1.0 Preview Release
-	 * @param string $feed_url This is the URL you want to parse.
-	 * @param string $cache_location This is where you want the cache to be stored.
-	 * @param int $cache_duration This is the number of seconds that you want to store the cache file for.
 	 */
-	function SimplePie($feed_url = null, $cache_location = null, $cache_duration = null)
+	function SimplePie()
 	{
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize =& new SimplePie_Sanitize;
 
-		// Set options if they're passed to the constructor
-		if ($cache_location !== null)
+		if (func_num_args() > 0)
 		{
-			$this->set_cache_location($cache_location);
-		}
-
-		if ($cache_duration !== null)
-		{
-			$this->set_cache_duration($cache_duration);
-		}
-
-		// Only init the script if we're passed a feed URL
-		if ($feed_url !== null)
-		{
-			$this->set_feed_url($feed_url);
-			$this->init();
+			trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_location() directly.');
 		}
 	}
 
@@ -2774,7 +2758,7 @@ class SimplePie
 
 	function get_latitude()
 	{
-		
+
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO, 'lat'))
 		{
 			return (float) $return[0]['data'];
