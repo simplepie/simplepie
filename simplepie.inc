@@ -1672,7 +1672,7 @@ class SimplePie
 								$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
 								if (!$cache->save($this))
 								{
-									trigger_error("$this->cache_location is not writeable", E_USER_WARNING);
+									trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
 								}
 								$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
 							}
@@ -1680,7 +1680,7 @@ class SimplePie
 						}
 						else
 						{
-							$this->error = "A feed could not be found at $this->feed_url";
+							$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
 							SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
 							return false;
 						}
@@ -1777,27 +1777,27 @@ class SimplePie
 							// Cache the file if caching is enabled
 							if ($cache && !$cache->save($this))
 							{
-								trigger_error("$cache->name is not writeable", E_USER_WARNING);
+								trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
 							}
 							return true;
 						}
 						else
 						{
-							$this->error = "A feed could not be found at $this->feed_url";
+							$this->error = "A feed could not be found at $this->feed_url. This does not appear to be a valid RSS or Atom feed.";
 							SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
 							return false;
 						}
 					}
 				}
 			}
-			if(isset($parser))
+			if (isset($parser))
 			{
 				// We have an error, just set SimplePie_Misc::error to it and quit
-				$this->error = sprintf('XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
+				$this->error = sprintf('This XML document is invalid, likely due to invalid characters. XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
 			}
 			else
 			{
-				$this->error = 'The data could not be converted to UTF-8';
+				$this->error = 'The data could not be converted to UTF-8. You MUST have either the iconv or mbstring extension installed. Upgrading to PHP 5.x (which includes iconv) is highly recommended.';
 			}
 			SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
 			return false;
@@ -1984,7 +1984,7 @@ class SimplePie
 							}
 							else
 							{
-								trigger_error("$cache->name is not writeable", E_USER_WARNING);
+								trigger_error("$cache->name is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
 								return $this->sanitize($favicon, SIMPLEPIE_CONSTRUCT_IRI);
 							}
 						}
@@ -9241,15 +9241,22 @@ class SimplePie_Misc
 
 			$log_error = true;
 			if (!function_exists('error_log'))
-					$log_error = false;
+			{
+				$log_error = false;
+			}
 
 			$log_file = @ini_get('error_log');
 			if (!empty($log_file) && ('syslog' != $log_file) && !@is_writable($log_file))
-					$log_error = false;
+			{
+				$log_error = false;
+			}
 
-			if ( $log_error )
-					@error_log("$note: $message in $file on line $line", 0);
+			if ($log_error)
+			{
+				@error_log("$note: $message in $file on line $line", 0);
+			}
 		}
+
 		return $message;
 	}
 
@@ -14927,7 +14934,7 @@ class SimplePie_Sanitize
 									}
 									else
 									{
-										trigger_error("$this->cache_location is not writeable", E_USER_WARNING);
+										trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
 									}
 								}
 							}
