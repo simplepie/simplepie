@@ -5056,7 +5056,7 @@ class SimplePie_Item
 			{
 				foreach ((array) $this->data['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['content'] as $content)
 				{
-					if (isset($content['attribs']['']['url']))
+					if (isset($content['attribs']['']['url']) || isset($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['player']))
 					{
 						// Attributes
 						$bitrate = null;
@@ -5141,8 +5141,10 @@ class SimplePie_Item
 						{
 							$width = $this->sanitize($content['attribs']['']['width'], SIMPLEPIE_CONSTRUCT_TEXT);
 						}
-						$url = $this->sanitize($content['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
-
+						if (isset($content['attribs']['']['url']))
+						{
+							$url = $this->sanitize($content['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+						}
 						// Checking the other optional media: elements. Priority: media:content, media:group, item, channel
 
 						// CAPTIONS
