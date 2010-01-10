@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-include_once('../simplepie.inc');
+include_once('../simplepie.class.php');
 
 // Parse it
 $feed = new SimplePie();
