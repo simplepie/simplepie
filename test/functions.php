@@ -1,7 +1,5 @@
 <?php
 
-require_once 'unit_test/unit_test2.php';
-
 class SimplePie_Unit_Test2_Group extends Unit_Test2_Group
 {
 	function pre()
