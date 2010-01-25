@@ -1,71 +1,8 @@
 <?php
 
-class SimplePie_Unit_Test2_Group extends Unit_Test2_Group
-{
-	function pre()
-	{
-		ob_start();
-	}
-	
-	function post()
-	{
-		$output = ob_get_contents();
-		
-		if ($output !== false)
-		{
-			ob_end_clean();
-		}
-		
-		$passed_percentage = floor($this->passes() / $this->total() * 100);
-		$failed_percentage = ceil($this->fails() / $this->total() * 100);
-		
-		echo '<h2 class=' . (($passed_percentage == 100) ? 'pass' : 'fail') . '>' . htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8') . ': ' . $passed_percentage . "% passed!</h2>\n";
-		echo "<p>\n$output\n</p>\n";
-		echo '<p>We ran ' . $this->total() . ' tests in ' . round($this->time(), 3) . ' seconds of which ' . $this->passes() . ' passed, and ' . $this->fails() . ' failed.</p>';
-		flush();
-	}
-}
+class SimplePie_Unit_Test2_Group extends Unit_Test2_Group {}
 
-class SimplePie_Unit_Test2 extends Unit_Test2
-{
-	function SimplePie_Unit_Test2()
-	{
-		parent::Unit_Test2();
-		if (strpos($this->name, 'SimplePie') === 0)
-		{
-			$this->name = trim(substr_replace($this->name, '', 0, 9));
-		}
-	}
-	
-	function output($title, $class, $content)
-	{
-		printf("<span title='%s' class='%s'>%s</span>\n", $title, $class, $content);
-	}
-	
-	function pass()
-	{
-		$this->output(htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8'), 'pass', '&#x2714;');
-		parent::pass();
-	}
-	
-	function fail()
-	{
-		$this->output(htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8'), 'fail', '&#x2718;');
-		parent::fail();
-	}
-	
-	function result()
-	{
-		if ($this->result === $this->expected)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail();
-		}
-	}
-}
+class SimplePie_Unit_Test2 extends Unit_Test2 {}
 
 class SimplePie_Feed_Test extends SimplePie_Unit_Test2
 {
