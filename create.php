@@ -70,6 +70,7 @@ function build_character_set_list()
 			'TIS-620' => 'windows-874',
 			//'US-ASCII' => 'windows-1252',
 			'x-x-big5' => 'Big5',
+			'Extended_UNIX_Code_Packed_Format_for_Japanese' => 'EUC-JP',
 		);
 		
 		foreach ($compat as $real => $replace)
