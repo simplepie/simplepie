@@ -9672,7 +9672,7 @@ class SimplePie_Misc
 			case 'cseucpkdfmtjapanese':
 			case 'eucjp':
 			case 'extendedunixcodepackedformatforjapanese':
-				return 'Extended_UNIX_Code_Packed_Format_for_Japanese';
+				return 'EUC-JP';
 
 			case 'gb18030':
 				return 'GB18030';
