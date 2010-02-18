@@ -1,6 +1,6 @@
 <?php
 
-require_once 'simplepie.inc';
+require_once 'simplepie.class.php';
 
 function normalize_character_set($charset)
 {
@@ -141,7 +141,7 @@ function build_function()
 	if ($charsets = build_character_set_list())
 	{
 		$return = <<<EOF
-function charset(\$charset)
+public static function encoding(\$charset)
 {
 	// Normalization from UTS #22
 	switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\\1', \$charset)))
