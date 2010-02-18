@@ -22,43 +22,38 @@ function build_character_set_list()
 		foreach ($data as $line)
 		{
 			// New character set
-			if (substr($line, 0, 5) === 'Name:')
+			if (preg_match('/^Name:\s+(\S+)/', $line, $match))
 			{
 				// If we already have one, push it on to the array
 				if (isset($aliases))
 				{
-					for ($i = 0, $count = count($aliases); $i < $count; $i++)
+					foreach ($aliases as &$alias)
 					{
-						$aliases[$i] = normalize_character_set($aliases[$i]);
+						$alias = normalize_character_set($alias);
 					}
 					$charsets[$preferred] = array_unique($aliases);
 					natsort($charsets[$preferred]);
 				}
 				
-				$start = 5 + strspn($line, "\x09\x0A\x0B\xC\x0D\x20", 5);
-				$chars = strcspn($line, "\x09\x0A\x0B\xC\x0D\x20", $start);
-				$aliases = array(substr($line, $start, $chars));
-				$preferred = end($aliases);
+				$aliases = array($match[1]);
+				$preferred = $match[1];
 			}
 			// Another alias
-			elseif(substr($line, 0, 6) === 'Alias:')
+			elseif (preg_match('/^Alias:\s+(\S+)(\s+\(preferred MIME name\))?\s*$/', $line, $match))
 			{
-				$start = 7 + strspn($line, "\x09\x0A\x0B\xC\x0D\x20", 7);
-				$chars = strcspn($line, "\x09\x0A\x0B\xC\x0D\x20", $start);
-				$aliases[] = substr($line, $start, $chars);
-				
-				if (end($aliases) === 'None')
+				if ($match[1] !== 'None')
 				{
-					array_pop($aliases);
-				}
-				elseif (substr($line, 7 + $chars + 1, 21) === '(preferred MIME name)')
-				{
-					$preferred = end($aliases);
+					$aliases[] = $match[1];
+					if ($match[2])
+					{
+						$preferred = $match[1];
+					}
 				}
 			}
 		}
 		
 		// Compatibility replacements
+		// From http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#misinterpreted-for-compatibility
 		$compat = array(
 			'EUC-KR' => 'windows-949',
 			'GB2312' => 'GBK',
@@ -67,10 +62,9 @@ function build_character_set_list()
 			'ISO-8859-9' => 'windows-1254',
 			'ISO-8859-11' => 'windows-874',
 			'KS_C_5601-1987' => 'windows-949',
+			'Shift_JIS' => 'Windows-31J',
 			'TIS-620' => 'windows-874',
 			//'US-ASCII' => 'windows-1252',
-			'x-x-big5' => 'Big5',
-			'Extended_UNIX_Code_Packed_Format_for_Japanese' => 'EUC-JP',
 		);
 		
 		foreach ($compat as $real => $replace)
