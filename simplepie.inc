@@ -3648,7 +3648,7 @@ class SimplePie_Item
 		{
 			return $this->sanitize($this->get_date(''), SIMPLEPIE_CONSTRUCT_TEXT);
 		}
-		elseif (($date = $this->get_date('U')) !== null)
+		elseif (($date = $this->get_date('U')) !== null && $date !== false)
 		{
 			return strftime($date_format, $date);
 		}
