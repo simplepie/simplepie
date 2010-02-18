@@ -7375,7 +7375,7 @@ class SimplePie_File
 						{
 							$this->redirects++;
 							$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-							return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+							return $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 						}
 					}
 				}
@@ -7456,7 +7456,7 @@ class SimplePie_File
 							{
 								$this->redirects++;
 								$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-								return $this->SimplePie_File($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+								return $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
 							}
 							if (isset($this->headers['content-encoding']))
 							{
