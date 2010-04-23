@@ -422,11 +422,12 @@ class SimplePie_iTunesRSS_Channel_Block_Test extends SimplePie_First_Item_Test
 			{
 				if ($restriction = $enclosure->get_restriction())
 				{
-					return $restriction->get_relationship();
+					$this->result = $restriction->get_relationship();
+					return;
 				}
 			}
 		}
-		return false;
+		$this->result = false;
 	}
 }
 
