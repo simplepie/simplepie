@@ -13933,7 +13933,7 @@ class SimplePie_XML_Declaration_Parser
 		}
 		else
 		{
-			$this->state = 'standalone_name';
+			$this->state = false;
 		}
 	}
 
@@ -13947,7 +13947,7 @@ class SimplePie_XML_Declaration_Parser
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = 'standalone_name';
 		}
 	}
 
