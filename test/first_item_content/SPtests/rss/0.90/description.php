@@ -14,7 +14,8 @@ class SimplePie_First_Item_Content_Test_RSS_090_Description extends SimplePie_Fi
 	
 	function expected()
 	{
-		$this->expected = NULL;
+		// <description> isn't technically in 0.90, but we support it for compatibility
+		$this->expected = 'Item Description';
 	}
 }
 
