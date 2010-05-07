@@ -1449,7 +1449,7 @@ class SimplePie
 	public function init()
 	{
 		// Check absolute bare minimum requirements.
-		if ((function_exists('version_compare') && version_compare(PHP_VERSION, '4.3.0', '<')) || !extension_loaded('xml') || !extension_loaded('pcre'))
+		if ((function_exists('version_compare') && version_compare(PHP_VERSION, '5.0', '<')) || !extension_loaded('xml') || !extension_loaded('pcre'))
 		{
 			return false;
 		}
@@ -8318,21 +8318,7 @@ class SimplePie_Cache_File
 			}
 
 			$data = serialize($data);
-
-			if (function_exists('file_put_contents'))
-			{
-				return (bool) file_put_contents($this->name, $data);
-			}
-			else
-			{
-				$fp = fopen($this->name, 'wb');
-				if ($fp)
-				{
-					fwrite($fp, $data);
-					fclose($fp);
-					return true;
-				}
-			}
+			return (bool) file_put_contents($this->name, $data);
 		}
 		return false;
 	}
@@ -8463,7 +8449,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 	public function __construct($mysql_location, $name, $extension)
 	{
 		$host = $mysql_location->get_host();
-		if (SimplePie_Misc::stripos($host, 'unix(') === 0 && substr($host, -1) === ')')
+		if (stripos($host, 'unix(') === 0 && substr($host, -1) === ')')
 		{
 			$server = ':' . substr($host, 5, -1);
 		}
@@ -10742,49 +10728,6 @@ class SimplePie_Misc
 		{
 			// U+FFFD REPLACEMENT CHARACTER
 			return "\xEF\xBF\xBD";
-		}
-	}
-
-	/**
-	 * Re-implementation of PHP 5's stripos()
-	 *
-	 * Returns the numeric position of the first occurrence of needle in the
-	 * haystack string.
-	 *
-	 * @static
-	 * @access string
-	 * @param object $haystack
-	 * @param string $needle Note that the needle may be a string of one or more
-	 *     characters. If needle is not a string, it is converted to an integer
-	 *     and applied as the ordinal value of a character.
-	 * @param int $offset The optional offset parameter allows you to specify which
-	 *     character in haystack to start searching. The position returned is still
-	 *     relative to the beginning of haystack.
-	 * @return bool If needle is not found, stripos() will return boolean false.
-	 */
-	public static function stripos($haystack, $needle, $offset = 0)
-	{
-		if (function_exists('stripos'))
-		{
-			return stripos($haystack, $needle, $offset);
-		}
-		else
-		{
-			if (is_string($needle))
-			{
-				$needle = strtolower($needle);
-			}
-			elseif (is_int($needle) || is_bool($needle) || is_double($needle))
-			{
-				$needle = strtolower(chr($needle));
-			}
-			else
-			{
-				trigger_error('needle is not a string or an integer', E_USER_WARNING);
-				return false;
-			}
-
-			return strpos(strtolower($haystack), $needle, $offset);
 		}
 	}
 
