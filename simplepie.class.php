@@ -1764,15 +1764,7 @@ class SimplePie
 			$this->multifeed_objects = array();
 			foreach ($this->multifeed_url as $url)
 			{
-				if (SIMPLEPIE_PHP5)
-				{
-					// This keyword needs to defy coding standards for PHP4 compatibility
-					$this->multifeed_objects[$i] = clone($this);
-				}
-				else
-				{
-					$this->multifeed_objects[$i] = $this;
-				}
+				$this->multifeed_objects[$i] = clone $this;
 				$this->multifeed_objects[$i]->set_feed_url($url);
 				$success |= $this->multifeed_objects[$i]->init();
 				$i++;
@@ -8522,11 +8514,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 
 			if (is_a($data, 'SimplePie'))
 			{
-				if (SIMPLEPIE_PHP5)
-				{
-					// This keyword needs to defy coding standards for PHP4 compatibility
-					$data = clone($data);
-				}
+				$data = clone $data;
 
 				$prepared = $this->prepare_simplepie_object_for_cache($data);
 
