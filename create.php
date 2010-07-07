@@ -44,7 +44,7 @@ function build_character_set_list()
 				if ($match[1] !== 'None')
 				{
 					$aliases[] = $match[1];
-					if ($match[2])
+					if (isset($match[2]))
 					{
 						$preferred = $match[1];
 					}
