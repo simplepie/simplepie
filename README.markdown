@@ -46,14 +46,15 @@ Removing PHP 4.x support will certainly help with the slimming. It will also hel
 
 
 ## What comes in the package?
-1. `simplepie.inc` - The SimplePie library.  This is all that's required for your pages.
-2. `README.markdown` - This document.
-3. `LICENSE.txt` - A copy of the BSD license.
-4. `compatibility_test/` - The SimplePie compatibility test that checks your server for required settings.
-5. `demo/` - A basic feed reader demo that shows off some of SimplePie's more noticable features.
-6. `idn/` - A third-party library that SimplePie can optionally use to understand Internationalized Domain Names (IDNs).
-7. `test/` - SimplePie's unit test suite.
-
+1. `SimplePie.compiled.php` - The SimplePie library in one file.  This is all that's required for your pages.
+2. `SimplePieAutoloader.php` - The SimplePie Autoloader if you want to use the separate file version.
+   `SimplePie` - Directory with all SimplePie libraries for separate file version'
+3. `README.markdown` - This document.
+4. `LICENSE.txt` - A copy of the BSD license.
+5. `compatibility_test/` - The SimplePie compatibility test that checks your server for required settings.
+6. `demo/` - A basic feed reader demo that shows off some of SimplePie's more noticable features.
+7. `idn/` - A third-party library that SimplePie can optionally use to understand Internationalized Domain Names (IDNs).
+8. `test/` - SimplePie's unit test suite.
 
 ## To start the demo
 1. Upload this package to your webserver.

@@ -1,6 +1,6 @@
 <?php
 
-include 'simplepie.class.php';
+include 'SimplePie.compiled.php';
 
 $test = new SimplePie();
 
