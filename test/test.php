@@ -1,4 +1,5 @@
 <?php
+include '../SimplePieAutoloader.php';
 
 if (version_compare(PHP_VERSION, '5.3', '>='))
 {
@@ -14,7 +15,8 @@ if (version_compare(PHP_VERSION, '5.1', '>='))
 	$tz = timezone_identifiers_list();
 	date_default_timezone_set($tz[array_rand($tz)]);
 }
-
+require_once 'functions.php';
+$simplePie = new SimplePie();
 header('Content-type: text/html; charset=UTF-8');
 
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
@@ -133,9 +135,6 @@ function fnLoadPngs() {
 	?>
 	</p>
 <?php
-
-require_once '../simplepie.class.php';
-require_once 'functions.php';
 
 $tests = array(
 	'absolutize',
