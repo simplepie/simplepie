@@ -1,14 +1,6 @@
 <?php
 include '../SimplePieAutoloader.php';
-
-if (version_compare(PHP_VERSION, '5.3', '>='))
-{
-	//error_reporting(E_ALL ^ E_DEPRECATED ^ E_USER_DEPRECATED);
-}
-else
-{
-	error_reporting(E_ALL);
-}
+error_reporting(E_ALL);
 
 if (version_compare(PHP_VERSION, '5.1', '>='))
 {
