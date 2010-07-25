@@ -572,7 +572,7 @@ class Unit_Test2_Files
 	 * @param string $dir Folder to get listing for
 	 * @return array
 	 */
-	function get_files($dir)
+	static function get_files($dir)
 	{
 		$files = array();
 		if ($dh = opendir($dir))
@@ -606,7 +606,7 @@ class Unit_Test2_Files
 	 * @param string $b File/folder 2
 	 * @return int
 	 */
-	function sort_files($a, $b)
+	static function sort_files($a, $b)
 	{
 		if (is_dir($a) && is_dir($b))
 		{
