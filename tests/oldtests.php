@@ -81,32 +81,6 @@ class OldTest extends PHPUnit_Framework_TestCase
     public function testOld($test)
     {
         $test->run();
-        if ($test->result instanceof \ComplexPie\Content)
-        {
-            if ($test->result instanceof \ComplexPie\Content_Node)
-            {
-                $node = $test->result->get_node();
-                if (is_array($node))
-                {
-                    $baseURI = $node[0]->baseURI;
-                }
-                else
-                {
-                    $baseURI = $node->baseURI;
-                }
-            }
-            else
-            {
-                $baseURI = null;
-            }
-            $sanitizer = new \ComplexPie\Sanitize();
-            // The 4 below should be \ComplexPie\CONSTRUCT_XHTML, but that errors. WTF PHP?
-            $test->result = $sanitizer->dosanitize($test->result->to_xml(), 4, $baseURI);
-        }
-        elseif ($test->result instanceof \DateTime)
-        {
-            $test->result = $test->result->getTimestamp();
-        }
         $this->assertSame($test->expected, $test->result);
     }
 }
