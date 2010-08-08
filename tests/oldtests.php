@@ -37,9 +37,7 @@ class OldTest extends PHPUnit_Framework_TestCase
             'first_item_longitude',
             'first_item_permalink',
             'first_item_title',
-            'functions.php',
-            'itunes_rss',
-            'who_knows_a_title_from_a_hole_in_the_ground'
+            'itunes_rss'
         );
         
         $master = new Unit_Test2_Group('SimplePie Test Suite');
