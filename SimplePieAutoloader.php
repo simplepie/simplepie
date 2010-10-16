@@ -47,12 +47,26 @@
 // autoloader
 spl_autoload_register(array(new SimplePie_Autoloader, 'autoload'));
 
+/**
+ * SimplePie Autoloader class.
+ *
+ * @package SimplePie
+ */
 class SimplePie_Autoloader
 {
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->path = dirname(__FILE__);
     }
+
+    /**
+     * Autoloader.
+     *
+     * @param string $class The name of the class to attempt to load.
+     */
     public function autoload($class)
     {
         // see if this request should be handled by this autoloader

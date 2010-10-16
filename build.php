@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 $compileFile = 'SimplePie.compiled.php';
 `cat SimplePie.php > $compileFile.tmp`;

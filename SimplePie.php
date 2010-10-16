@@ -43,8 +43,13 @@
  * @todo phpDoc comments
  */
 
-
-// BC class
+/**
+ * SimplePie class.
+ *
+ * Class for backward compatibility.
+ *
+ * @package SimplePie
+ */
 class SimplePie extends SimplePie_Core
 {
 
