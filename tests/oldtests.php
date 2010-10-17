@@ -4,7 +4,9 @@ date_default_timezone_set('UTC');
 error_reporting(E_ALL | E_STRICT);
 
 require_once 'PHPUnit/Framework.php';
-require_once '../simplepie.class.php';
+require_once '../SimplePieAutoloader.php';
+// Ensure SimplePie is loaded
+class_exists('SimplePie') or die("Couldn't load SimplePie");
 require_once 'oldtests/compat_test_harness.php';
 require_once 'oldtests/functions.php';
 

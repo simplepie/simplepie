@@ -1,6 +1,6 @@
 <?php
 
-require_once 'simplepie.class.php';
+require_once 'SimplePieAutoloader.php';
 
 function normalize_character_set($charset)
 {
