@@ -189,7 +189,10 @@ class SimplePie_Locator
 				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !empty($link['attribs']['type']['data']) && in_array(strtolower(SimplePie_Misc::parse_mime($link['attribs']['type']['data'])), array('application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href]))
 				{
 					$this->checked_feeds++;
-					$feed = new $this->file_class($href, $this->timeout, 5, null, $this->useragent);
+					$headers = array(
+						'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+					);
+					$feed = new $this->file_class($href, $this->timeout, 5, $headers, $this->useragent);
 					if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 					{
 						$feeds[$href] = $feed;
@@ -261,7 +264,11 @@ class SimplePie_Locator
 			if (in_array(strtolower(strrchr($value, '.')), array('.rss', '.rdf', '.atom', '.xml')))
 			{
 				$this->checked_feeds++;
-				$feed = new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
+				
+				$headers = array(
+					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+				);
+				$feed = new $this->file_class($value, $this->timeout, 5, $headers, $this->useragent);
 				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return $feed;
@@ -286,6 +293,9 @@ class SimplePie_Locator
 			if (preg_match('/(rss|rdf|atom|xml)/i', $value))
 			{
 				$this->checked_feeds++;
+				$headers = array(
+					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+				);
 				$feed = new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
 				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
