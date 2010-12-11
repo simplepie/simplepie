@@ -345,10 +345,20 @@ class SimplePie_Misc
 			return SimplePie_Misc::windows_1252_to_utf8($data);
 		}
 		// This is second, as behaviour of this varies only with PHP version (the middle part of this expression checks the encoding is supported).
-		elseif (function_exists('mb_convert_encoding') && @mb_convert_encoding("\x80", 'UTF-16BE', $input) !== "\x00\x80" && ($return = @mb_convert_encoding($data, $output, $input)))
-		{
-			return $return;
-		}
+		elseif (function_exists('mb_convert_encoding')) {
+			if ($input === 'windows-949')
+			{
+				$input = 'EUC-KR';
+			}
+			if ($output === 'windows-949')
+			{
+				$output = 'EUC-KR';
+			}
+			if (@mb_convert_encoding("\x80", 'UTF-16BE', $input) !== "\x00\x80" && ($return = @mb_convert_encoding($data, $output, $input)))
+			{
+				return $return;
+			}
+ 		}
 		// This is last, as behaviour of this varies with OS userland and PHP version
 		elseif (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
 		{
