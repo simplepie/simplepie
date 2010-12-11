@@ -68,7 +68,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 
 		if (strpos($mysql_location->get_userinfo(), ':') !== false)
 		{
-			list($username, $password) = explode(':', $mysql_location->get_userinfo(), 2);
+			list($username, $password) = array_map('urldecode', explode(':', $mysql_location->get_userinfo(), 2));
 		}
 		else
 		{
