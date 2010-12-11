@@ -278,7 +278,8 @@ class SimplePie_HTTP_Parser
 		if ($this->name !== '' && $this->value !== '')
 		{
 			$this->name = strtolower($this->name);
-			if (isset($this->headers[$this->name]))
+			// We should only use the last Content-Type header. c.f. issue #1
+			if (isset($this->headers[$this->name]) && $this->name !== 'content-type')
 			{
 				$this->headers[$this->name] .= ', ' . $this->value;
 			}
