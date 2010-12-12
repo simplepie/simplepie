@@ -372,6 +372,15 @@ class SimplePie_HTTP_Parser
 			switch ($this->data[$this->position])
 			{
 				case '"':
+					// Workaround for ETags: we have to include the quotes as
+					// part of the tag.
+					if ($this->name === 'ETag')
+					{
+						$this->value .= '"';
+						$this->position++;
+						$this->state = 'value_char';
+						break;
+					}
 					$this->position++;
 					$this->state = 'quote';
 					break;
