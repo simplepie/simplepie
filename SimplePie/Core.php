@@ -55,9 +55,9 @@ define('SIMPLEPIE_VERSION', '1.3-dev');
 
 /**
  * SimplePie Build
- * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
+ * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::get_build() only every load of simplepie.inc)
  */
-define('SIMPLEPIE_BUILD', gmdate('YmdHis', filemtime(__FILE__)));
+define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::get_build()));
 
 /**
  * SimplePie Website URL
