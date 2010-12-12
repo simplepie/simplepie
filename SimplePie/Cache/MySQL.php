@@ -128,7 +128,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			{
 				$data = clone $data;
 
-				$prepared = $this->prepare_simplepie_object_for_cache($data);
+				$prepared = self::prepare_simplepie_object_for_cache($data);
 
 				if ($query = mysql_query('SELECT `id` FROM `' . $this->options['prefix'][0] . 'cache_data` WHERE `id` = ' . $feed_id, $this->mysql))
 				{
