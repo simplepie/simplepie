@@ -51,10 +51,7 @@ class SimplePie_Cache
 	 *
 	 * @access private
 	 */
-	private function __construct()
-	{
-		trigger_error('Please call SimplePie_Cache::create() instead of the constructor', E_USER_ERROR);
-	}
+	private function __construct() { }
 
 	/**
 	 * Create a new SimplePie_Cache object
