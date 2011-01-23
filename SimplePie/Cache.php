@@ -47,6 +47,15 @@
 class SimplePie_Cache
 {
 	/**
+	 * Cache handler classes
+	 *
+	 * These receive 3 parameters to their constructor, as documented in
+	 * {@see register()}
+	 * @var array
+	 */
+	protected static $handlers = array('mysql' => 'SimplePie_Cache_MySQL');
+
+	/**
 	 * Don't call the constructor. Please.
 	 *
 	 * @access private
@@ -61,19 +70,26 @@ class SimplePie_Cache
 	 */
 	public static function create($location, $filename, $extension)
 	{
-		$type = explode(':', $location);
-		switch ($type[0])
+		$type = explode(':', $location, 2);
+		$type = $type[0];
+		if (!empty(self::$handlers[$type]))
 		{
-			case 'mysql':
-				if (extension_loaded('mysql'))
-				{
-					return new SimplePie_Cache_MySQL($location, $filename, $extension);
-				}
-				break;
-
-			default:
-				return new SimplePie_Cache_File($location, $filename, $extension);
+			$class = self::$handlers[$type];
+			return new $class($location, $filename, $extension);
 		}
+
+		return new SimplePie_Cache_File($location, $filename, $extension);
+	}
+
+	/**
+	 * Register a handler
+	 *
+	 * @param string $type DSN type to register for
+	 * @param string $class Name of handler class. Must implement SimplePie_Cache_Base
+	 */
+	public static function register($type, $class)
+	{
+		self::$handlers[$type] = $class;
 	}
 
 	/**
