@@ -96,7 +96,7 @@ class SimplePie_Content_Type_Sniffer
 			{
 				$official = $this->file->headers['content-type'];
 			}
-			$official = strtolower($official);
+			$official = trim(strtolower($official));
 
 			if ($official === 'unknown/unknown'
 				|| $official === 'application/unknown')
