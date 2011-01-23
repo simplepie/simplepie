@@ -64,13 +64,13 @@ class SimplePie_Cache
 	 */
 	public static function create($location, $filename, $extension)
 	{
-		$location_iri = new SimplePie_IRI($location);
-		switch ($location_iri->get_scheme())
+		$type = explode(':', $location);
+		switch ($type[0])
 		{
 			case 'mysql':
 				if (extension_loaded('mysql'))
 				{
-					return new SimplePie_Cache_MySQL($location_iri, $filename, $extension);
+					return new SimplePie_Cache_MySQL($location, $filename, $extension);
 				}
 				break;
 
@@ -78,5 +78,35 @@ class SimplePie_Cache
 				return new SimplePie_Cache_File($location, $filename, $extension);
 		}
 	}
-}
 
+	/**
+	 * Parse a DSN into an array
+	 *
+	 * @param string $dsn
+	 * @return array
+	 */
+	public static function parse_DSN($dsn)
+	{
+		$params = array();
+		list($params['type'], $options) = explode(':', $dsn, 2);
+		$options = explode(';', $options);
+		// We need a for loop, so that we can splice
+		for ($i = 0; $i < count($options); $i++)
+		{
+			$option = $options[$i];
+			// If this string ends with a backslash...
+			while (strpos($option, '\\') === (strlen($option) - 1))
+			{
+				// Remove the backslash
+				$option = substr($option, 0, strlen($option) - 1);
+				// Remove the next item from the array and reindex
+				$next = array_splice($options, $i + 1, 1);
+				// Then append the next one, with the semicolon between
+				$option .= ';' . $next[0];
+			}
+			list($name, $value) = explode('=', $option, 2);
+			$params[$name] = $value;
+		}
+		return $params;
+	}
+}
