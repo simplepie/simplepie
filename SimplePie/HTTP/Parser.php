@@ -511,7 +511,7 @@ class SimplePie_HTTP_Parser
 			$length = hexdec($matches[1]);
 			$chunk_length = strlen($matches[0]);
 			$decoded .= $part = substr($encoded, $chunk_length, $length);
-			$encoded = ltrim(str_replace(array($matches[0], $part), '', $encoded), "\r\n");
+			$encoded = ltrim(substr($encoded, $chunk_length + $length), "\r\n");
 
 			if (trim($encoded) === '0') {
 				$this->state = 'emit';
