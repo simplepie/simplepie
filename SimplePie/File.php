@@ -176,7 +176,7 @@ class SimplePie_File
 					{
 						$get = '/';
 					}
-					$out = "GET $get HTTP/1.0\r\n";
+					$out = "GET $get HTTP/1.1\r\n";
 					$out .= "Host: $url_parts[host]\r\n";
 					$out .= "User-Agent: $useragent\r\n";
 					if (extension_loaded('zlib'))

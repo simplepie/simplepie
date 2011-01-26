@@ -480,6 +480,44 @@ class SimplePie_HTTP_Parser
 	public function body()
 	{
 		$this->body = substr($this->data, $this->position);
-		$this->state = 'emit';
+		if (!empty($this->headers['transfer-encoding']))
+		{
+			unset($this->headers['transfer-encoding']);
+			$this->state = 'chunked';
+		}
+		else
+		{
+			$this->state = 'emit';
+		}
+	}
+
+	protected function chunked() {
+		if (!preg_match('/^[0-9a-f]+(\s|\r|\n)+/mi', trim($this->body))) {
+			$this->state = 'emit';
+			return;
+		}
+
+		$decoded = '';
+		$encoded = $this->body;
+
+		while (true) {
+			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)(\s|\r|\n)+/mi', $encoded, $matches );
+			if (!$is_chunked) {
+				// Looks like it's not chunked after all
+				$this->state = 'emit';
+				return;
+			}
+
+			$length = hexdec($matches[1]);
+			$chunk_length = strlen($matches[0]);
+			$decoded .= $part = substr($encoded, $chunk_length, $length);
+			$encoded = ltrim(str_replace(array($matches[0], $part), '', $encoded), "\r\n");
+
+			if (trim($encoded) === '0') {
+				$this->state = 'emit';
+				$this->body = $decoded;
+				return;
+			}
+		}
 	}
 }
