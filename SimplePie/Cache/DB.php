@@ -42,8 +42,6 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  * @todo phpDoc comments
  */
-include('Base.php');
-
 
 abstract class SimplePie_Cache_DB implements SimplePie_Cache_Base
 {
