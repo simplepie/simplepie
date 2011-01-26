@@ -455,8 +455,10 @@ class SimplePie_HTTP_Parser
 	/**
 	 * Parsed a "Transfer-Encoding: chunked" body
 	 */
-	protected function chunked() {
-		if (!preg_match('/^[0-9a-f]+(\s|\r|\n)+/mi', trim($this->body))) {
+	protected function chunked()
+	{
+		if (!preg_match('/^[0-9a-f]+(\s|\r|\n)+/mi', trim($this->body)))
+		{
 			$this->state = 'emit';
 			return;
 		}
@@ -464,9 +466,11 @@ class SimplePie_HTTP_Parser
 		$decoded = '';
 		$encoded = $this->body;
 
-		while (true) {
+		while (true)
+		{
 			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)(\s|\r|\n)+/mi', $encoded, $matches );
-			if (!$is_chunked) {
+			if (!$is_chunked)
+			{
 				// Looks like it's not chunked after all
 				$this->state = 'emit';
 				return;
@@ -477,7 +481,8 @@ class SimplePie_HTTP_Parser
 			$decoded .= $part = substr($encoded, $chunk_length, $length);
 			$encoded = ltrim(substr($encoded, $chunk_length + $length), "\r\n");
 
-			if (trim($encoded) === '0') {
+			if (trim($encoded) === '0')
+			{
 				$this->state = 'emit';
 				$this->body = $decoded;
 				return;
