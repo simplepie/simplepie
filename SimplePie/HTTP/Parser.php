@@ -54,95 +54,83 @@ class SimplePie_HTTP_Parser
 	/**
 	 * HTTP Version
 	 *
-	 * @access public
 	 * @var float
 	 */
-	var $http_version = 0.0;
+	public $http_version = 0.0;
 
 	/**
 	 * Status code
 	 *
-	 * @access public
 	 * @var int
 	 */
-	var $status_code = 0;
+	public $status_code = 0;
 
 	/**
 	 * Reason phrase
 	 *
-	 * @access public
 	 * @var string
 	 */
-	var $reason = '';
+	public $reason = '';
 
 	/**
 	 * Key/value pairs of the headers
 	 *
-	 * @access public
 	 * @var array
 	 */
-	var $headers = array();
+	public $headers = array();
 
 	/**
 	 * Body of the response
 	 *
-	 * @access public
 	 * @var string
 	 */
-	var $body = '';
+	public $body = '';
 
 	/**
 	 * Current state of the state machine
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $state = 'http_version';
+	protected $state = 'http_version';
 
 	/**
 	 * Input data
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $data = '';
+	protected $data = '';
 
 	/**
 	 * Input data length (to avoid calling strlen() everytime this is needed)
 	 *
-	 * @access private
 	 * @var int
 	 */
-	var $data_length = 0;
+	protected $data_length = 0;
 
 	/**
 	 * Current position of the pointer
 	 *
 	 * @var int
-	 * @access private
 	 */
-	var $position = 0;
+	protected $position = 0;
 
 	/**
 	 * Name of the hedaer currently being parsed
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $name = '';
+	protected $name = '';
 
 	/**
 	 * Value of the hedaer currently being parsed
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $value = '';
+	protected $value = '';
 
 	/**
 	 * Create an instance of the class with the input data
 	 *
-	 * @access public
 	 * @param string $data Input data
 	 */
 	public function __construct($data)
@@ -154,7 +142,6 @@ class SimplePie_HTTP_Parser
 	/**
 	 * Parse the input data
 	 *
-	 * @access public
 	 * @return bool true on success, false on failure
 	 */
 	public function parse()
@@ -183,10 +170,9 @@ class SimplePie_HTTP_Parser
 	/**
 	 * Check whether there is data beyond the pointer
 	 *
-	 * @access private
 	 * @return bool true if there is further data, false if not
 	 */
-	public function has_data()
+	protected function has_data()
 	{
 		return (bool) ($this->position < $this->data_length);
 	}
@@ -194,10 +180,9 @@ class SimplePie_HTTP_Parser
 	/**
 	 * See if the next character is LWS
 	 *
-	 * @access private
 	 * @return bool true if the next character is LWS, false if not
 	 */
-	public function is_linear_whitespace()
+	protected function is_linear_whitespace()
 	{
 		return (bool) ($this->data[$this->position] === "\x09"
 			|| $this->data[$this->position] === "\x20"
@@ -208,10 +193,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse the HTTP version
-	 *
-	 * @access private
 	 */
-	public function http_version()
+	protected function http_version()
 	{
 		if (strpos($this->data, "\x0A") !== false && strtoupper(substr($this->data, 0, 5)) === 'HTTP/')
 		{
@@ -237,10 +220,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse the status code
-	 *
-	 * @access private
 	 */
-	public function status()
+	protected function status()
 	{
 		if ($len = strspn($this->data, '0123456789', $this->position))
 		{
@@ -256,10 +237,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse the reason phrase
-	 *
-	 * @access private
 	 */
-	public function reason()
+	protected function reason()
 	{
 		$len = strcspn($this->data, "\x0A", $this->position);
 		$this->reason = trim(substr($this->data, $this->position, $len), "\x09\x0D\x20");
@@ -269,10 +248,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Deal with a new line, shifting data around as needed
-	 *
-	 * @access private
 	 */
-	public function new_line()
+	protected function new_line()
 	{
 		$this->value = trim($this->value, "\x0D\x20");
 		if ($this->name !== '' && $this->value !== '')
@@ -308,10 +285,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse a header name
-	 *
-	 * @access private
 	 */
-	public function name()
+	protected function name()
 	{
 		$len = strcspn($this->data, "\x0A:", $this->position);
 		if (isset($this->data[$this->position + $len]))
@@ -336,10 +311,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse LWS, replacing consecutive LWS characters with a single space
-	 *
-	 * @access private
 	 */
-	public function linear_whitespace()
+	protected function linear_whitespace()
 	{
 		do
 		{
@@ -358,10 +331,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * See what state to move to while within non-quoted header values
-	 *
-	 * @access private
 	 */
-	public function value()
+	protected function value()
 	{
 		if ($this->is_linear_whitespace())
 		{
@@ -399,10 +370,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse a header value while outside quotes
-	 *
-	 * @access private
 	 */
-	public function value_char()
+	protected function value_char()
 	{
 		$len = strcspn($this->data, "\x09\x20\x0A\"", $this->position);
 		$this->value .= substr($this->data, $this->position, $len);
@@ -412,10 +381,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * See what state to move to while within quoted header values
-	 *
-	 * @access private
 	 */
-	public function quote()
+	protected function quote()
 	{
 		if ($this->is_linear_whitespace())
 		{
@@ -449,10 +416,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse a header value while within quotes
-	 *
-	 * @access private
 	 */
-	public function quote_char()
+	protected function quote_char()
 	{
 		$len = strcspn($this->data, "\x09\x20\x0A\"\\", $this->position);
 		$this->value .= substr($this->data, $this->position, $len);
@@ -462,10 +427,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse an escaped character within quotes
-	 *
-	 * @access private
 	 */
-	public function quote_escaped()
+	protected function quote_escaped()
 	{
 		$this->value .= $this->data[$this->position];
 		$this->position++;
@@ -474,10 +437,8 @@ class SimplePie_HTTP_Parser
 
 	/**
 	 * Parse the body
-	 *
-	 * @access private
 	 */
-	public function body()
+	protected function body()
 	{
 		$this->body = substr($this->data, $this->position);
 		if (!empty($this->headers['transfer-encoding']))
@@ -491,6 +452,9 @@ class SimplePie_HTTP_Parser
 		}
 	}
 
+	/**
+	 * Parsed a "Transfer-Encoding: chunked" body
+	 */
 	protected function chunked() {
 		if (!preg_match('/^[0-9a-f]+(\s|\r|\n)+/mi', trim($this->body))) {
 			$this->state = 'emit';
