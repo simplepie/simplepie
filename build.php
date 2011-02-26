@@ -22,5 +22,6 @@ foreach ($tokens as $value) {
 	}
 }
 file_put_contents("$compileFile.tmp", $stripped_source);
-`cat header.tpl > $compileFile;cat $compileFile.tmp |sed 's/^<?php//g'>>$compileFile`;
+`cat header.tpl > $compileFile`;
+`cat $compileFile.tmp |sed 's/^<?php//g'>>$compileFile`;
 unlink("$compileFile.tmp");
