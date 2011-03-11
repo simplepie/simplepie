@@ -578,6 +578,46 @@ class SimplePie_Item
 		}
 	}
 
+	function get_updated_date($date_format = 'j F Y, g:i a')
+	{
+		if (!isset($this->data['date']))
+		{
+			if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'updated'))
+			{
+				$this->data['date']['raw'] = $return[0]['data'];
+			}
+
+			if (!empty($this->data['date']['raw']))
+			{
+				$parser = SimplePie_Parse_Date::get();
+				$this->data['date']['parsed'] = $parser->parse($this->data['date']['raw']);
+			}
+			else
+			{
+				$this->data['date'] = null;
+			}
+		}
+		if ($this->data['date'])
+		{
+			$date_format = (string) $date_format;
+			switch ($date_format)
+			{
+				case '':
+					return $this->sanitize($this->data['date']['raw'], SIMPLEPIE_CONSTRUCT_TEXT);
+
+				case 'U':
+					return $this->data['date']['parsed'];
+
+				default:
+					return date($date_format, $this->data['date']['parsed']);
+			}
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	public function get_local_date($date_format = '%c')
 	{
 		if (!$date_format)
