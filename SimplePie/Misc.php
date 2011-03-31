@@ -309,7 +309,6 @@ class SimplePie_Misc
 	 * Converts a Windows-1252 encoded string to a UTF-8 encoded string
 	 *
 	 * @static
-	 * @access public
 	 * @param string $string Windows-1252 encoded string
 	 * @return string UTF-8 encoded string
 	 */
@@ -1753,7 +1752,6 @@ class SimplePie_Misc
 	/**
 	 * Strip HTML comments
 	 *
-	 * @access public
 	 * @param string $data Data to strip comments from
 	 * @return string Comment stripped string
 	 */
@@ -1785,7 +1783,6 @@ class SimplePie_Misc
 	 * Decode HTML entities
 	 *
 	 * @static
-	 * @access public
 	 * @param string $data Input data
 	 * @return string Output data
 	 */
@@ -1798,7 +1795,6 @@ class SimplePie_Misc
 	/**
 	 * Remove RFC822 comments
 	 *
-	 * @access public
 	 * @param string $data Data to strip comments from
 	 * @return string Comment stripped string
 	 */
@@ -2039,7 +2035,6 @@ class SimplePie_Misc
 	 * Converts a unicode codepoint to a UTF-8 character
 	 *
 	 * @static
-	 * @access public
 	 * @param int $codepoint Unicode codepoint
 	 * @return string UTF-8 character
 	 */
@@ -2080,7 +2075,6 @@ class SimplePie_Misc
 	 * array of values that have used the same name
 	 *
 	 * @static
-	 * @access string
 	 * @param string $str The input string.
 	 * @return array
 	 */

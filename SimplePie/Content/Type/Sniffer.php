@@ -55,14 +55,12 @@ class SimplePie_Content_Type_Sniffer
 	 * File object
 	 *
 	 * @var SimplePie_File
-	 * @access private
 	 */
 	var $file;
 
 	/**
 	 * Create an instance of the class with the input file
 	 *
-	 * @access public
 	 * @param SimplePie_Content_Type_Sniffer $file Input file
 	 */
 	public function __construct($file)
@@ -73,7 +71,6 @@ class SimplePie_Content_Type_Sniffer
 	/**
 	 * Get the Content-Type of the specified file
 	 *
-	 * @access public
 	 * @return string Actual Content-Type
 	 */
 	public function get_type()
@@ -138,7 +135,6 @@ class SimplePie_Content_Type_Sniffer
 	/**
 	 * Sniff text or binary
 	 *
-	 * @access private
 	 * @return string Actual Content-Type
 	 */
 	public function text_or_binary()
@@ -163,7 +159,6 @@ class SimplePie_Content_Type_Sniffer
 	/**
 	 * Sniff unknown
 	 *
-	 * @access private
 	 * @return string Actual Content-Type
 	 */
 	public function unknown()
@@ -209,7 +204,6 @@ class SimplePie_Content_Type_Sniffer
 	/**
 	 * Sniff images
 	 *
-	 * @access private
 	 * @return string Actual Content-Type
 	 */
 	public function image()
@@ -240,7 +234,6 @@ class SimplePie_Content_Type_Sniffer
 	/**
 	 * Sniff HTML
 	 *
-	 * @access private
 	 * @return string Actual Content-Type
 	 */
 	public function feed_or_html()

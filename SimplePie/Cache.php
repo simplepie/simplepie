@@ -57,16 +57,11 @@ class SimplePie_Cache
 
 	/**
 	 * Don't call the constructor. Please.
-	 *
-	 * @access private
 	 */
 	private function __construct() { }
 
 	/**
 	 * Create a new SimplePie_Cache object
-	 *
-	 * @static
-	 * @access public
 	 */
 	public static function create($location, $filename, $extension)
 	{
