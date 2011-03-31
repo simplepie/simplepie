@@ -1472,7 +1472,7 @@ class SimplePie_Core
 			}
 		}
 
-		if (isset($_GET[$this->javascript]))
+		if ($this->javascript !== false && isset($_GET[$this->javascript]))
 		{
 			SimplePie_Misc::output_javascript();
 			exit;
