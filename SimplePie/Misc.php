@@ -2276,5 +2276,55 @@ function embed_wmedia(width, height, link) {
 			return filemtime(__FILE__);
 		}
 	}
+
+	/**
+	 * Format debugging information
+	 */
+	public static function debug(&$sp)
+	{
+		$info = 'SimplePie ' . SIMPLEPIE_VERSION . ' Build ' . SIMPLEPIE_BUILD . "\n";
+		$info .= 'PHP ' . PHP_VERSION . "\n";
+		if ($sp->error() !== null)
+		{
+			$info .= 'Error occurred: ' . $sp->error() . "\n";
+		}
+		else
+		{
+			$info .= "No error found.\n";
+		}
+		$info .= "Extensions:\n";
+		$extensions = array('pcre', 'curl', 'zlib', 'mbstring', 'iconv', 'xmlreader', 'xml');
+		foreach ($extensions as $ext)
+		{
+			if (extension_loaded($ext))
+			{
+				$info .= "    $ext loaded\n";
+				switch ($ext)
+				{
+					case 'pcre':
+						$info .= '      Version ' . PCRE_VERSION . "\n";
+						break;
+					case 'curl':
+						$version = curl_version();
+						$info .= '      Version ' . $version['version'] . "\n";
+						break;
+					case 'mbstring':
+						$info .= '      Overloading: ' . mb_get_info('func_overload') . "\n";
+						break;
+					case 'iconv':
+						$info .= '      Version ' . ICONV_VERSION . "\n";
+						break;
+					case 'xml':
+						$info .= '      Version ' . LIBXML_DOTTED_VERSION . "\n";
+						break;
+				}
+			}
+			else
+			{
+				$info .= "    $ext not loaded\n";
+			}
+		}
+		return $info;
+	}
 }
 
