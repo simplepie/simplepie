@@ -1,5 +1,6 @@
 <?php
 $compileFile = 'SimplePie.compiled.php';
+chdir(dirname(dirname(__FILE__)));
 `cat SimplePie.php > $compileFile.tmp`;
 `find SimplePie -type f| xargs cat | sed 's/^<?php//g'>>$compileFile.tmp`;
 
@@ -22,6 +23,6 @@ foreach ($tokens as $value) {
 	}
 }
 file_put_contents("$compileFile.tmp", $stripped_source);
-`cat header.tpl > $compileFile`;
+`cat build/header.txt > $compileFile`;
 `cat $compileFile.tmp |sed 's/^<?php//g'>>$compileFile`;
 unlink("$compileFile.tmp");

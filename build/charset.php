@@ -1,6 +1,6 @@
 <?php
 
-require_once 'SimplePieAutoloader.php';
+require_once '../SimplePieAutoloader.php';
 
 // Ensure constants are loaded
 class_exists('SimplePie') or die("Couldn't load SimplePie");
