@@ -657,14 +657,6 @@ class SimplePie_Core
 	public $source_class = 'SimplePie_Source';
 
 	/**
-	 * @var mixed Set javascript query string parameter (false, or
-	 * anything type-cast to false, disables this feature)
-	 * @see SimplePie::set_javascript()
-	 * @access private
-	 */
-	public $javascript = false;
-
-	/**
 	 * @var int Maximum number of feeds to check with autodiscovery
 	 * @see SimplePie::set_max_checked_feeds()
 	 * @access private
@@ -1315,24 +1307,6 @@ class SimplePie_Core
 	}
 
 	/**
-	 * Set javascript query string parameter
-	 *
-	 * @access public
-	 * @param mixed $get Javascript query string parameter
-	 */
-	public function set_javascript($get = 'js')
-	{
-		if ($get)
-		{
-			$this->javascript = (string) $get;
-		}
-		else
-		{
-			$this->javascript = false;
-		}
-	}
-
-	/**
 	 * Set options to make SP as fast as possible.  Forgoes a
 	 * substantial amount of data sanitization in favor of speed.
 	 *
@@ -1470,12 +1444,6 @@ class SimplePie_Core
 			{
 				return false;
 			}
-		}
-
-		if ($this->javascript !== false && isset($_GET[$this->javascript]))
-		{
-			SimplePie_Misc::output_javascript();
-			exit;
 		}
 
 		// Pass whatever was set with config options over to the sanitizer.

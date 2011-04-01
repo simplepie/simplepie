@@ -73,7 +73,7 @@ Support mailing list -- powered by users, for users.
 [http://tech.groups.yahoo.com/group/simplepie-support/](http://tech.groups.yahoo.com/group/simplepie-support/)
 
 
-## API Changes
+## API changes since 1.2
 ### Recently removed
 The following have recently been removed:
 
@@ -85,8 +85,4 @@ The following have recently been removed:
 * set_favicon_handler
 * subscribe_* (except subscribe_url)
 * utf8_bad_replace
-
-### Changed
-The following have recently changed behaviour:
-
-* set_javascript now defaults to false. To replicate 1.2 functionality, `$feed->set_javascript('js')`
+* set_javascript (See `SimplePie_Misc::output_javascript()`)
