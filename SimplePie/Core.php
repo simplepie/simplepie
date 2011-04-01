@@ -662,7 +662,7 @@ class SimplePie_Core
 	 * @see SimplePie::set_javascript()
 	 * @access private
 	 */
-	public $javascript = 'js';
+	public $javascript = false;
 
 	/**
 	 * @var int Maximum number of feeds to check with autodiscovery
