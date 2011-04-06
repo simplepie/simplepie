@@ -319,6 +319,14 @@ class SimplePie_Misc
 		return strtr($string, $convert_table);
 	}
 
+	/**
+	 * Change a string from one encoding to another
+	 *
+	 * @param string $data Raw data in $input encoding
+	 * @param string $input Encoding of $data
+	 * @param string $output Encoding you want
+	 * @return string|boolean False if we can't convert it
+	 */
 	public static function change_encoding($data, $input, $output)
 	{
 		$input = SimplePie_Misc::encoding($input);
