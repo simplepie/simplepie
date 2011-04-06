@@ -344,22 +344,12 @@ class SimplePie_Misc
 			return SimplePie_Misc::windows_1252_to_utf8($data);
 		}
 		// This is second, as behaviour of this varies only with PHP version (the middle part of this expression checks the encoding is supported).
-		elseif (function_exists('mb_convert_encoding')) {
-			if ($input === 'windows-949')
-			{
-				$input = 'EUC-KR';
-			}
-			if ($output === 'windows-949')
-			{
-				$output = 'EUC-KR';
-			}
-			if (@mb_convert_encoding("\x80", 'UTF-16BE', $input) !== "\x00\x80" && ($return = @mb_convert_encoding($data, $output, $input)))
-			{
-				return $return;
-			}
+		elseif (function_exists('mb_convert_encoding') && ($return = SimplePie_Misc::change_encoding_mbstring($data, $input, $output)))
+		{
+			return $return;
  		}
 		// This is last, as behaviour of this varies with OS userland and PHP version
-		elseif (function_exists('iconv') && ($return = @iconv($input, $output, $data)))
+		elseif (function_exists('iconv') && ($return = SimplePie_Misc::change_encoding_iconv($data, $input, $output)))
 		{
 			return $return;
 		}
@@ -368,6 +358,41 @@ class SimplePie_Misc
 		{
 			return false;
 		}
+	}
+
+	protected static function change_encoding_mbstring($data, $input, $output)
+	{
+		if ($input === 'windows-949')
+		{
+			$input = 'EUC-KR';
+		}
+		if ($output === 'windows-949')
+		{
+			$output = 'EUC-KR';
+		}
+
+		// Check that the encoding is supported
+		if (@mb_convert_encoding("\x80", 'UTF-16BE', $input) === "\x00\x80")
+		{
+			return false;
+		}
+		if (!in_array($input, mb_list_encodings()))
+		{
+			return false;
+		}
+
+		// Let's do some conversion
+		if ($return = @mb_convert_encoding($data, $output, $input))
+		{
+			return $return;
+		}
+
+		return false;
+	}
+
+	protected static function change_encoding_iconv($data, $input, $output)
+	{
+		return @iconv($input, $output, $data);
 	}
 
 	/**
