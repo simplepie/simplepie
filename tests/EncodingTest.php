@@ -156,7 +156,8 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	public static function toUTF16()
 	{
 		return array(
-			array("\x22\x1e", "\xfe\xff\x22\x1e", 'UTF-16BE'),
+			array("\x22\x1e", "\x22\x1e", 'UTF-16BE'),
+			array("\x1e\x22", "\x22\x1e", 'UTF-16LE'),
 		);
 	}
 
