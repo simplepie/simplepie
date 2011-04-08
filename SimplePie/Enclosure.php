@@ -723,12 +723,6 @@ class SimplePie_Enclosure
 
 		$embed = '';
 
-		// Make sure the JS library is included
-		if (!$native)
-		{
-			// Do nothing, it's up to the user to output the Javascript
-		}
-
 		// Odeo Feed MP3's
 		if ($handler === 'odeo')
 		{
