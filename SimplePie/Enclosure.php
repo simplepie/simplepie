@@ -89,7 +89,6 @@ class SimplePie_Enclosure
 		$this->framerate = $framerate;
 		$this->hashes = $hashes;
 		$this->height = $height;
-		$this->javascript = $javascript;
 		$this->keywords = $keywords;
 		$this->lang = $lang;
 		$this->length = $length;
@@ -727,12 +726,7 @@ class SimplePie_Enclosure
 		// Make sure the JS library is included
 		if (!$native)
 		{
-			static $javascript_outputted = null;
-			if (!$javascript_outputted && $this->javascript)
-			{
-				$embed .= '<script type="text/javascript" src="?' . htmlspecialchars($this->javascript) . '"></script>';
-				$javascript_outputted = true;
-			}
+			// Do nothing, it's up to the user to output the Javascript
 		}
 
 		// Odeo Feed MP3's

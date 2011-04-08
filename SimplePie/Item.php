@@ -1986,7 +1986,7 @@ class SimplePie_Item
 								$title = $title_parent;
 							}
 
-							$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions, $categories, $channels, $copyrights, $credits, $description, $duration, $expression, $framerate, $hashes, $height, $keywords, $lang, $medium, $player, $ratings, $restrictions, $samplingrate, $thumbnails, $title, $width);
+							$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, null, $bitrate, $captions, $categories, $channels, $copyrights, $credits, $description, $duration, $expression, $framerate, $hashes, $height, $keywords, $lang, $medium, $player, $ratings, $restrictions, $samplingrate, $thumbnails, $title, $width);
 						}
 					}
 				}
@@ -2393,7 +2393,7 @@ class SimplePie_Item
 							$title = $title_parent;
 						}
 
-						$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions, $categories, $channels, $copyrights, $credits, $description, $duration, $expression, $framerate, $hashes, $height, $keywords, $lang, $medium, $player, $ratings, $restrictions, $samplingrate, $thumbnails, $title, $width);
+						$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, null, $bitrate, $captions, $categories, $channels, $copyrights, $credits, $description, $duration, $expression, $framerate, $hashes, $height, $keywords, $lang, $medium, $player, $ratings, $restrictions, $samplingrate, $thumbnails, $title, $width);
 					}
 				}
 			}
@@ -2429,7 +2429,7 @@ class SimplePie_Item
 					}
 
 					// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
+					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
 				}
 			}
 
@@ -2464,7 +2464,7 @@ class SimplePie_Item
 					}
 
 					// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
+					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
 				}
 			}
 
@@ -2499,14 +2499,14 @@ class SimplePie_Item
 					}
 
 					// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
+					$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
 				}
 			}
 
 			if (sizeof($this->data['enclosures']) === 0 && ($url || $type || $length || $bitrate || $captions_parent || $categories_parent || $channels || $copyrights_parent || $credits_parent || $description_parent || $duration_parent || $expression || $framerate || $hashes_parent || $height || $keywords_parent || $lang || $medium || $player_parent || $ratings_parent || $restrictions_parent || $samplingrate || $thumbnails_parent || $title_parent || $width))
 			{
 				// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-				$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, $this->feed->javascript, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
+				$this->data['enclosures'][] = new $this->feed->enclosure_class($url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
 			}
 
 			$this->data['enclosures'] = array_values(SimplePie_Misc::array_unique($this->data['enclosures']));
