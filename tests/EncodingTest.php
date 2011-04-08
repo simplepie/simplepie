@@ -54,7 +54,7 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Test if we have mbstring
 	 *
-	 * Used for @depends
+	 * Used for depends
 	 */
 	public function test_has_mbstring()
 	{
@@ -64,7 +64,7 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Test if we have iconv (crazy if we don't)
 	 *
-	 * Used for @depends
+	 * Used for depends
 	 */
 	public function test_has_iconv()
 	{
