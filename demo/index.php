@@ -55,9 +55,9 @@ $feed->handle_content_type();
 
 // When we end our PHP block, we want to make sure our DOCTYPE is on the top line to make
 // sure that the browser snaps into Standards Mode.
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+?><!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<html lang="en-US">
 <head>
 <title>SimplePie: Demo</title>
 

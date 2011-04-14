@@ -38,7 +38,7 @@ else
 
 header('Content-type: text/html; charset=UTF-8');
 
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+?><!DOCTYPE html>
 
 <html lang="en">
 <head>
