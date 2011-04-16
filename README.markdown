@@ -24,7 +24,7 @@ For a complete list of contributors:
 * cURL or fsockopen()
 * PCRE support
 
-If you're looking for PHP 4.x support, pull the "1.2" tag, as that's the last version to support PHP 4.x.
+If you're looking for PHP 4.x support, pull the "one-dot-two" branch, as that's the last version to support PHP 4.x.
 
 
 ## License
