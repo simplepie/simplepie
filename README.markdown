@@ -78,11 +78,11 @@ Support mailing list -- powered by users, for users.
 The following have recently been removed:
 
 * Parameters for SimplePie::__construct()
-* add_to_*
-* display_cached_file
-* enable_xml_dump
-* get_favicon
-* set_favicon_handler
-* subscribe_* (except subscribe_url)
-* utf8_bad_replace
-* set_javascript (See `SimplePie_Misc::output_javascript()`)
+* `add_to_*`
+* `display_cached_file`
+* `enable_xml_dump`
+* `get_favicon`
+* `set_favicon_handler`
+* `subscribe_*` (except `subscribe_url`)
+* `utf8_bad_replace`
+* `set_javascript` (See `SimplePie_Misc::output_javascript()`)
