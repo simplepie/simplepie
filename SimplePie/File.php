@@ -143,16 +143,17 @@ class SimplePie_File
 			{
 				$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE | SIMPLEPIE_FILE_SOURCE_FSOCKOPEN;
 				$url_parts = parse_url($url);
+				$socket_host = $url_parts['host'];
 				if (isset($url_parts['scheme']) && strtolower($url_parts['scheme']) === 'https')
 				{
-					$url_parts['host'] = "ssl://$url_parts[host]";
+					$socket_host = "ssl://$url_parts[host]";
 					$url_parts['port'] = 443;
 				}
 				if (!isset($url_parts['port']))
 				{
 					$url_parts['port'] = 80;
 				}
-				$fp = @fsockopen($url_parts['host'], $url_parts['port'], $errno, $errstr, $timeout);
+				$fp = @fsockopen($socket_host, $url_parts['port'], $errno, $errstr, $timeout);
 				if (!$fp)
 				{
 					$this->error = 'fsockopen error: ' . $errstr;
