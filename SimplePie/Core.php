@@ -1544,6 +1544,7 @@ class SimplePie_Core
 						// If the cache is still valid, just return true
 						else
 						{
+							$this->raw_data = false;
 							return true;
 						}
 					}
@@ -1624,6 +1625,9 @@ class SimplePie_Core
 			{
 				$data = $this->raw_data;
 			}
+
+			// This is exposed via get_raw_data()
+			$this->raw_data = $data;
 
 			// Set up array of possible encodings
 			$encodings = array();
@@ -1761,6 +1765,19 @@ class SimplePie_Core
 	public function error()
 	{
 		return $this->error;
+	}
+
+	/**
+	 * Return the raw XML
+	 *
+	 * This is the same as setting `$xml_dump = true;`, but returns
+	 * the data instead of printing it.
+	 *
+	 * @return string|boolean Raw XML data, false if the cache is used
+	 */
+	public function get_raw_data()
+	{
+		return $this->raw_data;
 	}
 
 	public function get_encoding()
