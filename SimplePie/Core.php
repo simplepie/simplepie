@@ -551,6 +551,13 @@ class SimplePie_Core
 	 */
 	public $autodiscovery = SIMPLEPIE_LOCATOR_ALL;
 
+    /**
+     * Set false to avoid automatic sorting of items by entry update timestamp.
+     * @var bool
+	 * @access private
+     */
+    public $do_sort = true;
+
 	/**
 	 * @var string Class used for caching feeds
 	 * @see SimplePie::set_cache_class()
@@ -2738,7 +2745,7 @@ class SimplePie_Core
 			{
 				if (!isset($this->data['ordered_items']))
 				{
-					$do_sort = true;
+					$do_sort = $this->do_sort;
 					foreach ($this->data['items'] as $item)
 					{
 						if (!$item->get_date('U'))
@@ -2805,7 +2812,7 @@ class SimplePie_Core
 				}
 			}
 
-			$do_sort = true;
+			$do_sort = $this->do_sort;
 			foreach ($items as $item)
 			{
 				if (!$item->get_date('U'))
