@@ -47,6 +47,7 @@
 /**
  * Content-type sniffing
  *
+ * Based on the rules in http://tools.ietf.org/html/draft-abarth-mime-sniff-06
  * @package SimplePie
  */
 class SimplePie_Content_Type_Sniffer
@@ -80,7 +81,8 @@ class SimplePie_Content_Type_Sniffer
 			if (!isset($this->file->headers['content-encoding'])
 				&& ($this->file->headers['content-type'] === 'text/plain'
 					|| $this->file->headers['content-type'] === 'text/plain; charset=ISO-8859-1'
-					|| $this->file->headers['content-type'] === 'text/plain; charset=iso-8859-1'))
+					|| $this->file->headers['content-type'] === 'text/plain; charset=iso-8859-1'
+					|| $this->file->headers['content-type'] === 'text/plain; charset=UTF-8'))
 			{
 				return $this->text_or_binary();
 			}
@@ -195,6 +197,10 @@ class SimplePie_Content_Type_Sniffer
 		{
 			return 'image/bmp';
 		}
+		elseif (substr($this->file->body, 0, 4) === "\x00\x00\x01\x00")
+		{
+			return 'image/vnd.microsoft.icon';
+		}
 		else
 		{
 			return $this->text_or_binary();
@@ -224,6 +230,10 @@ class SimplePie_Content_Type_Sniffer
 		elseif (substr($this->file->body, 0, 2) === "\x42\x4D")
 		{
 			return 'image/bmp';
+		}
+		elseif (substr($this->file->body, 0, 4) === "\x00\x00\x01\x00")
+		{
+			return 'image/vnd.microsoft.icon';
 		}
 		else
 		{
