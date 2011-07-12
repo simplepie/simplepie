@@ -88,32 +88,17 @@ class SimplePie_Cache
 	}
 
 	/**
-	 * Parse a DSN into an array
+	 * Parse a URL into an array
 	 *
-	 * @param string $dsn
+	 * @param string $url
 	 * @return array
 	 */
-	public static function parse_DSN($dsn)
+	public static function parse_URL($url)
 	{
-		$params = array();
-		list($params['type'], $options) = explode(':', $dsn, 2);
-		$options = explode(';', $options);
-		// We need a for loop, so that we can splice
-		for ($i = 0; $i < count($options); $i++)
+		$params = parse_url($url);
+		if (isset($params['query']))
 		{
-			$option = $options[$i];
-			// If this string ends with a backslash...
-			while (strpos($option, '\\') === (strlen($option) - 1))
-			{
-				// Remove the backslash
-				$option = substr($option, 0, strlen($option) - 1);
-				// Remove the next item from the array and reindex
-				$next = array_splice($options, $i + 1, 1);
-				// Then append the next one, with the semicolon between
-				$option .= ';' . $next[0];
-			}
-			list($name, $value) = explode('=', $option, 2);
-			$params[$name] = $value;
+			parse_str($params['query'], $params['options']);
 		}
 		return $params;
 	}
