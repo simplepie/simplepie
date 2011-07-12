@@ -53,7 +53,10 @@ class SimplePie_Cache
 	 * {@see register()}
 	 * @var array
 	 */
-	protected static $handlers = array('mysql' => 'SimplePie_Cache_MySQL');
+	protected static $handlers = array(
+		'mysql' => 'SimplePie_Cache_MySQL',
+		'memcache' => 'SimplePie_Cache_Memcache',
+	);
 
 	/**
 	 * Don't call the constructor. Please.
