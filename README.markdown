@@ -52,7 +52,7 @@ Removing PHP 4.x support will certainly help with the slimming. It will also hel
 4. `README.markdown` - This document.
 5. `LICENSE.txt` - A copy of the BSD license.
 6. `compatibility_test/` - The SimplePie compatibility test that checks your server for required settings.
-7. `demo/` - A basic feed reader demo that shows off some of SimplePie's more noticable features.
+7. `demo/` - A basic feed reader demo that shows off some of SimplePie's more noticeable features.
 8. `idn/` - A third-party library that SimplePie can optionally use to understand Internationalized Domain Names (IDNs).
 9. `test/` - SimplePie's unit test suite.
 
