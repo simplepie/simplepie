@@ -43,7 +43,6 @@
  * @todo phpDoc comments
  */
 
-
 /**
  * IRI parser/serialiser
  *
@@ -309,13 +308,13 @@ class SimplePie_IRI
 	/**
 	 * Replace invalid character with percent encoding
 	 *
-	 * @access private
 	 * @param string $string Input string
-	 * @param string $valid_chars Valid characters
+	 * @param string $valid_chars Valid characters not in iunreserved or iprivate (this is ASCII-only)
 	 * @param int $case Normalise case
+	 * @param bool $iprivate Allow iprivate
 	 * @return string
 	 */
-	public function replace_invalid_with_pct_encoding($string, $valid_chars, $case = SIMPLEPIE_SAME_CASE)
+	protected function replace_invalid_with_pct_encoding($string, $valid_chars, $case = SIMPLEPIE_SAME_CASE, $iprivate = false)
 	{
 		// Normalise case
 		if ($case & SIMPLEPIE_LOWERCASE)
@@ -327,61 +326,269 @@ class SimplePie_IRI
 			$string = strtoupper($string);
 		}
 
-		// Store position and string length (to avoid constantly recalculating this)
+		// Normalize as many pct-encoded sections as possible
+		$string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', array(&$this, 'remove_iunreserved_percent_encoded'), $string);
+
+		// Replace invalid percent characters
+		$string = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
+
+		// Add unreserved and % to $valid_chars (the latter is safe because all
+		// pct-encoded sections are now valid).
+		$valid_chars .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~%';
+
+		// Now replace any bytes that aren't allowed with their pct-encoded versions
 		$position = 0;
 		$strlen = strlen($string);
-
-		// Loop as long as we have invalid characters, advancing the position to the next invalid character
 		while (($position += strspn($string, $valid_chars, $position)) < $strlen)
 		{
-			// If we have a % character
-			if ($string[$position] === '%')
+			$value = ord($string[$position]);
+
+			// Start position
+			$start = $position;
+
+			// By default we are valid
+			$valid = true;
+
+			// No one byte sequences are valid due to the while.
+			// Two byte sequence:
+			if (($value & 0xE0) === 0xC0)
 			{
-				// If we have a pct-encoded section
-				if ($position + 2 < $strlen && strspn($string, '0123456789ABCDEFabcdef', $position + 1, 2) === 2)
-				{
-					// Get the the represented character
-					$chr = chr(hexdec(substr($string, $position + 1, 2)));
-
-					// If the character is valid, replace the pct-encoded with the actual character while normalising case
-					if (strpos($valid_chars, $chr) !== false)
-					{
-						if ($case & SIMPLEPIE_LOWERCASE)
-						{
-							$chr = strtolower($chr);
-						}
-						elseif ($case & SIMPLEPIE_UPPERCASE)
-						{
-							$chr = strtoupper($chr);
-						}
-						$string = substr_replace($string, $chr, $position, 3);
-						$strlen -= 2;
-						$position++;
-					}
-
-					// Otherwise just normalise the pct-encoded to uppercase
-					else
-					{
-						$string = substr_replace($string, strtoupper(substr($string, $position + 1, 2)), $position + 1, 2);
-						$position += 3;
-					}
-				}
-				// If we don't have a pct-encoded section, just replace the % with its own esccaped form
-				else
-				{
-					$string = substr_replace($string, '%25', $position, 1);
-					$strlen += 2;
-					$position += 3;
-				}
+				$character = ($value & 0x1F) << 6;
+				$length = 2;
+				$remaining = 1;
 			}
-			// If we have an invalid character, change into its pct-encoded form
+			// Three byte sequence:
+			elseif (($value & 0xF0) === 0xE0)
+			{
+				$character = ($value & 0x0F) << 12;
+				$length = 3;
+				$remaining = 2;
+			}
+			// Four byte sequence:
+			elseif (($value & 0xF8) === 0xF0)
+			{
+				$character = ($value & 0x07) << 18;
+				$length = 4;
+				$remaining = 3;
+			}
+			// Invalid byte:
 			else
 			{
-				$replacement = sprintf("%%%02X", ord($string[$position]));
-				$string = str_replace($string[$position], $replacement, $string);
-				$strlen = strlen($string);
+				$valid = false;
+				$length = 1;
+				$remaining = 0;
+			}
+
+			if ($remaining)
+			{
+				if ($position + $length <= $strlen)
+				{
+					for ($position++; $remaining; $position++)
+					{
+						$value = ord($string[$position]);
+
+						// Check that the byte is valid, then add it to the character:
+						if (($value & 0xC0) === 0x80)
+						{
+							$character |= ($value & 0x3F) << (--$remaining * 6);
+						}
+						// If it is invalid, count the sequence as invalid and reprocess the current byte:
+						else
+						{
+							$valid = false;
+							$position--;
+							break;
+						}
+					}
+				}
+				else
+				{
+					$position = $strlen - 1;
+					$valid = false;
+				}
+			}
+
+			// Percent encode anything invalid or not in ucschar
+			if (
+				// Invalid sequences
+				!$valid
+				// Non-shortest form sequences are invalid
+				|| $length > 1 && $character <= 0x7F
+				|| $length > 2 && $character <= 0x7FF
+				|| $length > 3 && $character <= 0xFFFF
+				// Outside of range of ucschar codepoints
+				// Noncharacters
+				|| ($character & 0xFFFE) === 0xFFFE
+				|| $character >= 0xFDD0 && $character <= 0xFDEF
+				|| (
+					// Everything else not in ucschar
+					   $character > 0xD7FF && $character < 0xF900
+					|| $character < 0xA0
+					|| $character > 0xEFFFD
+				)
+				&& (
+					// Everything not in iprivate, if it applies
+					   !$iprivate
+					|| $character < 0xE000
+					|| $character > 0x10FFFD
+				)
+			)
+			{
+				// If we were a character, pretend we weren't, but rather an error.
+				if ($valid)
+					$position--;
+
+				for ($j = $start; $j <= $position; $j++)
+				{
+					$string = substr_replace($string, sprintf('%%%02X', ord($string[$j])), $j, 1);
+					$j += 2;
+					$position += 2;
+					$strlen += 2;
+				}
 			}
 		}
+
+		return $string;
+	}
+
+	/**
+	 * Callback function for preg_replace_callback.
+	 *
+	 * Removes sequences of percent encoded bytes that represent UTF-8
+	 * encoded characters in iunreserved
+	 *
+	 * @param array $match PCRE match
+	 * @return string Replacement
+	 */
+	protected function remove_iunreserved_percent_encoded($match)
+	{
+		// As we just have valid percent encoded sequences we can just explode
+		// and ignore the first member of the returned array (an empty string).
+		$bytes = explode('%', $match[0]);
+
+		// Initialize the new string (this is what will be returned) and that
+		// there are no bytes remaining in the current sequence (unsurprising
+		// at the first byte!).
+		$string = '';
+		$remaining = 0;
+
+		// Loop over each and every byte, and set $value to its value
+		for ($i = 1, $len = count($bytes); $i < $len; $i++)
+		{
+			$value = hexdec($bytes[$i]);
+
+			// If we're the first byte of sequence:
+			if (!$remaining)
+			{
+				// Start position
+				$start = $i;
+
+				// By default we are valid
+				$valid = true;
+
+				// One byte sequence:
+				if ($value <= 0x7F)
+				{
+					$character = $value;
+					$length = 1;
+				}
+				// Two byte sequence:
+				elseif (($value & 0xE0) === 0xC0)
+				{
+					$character = ($value & 0x1F) << 6;
+					$length = 2;
+					$remaining = 1;
+				}
+				// Three byte sequence:
+				elseif (($value & 0xF0) === 0xE0)
+				{
+					$character = ($value & 0x0F) << 12;
+					$length = 3;
+					$remaining = 2;
+				}
+				// Four byte sequence:
+				elseif (($value & 0xF8) === 0xF0)
+				{
+					$character = ($value & 0x07) << 18;
+					$length = 4;
+					$remaining = 3;
+				}
+				// Invalid byte:
+				else
+				{
+					$valid = false;
+					$remaining = 0;
+				}
+			}
+			// Continuation byte:
+			else
+			{
+				// Check that the byte is valid, then add it to the character:
+				if (($value & 0xC0) === 0x80)
+				{
+					$remaining--;
+					$character |= ($value & 0x3F) << ($remaining * 6);
+				}
+				// If it is invalid, count the sequence as invalid and reprocess the current byte as the start of a sequence:
+				else
+				{
+					$valid = false;
+					$remaining = 0;
+					$i--;
+				}
+			}
+
+			// If we've reached the end of the current byte sequence, append it to Unicode::$data
+			if (!$remaining)
+			{
+				// Percent encode anything invalid or not in iunreserved
+				if (
+					// Invalid sequences
+					!$valid
+					// Non-shortest form sequences are invalid
+					|| $length > 1 && $character <= 0x7F
+					|| $length > 2 && $character <= 0x7FF
+					|| $length > 3 && $character <= 0xFFFF
+					// Outside of range of iunreserved codepoints
+					|| $character < 0x2D
+					|| $character > 0xEFFFD
+					// Noncharacters
+					|| ($character & 0xFFFE) === 0xFFFE
+					|| $character >= 0xFDD0 && $character <= 0xFDEF
+					// Everything else not in iunreserved (this is all BMP)
+					|| $character === 0x2F
+					|| $character > 0x39 && $character < 0x41
+					|| $character > 0x5A && $character < 0x61
+					|| $character > 0x7A && $character < 0x7E
+					|| $character > 0x7E && $character < 0xA0
+					|| $character > 0xD7FF && $character < 0xF900
+				)
+				{
+					for ($j = $start; $j <= $i; $j++)
+					{
+						$string .= '%' . strtoupper($bytes[$j]);
+					}
+				}
+				else
+				{
+					for ($j = $start; $j <= $i; $j++)
+					{
+						$string .= chr(hexdec($bytes[$j]));
+					}
+				}
+			}
+		}
+
+		// If we have any bytes left over they are invalid (i.e., we are
+		// mid-way through a multi-byte sequence)
+		if ($remaining)
+		{
+			for ($j = $start; $j < $len; $j++)
+			{
+				$string .= '%' . strtoupper($bytes[$j]);
+			}
+		}
+
 		return $string;
 	}
 
