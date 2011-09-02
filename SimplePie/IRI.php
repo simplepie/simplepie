@@ -316,16 +316,6 @@ class SimplePie_IRI
 	 */
 	protected function replace_invalid_with_pct_encoding($string, $valid_chars, $case = SIMPLEPIE_SAME_CASE, $iprivate = false)
 	{
-		// Normalise case
-		if ($case & SIMPLEPIE_LOWERCASE)
-		{
-			$string = strtolower($string);
-		}
-		elseif ($case & SIMPLEPIE_UPPERCASE)
-		{
-			$string = strtoupper($string);
-		}
-
 		// Normalize as many pct-encoded sections as possible
 		$string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', array(&$this, 'remove_iunreserved_percent_encoded'), $string);
 
@@ -446,6 +436,16 @@ class SimplePie_IRI
 					$strlen += 2;
 				}
 			}
+		}
+
+		// Normalise case
+		if ($case & SIMPLEPIE_LOWERCASE)
+		{
+			$string = strtolower($string);
+		}
+		elseif ($case & SIMPLEPIE_UPPERCASE)
+		{
+			$string = strtoupper($string);
 		}
 
 		return $string;
