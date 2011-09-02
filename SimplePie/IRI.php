@@ -667,6 +667,10 @@ class SimplePie_IRI
 		if (($port_start = strpos($authority, ':')) !== false)
 		{
 			$port = substr($authority, $port_start + 1);
+			if ($port === false)
+			{
+				$port = null;
+			}
 			$authority = substr($authority, 0, $port_start);
 		}
 		else
