@@ -122,6 +122,10 @@ class SimplePie_Item
 			{
 				return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
+			elseif (isset($this->data['attribs'][SIMPLEPIE_NAMESPACE_RDF]['about']))
+			{
+				return $this->sanitize($this->data['attribs'][SIMPLEPIE_NAMESPACE_RDF]['about'], SIMPLEPIE_CONSTRUCT_TEXT);
+			}
 			elseif (($return = $this->get_permalink()) !== null)
 			{
 				return $return;
