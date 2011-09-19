@@ -176,6 +176,16 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	{
 		$this->assertFalse(SimplePie_Misc::change_encoding('', 'TESTENC', 'UTF-8'));
 	}
+
+	public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
+	{
+		if (is_string($expected) && is_string($actual))
+		{
+			$expected = bin2hex($expected);
+			$actual = bin2hex($actual);
+		}
+		parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+	}
 }
 
 class Mock_Misc extends SimplePie_Misc
