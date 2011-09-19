@@ -179,9 +179,12 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 
 	public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
 	{
-		if (is_string($expected) && is_string($actual))
+		if (is_string($expected))
 		{
 			$expected = bin2hex($expected);
+		}
+		if (is_string($actual))
+		{
 			$actual = bin2hex($actual);
 		}
 		parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
