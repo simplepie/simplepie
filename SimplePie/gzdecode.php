@@ -236,7 +236,7 @@ class SimplePie_gzdecode
 
 				// Get the length of the extra field
 				$len = current(unpack('v', substr($this->compressed_data, $this->position, 2)));
-				$position += 2;
+				$this->position += 2;
 
 				// Check the length of the string is still valid
 				$this->min_compressed_size += $len + 4;
