@@ -1,28 +1,62 @@
 <?php
-$compileFile = 'SimplePie.compiled.php';
-chdir(dirname(dirname(__FILE__)));
-`cat SimplePie.php > $compileFile.tmp`;
-`find SimplePie -type f| xargs cat | sed 's/^<?php//g'>>$compileFile.tmp`;
+// Set up our constants
+define('SP_PATH', dirname(dirname(__FILE__)));
+define('COMPILED', SP_PATH . DIRECTORY_SEPARATOR . 'SimplePie.compiled.php');
 
-$contents = file_get_contents("$compileFile.tmp");
-$tokens = token_get_all($contents);
-$stripped_source = '';
-foreach ($tokens as $value) {
-	if (is_string($value)) {
-		//var_dump($value);
-		$stripped_source .= "{$value}";
-		continue;
+function remove_header($contents)
+{
+	$tokens = token_get_all($contents);
+	$stripped_source = '';
+	$stripped_doc = false;
+	$stripped_open = false;
+	foreach ($tokens as $value)
+	{
+		if (is_string($value))
+		{
+			$stripped_source .= "{$value}";
+			continue;
+		}
+		switch ($value[0])
+		{
+			case T_DOC_COMMENT:
+				if (!$stripped_doc)
+				{
+					$stripped_doc = true;
+					continue 2;
+				}
+				break;
+			case T_OPEN_TAG:
+				if (!$stripped_open)
+				{
+					$stripped_open = true;
+					continue 2;
+				}
+				break;
+		}
+		$stripped_source .= "{$value[1]}";
 	}
-	switch ($value[0]) {
-		case T_DOC_COMMENT:
-		case T_COMMENT:
-			break;
-		default:
-			$stripped_source .= "{$value[1]}";
-			break;
-	}
+
+	return $stripped_source;
 }
-file_put_contents("$compileFile.tmp", $stripped_source);
-`cat build/header.txt > $compileFile`;
-`cat $compileFile.tmp |sed 's/^<?php//g'>>$compileFile`;
-unlink("$compileFile.tmp");
+
+// Start with the header
+$compiled = file_get_contents(SP_PATH . '/build/header.txt');
+$compiled .= "\n";
+
+// Add the base class
+$contents = file_get_contents(SP_PATH . '/SimplePie.php');
+$compiled .= remove_header($contents) . "\n";
+
+// Add all the files in the SimplePie directory
+$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(SP_PATH . '/SimplePie'));
+foreach($files as $file_path => $info)
+{
+	$contents = file_get_contents($file_path);
+	$compiled .= remove_header($contents) . "\n";
+}
+
+// Strip excess whitespace
+$compiled = preg_replace("#\n\n\n+#", "\n\n", $compiled);
+
+// Finally, save
+file_put_contents(COMPILED, $compiled);
