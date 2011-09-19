@@ -207,7 +207,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			$query->bindValue(':feed', $this->id);
 			if ($query->execute())
 			{
-				if ($query->rowCount > 0)
+				if ($query->rowCount() > 0)
 				{
 					$query = $this->mysql->prepare('UPDATE `' . $this->options['prefix'] . 'cache_data` SET `items` = 0, `data` = :data, `mtime` = :time WHERE `id` = :feed');
 					$query->bindValue(':data', serialize($data));
@@ -336,7 +336,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		$query = $this->mysql->prepare('UPDATE `' . $this->options['prefix'] . 'cache_data` SET `mtime` = :time WHERE `id` = :id');
 		$query->bindValue(':time', time());
 		$query->bindValue(':id', $this->id);
-		if ($query->execute() && $query->rowCount > 0)
+		if ($query->execute() && $query->rowCount() > 0)
 		{
 			return true;
 		}
