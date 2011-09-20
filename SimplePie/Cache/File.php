@@ -46,10 +46,10 @@
 
 class SimplePie_Cache_File implements SimplePie_Cache_Base
 {
-	var $location;
-	var $filename;
-	var $extension;
-	var $name;
+	protected $location;
+	protected $filename;
+	protected $extension;
+	protected $name;
 
 	public function __construct($location, $filename, $extension)
 	{

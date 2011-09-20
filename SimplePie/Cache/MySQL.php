@@ -46,16 +46,16 @@
 
 class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 {
-	var $mysql;
-	var $options;
-	var $id;
+	protected $mysql;
+	protected $options;
+	protected $id;
 
 	public function __construct($url, $name, $extension)
 	{
 		$this->options = array(
 			'user' => null,
 			'pass' => null,
-			'host' = '127.0.0.1',
+			'host' => '127.0.0.1',
 			'port' => '3306',
 			'prefix' => '',
 			'path' => '',
