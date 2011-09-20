@@ -77,7 +77,7 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 	{
 		$data = $this->cache->get($this->name);
 
-		if (False !== $data)
+		if ($data !== false)
 		{
 			return unserialize($data);
 		}
@@ -88,7 +88,8 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 	{
 		$data = $this->cache->get($this->name);
 
-		if ($data !== false) {
+		if ($data !== false)
+		{
 			// essentially ignore the mtime because Memcache expires on it's own
 			return time();
 		}
@@ -100,7 +101,8 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 	{
 		$data = $this->cache->get($this->name);
 
-		if ($data !== false) {
+		if ($data !== false)
+		{
 			return $this->cache->set($this->name, $data, MEMCACHE_COMPRESSED, (int) $this->duration);
 		}
 

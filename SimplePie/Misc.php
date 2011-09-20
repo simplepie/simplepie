@@ -2292,7 +2292,8 @@ function embed_wmedia(width, height, link) {
 		elseif (file_exists($root . '/SimplePie'))
 		{
 			$time = 0;
-			foreach (glob($root . '/SimplePie/*.php') as $file) {
+			foreach (glob($root . '/SimplePie/*.php') as $file)
+			{
 				if (($mtime = filemtime($file)) > $time)
 				{
 					$time = $mtime;
