@@ -52,13 +52,15 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 	public function __construct($url, $filename, $extension)
 	{
 		$this->options = array(
-			'timeout' => 3600, // one hour
-			'prefix' => 'simplepie_',
 			'host' => '127.0.0.1',
 			'port' => 11211,
+			'extras' => array(
+				'timeout' => 3600, // one hour
+				'prefix' => 'simplepie_',
+			),
 		);
-		$this->options = array_merge($this->options, SimplePie_Cache::parse_URL($url));
-		$this->name = $this->options['prefix'] . md5("$filename:$extension");
+		$this->options = array_merge_recursive($this->options, SimplePie_Cache::parse_URL($url));
+		$this->name = $this->options['extras']['prefix'] . md5("$filename:$extension");
 
 		$this->cache = new Memcache();
 		$this->cache->addServer($this->options['host'], (int) $this->options['port']);
@@ -70,7 +72,7 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 		{
 			$data = $data->data;
 		}
-		return $this->cache->set($this->name, serialize($data), MEMCACHE_COMPRESSED, (int) $this->options['timeout']);
+		return $this->cache->set($this->name, serialize($data), MEMCACHE_COMPRESSED, (int) $this->options['extras']['timeout']);
 	}
 
 	public function load()

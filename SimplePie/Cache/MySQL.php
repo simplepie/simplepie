@@ -57,10 +57,12 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			'pass' => null,
 			'host' => '127.0.0.1',
 			'port' => '3306',
-			'prefix' => '',
 			'path' => '',
+			'extras' => array(
+				'prefix' => '',
+			),
 		);
-		$this->options = array_merge($this->options, SimplePie_Cache::parse_URL($url));
+		$this->options = array_merge_recursive($this->options, SimplePie_Cache::parse_URL($url));
 
 		// Path is prefixed with a "/"
 		$this->options['dbname'] = substr($this->options['path'], 1);
@@ -89,18 +91,18 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			$db[] = $row;
 		}
 
-		if (!in_array($this->options['prefix'] . 'cache_data', $db))
+		if (!in_array($this->options['extras']['prefix'] . 'cache_data', $db))
 		{
-			$query = $this->mysql->exec('CREATE TABLE `' . $this->options['prefix'] . 'cache_data` (`id` TEXT CHARACTER SET utf8 NOT NULL, `items` SMALLINT NOT NULL DEFAULT 0, `data` BLOB NOT NULL, `mtime` INT UNSIGNED NOT NULL, UNIQUE (`id`(125)))');
+			$query = $this->mysql->exec('CREATE TABLE `' . $this->options['extras']['prefix'] . 'cache_data` (`id` TEXT CHARACTER SET utf8 NOT NULL, `items` SMALLINT NOT NULL DEFAULT 0, `data` BLOB NOT NULL, `mtime` INT UNSIGNED NOT NULL, UNIQUE (`id`(125)))');
 			if ($query === false)
 			{
 				$this->mysql = null;
 			}
 		}
 
-		if (!in_array($this->options['prefix'] . 'items', $db))
+		if (!in_array($this->options['extras']['prefix'] . 'items', $db))
 		{
-			$query = $this->mysql->exec('CREATE TABLE `' . $this->options['prefix'] . 'items` (`feed_id` TEXT CHARACTER SET utf8 NOT NULL, `id` TEXT CHARACTER SET utf8 NOT NULL, `data` TEXT CHARACTER SET utf8 NOT NULL, `posted` INT UNSIGNED NOT NULL, INDEX `feed_id` (`feed_id`(125)))');
+			$query = $this->mysql->exec('CREATE TABLE `' . $this->options['extras']['prefix'] . 'items` (`feed_id` TEXT CHARACTER SET utf8 NOT NULL, `id` TEXT CHARACTER SET utf8 NOT NULL, `data` TEXT CHARACTER SET utf8 NOT NULL, `posted` INT UNSIGNED NOT NULL, INDEX `feed_id` (`feed_id`(125)))');
 			if ($query === false)
 			{
 				$this->mysql = null;
@@ -121,7 +123,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 
 			$prepared = self::prepare_simplepie_object_for_cache($data);
 
-			$query = $this->mysql->prepare('SELECT COUNT(*) FROM `' . $this->options['prefix'] . 'cache_data` WHERE `id` = :feed');
+			$query = $this->mysql->prepare('SELECT COUNT(*) FROM `' . $this->options['extras']['prefix'] . 'cache_data` WHERE `id` = :feed');
 			$query->bindValue(':feed', $this->id);
 			if ($query->execute())
 			{
@@ -130,13 +132,13 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 					$items = count($prepared[1]);
 					if ($items)
 					{
-						$sql = 'UPDATE `' . $this->options['prefix'] . 'cache_data` SET `items` = :items, `data` = :data, `mtime` = :time WHERE `id` = :feed';
+						$sql = 'UPDATE `' . $this->options['extras']['prefix'] . 'cache_data` SET `items` = :items, `data` = :data, `mtime` = :time WHERE `id` = :feed';
 						$query = $this->mysql->prepare($sql);
 						$query->bindValue(':items', $items);
 					}
 					else
 					{
-						$sql = 'UPDATE `' . $this->options['prefix'] . 'cache_data` SET `data` = :data, `mtime` = :time WHERE `id` = :feed';
+						$sql = 'UPDATE `' . $this->options['extras']['prefix'] . 'cache_data` SET `data` = :data, `mtime` = :time WHERE `id` = :feed';
 						$query = $this->mysql->prepare($sql);
 					}
 
@@ -150,7 +152,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 				}
 				else
 				{
-					$query = $this->mysql->prepare('INSERT INTO `' . $this->options['prefix'] . 'cache_data` (`id`, `items`, `data`, `mtime`) VALUES(:feed, :count, :data, :time)');
+					$query = $this->mysql->prepare('INSERT INTO `' . $this->options['extras']['prefix'] . 'cache_data` (`id`, `items`, `data`, `mtime`) VALUES(:feed, :count, :data, :time)');
 					$query->bindValue(':feed', $this->id);
 					$query->bindValue(':count', count($prepared[1]));
 					$query->bindValue(':data', $prepared[0]);
@@ -169,7 +171,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 						$database_ids[] = $this->mysql->quote($id);
 					}
 
-					$query = $this->mysql->prepare('SELECT `id` FROM `' . $this->options['prefix'] . 'items` WHERE `id` = ' . implode(' OR `id` = ', $database_ids) . ' AND `feed_id` = :feed');
+					$query = $this->mysql->prepare('SELECT `id` FROM `' . $this->options['extras']['prefix'] . 'items` WHERE `id` = ' . implode(' OR `id` = ', $database_ids) . ' AND `feed_id` = :feed');
 					$query->bindValue(':feed', $this->id);
 
 					if ($query->execute())
@@ -189,7 +191,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 								$date = time();
 							}
 
-							$query = $this->mysql->prepare('INSERT INTO `' . $this->options['prefix'] . 'items` (`feed_id`, `id`, `data`, `posted`) VALUES(:feed, :id, :data, :date)');
+							$query = $this->mysql->prepare('INSERT INTO `' . $this->options['extras']['prefix'] . 'items` (`feed_id`, `id`, `data`, `posted`) VALUES(:feed, :id, :data, :date)');
 							$query->bindValue(':feed', $this->id);
 							$query->bindValue(':id', $new_id);
 							$query->bindValue(':data', serialize($prepared[1][$new_id]->data));
@@ -210,13 +212,13 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		}
 		else
 		{
-			$query = $this->mysql->prepare('SELECT `id` FROM `' . $this->options['prefix'] . 'cache_data` WHERE `id` = :feed');
+			$query = $this->mysql->prepare('SELECT `id` FROM `' . $this->options['extras']['prefix'] . 'cache_data` WHERE `id` = :feed');
 			$query->bindValue(':feed', $this->id);
 			if ($query->execute())
 			{
 				if ($query->rowCount() > 0)
 				{
-					$query = $this->mysql->prepare('UPDATE `' . $this->options['prefix'] . 'cache_data` SET `items` = 0, `data` = :data, `mtime` = :time WHERE `id` = :feed');
+					$query = $this->mysql->prepare('UPDATE `' . $this->options['extras']['prefix'] . 'cache_data` SET `items` = 0, `data` = :data, `mtime` = :time WHERE `id` = :feed');
 					$query->bindValue(':data', serialize($data));
 					$query->bindValue(':time', time());
 					$query->bindValue(':feed', $this->id);
@@ -227,7 +229,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 				}
 				else
 				{
-					$query = $this->mysql->prepare('INSERT INTO `' . $this->options['prefix'] . 'cache_data` (`id`, `items`, `data`, `mtime`) VALUES(:id, 0, :data, :time)');
+					$query = $this->mysql->prepare('INSERT INTO `' . $this->options['extras']['prefix'] . 'cache_data` (`id`, `items`, `data`, `mtime`) VALUES(:id, 0, :data, :time)');
 					$query->bindValue(':id', $this->id);
 					$query->bindValue(':data', serialize($data));
 					$query->bindValue(':time', time());
@@ -248,7 +250,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return false;
 		}
 
-		$query = $this->mysql->prepare('SELECT `items`, `data` FROM `' . $this->options['prefix'] . 'cache_data` WHERE `id` = :id');
+		$query = $this->mysql->prepare('SELECT `items`, `data` FROM `' . $this->options['extras']['prefix'] . 'cache_data` WHERE `id` = :id');
 		$query->bindValue(':id', $this->id);
 		if ($query->execute() && ($row = $query->fetch()))
 		{
@@ -288,7 +290,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 
 				if ($feed !== null)
 				{
-					$sql = 'SELECT `data` FROM `' . $this->options['prefix'] . 'items` WHERE `feed_id` = :feed ORDER BY `posted` DESC';
+					$sql = 'SELECT `data` FROM `' . $this->options['extras']['prefix'] . 'items` WHERE `feed_id` = :feed ORDER BY `posted` DESC';
 					if ($items > 0)
 					{
 						$sql .= ' LIMIT ' . $items;
@@ -321,7 +323,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return false;
 		}
 
-		$query = $this->mysql->prepare('SELECT `mtime` FROM `' . $this->options['prefix'] . 'cache_data` WHERE `id` = :id');
+		$query = $this->mysql->prepare('SELECT `mtime` FROM `' . $this->options['extras']['prefix'] . 'cache_data` WHERE `id` = :id');
 		$query->bindValue(':id', $this->id);
 		if ($query->execute() && ($time = $query->fetchColumn()))
 		{
@@ -340,7 +342,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return false;
 		}
 
-		$query = $this->mysql->prepare('UPDATE `' . $this->options['prefix'] . 'cache_data` SET `mtime` = :time WHERE `id` = :id');
+		$query = $this->mysql->prepare('UPDATE `' . $this->options['extras']['prefix'] . 'cache_data` SET `mtime` = :time WHERE `id` = :id');
 		$query->bindValue(':time', time());
 		$query->bindValue(':id', $this->id);
 		if ($query->execute() && $query->rowCount() > 0)
@@ -360,9 +362,9 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return false;
 		}
 
-		$query = $this->mysql->prepare('DELETE FROM `' . $this->options['prefix'] . 'cache_data` WHERE `id` = :id');
+		$query = $this->mysql->prepare('DELETE FROM `' . $this->options['extras']['prefix'] . 'cache_data` WHERE `id` = :id');
 		$query->bindValue(':id', $this->id);
-		$query2 = $this->mysql->prepare('DELETE FROM `' . $this->options['prefix'] . 'items` WHERE `feed_id` = :id');
+		$query2 = $this->mysql->prepare('DELETE FROM `' . $this->options['extras']['prefix'] . 'items` WHERE `feed_id` = :id');
 		$query2->bindValue(':id', $this->id);
 		if ($query->execute() && $query2->execute())
 		{
