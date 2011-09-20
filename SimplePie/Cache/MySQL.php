@@ -50,17 +50,21 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 	var $options;
 	var $id;
 
-	public function __construct($dsn, $name, $extension)
+	public function __construct($url, $name, $extension)
 	{
 		$this->options = array(
 			'user' => null,
-			'password' => null,
+			'pass' => null,
+			'host' = '127.0.0.1',
+			'port' => '3306',
 			'prefix' => '',
+			'path' => '',
 		);
-		$this->options = array_merge($this->options, SimplePie_Cache::parse_DSN($dsn));
+		$this->options = array_merge($this->options, SimplePie_Cache::parse_URL($url));
+		$this->options['dbname'] = substr($this->options['path'], 1); // strip off the first character because path will be prefixed with a "/"
 		try
 		{
-			$this->mysql = new PDO($dsn, $this->options['user'], $this->options['password'], array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+			$this->mysql = new PDO("mysql:dbname={$this->options['dbname']};host={$this->options['host']};port={$this->options['port']}", $this->options['user'], $this->options['pass'], array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 		}
 		catch (PDOException $e)
 		{
