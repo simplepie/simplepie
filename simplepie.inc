@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.2.1-dev
+ * @version 1.2.1
  * @copyright 2004-2011 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
@@ -56,9 +56,8 @@ define('SIMPLEPIE_VERSION', '1.2.1-dev');
 
 /**
  * SimplePie Build
- * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::parse_date() only every load of simplepie.inc)
  */
-define('SIMPLEPIE_BUILD', gmdate('YmdHis', filemtime(__FILE__)));
+define('SIMPLEPIE_BUILD', '20111015034325');
 
 /**
  * SimplePie Website URL
