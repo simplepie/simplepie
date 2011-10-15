@@ -56,7 +56,7 @@ For further setup and install documentation, function references, etc., visit:
 [http://simplepie.org/wiki/](http://simplepie.org/wiki/)
 
 For bug reports and feature requests, visit:
-[http://github.com/rmccue/simplepie/issues](http://github.com/rmccue/simplepie/issues)
+[http://github.com/simplepie/simplepie/issues](http://github.com/simplepie/simplepie/issues)
 
 Support mailing list -- powered by users, for users.
 [http://tech.groups.yahoo.com/group/simplepie-support/](http://tech.groups.yahoo.com/group/simplepie-support/)
