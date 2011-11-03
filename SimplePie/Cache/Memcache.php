@@ -113,6 +113,6 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 
 	public function unlink()
 	{
-		return $this->cache->delete($this->name);
+		return $this->cache->delete($this->name, 0);
 	}
 }
