@@ -43,14 +43,12 @@
  * @todo phpDoc comments
  */
 
-require_once 'PHPUnit/Autoload.php';
-require_once '../SimplePieAutoloader.php';
-class_exists('SimplePie') or die("Couldn't load SimplePie");
+require_once dirname(__FILE__) . '/bootstrap.php';
 
-require_once 'EncodingTest.php';
-require_once 'IRITest.php';
-require_once 'LocatorTest.php';
-require_once 'oldtests.php';
+require_once dirname(__FILE__) . '/EncodingTest.php';
+require_once dirname(__FILE__) . '/IRITest.php';
+require_once dirname(__FILE__) . '/LocatorTest.php';
+require_once dirname(__FILE__) . '/oldtests.php';
  
 class AllTests
 {

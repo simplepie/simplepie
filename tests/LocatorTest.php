@@ -45,9 +45,7 @@
  * @todo phpDoc comments
  */
 
-require_once 'PHPUnit/Autoload.php';
-require_once '../SimplePieAutoloader.php';
-class_exists('SimplePie') or die("Couldn't load SimplePie");
+require_once dirname(__FILE__) . '/bootstrap.php';
 
 class LocatorTest extends PHPUnit_Framework_TestCase
 {
