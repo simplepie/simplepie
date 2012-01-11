@@ -68,7 +68,7 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 
 	public function save($data)
 	{
-		if (is_a($data, 'SimplePie'))
+		if ($data instanceof SimplePie)
 		{
 			$data = $data->data;
 		}
