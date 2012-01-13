@@ -28,7 +28,7 @@ If you're looking for PHP 4.x support, pull the "one-dot-two" branch, as that's 
 
 
 ## License
-[New BSD license](http://www.opensource.org/licenses/bsd-license.php)
+[New BSD license](http://www.opensource.org/licenses/BSD-3-Clause)
 
 
 ## Project status
