@@ -67,7 +67,7 @@ class SimplePie_Cache_File implements SimplePie_Cache_Base
 	{
 		if (file_exists($this->name) && is_writeable($this->name) || file_exists($this->location) && is_writeable($this->location))
 		{
-			if (is_a($data, 'SimplePie'))
+			if ($data instanceof SimplePie)
 			{
 				$data = $data->data;
 			}
