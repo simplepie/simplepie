@@ -56,10 +56,34 @@
  */
 class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 {
+	/**
+	 * PDO instance
+	 *
+	 * @var PDO
+	 */
 	protected $mysql;
+
+	/**
+	 * Options
+	 *
+	 * @var array
+	 */
 	protected $options;
+
+	/**
+	 * Cache ID
+	 *
+	 * @var string
+	 */
 	protected $id;
 
+	/**
+	 * Create a new cache object
+	 *
+	 * @param string $location Location string (from SimplePie::$cache_location)
+	 * @param string $name Unique ID for the cache
+	 * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
+	 */
 	public function __construct($url, $name, $extension)
 	{
 		$this->options = array(
@@ -120,6 +144,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		}
 	}
 
+	/**
+	 * Save data to the cache
+	 *
+	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+	 */
 	public function save($data)
 	{
 		if ($this->mysql === null)
@@ -253,6 +282,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		return false;
 	}
 
+	/**
+	 * Retrieve the data saved to the cache
+	 *
+	 * @return array Data for SimplePie::$data
+	 */
 	public function load()
 	{
 		if ($this->mysql === null)
@@ -326,6 +360,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		return false;
 	}
 
+	/**
+	 * Retrieve the last modified time for the cache
+	 *
+	 * @return int Timestamp
+	 */
 	public function mtime()
 	{
 		if ($this->mysql === null)
@@ -345,6 +384,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		}
 	}
 
+	/**
+	 * Set the last modified time to the current time
+	 *
+	 * @return bool Success status
+	 */
 	public function touch()
 	{
 		if ($this->mysql === null)
@@ -365,6 +409,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		}
 	}
 
+	/**
+	 * Remove the cache
+	 *
+	 * @return bool Success status
+	 */
 	public function unlink()
 	{
 		if ($this->mysql === null)
