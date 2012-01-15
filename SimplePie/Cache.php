@@ -72,6 +72,11 @@ class SimplePie_Cache
 
 	/**
 	 * Create a new SimplePie_Cache object
+	 *
+	 * @param string $location URL location (scheme is used to determine handler)
+	 * @param string $filename Unique identifier for cache object
+	 * @param string $extension 'spi' or 'spc'
+	 * @return SimplePie_Cache_Base Type of object depends on scheme of `$location`
 	 */
 	public static function create($location, $filename, $extension)
 	{
