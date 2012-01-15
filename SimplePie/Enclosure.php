@@ -529,7 +529,7 @@ class SimplePie_Enclosure
 	/**
 	 * Get the preferred handler
 	 *
-	 * @return string|null One of 'odeo', 'flash', 'fmedia', 'quicktime', 'wmedia', 'mp3'
+	 * @return string|null One of 'flash', 'fmedia', 'quicktime', 'wmedia', 'mp3'
 	 */
 	public function get_handler()
 	{
@@ -1125,21 +1125,8 @@ class SimplePie_Enclosure
 
 		$embed = '';
 
-		// Odeo Feed MP3's
-		if ($handler === 'odeo')
-		{
-			if ($native)
-			{
-				$embed .= '<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://adobe.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url=' . $this->get_link() . '"></embed>';
-			}
-			else
-			{
-				$embed .= '<script type="text/javascript">embed_odeo("' . $this->get_link() . '");</script>';
-			}
-		}
-
 		// Flash
-		elseif ($handler === 'flash')
+		if ($handler === 'flash')
 		{
 			if ($native)
 			{
@@ -1217,16 +1204,10 @@ class SimplePie_Enclosure
 	 *
 	 * @see get_type()
 	 * @param bool $find_handler Internal use only, use {@see get_handler()} instead
-	 * @return string MIME type or 'odeo'
+	 * @return string MIME type
 	 */
 	public function get_real_type($find_handler = false)
 	{
-		// If it's Odeo, let's get it out of the way.
-		if (substr(strtolower($this->get_link()), 0, 15) === 'http://odeo.com')
-		{
-			return 'odeo';
-		}
-
 		// Mime-types by handler.
 		$types_flash = array('application/x-shockwave-flash', 'application/futuresplash'); // Flash
 		$types_fmedia = array('video/flv', 'video/x-flv','flv-application/octet-stream'); // Flash Media Player

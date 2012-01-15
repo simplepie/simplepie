@@ -86,6 +86,7 @@ The following have recently been removed:
 * `subscribe_*` (except `subscribe_url`)
 * `utf8_bad_replace`
 * `set_javascript` (See `SimplePie_Misc::output_javascript()`)
+* Support for Odeo
 
 ### Deprecated
 The following have recently been deprecated:
