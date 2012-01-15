@@ -55,11 +55,15 @@ interface SimplePie_Cache_Base
 {
 	/**
 	 * Feed cache type
+	 *
+	 * @var string
 	 */
 	const TYPE_FEED = 'spc';
 
 	/**
 	 * Image cache type
+	 *
+	 * @var string
 	 */
 	const TYPE_IMAGE = 'spi';
 
@@ -76,6 +80,7 @@ interface SimplePie_Cache_Base
 	 * Save data to the cache
 	 *
 	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+	 * @return bool Successfulness
 	 */
 	public function save($data);
 

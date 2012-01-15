@@ -84,7 +84,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 	 * @param string $name Unique ID for the cache
 	 * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
 	 */
-	public function __construct($url, $name, $extension)
+	public function __construct($location, $name, $type)
 	{
 		$this->options = array(
 			'user' => null,
@@ -96,7 +96,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 				'prefix' => '',
 			),
 		);
-		$this->options = array_merge_recursive($this->options, SimplePie_Cache::parse_URL($url));
+		$this->options = array_merge_recursive($this->options, SimplePie_Cache::parse_URL($location));
 
 		// Path is prefixed with a "/"
 		$this->options['dbname'] = substr($this->options['path'], 1);
@@ -111,7 +111,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return;
 		}
 
-		$this->id = $name . $extension;
+		$this->id = $name . $type;
 
 		if (!$query = $this->mysql->query('SHOW TABLES'))
 		{
@@ -148,6 +148,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 	 * Save data to the cache
 	 *
 	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+	 * @return bool Successfulness
 	 */
 	public function save($data)
 	{

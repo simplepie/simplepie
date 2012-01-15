@@ -86,18 +86,19 @@ class SimplePie_Cache_File implements SimplePie_Cache_Base
 	 * @param string $name Unique ID for the cache
 	 * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
 	 */
-	public function __construct($location, $filename, $extension)
+	public function __construct($location, $name, $type)
 	{
 		$this->location = $location;
-		$this->filename = $filename;
-		$this->extension = $extension;
-		$this->name = "$this->location/$this->filename.$this->extension";
+		$this->filename = $name;
+		$this->extension = $type;
+		$this->name = "$this->location/$this->name.$this->type";
 	}
 
 	/**
 	 * Save data to the cache
 	 *
 	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+	 * @return bool Successfulness
 	 */
 	public function save($data)
 	{
