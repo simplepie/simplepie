@@ -1449,293 +1449,7 @@ class SimplePie_Core
 		$this->sanitize->pass_cache_data($this->cache, $this->cache_location, $this->cache_name_function, $this->cache_class);
 		$this->sanitize->pass_file_data($this->file_class, $this->timeout, $this->useragent, $this->force_fsockopen);
 
-		if ($this->feed_url !== null || $this->raw_data !== null)
-		{
-			$this->error = null;
-			$this->data = array();
-			$this->multifeed_objects = array();
-			$cache = false;
-
-			if ($this->feed_url !== null)
-			{
-				$parsed_feed_url = SimplePie_Misc::parse_url($this->feed_url);
-				// Decide whether to enable caching
-				if ($this->cache && $parsed_feed_url['scheme'] !== '')
-				{
-					$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
-				}
-				// If it's enabled and we don't want an XML dump, use the cache
-				if ($cache && !$this->xml_dump)
-				{
-					// Load the Cache
-					$this->data = $cache->load();
-					if (!empty($this->data))
-					{
-						// If the cache is for an outdated build of SimplePie
-						if (!isset($this->data['build']) || $this->data['build'] !== SIMPLEPIE_BUILD)
-						{
-							$cache->unlink();
-							$this->data = array();
-						}
-						// If we've hit a collision just rerun it with caching disabled
-						elseif (isset($this->data['url']) && $this->data['url'] !== $this->feed_url)
-						{
-							$cache = false;
-							$this->data = array();
-						}
-						// If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
-						elseif (isset($this->data['feed_url']))
-						{
-							// If the autodiscovery cache is still valid use it.
-							if ($cache->mtime() + $this->autodiscovery_cache_duration > time())
-							{
-								// Do not need to do feed autodiscovery yet.
-								if ($this->data['feed_url'] === $this->data['url'])
-								{
-									$cache->unlink();
-									$this->data = array();
-								}
-								else
-								{
-									$this->set_feed_url($this->data['feed_url']);
-									return $this->init();
-								}
-							}
-						}
-						// Check if the cache has been updated
-						elseif ($cache->mtime() + $this->cache_duration < time())
-						{
-							// If we have last-modified and/or etag set
-							if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag']))
-							{
-								$headers = array(
-									'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-								);
-								if (isset($this->data['headers']['last-modified']))
-								{
-									$headers['if-modified-since'] = $this->data['headers']['last-modified'];
-								}
-								if (isset($this->data['headers']['etag']))
-								{
-									$headers['if-none-match'] = $this->data['headers']['etag'];
-								}
-
-								$file = new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
-
-								if ($file->success)
-								{
-									if ($file->status_code === 304)
-									{
-										$cache->touch();
-										return true;
-									}
-									else
-									{
-										$headers = $file->headers;
-									}
-								}
-								else
-								{
-									unset($file);
-								}
-							}
-						}
-						// If the cache is still valid, just return true
-						else
-						{
-							$this->raw_data = false;
-							return true;
-						}
-					}
-					// If the cache is empty, delete it
-					else
-					{
-						$cache->unlink();
-						$this->data = array();
-					}
-				}
-				// If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
-				if (!isset($file))
-				{
-					if ($this->file instanceof SimplePie_File && $this->file->url === $this->feed_url)
-					{
-						$file =& $this->file;
-					}
-					else
-					{
-						$headers = array(
-							'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-						);
-						$file = new $this->file_class($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen);
-					}
-				}
-				// If the file connection has an error, set SimplePie::error to that and quit
-				if (!$file->success && !($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
-				{
-					$this->error = $file->error;
-					if (!empty($this->data))
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				}
-
-				if (!$this->force_feed)
-				{
-					// Check if the supplied URL is a feed, if it isn't, look for it.
-					$locate = new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds, $this->content_type_sniffer_class);
-
-					if (!$locate->is_feed($file))
-					{
-						// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
-						unset($file);
-						if ($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds))
-						{
-							if ($cache)
-							{
-								$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
-								if (!$cache->save($this))
-								{
-									trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
-								}
-								$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
-							}
-							$this->feed_url = $file->url;
-						}
-						else
-						{
-							$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
-							SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
-							return false;
-						}
-					}
-					$locate = null;
-				}
-
-				$headers = $file->headers;
-				$data = $file->body;
-				$sniffer = new $this->content_type_sniffer_class($file);
-				$sniffed = $sniffer->get_type();
-			}
-			else
-			{
-				$data = $this->raw_data;
-			}
-
-			// This is exposed via get_raw_data()
-			$this->raw_data = $data;
-
-			// Set up array of possible encodings
-			$encodings = array();
-
-			// First check to see if input has been overridden.
-			if ($this->input_encoding !== false)
-			{
-				$encodings[] = $this->input_encoding;
-			}
-
-			$application_types = array('application/xml', 'application/xml-dtd', 'application/xml-external-parsed-entity');
-			$text_types = array('text/xml', 'text/xml-external-parsed-entity');
-
-			// RFC 3023 (only applies to sniffed content)
-			if (isset($sniffed))
-			{
-				if (in_array($sniffed, $application_types) || substr($sniffed, 0, 12) === 'application/' && substr($sniffed, -4) === '+xml')
-				{
-					if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
-					{
-						$encodings[] = strtoupper($charset[1]);
-					}
-					$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
-					$encodings[] = 'UTF-8';
-				}
-				elseif (in_array($sniffed, $text_types) || substr($sniffed, 0, 5) === 'text/' && substr($sniffed, -4) === '+xml')
-				{
-					if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
-					{
-						$encodings[] = $charset[1];
-					}
-					$encodings[] = 'US-ASCII';
-				}
-				// Text MIME-type default
-				elseif (substr($sniffed, 0, 5) === 'text/')
-				{
-					$encodings[] = 'US-ASCII';
-				}
-			}
-
-			// Fallback to XML 1.0 Appendix F.1/UTF-8/ISO-8859-1
-			$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
-			$encodings[] = 'UTF-8';
-			$encodings[] = 'ISO-8859-1';
-
-			// There's no point in trying an encoding twice
-			$encodings = array_unique($encodings);
-
-			// If we want the XML, just output that with the most likely encoding and quit
-			if ($this->xml_dump)
-			{
-				header('Content-type: text/xml; charset=' . $encodings[0]);
-				echo $data;
-				exit;
-			}
-
-			// Loop through each possible encoding, till we return something, or run out of possibilities
-			foreach ($encodings as $encoding)
-			{
-				// Change the encoding to UTF-8 (as we always use UTF-8 internally)
-				if ($utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8'))
-				{
-					// Create new parser
-					$parser = new $this->parser_class();
-
-					// If it's parsed fine
-					if ($parser->parse($utf8_data, 'UTF-8'))
-					{
-						$this->data = $parser->get_data();
-						if ($this->get_type() & ~SIMPLEPIE_TYPE_NONE)
-						{
-							if (isset($headers))
-							{
-								$this->data['headers'] = $headers;
-							}
-							$this->data['build'] = SIMPLEPIE_BUILD;
-
-							// Cache the file if caching is enabled
-							if ($cache && !$cache->save($this))
-							{
-								trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
-							}
-							return true;
-						}
-						else
-						{
-							$this->error = "A feed could not be found at $this->feed_url. This does not appear to be a valid RSS or Atom feed.";
-							SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
-							return false;
-						}
-					}
-				}
-			}
-
-			if (isset($parser))
-			{
-				// We have an error, just set SimplePie_Misc::error to it and quit
-				$this->error = sprintf('This XML document is invalid, likely due to invalid characters. XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
-			}
-			else
-			{
-				$this->error = 'The data could not be converted to UTF-8. You MUST have either the iconv or mbstring extension installed. Upgrading to PHP 5.x (which includes iconv) is highly recommended.';
-			}
-
-			SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
-
-			return false;
-		}
-		elseif (!empty($this->multifeed_url))
+		if (!empty($this->multifeed_url))
 		{
 			$i = 0;
 			$success = 0;
@@ -1749,10 +1463,277 @@ class SimplePie_Core
 			}
 			return (bool) $success;
 		}
-		else
+		elseif ($this->feed_url === null && $this->raw_data === null)
 		{
 			return false;
 		}
+
+		$this->error = null;
+		$this->data = array();
+		$this->multifeed_objects = array();
+		$cache = false;
+
+		if ($this->feed_url !== null)
+		{
+			$parsed_feed_url = SimplePie_Misc::parse_url($this->feed_url);
+			// Decide whether to enable caching
+			if ($this->cache && $parsed_feed_url['scheme'] !== '')
+			{
+				$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
+			}
+			// If it's enabled and we don't want an XML dump, use the cache
+			if ($cache && !$this->xml_dump)
+			{
+				// Load the Cache
+				$this->data = $cache->load();
+				if (!empty($this->data))
+				{
+					// If the cache is for an outdated build of SimplePie
+					if (!isset($this->data['build']) || $this->data['build'] !== SIMPLEPIE_BUILD)
+					{
+						$cache->unlink();
+						$this->data = array();
+					}
+					// If we've hit a collision just rerun it with caching disabled
+					elseif (isset($this->data['url']) && $this->data['url'] !== $this->feed_url)
+					{
+						$cache = false;
+						$this->data = array();
+					}
+					// If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
+					elseif (isset($this->data['feed_url']))
+					{
+						// If the autodiscovery cache is still valid use it.
+						if ($cache->mtime() + $this->autodiscovery_cache_duration > time())
+						{
+							// Do not need to do feed autodiscovery yet.
+							if ($this->data['feed_url'] !== $this->data['url']) {
+								$this->set_feed_url($this->data['feed_url']);
+								return $this->init();
+							}
+
+							$cache->unlink();
+							$this->data = array();
+						}
+					}
+					// Check if the cache has been updated
+					elseif ($cache->mtime() + $this->cache_duration < time())
+					{
+						// If we have last-modified and/or etag set
+						if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag']))
+						{
+							$headers = array(
+								'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+							);
+							if (isset($this->data['headers']['last-modified']))
+							{
+								$headers['if-modified-since'] = $this->data['headers']['last-modified'];
+							}
+							if (isset($this->data['headers']['etag']))
+							{
+								$headers['if-none-match'] = $this->data['headers']['etag'];
+							}
+
+							$file = new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
+
+							if ($file->success)
+							{
+								if ($file->status_code === 304)
+								{
+									$cache->touch();
+									return true;
+								}
+
+								$headers = $file->headers;
+							}
+							else
+							{
+								unset($file);
+							}
+						}
+					}
+					// If the cache is still valid, just return true
+					else
+					{
+						$this->raw_data = false;
+						return true;
+					}
+				}
+				// If the cache is empty, delete it
+				else
+				{
+					$cache->unlink();
+					$this->data = array();
+				}
+			}
+			// If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
+			if (!isset($file))
+			{
+				if ($this->file instanceof SimplePie_File && $this->file->url === $this->feed_url)
+				{
+					$file =& $this->file;
+				}
+				else
+				{
+					$headers = array(
+						'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+					);
+					$file = new $this->file_class($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen);
+				}
+			}
+			// If the file connection has an error, set SimplePie::error to that and quit
+			if (!$file->success && !($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
+			{
+				$this->error = $file->error;
+				return !empty($this->data);
+			}
+
+			if (!$this->force_feed)
+			{
+				// Check if the supplied URL is a feed, if it isn't, look for it.
+				$locate = new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds, $this->content_type_sniffer_class);
+
+				if (!$locate->is_feed($file))
+				{
+					// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
+					unset($file);
+					if (!($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds)))
+					{
+						$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
+						SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+						return false;
+					}
+					if ($cache)
+					{
+						$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
+						if (!$cache->save($this))
+						{
+							trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
+						}
+						$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
+					}
+					$this->feed_url = $file->url;
+				}
+				$locate = null;
+			}
+
+			$headers = $file->headers;
+			$data = $file->body;
+			$sniffer = new $this->content_type_sniffer_class($file);
+			$sniffed = $sniffer->get_type();
+		}
+		else
+		{
+			$data = $this->raw_data;
+		}
+
+		// This is exposed via get_raw_data()
+		$this->raw_data = $data;
+
+		// Set up array of possible encodings
+		$encodings = array();
+
+		// First check to see if input has been overridden.
+		if ($this->input_encoding !== false)
+		{
+			$encodings[] = $this->input_encoding;
+		}
+
+		$application_types = array('application/xml', 'application/xml-dtd', 'application/xml-external-parsed-entity');
+		$text_types = array('text/xml', 'text/xml-external-parsed-entity');
+
+		// RFC 3023 (only applies to sniffed content)
+		if (isset($sniffed))
+		{
+			if (in_array($sniffed, $application_types) || substr($sniffed, 0, 12) === 'application/' && substr($sniffed, -4) === '+xml')
+			{
+				if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
+				{
+					$encodings[] = strtoupper($charset[1]);
+				}
+				$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
+				$encodings[] = 'UTF-8';
+			}
+			elseif (in_array($sniffed, $text_types) || substr($sniffed, 0, 5) === 'text/' && substr($sniffed, -4) === '+xml')
+			{
+				if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
+				{
+					$encodings[] = $charset[1];
+				}
+				$encodings[] = 'US-ASCII';
+			}
+			// Text MIME-type default
+			elseif (substr($sniffed, 0, 5) === 'text/')
+			{
+				$encodings[] = 'US-ASCII';
+			}
+		}
+
+		// Fallback to XML 1.0 Appendix F.1/UTF-8/ISO-8859-1
+		$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
+		$encodings[] = 'UTF-8';
+		$encodings[] = 'ISO-8859-1';
+
+		// There's no point in trying an encoding twice
+		$encodings = array_unique($encodings);
+
+		// If we want the XML, just output that with the most likely encoding and quit
+		if ($this->xml_dump)
+		{
+			header('Content-type: text/xml; charset=' . $encodings[0]);
+			echo $data;
+			exit;
+		}
+
+		// Loop through each possible encoding, till we return something, or run out of possibilities
+		foreach ($encodings as $encoding)
+		{
+			// Change the encoding to UTF-8 (as we always use UTF-8 internally)
+			if ($utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8'))
+			{
+				// Create new parser
+				$parser = new $this->parser_class();
+
+				// If it's parsed fine
+				if ($parser->parse($utf8_data, 'UTF-8'))
+				{
+					$this->data = $parser->get_data();
+					if (!($this->get_type() & ~SIMPLEPIE_TYPE_NONE))
+					{
+						$this->error = "A feed could not be found at $this->feed_url. This does not appear to be a valid RSS or Atom feed.";
+						SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+						return false;
+					}
+
+					if (isset($headers))
+					{
+						$this->data['headers'] = $headers;
+					}
+					$this->data['build'] = SIMPLEPIE_BUILD;
+
+					// Cache the file if caching is enabled
+					if ($cache && !$cache->save($this))
+					{
+						trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
+					}
+					return true;
+				}
+			}
+		}
+
+		if (isset($parser))
+		{
+			// We have an error, just set SimplePie_Misc::error to it and quit
+			$this->error = sprintf('This XML document is invalid, likely due to invalid characters. XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
+		}
+		else
+		{
+			$this->error = 'The data could not be converted to UTF-8. You MUST have either the iconv or mbstring extension installed. Upgrading to PHP 5.x (which includes iconv) is highly recommended.';
+		}
+
+		SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+
+		return false;
 	}
 
 	/**
