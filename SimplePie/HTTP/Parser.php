@@ -467,7 +467,7 @@ class SimplePie_HTTP_Parser
 
 		while (true)
 		{
-			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)(\s|\r|\n)+/mi', $encoded, $matches );
+			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)[^\r\n]*\r\n/mi', $encoded, $matches );
 			if (!$is_chunked)
 			{
 				// Looks like it's not chunked after all
@@ -475,12 +475,20 @@ class SimplePie_HTTP_Parser
 				return;
 			}
 
-			$length = hexdec($matches[1]);
+			$length = hexdec(trim($matches[1]));
+			if ($length === 0)
+			{
+				// Ignore trailer headers
+				$this->state = 'emit';
+				$this->body = $decoded;
+				return;
+			}
+
 			$chunk_length = strlen($matches[0]);
 			$decoded .= $part = substr($encoded, $chunk_length, $length);
-			$encoded = ltrim(substr($encoded, $chunk_length + $length), "\r\n");
+			$encoded = substr($encoded, $chunk_length + $length + 2);
 
-			if (trim($encoded) === '0')
+			if (trim($encoded) === '0' || empty($encoded))
 			{
 				$this->state = 'emit';
 				$this->body = $decoded;
