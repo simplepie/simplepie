@@ -54,11 +54,36 @@
  */
 class SimplePie_Credit
 {
+	/**
+	 * Credited role
+	 *
+	 * @var string
+	 * @see get_role()
+	 */
 	var $role;
+
+	/**
+	 * Organizational scheme
+	 *
+	 * @var string
+	 * @see get_scheme()
+	 */
 	var $scheme;
+
+	/**
+	 * Credited name
+	 *
+	 * @var string
+	 * @see get_name()
+	 */
 	var $name;
 
-	// Constructor, used to input the data
+	/**
+	 * Constructor, used to input the data
+	 *
+	 * For documentation on all the parameters, see the corresponding
+	 * properties and their accessors
+	 */
 	public function __construct($role = null, $scheme = null, $name = null)
 	{
 		$this->role = $role;
@@ -66,12 +91,22 @@ class SimplePie_Credit
 		$this->name = $name;
 	}
 
+	/**
+	 * String-ified version
+	 *
+	 * @return string
+	 */
 	public function __toString()
 	{
 		// There is no $this->data here
 		return md5(serialize($this));
 	}
 
+	/**
+	 * Get the role of the person receiving credit
+	 *
+	 * @return string|null
+	 */
 	public function get_role()
 	{
 		if ($this->role !== null)
@@ -84,6 +119,11 @@ class SimplePie_Credit
 		}
 	}
 
+	/**
+	 * Get the organizational scheme
+	 *
+	 * @return string|null
+	 */
 	public function get_scheme()
 	{
 		if ($this->scheme !== null)
@@ -96,6 +136,11 @@ class SimplePie_Credit
 		}
 	}
 
+	/**
+	 * Get the credited person/entity's name
+	 *
+	 * @return string|null
+	 */
 	public function get_name()
 	{
 		if ($this->name !== null)
