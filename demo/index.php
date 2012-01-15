@@ -148,11 +148,11 @@ $feed->handle_content_type();
 			<a href="?feed=http://revision3.com/diggnation/feed/quicktime-large" title="Tech and industry videocast.">Diggnation</a>,
 			<a href="?feed=http://www.flickr.com/services/feeds/photos_public.gne?format=rss2" title="Flickr Photos">Flickr</a>,
 			<a href="?feed=http://news.google.com/?output=rss" title="World News">Google News</a>,
-			<a href="?feed=http://video.google.com/videofeed?type=top100new&num=20&output=rss" title="Test: Media RSS Support">Google Video</a>,
+			<a href="?feed=http://video.google.com/videofeed?type=top100new&amp;num=20&amp;output=rss" title="Test: Media RSS Support">Google Video</a>,
 			<a href="?feed=http://blogs.law.harvard.edu/home/feed/rdf/" title="Test: Tag Stripping">Harvard Law</a>,
 			<a href="?feed=http://hagada.org.il/hagada/html/backend.php" title="Test: Window-1255 Encoding">Hebrew Language</a>,
 			<a href="?feed=http://www.infoworld.com/rss/news.xml" title="Test: Ad Stripping">InfoWorld</a>,
-			<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml&orderbydate=false" title="Test: Tag Stripping">iTunes</a>,
+			<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml&amp;orderbydate=false" title="Test: Tag Stripping">iTunes</a>,
 			<a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf" title="Test: EUC-JP Encoding">Japanese Language</a>,
 			<a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php&amp;input=EUC-KR" title="Test: EUC-KR Encoding">Korean Language</a>,
 			<a href="?feed=http://mir.aculo.us/xml/rss/feed.xml" title="Weblog for the developer of Scriptaculous">mir.aculo.us</a>,
@@ -163,8 +163,10 @@ $feed->handle_content_type();
 			<a href="?feed=http://osnews.com/files/recent.rdf" title="News about every OS ever">OS News</a>,
 			<a href="?feed=http://weblog.philringnalda.com/feed/" title="Test: Atom 1.0 Support">Phil Ringnalda</a>,
 			<a href="?feed=http://kabili.libsyn.com/rss" title="Test: Improved enclosure type sniffing">Photoshop Videocast</a>,
+			<a href="?feed=http://www.reddit.com/" title="Top links from around the web">reddit</a>,
 			<a href="?feed=http://www.pariurisportive.com/blog/xmlsrv/rss2.php?blog=2" title="Test: ISO-8859-1 Encoding">Romanian Language</a>,
 			<a href="?feed=http://www.erased.info/rss2.php" title="Test: KOI8-R Encoding">Russian Language</a>,
+			<a href="?feed=http://ryanparman.com/" title="SimplePie developer alumnus">Ryan Parman</a>,
 			<a href="?feed=http://www.upsaid.com/isis/index.rdf" title="Test: BIG5 Encoding">Traditional Chinese Language</a>,
 			<a href="?feed=http://technorati.com/watchlists/rss.html?wid=29290" title="Technorati watch for SimplePie">Technorati</a>,
 			<a href="?feed=http://www.tbray.org/ongoing/ongoing.atom" title="Test: Atom 1.0 Support">Tim Bray</a>,
@@ -175,7 +177,7 @@ $feed->handle_content_type();
 			<a href="?feed=http://windowsvistablog.com/blogs/MainFeed.aspx" title="Test: Tag Stripping">Windows Vista Blog</a>,
 			<a href="?feed=http://xkcd.com/rss.xml" title="Test: LightHTTPd and GZipping">XKCD</a>,
 			<a href="?feed=http://rss.news.yahoo.com/rss/topstories" title="World News">Yahoo! News</a>,
-			<a href="?feed=http://youtube.com/rss/global/top_favorites.rss" title="Funny user-submitted videos">You Tube</a>,
+			<a href="?feed=http://gdata.youtube.com/feeds/api/standardfeeds/top_favorites" title="Funny user-submitted videos">You Tube</a>,
 			<a href="?feed=http://zeldman.com/rss/" title="The father of the web standards movement">Zeldman</a></p>
 
 		</div>

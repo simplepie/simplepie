@@ -69,7 +69,8 @@ class HTTPParserTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider chunkedProvider
 	 */
-	public function testChunkedNormal($data, $expected) {
+	public function testChunkedNormal($data, $expected)
+	{
 		$data = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
 		$parser = new SimplePie_HTTP_Parser($data);
 		$this->assertTrue($parser->parse());
