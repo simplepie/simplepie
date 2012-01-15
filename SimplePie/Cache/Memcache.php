@@ -53,13 +53,38 @@
  * prefixed with `sp_` and data will expire after 3600 seconds
  *
  * @package SimplePie
+ * @uses Memcache
  */
 class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 {
+	/**
+	 * Memcache instance
+	 *
+	 * @var Memcache
+	 */
 	protected $cache;
+
+	/**
+	 * Options
+	 *
+	 * @var array
+	 */
 	protected $options;
+
+	/**
+	 * Cache name
+	 *
+	 * @var string
+	 */
 	protected $name;
 
+	/**
+	 * Create a new cache object
+	 *
+	 * @param string $location Location string (from SimplePie::$cache_location)
+	 * @param string $name Unique ID for the cache
+	 * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
+	 */
 	public function __construct($url, $filename, $extension)
 	{
 		$this->options = array(
@@ -77,6 +102,11 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 		$this->cache->addServer($this->options['host'], (int) $this->options['port']);
 	}
 
+	/**
+	 * Save data to the cache
+	 *
+	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+	 */
 	public function save($data)
 	{
 		if ($data instanceof SimplePie)
@@ -86,6 +116,11 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 		return $this->cache->set($this->name, serialize($data), MEMCACHE_COMPRESSED, (int) $this->options['extras']['timeout']);
 	}
 
+	/**
+	 * Retrieve the data saved to the cache
+	 *
+	 * @return array Data for SimplePie::$data
+	 */
 	public function load()
 	{
 		$data = $this->cache->get($this->name);
@@ -97,6 +132,11 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 		return false;
 	}
 
+	/**
+	 * Retrieve the last modified time for the cache
+	 *
+	 * @return int Timestamp
+	 */
 	public function mtime()
 	{
 		$data = $this->cache->get($this->name);
@@ -110,6 +150,11 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 		return false;
 	}
 
+	/**
+	 * Set the last modified time to the current time
+	 *
+	 * @return bool Success status
+	 */
 	public function touch()
 	{
 		$data = $this->cache->get($this->name);
@@ -122,6 +167,11 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 		return false;
 	}
 
+	/**
+	 * Remove the cache
+	 *
+	 * @return bool Success status
+	 */
 	public function unlink()
 	{
 		return $this->cache->delete($this->name, 0);
