@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Handles `<media:restriction>` as defined in Media RSS
+ *
+ * Used by {@see SimplePie_Enclosure::get_restriction()} and {@see SimplePie_Enclosure::get_restrictions()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_restriction_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Restriction
 {
 	var $relationship;

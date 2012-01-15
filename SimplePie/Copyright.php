@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Manages `<media:copyright>` copyright tags as defined in Media RSS
+ *
+ * Used by {@see SimplePie_Enclosure::get_copyright()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_copyright_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Copyright
 {
 	var $url;

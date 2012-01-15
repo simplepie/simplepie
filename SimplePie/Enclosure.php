@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Handles everything related to enclosures (including Media RSS and iTunes RSS)
+ *
+ * Used by {@see SimplePie_Item::get_enclosure()} and {@see SimplePie_Item::get_enclosures()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_enclosure_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Enclosure
 {
 	var $bitrate;

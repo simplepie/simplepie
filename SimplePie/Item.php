@@ -44,6 +44,15 @@
  */
 
 
+/**
+ * Manages all item-related data
+ *
+ * Used by {@see SimplePie::get_item()} and {@see SimplePie::get_items()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_item_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Item
 {
 	var $feed;

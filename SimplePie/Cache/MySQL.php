@@ -43,7 +43,17 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Caches data to a MySQL database
+ *
+ * Registered for URLs with the "mysql" protocol
+ *
+ * For example, `mysql://root:password@localhost:3306/mydb?prefix=sp_` will
+ * connect to the `mydb` database on `localhost` on port 3306, with the user
+ * `root` and the password `password`. All tables will be prefixed with `sp_`
+ *
+ * @package SimplePie
+ */
 class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 {
 	protected $mysql;

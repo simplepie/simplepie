@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Manages all author-related data
+ *
+ * Used by {@see SimplePie_Item::get_author()} and {@see SimplePie::get_authors()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_author_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Author
 {
 	var $name;

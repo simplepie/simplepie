@@ -44,6 +44,15 @@
  */
 
 
+/**
+ * Handles `<media:text>` captions as defined in Media RSS.
+ *
+ * Used by {@see SimplePie_Enclosure::get_caption()} and {@see SimplePie_Enclosure::get_captions()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_caption_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Caption
 {
 	var $type;

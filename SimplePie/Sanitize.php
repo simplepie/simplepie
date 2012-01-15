@@ -43,8 +43,13 @@
  * @todo phpDoc comments
  */
 
-
 /**
+ * Used for data cleanup and post-processing
+ *
+ *
+ * This class can be overloaded with {@see SimplePie::set_sanitize_class()}
+ *
+ * @package SimplePie
  * @todo Move to using an actual HTML parser (this will allow tags to be properly stripped, and to switch between HTML and XHTML), this will also make it easier to shorten a string while preserving HTML tags
  */
 class SimplePie_Sanitize

@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Used to create cache objects
+ *
+ * This class can be overloaded with {@see SimplePie::set_cache_class()},
+ * although the preferred way is to create your own handler
+ * via {@see register()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Cache
 {
 	/**

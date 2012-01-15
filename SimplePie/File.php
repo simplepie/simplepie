@@ -43,8 +43,14 @@
  * @todo phpDoc comments
  */
 
-
 /**
+ * Used for fetching remote files and reading local files
+ *
+ * Supports HTTP 1.0 via cURL or fsockopen, with spotty HTTP 1.1 support
+ *
+ * This class can be overloaded with {@see SimplePie::set_file_class()}
+ *
+ * @package SimplePie
  * @todo Move to properly supporting RFC2616 (HTTP/1.1)
  */
 class SimplePie_File

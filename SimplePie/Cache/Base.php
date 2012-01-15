@@ -43,7 +43,14 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Base for cache objects
+ *
+ * Classes to be used with {@see SimplePie_Cache::register()} are expected
+ * to implement this interface.
+ *
+ * @package SimplePie
+ */
 interface SimplePie_Cache_Base
 {
 	/**

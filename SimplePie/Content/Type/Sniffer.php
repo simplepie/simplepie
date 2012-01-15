@@ -48,6 +48,13 @@
  * Content-type sniffing
  *
  * Based on the rules in http://tools.ietf.org/html/draft-abarth-mime-sniff-06
+ *
+ * This is used since we can't always trust Content-Type headers, and is based
+ * upon the HTML5 parsing rules.
+ *
+ *
+ * This class can be overloaded with {@see SimplePie::set_content_type_sniffer_class()}
+ *
  * @package SimplePie
  */
 class SimplePie_Content_Type_Sniffer

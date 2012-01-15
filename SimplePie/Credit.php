@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Handles `<media:credit>` as defined in Media RSS
+ *
+ * Used by {@see SimplePie_Enclosure::get_credit()} and {@see SimplePie_Enclosure::get_credits()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_credit_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Credit
 {
 	var $role;

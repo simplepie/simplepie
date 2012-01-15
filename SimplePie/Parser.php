@@ -43,7 +43,14 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Parses XML into something sane
+ *
+ *
+ * This class can be overloaded with {@see SimplePie::set_parser_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Parser
 {
 	var $error_code;

@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Handles `<atom:source>`
+ *
+ * Used by {@see SimplePie_Item::get_source()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_source_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Source
 {
 	var $item;

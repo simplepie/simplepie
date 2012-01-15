@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Handles `<media:rating>` or `<itunes:explicit>` tags as defined in Media RSS and iTunes RSS respectively
+ *
+ * Used by {@see SimplePie_Enclosure::get_rating()} and {@see SimplePie_Enclosure::get_ratings()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_rating_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Rating
 {
 	var $scheme;

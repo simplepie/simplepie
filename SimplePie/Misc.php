@@ -43,7 +43,11 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Miscellanous utilities
+ *
+ * @package SimplePie
+ */
 class SimplePie_Misc
 {
 	public static function time_hms($seconds)

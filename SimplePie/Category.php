@@ -43,7 +43,15 @@
  * @todo phpDoc comments
  */
 
-
+/**
+ * Manages all category-related data
+ *
+ * Used by {@see SimplePie_Item::get_category()} and {@see SimplePie_Item::get_categories()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_category_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Category
 {
 	var $term;

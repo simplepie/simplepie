@@ -45,7 +45,7 @@
 
 
 /**
- * gzdecode
+ * Decode 'gzip' encoded HTTP data
  *
  * @package SimplePie
  */
