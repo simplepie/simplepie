@@ -1,5 +1,7 @@
 <?php
 /**
+ * HTTP parsing tests
+ *
  * SimplePie
  *
  * A PHP-Based RSS and Atom Feed Framework.
@@ -44,24 +46,38 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
-require_once dirname(__FILE__) . '/EncodingTest.php';
-require_once dirname(__FILE__) . '/IRITest.php';
-require_once dirname(__FILE__) . '/LocatorTest.php';
-require_once dirname(__FILE__) . '/oldtests.php';
- 
-class AllTests
+class HTTPParserTest extends PHPUnit_Framework_TestCase
 {
-	public static function suite()
+	public static function chunkedProvider()
 	{
-		$suite = new PHPUnit_Framework_TestSuite();
-		$suite->setName('SimplePie');
+		return array(
+			array(
+				"25\r\nThis is the data in the first chunk\r\n\r\n1A\r\nand this is the second one\r\n0\r\n",
+				"This is the data in the first chunk\r\nand this is the second one"
+			),
+			array(
+				"02\r\nab\r\n04\r\nra\nc\r\n06\r\nadabra\r\n0\r\nnothing\n",
+				"abra\ncadabra"
+			),
+			array(
+				"02\r\nab\r\n04\r\nra\nc\r\n06\r\nadabra\r\n0c\r\n\nall we got\n",
+				"abra\ncadabra\nall we got\n"
+			),
+		);
+	}
 
-		$suite->addTestSuite('EncodingTest');
-		$suite->addTestSuite('IRITest');
-		$suite->addTestSuite('LocatorTest');
-		$suite->addTestSuite('HTTPParserTest');
-		$suite->addTestSuite('OldTest');
- 
-		return $suite;
+	/**
+	 * @dataProvider chunkedProvider
+	 */
+	public function testChunkedNormal($data, $expected) {
+		$data = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
+		$parser = new SimplePie_HTTP_Parser($data);
+		$this->assertTrue($parser->parse());
+		$this->assertEquals(1.1, $parser->http_version);
+		$this->assertEquals(200, $parser->status_code);
+		$this->assertEquals('OK', $parser->reason);
+		$this->assertEquals(array('content-type' => 'text/plain'), $parser->headers);
+		$this->assertEquals($expected, $parser->body);
+
 	}
 }
