@@ -127,7 +127,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return false;
 		}
 
-		if (is_a($data, 'SimplePie'))
+		if ($data instanceof SimplePie)
 		{
 			$data = clone $data;
 
