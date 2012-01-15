@@ -280,5 +280,7 @@ class SimplePie_File
 				$this->success = false;
 			}
 		}
+		// leading whitespace will cause SimplePie to error.
+		$this->body = trim($this->body);
 	}
 }
