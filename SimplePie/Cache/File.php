@@ -90,7 +90,7 @@ class SimplePie_Cache_File implements SimplePie_Cache_Base
 		$this->location = $location;
 		$this->filename = $name;
 		$this->extension = $type;
-		$this->name = "$this->location/$this->name.$this->type";
+		$this->name = "$this->location/$this->filename.$this->extension";
 	}
 
 	/**
