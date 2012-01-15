@@ -50,11 +50,42 @@
  */
 class SimplePie_Cache_File implements SimplePie_Cache_Base
 {
+	/**
+	 * Location string
+	 *
+	 * @see SimplePie::$cache_location
+	 * @var string
+	 */
 	protected $location;
+
+	/**
+	 * Filename
+	 *
+	 * @var string
+	 */
 	protected $filename;
+
+	/**
+	 * File extension
+	 *
+	 * @var string
+	 */
 	protected $extension;
+
+	/**
+	 * File path
+	 *
+	 * @var string
+	 */
 	protected $name;
 
+	/**
+	 * Create a new cache object
+	 *
+	 * @param string $location Location string (from SimplePie::$cache_location)
+	 * @param string $name Unique ID for the cache
+	 * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
+	 */
 	public function __construct($location, $filename, $extension)
 	{
 		$this->location = $location;
@@ -63,6 +94,11 @@ class SimplePie_Cache_File implements SimplePie_Cache_Base
 		$this->name = "$this->location/$this->filename.$this->extension";
 	}
 
+	/**
+	 * Save data to the cache
+	 *
+	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+	 */
 	public function save($data)
 	{
 		if (file_exists($this->name) && is_writeable($this->name) || file_exists($this->location) && is_writeable($this->location))
@@ -78,6 +114,11 @@ class SimplePie_Cache_File implements SimplePie_Cache_Base
 		return false;
 	}
 
+	/**
+	 * Retrieve the data saved to the cache
+	 *
+	 * @return array Data for SimplePie::$data
+	 */
 	public function load()
 	{
 		if (file_exists($this->name) && is_readable($this->name))
@@ -87,6 +128,11 @@ class SimplePie_Cache_File implements SimplePie_Cache_Base
 		return false;
 	}
 
+	/**
+	 * Retrieve the last modified time for the cache
+	 *
+	 * @return int Timestamp
+	 */
 	public function mtime()
 	{
 		if (file_exists($this->name))
@@ -96,6 +142,11 @@ class SimplePie_Cache_File implements SimplePie_Cache_Base
 		return false;
 	}
 
+	/**
+	 * Set the last modified time to the current time
+	 *
+	 * @return bool Success status
+	 */
 	public function touch()
 	{
 		if (file_exists($this->name))
@@ -105,6 +156,11 @@ class SimplePie_Cache_File implements SimplePie_Cache_Base
 		return false;
 	}
 
+	/**
+	 * Remove the cache
+	 *
+	 * @return bool Success status
+	 */
 	public function unlink()
 	{
 		if (file_exists($this->name))
