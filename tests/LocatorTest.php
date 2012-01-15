@@ -58,7 +58,7 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 	public static function firefoxtests()
 	{
 		$data = array(
-			array(new SimplePie_File(__DIR__ . '/data/fftests.html'))
+			array(new SimplePie_File(dirname(__FILE__) . '/data/fftests.html'))
 		);
 		foreach ($data as &$row)
 		{
