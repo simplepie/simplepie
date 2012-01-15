@@ -54,35 +54,176 @@
  */
 class SimplePie_Enclosure
 {
+	/**
+	 * @var string
+	 * @see get_bitrate()
+	 */
 	var $bitrate;
+
+	/**
+	 * @var array
+	 * @see get_captions()
+	 */
 	var $captions;
+
+	/**
+	 * @var array
+	 * @see get_categories()
+	 */
 	var $categories;
+
+	/**
+	 * @var int
+	 * @see get_channels()
+	 */
 	var $channels;
+
+	/**
+	 * @var SimplePie_Copyright
+	 * @see get_copyright()
+	 */
 	var $copyright;
+
+	/**
+	 * @var array
+	 * @see get_credits()
+	 */
 	var $credits;
+
+	/**
+	 * @var string
+	 * @see get_description()
+	 */
 	var $description;
+
+	/**
+	 * @var int
+	 * @see get_duration()
+	 */
 	var $duration;
+
+	/**
+	 * @var string
+	 * @see get_expression()
+	 */
 	var $expression;
+
+	/**
+	 * @var string
+	 * @see get_framerate()
+	 */
 	var $framerate;
+
+	/**
+	 * @var string
+	 * @see get_handler()
+	 */
 	var $handler;
+
+	/**
+	 * @var array
+	 * @see get_hashes()
+	 */
 	var $hashes;
+
+	/**
+	 * @var string
+	 * @see get_height()
+	 */
 	var $height;
+
+	/**
+	 * @deprecated
+	 * @var null
+	 */
 	var $javascript;
+
+	/**
+	 * @var array
+	 * @see get_keywords()
+	 */
 	var $keywords;
+
+	/**
+	 * @var string
+	 * @see get_language()
+	 */
 	var $lang;
+
+	/**
+	 * @var string
+	 * @see get_length()
+	 */
 	var $length;
+
+	/**
+	 * @var string
+	 * @see get_link()
+	 */
 	var $link;
+
+	/**
+	 * @var string
+	 * @see get_medium()
+	 */
 	var $medium;
+
+	/**
+	 * @var string
+	 * @see get_player()
+	 */
 	var $player;
+
+	/**
+	 * @var array
+	 * @see get_ratings()
+	 */
 	var $ratings;
+
+	/**
+	 * @var array
+	 * @see get_restrictions()
+	 */
 	var $restrictions;
+
+	/**
+	 * @var string
+	 * @see get_sampling_rate()
+	 */
 	var $samplingrate;
+
+	/**
+	 * @var array
+	 * @see get_thumbnails()
+	 */
 	var $thumbnails;
+
+	/**
+	 * @var string
+	 * @see get_title()
+	 */
 	var $title;
+
+	/**
+	 * @var string
+	 * @see get_type()
+	 */
 	var $type;
+
+	/**
+	 * @var string
+	 * @see get_width()
+	 */
 	var $width;
 
-	// Constructor, used to input the data
+	/**
+	 * Constructor, used to input the data
+	 *
+	 * For documentation on all the parameters, see the corresponding
+	 * properties and their accessors
+	 *
+	 * @uses idna_convert If available, this will convert an IDN
+	 */
 	public function __construct($link = null, $type = null, $length = null, $javascript = null, $bitrate = null, $captions = null, $categories = null, $channels = null, $copyright = null, $credits = null, $description = null, $duration = null, $expression = null, $framerate = null, $hashes = null, $height = null, $keywords = null, $lang = null, $medium = null, $player = null, $ratings = null, $restrictions = null, $samplingrate = null, $thumbnails = null, $title = null, $width = null)
 	{
 		$this->bitrate = $bitrate;
@@ -562,7 +703,7 @@ class SimplePie_Enclosure
 	 * Get the player URL
 	 *
 	 * Typically the same as {@see get_permalink()}
-	 *
+	 * @return string|null Player URL
 	 */
 	public function get_player()
 	{
