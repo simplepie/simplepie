@@ -2,9 +2,6 @@
 
 require_once '../SimplePieAutoloader.php';
 
-// Ensure constants are loaded
-class_exists('SimplePie') or die("Couldn't load SimplePie");
-
 function normalize_character_set($charset)
 {
 	return strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset));

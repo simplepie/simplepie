@@ -46,15 +46,20 @@
 // autoloader
 spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
 
+if (!class_exists('SimplePie_Core'))
+{
+	trigger_error('Autoloader not registered properly', E_USER_ERROR);
+}
+
 /**
- * SimplePie Autoloader class.
+ * Autoloader class
  *
  * @package SimplePie
  */
 class SimplePie_Autoloader
 {
 	/**
-	 * Constructor.
+	 * Constructor
 	 */
 	public function __construct()
 	{
@@ -62,14 +67,15 @@ class SimplePie_Autoloader
 	}
 
 	/**
-	 * Autoloader.
+	 * Autoloader
 	 *
 	 * @param string $class The name of the class to attempt to load.
 	 */
 	public function autoload($class)
 	{
 		// see if this request should be handled by this autoloader
-		if (strpos($class, 'SimplePie') !== 0) {
+		if (strpos($class, 'SimplePie') !== 0)
+		{
 			return;
 		}
 
