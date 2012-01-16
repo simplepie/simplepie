@@ -73,7 +73,7 @@ class SimplePie_Autoloader
 	 */
 	public function autoload($class)
 	{
-		// see if this request should be handled by this autoloader
+		// Only load the class if it starts with "SimplePie"
 		if (strpos($class, 'SimplePie') !== 0)
 		{
 			return;
