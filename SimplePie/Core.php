@@ -2731,7 +2731,7 @@ class SimplePie_Core
 					$this->data['ordered_items'] = $this->data['items'];
 					if ($do_sort)
 					{
-						usort($this->data['ordered_items'], array(&$this, 'sort_items'));
+						usort($this->data['ordered_items'], array(get_class($this), 'sort_items'));
 					}
 				}
 				$items = $this->data['ordered_items'];
@@ -2757,17 +2757,11 @@ class SimplePie_Core
 		}
 	}
 
-	/**
-	 * @static
-	 */
-	public function sort_items($a, $b)
+	public static function sort_items($a, $b)
 	{
 		return $a->get_date('U') <= $b->get_date('U');
 	}
 
-	/**
-	 * @static
-	 */
 	public static function merge_items($urls, $start = 0, $end = 0, $limit = 0)
 	{
 		if (is_array($urls) && sizeof($urls) > 0)
