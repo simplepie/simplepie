@@ -648,8 +648,7 @@ class SimplePie_Enclosure
 	/**
 	 * Get length
 	 *
-	 * @todo Check if this is actually an int
-	 * @return string|null
+	 * @return float Length in bytes
 	 */
 	public function get_length()
 	{
