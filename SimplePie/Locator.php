@@ -57,29 +57,31 @@ class SimplePie_Locator
 	var $file;
 	var $local = array();
 	var $elsewhere = array();
-	var $file_class = 'SimplePie_File';
 	var $cached_entities = array();
 	var $http_base;
 	var $base;
 	var $base_location = 0;
 	var $checked_feeds = 0;
 	var $max_checked_feeds = 10;
-	var $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
+	protected $registry;
 
-	public function __construct(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds = 10, $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer')
+	public function __construct(&$file, $timeout = 10, $useragent = null, $max_checked_feeds = 10)
 	{
 		$this->file =& $file;
-		$this->file_class = $file_class;
 		$this->useragent = $useragent;
 		$this->timeout = $timeout;
 		$this->max_checked_feeds = $max_checked_feeds;
-		$this->content_type_sniffer_class = $content_type_sniffer_class;
 
 		$this->dom = new DOMDocument();
 
 		set_error_handler(array('SimplePie_Misc', 'silence_errors'));
 		$this->dom->loadHTML($this->file->body);
 		restore_error_handler();
+	}
+
+	public function set_registry(&$registry)
+	{
+		$this->registry = &$registry;
 	}
 
 	public function find($type = SIMPLEPIE_LOCATOR_ALL, &$working)
@@ -91,7 +93,7 @@ class SimplePie_Locator
 
 		if ($this->file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = new $this->content_type_sniffer_class($this->file);
+			$sniffer = $this->registry->create('Content_Type_Sniffer', array($this->file));
 			if ($sniffer->get_type() !== 'text/html')
 			{
 				return null;
@@ -137,7 +139,7 @@ class SimplePie_Locator
 	{
 		if ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = new $this->content_type_sniffer_class($file);
+			$sniffer = $this->registry->create('Content_Type_Sniffer', array($file));
 			$sniffed = $sniffer->get_type();
 			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'text/rdf', 'application/atom+xml', 'text/xml', 'application/xml')))
 			{
@@ -220,7 +222,7 @@ class SimplePie_Locator
 					$headers = array(
 						'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 					);
-					$feed = new $this->file_class($href, $this->timeout, 5, $headers, $this->useragent);
+					$feed = $this->registry->create('File', array($href, $this->timeout, 5, $headers, $this->useragent));
 					if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 					{
 						$feeds[$href] = $feed;
@@ -290,7 +292,7 @@ class SimplePie_Locator
 				$headers = array(
 					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 				);
-				$feed = new $this->file_class($value, $this->timeout, 5, $headers, $this->useragent);
+				$feed = $this->registry->create('File', array($value, $this->timeout, 5, $headers, $this->useragent));
 				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return $feed;
@@ -318,7 +320,7 @@ class SimplePie_Locator
 				$headers = array(
 					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 				);
-				$feed = new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
+				$feed = $this->registry->create('File', array($value, $this->timeout, 5, null, $this->useragent));
 				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return $feed;

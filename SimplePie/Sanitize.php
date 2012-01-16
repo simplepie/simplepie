@@ -67,8 +67,6 @@ class SimplePie_Sanitize
 	var $enable_cache = true;
 	var $cache_location = './cache';
 	var $cache_name_function = 'md5';
-	var $cache_class = 'SimplePie_Cache';
-	var $file_class = 'SimplePie_File';
 	var $timeout = 10;
 	var $useragent = '';
 	var $force_fsockopen = false;
@@ -102,6 +100,11 @@ class SimplePie_Sanitize
 		}
 	}
 
+	public function set_registry(&$registry)
+	{
+		$this->registry = $registry;
+	}
+
 	public function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = 'SimplePie_Cache')
 	{
 		if (isset($enable_cache))
@@ -118,20 +121,10 @@ class SimplePie_Sanitize
 		{
 			$this->cache_name_function = (string) $cache_name_function;
 		}
-
-		if ($cache_class)
-		{
-			$this->cache_class = (string) $cache_class;
-		}
 	}
 
 	public function pass_file_data($file_class = 'SimplePie_File', $timeout = 10, $useragent = '', $force_fsockopen = false)
 	{
-		if ($file_class)
-		{
-			$this->file_class = (string) $file_class;
-		}
-
 		if ($timeout)
 		{
 			$this->timeout = (string) $timeout;
@@ -294,7 +287,7 @@ class SimplePie_Sanitize
 						if ($img->hasAttribute('src'))
 						{
 							$image_url = call_user_func($this->cache_name_function, $img->getAttribute('src'));
-							$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $image_url, 'spi');
+							$cache = $this->registry->call('Cache', 'create', array($this->cache_location, $image_url, 'spi'));
 
 							if ($cache->load())
 							{
@@ -302,7 +295,7 @@ class SimplePie_Sanitize
 							}
 							else
 							{
-								$file = new $this->file_class($img['attribs']['src']['data'], $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+								$file = $this->registry->create('File', array($img['attribs']['src']['data'], $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen));
 								$headers = $file->headers;
 
 								if ($file->success && ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))

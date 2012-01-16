@@ -67,6 +67,12 @@ class SimplePie_Parser
 	var $datas = array(array());
 	var $current_xhtml_construct = -1;
 	var $encoding;
+	protected $registry;
+
+	public function set_registry(&$registry)
+	{
+		$this->registry = &$registry;
+	}
 
 	public function parse(&$data, $encoding)
 	{

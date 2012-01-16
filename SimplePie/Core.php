@@ -550,110 +550,7 @@ class SimplePie_Core
 	 */
 	public $autodiscovery = SIMPLEPIE_LOCATOR_ALL;
 
-	/**
-	 * @var string Class used for caching feeds
-	 * @see SimplePie::set_cache_class()
-	 * @access private
-	 */
-	public $cache_class = 'SimplePie_Cache';
-
-	/**
-	 * @var string Class used for locating feeds
-	 * @see SimplePie::set_locator_class()
-	 * @access private
-	 */
-	public $locator_class = 'SimplePie_Locator';
-
-	/**
-	 * @var string Class used for parsing feeds
-	 * @see SimplePie::set_parser_class()
-	 * @access private
-	 */
-	public $parser_class = 'SimplePie_Parser';
-
-	/**
-	 * @var string Class used for fetching feeds
-	 * @see SimplePie::set_file_class()
-	 * @access private
-	 */
-	public $file_class = 'SimplePie_File';
-
-	/**
-	 * @var string Class used for items
-	 * @see SimplePie::set_item_class()
-	 * @access private
-	 */
-	public $item_class = 'SimplePie_Item';
-
-	/**
-	 * @var string Class used for authors
-	 * @see SimplePie::set_author_class()
-	 * @access private
-	 */
-	public $author_class = 'SimplePie_Author';
-
-	/**
-	 * @var string Class used for categories
-	 * @see SimplePie::set_category_class()
-	 * @access private
-	 */
-	public $category_class = 'SimplePie_Category';
-
-	/**
-	 * @var string Class used for enclosures
-	 * @see SimplePie::set_enclosures_class()
-	 * @access private
-	 */
-	public $enclosure_class = 'SimplePie_Enclosure';
-
-	/**
-	 * @var string Class used for Media RSS <media:text> captions
-	 * @see SimplePie::set_caption_class()
-	 * @access private
-	 */
-	public $caption_class = 'SimplePie_Caption';
-
-	/**
-	 * @var string Class used for Media RSS <media:copyright>
-	 * @see SimplePie::set_copyright_class()
-	 * @access private
-	 */
-	public $copyright_class = 'SimplePie_Copyright';
-
-	/**
-	 * @var string Class used for Media RSS <media:credit>
-	 * @see SimplePie::set_credit_class()
-	 * @access private
-	 */
-	public $credit_class = 'SimplePie_Credit';
-
-	/**
-	 * @var string Class used for Media RSS <media:rating>
-	 * @see SimplePie::set_rating_class()
-	 * @access private
-	 */
-	public $rating_class = 'SimplePie_Rating';
-
-	/**
-	 * @var string Class used for Media RSS <media:restriction>
-	 * @see SimplePie::set_restriction_class()
-	 * @access private
-	 */
-	public $restriction_class = 'SimplePie_Restriction';
-
-	/**
-	 * @var string Class used for content-type sniffing
-	 * @see SimplePie::set_content_type_sniffer_class()
-	 * @access private
-	 */
-	public $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
-
-	/**
-	 * @var string Class used for item sources.
-	 * @see SimplePie::set_source_class()
-	 * @access private
-	 */
-	public $source_class = 'SimplePie_Source';
+	public $registry;
 
 	/**
 	 * @var int Maximum number of feeds to check with autodiscovery
@@ -745,6 +642,7 @@ class SimplePie_Core
 
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize = new SimplePie_Sanitize();
+		$this->registry = new SimplePie_Registry();
 
 		if (func_num_args() > 0)
 		{
@@ -822,12 +720,12 @@ class SimplePie_Core
 		{
 			foreach ($url as $value)
 			{
-				$this->multifeed_url[] = SimplePie_Misc::fix_protocol($value, 1);
+				$this->multifeed_url[] = $this->registry->call('Misc', 'fix_protocol', array($value, 1));
 			}
 		}
 		else
 		{
-			$this->feed_url = SimplePie_Misc::fix_protocol($url, 1);
+			$this->feed_url = $this->registry->call('Misc', 'fix_protocol', array($url, 1));
 		}
 	}
 
@@ -993,292 +891,152 @@ class SimplePie_Core
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for caching.
+	 * Get the class registry
+	 *
+	 * Use this to override SimplePie's default classes
+	 * @see SimplePie_Registry
+	 * @return SimplePie_Registry
+	 */
+	public function &get_registry()
+	{
+		return $this->registry;
+	}
+
+	/**#@+
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 *
-	 * @access public
+	 * @deprecated Use {@see get_registry()} instead
 	 * @param string $class Name of custom class.
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
+	/**
+	 * Allows you to change which class SimplePie uses for caching.
+	 */
 	public function set_cache_class($class = 'SimplePie_Cache')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Cache'))
-		{
-			$this->cache_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Cache', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for auto-discovery.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_locator_class($class = 'SimplePie_Locator')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Locator'))
-		{
-			$this->locator_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Locator', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for XML parsing.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_parser_class($class = 'SimplePie_Parser')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Parser'))
-		{
-			$this->parser_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Parser', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for remote file fetching.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_file_class($class = 'SimplePie_File')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_File'))
-		{
-			$this->file_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('File', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for data sanitization.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_sanitize_class($class = 'SimplePie_Sanitize')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Sanitize'))
-		{
-			$this->sanitize = new $class();
-			return true;
-		}
-		return false;
+		return $this->registry->register('Sanitize', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for handling feed items.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_item_class($class = 'SimplePie_Item')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Item'))
-		{
-			$this->item_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Item', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for handling author data.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_author_class($class = 'SimplePie_Author')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Author'))
-		{
-			$this->author_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Author', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for handling category data.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_category_class($class = 'SimplePie_Category')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Category'))
-		{
-			$this->category_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Category', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for feed enclosures.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_enclosure_class($class = 'SimplePie_Enclosure')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Enclosure'))
-		{
-			$this->enclosure_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Enclosure', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for <media:text> captions
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_caption_class($class = 'SimplePie_Caption')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Caption'))
-		{
-			$this->caption_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Caption', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for <media:copyright>
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_copyright_class($class = 'SimplePie_Copyright')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Copyright'))
-		{
-			$this->copyright_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Copyright', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for <media:credit>
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_credit_class($class = 'SimplePie_Credit')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Credit'))
-		{
-			$this->credit_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Credit', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for <media:rating>
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_rating_class($class = 'SimplePie_Rating')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Rating'))
-		{
-			$this->rating_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Rating', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for <media:restriction>
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_restriction_class($class = 'SimplePie_Restriction')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Restriction'))
-		{
-			$this->restriction_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Restriction', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses for content-type sniffing.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_content_type_sniffer_class($class = 'SimplePie_Content_Type_Sniffer')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Content_Type_Sniffer'))
-		{
-			$this->content_type_sniffer_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Content_Type_Sniffer', $class, true);
 	}
 
 	/**
 	 * Allows you to change which class SimplePie uses item sources.
-	 * Useful when you are overloading or extending SimplePie's default classes.
-	 *
-	 * @access public
-	 * @param string $class Name of custom class.
-	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	public function set_source_class($class = 'SimplePie_Source')
 	{
-		if (SimplePie_Misc::is_subclass_of($class, 'SimplePie_Source'))
-		{
-			$this->source_class = $class;
-			return true;
-		}
-		return false;
+		return $this->registry->register('Source', $class, true);
 	}
+	/**#@-*/
 
 	/**
 	 * Allows you to override the default user agent string.
@@ -1445,9 +1203,15 @@ class SimplePie_Core
 			}
 		}
 
+		if (method_exists($this->sanitize, 'set_registry'))
+		{
+			$this->sanitize->set_registry($this->registry);
+		}
+
 		// Pass whatever was set with config options over to the sanitizer.
-		$this->sanitize->pass_cache_data($this->cache, $this->cache_location, $this->cache_name_function, $this->cache_class);
-		$this->sanitize->pass_file_data($this->file_class, $this->timeout, $this->useragent, $this->force_fsockopen);
+		// Pass the classes in for legacy support; new classes should use the registry instead
+		$this->sanitize->pass_cache_data($this->cache, $this->cache_location, $this->cache_name_function, $this->registry->get_class('Cache'));
+		$this->sanitize->pass_file_data($this->registry->get_class('File'), $this->timeout, $this->useragent, $this->force_fsockopen);
 
 		if (!empty($this->multifeed_url))
 		{
@@ -1475,11 +1239,11 @@ class SimplePie_Core
 
 		if ($this->feed_url !== null)
 		{
-			$parsed_feed_url = SimplePie_Misc::parse_url($this->feed_url);
+			$parsed_feed_url = $this->registry->call('Misc', 'parse_url', array($this->feed_url));
 			// Decide whether to enable caching
 			if ($this->cache && $parsed_feed_url['scheme'] !== '')
 			{
-				$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc');
+				$cache = $this->registry->call('Cache', 'create', array($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc'));
 			}
 			// If it's enabled and we don't want an XML dump, use the cache
 			if ($cache && !$this->xml_dump)
@@ -1534,7 +1298,7 @@ class SimplePie_Core
 								$headers['if-none-match'] = $this->data['headers']['etag'];
 							}
 
-							$file = new $this->file_class($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen);
+							$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen));
 
 							if ($file->success)
 							{
@@ -1578,7 +1342,7 @@ class SimplePie_Core
 					$headers = array(
 						'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 					);
-					$file = new $this->file_class($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen);
+					$file = $this->registry->create('File', array($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen));
 				}
 			}
 			// If the file connection has an error, set SimplePie::error to that and quit
@@ -1591,7 +1355,7 @@ class SimplePie_Core
 			if (!$this->force_feed)
 			{
 				// Check if the supplied URL is a feed, if it isn't, look for it.
-				$locate = new $this->locator_class($file, $this->timeout, $this->useragent, $this->file_class, $this->max_checked_feeds, $this->content_type_sniffer_class);
+				$locate = $this->registry->create('Locator', array(&$file, $this->timeout, $this->useragent, $this->max_checked_feeds));
 
 				if (!$locate->is_feed($file))
 				{
@@ -1600,7 +1364,7 @@ class SimplePie_Core
 					if (!($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds)))
 					{
 						$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
-						SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+						$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
 						return false;
 					}
 					if ($cache)
@@ -1610,7 +1374,7 @@ class SimplePie_Core
 						{
 							trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
 						}
-						$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc');
+						$cache = $this->registry->call('Cache', 'create', array($this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc'));
 					}
 					$this->feed_url = $file->url;
 				}
@@ -1619,7 +1383,7 @@ class SimplePie_Core
 
 			$headers = $file->headers;
 			$data = $file->body;
-			$sniffer = new $this->content_type_sniffer_class($file);
+			$sniffer = $this->registry->create('Content_Type_Sniffer', array(&$file));
 			$sniffed = $sniffer->get_type();
 		}
 		else
@@ -1651,7 +1415,7 @@ class SimplePie_Core
 				{
 					$encodings[] = strtoupper($charset[1]);
 				}
-				$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
+				$encodings = array_merge($encodings, $this->registry->call('Misc', 'xml_encoding', array($data)));
 				$encodings[] = 'UTF-8';
 			}
 			elseif (in_array($sniffed, $text_types) || substr($sniffed, 0, 5) === 'text/' && substr($sniffed, -4) === '+xml')
@@ -1670,7 +1434,7 @@ class SimplePie_Core
 		}
 
 		// Fallback to XML 1.0 Appendix F.1/UTF-8/ISO-8859-1
-		$encodings = array_merge($encodings, SimplePie_Misc::xml_encoding($data));
+		$encodings = array_merge($encodings, $this->registry->call('Misc', 'xml_encoding', array($data)));
 		$encodings[] = 'UTF-8';
 		$encodings[] = 'ISO-8859-1';
 
@@ -1689,10 +1453,10 @@ class SimplePie_Core
 		foreach ($encodings as $encoding)
 		{
 			// Change the encoding to UTF-8 (as we always use UTF-8 internally)
-			if ($utf8_data = SimplePie_Misc::change_encoding($data, $encoding, 'UTF-8'))
+			if ($utf8_data = $this->registry->call('Misc', 'change_encoding', array($data, $encoding, 'UTF-8')))
 			{
 				// Create new parser
-				$parser = new $this->parser_class();
+				$parser = $this->registry->create('Parser');
 
 				// If it's parsed fine
 				if ($parser->parse($utf8_data, 'UTF-8'))
@@ -1701,7 +1465,7 @@ class SimplePie_Core
 					if (!($this->get_type() & ~SIMPLEPIE_TYPE_NONE))
 					{
 						$this->error = "A feed could not be found at $this->feed_url. This does not appear to be a valid RSS or Atom feed.";
-						SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+						$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
 						return false;
 					}
 
@@ -1731,7 +1495,7 @@ class SimplePie_Core
 			$this->error = 'The data could not be converted to UTF-8. You MUST have either the iconv or mbstring extension installed. Upgrading to PHP 5.x (which includes iconv) is highly recommended.';
 		}
 
-		SimplePie_Misc::error($this->error, E_USER_NOTICE, __FILE__, __LINE__);
+		$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
 
 		return false;
 	}
@@ -2017,11 +1781,11 @@ class SimplePie_Core
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs']), $this->get_base($return[0])));
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs']), $this->get_base($return[0])));
 		}
 		elseif ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'title'))
 		{
@@ -2083,7 +1847,7 @@ class SimplePie_Core
 			{
 				$label = $this->sanitize($category['attribs']['']['label'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			$categories[] = new $this->category_class($term, $scheme, $label);
+			$categories[] = $this->registry->create('Category', array($term, $scheme, $label));
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'category') as $category)
 		{
@@ -2098,20 +1862,20 @@ class SimplePie_Core
 			{
 				$scheme = null;
 			}
-			$categories[] = new $this->category_class($term, $scheme, null);
+			$categories[] = $this->registry->create('Category', array($term, $scheme, null));
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'subject') as $category)
 		{
-			$categories[] = new $this->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_10, 'subject') as $category)
 		{
-			$categories[] = new $this->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 
 		if (!empty($categories))
 		{
-			return SimplePie_Misc::array_unique($categories);
+			return $this->registry->call('Misc', 'array_unique', array($categories));
 		}
 		else
 		{
@@ -2154,7 +1918,7 @@ class SimplePie_Core
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
-				$authors[] = new $this->author_class($name, $uri, $email);
+				$authors[] = $this->registry->create('Author', array($name, $uri, $email));
 			}
 		}
 		if ($author = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
@@ -2176,25 +1940,25 @@ class SimplePie_Core
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
-				$authors[] = new $this->author_class($name, $url, $email);
+				$authors[] = $this->registry->create('Author', array($name, $url, $email));
 			}
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $author)
 		{
-			$authors[] = new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $author)
 		{
-			$authors[] = new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
 		{
-			$authors[] = new $this->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 
 		if (!empty($authors))
 		{
-			return SimplePie_Misc::array_unique($authors);
+			return $this->registry->call('Misc', 'array_unique', array($authors));
 		}
 		else
 		{
@@ -2237,7 +2001,7 @@ class SimplePie_Core
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
-				$contributors[] = new $this->author_class($name, $uri, $email);
+				$contributors[] = $this->registry->create('Author', array($name, $uri, $email));
 			}
 		}
 		foreach ((array) $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'contributor') as $contributor)
@@ -2259,7 +2023,7 @@ class SimplePie_Core
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
-				$contributors[] = new $this->author_class($name, $url, $email);
+				$contributors[] = $this->registry->create('Author', array($name, $url, $email));
 			}
 		}
 
@@ -2673,7 +2437,7 @@ class SimplePie_Core
 					$keys = array_keys($items);
 					foreach ($keys as $key)
 					{
-						$this->data['items'][] = new $this->item_class($this, $items[$key]);
+						$this->data['items'][] = $this->registry->create('Item', array($this, $items[$key]));
 					}
 				}
 				if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'entry'))
@@ -2681,7 +2445,7 @@ class SimplePie_Core
 					$keys = array_keys($items);
 					foreach ($keys as $key)
 					{
-						$this->data['items'][] = new $this->item_class($this, $items[$key]);
+						$this->data['items'][] = $this->registry->create('Item', array($this, $items[$key]));
 					}
 				}
 				if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'item'))
@@ -2689,7 +2453,7 @@ class SimplePie_Core
 					$keys = array_keys($items);
 					foreach ($keys as $key)
 					{
-						$this->data['items'][] = new $this->item_class($this, $items[$key]);
+						$this->data['items'][] = $this->registry->create('Item', array($this, $items[$key]));
 					}
 				}
 				if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'item'))
@@ -2697,7 +2461,7 @@ class SimplePie_Core
 					$keys = array_keys($items);
 					foreach ($keys as $key)
 					{
-						$this->data['items'][] = new $this->item_class($this, $items[$key]);
+						$this->data['items'][] = $this->registry->create('Item', array($this, $items[$key]));
 					}
 				}
 				if ($items = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'item'))
@@ -2705,7 +2469,7 @@ class SimplePie_Core
 					$keys = array_keys($items);
 					foreach ($keys as $key)
 					{
-						$this->data['items'][] = new $this->item_class($this, $items[$key]);
+						$this->data['items'][] = $this->registry->create('Item', array($this, $items[$key]));
 					}
 				}
 			}
