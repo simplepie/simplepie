@@ -606,6 +606,16 @@ class SimplePie_Item
 		}
 	}
 
+	public function get_gmdate($date_format = 'j F Y, g:i a')
+	{
+		$date = $this->get_date('U');
+		if ($date === null) {
+			return null;
+		}
+
+		return gmdate($date_format, $date);
+	}
+
 	public function get_permalink()
 	{
 		$link = $this->get_link();
