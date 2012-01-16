@@ -47,6 +47,7 @@ Removing PHP 4.x support will certainly help with the slimming. It will also hel
 
 ## What comes in the package?
 1. `SimplePie.compiled.php` - The SimplePie library in one file.  This is all that's required for your pages.
+   Either run `php build/compile.php` to generate this, or grab a copy from [dev.simplepie.org](http://dev.simplepie.org/SimplePie.compiled.php)
 2. `SimplePieAutoloader.php` - The SimplePie Autoloader if you want to use the separate file version.
 3. `SimplePie/` - SimplePie classes for use with the autoloader
 4. `README.markdown` - This document.
