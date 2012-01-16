@@ -511,7 +511,6 @@ class SimplePie_Enclosure
 	/**
 	 * Get the framerate (in frames-per-second)
 	 *
-	 * @todo Check if this is actually an int
 	 * @return string|null
 	 */
 	public function get_framerate()
@@ -576,7 +575,6 @@ class SimplePie_Enclosure
 	/**
 	 * Get the height
 	 *
-	 * @todo Check if this is really an int
 	 * @return string|null
 	 */
 	public function get_height()
@@ -896,7 +894,6 @@ class SimplePie_Enclosure
 	/**
 	 * Get the width
 	 *
-	 * @todo Check if this is really an int
 	 * @return string|null
 	 */
 	public function get_width()
@@ -965,7 +962,6 @@ class SimplePie_Enclosure
 	 * `width` and `height` set to `auto` will default to 480x270 video resolution.
 	 *
 	 * @todo If the dimensions for media:content are defined, use them when width/height are set to 'auto'.
-	 * @todo Check if the Javascript still works, didn't we remove that?
 	 * @param array|string $options Comma-separated key:value list, or array
 	 * @param bool $native Use `<embed>`
 	 * @return string HTML string to output
