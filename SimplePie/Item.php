@@ -2589,7 +2589,7 @@ class SimplePie_Item
 				$this->data['enclosures'][] = $this->registry->create('Enclosure', array($url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width));
 			}
 
-			$this->data['enclosures'] = array_values($this->registry('Misc', 'array_unique', array($this->data['enclosures'])));
+			$this->data['enclosures'] = array_values($this->registry->call('Misc', 'array_unique', array($this->data['enclosures'])));
 		}
 		if (!empty($this->data['enclosures']))
 		{
