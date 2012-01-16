@@ -817,9 +817,9 @@ class SimplePie_Core
 	 */
 	public function set_feed_url($url)
 	{
+		$this->multifeed_url = array();
 		if (is_array($url))
 		{
-			$this->multifeed_url = array();
 			foreach ($url as $value)
 			{
 				$this->multifeed_url[] = SimplePie_Misc::fix_protocol($value, 1);
