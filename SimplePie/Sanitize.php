@@ -344,7 +344,7 @@ class SimplePie_Sanitize
 
 			if ($type & SIMPLEPIE_CONSTRUCT_IRI)
 			{
-				$data = SimplePie_Misc::absolutize_url($data, $base);
+				$data = $this->registry->call('Misc', 'absolutize_url', array($data, $base));
 			}
 
 			if ($type & (SIMPLEPIE_CONSTRUCT_TEXT | SIMPLEPIE_CONSTRUCT_IRI))
@@ -354,7 +354,7 @@ class SimplePie_Sanitize
 
 			if ($this->output_encoding !== 'UTF-8')
 			{
-				$data = SimplePie_Misc::change_encoding($data, 'UTF-8', $this->output_encoding);
+				$data = $this->registry->call('Misc', 'change_encoding', array($data, 'UTF-8', $this->output_encoding));
 			}
 		}
 		return $data;
@@ -399,7 +399,7 @@ class SimplePie_Sanitize
 				{
 					if ($element->hasAttribute($attribute))
 					{
-						$value = SimplePie_Misc::absolutize_url($element->getAttribute($attribute), $this->base);
+						$value = $this->registry->call('Misc', 'absolutize_url', array($element->getAttribute($attribute), $this->base));
 						$element->setAttribute($attribute, $value);
 					}
 				}

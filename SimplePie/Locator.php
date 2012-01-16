@@ -169,7 +169,7 @@ class SimplePie_Locator
 		{
 			if ($element->hasAttribute('href'))
 			{
-				$this->base = SimplePie_Misc::absolutize_url(trim($element->getAttribute('href')), $this->http_base);
+				$this->base = $this->registry->call('Misc', 'absolutize_url', array(trim($element->getAttribute('href')), $this->http_base));
 				$this->base_location = $element->getLineNo();
 				break;
 			}
@@ -205,18 +205,18 @@ class SimplePie_Locator
 			}
 			if ($link->hasAttribute('href') && $link->hasAttribute('rel'))
 			{
-				$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link->getAttribute('rel'))));
+				$rel = array_unique($this->registry->call('Misc', 'space_seperated_tokens', array(strtolower($link->getAttribute('rel')))));
 
 				if ($this->base_location < $link->getLineNo())
 				{
-					$href = SimplePie_Misc::absolutize_url(trim($link->getAttribute('href')), $this->base);
+					$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->base));
 				}
 				else
 				{
-					$href = SimplePie_Misc::absolutize_url(trim($link->getAttribute('href')), $this->http_base);
+					$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->http_base));
 				}
 
-				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower(SimplePie_Misc::parse_mime($link->getAttribute('type'))), array('application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href]))
+				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower($this->registry->call('Misc', 'parse_mime', array($link->getAttribute('type')))), array('application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href]))
 				{
 					$this->checked_feeds++;
 					$headers = array(
@@ -243,19 +243,19 @@ class SimplePie_Locator
 			if ($link->hasAttribute('href'))
 			{
 				$href = trim($link->getAttribute('href'));
-				$parsed = SimplePie_Misc::parse_url($href);
+				$parsed = $this->registry->call('Misc', 'parse_url', array($href));
 				if ($parsed['scheme'] === '' || preg_match('/^(http(s)|feed)?$/i', $parsed['scheme']))
 				{
 					if ($this->base_location < $link->getLineNo())
 					{
-						$href = SimplePie_Misc::absolutize_url(trim($link->getAttribute('href')), $this->base);
+						$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->base));
 					}
 					else
 					{
-						$href = SimplePie_Misc::absolutize_url(trim($link->getAttribute('href')), $this->http_base);
+						$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->http_base));
 					}
 
-					$current = SimplePie_Misc::parse_url($this->file->url);
+					$current = $this->registry->call('Misc', 'parse_url', array($this->file->url));
 
 					if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority'])
 					{
