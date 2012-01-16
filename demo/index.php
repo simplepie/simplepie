@@ -13,6 +13,12 @@ $feed = new SimplePie();
 
 //$feed->force_fsockopen(true);
 
+if (isset($_GET['js']))
+{
+	SimplePie_Misc::output_javascript();
+	die();
+}
+
 // Make sure that page is getting passed a URL
 if (isset($_GET['feed']) && $_GET['feed'] !== '')
 {
@@ -68,6 +74,7 @@ $feed->handle_content_type();
 <script type="text/javascript" src="./for_the_demo/sifr.js"></script>
 <script type="text/javascript" src="./for_the_demo/sifr-config.js"></script>
 <script type="text/javascript" src="./for_the_demo/sleight.js"></script>
+<script type="text/javascript" src="?js"></script>
 
 </head>
 
