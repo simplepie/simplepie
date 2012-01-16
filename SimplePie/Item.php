@@ -590,38 +590,38 @@ class SimplePie_Item
 		}
 	}
 
-	function get_updated_date($date_format = 'j F Y, g:i a')
+	public function get_updated_date($date_format = 'j F Y, g:i a')
 	{
-		if (!isset($this->data['date']))
+		if (!isset($this->data['updated']))
 		{
 			if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'updated'))
 			{
-				$this->data['date']['raw'] = $return[0]['data'];
+				$this->data['updated']['raw'] = $return[0]['data'];
 			}
 
-			if (!empty($this->data['date']['raw']))
+			if (!empty($this->data['updated']['raw']))
 			{
 				$parser = SimplePie_Parse_Date::get();
-				$this->data['date']['parsed'] = $parser->parse($this->data['date']['raw']);
+				$this->data['updated']['parsed'] = $parser->parse($this->data['date']['raw']);
 			}
 			else
 			{
-				$this->data['date'] = null;
+				$this->data['updated'] = null;
 			}
 		}
-		if ($this->data['date'])
+		if ($this->data['updated'])
 		{
 			$date_format = (string) $date_format;
 			switch ($date_format)
 			{
 				case '':
-					return $this->sanitize($this->data['date']['raw'], SIMPLEPIE_CONSTRUCT_TEXT);
+					return $this->sanitize($this->data['updated']['raw'], SIMPLEPIE_CONSTRUCT_TEXT);
 
 				case 'U':
-					return $this->data['date']['parsed'];
+					return $this->data['updated']['parsed'];
 
 				default:
-					return date($date_format, $this->data['date']['parsed']);
+					return date($date_format, $this->data['updated']['parsed']);
 			}
 		}
 		else
@@ -649,7 +649,19 @@ class SimplePie_Item
 	public function get_gmdate($date_format = 'j F Y, g:i a')
 	{
 		$date = $this->get_date('U');
-		if ($date === null) {
+		if ($date === null)
+		{
+			return null;
+		}
+
+		return gmdate($date_format, $date);
+	}
+
+	public function get_updated_gmdate($date_format = 'j F Y, g:i a')
+	{
+		$date = $this->get_updated_date('U');
+		if ($date === null)
+		{
 			return null;
 		}
 
