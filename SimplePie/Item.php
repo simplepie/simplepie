@@ -971,7 +971,7 @@ class SimplePie_Item
 			}
 			if (is_array($categories_parent))
 			{
-				$categories_parent = array_values($this->registry('Misc', 'array_unique', array($categories_parent)));
+				$categories_parent = array_values($this->registry->call('Misc', 'array_unique', array($categories_parent)));
 			}
 
 			// COPYRIGHT
@@ -1059,7 +1059,7 @@ class SimplePie_Item
 			}
 			if (is_array($credits_parent))
 			{
-				$credits_parent = array_values($this->registry('Misc', 'array_unique', array($credits_parent)));
+				$credits_parent = array_values($this->registry->call('Misc', 'array_unique', array($credits_parent)));
 			}
 
 			// DESCRIPTION
@@ -1151,7 +1151,7 @@ class SimplePie_Item
 			}
 			if (is_array($hashes_parent))
 			{
-				$hashes_parent = array_values($this->registry('Misc', 'array_unique', array($hashes_parent)));
+				$hashes_parent = array_values($this->registry->call('Misc', 'array_unique', array($hashes_parent)));
 			}
 
 			// KEYWORDS
@@ -1205,7 +1205,7 @@ class SimplePie_Item
 			}
 			if (is_array($keywords_parent))
 			{
-				$keywords_parent = array_values($this->registry('Misc', 'array_unique', array($keywords_parent)));
+				$keywords_parent = array_values($this->registry->call('Misc', 'array_unique', array($keywords_parent)));
 			}
 
 			// PLAYER
@@ -1295,7 +1295,7 @@ class SimplePie_Item
 			}
 			if (is_array($ratings_parent))
 			{
-				$ratings_parent = array_values($this->registry('Misc', 'array_unique', array($ratings_parent)));
+				$ratings_parent = array_values($this->registry->call('Misc', 'array_unique', array($ratings_parent)));
 			}
 
 			// RESTRICTIONS
@@ -1373,7 +1373,7 @@ class SimplePie_Item
 			}
 			if (is_array($restrictions_parent))
 			{
-				$restrictions_parent = array_values($this->registry('Misc', 'array_unique', array($restrictions_parent)));
+				$restrictions_parent = array_values($this->registry->call('Misc', 'array_unique', array($restrictions_parent)));
 			}
 
 			// THUMBNAILS
@@ -1578,7 +1578,7 @@ class SimplePie_Item
 								}
 								if (is_array($captions))
 								{
-									$captions = array_values($this->registry('Misc', 'array_unique', array($captions)));
+									$captions = array_values($this->registry->call('Misc', 'array_unique', array($captions)));
 								}
 							}
 							elseif (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['text']))
@@ -1614,7 +1614,7 @@ class SimplePie_Item
 								}
 								if (is_array($captions))
 								{
-									$captions = array_values($this->registry('Misc', 'array_unique', array($captions)));
+									$captions = array_values($this->registry->call('Misc', 'array_unique', array($captions)));
 								}
 							}
 							else
@@ -1677,15 +1677,15 @@ class SimplePie_Item
 							}
 							if (is_array($categories) && is_array($categories_parent))
 							{
-								$categories = array_values($this->registry('Misc', 'array_unique', array(array_merge($categories, $categories_parent))));
+								$categories = array_values($this->registry->call('Misc', 'array_unique', array(array_merge($categories, $categories_parent))));
 							}
 							elseif (is_array($categories))
 							{
-								$categories = array_values($this->registry('Misc', 'array_unique', array($categories)));
+								$categories = array_values($this->registry->call('Misc', 'array_unique', array($categories)));
 							}
 							elseif (is_array($categories_parent))
 							{
-								$categories = array_values($this->registry('Misc', 'array_unique', array($categories_parent)));
+								$categories = array_values($this->registry->call('Misc', 'array_unique', array($categories_parent)));
 							}
 
 							// COPYRIGHTS
@@ -1750,7 +1750,7 @@ class SimplePie_Item
 								}
 								if (is_array($credits))
 								{
-									$credits = array_values($this->registry('Misc', 'array_unique', array($credits)));
+									$credits = array_values($this->registry->call('Misc', 'array_unique', array($credits)));
 								}
 							}
 							elseif (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['credit']))
@@ -1780,7 +1780,7 @@ class SimplePie_Item
 								}
 								if (is_array($credits))
 								{
-									$credits = array_values($this->registry('Misc', 'array_unique', array($credits)));
+									$credits = array_values($this->registry->call('Misc', 'array_unique', array($credits)));
 								}
 							}
 							else
@@ -1825,7 +1825,7 @@ class SimplePie_Item
 								}
 								if (is_array($hashes))
 								{
-									$hashes = array_values($this->registry('Misc', 'array_unique', array($hashes)));
+									$hashes = array_values($this->registry->call('Misc', 'array_unique', array($hashes)));
 								}
 							}
 							elseif (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['hash']))
@@ -1850,7 +1850,7 @@ class SimplePie_Item
 								}
 								if (is_array($hashes))
 								{
-									$hashes = array_values($this->registry('Misc', 'array_unique', array($hashes)));
+									$hashes = array_values($this->registry->call('Misc', 'array_unique', array($hashes)));
 								}
 							}
 							else
@@ -1872,7 +1872,7 @@ class SimplePie_Item
 								}
 								if (is_array($keywords))
 								{
-									$keywords = array_values($this->registry('Misc', 'array_unique', array($keywords)));
+									$keywords = array_values($this->registry->call('Misc', 'array_unique', array($keywords)));
 								}
 							}
 							elseif (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords']))
@@ -1888,7 +1888,7 @@ class SimplePie_Item
 								}
 								if (is_array($keywords))
 								{
-									$keywords = array_values($this->registry('Misc', 'array_unique', array($keywords)));
+									$keywords = array_values($this->registry->call('Misc', 'array_unique', array($keywords)));
 								}
 							}
 							else
@@ -1933,7 +1933,7 @@ class SimplePie_Item
 								}
 								if (is_array($ratings))
 								{
-									$ratings = array_values($this->registry('Misc', 'array_unique', array($ratings)));
+									$ratings = array_values($this->registry->call('Misc', 'array_unique', array($ratings)));
 								}
 							}
 							elseif (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['rating']))
@@ -1958,7 +1958,7 @@ class SimplePie_Item
 								}
 								if (is_array($ratings))
 								{
-									$ratings = array_values($this->registry('Misc', 'array_unique', array($ratings)));
+									$ratings = array_values($this->registry->call('Misc', 'array_unique', array($ratings)));
 								}
 							}
 							else
@@ -1990,7 +1990,7 @@ class SimplePie_Item
 								}
 								if (is_array($restrictions))
 								{
-									$restrictions = array_values($this->registry('Misc', 'array_unique', array($restrictions)));
+									$restrictions = array_values($this->registry->call('Misc', 'array_unique', array($restrictions)));
 								}
 							}
 							elseif (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['restriction']))
@@ -2016,7 +2016,7 @@ class SimplePie_Item
 								}
 								if (is_array($restrictions))
 								{
-									$restrictions = array_values($this->registry('Misc', 'array_unique', array($restrictions)));
+									$restrictions = array_values($this->registry->call('Misc', 'array_unique', array($restrictions)));
 								}
 							}
 							else
@@ -2033,7 +2033,7 @@ class SimplePie_Item
 								}
 								if (is_array($thumbnails))
 								{
-									$thumbnails = array_values($this->registry('Misc', 'array_unique', array($thumbnails)));
+									$thumbnails = array_values($this->registry->call('Misc', 'array_unique', array($thumbnails)));
 								}
 							}
 							elseif (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['thumbnail']))
@@ -2044,7 +2044,7 @@ class SimplePie_Item
 								}
 								if (is_array($thumbnails))
 								{
-									$thumbnails = array_values($this->registry('Misc', 'array_unique', array($thumbnails)));
+									$thumbnails = array_values($this->registry->call('Misc', 'array_unique', array($thumbnails)));
 								}
 							}
 							else
@@ -2202,7 +2202,7 @@ class SimplePie_Item
 							}
 							if (is_array($captions))
 							{
-								$captions = array_values($this->registry('Misc', 'array_unique', array($captions)));
+								$captions = array_values($this->registry->call('Misc', 'array_unique', array($captions)));
 							}
 						}
 						else
@@ -2239,15 +2239,15 @@ class SimplePie_Item
 						}
 						if (is_array($categories) && is_array($categories_parent))
 						{
-							$categories = array_values($this->registry('Misc', 'array_unique', array(array_merge($categories, $categories_parent))));
+							$categories = array_values($this->registry->call('Misc', 'array_unique', array(array_merge($categories, $categories_parent))));
 						}
 						elseif (is_array($categories))
 						{
-							$categories = array_values($this->registry('Misc', 'array_unique', array($categories)));
+							$categories = array_values($this->registry->call('Misc', 'array_unique', array($categories)));
 						}
 						elseif (is_array($categories_parent))
 						{
-							$categories = array_values($this->registry('Misc', 'array_unique', array($categories_parent)));
+							$categories = array_values($this->registry->call('Misc', 'array_unique', array($categories_parent)));
 						}
 						else
 						{
@@ -2302,7 +2302,7 @@ class SimplePie_Item
 							}
 							if (is_array($credits))
 							{
-								$credits = array_values($this->registry('Misc', 'array_unique', array($credits)));
+								$credits = array_values($this->registry->call('Misc', 'array_unique', array($credits)));
 							}
 						}
 						else
@@ -2343,7 +2343,7 @@ class SimplePie_Item
 							}
 							if (is_array($hashes))
 							{
-								$hashes = array_values($this->registry('Misc', 'array_unique', array($hashes)));
+								$hashes = array_values($this->registry->call('Misc', 'array_unique', array($hashes)));
 							}
 						}
 						else
@@ -2365,7 +2365,7 @@ class SimplePie_Item
 							}
 							if (is_array($keywords))
 							{
-								$keywords = array_values($this->registry('Misc', 'array_unique', array($keywords)));
+								$keywords = array_values($this->registry->call('Misc', 'array_unique', array($keywords)));
 							}
 						}
 						else
@@ -2406,7 +2406,7 @@ class SimplePie_Item
 							}
 							if (is_array($ratings))
 							{
-								$ratings = array_values($this->registry('Misc', 'array_unique', array($ratings)));
+								$ratings = array_values($this->registry->call('Misc', 'array_unique', array($ratings)));
 							}
 						}
 						else
@@ -2438,7 +2438,7 @@ class SimplePie_Item
 							}
 							if (is_array($restrictions))
 							{
-								$restrictions = array_values($this->registry('Misc', 'array_unique', array($restrictions)));
+								$restrictions = array_values($this->registry->call('Misc', 'array_unique', array($restrictions)));
 							}
 						}
 						else
@@ -2455,7 +2455,7 @@ class SimplePie_Item
 							}
 							if (is_array($thumbnails))
 							{
-								$thumbnails = array_values($this->registry('Misc', 'array_unique', array($thumbnails)));
+								$thumbnails = array_values($this->registry->call('Misc', 'array_unique', array($thumbnails)));
 							}
 						}
 						else
