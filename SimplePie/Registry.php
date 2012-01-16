@@ -76,6 +76,7 @@ class SimplePie_Registry
 		'Content_Type_Sniffer' => 'SimplePie_Content_Type_Sniffer',
 		'Source' => 'SimplePie_Source',
 		'Misc' => 'SimplePie_Misc',
+		'XML_Declaration_Parser' => 'SimplePie_XML_Declaration_Parser'
 	);
 
 	/**

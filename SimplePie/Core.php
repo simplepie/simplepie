@@ -1415,7 +1415,7 @@ class SimplePie_Core
 				{
 					$encodings[] = strtoupper($charset[1]);
 				}
-				$encodings = array_merge($encodings, $this->registry->call('Misc', 'xml_encoding', array($data)));
+				$encodings = array_merge($encodings, $this->registry->call('Misc', 'xml_encoding', array($data, &$this->regisry)));
 				$encodings[] = 'UTF-8';
 			}
 			elseif (in_array($sniffed, $text_types) || substr($sniffed, 0, 5) === 'text/' && substr($sniffed, -4) === '+xml')
@@ -1434,7 +1434,7 @@ class SimplePie_Core
 		}
 
 		// Fallback to XML 1.0 Appendix F.1/UTF-8/ISO-8859-1
-		$encodings = array_merge($encodings, $this->registry->call('Misc', 'xml_encoding', array($data)));
+		$encodings = array_merge($encodings, $this->registry->call('Misc', 'xml_encoding', array($data, &$this->registry)));
 		$encodings[] = 'UTF-8';
 		$encodings[] = 'ISO-8859-1';
 
