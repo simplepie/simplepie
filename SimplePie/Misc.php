@@ -1826,7 +1826,7 @@ class SimplePie_Misc
 	/**
 	 * Decode HTML entities
 	 *
-	 * @static
+	 * @deprecated Use DOMDocument instead
 	 * @param string $data Input data
 	 * @return string Output data
 	 */

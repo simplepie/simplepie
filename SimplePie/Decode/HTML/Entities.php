@@ -48,6 +48,7 @@
  *
  * This implements HTML5 as of revision 967 (2007-06-28)
  *
+ * @deprecated Use DOMDocument instead!
  * @package SimplePie
  */
 class SimplePie_Decode_HTML_Entities
