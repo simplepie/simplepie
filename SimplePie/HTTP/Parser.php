@@ -456,7 +456,7 @@ class SimplePie_HTTP_Parser
 	 */
 	protected function chunked()
 	{
-		if (!preg_match('/^[0-9a-f]+(\s|\r|\n)+/mi', trim($this->body)))
+		if (!preg_match('/^([0-9a-f]+)[^\r\n]*\r\n/i', trim($this->body)))
 		{
 			$this->state = 'emit';
 			return;
@@ -467,7 +467,7 @@ class SimplePie_HTTP_Parser
 
 		while (true)
 		{
-			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)[^\r\n]*\r\n/mi', $encoded, $matches );
+			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)[^\r\n]*\r\n/i', $encoded, $matches );
 			if (!$is_chunked)
 			{
 				// Looks like it's not chunked after all
