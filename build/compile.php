@@ -58,5 +58,12 @@ foreach($files as $file_path => $info)
 // Strip excess whitespace
 $compiled = preg_replace("#\n\n\n+#", "\n\n", $compiled);
 
+// Hardcode the build
+$compiled = str_replace(
+	"define('SIMPLEPIE_BUILD', gmdate('YmdHis', SimplePie_Misc::get_build()))",
+	"define('SIMPLEPIE_BUILD', '" . gmdate('YmdHis', time()) . "')",
+	$compiled
+);
+
 // Finally, save
 file_put_contents(COMPILED, $compiled);
