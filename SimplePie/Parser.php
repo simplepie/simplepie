@@ -69,7 +69,7 @@ class SimplePie_Parser
 	var $encoding;
 	protected $registry;
 
-	public function set_registry(&$registry)
+	public function set_registry(SimplePie_Registry &$registry)
 	{
 		$this->registry = &$registry;
 	}

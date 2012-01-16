@@ -64,7 +64,7 @@ class SimplePie_Item
 		$this->data = $data;
 	}
 
-	public function set_registry(&$registry)
+	public function set_registry(SimplePie_Registry &$registry)
 	{
 		$this->registry = &$registry;
 	}
