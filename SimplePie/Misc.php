@@ -137,6 +137,14 @@ class SimplePie_Misc
 		return $output . $input;
 	}
 
+	/**
+	 * Get a HTML/XML element from a HTML string
+	 *
+	 * @deprecated Use DOMDocument instead (parsing HTML with regex is bad!)
+	 * @param string $realname Element name (including namespace prefix if applicable)
+	 * @param string $string HTML document
+	 * @return array
+	 */
 	public static function get_element($realname, $string)
 	{
 		$return = array();
@@ -2358,6 +2366,11 @@ function embed_wmedia(width, height, link) {
 			}
 		}
 		return $info;
+	}
+
+	public static function silence_errors($num, $str)
+	{
+		// No-op
 	}
 }
 

@@ -74,6 +74,12 @@ class SimplePie_Locator
 		$this->timeout = $timeout;
 		$this->max_checked_feeds = $max_checked_feeds;
 		$this->content_type_sniffer_class = $content_type_sniffer_class;
+
+		$this->dom = new DOMDocument();
+
+		set_error_handler(array('SimplePie_Misc', 'silence_errors'));
+		$this->dom->loadHTML($this->file->body);
+		restore_error_handler();
 	}
 
 	public function find($type = SIMPLEPIE_LOCATOR_ALL, &$working)
@@ -156,13 +162,13 @@ class SimplePie_Locator
 	{
 		$this->http_base = $this->file->url;
 		$this->base = $this->http_base;
-		$elements = SimplePie_Misc::get_element('base', $this->file->body);
+		$elements = $this->dom->getElementsByTagName('base');
 		foreach ($elements as $element)
 		{
-			if ($element['attribs']['href']['data'] !== '')
+			if ($element->hasAttribute('href'))
 			{
-				$this->base = SimplePie_Misc::absolutize_url(trim($element['attribs']['href']['data']), $this->http_base);
-				$this->base_location = $element['offset'];
+				$this->base = SimplePie_Misc::absolutize_url(trim($element->getAttribute('href')), $this->http_base);
+				$this->base_location = $element->getLineNo();
 				break;
 			}
 		}
@@ -170,29 +176,45 @@ class SimplePie_Locator
 
 	public function autodiscovery()
 	{
-		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body), SimplePie_Misc::get_element('a', $this->file->body), SimplePie_Misc::get_element('area', $this->file->body));
 		$done = array();
 		$feeds = array();
+		$feeds = array_merge($feeds, $this->search_elements_by_tag('link', $done, $feeds));
+		$feeds = array_merge($feeds, $this->search_elements_by_tag('a', $done, $feeds));
+		$feeds = array_merge($feeds, $this->search_elements_by_tag('area', $done, $feeds));
+
+		if (!empty($feeds))
+		{
+			return array_values($feeds);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	protected function search_elements_by_tag($name, &$done, $feeds)
+	{
+		$links = $this->dom->getElementsByTagName($name);
 		foreach ($links as $link)
 		{
 			if ($this->checked_feeds === $this->max_checked_feeds)
 			{
 				break;
 			}
-			if (isset($link['attribs']['href']['data']) && isset($link['attribs']['rel']['data']))
+			if ($link->hasAttribute('href') && $link->hasAttribute('rel'))
 			{
-				$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link['attribs']['rel']['data'])));
+				$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link->getAttribute('rel'))));
 
-				if ($this->base_location < $link['offset'])
+				if ($this->base_location < $link->getLineNo())
 				{
-					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->base);
+					$href = SimplePie_Misc::absolutize_url(trim($link->getAttribute('href')), $this->base);
 				}
 				else
 				{
-					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->http_base);
+					$href = SimplePie_Misc::absolutize_url(trim($link->getAttribute('href')), $this->http_base);
 				}
 
-				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && !empty($link['attribs']['type']['data']) && in_array(strtolower(SimplePie_Misc::parse_mime($link['attribs']['type']['data'])), array('application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href]))
+				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower(SimplePie_Misc::parse_mime($link->getAttribute('type'))), array('application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href]))
 				{
 					$this->checked_feeds++;
 					$headers = array(
@@ -208,34 +230,27 @@ class SimplePie_Locator
 			}
 		}
 
-		if (!empty($feeds))
-		{
-			return array_values($feeds);
-		}
-		else
-		{
-			return null;
-		}
+		return $feeds;
 	}
 
 	public function get_links()
 	{
-		$links = SimplePie_Misc::get_element('a', $this->file->body);
+		$links = $this->dom->getElementsByTagName('a');
 		foreach ($links as $link)
 		{
-			if (isset($link['attribs']['href']['data']))
+			if ($link->hasAttribute('href'))
 			{
-				$href = trim($link['attribs']['href']['data']);
+				$href = trim($link->getAttribute('href'));
 				$parsed = SimplePie_Misc::parse_url($href);
 				if ($parsed['scheme'] === '' || preg_match('/^(http(s)|feed)?$/i', $parsed['scheme']))
 				{
-					if ($this->base_location < $link['offset'])
+					if ($this->base_location < $link->getLineNo())
 					{
-						$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->base);
+						$href = SimplePie_Misc::absolutize_url(trim($link->getAttribute('href')), $this->base);
 					}
 					else
 					{
-						$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->http_base);
+						$href = SimplePie_Misc::absolutize_url(trim($link->getAttribute('href')), $this->http_base);
 					}
 
 					$current = SimplePie_Misc::parse_url($this->file->url);
