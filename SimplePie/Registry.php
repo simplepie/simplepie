@@ -174,8 +174,15 @@ class SimplePie_Registry
 			}
 		}
 
-		$reflector = new ReflectionClass($class);
-		$instance = $reflector->newInstanceArgs($parameters);
+		if (!method_exists($class, '__construct'))
+		{
+			$instance = new $class;
+		}
+		else
+		{
+			$reflector = new ReflectionClass($class);
+			$instance = $reflector->newInstanceArgs($parameters);
+		}
 
 		if (method_exists($instance, 'set_registry'))
 		{
