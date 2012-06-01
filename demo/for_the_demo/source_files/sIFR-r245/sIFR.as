@@ -12,7 +12,7 @@
 
   =:license
     This software is licensed and provided under the CC-GNU LGPL.
-    See <http://creativecommons.org/licenses/LGPL/2.1/>    
+    See <http://creativecommons.org/licenses/LGPL/2.1/>
 */
 
 import SifrStyleSheet;
@@ -29,7 +29,7 @@ class sIFR {
 
   public static var MAX_FONT_SIZE                = 126;
   public static var ALIASING_MAX_FONT_SIZE       = 48;
-  
+
   //= Holds CSS properties and other rendering properties for the Flash movie.
   //  *Don't overwrite!*
   public static var styles:SifrStyleSheet        = new SifrStyleSheet();
@@ -83,7 +83,7 @@ class sIFR {
   };
 
   private static var instance;
-  
+
   private var textField;
   private var content;
   private var realHeight;
@@ -92,9 +92,9 @@ class sIFR {
   private var fontSize;
   private var tuneWidth;
   private var tuneHeight;
-  
 
-  
+
+
   //= Sets the default styles for `sIFR.styles`. This method is called
   //  directly in `sifr.fla`, before options are applied.
   public static function setDefaultStyles() {
@@ -106,15 +106,15 @@ class sIFR {
       'a:hover { color: #0000FF; text-decoration: none; }'
     ].join(''));
   }
-  
+
   //= Validates the domain sIFR is being used on.
-  //  Returns `true` if the domain is valid, `false` otherwise.  
+  //  Returns `true` if the domain is valid, `false` otherwise.
   public static function checkDomain():Boolean {
     if(sIFR.domains.length == 0) return true;
 
     var domain = (new LocalConnection()).domain();
     if(sIFR.fromLocal) sIFR.domains.push('localhost');
-    
+
     for(var i = 0; i < sIFR.domains.length; i++) {
       var match = sIFR.domains[i];
       if(match == '*' || match == domain) return true;
@@ -126,10 +126,10 @@ class sIFR {
         if(matchPosition > -1 && (matchPosition + match.length) == domain.length) return true;
       }
     }
-    
+
     return false;
   }
-  
+
   //= Runs sIFR. Called automatically.
   public static function run() {
     var holder  = _root.holder;
@@ -143,7 +143,7 @@ class sIFR {
     Stage.scaleMode = 'noscale';
     Stage.align = 'TL';
     Stage.showMenu = false;
-    
+
     // Other parameters
     var opacity = parseInt(_root.opacity);
     if(!isNaN(opacity)) holder._alpha = sIFR.defaultOpacity == -1 ? opacity : sIFR.defaultOpacity;
@@ -155,15 +155,15 @@ class sIFR {
 /*    if(_root.zoomsupport == 'true') Stage.addListener({onResize: function() { sIFR.instance.scale() }});*/
 
     // Setup callbacks
-    _root.watch('callbackTrigger', function() { 
+    _root.watch('callbackTrigger', function() {
       sIFR.callback();
       return false;
     });
   }
-  
+
   private static function eval(str) {
     var as;
-    
+
     if(str.charAt(0) == '{') { // Ah, we need to create an object
       as = {};
       str = str.substring(1, str.length - 1);
@@ -179,30 +179,30 @@ class sIFR {
     } else { // Float
       as = parseFloat(str);
     }
-    
+
     return as;
   }
-  
+
   private function applyFilters() {
     var $filters = this.textField.filters;
     $filters = $filters.concat(sIFR.filters);
-    
+
     var $ = _root.flashfilters.split(';'); // name,prop:value,...;
     for(var i = 0; i < $.length; i++) {
       var $1 = $[i].split(',');
-      
+
       var newFilter = new sIFR.filterMap[$1[0]]();
       for(var j = 1; j < $1.length; j++) {
         var $2 = $1[j].split(':');
         newFilter[$2[0]] = sIFR.eval(unescape($2[1]));
       }
-      
+
       $filters.push(newFilter);
     }
 
     this.textField.filters = $filters;
   }
-  
+
   private function sIFR(textField, content) {
     this.textField = textField;
     this.content   = content;
@@ -211,7 +211,7 @@ class sIFR {
     textField._x = MARGIN_LEFT + (isNaN(offsetLeft) ? 0 : offsetLeft);
     var offsetTop = parseInt(_root.offsettop);
     if(!isNaN(offsetTop)) textField._y += offsetTop;
-    
+
     tuneWidth = parseInt(_root.tunewidth);
     if(isNaN(tuneWidth)) tuneWidth = 0;
     tuneHeight = parseInt(_root.tuneheight);
@@ -228,10 +228,10 @@ class sIFR {
     this.fontSize = parseInt(_root.size);
     if(isNaN(this.fontSize)) this.fontSize = 26;
     styles.fontSize = this.fontSize;
-    
+
     if(!sIFR.preserveAntiAlias && (sIFR.conditionalAntiAlias && this.fontSize < ALIASING_MAX_FONT_SIZE
     || !sIFR.conditionalAntiAlias)) {
-      textField.antiAliasType = sIFR.antiAliasType || DEFAULT_ANTI_ALIAS_TYPE;      
+      textField.antiAliasType = sIFR.antiAliasType || DEFAULT_ANTI_ALIAS_TYPE;
     }
 
     if(!sIFR.preserveAntiAlias || !isNaN(parseInt(_root.sharpness))) {
@@ -243,19 +243,19 @@ class sIFR {
       textField.thickness = parseInt(_root.thickness);
     }
     if(isNaN(textField.thickness)) textField.thickness = sIFR.defaultThickness;
-    
+
     // Set font-size and other styles
     sIFR.styles.parseCSS(unescape(_root.css));
-    
+
     var rootStyle = styles.getStyle('.sIFR-root') || {};
     rootStyle.fontSize = this.fontSize; // won't go higher than 126!
     styles.setStyle('.sIFR-root', rootStyle);
     textField.styleSheet = styles;
-    
+
     this.write(content);
     this.repaint();
   }
-  
+
   private function repaint() {
     var leadingFix = this.isSingleLine() ? sIFR.styles.latestLeading : 0;
     if(leadingFix > 0) leadingFix -= LEADING_REMAINDER;
@@ -269,19 +269,19 @@ class sIFR {
     var arg = 'height:' + this.realHeight;
     if(_root.fitexactly == 'true') arg += ',width:' + (textField.textWidth + tuneWidth);
     fscommand('resize', arg);
-        
+
     this.originalHeight = textField._height;
     this.currentHeight = Stage.height;
 
     textField._xscale = textField._yscale = parseInt(_root.zoom);
   }
-  
+
   private function write(content) {
-    this.textField.htmlText = ['<p class="', CSS_ROOT_CLASS, '">', 
+    this.textField.htmlText = ['<p class="', CSS_ROOT_CLASS, '">',
                                 content, '</p>'
                               ].join('');
   }
-  
+
   private function isSingleLine() {
     return Math.round((this.textField.textHeight - sIFR.styles.latestLeading) / this.fontSize) == 1;
   }
@@ -292,14 +292,14 @@ class sIFR {
     var scale = 100 * Math.round(this.currentHeight / this.originalHeight);
     textField._xscale = textField._yscale = scale;
   }
-  
+
   private function calculateRatios() {
     var strings = ['X', 'X<br>X', 'X<br>X<br>X', 'X<br>X<br>X<br>X'];
     var results = {};
 
     for(var i = 1; i <= strings.length; i++) {
       var size = 6;
-    
+
       this.write(strings[i - 1]);
       while(size < MAX_FONT_SIZE) {
         var rootStyle = sIFR.styles.getStyle('.sIFR-root') || {};
@@ -335,11 +335,11 @@ class sIFR {
 
     fscommand('debug:ratios', '[' + ratios.join(',') + ']');
   }
-  
+
   private function roundDecimals(value, decimals) {
     return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
   }
-  
+
   public static function callback() {
     switch(_root.callbackType) {
       case 'replacetext':
