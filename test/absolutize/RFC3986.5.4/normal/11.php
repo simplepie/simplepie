@@ -6,7 +6,7 @@ class SimplePie_Absolutize_Test_RFC3986_Normal_11 extends SimplePie_Absolutize_T
 	{
 		$this->data['relative'] = 'g?y#s';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'http://a/b/c/g?y#s';

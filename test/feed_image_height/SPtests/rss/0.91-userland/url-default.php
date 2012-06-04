@@ -4,7 +4,7 @@ class SimplePie_Feed_Image_Height_Test_RSS_091_Userland_URL_Default extends Simp
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91">
 	<channel>
 		<image>
@@ -13,7 +13,7 @@ class SimplePie_Feed_Image_Height_Test_RSS_091_Userland_URL_Default extends Simp
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 31.0;

@@ -4,7 +4,7 @@ class SimplePie_First_Item_ID_Test_RSS_091_Userland_Atom_10_ID extends SimplePie
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_ID_Test_RSS_091_Userland_Atom_10_ID extends SimplePie
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'http://example.com/';

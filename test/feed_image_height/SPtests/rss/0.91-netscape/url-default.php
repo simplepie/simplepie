@@ -4,7 +4,7 @@ class SimplePie_Feed_Image_Height_Test_RSS_091_Netscape_URL_Default extends Simp
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
 	<channel>
@@ -14,7 +14,7 @@ class SimplePie_Feed_Image_Height_Test_RSS_091_Netscape_URL_Default extends Simp
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 31.0;

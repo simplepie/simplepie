@@ -4,7 +4,7 @@ class SimplePie_First_Item_Title_Test_RSS_092_Title extends SimplePie_First_Item
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.92">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Title_Test_RSS_092_Title extends SimplePie_First_Item
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Title';

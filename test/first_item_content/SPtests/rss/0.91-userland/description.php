@@ -4,7 +4,7 @@ class SimplePie_First_Item_Content_Test_RSS_091_Userland_Description extends Sim
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Content_Test_RSS_091_Userland_Description extends Sim
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Description';

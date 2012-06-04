@@ -4,7 +4,7 @@ class SimplePie_First_Item_Contributor_Name_Test_Atom_03_Name extends SimplePie_
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<entry>
 		<contributor>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Contributor_Name_Test_Atom_03_Name extends SimplePie_
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Contributor';

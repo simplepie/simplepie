@@ -4,7 +4,7 @@ class SimplePie_First_Item_Author_Name_Test_RSS_20_Author extends SimplePie_Firs
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="2.0">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Author_Name_Test_RSS_20_Author extends SimplePie_Firs
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = NULL;

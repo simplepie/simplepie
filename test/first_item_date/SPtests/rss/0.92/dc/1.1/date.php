@@ -4,7 +4,7 @@ class SimplePie_First_Item_Date_Test_RSS_092_DC_11_Date extends SimplePie_First_
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Date_Test_RSS_092_DC_11_Date extends SimplePie_First_
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 1168531200;
