@@ -93,7 +93,12 @@ class SimplePie_Locator
 
 		if ($this->file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = $this->registry->create('Content_Type_Sniffer', array($this->file));
+			$registry = $this->registry;
+			if (null === $registry)
+			{
+				return null;
+			}
+			$sniffer = $registry->create('Content_Type_Sniffer', array($this->file));
 			if ($sniffer->get_type() !== 'text/html')
 			{
 				return null;
@@ -139,7 +144,12 @@ class SimplePie_Locator
 	{
 		if ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = $this->registry->create('Content_Type_Sniffer', array($file));
+			$registry = $this->registry;
+			if (null === $registry)
+			{
+				return false;
+			}
+			$sniffer = $registry->create('Content_Type_Sniffer', array($file));
 			$sniffed = $sniffer->get_type();
 			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'text/rdf', 'application/atom+xml', 'text/xml', 'application/xml')))
 			{
