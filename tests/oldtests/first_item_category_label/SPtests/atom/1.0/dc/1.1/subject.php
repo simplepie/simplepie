@@ -4,14 +4,14 @@ class SimplePie_First_Item_Category_Label_Test_Atom_10_DC_11_Subject extends Sim
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<entry>
 		<dc:subject>Item Category</dc:subject>
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Category';

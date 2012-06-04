@@ -4,7 +4,7 @@ class SimplePie_Feed_Image_URL_Test_RSS_091_Userland_URL extends SimplePie_Feed_
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91">
 	<channel>
 		<image>
@@ -13,7 +13,7 @@ class SimplePie_Feed_Image_URL_Test_RSS_091_Userland_URL extends SimplePie_Feed_
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'http://example.com/';

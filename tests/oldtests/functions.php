@@ -369,19 +369,19 @@ class SimplePie_iTunesRSS_Channel_Block_Test extends SimplePie_First_Item_Test
 class diveintomark_Atom_Autodiscovery extends SimplePie_Unit_Test2
 {
 	var $data = array('url' => 'http://diveintomark.org/tests/client/autodiscovery/');
-	
+
 	function data()
 	{
 		$this->data['file'] = new SimplePie_File($this->data['url'], 10, 5, null, SIMPLEPIE_USERAGENT);
 		$this->name = $this->data['url'];
 		$this->data['url'] = false;
 	}
-	
+
 	function expected()
 	{
 		$this->expected = $this->data['file']->url;
 	}
-	
+
 	function test()
 	{
 		$feed = new SimplePie();
@@ -390,7 +390,7 @@ class diveintomark_Atom_Autodiscovery extends SimplePie_Unit_Test2
 		$feed->init();
 		$this->result = $feed->get_link();
 	}
-	
+
 	function result()
 	{
 		if ($this->data['file']->url != 'http://diveintomark.org/tests/client/autodiscovery/')

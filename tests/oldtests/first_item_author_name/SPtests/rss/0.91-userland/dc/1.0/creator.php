@@ -4,7 +4,7 @@ class SimplePie_First_Item_Author_Name_Test_RSS_091_Userland_DC_10_Creator exten
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Author_Name_Test_RSS_091_Userland_DC_10_Creator exten
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Author';

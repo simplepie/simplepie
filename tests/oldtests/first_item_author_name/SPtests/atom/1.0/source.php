@@ -4,7 +4,7 @@ class SimplePie_First_Item_Author_Name_Atom_10_Inheritance_Source_Name extends S
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<source>
@@ -15,7 +15,7 @@ class SimplePie_First_Item_Author_Name_Atom_10_Inheritance_Source_Name extends S
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Author';

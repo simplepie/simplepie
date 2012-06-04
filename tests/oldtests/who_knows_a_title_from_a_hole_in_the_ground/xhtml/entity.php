@@ -4,7 +4,7 @@ class who_knows_a_title_from_a_hole_in_the_ground_xhtml_entity extends SimplePie
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 <id>http://atomtests.philringnalda.com/tests/item/title/xhtml-entity.atom</id>
@@ -27,7 +27,7 @@ less-than character is escaped with its character entity reference.</summary>
 </entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = '&lt;title&gt;';

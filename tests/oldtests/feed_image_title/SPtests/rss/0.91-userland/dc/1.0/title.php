@@ -4,7 +4,7 @@ class SimplePie_Feed_Image_Title_Test_RSS_091_Userland_DC_10_Title extends Simpl
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<image>
@@ -13,7 +13,7 @@ class SimplePie_Feed_Image_Title_Test_RSS_091_Userland_DC_10_Title extends Simpl
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Image Title';

@@ -4,7 +4,7 @@ class SimplePie_Feed_Image_Title_Test_RSS_091_Userland_Title extends SimplePie_F
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91">
 	<channel>
 		<image>
@@ -13,7 +13,7 @@ class SimplePie_Feed_Image_Title_Test_RSS_091_Userland_Title extends SimplePie_F
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Image Title';

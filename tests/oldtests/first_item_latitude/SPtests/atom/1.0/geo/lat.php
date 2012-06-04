@@ -4,7 +4,7 @@ class SimplePie_First_Item_Latitude_Test_Atom_10_Geo_Lat extends SimplePie_First
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
 	<entry>
 		<geo:lat>55.701</geo:lat>
@@ -12,7 +12,7 @@ class SimplePie_First_Item_Latitude_Test_Atom_10_Geo_Lat extends SimplePie_First
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 55.701;
