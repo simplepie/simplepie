@@ -4,7 +4,7 @@ class SimplePie_Feed_Image_Height_Test_RSS_092_Height extends SimplePie_Feed_Ima
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.92">
 	<channel>
 		<image>
@@ -13,7 +13,7 @@ class SimplePie_Feed_Image_Height_Test_RSS_092_Height extends SimplePie_Feed_Ima
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 100.0;

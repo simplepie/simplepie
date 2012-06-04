@@ -4,7 +4,7 @@ class SimplePie_First_Item_Latitude_Test_RSS_20_Geo_Lat extends SimplePie_First_
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="2.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
 	<channel>
 		<item>
@@ -14,7 +14,7 @@ class SimplePie_First_Item_Latitude_Test_RSS_20_Geo_Lat extends SimplePie_First_
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 55.701;

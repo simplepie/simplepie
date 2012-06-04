@@ -4,14 +4,14 @@ class SimplePie_First_Item_Category_Label_Test_Atom_10_Category_Label extends Si
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<category label="Item Category"/>
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Category';

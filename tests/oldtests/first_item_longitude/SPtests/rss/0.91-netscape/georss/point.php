@@ -4,7 +4,7 @@ class SimplePie_First_Item_Longitude_Test_RSS_091_Netscape_Georss_Point extends 
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:georss="http://www.georss.org/georss">
 	<channel>
@@ -14,7 +14,7 @@ class SimplePie_First_Item_Longitude_Test_RSS_091_Netscape_Georss_Point extends 
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 12.552;

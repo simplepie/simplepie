@@ -4,7 +4,7 @@ class SimplePie_Feed_Image_Width_Test_RSS_091_Userland extends SimplePie_Feed_Im
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91">
 	<channel>
 		<image>
@@ -13,7 +13,7 @@ class SimplePie_Feed_Image_Width_Test_RSS_091_Userland extends SimplePie_Feed_Im
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 88.0;

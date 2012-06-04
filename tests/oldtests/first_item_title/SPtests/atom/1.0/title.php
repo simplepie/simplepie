@@ -4,14 +4,14 @@ class SimplePie_First_Item_Title_Test_Atom_10_Title extends SimplePie_First_Item
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<title>Item Title</title>
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Title';

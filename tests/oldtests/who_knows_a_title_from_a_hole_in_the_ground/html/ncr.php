@@ -4,7 +4,7 @@ class who_knows_a_title_from_a_hole_in_the_ground_html_ncr extends SimplePie_Fir
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 <id>http://atomtests.philringnalda.com/tests/item/title/html-ncr.atom</id>
@@ -28,7 +28,7 @@ ampersand with a numeric character reference.</summary>
 </entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = '&lt;title>';

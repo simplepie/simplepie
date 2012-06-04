@@ -4,7 +4,7 @@ class SimplePie_First_Item_Contributor_Name_Test_RSS_092_Atom_10_Name extends Si
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<item>
@@ -15,7 +15,7 @@ class SimplePie_First_Item_Contributor_Name_Test_RSS_092_Atom_10_Name extends Si
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Contributor';

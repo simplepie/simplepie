@@ -15,7 +15,7 @@ class SimplePie_Absolutize_Test_RFC3986 extends SimplePie_Absolutize_Test
 			parent::SimplePie_Absolutize_Test();
 		}
 	}
-	
+
 	function init()
 	{
 		$this->data['base'] = 'http://a/b/c/d;p?q';

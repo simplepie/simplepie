@@ -4,12 +4,12 @@ class SimplePie_Feed_Category_Label_Test_Atom_10_DC_11_Subject extends SimplePie
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:subject>Feed Category</dc:subject>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Feed Category';

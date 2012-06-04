@@ -4,7 +4,7 @@ class SimplePie_First_Item_Date_Test_RSS_20_pubDate extends SimplePie_First_Item
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="2.0">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Date_Test_RSS_20_pubDate extends SimplePie_First_Item
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 1168531200;
