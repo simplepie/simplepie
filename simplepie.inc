@@ -52,7 +52,7 @@ define('SIMPLEPIE_NAME', 'SimplePie');
 /**
  * SimplePie Version
  */
-define('SIMPLEPIE_VERSION', '1.2.1-dev');
+define('SIMPLEPIE_VERSION', '1.2.1');
 
 /**
  * SimplePie Build
