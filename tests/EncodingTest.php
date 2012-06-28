@@ -131,7 +131,12 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	public function test_convert_UTF8_mbstring($input, $expected, $encoding)
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
-		$this->assertEquals($expected, Mock_Misc::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+		if (version_compare(phpversion(), '5.3', '<')) {
+			$this->assertEquals($expected, Mock_Misc::__callStatic('change_encoding_mbstring', array($input, $encoding, 'UTF-8')));
+		}
+		else {
+			$this->assertEquals($expected, Mock_Misc::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+		}
 	}
 
 	/**
@@ -144,7 +149,12 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	public function test_convert_UTF8_iconv($input, $expected, $encoding)
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
-		$this->assertEquals($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
+		if (version_compare(phpversion(), '5.3', '<')) {
+			$this->assertEquals($expected, Mock_Misc::__callStatic('change_encoding_iconv', array($input, $encoding, 'UTF-8')));
+		}
+		else {
+			$this->assertEquals($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
+		}
 	}
 	/**#@-*/
 
