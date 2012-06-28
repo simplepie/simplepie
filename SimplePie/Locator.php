@@ -170,7 +170,7 @@ class SimplePie_Locator
 			if ($element->hasAttribute('href'))
 			{
 				$this->base = $this->registry->call('Misc', 'absolutize_url', array(trim($element->getAttribute('href')), $this->http_base));
-				$this->base_location = $element->getLineNo();
+				$this->base_location = method_exists($element, 'getLineNo') ? $element->getLineNo() : 0;
 				break;
 			}
 		}
@@ -206,8 +206,9 @@ class SimplePie_Locator
 			if ($link->hasAttribute('href') && $link->hasAttribute('rel'))
 			{
 				$rel = array_unique($this->registry->call('Misc', 'space_seperated_tokens', array(strtolower($link->getAttribute('rel')))));
+				$line = method_exists($link, 'getLineNo') ? $link->getLineNo() : 1;
 
-				if ($this->base_location < $link->getLineNo())
+				if ($this->base_location < $line)
 				{
 					$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->base));
 				}
