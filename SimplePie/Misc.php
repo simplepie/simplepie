@@ -389,6 +389,14 @@ class SimplePie_Misc
 		{
 			$output = 'EUC-KR';
 		}
+		if ($input === 'Windows-31J')
+		{
+			$input = 'SJIS';
+		}
+		if ($output === 'Windows-31J')
+		{
+			$output = 'SJIS';
+		}
 
 		// Check that the encoding is supported
 		if (@mb_convert_encoding("\x80", 'UTF-16BE', $input) === "\x00\x80")
