@@ -74,7 +74,11 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from_file($data)
 	{
-		$locator = new SimplePie_Locator($data, 0, null, 'MockSimplePie_File', false);
+		$locator = new SimplePie_Locator($data, 0, null, false);
+
+		$registry = new SimplePie_Registry();
+		$registry->register('File', 'MockSimplePie_File');
+		$locator->set_registry($registry);
 
 		$expected = SimplePie_Misc::get_element('link', $data->body);
 
