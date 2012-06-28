@@ -48,6 +48,32 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 
 class LocatorTest extends PHPUnit_Framework_TestCase
 {
+	public static function feedmimetypes() {
+		return array(
+			array('application/rss+xml'),
+			array('application/rdf+xml'),
+			array('text/rdf'),
+			array('application/atom+xml'),
+			array('text/xml'),
+			array('application/xml'),
+		);
+	}
+	/**
+	 * @dataProvider feedmimetypes
+	 */
+	public function testAutodiscoverOnFeed($mime) {
+		$data = new MockSimplePie_File('http://example.com/feed.xml');
+		$data->headers['content-type'] = $mime;
+		$locator = new SimplePie_Locator($data, 0, null, false);
+
+		$registry = new SimplePie_Registry();
+		$registry->register('File', 'MockSimplePie_File');
+		$locator->set_registry($registry);
+
+		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
+		$this->assertEquals($feed, $data);
+	}
+
 	/**
 	 * Tests from Firefox
 	 *
