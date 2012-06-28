@@ -1152,7 +1152,14 @@ class SimplePie_IRI
 		{
 			$iri .= '//' . $iauthority;
 		}
-		$iri .= $this->ipath;
+		if ($this->ipath !== '')
+		{
+			$iri .= $this->ipath;
+		}
+		elseif (!empty($this->normalization[$this->scheme]['ipath']) && $iauthority !== null && $iauthority !== '')
+		{
+			$iri .= $this->normalization[$this->scheme]['ipath'];
+		}
 		if ($this->iquery !== null)
 		{
 			$iri .= '?' . $this->iquery;
