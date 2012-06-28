@@ -43,9 +43,14 @@
  */
 
 /**
- * IRI parser/serialiser
+ * IRI parser/serialiser/normaliser
  *
  * @package SimplePie
+ * @author Geoffrey Sneddon
+ * @author Steve Minutillo
+ * @author Ryan McCue
+ * @copyright 2007-2012 Geoffrey Sneddon, Steve Minutillo, Ryan McCue
+ * @license http://www.opensource.org/licenses/bsd-license.php
  */
 class SimplePie_IRI
 {
