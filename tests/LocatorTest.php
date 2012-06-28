@@ -64,6 +64,7 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 	public function testAutodiscoverOnFeed($mime) {
 		$data = new MockSimplePie_File('http://example.com/feed.xml');
 		$data->headers['content-type'] = $mime;
+
 		$locator = new SimplePie_Locator($data, 0, null, false);
 
 		$registry = new SimplePie_Registry();
@@ -72,6 +73,21 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 
 		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
 		$this->assertEquals($feed, $data);
+	}
+
+	public function testInvalidMIMEType()
+	{
+		$data = new MockSimplePie_File('http://example.com/feed.xml');
+		$data->headers['content-type'] = 'application/pdf';
+
+		$locator = new SimplePie_Locator($data, 0, null, false);
+
+		$registry = new SimplePie_Registry();
+		$registry->register('File', 'MockSimplePie_File');
+		$locator->set_registry($registry);
+
+		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
+		$this->assertEquals($feed, null);
 	}
 
 	/**
