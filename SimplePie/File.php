@@ -243,15 +243,23 @@ class SimplePie_File
 										break;
 
 									case 'deflate':
-										if (($body = gzuncompress($this->body)) === false)
+										if (($decompressed = gzinflate($this->body)) !== false)
 										{
-											if (($body = gzinflate($this->body)) === false)
-											{
-												$this->error = 'Unable to decode HTTP "deflate" stream';
-												$this->success = false;
-											}
+											$this->body = $decompressed;
 										}
-										$this->body = $body;
+										else if (($decompressed = gzuncompress($this->body)) !== false)
+										{
+											$this->body = $decompressed;
+										}
+										else if (function_exists('gzdecode') && ($decompressed = gzdecode($this->body)) !== false)
+										{
+											$this->body = $decompressed;
+										}
+										else
+										{
+											$this->error = 'Unable to decode HTTP "deflate" stream';
+											$this->success = false;
+										}
 										break;
 
 									default:
