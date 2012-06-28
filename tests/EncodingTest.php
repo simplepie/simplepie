@@ -84,6 +84,7 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 			array("\x81\x87", "\xe2\x88\x9e", 'Shift_JIS'),
 			array("\x2b\x49\x68\x34\x2d", "\xe2\x88\x9e", 'UTF-7'),
 			array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
+			array("\xff\xfe\x1e\x22", "\xe2\x88\x9e", 'UTF-16'),
 			array("\x22\x1e", "\xe2\x88\x9e", 'UTF-16BE'),
 			array("\x1e\x22", "\xe2\x88\x9e", 'UTF-16LE'),
 		);
