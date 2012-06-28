@@ -112,6 +112,16 @@ class IRITest extends PHPUnit_Framework_TestCase
 		$expected = new SimplePie_IRI($expected);
 		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative));
 	}
+
+	/**
+	 * @dataProvider rfc3986_tests
+	 */
+	public function testBothStringRFC3986($relative, $expected)
+	{
+		$base = 'http://a/b/c/d;p?q';
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertEquals($expected, (string) SimplePie_IRI::absolutize($base, $relative));
+	}
 	
 	public static function sp_tests()
 	{
@@ -237,11 +247,18 @@ class IRITest extends PHPUnit_Framework_TestCase
 			array('https://example.com#', 'https://example.com#'),
 			array('file://localhost/foobar', 'file:/foobar'),
 			array('http://[0:0:0:0:0:0:0:1]', 'http://[::1]'),
+			array('http://[2001:db8:85a3:0000:0000:8a2e:370:7334]', 'http://[2001:db8:85a3::8a2e:370:7334]'),
+			array('http://[0:0:0:0:0:ffff:c0a8:a01]', 'http://[::ffff:c0a8:a01]'),
+			array('http://[ffff:0:0:0:0:0:0:0]', 'http://[ffff::]'),
+			array('http://[::ffff:192.0.2.128]', 'http://[::ffff:192.0.2.128]'),
+			array('http://[invalid]', 'http:'),
 			array('http://[0:0:0:0:0:0:0:1]:', 'http://[::1]'),
 			array('http://[0:0:0:0:0:0:0:1]:80', 'http://[::1]'),
 			array('http://[0:0:0:0:0:0:0:1]:1234', 'http://[::1]:1234'),
-			array('http://xn--tdali-d8a8w.lv', 'http://tudalin.lv'),
-			array('http://t%C5%ABdali%C5%86.lv', 'http://tudalin.lv'),
+			// Punycode decoding helps with normalisation of IRIs, but is not
+			// needed for URIs, so we don't really care about it here
+			//array('http://xn--tdali-d8a8w.lv', 'http://tÅ«daliÅ†.lv'),
+			//array('http://t%C5%ABdali%C5%86.lv', 'http://tÅ«daliÅ†.lv'),
 			array('http://Aa@example.com', 'http://Aa@example.com'),
 			array('http://example.com?Aa', 'http://example.com?Aa'),
 			array('http://example.com/Aa', 'http://example.com/Aa'),
@@ -256,9 +273,9 @@ class IRITest extends PHPUnit_Framework_TestCase
 			array('http://example.com/%C2', 'http://example.com/%C2'),
 			array('http://example.com/%C2a', 'http://example.com/%C2a'),
 			array('http://example.com/%C2%00', 'http://example.com/%C2%00'),
-			array('http://example.com/%C3%A9', 'http://example.com/é'),
-			array('http://example.com/%C3%A9%00', 'http://example.com/é%00'),
-			array('http://example.com/%C3%A9cole', 'http://example.com/école'),
+			array('http://example.com/%C3%A9', 'http://example.com/Ã©'),
+			array('http://example.com/%C3%A9%00', 'http://example.com/Ã©%00'),
+			array('http://example.com/%C3%A9cole', 'http://example.com/Ã©cole'),
 			array('http://example.com/%FF', 'http://example.com/%FF'),
 			array("http://example.com/\xF3\xB0\x80\x80", 'http://example.com/%F3%B0%80%80'),
 			array("http://example.com/\xF3\xB0\x80\x80%00", 'http://example.com/%F3%B0%80%80%00'),
@@ -275,16 +292,15 @@ class IRITest extends PHPUnit_Framework_TestCase
 			array("http://example.com/\xC2", 'http://example.com/%C2'),
 			array("http://example.com/\xC2a", 'http://example.com/%C2a'),
 			array("http://example.com/\xC2\x00", 'http://example.com/%C2%00'),
-			array("http://example.com/\xC3\xA9", 'http://example.com/é'),
-			array("http://example.com/\xC3\xA9\x00", 'http://example.com/é%00'),
-			array("http://example.com/\xC3\xA9cole", 'http://example.com/école'),
+			array("http://example.com/\xC3\xA9", 'http://example.com/Ã©'),
+			array("http://example.com/\xC3\xA9\x00", 'http://example.com/Ã©%00'),
+			array("http://example.com/\xC3\xA9cole", 'http://example.com/Ã©cole'),
 			array("http://example.com/\xFF", 'http://example.com/%FF'),
 			array("http://example.com/\xFF%00", 'http://example.com/%FF%00'),
 			array("http://example.com/\xFFa", 'http://example.com/%FFa'),
 			array('http://example.com/%61', 'http://example.com/a'),
 			array('http://example.com?%26', 'http://example.com?%26'),
 			array('http://example.com?%61', 'http://example.com?a'),
-			array('http://www.nörgler.com/', 'http://www.xn--nrgler-wxa.com/'),
 			array('///', '///'),
 		);
 	}
@@ -311,7 +327,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public static function equivalence_tests()
 	{
 		return array(
-			array('http://É.com', 'http://%C3%89.com'),
+			array('http://Ã‰.com', 'http://%C3%89.com'),
 		);
 	}
  
@@ -341,6 +357,95 @@ class IRITest extends PHPUnit_Framework_TestCase
 		$output = new SimplePie_IRI($output);
 		$this->assertNotEquals($output, $input);
 	}
+
+	public function testInvalidAbsolutizeBase()
+	{
+		$this->assertFalse(SimplePie_IRI::absolutize('://not a URL', '../'));
+	}
+
+	public function testInvalidAbsolutizeRelative()
+	{
+		$this->assertFalse(SimplePie_IRI::absolutize('http://example.com/', 'http://example.com//not a URL'));
+	}
+
+	public function testFullGamut()
+	{
+		$iri = new SimplePie_IRI();
+		$iri->scheme = 'http';
+		$iri->userinfo = 'user:password';
+		$iri->host = 'example.com';
+		$iri->path = '/test/';
+		$iri->fragment = 'test';
+
+		$this->assertEquals('http', $iri->scheme);
+		$this->assertEquals('user:password', $iri->userinfo);
+		$this->assertEquals('example.com', $iri->host);
+		$this->assertEquals(80, $iri->port);
+		$this->assertEquals('/test/', $iri->path);
+		$this->assertEquals('test', $iri->fragment);
+	}
+
+	public function testReadAliased()
+	{
+		$iri = new SimplePie_IRI();
+		$iri->scheme = 'http';
+		$iri->userinfo = 'user:password';
+		$iri->host = 'example.com';
+		$iri->path = '/test/';
+		$iri->fragment = 'test';
+
+		$this->assertEquals('http', $iri->ischeme);
+		$this->assertEquals('user:password', $iri->iuserinfo);
+		$this->assertEquals('example.com', $iri->ihost);
+		$this->assertEquals(80, $iri->iport);
+		$this->assertEquals('/test/', $iri->ipath);
+		$this->assertEquals('test', $iri->ifragment);
+	}
+
+	public function testWriteAliased()
+	{
+		$iri = new SimplePie_IRI();
+		$iri->scheme = 'http';
+		$iri->iuserinfo = 'user:password';
+		$iri->ihost = 'example.com';
+		$iri->ipath = '/test/';
+		$iri->ifragment = 'test';
+
+		$this->assertEquals('http', $iri->scheme);
+		$this->assertEquals('user:password', $iri->userinfo);
+		$this->assertEquals('example.com', $iri->host);
+		$this->assertEquals(80, $iri->port);
+		$this->assertEquals('/test/', $iri->path);
+		$this->assertEquals('test', $iri->fragment);
+	}
+
+	/**
+	 * @expectedException PHPUnit_Framework_Error_Notice
+	 */
+	public function testNonexistantProperty()
+	{
+		$iri = new SimplePie_IRI();
+		$this->assertFalse(isset($iri->nonexistant_prop));
+		$should_fail = $iri->nonexistant_prop;
+	}
+
+	public function testBlankHost()
+	{
+		$iri = new SimplePie_IRI('http://example.com/a/?b=c#d');
+		$iri->host = null;
+
+		$this->assertEquals(null, $iri->host);
+		$this->assertEquals('http:/a/?b=c#d', (string) $iri);
+	}
+
+	public function testBadPort()
+	{
+		$iri = new SimplePie_IRI();
+		$iri->port = 'example';
+
+		$this->assertEquals(null, $iri->port);
+	}
 }
+
 
 ?>

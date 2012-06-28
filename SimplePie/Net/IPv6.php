@@ -58,48 +58,28 @@
 class SimplePie_Net_IPv6
 {
 	/**
-	 * Removes a possible existing netmask specification of an IP address.
-	 *
-	 * @param string $ip the (compressed) IP as Hex representation
-	 * @return string the IP the without netmask
-	 * @since 1.1.0
-	 * @access public
-	 * @static
-	 */
-	public static function removeNetmaskSpec($ip)
-	{
-		if (strpos($ip, '/') !== false)
-		{
-			list($addr, $nm) = explode('/', $ip);
-		}
-		else
-		{
-			$addr = $ip;
-		}
-		return $addr;
-	}
-
-	/**
 	 * Uncompresses an IPv6 address
 	 *
-	 * RFC 2373 allows you to compress zeros in an address to '::'. This
-	 * function expects an valid IPv6 address and expands the '::' to
-	 * the required zeros.
+	 * RFC 4291 allows you to compress concecutive zero pieces in an address to
+	 * '::'. This method expects a valid IPv6 address and expands the '::' to
+	 * the required number of zero pieces.
 	 *
-	 * Example:	 FF01::101	->	FF01:0:0:0:0:0:0:101
-	 *			 ::1		->	0:0:0:0:0:0:0:1
+	 * Example:  FF01::101   ->  FF01:0:0:0:0:0:0:101
+	 *           ::1         ->  0:0:0:0:0:0:0:1
 	 *
-	 * @access public
-	 * @static
-	 * @param string $ip a valid IPv6-address (hex format)
-	 * @return string the uncompressed IPv6-address (hex format)
+	 * @author Alexander Merz <alexander.merz@web.de>
+	 * @author elfrink at introweb dot nl
+	 * @author Josh Peck <jmp at joshpeck dot org>
+	 * @copyright 2003-2005 The PHP Group
+	 * @license http://www.opensource.org/licenses/bsd-license.php
+	 * @param string $ip An IPv6 address
+	 * @return string The uncompressed IPv6 address
 	 */
-	public static function Uncompress($ip)
+	public static function uncompress($ip)
 	{
-		$uip = SimplePie_Net_IPv6::removeNetmaskSpec($ip);
 		$c1 = -1;
 		$c2 = -1;
-		if (strpos($ip, '::') !== false)
+		if (substr_count($ip, '::') === 1)
 		{
 			list($ip1, $ip2) = explode('::', $ip);
 			if ($ip1 === '')
@@ -108,15 +88,7 @@ class SimplePie_Net_IPv6
 			}
 			else
 			{
-				$pos = 0;
-				if (($pos = substr_count($ip1, ':')) > 0)
-				{
-					$c1 = $pos;
-				}
-				else
-				{
-					$c1 = 0;
-				}
+				$c1 = substr_count($ip1, ':');
 			}
 			if ($ip2 === '')
 			{
@@ -124,71 +96,109 @@ class SimplePie_Net_IPv6
 			}
 			else
 			{
-				$pos = 0;
-				if (($pos = substr_count($ip2, ':')) > 0)
-				{
-					$c2 = $pos;
-				}
-				else
-				{
-					$c2 = 0;
-				}
+				$c2 = substr_count($ip2, ':');
 			}
-			if (strstr($ip2, '.'))
+			if (strpos($ip2, '.') !== false)
 			{
 				$c2++;
 			}
 			// ::
 			if ($c1 === -1 && $c2 === -1)
 			{
-				$uip = '0:0:0:0:0:0:0:0';
+				$ip = '0:0:0:0:0:0:0:0';
 			}
 			// ::xxx
 			else if ($c1 === -1)
 			{
 				$fill = str_repeat('0:', 7 - $c2);
-				$uip =	str_replace('::', $fill, $uip);
+				$ip = str_replace('::', $fill, $ip);
 			}
 			// xxx::
 			else if ($c2 === -1)
 			{
 				$fill = str_repeat(':0', 7 - $c1);
-				$uip =	str_replace('::', $fill, $uip);
+				$ip = str_replace('::', $fill, $ip);
 			}
 			// xxx::xxx
 			else
 			{
-				$fill = str_repeat(':0:', 6 - $c2 - $c1);
-				$uip =	str_replace('::', $fill, $uip);
-				$uip =	str_replace('::', ':', $uip);
+				$fill = ':' . str_repeat('0:', 6 - $c2 - $c1);
+				$ip = str_replace('::', $fill, $ip);
 			}
 		}
-		return $uip;
+		return $ip;
 	}
 
 	/**
-	 * Splits an IPv6 address into the IPv6 and a possible IPv4 part
+	 * Compresses an IPv6 address
 	 *
-	 * RFC 2373 allows you to note the last two parts of an IPv6 address as
-	 * an IPv4 compatible address
+	 * RFC 4291 allows you to compress concecutive zero pieces in an address to
+	 * '::'. This method expects a valid IPv6 address and compresses consecutive
+	 * zero pieces to '::'.
 	 *
-	 * Example:	 0:0:0:0:0:0:13.1.68.3
-	 *			 0:0:0:0:0:FFFF:129.144.52.38
+	 * Example:  FF01:0:0:0:0:0:0:101   ->  FF01::101
+	 *           0:0:0:0:0:0:0:1        ->  ::1
 	 *
-	 * @access public
-	 * @static
-	 * @param string $ip a valid IPv6-address (hex format)
-	 * @return array [0] contains the IPv6 part, [1] the IPv4 part (hex format)
+	 * @see uncompress()
+	 * @param string $ip An IPv6 address
+	 * @return string The compressed IPv6 address
 	 */
-	public static function SplitV64($ip)
+	public static function compress($ip)
 	{
-		$ip = SimplePie_Net_IPv6::Uncompress($ip);
-		if (strstr($ip, '.'))
+		// Prepare the IP to be compressed
+		$ip = self::uncompress($ip);
+		$ip_parts = self::split_v6_v4($ip);
+
+		// Replace all leading zeros
+		$ip_parts[0] = preg_replace('/(^|:)0+([0-9])/', '\1\2', $ip_parts[0]);
+
+		// Find bunches of zeros
+		if (preg_match_all('/(?:^|:)(?:0(?::|$))+/', $ip_parts[0], $matches, PREG_OFFSET_CAPTURE))
+		{
+			$max = 0;
+			$pos = null;
+			foreach ($matches[0] as $match)
+			{
+				if (strlen($match[0]) > $max)
+				{
+					$max = strlen($match[0]);
+					$pos = $match[1];
+				}
+			}
+
+			$ip_parts[0] = substr_replace($ip_parts[0], '::', $pos, $max);
+		}
+
+		if ($ip_parts[1] !== '')
+		{
+			return implode(':', $ip_parts);
+		}
+		else
+		{
+			return $ip_parts[0];
+		}
+	}
+
+	/**
+	 * Splits an IPv6 address into the IPv6 and IPv4 representation parts
+	 *
+	 * RFC 4291 allows you to represent the last two parts of an IPv6 address
+	 * using the standard IPv4 representation
+	 *
+	 * Example:  0:0:0:0:0:0:13.1.68.3
+	 *           0:0:0:0:0:FFFF:129.144.52.38
+	 *
+	 * @param string $ip An IPv6 address
+	 * @return array [0] contains the IPv6 represented part, and [1] the IPv4 represented part
+	 */
+	private static function split_v6_v4($ip)
+	{
+		if (strpos($ip, '.') !== false)
 		{
 			$pos = strrpos($ip, ':');
-			$ip[$pos] = '_';
-			$ipPart = explode('_', $ip);
-			return $ipPart;
+			$ipv6_part = substr($ip, 0, $pos);
+			$ipv4_part = substr($ip, $pos + 1);
+			return array($ipv6_part, $ipv4_part);
 		}
 		else
 		{
@@ -199,59 +209,65 @@ class SimplePie_Net_IPv6
 	/**
 	 * Checks an IPv6 address
 	 *
-	 * Checks if the given IP is IPv6-compatible
+	 * Checks if the given IP is a valid IPv6 address
 	 *
-	 * @access public
-	 * @static
-	 * @param string $ip a valid IPv6-address
-	 * @return bool true if $ip is an IPv6 address
+	 * @param string $ip An IPv6 address
+	 * @return bool true if $ip is a valid IPv6 address
 	 */
-	public static function checkIPv6($ip)
+	public static function check_ipv6($ip)
 	{
-		$ipPart = SimplePie_Net_IPv6::SplitV64($ip);
-		$count = 0;
-		if (!empty($ipPart[0]))
+		$ip = self::uncompress($ip);
+		list($ipv6, $ipv4) = self::split_v6_v4($ip);
+		$ipv6 = explode(':', $ipv6);
+		$ipv4 = explode('.', $ipv4);
+		if (count($ipv6) === 8 && count($ipv4) === 1 || count($ipv6) === 6 && count($ipv4) === 4)
 		{
-			$ipv6 = explode(':', $ipPart[0]);
-			for ($i = 0; $i < count($ipv6); $i++)
+			foreach ($ipv6 as $ipv6_part)
 			{
-				$dec = hexdec($ipv6[$i]);
-				$hex = strtoupper(preg_replace('/^[0]{1,3}(.*[0-9a-fA-F])$/', '\\1', $ipv6[$i]));
-				if ($ipv6[$i] >= 0 && $dec <= 65535 && $hex === strtoupper(dechex($dec)))
-				{
-					$count++;
-				}
+				// The section can't be empty
+				if ($ipv6_part === '')
+					return false;
+
+				// Nor can it be over four characters
+				if (strlen($ipv6_part) > 4)
+					return false;
+
+				// Remove leading zeros (this is safe because of the above)
+				$ipv6_part = ltrim($ipv6_part, '0');
+				if ($ipv6_part === '')
+					$ipv6_part = '0';
+
+				// Check the value is valid
+				$value = hexdec($ipv6_part);
+				if (dechex($value) !== strtolower($ipv6_part) || $value < 0 || $value > 0xFFFF)
+					return false;
 			}
-			if ($count === 8)
+			if (count($ipv4) === 4)
 			{
-				return true;
-			}
-			elseif ($count === 6 && !empty($ipPart[1]))
-			{
-				$ipv4 = explode('.', $ipPart[1]);
-				$count = 0;
 				foreach ($ipv4 as $ipv4_part)
 				{
-					if ($ipv4_part >= 0 && $ipv4_part <= 255 && preg_match('/^\d{1,3}$/', $ipv4_part))
-					{
-						$count++;
-					}
-				}
-				if ($count === 4)
-				{
-					return true;
+					$value = (int) $ipv4_part;
+					if ((string) $value !== $ipv4_part || $value < 0 || $value > 0xFF)
+						return false;
 				}
 			}
-			else
-			{
-				return false;
-			}
-
+			return true;
 		}
 		else
 		{
 			return false;
 		}
 	}
-}
 
+	/**
+	 * Checks if the given IP is a valid IPv6 address
+	 *
+	 * @deprecated since 1.3
+	 * @see check_ipv6
+	 * @param string $ip An IPv6 address
+	 * @return bool true if $ip is a valid IPv6 address
+	 */
+	public static function checkIPv6($ip) {
+		return self::check_ipv6($ip);
+	}
+}

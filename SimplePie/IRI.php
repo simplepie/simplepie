@@ -52,71 +52,81 @@ class SimplePie_IRI
 	/**
 	 * Scheme
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $scheme;
+	protected $scheme = null;
 
 	/**
 	 * User Information
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $userinfo;
+	protected $iuserinfo = null;
 
 	/**
-	 * Host
+	 * ihost
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $host;
+	protected $ihost = null;
 
 	/**
 	 * Port
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $port;
+	protected $port = null;
 
 	/**
-	 * Path
+	 * ipath
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $path;
+	protected $ipath = '';
 
 	/**
-	 * Query
+	 * iquery
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $query;
+	protected $iquery = null;
 
 	/**
-	 * Fragment
+	 * ifragment
 	 *
-	 * @access private
 	 * @var string
 	 */
-	var $fragment;
+	protected $ifragment = null;
 
 	/**
-	 * Whether the object represents a valid IRI
+	 * Normalization database
 	 *
-	 * @access private
-	 * @var array
+	 * Each key is the scheme, each value is an array with each key as the IRI
+	 * part and value as the default value for that part.
 	 */
-	var $valid = array();
+	protected $normalization = array(
+		'acap' => array(
+			'port' => 674
+		),
+		'dict' => array(
+			'port' => 2628
+		),
+		'file' => array(
+			'ihost' => 'localhost'
+		),
+		'http' => array(
+			'port' => 80,
+			'ipath' => '/'
+		),
+		'https' => array(
+			'port' => 443,
+			'ipath' => '/'
+		),
+	);
 
 	/**
 	 * Return the entire IRI when you try and read the object as a string
 	 *
-	 * @access public
 	 * @return string
 	 */
 	public function __toString()
@@ -125,132 +135,267 @@ class SimplePie_IRI
 	}
 
 	/**
+	 * Overload __set() to provide access via properties
+	 *
+	 * @param string $name Property name
+	 * @param mixed $value Property value
+	 */
+	public function __set($name, $value)
+	{
+		if (method_exists($this, 'set_' . $name))
+		{
+			call_user_func(array($this, 'set_' . $name), $value);
+		}
+		elseif (
+			   $name === 'iauthority'
+			|| $name === 'iuserinfo'
+			|| $name === 'ihost'
+			|| $name === 'ipath'
+			|| $name === 'iquery'
+			|| $name === 'ifragment'
+		)
+		{
+			call_user_func(array($this, 'set_' . substr($name, 1)), $value);
+		}
+	}
+
+	/**
+	 * Overload __get() to provide access via properties
+	 *
+	 * @param string $name Property name
+	 * @return mixed
+	 */
+	public function __get($name)
+	{
+		// isset() returns false for null, we don't want to do that
+		// Also why we use array_key_exists below instead of isset()
+		$props = get_object_vars($this);
+
+		if (
+			$name === 'iri' ||
+			$name === 'uri' ||
+			$name === 'iauthority' ||
+			$name === 'authority'
+		)
+		{
+			$return = $this->{"get_$name"}();
+		}
+		elseif (array_key_exists($name, $props))
+		{
+			$return = $this->$name;
+		}
+		// host -> ihost
+		elseif (($prop = 'i' . $name) && array_key_exists($prop, $props))
+		{
+			$name = $prop;
+			$return = $this->$prop;
+		}
+		// ischeme -> scheme
+		elseif (($prop = substr($name, 1)) && array_key_exists($prop, $props))
+		{
+			$name = $prop;
+			$return = $this->$prop;
+		}
+		else
+		{
+			trigger_error('Undefined property: ' . get_class($this) . '::' . $name, E_USER_NOTICE);
+			$return = null;
+		}
+
+		if ($return === null && isset($this->normalization[$this->scheme][$name]))
+		{
+			return $this->normalization[$this->scheme][$name];
+		}
+		else
+		{
+			return $return;
+		}
+	}
+
+	/**
+	 * Overload __isset() to provide access via properties
+	 *
+	 * @param string $name Property name
+	 * @return bool
+	 */
+	public function __isset($name)
+	{
+		if (method_exists($this, 'get_' . $name) || isset($this->$name))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Overload __unset() to provide access via properties
+	 *
+	 * @param string $name Property name
+	 */
+	public function __unset($name)
+	{
+		if (method_exists($this, 'set_' . $name))
+		{
+			call_user_func(array($this, 'set_' . $name), '');
+		}
+	}
+
+	/**
 	 * Create a new IRI object, from a specified string
 	 *
-	 * @access public
 	 * @param string $iri
-	 * @return SimplePie_IRI
 	 */
-	public function __construct($iri)
+	public function __construct($iri = null)
 	{
-		$iri = (string) $iri;
-		if ($iri !== '')
-		{
-			$parsed = $this->parse_iri($iri);
-			$this->set_scheme($parsed['scheme']);
-			$this->set_authority($parsed['authority']);
-			$this->set_path($parsed['path']);
-			$this->set_query($parsed['query']);
-			$this->set_fragment($parsed['fragment']);
-		}
+		$this->set_iri($iri);
 	}
 
 	/**
 	 * Create a new IRI object by resolving a relative IRI
 	 *
-	 * @static
-	 * @access public
-	 * @param SimplePie_IRI $base Base IRI
-	 * @param string $relative Relative IRI
-	 * @return SimplePie_IRI
+	 * Returns false if $base is not absolute, otherwise an IRI.
+	 *
+	 * @param IRI|string $base (Absolute) Base IRI
+	 * @param IRI|string $relative Relative IRI
+	 * @return IRI|false
 	 */
 	public static function absolutize($base, $relative)
 	{
-		$relative = (string) $relative;
-		if ($relative !== '')
+		if (!($relative instanceof SimplePie_IRI))
 		{
 			$relative = new SimplePie_IRI($relative);
-			if ($relative->get_scheme() !== null)
-			{
-				$target = $relative;
-			}
-			elseif ($base->get_iri() !== null)
-			{
-				if ($relative->get_authority() !== null)
-				{
-					$target = $relative;
-					$target->set_scheme($base->get_scheme());
-				}
-				else
-				{
-					$target = new SimplePie_IRI('');
-					$target->set_scheme($base->get_scheme());
-					$target->set_userinfo($base->get_userinfo());
-					$target->set_host($base->get_host());
-					$target->set_port($base->get_port());
-					if ($relative->get_path() !== null)
-					{
-						if (strpos($relative->get_path(), '/') === 0)
-						{
-							$target->set_path($relative->get_path());
-						}
-						elseif (($base->get_userinfo() !== null || $base->get_host() !== null || $base->get_port() !== null) && $base->get_path() === null)
-						{
-							$target->set_path('/' . $relative->get_path());
-						}
-						elseif (($last_segment = strrpos($base->get_path(), '/')) !== false)
-						{
-							$target->set_path(substr($base->get_path(), 0, $last_segment + 1) . $relative->get_path());
-						}
-						else
-						{
-							$target->set_path($relative->get_path());
-						}
-						$target->set_query($relative->get_query());
-					}
-					else
-					{
-						$target->set_path($base->get_path());
-						if ($relative->get_query() !== null)
-						{
-							$target->set_query($relative->get_query());
-						}
-						elseif ($base->get_query() !== null)
-						{
-							$target->set_query($base->get_query());
-						}
-					}
-				}
-				$target->set_fragment($relative->get_fragment());
-			}
-			else
-			{
-				// No base URL, just return the relative URL
-				$target = $relative;
-			}
+		}
+		if (!$relative->is_valid())
+		{
+			return false;
+		}
+		elseif ($relative->scheme !== null)
+		{
+			return clone $relative;
 		}
 		else
 		{
-			$target = $base;
+			if (!($base instanceof SimplePie_IRI))
+			{
+				$base = new SimplePie_IRI($base);
+			}
+			if ($base->scheme !== null && $base->is_valid())
+			{
+				if ($relative->get_iri() !== '')
+				{
+					if ($relative->iuserinfo !== null || $relative->ihost !== null || $relative->port !== null)
+					{
+						$target = clone $relative;
+						$target->scheme = $base->scheme;
+					}
+					else
+					{
+						$target = new SimplePie_IRI;
+						$target->scheme = $base->scheme;
+						$target->iuserinfo = $base->iuserinfo;
+						$target->ihost = $base->ihost;
+						$target->port = $base->port;
+						if ($relative->ipath !== '')
+						{
+							if ($relative->ipath[0] === '/')
+							{
+								$target->ipath = $relative->ipath;
+							}
+							elseif (($base->iuserinfo !== null || $base->ihost !== null || $base->port !== null) && $base->ipath === '')
+							{
+								$target->ipath = '/' . $relative->ipath;
+							}
+							elseif (($last_segment = strrpos($base->ipath, '/')) !== false)
+							{
+								$target->ipath = substr($base->ipath, 0, $last_segment + 1) . $relative->ipath;
+							}
+							else
+							{
+								$target->ipath = $relative->ipath;
+							}
+							$target->ipath = $target->remove_dot_segments($target->ipath);
+							$target->iquery = $relative->iquery;
+						}
+						else
+						{
+							$target->ipath = $base->ipath;
+							if ($relative->iquery !== null)
+							{
+								$target->iquery = $relative->iquery;
+							}
+							elseif ($base->iquery !== null)
+							{
+								$target->iquery = $base->iquery;
+							}
+						}
+						$target->ifragment = $relative->ifragment;
+					}
+				}
+				else
+				{
+					$target = clone $base;
+					$target->ifragment = null;
+				}
+				$target->scheme_normalization();
+				return $target;
+			}
+			else
+			{
+				return false;
+			}
 		}
-		return $target;
 	}
 
 	/**
 	 * Parse an IRI into scheme/authority/path/query/fragment segments
 	 *
-	 * @access private
 	 * @param string $iri
 	 * @return array
 	 */
-	public function parse_iri($iri)
+	protected function parse_iri($iri)
 	{
-		preg_match('/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$/', $iri, $match);
-		for ($i = count($match); $i <= 9; $i++)
+		$iri = trim($iri, "\x20\x09\x0A\x0C\x0D");
+		if (preg_match('/^((?P<scheme>[^:\/?#]+):)?(\/\/(?P<authority>[^\/?#]*))?(?P<path>[^?#]*)(\?(?P<query>[^#]*))?(#(?P<fragment>.*))?$/', $iri, $match))
 		{
-			$match[$i] = '';
+			if ($match[1] === '')
+			{
+				$match['scheme'] = null;
+			}
+			if (!isset($match[3]) || $match[3] === '')
+			{
+				$match['authority'] = null;
+			}
+			if (!isset($match[5]))
+			{
+				$match['path'] = '';
+			}
+			if (!isset($match[6]) || $match[6] === '')
+			{
+				$match['query'] = null;
+			}
+			if (!isset($match[8]) || $match[8] === '')
+			{
+				$match['fragment'] = null;
+			}
+			return $match;
 		}
-		return array('scheme' => $match[2], 'authority' => $match[4], 'path' => $match[5], 'query' => $match[7], 'fragment' => $match[9]);
+		else
+		{
+			trigger_error('This should never happen', E_USER_ERROR);
+			die;
+		}
 	}
 
 	/**
 	 * Remove dot segments from a path
 	 *
-	 * @access private
 	 * @param string $input
 	 * @return string
 	 */
-	public function remove_dot_segments($input)
+	protected function remove_dot_segments($input)
 	{
 		$output = '';
 		while (strpos($input, './') !== false || strpos($input, '/.') !== false || $input === '.' || $input === '..')
@@ -267,7 +412,7 @@ class SimplePie_IRI
 			// B: if the input buffer begins with a prefix of "/./" or "/.", where "." is a complete path segment, then replace that prefix with "/" in the input buffer; otherwise,
 			elseif (strpos($input, '/./') === 0)
 			{
-				$input = substr_replace($input, '/', 0, 3);
+				$input = substr($input, 2);
 			}
 			elseif ($input === '/.')
 			{
@@ -276,7 +421,7 @@ class SimplePie_IRI
 			// C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise,
 			elseif (strpos($input, '/../') === 0)
 			{
-				$input = substr_replace($input, '/', 0, 4);
+				$input = substr($input, 3);
 				$output = substr_replace($output, '', strrpos($output, '/'));
 			}
 			elseif ($input === '/..')
@@ -308,12 +453,12 @@ class SimplePie_IRI
 	 * Replace invalid character with percent encoding
 	 *
 	 * @param string $string Input string
-	 * @param string $valid_chars Valid characters not in iunreserved or iprivate (this is ASCII-only)
-	 * @param int $case Normalise case
+	 * @param string $extra_chars Valid characters not in iunreserved or
+	 *                            iprivate (this is ASCII-only)
 	 * @param bool $iprivate Allow iprivate
 	 * @return string
 	 */
-	protected function replace_invalid_with_pct_encoding($string, $valid_chars, $case = SIMPLEPIE_SAME_CASE, $iprivate = false)
+	protected function replace_invalid_with_pct_encoding($string, $extra_chars, $iprivate = false)
 	{
 		// Normalize as many pct-encoded sections as possible
 		$string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', array(&$this, 'remove_iunreserved_percent_encoded'), $string);
@@ -321,14 +466,14 @@ class SimplePie_IRI
 		// Replace invalid percent characters
 		$string = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
 
-		// Add unreserved and % to $valid_chars (the latter is safe because all
+		// Add unreserved and % to $extra_chars (the latter is safe because all
 		// pct-encoded sections are now valid).
-		$valid_chars .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~%';
+		$extra_chars .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~%';
 
 		// Now replace any bytes that aren't allowed with their pct-encoded versions
 		$position = 0;
 		$strlen = strlen($string);
-		while (($position += strspn($string, $valid_chars, $position)) < $strlen)
+		while (($position += strspn($string, $extra_chars, $position)) < $strlen)
 		{
 			$value = ord($string[$position]);
 
@@ -435,16 +580,6 @@ class SimplePie_IRI
 					$strlen += 2;
 				}
 			}
-		}
-
-		// Normalise case
-		if ($case & SIMPLEPIE_LOWERCASE)
-		{
-			$string = strtolower($string);
-		}
-		elseif ($case & SIMPLEPIE_UPPERCASE)
-		{
-			$string = strtoupper($string);
 		}
 
 		return $string;
@@ -591,55 +726,139 @@ class SimplePie_IRI
 		return $string;
 	}
 
+	protected function scheme_normalization()
+	{
+		if (isset($this->normalization[$this->scheme]['iuserinfo']) && $this->iuserinfo === $this->normalization[$this->scheme]['iuserinfo'])
+		{
+			$this->iuserinfo = null;
+		}
+		if (isset($this->normalization[$this->scheme]['ihost']) && $this->ihost === $this->normalization[$this->scheme]['ihost'])
+		{
+			$this->ihost = null;
+		}
+		if (isset($this->normalization[$this->scheme]['port']) && $this->port === $this->normalization[$this->scheme]['port'])
+		{
+			$this->port = null;
+		}
+		if (isset($this->normalization[$this->scheme]['ipath']) && $this->ipath === $this->normalization[$this->scheme]['ipath'])
+		{
+			$this->ipath = '';
+		}
+		if (isset($this->normalization[$this->scheme]['iquery']) && $this->iquery === $this->normalization[$this->scheme]['iquery'])
+		{
+			$this->iquery = null;
+		}
+		if (isset($this->normalization[$this->scheme]['ifragment']) && $this->ifragment === $this->normalization[$this->scheme]['ifragment'])
+		{
+			$this->ifragment = null;
+		}
+	}
+
 	/**
-	 * Check if the object represents a valid IRI
+	 * Check if the object represents a valid IRI. This needs to be done on each
+	 * call as some things change depending on another part of the IRI.
 	 *
-	 * @access public
 	 * @return bool
 	 */
 	public function is_valid()
 	{
-		return array_sum($this->valid) === count($this->valid);
+		$isauthority = $this->iuserinfo !== null || $this->ihost !== null || $this->port !== null;
+		if ($this->ipath !== '' &&
+			(
+				$isauthority && (
+					$this->ipath[0] !== '/' ||
+					substr($this->ipath, 0, 2) === '//'
+				) ||
+				(
+					$this->scheme === null &&
+					!$isauthority &&
+					strpos($this->ipath, ':') !== false &&
+					(strpos($this->ipath, '/') === false ? true : strpos($this->ipath, ':') < strpos($this->ipath, '/'))
+				)
+			)
+		)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Set the entire IRI. Returns true on success, false on failure (if there
+	 * are any invalid characters).
+	 *
+	 * @param string $iri
+	 * @return bool
+	 */
+	public function set_iri($iri)
+	{
+		static $cache;
+		if (!$cache)
+		{
+			$cache = array();
+		}
+
+		if ($iri === null)
+		{
+			return true;
+		}
+		elseif (isset($cache[$iri]))
+		{
+			list($this->scheme,
+				 $this->iuserinfo,
+				 $this->ihost,
+				 $this->port,
+				 $this->ipath,
+				 $this->iquery,
+				 $this->ifragment,
+				 $return) = $cache[$iri];
+			return $return;
+		}
+		else
+		{
+			$parsed = $this->parse_iri((string) $iri);
+
+			$return = $this->set_scheme($parsed['scheme'])
+				&& $this->set_authority($parsed['authority'])
+				&& $this->set_path($parsed['path'])
+				&& $this->set_query($parsed['query'])
+				&& $this->set_fragment($parsed['fragment']);
+
+			$cache[$iri] = array($this->scheme,
+								 $this->iuserinfo,
+								 $this->ihost,
+								 $this->port,
+								 $this->ipath,
+								 $this->iquery,
+								 $this->ifragment,
+								 $return);
+			return $return;
+		}
 	}
 
 	/**
 	 * Set the scheme. Returns true on success, false on failure (if there are
 	 * any invalid characters).
 	 *
-	 * @access public
 	 * @param string $scheme
 	 * @return bool
 	 */
 	public function set_scheme($scheme)
 	{
-		if ($scheme === null || $scheme === '')
+		if ($scheme === null)
 		{
 			$this->scheme = null;
 		}
+		elseif (!preg_match('/^[A-Za-z][0-9A-Za-z+\-.]*$/', $scheme))
+		{
+			$this->scheme = null;
+			return false;
+		}
 		else
 		{
-			$len = strlen($scheme);
-			switch (true)
-			{
-				case $len > 1:
-					if (!strspn($scheme, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-.', 1))
-					{
-						$this->scheme = null;
-						$this->valid[__FUNCTION__] = false;
-						return false;
-					}
-
-				case $len > 0:
-					if (!strspn($scheme, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 0, 1))
-					{
-						$this->scheme = null;
-						$this->valid[__FUNCTION__] = false;
-						return false;
-					}
-			}
 			$this->scheme = strtolower($scheme);
 		}
-		$this->valid[__FUNCTION__] = true;
 		return true;
 	}
 
@@ -647,350 +866,356 @@ class SimplePie_IRI
 	 * Set the authority. Returns true on success, false on failure (if there are
 	 * any invalid characters).
 	 *
-	 * @access public
 	 * @param string $authority
 	 * @return bool
 	 */
 	public function set_authority($authority)
 	{
-		if (($userinfo_end = strrpos($authority, '@')) !== false)
+		static $cache;
+		if (!$cache)
+			$cache = array();
+
+		if ($authority === null)
 		{
-			$userinfo = substr($authority, 0, $userinfo_end);
-			$authority = substr($authority, $userinfo_end + 1);
+			$this->iuserinfo = null;
+			$this->ihost = null;
+			$this->port = null;
+			return true;
+		}
+		elseif (isset($cache[$authority]))
+		{
+			list($this->iuserinfo,
+				 $this->ihost,
+				 $this->port,
+				 $return) = $cache[$authority];
+
+			return $return;
 		}
 		else
 		{
-			$userinfo = null;
-		}
-
-		if (($port_start = strpos($authority, ':')) !== false)
-		{
-			$port = substr($authority, $port_start + 1);
-			if ($port === false)
+			$remaining = $authority;
+			if (($iuserinfo_end = strrpos($remaining, '@')) !== false)
+			{
+				$iuserinfo = substr($remaining, 0, $iuserinfo_end);
+				$remaining = substr($remaining, $iuserinfo_end + 1);
+			}
+			else
+			{
+				$iuserinfo = null;
+			}
+			if (($port_start = strpos($remaining, ':', strpos($remaining, ']'))) !== false)
+			{
+				if (($port = substr($remaining, $port_start + 1)) === false)
+				{
+					$port = null;
+				}
+				$remaining = substr($remaining, 0, $port_start);
+			}
+			else
 			{
 				$port = null;
 			}
-			$authority = substr($authority, 0, $port_start);
-		}
-		else
-		{
-			$port = null;
-		}
 
-		return $this->set_userinfo($userinfo) && $this->set_host($authority) && $this->set_port($port);
+			$return = $this->set_userinfo($iuserinfo) &&
+					  $this->set_host($remaining) &&
+					  $this->set_port($port);
+
+			$cache[$authority] = array($this->iuserinfo,
+									   $this->ihost,
+									   $this->port,
+									   $return);
+
+			return $return;
+		}
 	}
 
 	/**
-	 * Set the userinfo.
+	 * Set the iuserinfo.
 	 *
-	 * @access public
-	 * @param string $userinfo
+	 * @param string $iuserinfo
 	 * @return bool
 	 */
-	public function set_userinfo($userinfo)
+	public function set_userinfo($iuserinfo)
 	{
-		if ($userinfo === null || $userinfo === '')
+		if ($iuserinfo === null)
 		{
-			$this->userinfo = null;
+			$this->iuserinfo = null;
 		}
 		else
 		{
-			$this->userinfo = $this->replace_invalid_with_pct_encoding($userinfo, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~!$&\'()*+,;=:');
+			$this->iuserinfo = $this->replace_invalid_with_pct_encoding($iuserinfo, '!$&\'()*+,;=:');
+			$this->scheme_normalization();
 		}
-		$this->valid[__FUNCTION__] = true;
+
 		return true;
 	}
 
 	/**
-	 * Set the host. Returns true on success, false on failure (if there are
+	 * Set the ihost. Returns true on success, false on failure (if there are
 	 * any invalid characters).
 	 *
-	 * @access public
-	 * @param string $host
+	 * @param string $ihost
 	 * @return bool
 	 */
-	public function set_host($host)
+	public function set_host($ihost)
 	{
-		if ($host === null || $host === '')
+		if ($ihost === null)
 		{
-			$this->host = null;
-			$this->valid[__FUNCTION__] = true;
+			$this->ihost = null;
 			return true;
 		}
-		elseif ($host[0] === '[' && substr($host, -1) === ']')
+		elseif (substr($ihost, 0, 1) === '[' && substr($ihost, -1) === ']')
 		{
-			if (SimplePie_Net_IPv6::checkIPv6(substr($host, 1, -1)))
+			if (SimplePie_Net_IPv6::check_ipv6(substr($ihost, 1, -1)))
 			{
-				$this->host = $host;
-				$this->valid[__FUNCTION__] = true;
-				return true;
+				$this->ihost = '[' . SimplePie_Net_IPv6::compress(substr($ihost, 1, -1)) . ']';
 			}
 			else
 			{
-				$this->host = null;
-				$this->valid[__FUNCTION__] = false;
+				$this->ihost = null;
 				return false;
 			}
 		}
 		else
 		{
-			$this->host = $this->replace_invalid_with_pct_encoding($host, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~!$&\'()*+,;=', SIMPLEPIE_LOWERCASE);
-			$this->valid[__FUNCTION__] = true;
-			return true;
+			$ihost = $this->replace_invalid_with_pct_encoding($ihost, '!$&\'()*+,;=');
+
+			// Lowercase, but ignore pct-encoded sections (as they should
+			// remain uppercase). This must be done after the previous step
+			// as that can add unescaped characters.
+			$position = 0;
+			$strlen = strlen($ihost);
+			while (($position += strcspn($ihost, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ%', $position)) < $strlen)
+			{
+				if ($ihost[$position] === '%')
+				{
+					$position += 3;
+				}
+				else
+				{
+					$ihost[$position] = strtolower($ihost[$position]);
+					$position++;
+				}
+			}
+
+			$this->ihost = $ihost;
 		}
+
+		$this->scheme_normalization();
+
+		return true;
 	}
 
 	/**
 	 * Set the port. Returns true on success, false on failure (if there are
 	 * any invalid characters).
 	 *
-	 * @access public
 	 * @param string $port
 	 * @return bool
 	 */
 	public function set_port($port)
 	{
-		if ($port === null || $port === '')
+		if ($port === null)
 		{
 			$this->port = null;
-			$this->valid[__FUNCTION__] = true;
 			return true;
 		}
 		elseif (strspn($port, '0123456789') === strlen($port))
 		{
 			$this->port = (int) $port;
-			$this->valid[__FUNCTION__] = true;
+			$this->scheme_normalization();
 			return true;
 		}
 		else
 		{
 			$this->port = null;
-			$this->valid[__FUNCTION__] = false;
 			return false;
 		}
 	}
 
 	/**
-	 * Set the path.
+	 * Set the ipath.
 	 *
-	 * @access public
-	 * @param string $path
+	 * @param string $ipath
 	 * @return bool
 	 */
-	public function set_path($path)
+	public function set_path($ipath)
 	{
-		if ($path === null || $path === '')
+		static $cache;
+		if (!$cache)
 		{
-			$this->path = null;
-			$this->valid[__FUNCTION__] = true;
-			return true;
+			$cache = array();
 		}
-		elseif (substr($path, 0, 2) === '//' && $this->userinfo === null && $this->host === null && $this->port === null)
-		{
-			$this->path = null;
-			$this->valid[__FUNCTION__] = false;
-			return false;
-		}
-		else
-		{
-			$this->path = $this->replace_invalid_with_pct_encoding($path, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~!$&\'()*+,;=@/');
-			if ($this->scheme !== null)
-			{
-				$this->path = $this->remove_dot_segments($this->path);
-			}
-			$this->valid[__FUNCTION__] = true;
-			return true;
-		}
-	}
 
-	/**
-	 * Set the query.
-	 *
-	 * @access public
-	 * @param string $query
-	 * @return bool
-	 */
-	public function set_query($query)
-	{
-		if ($query === null || $query === '')
+		$ipath = (string) $ipath;
+
+		if (isset($cache[$ipath]))
 		{
-			$this->query = null;
+			$this->ipath = $cache[$ipath][(int) ($this->scheme !== null)];
 		}
 		else
 		{
-			$this->query = $this->replace_invalid_with_pct_encoding($query, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~!$\'()*+,;:@/?&=');
+			$valid = $this->replace_invalid_with_pct_encoding($ipath, '!$&\'()*+,;=@:/');
+			$removed = $this->remove_dot_segments($valid);
+
+			$cache[$ipath] = array($valid, $removed);
+			$this->ipath =  ($this->scheme !== null) ? $removed : $valid;
 		}
-		$this->valid[__FUNCTION__] = true;
+
+		$this->scheme_normalization();
 		return true;
 	}
 
 	/**
-	 * Set the fragment.
+	 * Set the iquery.
 	 *
-	 * @access public
-	 * @param string $fragment
+	 * @param string $iquery
 	 * @return bool
 	 */
-	public function set_fragment($fragment)
+	public function set_query($iquery)
 	{
-		if ($fragment === null || $fragment === '')
+		if ($iquery === null)
 		{
-			$this->fragment = null;
+			$this->iquery = null;
 		}
 		else
 		{
-			$this->fragment = $this->replace_invalid_with_pct_encoding($fragment, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~!$&\'()*+,;=:@/?');
+			$this->iquery = $this->replace_invalid_with_pct_encoding($iquery, '!$&\'()*+,;=:@/?', true);
+			$this->scheme_normalization();
 		}
-		$this->valid[__FUNCTION__] = true;
 		return true;
+	}
+
+	/**
+	 * Set the ifragment.
+	 *
+	 * @param string $ifragment
+	 * @return bool
+	 */
+	public function set_fragment($ifragment)
+	{
+		if ($ifragment === null)
+		{
+			$this->ifragment = null;
+		}
+		else
+		{
+			$this->ifragment = $this->replace_invalid_with_pct_encoding($ifragment, '!$&\'()*+,;=:@/?');
+			$this->scheme_normalization();
+		}
+		return true;
+	}
+
+	/**
+	 * Convert an IRI to a URI (or parts thereof)
+	 *
+	 * @return string
+	 */
+	public function to_uri($string)
+	{
+		static $non_ascii;
+		if (!$non_ascii)
+		{
+			$non_ascii = implode('', range("\x80", "\xFF"));
+		}
+
+		$position = 0;
+		$strlen = strlen($string);
+		while (($position += strcspn($string, $non_ascii, $position)) < $strlen)
+		{
+			$string = substr_replace($string, sprintf('%%%02X', ord($string[$position])), $position, 1);
+			$position += 3;
+			$strlen += 2;
+		}
+
+		return $string;
 	}
 
 	/**
 	 * Get the complete IRI
 	 *
-	 * @access public
 	 * @return string
 	 */
 	public function get_iri()
 	{
+		if (!$this->is_valid())
+		{
+			return false;
+		}
+
 		$iri = '';
 		if ($this->scheme !== null)
 		{
 			$iri .= $this->scheme . ':';
 		}
-		if (($authority = $this->get_authority()) !== null)
+		if (($iauthority = $this->get_iauthority()) !== null)
 		{
-			$iri .= '//' . $authority;
+			$iri .= '//' . $iauthority;
 		}
-		if ($this->path !== null)
+		$iri .= $this->ipath;
+		if ($this->iquery !== null)
 		{
-			$iri .= $this->path;
+			$iri .= '?' . $this->iquery;
 		}
-		if ($this->query !== null)
+		if ($this->ifragment !== null)
 		{
-			$iri .= '?' . $this->query;
-		}
-		if ($this->fragment !== null)
-		{
-			$iri .= '#' . $this->fragment;
+			$iri .= '#' . $this->ifragment;
 		}
 
-		if ($iri !== '')
+		return $iri;
+	}
+
+	/**
+	 * Get the complete URI
+	 *
+	 * @return string
+	 */
+	protected function get_uri()
+	{
+		return $this->to_uri($this->get_iri());
+	}
+
+	/**
+	 * Get the complete iauthority
+	 *
+	 * @return string
+	 */
+	protected function get_iauthority()
+	{
+		if ($this->iuserinfo !== null || $this->ihost !== null || $this->port !== null)
 		{
-			return $iri;
+			$iauthority = '';
+			if ($this->iuserinfo !== null)
+			{
+				$iauthority .= $this->iuserinfo . '@';
+			}
+			if ($this->ihost !== null)
+			{
+				$iauthority .= $this->ihost;
+			}
+			if ($this->port !== null)
+			{
+				$iauthority .= ':' . $this->port;
+			}
+			return $iauthority;
 		}
 		else
 		{
 			return null;
 		}
-	}
-
-	/**
-	 * Get the scheme
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_scheme()
-	{
-		return $this->scheme;
 	}
 
 	/**
 	 * Get the complete authority
 	 *
-	 * @access public
 	 * @return string
 	 */
-	public function get_authority()
+	protected function get_authority()
 	{
-		$authority = '';
-		if ($this->userinfo !== null)
-		{
-			$authority .= $this->userinfo . '@';
-		}
-		if ($this->host !== null)
-		{
-			$authority .= $this->host;
-		}
-		if ($this->port !== null)
-		{
-			$authority .= ':' . $this->port;
-		}
-
-		if ($authority !== '')
-		{
-			return $authority;
-		}
+		$iauthority = $this->get_iauthority();
+		if (is_string($iauthority))
+			return $this->to_uri($iauthority);
 		else
-		{
-			return null;
-		}
-	}
-
-	/**
-	 * Get the user information
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_userinfo()
-	{
-		return $this->userinfo;
-	}
-
-	/**
-	 * Get the host
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_host()
-	{
-		return $this->host;
-	}
-
-	/**
-	 * Get the port
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_port()
-	{
-		return $this->port;
-	}
-
-	/**
-	 * Get the path
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_path()
-	{
-		return $this->path;
-	}
-
-	/**
-	 * Get the query
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_query()
-	{
-		return $this->query;
-	}
-
-	/**
-	 * Get the fragment
-	 *
-	 * @access public
-	 * @return string
-	 */
-	public function get_fragment()
-	{
-		return $this->fragment;
+			return $iauthority;
 	}
 }
