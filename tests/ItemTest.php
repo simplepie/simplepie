@@ -65,7 +65,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		$feed->enable_cache(false);
 		$feed->init();
 
-		$this->assertEquals($expected, $feed->get_title());
+		return $feed;
 	}
 
 	public static function titleprovider()
@@ -104,7 +104,8 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<title>%s</title>
 	</channel>
 </rss>';
-		$this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$this->assertEquals($expected, $feed->get_title());
 	}
 
 	/**
@@ -118,7 +119,8 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<dc:title>%s</dc:title>
 	</channel>
 </rss>';
-		$this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$this->assertEquals($expected, $feed->get_title());
 	}
 
 	/**
@@ -132,7 +134,8 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<dc:title>%s</dc:title>
 	</channel>
 </rss>';
-		$this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$this->assertEquals($expected, $feed->get_title());
 	}
 
 	/**
@@ -146,7 +149,8 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<a:title>%s</a:title>
 	</channel>
 </rss>';
-		$this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$this->assertEquals($expected, $feed->get_title());
 	}
 
 	/**
@@ -160,7 +164,8 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<a:title>%s</a:title>
 	</channel>
 </rss>';
-		$this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$this->assertEquals($expected, $feed->get_title());
 	}
 
 	/**
@@ -179,7 +184,8 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		</image>
 	</channel>
 </rss>';
-		$this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$this->assertEquals($expected, $feed->get_title());
 	}
 
 	/**
@@ -198,6 +204,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<title>%s</title>
 	</channel>
 </rss>';
-		$this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$this->assertEquals($expected, $feed->get_title());
 	}
 }
