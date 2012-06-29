@@ -1271,7 +1271,8 @@ class SimplePie_Core
 						if ($cache->mtime() + $this->autodiscovery_cache_duration > time())
 						{
 							// Do not need to do feed autodiscovery yet.
-							if ($this->data['feed_url'] !== $this->data['url']) {
+							if ($this->data['feed_url'] !== $this->data['url'])
+							{
 								$this->set_feed_url($this->data['feed_url']);
 								return $this->init();
 							}

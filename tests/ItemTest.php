@@ -68,7 +68,8 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $feed->get_title());
 	}
 
-	public static function titleprovider() {
+	public static function titleprovider()
+	{
 		return array(
 			array('Feed Title', 'Feed Title'),
 

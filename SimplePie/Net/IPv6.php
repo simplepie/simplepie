@@ -267,7 +267,8 @@ class SimplePie_Net_IPv6
 	 * @param string $ip An IPv6 address
 	 * @return bool true if $ip is a valid IPv6 address
 	 */
-	public static function checkIPv6($ip) {
+	public static function checkIPv6($ip)
+	{
 		return self::check_ipv6($ip);
 	}
 }

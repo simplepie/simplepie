@@ -48,7 +48,8 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 
 class LocatorTest extends PHPUnit_Framework_TestCase
 {
-	public static function feedmimetypes() {
+	public static function feedmimetypes()
+	{
 		return array(
 			array('application/rss+xml'),
 			array('application/rdf+xml'),
@@ -61,7 +62,8 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider feedmimetypes
 	 */
-	public function testAutodiscoverOnFeed($mime) {
+	public function testAutodiscoverOnFeed($mime)
+	{
 		$data = new MockSimplePie_File('http://example.com/feed.xml');
 		$data->headers['content-type'] = $mime;
 
