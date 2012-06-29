@@ -262,7 +262,8 @@ class SimplePie_Net_IPv6
 	/**
 	 * Checks if the given IP is a valid IPv6 address
 	 *
-	 * @deprecated since 1.3
+	 * @codeCoverageIgnore
+	 * @deprecated Use {@see SimplePie_Net_IPv6::check_ipv6()} instead
 	 * @see check_ipv6
 	 * @param string $ip An IPv6 address
 	 * @return bool true if $ip is a valid IPv6 address
