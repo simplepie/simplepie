@@ -65,7 +65,7 @@ class SimplePie_Locator
 	var $max_checked_feeds = 10;
 	protected $registry;
 
-	public function __construct(&$file, $timeout = 10, $useragent = null, $max_checked_feeds = 10)
+	public function __construct(SimplePie_File &$file, $timeout = 10, $useragent = null, $max_checked_feeds = 10)
 	{
 		$this->file =& $file;
 		$this->useragent = $useragent;
