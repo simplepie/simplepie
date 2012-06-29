@@ -5,5 +5,17 @@
         <testsuite name="SimplePie Test Suite">
             <directory>./tests</directory>
         </testsuite>
+        <testsuite name="Old Tests">
+			<file>tests/oldtests.php</file>
+        </testsuite>
     </testsuites>
+
+	<filter>
+		<blacklist>
+			<directory suffix=".php">tests</directory>
+		</blacklist>
+		<whitelist>
+			<directory suffix=".php">SimplePie</directory>
+		</whitelist>
+	</filter>
 </phpunit>
