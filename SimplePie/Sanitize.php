@@ -328,17 +328,14 @@ class SimplePie_Sanitize
 				// Finally, convert to a HTML string
 				$data = trim($document->saveHTML());
 
-				if ($type & SIMPLEPIE_CONSTRUCT_XHTML)
+				if ($this->remove_div)
 				{
-					if ($this->remove_div)
-					{
-						$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '', $data);
-						$data = preg_replace('/<\/div>$/', '', $data);
-					}
-					else
-					{
-						$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
-					}
+					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '', $data);
+					$data = preg_replace('/<\/div>$/', '', $data);
+				}
+				else
+				{
+					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
 				}
 			}
 
