@@ -10,7 +10,7 @@ class SimplePie_Absolutize_Test_Bug_691_Test_1 extends SimplePie_Absolutize_Test
 	
 	function expected()
 	{
-		$this->expected = 'http://0';
+		$this->expected = 'http://0/';
 	}
 }
 
