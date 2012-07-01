@@ -14,7 +14,7 @@ class SimplePie_First_Item_Description_Test_RSS_090_Description extends SimplePi
 	
 	function expected()
 	{
-		$this->expected = NULL;
+		$this->expected = 'Item Description';
 	}
 }
 
