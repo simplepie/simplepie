@@ -470,10 +470,14 @@ class SimplePie_Sanitize
 					$text .= '>';
 					$fragment->appendChild(new DOMText($text));
 				}
-				foreach ($element->childNodes as $child)
+
+				$number = $element->childNodes->length;
+				for ($i = $number; $i > 0; $i--)
 				{
+					$child = $element->childNodes->item(0);
 					$fragment->appendChild($child);
 				}
+
 				if (!in_array($tag, array('script', 'style')))
 				{
 					$fragment->appendChild(new DOMText('</' . $tag . '>'));
@@ -498,8 +502,10 @@ class SimplePie_Sanitize
 			foreach ($elements as $element)
 			{
 				$fragment = $document->createDocumentFragment();
-				foreach ($element->childNodes as $child)
+				$number = $element->childNodes->length;
+				for ($i = $number; $i > 0; $i--)
 				{
+					$child = $element->childNodes->item(0);
 					$fragment->appendChild($child);
 				}
 
