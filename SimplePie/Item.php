@@ -1375,6 +1375,10 @@ class SimplePie_Item
 			{
 				$restrictions_parent = array_values($this->registry->call('Misc', 'array_unique', array($restrictions_parent)));
 			}
+			else
+			{
+				$restrictions_parent = array(new SimplePie_Restriction('allow', null, 'default'));
+			}
 
 			// THUMBNAILS
 			if ($thumbnails = $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'thumbnail'))
