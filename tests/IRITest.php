@@ -100,7 +100,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testStringRFC3986($relative, $expected)
 	{
 		$base = new SimplePie_IRI('http://a/b/c/d;p?q');
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_uri());
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
  
 	/**
@@ -119,7 +119,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testBothStringRFC3986($relative, $expected)
 	{
 		$base = 'http://a/b/c/d;p?q';
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_uri());
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 		$this->assertEquals($expected, (string) SimplePie_IRI::absolutize($base, $relative));
 	}
 	
@@ -151,7 +151,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testStringSP($base, $relative, $expected)
 	{
 		$base = new SimplePie_IRI($base);
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_uri());
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
  
 	/**
@@ -181,7 +181,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	{
 		$base = new SimplePie_IRI('http://example.com/');
 		$base->set_query($query);
-		$this->assertEquals($expected, $base->get_uri());
+		$this->assertEquals($expected, $base->get_iri());
 	}
  
 	/**
@@ -209,7 +209,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testAbsolutizeString($base, $relative, $expected)
 	{
 		$base = new SimplePie_IRI($base);
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_uri());
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
  
 	/**
@@ -311,7 +311,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testStringNormalization($input, $output)
 	{
 		$input = new SimplePie_IRI($input);
-		$this->assertEquals($output, $input->get_uri());
+		$this->assertEquals($output, $input->get_iri());
 	}
  
 	/**
@@ -322,6 +322,23 @@ class IRITest extends PHPUnit_Framework_TestCase
 		$input = new SimplePie_IRI($input);
 		$output = new SimplePie_IRI($output);
 		$this->assertEquals($output, $input);
+	}
+
+	public static function uri_tests() {
+		return array(
+			array('http://example.com/%C3%A9cole', 'http://example.com/%C3%A9cole'),
+			array('http://example.com/école', 'http://example.com/%C3%A9cole'),
+			array("http://example.com/\xC3\xA9cole", 'http://example.com/%C3%A9cole'),
+		);
+	}
+
+	/**
+	 * @dataProvider uri_tests
+	 */
+	public function testURIConversion($input, $output)
+	{
+		$input = new SimplePie_IRI($input);
+		$this->assertEquals($output, $input->get_uri());
 	}
 	
 	public static function equivalence_tests()
