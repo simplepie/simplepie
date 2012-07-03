@@ -1182,7 +1182,7 @@ class SimplePie_IRI
 	 *
 	 * @return string
 	 */
-	protected function get_uri()
+	public function get_uri()
 	{
 		return $this->to_uri($this->get_iri());
 	}
