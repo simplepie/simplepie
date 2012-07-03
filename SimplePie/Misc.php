@@ -1882,18 +1882,6 @@ class SimplePie_Misc
 		}
 	}
 
-	public static function htmlspecialchars_decode($string, $quote_style)
-	{
-		if (function_exists('htmlspecialchars_decode'))
-		{
-			return htmlspecialchars_decode($string, $quote_style);
-		}
-		else
-		{
-			return strtr($string, array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style)));
-		}
-	}
-
 	public static function atom_03_construct_type($attribs)
 	{
 		if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode']) === 'base64'))
