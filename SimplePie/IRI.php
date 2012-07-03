@@ -1218,60 +1218,16 @@ class SimplePie_IRI
 	}
 
 	/**
-	 * Get the scheme
-	 *
-	 * @deprecated Use $iri->scheme instead
-	 * @return string
-	 */
-	public function get_scheme()
-	{
-		return $this->scheme;
-	}
-
-	/**
 	 * Get the complete authority
 	 *
-	 * @deprecated Use $iri->authority instead
 	 * @return string
 	 */
-	public function get_authority()
+	protected function get_authority()
 	{
 		$iauthority = $this->get_iauthority();
 		if (is_string($iauthority))
 			return $this->to_uri($iauthority);
 		else
 			return $iauthority;
-	}
-
-	/**
-	 * Get the path
-	 *
-	 * @return string
-	 */
-	public function get_path()
-	{
-		return $this->ipath;
-	}
-
-	/**
-	 * Get the query
-	 *
-	 * @deprecated Use $iri->query instead
-	 * @return string
-	 */
-	public function get_query()
-	{
-		return $this->iquery;
-	}
-
-	/**
-	 * Get the query
-	 *
-	 * @deprecated Use $iri->fragment instead
-	 * @return string
-	 */
-	public function get_fragment()
-	{
-		return $this->ifragment;
 	}
 }
