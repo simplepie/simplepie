@@ -47,6 +47,7 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 require_once dirname(__FILE__) . '/EncodingTest.php';
 require_once dirname(__FILE__) . '/IRITest.php';
 require_once dirname(__FILE__) . '/LocatorTest.php';
+require_once dirname(__FILE__) . '/ItemTest.php';
 require_once dirname(__FILE__) . '/oldtests.php';
  
 class AllTests
@@ -60,6 +61,7 @@ class AllTests
 		$suite->addTestSuite('IRITest');
 		$suite->addTestSuite('LocatorTest');
 		$suite->addTestSuite('HTTPParserTest');
+		$suite->addTestSuite('ItemTest');
 		$suite->addTestSuite('OldTest');
  
 		return $suite;
