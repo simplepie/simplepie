@@ -80,7 +80,7 @@ class SimplePie_Misc
 	public static function absolutize_url($relative, $base)
 	{
 		$iri = SimplePie_IRI::absolutize(new SimplePie_IRI($base), $relative);
-		return $iri->get_iri();
+		return $iri->get_uri();
 	}
 
 	public static function remove_dot_segments($input)
@@ -294,13 +294,13 @@ class SimplePie_Misc
 		$iri->set_path($path);
 		$iri->set_query($query);
 		$iri->set_fragment($fragment);
-		return $iri->get_iri();
+		return $iri->get_uri();
 	}
 
 	public static function normalize_url($url)
 	{
 		$iri = new SimplePie_IRI($url);
-		return $iri->get_iri();
+		return $iri->get_uri();
 	}
 
 	public static function percent_encoding_normalization($match)

@@ -100,7 +100,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testStringRFC3986($relative, $expected)
 	{
 		$base = new SimplePie_IRI('http://a/b/c/d;p?q');
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_uri());
 	}
  
 	/**
@@ -119,7 +119,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testBothStringRFC3986($relative, $expected)
 	{
 		$base = 'http://a/b/c/d;p?q';
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_uri());
 		$this->assertEquals($expected, (string) SimplePie_IRI::absolutize($base, $relative));
 	}
 	
@@ -151,7 +151,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testStringSP($base, $relative, $expected)
 	{
 		$base = new SimplePie_IRI($base);
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_uri());
 	}
  
 	/**
@@ -181,7 +181,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	{
 		$base = new SimplePie_IRI('http://example.com/');
 		$base->set_query($query);
-		$this->assertEquals($expected, $base->get_iri());
+		$this->assertEquals($expected, $base->get_uri());
 	}
  
 	/**
@@ -209,7 +209,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testAbsolutizeString($base, $relative, $expected)
 	{
 		$base = new SimplePie_IRI($base);
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_uri());
 	}
  
 	/**
@@ -311,7 +311,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 	public function testStringNormalization($input, $output)
 	{
 		$input = new SimplePie_IRI($input);
-		$this->assertEquals($output, $input->get_iri());
+		$this->assertEquals($output, $input->get_uri());
 	}
  
 	/**
