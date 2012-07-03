@@ -1767,40 +1767,6 @@ class SimplePie_Misc
 		return $curl;
 	}
 
-	public static function is_subclass_of($class1, $class2)
-	{
-		if (func_num_args() !== 2)
-		{
-			trigger_error('Wrong parameter count for SimplePie_Misc::is_subclass_of()', E_USER_WARNING);
-		}
-		elseif (version_compare(PHP_VERSION, '5.0.3', '>=') || is_object($class1))
-		{
-			return is_subclass_of($class1, $class2);
-		}
-		elseif (is_string($class1) && is_string($class2))
-		{
-			if (class_exists($class1))
-			{
-				if (class_exists($class2))
-				{
-					$class2 = strtolower($class2);
-					while ($class1 = strtolower(get_parent_class($class1)))
-					{
-						if ($class1 === $class2)
-						{
-							return true;
-						}
-					}
-				}
-			}
-			else
-			{
-				trigger_error('Unknown class passed as parameter', E_USER_WARNNG);
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Strip HTML comments
 	 *
