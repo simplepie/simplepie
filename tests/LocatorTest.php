@@ -124,12 +124,19 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 		$registry->register('File', 'MockSimplePie_File');
 		$locator->set_registry($registry);
 
-		$expected = SimplePie_Misc::get_element('link', $data->body);
+		$expected = array();
+		$document = new DOMDocument();
+		$document->loadHTML($data->body);
+		$xpath = new DOMXPath($document);
+		foreach ($xpath->query('//link') as $element)
+		{
+			$expected[] = 'http://example.com' . $element->getAttribute('href');
+		}
+		//$expected = SimplePie_Misc::get_element('link', $data->body);
 
 		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
 		$this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
 		$this->assertInstanceOf('MockSimplePie_File', $feed);
-		$expected = array_map(array(get_class(), 'map_url_attrib'), $expected);
 		$success = array_filter($expected, array(get_class(), 'filter_success'));
 
 		$found = array_map(array(get_class(), 'map_url_file'), $all);
@@ -139,11 +146,6 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 	protected static function filter_success($url)
 	{
 		return (stripos($url, 'bogus') === false);
-	}
-
-	protected static function map_url_attrib($elem)
-	{
-		return 'http://example.com' . $elem['attribs']['href']['data'];
 	}
 
 	protected static function map_url_file($file)
