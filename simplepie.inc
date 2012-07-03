@@ -12486,12 +12486,37 @@ class SimplePie_IRI
 
 		if ($iri !== '')
 		{
-			return $iri;
+			return $this->to_uri($iri);
 		}
 		else
 		{
 			return null;
 		}
+	}
+
+	/**
+	 * Convert an IRI to a URI (or parts thereof)
+	 *
+	 * @return string
+	 */
+	function to_uri($string)
+	{
+		static $non_ascii;
+		if (!$non_ascii)
+		{
+			$non_ascii = implode('', range("\x80", "\xFF"));
+		}
+
+		$position = 0;
+		$strlen = strlen($string);
+		while (($position += strcspn($string, $non_ascii, $position)) < $strlen)
+		{
+			$string = substr_replace($string, sprintf('%%%02X', ord($string[$position])), $position, 1);
+			$position += 3;
+			$strlen += 2;
+		}
+
+		return $string;
 	}
 
 	/**
