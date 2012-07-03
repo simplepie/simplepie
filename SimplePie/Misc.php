@@ -278,22 +278,22 @@ class SimplePie_Misc
 	{
 		$iri = new SimplePie_IRI($url);
 		return array(
-			'scheme' => (string) $iri->get_scheme(),
-			'authority' => (string) $iri->get_authority(),
-			'path' => (string) $iri->get_path(),
-			'query' => (string) $iri->get_query(),
-			'fragment' => (string) $iri->get_fragment()
+			'scheme' => (string) $iri->scheme,
+			'authority' => (string) $iri->authority,
+			'path' => (string) $iri->path,
+			'query' => (string) $iri->query,
+			'fragment' => (string) $iri->fragment
 		);
 	}
 
 	public static function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
 	{
 		$iri = new SimplePie_IRI('');
-		$iri->set_scheme($scheme);
-		$iri->set_authority($authority);
-		$iri->set_path($path);
-		$iri->set_query($query);
-		$iri->set_fragment($fragment);
+		$iri->scheme = $scheme;
+		$iri->authority = $authority;
+		$iri->path = $path;
+		$iri->query = $query;
+		$iri->fragment = $fragment;
 		return $iri->get_uri();
 	}
 
