@@ -47,6 +47,7 @@
  * Decode 'gzip' encoded HTTP data
  *
  * @package SimplePie
+ * @subpackage HTTP
  * @link http://www.gzip.org/format.txt
  */
 class SimplePie_gzdecode

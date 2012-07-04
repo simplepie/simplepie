@@ -413,6 +413,7 @@ define('SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS', 16);
  * SimplePie
  *
  * @package SimplePie
+ * @subpackage API
  */
 class SimplePie_Core
 {

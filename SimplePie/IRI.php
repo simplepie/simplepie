@@ -46,6 +46,7 @@
  * IRI parser/serialiser/normaliser
  *
  * @package SimplePie
+ * @subpackage HTTP
  * @author Geoffrey Sneddon
  * @author Steve Minutillo
  * @author Ryan McCue

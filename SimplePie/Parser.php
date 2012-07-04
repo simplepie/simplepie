@@ -49,6 +49,7 @@
  * This class can be overloaded with {@see SimplePie::set_parser_class()}
  *
  * @package SimplePie
+ * @subpackage Parsing
  */
 class SimplePie_Parser
 {

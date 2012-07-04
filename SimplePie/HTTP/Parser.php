@@ -47,6 +47,7 @@
  * HTTP Response Parser
  *
  * @package SimplePie
+ * @subpackage HTTP
  */
 class SimplePie_HTTP_Parser
 {

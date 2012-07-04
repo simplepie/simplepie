@@ -47,6 +47,7 @@
  * Date Parser
  *
  * @package SimplePie
+ * @subpackage Parsing
  */
 class SimplePie_Parse_Date
 {

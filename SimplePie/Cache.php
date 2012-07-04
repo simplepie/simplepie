@@ -50,6 +50,7 @@
  * via {@see register()}
  *
  * @package SimplePie
+ * @subpackage Caching
  */
 class SimplePie_Cache
 {

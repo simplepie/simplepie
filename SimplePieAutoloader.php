@@ -55,6 +55,7 @@ if (!class_exists('SimplePie_Core'))
  * Autoloader class
  *
  * @package SimplePie
+ * @subpackage API
  */
 class SimplePie_Autoloader
 {

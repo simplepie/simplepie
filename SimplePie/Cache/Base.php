@@ -49,6 +49,7 @@
  * to implement this interface.
  *
  * @package SimplePie
+ * @subpackage Caching
  */
 interface SimplePie_Cache_Base
 {

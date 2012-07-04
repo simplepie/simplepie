@@ -50,6 +50,7 @@
  * This class can be overloaded with {@see SimplePie::set_enclosure_class()}
  *
  * @package SimplePie
+ * @subpackage API
  */
 class SimplePie_Enclosure
 {

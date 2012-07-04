@@ -52,6 +52,7 @@
  * `root` and the password `password`. All tables will be prefixed with `sp_`
  *
  * @package SimplePie
+ * @subpackage Caching
  */
 class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 {

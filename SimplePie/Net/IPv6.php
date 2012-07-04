@@ -47,6 +47,7 @@
  * Class to validate and to work with IPv6 addresses.
  *
  * @package SimplePie
+ * @subpackage HTTP
  * @copyright 2003-2005 The PHP Group
  * @license http://www.opensource.org/licenses/bsd-license.php
  * @link http://pear.php.net/package/Net_IPv6

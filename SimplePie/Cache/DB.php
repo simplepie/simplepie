@@ -46,6 +46,7 @@
  * Base class for database-based caches
  *
  * @package SimplePie
+ * @subpackage Caching
  */
 abstract class SimplePie_Cache_DB implements SimplePie_Cache_Base
 {

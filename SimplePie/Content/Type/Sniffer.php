@@ -55,6 +55,7 @@
  * This class can be overloaded with {@see SimplePie::set_content_type_sniffer_class()}
  *
  * @package SimplePie
+ * @subpackage HTTP
  */
 class SimplePie_Content_Type_Sniffer
 {

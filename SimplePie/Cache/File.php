@@ -46,6 +46,7 @@
  * Caches data to the filesystem
  *
  * @package SimplePie
+ * @subpackage Caching
  */
 class SimplePie_Cache_File implements SimplePie_Cache_Base
 {

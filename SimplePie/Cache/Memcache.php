@@ -52,6 +52,7 @@
  * prefixed with `sp_` and data will expire after 3600 seconds
  *
  * @package SimplePie
+ * @subpackage Caching
  * @uses Memcache
  */
 class SimplePie_Cache_Memcache implements SimplePie_Cache_Base

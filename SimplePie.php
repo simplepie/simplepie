@@ -48,6 +48,7 @@
  * Class for backward compatibility.
  *
  * @package SimplePie
+ * @subpackage API
  */
 class SimplePie extends SimplePie_Core
 {

@@ -51,6 +51,7 @@
  * This class can be overloaded with {@see SimplePie::set_item_class()}
  *
  * @package SimplePie
+ * @subpackage API
  */
 class SimplePie_Item
 {
