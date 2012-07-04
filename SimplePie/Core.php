@@ -635,9 +635,9 @@ class SimplePie_Core
 	 */
 	public function __construct()
 	{
-		if (version_compare(PHP_VERSION, '5.0', '<'))
+		if (version_compare(PHP_VERSION, '5.2', '<'))
 		{
-			trigger_error('PHP 4.x is no longer supported. Please upgrade to PHP 5.2 or newer.');
+			trigger_error('PHP 4.x, 5.0 and 5.1 are no longer supported. Please upgrade to PHP 5.2 or newer.');
 			die();
 		}
 
@@ -1183,7 +1183,7 @@ class SimplePie_Core
 	public function init()
 	{
 		// Check absolute bare minimum requirements.
-		if ((function_exists('version_compare') && version_compare(PHP_VERSION, '5.0', '<')) || !extension_loaded('xml') || !extension_loaded('pcre'))
+		if (!extension_loaded('xml') || !extension_loaded('pcre'))
 		{
 			return false;
 		}

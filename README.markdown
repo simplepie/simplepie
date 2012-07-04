@@ -18,7 +18,7 @@ For a complete list of contributors:
 
 
 ## Requirements
-* PHP 5.1.4 or newer
+* PHP 5.2.0 or newer
 * libxml2 (certain 2.7.x releases are too buggy for words, and will crash)
 * Either the iconv or mbstring extension
 * cURL or fsockopen()
