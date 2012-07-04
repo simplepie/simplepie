@@ -1941,48 +1941,6 @@ class SimplePie_Misc
 		return $tokens;
 	}
 
-	public static function array_unique($array)
-	{
-		if (version_compare(PHP_VERSION, '5.2', '>='))
-		{
-			return array_unique($array);
-		}
-		else
-		{
-			$array = (array) $array;
-			$new_array = array();
-			$new_array_strings = array();
-			foreach ($array as $key => $value)
-			{
-				if (is_object($value))
-				{
-					if (method_exists($value, '__toString'))
-					{
-						$cmp = $value->__toString();
-					}
-					else
-					{
-						trigger_error('Object of class ' . get_class($value) . ' could not be converted to string', E_USER_ERROR);
-					}
-				}
-				elseif (is_array($value))
-				{
-					$cmp = (string) reset($value);
-				}
-				else
-				{
-					$cmp = (string) $value;
-				}
-				if (!in_array($cmp, $new_array_strings))
-				{
-					$new_array[$key] = $value;
-					$new_array_strings[] = $cmp;
-				}
-			}
-			return $new_array;
-		}
-	}
-
 	/**
 	 * Converts a unicode codepoint to a UTF-8 character
 	 *

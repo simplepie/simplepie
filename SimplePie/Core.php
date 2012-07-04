@@ -1877,7 +1877,7 @@ class SimplePie_Core
 
 		if (!empty($categories))
 		{
-			return $this->registry->call('Misc', 'array_unique', array($categories));
+			return array_unique($categories);
 		}
 		else
 		{
@@ -1960,7 +1960,7 @@ class SimplePie_Core
 
 		if (!empty($authors))
 		{
-			return $this->registry->call('Misc', 'array_unique', array($authors));
+			return array_unique($authors);
 		}
 		else
 		{
@@ -2031,7 +2031,7 @@ class SimplePie_Core
 
 		if (!empty($contributors))
 		{
-			return $this->registry->call('Misc', 'array_unique', array($contributors));
+			return array_unique($contributors);
 		}
 		else
 		{
