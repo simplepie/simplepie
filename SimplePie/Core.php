@@ -373,11 +373,6 @@ define('SIMPLEPIE_NAMESPACE_XHTML', 'http://www.w3.org/1999/xhtml');
 define('SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY', 'http://www.iana.org/assignments/relation/');
 
 /**
- * Whether we're running on PHP5
- */
-define('SIMPLEPIE_PHP5', version_compare(PHP_VERSION, '5.0.0', '>='));
-
-/**
  * No file source
  */
 define('SIMPLEPIE_FILE_SOURCE_NONE', 0);
