@@ -613,19 +613,15 @@ class SimplePie
 	/**
 	 * The SimplePie class contains feed level data and options
 	 *
-	 * There are two ways that you can create a new SimplePie object. The first
-	 * is by passing a feed URL as a parameter to the SimplePie constructor
-	 * (as well as optionally setting the cache location and cache expiry). This
-	 * will initialise the whole feed with all of the default settings, and you
-	 * can begin accessing methods and properties immediately.
-	 *
-	 * The second way is to create the SimplePie object with no parameters
-	 * at all. This will enable you to set configuration options. After setting
+	 * To use SimplePie, create the SimplePie object with no parameters. You can
+	 * then set configuration options using the provided methods. After setting
 	 * them, you must initialise the feed using $feed->init(). At that point the
-	 * object's methods and properties will be available to you. This format is
-	 * what is used throughout this documentation.
+	 * object's methods and properties will be available to you.
 	 *
-	 * @access public
+	 * Previously, it was possible to pass in the feed URL along with cache
+	 * options directly into the constructor. This has been removed as of 1.3 as
+	 * it caused a lot of confusion.
+	 *
 	 * @since 1.0 Preview Release
 	 */
 	public function __construct()
@@ -681,10 +677,11 @@ class SimplePie
 	}
 
 	/**
-	 * Force the given data/URL to be treated as a feed no matter what it
-	 * appears like
+	 * Force the given data/URL to be treated as a feed
 	 *
-	 * @access public
+	 * This tells SimplePie to ignore the content-type provided by the server.
+	 * Be careful when using this option, as it will also disable autodiscovery.
+	 *
 	 * @since 1.1
 	 * @param bool $enable Force the given data/URL to be treated as a feed
 	 */
@@ -694,7 +691,7 @@ class SimplePie
 	}
 
 	/**
-	 * This is the URL of the feed you want to parse.
+	 * Set the URL of the feed you want to parse
 	 *
 	 * This allows you to enter the URL of the feed you want to parse, or the
 	 * website you want to try to use auto-discovery on. This takes priority
@@ -704,10 +701,9 @@ class SimplePie
 	 * of a string for the $url. Remember that with each additional feed comes
 	 * additional processing and resources.
 	 *
-	 * @access public
 	 * @since 1.0 Preview Release
-	 * @param mixed $url This is the URL (or array of URLs) that you want to parse.
-	 * @see SimplePie::set_raw_data()
+	 * @see set_raw_data()
+	 * @param string|array $url This is the URL (or array of URLs) that you want to parse.
 	 */
 	public function set_feed_url($url)
 	{
@@ -726,10 +722,9 @@ class SimplePie
 	}
 
 	/**
-	 * Provides an instance of SimplePie_File to use as a feed
+	 * Set an instance of {@see SimplePie_File} to use as a feed
 	 *
-	 * @access public
-	 * @param object &$file Instance of SimplePie_File (or subclass)
+	 * @param SimplePie_File &$file
 	 * @return bool True on success, false on failure
 	 */
 	public function set_file(&$file)
@@ -744,16 +739,17 @@ class SimplePie
 	}
 
 	/**
+	 * Set the raw XML data to parse
+	 *
 	 * Allows you to use a string of RSS/Atom data instead of a remote feed.
 	 *
 	 * If you have a feed available as a string in PHP, you can tell SimplePie
 	 * to parse that data string instead of a remote feed. Any set feed URL
 	 * takes precedence.
 	 *
-	 * @access public
 	 * @since 1.0 Beta 3
 	 * @param string $data RSS or Atom data as a string.
-	 * @see SimplePie::set_feed_url()
+	 * @see set_feed_url()
 	 */
 	public function set_raw_data($data)
 	{
@@ -761,12 +757,11 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to override the default timeout for fetching remote feeds.
+	 * Set the the default timeout for fetching remote feeds
 	 *
 	 * This allows you to change the maximum time the feed's server to respond
 	 * and send the feed back.
 	 *
-	 * @access public
 	 * @since 1.0 Beta 3
 	 * @param int $timeout The maximum number of seconds to spend waiting to retrieve a feed.
 	 */
@@ -776,10 +771,8 @@ class SimplePie
 	}
 
 	/**
-	 * Forces SimplePie to use fsockopen() instead of the preferred cURL
-	 * functions.
+	 * Force SimplePie to use fsockopen() instead of cURL
 	 *
-	 * @access public
 	 * @since 1.0 Beta 3
 	 * @param bool $enable Force fsockopen() to be used
 	 */
@@ -789,12 +782,11 @@ class SimplePie
 	}
 
 	/**
-	 * Enables/disables caching in SimplePie.
+	 * Enable/disable caching in SimplePie.
 	 *
 	 * This option allows you to disable caching all-together in SimplePie.
 	 * However, disabling the cache can lead to longer load times.
 	 *
-	 * @access public
 	 * @since 1.0 Preview Release
 	 * @param bool $enable Enable caching
 	 */
@@ -804,11 +796,10 @@ class SimplePie
 	}
 
 	/**
-	 * Set the length of time (in seconds) that the contents of a feed
-	 * will be cached.
+	 * Set the length of time (in seconds) that the contents of a feed will be
+	 * cached
 	 *
-	 * @access public
-	 * @param int $seconds The feed content cache duration.
+	 * @param int $seconds The feed content cache duration
 	 */
 	public function set_cache_duration($seconds = 3600)
 	{
@@ -816,10 +807,9 @@ class SimplePie
 	}
 
 	/**
-	 * Set the length of time (in seconds) that the autodiscovered feed
-	 * URL will be cached.
+	 * Set the length of time (in seconds) that the autodiscovered feed URL will
+	 * be cached
 	 *
-	 * @access public
 	 * @param int $seconds The autodiscovered feed URL cache duration.
 	 */
 	public function set_autodiscovery_cache_duration($seconds = 604800)
@@ -828,9 +818,8 @@ class SimplePie
 	}
 
 	/**
-	 * Set the file system location where the cached files should be stored.
+	 * Set the file system location where the cached files should be stored
 	 *
-	 * @access public
 	 * @param string $location The file system location.
 	 */
 	public function set_cache_location($location = './cache')
@@ -839,9 +828,8 @@ class SimplePie
 	}
 
 	/**
-	 * Determines whether feed items should be sorted into reverse chronological order.
+	 * Set whether feed items should be sorted into reverse chronological order
 	 *
-	 * @access public
 	 * @param bool $enable Sort as reverse chronological order.
 	 */
 	public function enable_order_by_date($enable = true)
@@ -850,10 +838,12 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to override the character encoding reported by the feed.
+	 * Set the character encoding used to parse the feed
 	 *
-	 * @access public
-	 * @param string $encoding Character encoding.
+	 * This overrides the encoding reported by the feed, however it will fall
+	 * back to the normal encoding detection if the override fails
+	 *
+	 * @param string $encoding Character encoding
 	 */
 	public function set_input_encoding($encoding = false)
 	{
@@ -870,7 +860,6 @@ class SimplePie
 	/**
 	 * Set how much feed autodiscovery to do
 	 *
-	 * @access public
 	 * @see SIMPLEPIE_LOCATOR_NONE
 	 * @see SIMPLEPIE_LOCATOR_AUTODISCOVERY
 	 * @see SIMPLEPIE_LOCATOR_LOCAL_EXTENSION
@@ -878,8 +867,7 @@ class SimplePie
 	 * @see SIMPLEPIE_LOCATOR_REMOTE_EXTENSION
 	 * @see SIMPLEPIE_LOCATOR_REMOTE_BODY
 	 * @see SIMPLEPIE_LOCATOR_ALL
-	 * @param int $level Feed Autodiscovery Level (level can be a
-	 * combination of the above constants, see bitwise OR operator)
+	 * @param int $level Feed Autodiscovery Level (level can be a combination of the above constants, see bitwise OR operator)
 	 */
 	public function set_autodiscovery_level($level = SIMPLEPIE_LOCATOR_ALL)
 	{
@@ -902,11 +890,11 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 *
 	 * @deprecated Use {@see get_registry()} instead
-	 * @param string $class Name of custom class.
+	 * @param string $class Name of custom class
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
 	 */
 	/**
-	 * Allows you to change which class SimplePie uses for caching.
+	 * Set which class SimplePie uses for caching
 	 */
 	public function set_cache_class($class = 'SimplePie_Cache')
 	{
@@ -914,7 +902,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for auto-discovery.
+	 * Set which class SimplePie uses for auto-discovery
 	 */
 	public function set_locator_class($class = 'SimplePie_Locator')
 	{
@@ -922,7 +910,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for XML parsing.
+	 * Set which class SimplePie uses for XML parsing
 	 */
 	public function set_parser_class($class = 'SimplePie_Parser')
 	{
@@ -930,7 +918,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for remote file fetching.
+	 * Set which class SimplePie uses for remote file fetching
 	 */
 	public function set_file_class($class = 'SimplePie_File')
 	{
@@ -938,7 +926,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for data sanitization.
+	 * Set which class SimplePie uses for data sanitization
 	 */
 	public function set_sanitize_class($class = 'SimplePie_Sanitize')
 	{
@@ -946,7 +934,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for handling feed items.
+	 * Set which class SimplePie uses for handling feed items
 	 */
 	public function set_item_class($class = 'SimplePie_Item')
 	{
@@ -954,7 +942,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for handling author data.
+	 * Set which class SimplePie uses for handling author data
 	 */
 	public function set_author_class($class = 'SimplePie_Author')
 	{
@@ -962,7 +950,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for handling category data.
+	 * Set which class SimplePie uses for handling category data
 	 */
 	public function set_category_class($class = 'SimplePie_Category')
 	{
@@ -970,7 +958,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for feed enclosures.
+	 * Set which class SimplePie uses for feed enclosures
 	 */
 	public function set_enclosure_class($class = 'SimplePie_Enclosure')
 	{
@@ -978,7 +966,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for <media:text> captions
+	 * Set which class SimplePie uses for `<media:text>` captions
 	 */
 	public function set_caption_class($class = 'SimplePie_Caption')
 	{
@@ -986,7 +974,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for <media:copyright>
+	 * Set which class SimplePie uses for `<media:copyright>`
 	 */
 	public function set_copyright_class($class = 'SimplePie_Copyright')
 	{
@@ -994,7 +982,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for <media:credit>
+	 * Set which class SimplePie uses for `<media:credit>`
 	 */
 	public function set_credit_class($class = 'SimplePie_Credit')
 	{
@@ -1002,7 +990,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for <media:rating>
+	 * Set which class SimplePie uses for `<media:rating>`
 	 */
 	public function set_rating_class($class = 'SimplePie_Rating')
 	{
@@ -1010,7 +998,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for <media:restriction>
+	 * Set which class SimplePie uses for `<media:restriction>`
 	 */
 	public function set_restriction_class($class = 'SimplePie_Restriction')
 	{
@@ -1018,7 +1006,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses for content-type sniffing.
+	 * Set which class SimplePie uses for content-type sniffing
 	 */
 	public function set_content_type_sniffer_class($class = 'SimplePie_Content_Type_Sniffer')
 	{
@@ -1026,7 +1014,7 @@ class SimplePie
 	}
 
 	/**
-	 * Allows you to change which class SimplePie uses item sources.
+	 * Set which class SimplePie uses item sources
 	 */
 	public function set_source_class($class = 'SimplePie_Source')
 	{
@@ -1035,9 +1023,8 @@ class SimplePie
 	/**#@-*/
 
 	/**
-	 * Allows you to override the default user agent string.
+	 * Set the user agent string
 	 *
-	 * @access public
 	 * @param string $ua New user agent string.
 	 */
 	public function set_useragent($ua = SIMPLEPIE_USERAGENT)
@@ -1048,7 +1035,6 @@ class SimplePie
 	/**
 	 * Set callback function to create cache filename with
 	 *
-	 * @access public
 	 * @param mixed $function Callback function
 	 */
 	public function set_cache_name_function($function = 'md5')
@@ -1060,10 +1046,11 @@ class SimplePie
 	}
 
 	/**
-	 * Set options to make SP as fast as possible.  Forgoes a
-	 * substantial amount of data sanitization in favor of speed.
+	 * Set options to make SP as fast as possible
 	 *
-	 * @access public
+	 * Forgoes a substantial amount of data sanitization in favor of speed. This
+	 * turns SimplePie into a dumb parser of feeds.
+	 *
 	 * @param bool $set Whether to set them or not
 	 */
 	public function set_stupidly_fast($set = false)
@@ -1082,7 +1069,6 @@ class SimplePie
 	/**
 	 * Set maximum number of feeds to check with autodiscovery
 	 *
-	 * @access public
 	 * @param int $max Maximum number of feeds to check
 	 */
 	public function set_max_checked_feeds($max = 10)
@@ -1122,6 +1108,28 @@ class SimplePie
 		$this->sanitize->strip_attributes($attribs);
 	}
 
+	/**
+	 * Set the output encoding
+	 *
+	 * Allows you to override SimplePie's output to match that of your webpage.
+	 * This is useful for times when your webpages are not being served as
+	 * UTF-8.  This setting will be obeyed by {@see handle_content_type()}, and
+	 * is similar to {@see set_input_encoding()}.
+	 *
+	 * It should be noted, however, that not all character encodings can support
+	 * all characters.  If your page is being served as ISO-8859-1 and you try
+	 * to display a Japanese feed, you'll likely see garbled characters.
+	 * Because of this, it is highly recommended to ensure that your webpages
+	 * are served as UTF-8.
+	 *
+	 * The number of supported character encodings depends on whether your web
+	 * host supports {@link http://php.net/mbstring mbstring},
+	 * {@link http://php.net/iconv iconv}, or both. See
+	 * {@link http://simplepie.org/wiki/faq/Supported_Character_Encodings} for
+	 * more information.
+	 *
+	 * @param string $encoding
+	 */
 	public function set_output_encoding($encoding = 'UTF-8')
 	{
 		$this->sanitize->set_output_encoding($encoding);
@@ -1136,9 +1144,12 @@ class SimplePie
 	 * Set element/attribute key/value pairs of HTML attributes
 	 * containing URLs that need to be resolved relative to the feed
 	 *
-	 * @access public
+	 * Defaults to |a|@href, |area|@href, |blockquote|@cite, |del|@cite,
+	 * |form|@action, |img|@longdesc, |img|@src, |input|@src, |ins|@cite,
+	 * |q|@cite
+	 *
 	 * @since 1.0
-	 * @param array $element_attribute Element/attribute key/value pairs
+	 * @param array|null $element_attribute Element/attribute key/value pairs, null for default
 	 */
 	public function set_url_replacements($element_attribute = array('a' => 'href', 'area' => 'href', 'blockquote' => 'cite', 'del' => 'cite', 'form' => 'action', 'img' => array('longdesc', 'src'), 'input' => 'src', 'ins' => 'cite', 'q' => 'cite'))
 	{
@@ -1148,7 +1159,6 @@ class SimplePie
 	/**
 	 * Set the handler to enable the display of cached images.
 	 *
-	 * @access public
 	 * @param str $page Web-accessible path to the handler_image.php file.
 	 * @param str $qs The query string that the value should be passed to.
 	 */
@@ -1165,9 +1175,8 @@ class SimplePie
 	}
 
 	/**
-	 * Set the limit for items returned per-feed with multifeeds.
+	 * Set the limit for items returned per-feed with multifeeds
 	 *
-	 * @access public
 	 * @param integer $limit The maximum number of items to return.
 	 */
 	public function set_item_limit($limit = 0)
@@ -1175,6 +1184,15 @@ class SimplePie
 		$this->item_limit = (int) $limit;
 	}
 
+	/**
+	 * Initialize the feed object
+	 *
+	 * This is what makes everything happen.  Period.  This is where all of the
+	 * configuration options get processed, feeds are fetched, cached, and
+	 * parsed, and all of that other good stuff.
+	 *
+	 * @return boolean True if successful, false otherwise
+	 */
 	public function init()
 	{
 		// Check absolute bare minimum requirements.
@@ -1512,9 +1530,8 @@ class SimplePie
 	}
 
 	/**
-	 * Return the error message for the occured error
+	 * Get the error message for the occured error
 	 *
-	 * @access public
 	 * @return string Error message
 	 */
 	public function error()
@@ -1523,10 +1540,10 @@ class SimplePie
 	}
 
 	/**
-	 * Return the raw XML
+	 * Get the raw XML
 	 *
-	 * This is the same as setting `$xml_dump = true;`, but returns
-	 * the data instead of printing it.
+	 * This is the same as setting `$xml_dump = true`, but returns the data
+	 * instead of printing it.
 	 *
 	 * @return string|boolean Raw XML data, false if the cache is used
 	 */
@@ -1535,11 +1552,36 @@ class SimplePie
 		return $this->raw_data;
 	}
 
+	/**
+	 * Get the character encoding used for output
+	 *
+	 * @since Preview Release
+	 * @return string
+	 */
 	public function get_encoding()
 	{
 		return $this->sanitize->output_encoding;
 	}
 
+	/**
+	 * Send the content-type header with correct encoding
+	 *
+	 * This method ensures that the SimplePie-enabled page is being served with
+	 * the correct {@link http://www.iana.org/assignments/media-types/ mime-type}
+	 * and character encoding HTTP headers (character encoding determined by the
+	 * {@see set_output_encoding} config option).
+	 *
+	 * This won't work properly if any content or whitespace has already been
+	 * sent to the browser, because it relies on PHP's
+	 * {@link http://php.net/header header()} function, and these are the
+	 * circumstances under which the function works.
+	 *
+	 * Because it's setting these settings for the entire page (as is the nature
+	 * of HTTP headers), this should only be used once per page (again, at the
+	 * top).
+	 *
+	 * @param string $mime MIME type to serve the page as
+	 */
 	public function handle_content_type($mime = 'text/html')
 	{
 		if (!headers_sent())
@@ -1638,9 +1680,16 @@ class SimplePie
 	}
 
 	/**
+	 * Get the URL for the feed
+	 *
+	 * May or may not be different from the URL passed to {@see set_feed_url()},
+	 * depending on whether auto-discovery was used.
+	 *
+	 * @since Preview Release (previously called `get_feed_url()` since SimplePie 0.8.)
 	 * @todo If we have a perm redirect we should return the new URL
 	 * @todo When we make the above change, let's support <itunes:new-feed-url> as well
 	 * @todo Also, |atom:link|@rel=self
+	 * @return string|null
 	 */
 	public function subscribe_url()
 	{
@@ -1905,6 +1954,13 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get a category for the feed
+	 *
+	 * @since Unknown
+	 * @param int $key The category that you want to return.  Remember that arrays begin with 0, not 1
+	 * @return SimplePie_Category|null
+	 */
 	public function get_category($key = 0)
 	{
 		$categories = $this->get_categories();
@@ -1918,6 +1974,14 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get all categories for the feed
+	 *
+	 * Uses `<atom:category>`, `<category>` or `<dc:subject>`
+	 *
+	 * @since Unknown
+	 * @return array|null List of {@see SimplePie_Category} objects
+	 */
 	public function get_categories()
 	{
 		$categories = array();
@@ -1975,6 +2039,13 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get an author for the feed
+	 *
+	 * @since 1.1
+	 * @param int $key The author that you want to return.  Remember that arrays begin with 0, not 1
+	 * @return SimplePie_Author|null
+	 */
 	public function get_author($key = 0)
 	{
 		$authors = $this->get_authors();
@@ -1988,6 +2059,14 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get all authors for the feed
+	 *
+	 * Uses `<atom:author>`, `<author>`, `<dc:creator>` or `<itunes:author>`
+	 *
+	 * @since 1.1
+	 * @return array|null List of {@see SimplePie_Author} objects
+	 */
 	public function get_authors()
 	{
 		$authors = array();
@@ -2058,6 +2137,13 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get a contributor for the feed
+	 *
+	 * @since 1.1
+	 * @param int $key The contrbutor that you want to return.  Remember that arrays begin with 0, not 1
+	 * @return SimplePie_Author|null
+	 */
 	public function get_contributor($key = 0)
 	{
 		$contributors = $this->get_contributors();
@@ -2071,6 +2157,14 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get all contributors for the feed
+	 *
+	 * Uses `<atom:contributor>`
+	 *
+	 * @since 1.1
+	 * @return array|null List of {@see SimplePie_Author} objects
+	 */
 	public function get_contributors()
 	{
 		$contributors = array();
@@ -2129,6 +2223,14 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get a single link for the feed
+	 *
+	 * @since 1.0 (previously called `get_feed_link` since Preview Release, `get_feed_permalink()` since 0.8)
+	 * @param int $key The link that you want to return.  Remember that arrays begin with 0, not 1
+	 * @param string $rel The relationship of the link to return
+	 * @return string|null Link URL
+	 */
 	public function get_link($key = 0, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
@@ -2143,13 +2245,30 @@ class SimplePie
 	}
 
 	/**
-	 * Added for parity between the parent-level and the item/entry-level.
+	 * Get the permalink for the item
+	 *
+	 * Returns the first link available with a relationship of "alternate".
+	 * Identical to {@see get_link()} with key 0
+	 *
+	 * @see get_link
+	 * @since 1.0 (previously called `get_feed_link` since Preview Release, `get_feed_permalink()` since 0.8)
+	 * @internal Added for parity between the parent-level and the item/entry-level.
+	 * @return string|null Link URL
 	 */
 	public function get_permalink()
 	{
 		return $this->get_link(0);
 	}
 
+	/**
+	 * Get all links for the feed
+	 *
+	 * Uses `<atom:link>` or `<link>`
+	 *
+	 * @since Beta 2
+	 * @param string $rel The relationship of links to return
+	 * @return array|null Links found for the feed (strings)
+	 */
 	public function get_links($rel = 'alternate')
 	{
 		if (!isset($this->data['links']))
@@ -2486,6 +2605,15 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the number of items in the feed
+	 *
+	 * This is well-suited for {@link http://php.net/for for()} loops with
+	 * {@see get_item()}
+	 *
+	 * @param int $max Maximum value to return. 0 for no limit
+	 * @return int Number of items in the feed
+	 */
 	public function get_item_quantity($max = 0)
 	{
 		$max = (int) $max;
@@ -2500,6 +2628,18 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get a single item from the feed
+	 *
+	 * This is better suited for {@link http://php.net/for for()} loops, whereas
+	 * {@see get_items()} is better suited for
+	 * {@link http://php.net/foreach foreach()} loops.
+	 *
+	 * @see get_item_quantity()
+	 * @since Beta 2
+	 * @param int $key The item that you want to return.  Remember that arrays begin with 0, not 1
+	 * @return SimplePie_Item|null
+	 */
 	public function get_item($key = 0)
 	{
 		$items = $this->get_items();
@@ -2513,6 +2653,19 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get all items from the feed
+	 *
+	 * This is better suited for {@link http://php.net/for for()} loops, whereas
+	 * {@see get_items()} is better suited for
+	 * {@link http://php.net/foreach foreach()} loops.
+	 *
+	 * @see get_item_quantity
+	 * @since Beta 2
+	 * @param int $start Index to start at
+	 * @param int $end Number of items to return. 0 for all items after `$start`
+	 * @return array|null List of {@see SimplePie_Item} objects
+	 */
 	public function get_items($start = 0, $end = 0)
 	{
 		if (!isset($this->data['items']))
@@ -2613,11 +2766,32 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Sorting callback for items
+	 *
+	 * @access private
+	 * @param SimplePie $a
+	 * @param SimplePie $b
+	 * @return boolean
+	 */
 	public static function sort_items($a, $b)
 	{
 		return $a->get_date('U') <= $b->get_date('U');
 	}
 
+	/**
+	 * Merge items from several feeds into one
+	 *
+	 * If you're merging multiple feeds together, they need to all have dates
+	 * for the items or else SimplePie will refuse to sort them.
+	 *
+	 * @link http://simplepie.org/wiki/tutorial/sort_multiple_feeds_by_time_and_date#if_feeds_require_separate_per-feed_settings
+	 * @param array $urls List of SimplePie feed objects to merge
+	 * @param int $start Starting item
+	 * @param int $end Number of items to return
+	 * @param int $limit Maximum number of items per feed
+	 * @return array
+	 */
 	public static function merge_items($urls, $start = 0, $end = 0, $limit = 0)
 	{
 		if (is_array($urls) && sizeof($urls) > 0)
