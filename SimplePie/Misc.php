@@ -2017,7 +2017,7 @@ class SimplePie_Misc
 	 * @param SimplePie_Registry $registry Class registry
 	 * @return array Possible encodings
 	 */
-	public static function xml_encoding($data, &$registry)
+	public static function xml_encoding($data, $registry)
 	{
 		// UTF-32 Big Endian BOM
 		if (substr($data, 0, 4) === "\x00\x00\xFE\xFF")

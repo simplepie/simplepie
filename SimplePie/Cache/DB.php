@@ -58,7 +58,7 @@ abstract class SimplePie_Cache_DB implements SimplePie_Cache_Base
 	 * @param SimplePie $data
 	 * @return array First item is the serialized data for storage, second item is the unique ID for this item
 	 */
-	protected static function prepare_simplepie_object_for_cache(&$data)
+	protected static function prepare_simplepie_object_for_cache($data)
 	{
 		$items = $data->get_items();
 		$items_by_id = array();

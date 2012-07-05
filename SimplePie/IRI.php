@@ -467,7 +467,7 @@ class SimplePie_IRI
 	protected function replace_invalid_with_pct_encoding($string, $extra_chars, $iprivate = false)
 	{
 		// Normalize as many pct-encoded sections as possible
-		$string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', array(&$this, 'remove_iunreserved_percent_encoded'), $string);
+		$string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', array($this, 'remove_iunreserved_percent_encoded'), $string);
 
 		// Replace invalid percent characters
 		$string = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);

@@ -100,7 +100,7 @@ class SimplePie_Sanitize
 		}
 	}
 
-	public function set_registry(SimplePie_Registry &$registry)
+	public function set_registry(SimplePie_Registry $registry)
 	{
 		$this->registry = $registry;
 	}
@@ -380,7 +380,7 @@ class SimplePie_Sanitize
 		return $ret;
 	}
 
-	public function replace_urls(&$document, $tag, $attributes)
+	public function replace_urls($document, $tag, $attributes)
 	{
 		if (!is_array($attributes))
 		{
@@ -429,7 +429,7 @@ class SimplePie_Sanitize
 		}
 	}
 
-	protected function strip_tag($tag, &$document, $type)
+	protected function strip_tag($tag, $document, $type)
 	{
 		$xpath = new DOMXPath($document);
 		$elements = $xpath->query('body//' . $tag);
@@ -514,7 +514,7 @@ class SimplePie_Sanitize
 		}
 	}
 
-	protected function strip_attr($attrib, &$document)
+	protected function strip_attr($attrib, $document)
 	{
 		$xpath = new DOMXPath($document);
 		$elements = $xpath->query('//*[@' . $attrib . ']');

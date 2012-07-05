@@ -599,7 +599,7 @@ class SimplePie_Parse_Date
 
 		foreach ($this->built_in as $method)
 		{
-			if (($returned = call_user_func(array(&$this, $method), $date)) !== false)
+			if (($returned = call_user_func(array($this, $method), $date)) !== false)
 			{
 				return $returned;
 			}

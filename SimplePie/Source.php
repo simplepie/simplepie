@@ -64,9 +64,9 @@ class SimplePie_Source
 		$this->data = $data;
 	}
 
-	public function set_registry(SimplePie_Registry &$registry)
+	public function set_registry(SimplePie_Registry $registry)
 	{
-		$this->registry = &$registry;
+		$this->registry = $registry;
 	}
 
 	public function __toString()

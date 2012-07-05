@@ -65,9 +65,9 @@ class SimplePie_Locator
 	var $max_checked_feeds = 10;
 	protected $registry;
 
-	public function __construct(SimplePie_File &$file, $timeout = 10, $useragent = null, $max_checked_feeds = 10)
+	public function __construct(SimplePie_File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10)
 	{
-		$this->file =& $file;
+		$this->file = $file;
 		$this->useragent = $useragent;
 		$this->timeout = $timeout;
 		$this->max_checked_feeds = $max_checked_feeds;
@@ -79,9 +79,9 @@ class SimplePie_Locator
 		restore_error_handler();
 	}
 
-	public function set_registry(SimplePie_Registry &$registry)
+	public function set_registry(SimplePie_Registry $registry)
 	{
-		$this->registry = &$registry;
+		$this->registry = $registry;
 	}
 
 	public function find($type = SIMPLEPIE_LOCATOR_ALL, &$working)
@@ -135,7 +135,7 @@ class SimplePie_Locator
 		return null;
 	}
 
-	public function is_feed(&$file)
+	public function is_feed($file)
 	{
 		if ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
