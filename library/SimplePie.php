@@ -1654,6 +1654,37 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get data for an feed-level element
+	 *
+	 * This method allows you to get access to ANY element/attribute that is a
+	 * sub-element of the opening feed tag.
+	 *
+	 * The return value is an indexed array of elements matching the given
+	 * namespace and tag name. Each element has `attribs`, `data` and `child`
+	 * subkeys. For `attribs` and `child`, these contain namespace subkeys.
+	 * `attribs` then has one level of associative name => value data (where
+	 * `value` is a string) after the namespace. `child` has tag-indexed keys
+	 * after the namespace, each member of which is an indexed array matching
+	 * this same format.
+	 *
+	 * For example:
+	 * <pre>
+	 * // This is probably a bad example because we already support
+	 * // <media:content> natively, but it shows you how to parse through
+	 * // the nodes.
+	 * $group = $item->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'group');
+	 * $content = $group[0]['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['content'];
+	 * $file = $content[0]['attribs']['']['url'];
+	 * echo $file;
+	 * </pre>
+	 *
+	 * @since 1.0
+	 * @see http://simplepie.org/wiki/faq/supported_xml_namespaces
+	 * @param string $namespace The URL of the XML namespace of the elements you're trying to access
+	 * @param string $tag Tag name
+	 * @return array
+	 */
 	public function get_feed_tags($namespace, $tag)
 	{
 		$type = $this->get_type();
@@ -1688,6 +1719,20 @@ class SimplePie
 		return null;
 	}
 
+	/**
+	 * Get data for an channel-level element
+	 *
+	 * This method allows you to get access to ANY element/attribute in the
+	 * channel/header section of the feed.
+	 *
+	 * See {@see SimplePie::get_feed_tags()} for a description of the return value
+	 *
+	 * @since 1.0
+	 * @see http://simplepie.org/wiki/faq/supported_xml_namespaces
+	 * @param string $namespace The URL of the XML namespace of the elements you're trying to access
+	 * @param string $tag Tag name
+	 * @return array
+	 */
 	public function get_channel_tags($namespace, $tag)
 	{
 		$type = $this->get_type();
@@ -1731,6 +1776,20 @@ class SimplePie
 		return null;
 	}
 
+	/**
+	 * Get data for an channel-level element
+	 *
+	 * This method allows you to get access to ANY element/attribute in the
+	 * image/logo section of the feed.
+	 *
+	 * See {@see SimplePie::get_feed_tags()} for a description of the return value
+	 *
+	 * @since 1.0
+	 * @see http://simplepie.org/wiki/faq/supported_xml_namespaces
+	 * @param string $namespace The URL of the XML namespace of the elements you're trying to access
+	 * @param string $tag Tag name
+	 * @return array
+	 */
 	public function get_image_tags($namespace, $tag)
 	{
 		$type = $this->get_type();
@@ -1767,6 +1826,18 @@ class SimplePie
 		return null;
 	}
 
+	/**
+	 * Get the base URL value from the feed
+	 *
+	 * Uses `<xml:base>` if available, otherwise uses the first link in the
+	 * feed, or failing that, the URL of the feed itself.
+	 *
+	 * @see get_link
+	 * @see subscribe_url
+	 *
+	 * @param array $element
+	 * @return string
+	 */
 	public function get_base($element = array())
 	{
 		if (!($this->get_type() & SIMPLEPIE_TYPE_RSS_SYNDICATION) && !empty($element['xml_base_explicit']) && isset($element['xml_base']))
@@ -1783,6 +1854,16 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Sanitize feed data
+	 *
+	 * @access private
+	 * @see SimplePie_Sanitize::sanitize()
+	 * @param string $data Data to sanitize
+	 * @param int $type One of the SIMPLEPIE_CONSTRUCT_* constants
+	 * @param string $base Base URL to resolve URLs against
+	 * @return string Sanitized data
+	 */
 	public function sanitize($data, $type, $base = '')
 	{
 		return $this->sanitize->sanitize($data, $type, $base);
