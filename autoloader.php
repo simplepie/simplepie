@@ -46,7 +46,7 @@
 // autoloader
 spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
 
-if (!class_exists('SimplePie_Core'))
+if (!class_exists('SimplePie'))
 {
 	trigger_error('Autoloader not registered properly', E_USER_ERROR);
 }
