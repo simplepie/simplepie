@@ -64,7 +64,7 @@ class SimplePie_Autoloader
 	 */
 	public function __construct()
 	{
-		$this->path = dirname(__FILE__);
+		$this->path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'library';
 	}
 
 	/**
