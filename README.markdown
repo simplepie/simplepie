@@ -1,6 +1,9 @@
-# SimplePie
+SimplePie
+=========
 
-## Authors and contributors
+
+Authors and contributors
+------------------------
 ### Current
 * [Ryan McCue](http://ryanmccue.info) (Maintainer, support)
 
@@ -17,7 +20,8 @@ For a complete list of contributors:
 2. In the `simplepie` directory, run `git shortlog -ns`
 
 
-## Requirements
+Requirements
+------------
 * PHP 5.2.0 or newer
 * libxml2 (certain 2.7.x releases are too buggy for words, and will crash)
 * Either the iconv or mbstring extension
@@ -27,11 +31,13 @@ For a complete list of contributors:
 If you're looking for PHP 4.x support, pull the "one-dot-two" branch, as that's the last version to support PHP 4.x.
 
 
-## License
+License
+-------
 [New BSD license](http://www.opensource.org/licenses/BSD-3-Clause)
 
 
-## Project status
+Project status
+--------------
 SimplePie is currently maintained by Ryan McCue.
 
 SimplePie is currently in "low-power mode." If the community decides that SimplePie is a valuable tool, then the community will come together to maintain it into the future.
@@ -39,13 +45,15 @@ SimplePie is currently in "low-power mode." If the community decides that Simple
 If you're interested in getting involved with SimplePie, please get in touch with Ryan McCue.
 
 
-## Roadmap
+Roadmap
+-------
 SimplePie 1.3 should be a thoughtful reduction of features. Remove some bloat, slim it down, and break it into smaller, more manageable chunks.
 
 Removing PHP 4.x support will certainly help with the slimming. It will also help avoid certain issues that frequently crop up with PHP 4.x. The PHP5-only migration is underway, but there is still quite a bit of work before it's "clean."
 
 
-## What comes in the package?
+What comes in the package?
+--------------------------
 1. `SimplePie.compiled.php` - The SimplePie library in one file.  This is all that's required for your pages.
    Either run `php build/compile.php` to generate this, or grab a copy from [dev.simplepie.org](http://dev.simplepie.org/SimplePie.compiled.php)
 2. `autoloader.php` - The SimplePie Autoloader if you want to use the separate file version.
@@ -57,13 +65,15 @@ Removing PHP 4.x support will certainly help with the slimming. It will also hel
 8. `idn/` - A third-party library that SimplePie can optionally use to understand Internationalized Domain Names (IDNs).
 9. `test/` - SimplePie's unit test suite.
 
-## To start the demo
+To start the demo
+-----------------
 1. Upload this package to your webserver.
 2. Make sure that the cache folder inside of the demo folder is server-writable.
 3. Navigate your browser to the demo folder.
 
 
-## Need support?
+Need support?
+-------------
 For further setup and install documentation, function references, etc., visit:
 [http://simplepie.org/wiki/](http://simplepie.org/wiki/)
 
@@ -74,7 +84,8 @@ Support mailing list -- powered by users, for users.
 [http://tech.groups.yahoo.com/group/simplepie-support/](http://tech.groups.yahoo.com/group/simplepie-support/)
 
 
-## API changes since 1.2
+API changes since 1.2
+---------------------
 ### Recently removed
 The following have recently been removed:
 
