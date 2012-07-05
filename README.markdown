@@ -55,16 +55,22 @@ Project status
 --------------
 SimplePie is currently maintained by Ryan McCue.
 
-SimplePie is currently in "low-power mode." If the community decides that
-SimplePie is a valuable tool, then the community will come together to maintain
-it into the future.
+As an open source project, SimplePie is maintained on a somewhat sporadic basis.
+This means that feature requests may not be fulfilled straight away, as time has
+to be prioritized.
+
+If you'd like to contribute to SimplePie, the best way to get started is to fork
+the project on GitHub and send pull requests for patches. When doing so, please
+be aware of our [coding standards][].
+
+[coding standards]: http://simplepie.org/wiki/misc/coding_standards
 
 If you're interested in getting involved with SimplePie, please get in touch
 with Ryan McCue.
 
 
-Roadmap
--------
+Roadmap for 1.3
+---------------
 SimplePie 1.3 should be a thoughtful reduction of features. Remove some bloat,
 slim it down, and break it into smaller, more manageable chunks.
 
@@ -76,21 +82,30 @@ it's "clean."
 
 What comes in the package?
 --------------------------
-1. `SimplePie.compiled.php` - The SimplePie library in one file.  This is all
-   that's required for your pages.
-   Either run `php build/compile.php` to generate this, or grab a copy from [dev.simplepie.org](http://dev.simplepie.org/SimplePie.compiled.php)
+1. `library/` - SimplePie classes for use with the autoloader
 2. `autoloader.php` - The SimplePie Autoloader if you want to use the separate
    file version.
-3. `library/` - SimplePie classes for use with the autoloader
-4. `README.markdown` - This document.
-5. `LICENSE.txt` - A copy of the BSD license.
-6. `compatibility_test/` - The SimplePie compatibility test that checks your
+3. `README.markdown` - This document.
+4. `LICENSE.txt` - A copy of the BSD license.
+5. `compatibility_test/` - The SimplePie compatibility test that checks your
    server for required settings.
-7. `demo/` - A basic feed reader demo that shows off some of SimplePie's more
+6. `demo/` - A basic feed reader demo that shows off some of SimplePie's more
    noticeable features.
-8. `idn/` - A third-party library that SimplePie can optionally use to
+7. `idn/` - A third-party library that SimplePie can optionally use to
    understand Internationalized Domain Names (IDNs).
+8. `build/` - Scripts related to generating pieces of SimplePie
 9. `test/` - SimplePie's unit test suite.
+
+### Where's `simplepie.inc`?
+For SimplePie 1.3, we've split the classes into separate files to make it easier
+to maintain and use.
+
+If you'd like a single monolithic file, you can run `php build/compile.php` to
+generate `SimplePie.compiled.php`, or grab a copy from
+[dev.simplepie.org][dev_compiled] (this is kept up-to-date with the latest
+code from Git).
+
+[dev_compiled]: http://dev.simplepie.org/SimplePie.compiled.php
 
 
 To start the demo
