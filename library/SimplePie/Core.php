@@ -47,6 +47,7 @@
  *
  * Class for backward compatibility.
  *
+ * @deprecated Use {@see SimplePie} directly
  * @package SimplePie
  * @subpackage API
  */
