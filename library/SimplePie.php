@@ -483,13 +483,6 @@ class SimplePie
 	public $force_feed = false;
 
 	/**
-	 * @var bool Enable/Disable XML dump
-	 * @see SimplePie::enable_xml_dump()
-	 * @access private
-	 */
-	public $xml_dump = false;
-
-	/**
 	 * @var bool Enable/Disable Caching
 	 * @see SimplePie::enable_cache()
 	 * @access private
@@ -1332,14 +1325,6 @@ class SimplePie
 		// There's no point in trying an encoding twice
 		$encodings = array_unique($encodings);
 
-		// If we want the XML, just output that with the most likely encoding and quit
-		if ($this->xml_dump)
-		{
-			header('Content-type: text/xml; charset=' . $encodings[0]);
-			echo $this->raw_data;
-			exit;
-		}
-
 		// Loop through each possible encoding, till we return something, or run out of possibilities
 		foreach ($encodings as $encoding)
 		{
@@ -1400,8 +1385,8 @@ class SimplePie
 	 */
 	protected function fetch_data(&$cache)
 	{
-		// If it's enabled and we don't want an XML dump, use the cache
-		if ($cache && !$this->xml_dump)
+		// If it's enabled, use the cache
+		if ($cache)
 		{
 			// Load the Cache
 			$this->data = $cache->load();
@@ -1557,8 +1542,8 @@ class SimplePie
 	/**
 	 * Get the raw XML
 	 *
-	 * This is the same as setting `$xml_dump = true`, but returns the data
-	 * instead of printing it.
+	 * This is the same as the old `$feed->enable_xml_dump(true)`, but returns
+	 * the data instead of printing it.
 	 *
 	 * @return string|boolean Raw XML data, false if the cache is used
 	 */
