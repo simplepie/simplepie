@@ -21,21 +21,6 @@ If you're looking for PHP 4.x support, pull the "one-dot-two" branch, as that's
 the last version to support PHP 4.x.
 
 
-Project status
---------------
-SimplePie is currently maintained by Ryan McCue.
-
-As an open source project, SimplePie is maintained on a somewhat sporadic basis.
-This means that feature requests may not be fulfilled straight away, as time has
-to be prioritized.
-
-If you'd like to contribute to SimplePie, the best way to get started is to fork
-the project on GitHub and send pull requests for patches. When doing so, please
-be aware of our [coding standards][].
-
-[coding standards]: http://simplepie.org/wiki/misc/coding_standards
-
-
 What comes in the package?
 --------------------------
 1. `library/` - SimplePie classes for use with the autoloader
@@ -85,6 +70,21 @@ the [issue tracker][].
 [wiki]: http://simplepie.org/wiki/
 [support channels]: http://simplepie.org/support/
 [issue tracker]: http://github.com/simplepie/simplepie/issues
+
+
+Project status
+--------------
+SimplePie is currently maintained by Ryan McCue.
+
+As an open source project, SimplePie is maintained on a somewhat sporadic basis.
+This means that feature requests may not be fulfilled straight away, as time has
+to be prioritized.
+
+If you'd like to contribute to SimplePie, the best way to get started is to fork
+the project on GitHub and send pull requests for patches. When doing so, please
+be aware of our [coding standards][].
+
+[coding standards]: http://simplepie.org/wiki/misc/coding_standards
 
 
 Authors and contributors
