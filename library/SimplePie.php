@@ -546,6 +546,11 @@ class SimplePie
 	 */
 	public $autodiscovery = SIMPLEPIE_LOCATOR_ALL;
 
+	/**
+	 * Class registry object
+	 *
+	 * @var SimplePie_Registry
+	 */
 	public $registry;
 
 	/**
@@ -890,8 +895,9 @@ class SimplePie
 	 * Useful when you are overloading or extending SimplePie's default classes.
 	 *
 	 * @deprecated Use {@see get_registry()} instead
-	 * @param string $class Name of custom class
 	 * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
+	 * @param string $class Name of custom class
+	 * @return boolean True on success, false otherwise
 	 */
 	/**
 	 * Set which class SimplePie uses for caching
@@ -1599,6 +1605,32 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the type of the feed
+	 *
+	 * This returns a SIMPLEPIE_TYPE_* constant, which can be tested against
+	 * using {@link http://php.net/language.operators.bitwise bitwise operators}
+	 *
+	 * @since 0.8 (usage changed to using constants in 1.0)
+	 * @see SIMPLEPIE_TYPE_NONE Unknown.
+	 * @see SIMPLEPIE_TYPE_RSS_090 RSS 0.90.
+	 * @see SIMPLEPIE_TYPE_RSS_091_NETSCAPE RSS 0.91 (Netscape).
+	 * @see SIMPLEPIE_TYPE_RSS_091_USERLAND RSS 0.91 (Userland).
+	 * @see SIMPLEPIE_TYPE_RSS_091 RSS 0.91.
+	 * @see SIMPLEPIE_TYPE_RSS_092 RSS 0.92.
+	 * @see SIMPLEPIE_TYPE_RSS_093 RSS 0.93.
+	 * @see SIMPLEPIE_TYPE_RSS_094 RSS 0.94.
+	 * @see SIMPLEPIE_TYPE_RSS_10 RSS 1.0.
+	 * @see SIMPLEPIE_TYPE_RSS_20 RSS 2.0.x.
+	 * @see SIMPLEPIE_TYPE_RSS_RDF RDF-based RSS.
+	 * @see SIMPLEPIE_TYPE_RSS_SYNDICATION Non-RDF-based RSS (truly intended as syndication format).
+	 * @see SIMPLEPIE_TYPE_RSS_ALL Any version of RSS.
+	 * @see SIMPLEPIE_TYPE_ATOM_03 Atom 0.3.
+	 * @see SIMPLEPIE_TYPE_ATOM_10 Atom 1.0.
+	 * @see SIMPLEPIE_TYPE_ATOM_ALL Any version of Atom.
+	 * @see SIMPLEPIE_TYPE_ALL Any known/supported feed type.
+	 * @return int SIMPLEPIE_TYPE_* constant
+	 */
 	public function get_type()
 	{
 		if (!isset($this->data['type']))
@@ -1918,6 +1950,14 @@ class SimplePie
 		return $this->sanitize->sanitize($data, $type, $base);
 	}
 
+	/**
+	 * Get the title of the feed
+	 *
+	 * Uses `<atom:title>`, `<title>` or `<dc:title>`
+	 *
+	 * @since 1.0 (previously called `get_feed_title` since 0.8)
+	 * @return string|null
+	 */
 	public function get_title()
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'title'))
@@ -2348,6 +2388,15 @@ class SimplePie
 		return $this->all_discovered_feeds;
 	}
 
+	/**
+	 * Get the content for the item
+	 *
+	 * Uses `<atom:subtitle>`, `<atom:tagline>`, `<description>`,
+	 * `<dc:description>`, `<itunes:summary>` or `<itunes:subtitle>`
+	 *
+	 * @since 1.0 (previously called `get_feed_description()` since 0.8)
+	 * @return string|null
+	 */
 	public function get_description()
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'subtitle'))
@@ -2392,6 +2441,14 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the copyright info for the feed
+	 *
+	 * Uses `<atom:rights>`, `<atom:copyright>` or `<dc:rights>`
+	 *
+	 * @since 1.0 (previously called `get_feed_copyright()` since 0.8)
+	 * @return string|null
+	 */
 	public function get_copyright()
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'rights'))
@@ -2420,6 +2477,14 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the language for the feed
+	 *
+	 * Uses `<language>`, `<dc:language>`, or @xml_lang
+	 *
+	 * @since 1.0 (previously called `get_feed_language()` since 0.8)
+	 * @return string|null
+	 */
 	public function get_language()
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'language'))
@@ -2456,6 +2521,18 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the latitude coordinates for the item
+	 *
+	 * Compatible with the W3C WGS84 Basic Geo and GeoRSS specifications
+	 *
+	 * Uses `<geo:lat>` or `<georss:point>`
+	 *
+	 * @since 1.0
+	 * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
+	 * @link http://www.georss.org/ GeoRSS
+	 * @return string|null
+	 */
 	public function get_latitude()
 	{
 
@@ -2473,6 +2550,18 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the longitude coordinates for the feed
+	 *
+	 * Compatible with the W3C WGS84 Basic Geo and GeoRSS specifications
+	 *
+	 * Uses `<geo:long>`, `<geo:lon>` or `<georss:point>`
+	 *
+	 * @since 1.0
+	 * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
+	 * @link http://www.georss.org/ GeoRSS
+	 * @return string|null
+	 */
 	public function get_longitude()
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO, 'long'))
@@ -2493,6 +2582,15 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the feed logo's title
+	 *
+	 * RSS 0.9.0, 1.0 and 2.0 feeds are allowed to have a "feed logo" title.
+	 *
+	 * Uses `<image><title>` or `<image><dc:title>`
+	 *
+	 * @return string|null
+	 */
 	public function get_image_title()
 	{
 		if ($return = $this->get_image_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'title'))
@@ -2521,6 +2619,17 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the feed logo's URL
+	 *
+	 * RSS 0.9.0, 2.0, Atom 1.0, and feeds with iTunes RSS tags are allowed to
+	 * have a "feed logo" URL. This points directly to the image itself.
+	 *
+	 * Uses `<itunes:image>`, `<atom:logo>`, `<atom:icon>`,
+	 * `<image><title>` or `<image><dc:title>`
+	 *
+	 * @return string|null
+	 */
 	public function get_image_url()
 	{
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'image'))
@@ -2553,6 +2662,18 @@ class SimplePie
 		}
 	}
 
+
+	/**
+	 * Get the feed logo's link
+	 *
+	 * RSS 0.9.0, 1.0 and 2.0 feeds are allowed to have a "feed logo" link. This
+	 * points to a human-readable page that the image should link to.
+	 *
+	 * Uses `<itunes:image>`, `<atom:logo>`, `<atom:icon>`,
+	 * `<image><title>` or `<image><dc:title>`
+	 *
+	 * @return string|null
+	 */
 	public function get_image_link()
 	{
 		if ($return = $this->get_image_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'link'))
@@ -2573,6 +2694,16 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the feed logo's link
+	 *
+	 * RSS 2.0 feeds are allowed to have a "feed logo" width.
+	 *
+	 * Uses `<image><width>` or defaults to 88.0 if no width is specified and
+	 * the feed is an RSS 2.0 feed.
+	 *
+	 * @return int|float|null
+	 */
 	public function get_image_width()
 	{
 		if ($return = $this->get_image_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'width'))
@@ -2589,6 +2720,16 @@ class SimplePie
 		}
 	}
 
+	/**
+	 * Get the feed logo's height
+	 *
+	 * RSS 2.0 feeds are allowed to have a "feed logo" height.
+	 *
+	 * Uses `<image><height>` or defaults to 31.0 if no height is specified and
+	 * the feed is an RSS 2.0 feed.
+	 *
+	 * @return int|float|null
+	 */
 	public function get_image_height()
 	{
 		if ($return = $this->get_image_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'height'))
