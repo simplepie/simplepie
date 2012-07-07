@@ -1272,6 +1272,9 @@ class SimplePie
 			{
 				return true;
 			}
+			elseif ($fetched === false) {
+				return false;
+			}
 
 			list($headers, $sniffed) = $fetched;
 		}
