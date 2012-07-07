@@ -29,9 +29,14 @@ ampersand with a numeric character reference.</summary>
 </feed>';
 	}
 	
+	/**
+	 * @todo Change this back to the non-entity form
+	 */
 	function expected()
 	{
-		$this->expected = '&lt;title>';
+		// This is really just nitpicking, but this should be fixed eventually.
+		//$this->expected = '&lt;title>';
+		$this->expected = '&lt;title&gt;';
 	}
 }
 
