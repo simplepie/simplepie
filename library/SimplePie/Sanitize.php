@@ -198,12 +198,32 @@ class SimplePie_Sanitize
 	 * Set element/attribute key/value pairs of HTML attributes
 	 * containing URLs that need to be resolved relative to the feed
 	 *
-	 * @access public
+	 * Defaults to |a|@href, |area|@href, |blockquote|@cite, |del|@cite,
+	 * |form|@action, |img|@longdesc, |img|@src, |input|@src, |ins|@cite,
+	 * |q|@cite
+	 *
 	 * @since 1.0
-	 * @param array $element_attribute Element/attribute key/value pairs
+	 * @param array|null $element_attribute Element/attribute key/value pairs, null for default
 	 */
-	public function set_url_replacements($element_attribute = array('a' => 'href', 'area' => 'href', 'blockquote' => 'cite', 'del' => 'cite', 'form' => 'action', 'img' => array('longdesc', 'src'), 'input' => 'src', 'ins' => 'cite', 'q' => 'cite'))
+	public function set_url_replacements($element_attribute = null)
 	{
+		if ($element_attribute === null)
+		{
+			$element_attribute = array(
+				'a' => 'href',
+				'area' => 'href',
+				'blockquote' => 'cite',
+				'del' => 'cite',
+				'form' => 'action',
+				'img' => array(
+					'longdesc',
+					'src'
+				),
+				'input' => 'src',
+				'ins' => 'cite',
+				'q' => 'cite'
+			);
+		}
 		$this->replace_url_attributes = (array) $element_attribute;
 	}
 

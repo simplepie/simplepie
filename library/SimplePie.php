@@ -1157,7 +1157,7 @@ class SimplePie
 	 * @since 1.0
 	 * @param array|null $element_attribute Element/attribute key/value pairs, null for default
 	 */
-	public function set_url_replacements($element_attribute = array('a' => 'href', 'area' => 'href', 'blockquote' => 'cite', 'del' => 'cite', 'form' => 'action', 'img' => array('longdesc', 'src'), 'input' => 'src', 'ins' => 'cite', 'q' => 'cite'))
+	public function set_url_replacements($element_attribute = null)
 	{
 		$this->sanitize->set_url_replacements($element_attribute);
 	}
