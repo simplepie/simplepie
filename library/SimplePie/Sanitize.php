@@ -70,18 +70,13 @@ class SimplePie_Sanitize
 	var $timeout = 10;
 	var $useragent = '';
 	var $force_fsockopen = false;
+	var $replace_url_attributes = null;
 
-	var $replace_url_attributes = array(
-		'a' => 'href',
-		'area' => 'href',
-		'blockquote' => 'cite',
-		'del' => 'cite',
-		'form' => 'action',
-		'img' => array('longdesc', 'src'),
-		'input' => 'src',
-		'ins' => 'cite',
-		'q' => 'cite'
-	);
+	public function __construct()
+	{
+		// Set defaults
+		$this->set_url_replacements(null);
+	}
 
 	public function remove_div($enable = true)
 	{
