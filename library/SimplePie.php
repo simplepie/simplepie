@@ -1238,11 +1238,17 @@ class SimplePie
 			$i = 0;
 			$success = 0;
 			$this->multifeed_objects = array();
+			$this->error = array();
 			foreach ($this->multifeed_url as $url)
 			{
 				$this->multifeed_objects[$i] = clone $this;
 				$this->multifeed_objects[$i]->set_feed_url($url);
-				$success |= $this->multifeed_objects[$i]->init();
+				$single_success = $this->multifeed_objects[$i]->init();
+				$success |= $single_success;
+				if (!$single_success)
+				{
+					$this->error[$i] = $this->multifeed_objects[$i]->error();
+				}
 				$i++;
 			}
 			return (bool) $success;
@@ -1541,7 +1547,7 @@ class SimplePie
 	/**
 	 * Get the error message for the occured error
 	 *
-	 * @return string Error message
+	 * @return string|array Error message, or array of messages for multifeeds
 	 */
 	public function error()
 	{
