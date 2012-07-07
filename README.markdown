@@ -9,31 +9,6 @@ compatibility and standards compliance][what_is].
 [what_is]: http://simplepie.org/wiki/faq/what_is_simplepie
 
 
-Authors and contributors
-------------------------
-### Current
-* [Ryan McCue][] (Maintainer, support)
-
-### Alumni
-* [Ryan Parman][] (Creator, developer, evangelism, support)
-* [Geoffrey Sneddon][] (Lead developer)
-* [Michael Shipley][] (Submitter of patches, support)
-* [Steve Minutillo][] (Submitter of patches)
-
-[Ryan McCue]: http://ryanmccue.info
-[Ryan Parman]: http://ryanparman.com
-[Geoffrey Sneddon]: http://gsnedders.com
-[Michael Shipley]: http://michaelpshipley.com
-[Steve Minutillo]: http://minutillo.com/steve/
-
-
-### Contributors
-For a complete list of contributors:
-
-1. Pull down the latest SimplePie code
-2. In the `simplepie` directory, run `git shortlog -ns`
-
-
 Requirements
 ------------
 * PHP 5.2.0 or newer
@@ -44,11 +19,6 @@ Requirements
 
 If you're looking for PHP 4.x support, pull the "one-dot-two" branch, as that's
 the last version to support PHP 4.x.
-
-
-License
--------
-[New BSD license](http://www.opensource.org/licenses/BSD-3-Clause)
 
 
 Project status
@@ -64,20 +34,6 @@ the project on GitHub and send pull requests for patches. When doing so, please
 be aware of our [coding standards][].
 
 [coding standards]: http://simplepie.org/wiki/misc/coding_standards
-
-If you're interested in getting involved with SimplePie, please get in touch
-with Ryan McCue.
-
-
-Roadmap for 1.3
----------------
-SimplePie 1.3 should be a thoughtful reduction of features. Remove some bloat,
-slim it down, and break it into smaller, more manageable chunks.
-
-Removing PHP 4.x support will certainly help with the slimming. It will also
-help avoid certain issues that frequently crop up with PHP 4.x. The PHP5-only
-migration is underway, but there is still quite a bit of work before
-it's "clean."
 
 
 What comes in the package?
@@ -131,23 +87,31 @@ the [issue tracker][].
 [issue tracker]: http://github.com/simplepie/simplepie/issues
 
 
-API changes since 1.2
----------------------
-### Recently removed
-The following have recently been removed:
+Authors and contributors
+------------------------
+### Current
+* [Ryan McCue][] (Maintainer, support)
 
-* Parameters for SimplePie::__construct()
-* `add_to_*`
-* `display_cached_file`
-* `enable_xml_dump`
-* `get_favicon`
-* `set_favicon_handler`
-* `subscribe_*` (except `subscribe_url`)
-* `utf8_bad_replace`
-* `set_javascript` (See `SimplePie_Misc::output_javascript()`)
-* Support for Odeo
+### Alumni
+* [Ryan Parman][] (Creator, developer, evangelism, support)
+* [Geoffrey Sneddon][] (Lead developer)
+* [Michael Shipley][] (Submitter of patches, support)
+* [Steve Minutillo][] (Submitter of patches)
 
-### Deprecated
-The following have recently been deprecated:
+[Ryan McCue]: http://ryanmccue.info
+[Ryan Parman]: http://ryanparman.com
+[Geoffrey Sneddon]: http://gsnedders.com
+[Michael Shipley]: http://michaelpshipley.com
+[Steve Minutillo]: http://minutillo.com/steve/
 
-* `SimplePie_Enclosure::native_embed` (use `SimplePie_Enclosure::embed(..., true)` instead)
+
+### Contributors
+For a complete list of contributors:
+
+1. Pull down the latest SimplePie code
+2. In the `simplepie` directory, run `git shortlog -ns`
+
+
+License
+-------
+[New BSD license](http://www.opensource.org/licenses/BSD-3-Clause)
