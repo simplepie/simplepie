@@ -12,7 +12,7 @@
 
   =:license
     This software is licensed and provided under the CC-GNU LGPL.
-    See <http://creativecommons.org/licenses/LGPL/2.1/>    
+    See <http://creativecommons.org/licenses/LGPL/2.1/>
 */
 
 import TextField.StyleSheet;
@@ -20,13 +20,13 @@ import TextField.StyleSheet;
 class SifrStyleSheet extends TextField.StyleSheet {
   public var fontSize;
   public var latestLeading = 0;
-  
+
   public function parseCSS(cssText:String) {
     var native = new TextField.StyleSheet();
     var parsed = native.parseCSS(cssText);
-    
+
     if(!parsed) return false;
-    
+
     var selectors = native.getStyleNames();
     for(var i = selectors.length - 1; i >= 0; i--) {
       var selector = selectors[i];
@@ -37,14 +37,14 @@ class SifrStyleSheet extends TextField.StyleSheet {
       }
       this.setStyle(selector, style);
     }
-    
+
     return true;
   }
-  
+
   // Apply leading to the textFormat. Much thanks to <http://www.blog.lessrain.com/?p=98>.
   private function applyLeading(format, leading) {
     this.latestLeading = leading;
-    
+
     if(leading >= 0) {
         format.leading = leading;
         return format;
@@ -56,7 +56,7 @@ class SifrStyleSheet extends TextField.StyleSheet {
 
     return newFormat;
   }
-  
+
   public function transform(style) {
     var format = super.transform(style);
     if(style.leading) format = applyLeading(format, style.leading);
