@@ -1,5 +1,9 @@
 # SimplePie
 
+**Warning:** SimplePie 1.2 is no longer officially supported! Upgrade to 1.3
+instead. (This branch is kept around for PHP 4 compatibility and is not
+maintained officially. Patches will still be accepted.)
+
 ## Authors and contributors
 
 ### Current
