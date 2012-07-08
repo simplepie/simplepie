@@ -4,7 +4,7 @@ class SimplePie_First_Item_Contributor_Name_Test_Atom_10_Name extends SimplePie_
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<contributor>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Contributor_Name_Test_Atom_10_Name extends SimplePie_
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Contributor';

@@ -509,25 +509,25 @@ class Unit_Test2_Group
 	 * @param string $class_name The class name
 	 * @return bool Returns true if the object is of this class or has this class as one of its parents, false otherwise
 	 */
-	 function is_a($object, $class_name)
-	 {
-	 	if (function_exists('is_a'))
-	 	{
-	 		return is_a($object, $class_name);
-	 	}
-	 	elseif (!is_object($object))
-	 	{
-	 		return false;
-	 	}
-	 	elseif (get_class($object) == strtolower($class_name))
-	 	{
-	 		return true;
-	 	}
-	 	else
-	 	{
-	 		return is_subclass_of($object, $class_name);
-	 	}
-	 }
+	function is_a($object, $class_name)
+	{
+		if (function_exists('is_a'))
+		{
+			return is_a($object, $class_name);
+		}
+		elseif (!is_object($object))
+		{
+			return false;
+		}
+		elseif (get_class($object) == strtolower($class_name))
+		{
+			return true;
+		}
+		else
+		{
+			return is_subclass_of($object, $class_name);
+		}
+	}
 
 	/**
 	 * Re-implementation of PHP 5's microtime()

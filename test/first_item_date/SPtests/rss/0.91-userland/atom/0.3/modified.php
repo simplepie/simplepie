@@ -4,7 +4,7 @@ class SimplePie_First_Item_Date_Test_RSS_091_Userland_Atom_03_Modified extends S
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Date_Test_RSS_091_Userland_Atom_03_Modified extends S
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 1168531200;

@@ -1,4 +1,4 @@
-This is a pre-release nightly of sIFR 3 (r245 to be exact).  We (the SimplePie team) will be updating the 
+This is a pre-release nightly of sIFR 3 (r245 to be exact).  We (the SimplePie team) will be updating the
 sIFR code and font files from time to time as new releases of sIFR 3 are made available.
 
 In this folder you'll find a few Flash 8 files.  The only one of you might want to mess with is sifr.fla.

@@ -4,7 +4,7 @@ class SimplePie_First_Item_Longitude_Test_RSS_20_Georss_Point extends SimplePie_
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="2.0" xmlns:georss="http://www.georss.org/georss">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Longitude_Test_RSS_20_Georss_Point extends SimplePie_
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 12.552;

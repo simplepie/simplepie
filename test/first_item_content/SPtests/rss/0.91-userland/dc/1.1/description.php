@@ -4,7 +4,7 @@ class SimplePie_First_Item_Content_Test_RSS_091_Userland_DC_11_Description exten
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Content_Test_RSS_091_Userland_DC_11_Description exten
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Description';

@@ -4,7 +4,7 @@ class SimplePie_iTunesRSS_Channel_Block_Default_Test_RSS_20 extends SimplePie_iT
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_iTunesRSS_Channel_Block_Default_Test_RSS_20 extends SimplePie_iT
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'allow';

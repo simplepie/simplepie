@@ -4,12 +4,12 @@ class SimplePie_Feed_Description_Test_Atom_10_Subtitle extends SimplePie_Feed_De
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom">
 	<subtitle>Feed Description</subtitle>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Feed Description';

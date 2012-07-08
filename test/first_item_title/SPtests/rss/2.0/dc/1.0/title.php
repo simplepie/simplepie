@@ -4,7 +4,7 @@ class SimplePie_First_Item_Title_Test_RSS_20_DC_10_Title extends SimplePie_First
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Title_Test_RSS_20_DC_10_Title extends SimplePie_First
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Title';

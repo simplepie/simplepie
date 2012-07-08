@@ -15,13 +15,13 @@ class Unit_Test
 	var $failed;
 	var $success_callback;
 	var $fail_callback;
-	
+
 	function Unit_Test($success, $fail)
 	{
 		$this->success_callback = $success;
 		$this->fail_callback = $fail;
 	}
-	
+
 	function do_test($callback, $dir, $vars = 'data')
 	{
 		$files = $this->get_files($dir);
@@ -42,7 +42,7 @@ class Unit_Test
 			}
 		}
 	}
-	
+
 	function run_test($file, $success)
 	{
 		if ($success)
@@ -56,22 +56,22 @@ class Unit_Test
 			call_user_func($this->fail_callback, $file);
 		}
 	}
-	
+
 	function passed()
 	{
 		return $this->passed;
 	}
-	
+
 	function failed()
 	{
 		return $this->failed;
 	}
-	
+
 	function total()
 	{
 		return $this->passed + $this->failed;
 	}
-	
+
 	function get_files($dir)
 	{
 		static $extension = null;
@@ -105,7 +105,7 @@ class Unit_Test
 		}
 		return $files;
 	}
-	
+
 	function sort_files(&$a, &$b)
 	{
 		if (is_dir($a) && is_dir($b) || !(is_dir($a) || is_dir($b)))

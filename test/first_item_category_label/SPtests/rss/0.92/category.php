@@ -4,7 +4,7 @@ class SimplePie_First_Item_Category_Label_Test_RSS_092_Category extends SimplePi
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="0.92">
 	<channel>
 		<item>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Category_Label_Test_RSS_092_Category extends SimplePi
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Category';

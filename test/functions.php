@@ -8,19 +8,19 @@ class SimplePie_Unit_Test2_Group extends Unit_Test2_Group
 	{
 		ob_start();
 	}
-	
+
 	function post()
 	{
 		$output = ob_get_contents();
-		
+
 		if ($output !== false)
 		{
 			ob_end_clean();
 		}
-		
+
 		$passed_percentage = floor($this->passes() / $this->total() * 100);
 		$failed_percentage = ceil($this->fails() / $this->total() * 100);
-		
+
 		echo '<h2 class=' . (($passed_percentage == 100) ? 'pass' : 'fail') . '>' . htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8') . ': ' . $passed_percentage . "% passed!</h2>\n";
 		echo "<p>\n$output\n</p>\n";
 		echo '<p>We ran ' . $this->total() . ' tests in ' . round($this->time(), 3) . ' seconds of which ' . $this->passes() . ' passed, and ' . $this->fails() . ' failed.</p>';
@@ -38,24 +38,24 @@ class SimplePie_Unit_Test2 extends Unit_Test2
 			$this->name = trim(substr_replace($this->name, '', 0, 9));
 		}
 	}
-	
+
 	function output($title, $class, $content)
 	{
 		printf("<span title='%s' class='%s'>%s</span>\n", $title, $class, $content);
 	}
-	
+
 	function pass()
 	{
 		$this->output(htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8'), 'pass', '&#x2714;');
 		parent::pass();
 	}
-	
+
 	function fail()
 	{
 		$this->output(htmlspecialchars($this->name(), ENT_COMPAT, 'UTF-8'), 'fail', '&#x2718;');
 		parent::fail();
 	}
-	
+
 	function result()
 	{
 		if ($this->result === $this->expected)
@@ -434,19 +434,19 @@ class SimplePie_iTunesRSS_Channel_Block_Test extends SimplePie_First_Item_Test
 class diveintomark_Atom_Autodiscovery extends SimplePie_Unit_Test2
 {
 	var $data = array('url' => 'http://diveintomark.org/tests/client/autodiscovery/');
-	
+
 	function data()
 	{
 		$this->data['file'] =& new SimplePie_File($this->data['url'], 10, 5, null, SIMPLEPIE_USERAGENT);
 		$this->name = $this->data['url'];
 		$this->data['url'] = false;
 	}
-	
+
 	function expected()
 	{
 		$this->expected = $this->data['file']->url;
 	}
-	
+
 	function test()
 	{
 		$feed = new SimplePie();
@@ -455,7 +455,7 @@ class diveintomark_Atom_Autodiscovery extends SimplePie_Unit_Test2
 		$feed->init();
 		$this->result = $feed->get_link();
 	}
-	
+
 	function result()
 	{
 		if ($this->data['file']->url != 'http://diveintomark.org/tests/client/autodiscovery/')

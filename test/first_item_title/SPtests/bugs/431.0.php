@@ -4,7 +4,7 @@ class SimplePie_First_Item_Title_Test_Bug_431_Test_0 extends SimplePie_First_Ite
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<rss version="2.0">
 	<channel>
 		<item>
@@ -16,7 +16,7 @@ class SimplePie_First_Item_Title_Test_Bug_431_Test_0 extends SimplePie_First_Ite
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item title';

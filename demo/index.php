@@ -21,10 +21,10 @@ if (isset($_GET['feed']) && $_GET['feed'] !== '')
 	{
 		$_GET['feed'] = stripslashes($_GET['feed']);
 	}
-	
+
 	// Use the URL that was passed to the page in SimplePie
 	$feed->set_feed_url($_GET['feed']);
-	
+
 	// XML dump
 	$feed->enable_xml_dump(isset($_GET['xmldump']) ? true : false);
 }
@@ -50,8 +50,8 @@ if (!empty($_GET['image']) && $_GET['image'] == 'true')
 // We'll enable the discovering and caching of favicons.
 $feed->set_favicon_handler('./handler_image.php');
 
-// Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and 
-// all that other good stuff.  The feed's information will not be available to SimplePie before 
+// Initialize the whole SimplePie object.  Read the feed, process it, parse it, cache it, and
+// all that other good stuff.  The feed's information will not be available to SimplePie before
 // this is called.
 $success = $feed->init();
 
@@ -59,7 +59,7 @@ $success = $feed->init();
 // This function will grab the proper character encoding, as well as set the content type to text/html.
 $feed->handle_content_type();
 
-// When we end our PHP block, we want to make sure our DOCTYPE is on the top line to make 
+// When we end our PHP block, we want to make sure our DOCTYPE is on the top line to make
 // sure that the browser snaps into Standards Mode.
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -89,9 +89,9 @@ $feed->handle_content_type();
 
 		</div>
 		<div id="menu">
-		<!-- I know, I know, I know... tables for layout, I know.  If a web standards evangelist (like me) has to resort 
-		to using tables for something, it's because no other possible solution could be found.  This issue?  No way to 
-		do centered floats purely with CSS. The table box model allows for a dynamic width while centered, while the 
+		<!-- I know, I know, I know... tables for layout, I know.  If a web standards evangelist (like me) has to resort
+		to using tables for something, it's because no other possible solution could be found.  This issue?  No way to
+		do centered floats purely with CSS. The table box model allows for a dynamic width while centered, while the
 		CSS box model for DIVs doesn't allow for it. :( -->
 		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
 <ul><li id="demo"><a href="./">SimplePie Demo</a></li><li><a href="http://simplepie.org/wiki/faq/start">FAQ/Troubleshooting</a></li><li><a href="http://simplepie.org/support/">Support Forums</a></li><li><a href="http://simplepie.org/wiki/reference/start">API Reference</a></li><li><a href="http://simplepie.org/blog/">Weblog</a></li><li><a href="../test/test.php">Unit Tests</a></li></ul>
@@ -135,53 +135,53 @@ $feed->handle_content_type();
 			?>
 
 			<!-- Here are some sample feeds. -->
-			<p class="sample_feeds"><strong>Or try one of the following:</strong> 
-			<a href="?feed=http://www.詹姆斯.com/atomtests/iri/everything.atom" title="Test: International Domain Name support">詹姆斯.com</a>, 
-			<a href="?feed=http://www.adultswim.com/williams/podcast/tools/xml/video_rss.xml" title="Humor from the people who make [adult swim] cartoons.">adult swim</a>, 
-			<a href="?feed=http://afterdawn.com/news/afterdawn_rss.xml" title="Ripping, Burning, DRM, and the Dark Side of Consumer Electronics Media">Afterdawn</a>, 
-			<a href="?feed=http://feeds.feedburner.com/ajaxian" title="AJAX and Scripting News">Ajaxian</a>, 
-			<a href="?feed=http://www.andybudd.com/index.rdf&amp;image=true" title="Test: Bypass Image Hotlink Blocking">Andy Budd</a>, 
-			<a href="?feed=http://feeds.feedburner.com/AskANinja" title="Test: Embedded Enclosures">Ask a Ninja</a>, 
-			<a href="?feed=http://www.atomenabled.org/atom.xml" title="Test: Atom 1.0 Support">AtomEnabled.org</a>, 
-			<a href="?feed=http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml" title="World News">BBC News</a>, 
-			<a href="?feed=http://newsrss.bbc.co.uk/rss/arabic/news/rss.xml" title="Test: Windows-1256 Encoding">BBC Arabic</a>, 
-			<a href="?feed=http://newsrss.bbc.co.uk/rss/chinese/simp/news/rss.xml" title="Test: GB2312 Encoding">BBC China</a>, 
-			<a href="?feed=http://newsrss.bbc.co.uk/rss/russian/news/rss.xml" title="Test: Windows-1251 Encoding">BBC Russia</a>, 
-			<a href="?feed=http://inessential.com/xml/rss.xml" title="Developer of NetNewsWire">Brent Simmons</a>, 
-			<a href="?feed=http://www.channelfrederator.com/rss" title="Test: Embedded Enclosures">Channel Frederator</a>, 
-			<a href="?feed=http://rss.cnn.com/rss/cnn_topstories.rss" title="World News">CNN</a>, 
-			<a href="?feed=http://digg.com/rss/index.xml" title="Tech news. Better than Slashdot.">Digg</a>, 
-			<a href="?feed=http://revision3.com/diggnation/feed/quicktime-large" title="Tech and industry videocast.">Diggnation</a>, 
-			<a href="?feed=http://www.flickr.com/services/feeds/photos_public.gne?format=rss2" title="Flickr Photos">Flickr</a>, 
-			<a href="?feed=http://news.google.com/?output=rss" title="World News">Google News</a>, 
-			<a href="?feed=http://video.google.com/videofeed?type=top100new&num=20&output=rss" title="Test: Media RSS Support">Google Video</a>, 
-			<a href="?feed=http://blogs.law.harvard.edu/home/feed/rdf/" title="Test: Tag Stripping">Harvard Law</a>, 
-			<a href="?feed=http://hagada.org.il/hagada/html/backend.php" title="Test: Window-1255 Encoding">Hebrew Language</a>, 
-			<a href="?feed=http://www.infoworld.com/rss/news.xml" title="Test: Ad Stripping">InfoWorld</a>, 
-			<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml&orderbydate=false" title="Test: Tag Stripping">iTunes</a>, 
-			<a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf" title="Test: EUC-JP Encoding">Japanese Language</a>, 
-			<a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php&amp;input=EUC-KR" title="Test: EUC-KR Encoding">Korean Language</a>, 
-			<a href="?feed=http://mir.aculo.us/xml/rss/feed.xml" title="Weblog for the developer of Scriptaculous">mir.aculo.us</a>, 
-			<a href="?feed=http://images.apple.com/trailers/rss/newtrailers.rss" title="Apple's QuickTime movie trailer site">Movie Trailers</a>, 
-			<a href="?feed=http://www.newspond.com/rss/main.xml" title="Tech and Science News">Newspond</a>, 
-			<a href="?feed=http://nick.typepad.com/blog/index.rss" title="Developer of TopStyle and FeedDemon">Nick Bradbury</a>, 
-			<a href="?feed=http://feeds.feedburner.com/ok-cancel" title="Usability comics and commentary">OK/Cancel</a>, 
-			<a href="?feed=http://osnews.com/files/recent.rdf" title="News about every OS ever">OS News</a>, 
-			<a href="?feed=http://weblog.philringnalda.com/feed/" title="Test: Atom 1.0 Support">Phil Ringnalda</a>, 
-			<a href="?feed=http://kabili.libsyn.com/rss" title="Test: Improved enclosure type sniffing">Photoshop Videocast</a>, 
-			<a href="?feed=http://www.pariurisportive.com/blog/xmlsrv/rss2.php?blog=2" title="Test: ISO-8859-1 Encoding">Romanian Language</a>, 
-			<a href="?feed=http://www.erased.info/rss2.php" title="Test: KOI8-R Encoding">Russian Language</a>, 
-			<a href="?feed=http://www.upsaid.com/isis/index.rdf" title="Test: BIG5 Encoding">Traditional Chinese Language</a>, 
-			<a href="?feed=http://technorati.com/watchlists/rss.html?wid=29290" title="Technorati watch for SimplePie">Technorati</a>, 
-			<a href="?feed=http://www.tbray.org/ongoing/ongoing.atom" title="Test: Atom 1.0 Support">Tim Bray</a>, 
-			<a href="?feed=http://tuaw.com/rss.xml" title="Apple News">TUAW</a>, 
-			<a href="?feed=http://www.tvgasm.com/atom.xml&amp;image=true" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>, 
-			<a href="?feed=http://uneasysilence.com/feed/" title="Interesting tech randomness">UNEASYsilence</a>, 
-			<a href="?feed=http://feeds.feedburner.com/web20Show" title="Test: Embedded Enclosures">Web 2.0 Show</a>, 
-			<a href="?feed=http://windowsvistablog.com/blogs/MainFeed.aspx" title="Test: Tag Stripping">Windows Vista Blog</a>, 
-			<a href="?feed=http://xkcd.com/rss.xml" title="Test: LightHTTPd and GZipping">XKCD</a>, 
-			<a href="?feed=http://rss.news.yahoo.com/rss/topstories" title="World News">Yahoo! News</a>, 
-			<a href="?feed=http://youtube.com/rss/global/top_favorites.rss" title="Funny user-submitted videos">You Tube</a>, 
+			<p class="sample_feeds"><strong>Or try one of the following:</strong>
+			<a href="?feed=http://www.詹姆斯.com/atomtests/iri/everything.atom" title="Test: International Domain Name support">詹姆斯.com</a>,
+			<a href="?feed=http://www.adultswim.com/williams/podcast/tools/xml/video_rss.xml" title="Humor from the people who make [adult swim] cartoons.">adult swim</a>,
+			<a href="?feed=http://afterdawn.com/news/afterdawn_rss.xml" title="Ripping, Burning, DRM, and the Dark Side of Consumer Electronics Media">Afterdawn</a>,
+			<a href="?feed=http://feeds.feedburner.com/ajaxian" title="AJAX and Scripting News">Ajaxian</a>,
+			<a href="?feed=http://www.andybudd.com/index.rdf&amp;image=true" title="Test: Bypass Image Hotlink Blocking">Andy Budd</a>,
+			<a href="?feed=http://feeds.feedburner.com/AskANinja" title="Test: Embedded Enclosures">Ask a Ninja</a>,
+			<a href="?feed=http://www.atomenabled.org/atom.xml" title="Test: Atom 1.0 Support">AtomEnabled.org</a>,
+			<a href="?feed=http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml" title="World News">BBC News</a>,
+			<a href="?feed=http://newsrss.bbc.co.uk/rss/arabic/news/rss.xml" title="Test: Windows-1256 Encoding">BBC Arabic</a>,
+			<a href="?feed=http://newsrss.bbc.co.uk/rss/chinese/simp/news/rss.xml" title="Test: GB2312 Encoding">BBC China</a>,
+			<a href="?feed=http://newsrss.bbc.co.uk/rss/russian/news/rss.xml" title="Test: Windows-1251 Encoding">BBC Russia</a>,
+			<a href="?feed=http://inessential.com/xml/rss.xml" title="Developer of NetNewsWire">Brent Simmons</a>,
+			<a href="?feed=http://www.channelfrederator.com/rss" title="Test: Embedded Enclosures">Channel Frederator</a>,
+			<a href="?feed=http://rss.cnn.com/rss/cnn_topstories.rss" title="World News">CNN</a>,
+			<a href="?feed=http://digg.com/rss/index.xml" title="Tech news. Better than Slashdot.">Digg</a>,
+			<a href="?feed=http://revision3.com/diggnation/feed/quicktime-large" title="Tech and industry videocast.">Diggnation</a>,
+			<a href="?feed=http://www.flickr.com/services/feeds/photos_public.gne?format=rss2" title="Flickr Photos">Flickr</a>,
+			<a href="?feed=http://news.google.com/?output=rss" title="World News">Google News</a>,
+			<a href="?feed=http://video.google.com/videofeed?type=top100new&num=20&output=rss" title="Test: Media RSS Support">Google Video</a>,
+			<a href="?feed=http://blogs.law.harvard.edu/home/feed/rdf/" title="Test: Tag Stripping">Harvard Law</a>,
+			<a href="?feed=http://hagada.org.il/hagada/html/backend.php" title="Test: Window-1255 Encoding">Hebrew Language</a>,
+			<a href="?feed=http://www.infoworld.com/rss/news.xml" title="Test: Ad Stripping">InfoWorld</a>,
+			<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml&orderbydate=false" title="Test: Tag Stripping">iTunes</a>,
+			<a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf" title="Test: EUC-JP Encoding">Japanese Language</a>,
+			<a href="?feed=http://nurapt.kaist.ac.kr/~jamaica/htmls/blog/rss.php&amp;input=EUC-KR" title="Test: EUC-KR Encoding">Korean Language</a>,
+			<a href="?feed=http://mir.aculo.us/xml/rss/feed.xml" title="Weblog for the developer of Scriptaculous">mir.aculo.us</a>,
+			<a href="?feed=http://images.apple.com/trailers/rss/newtrailers.rss" title="Apple's QuickTime movie trailer site">Movie Trailers</a>,
+			<a href="?feed=http://www.newspond.com/rss/main.xml" title="Tech and Science News">Newspond</a>,
+			<a href="?feed=http://nick.typepad.com/blog/index.rss" title="Developer of TopStyle and FeedDemon">Nick Bradbury</a>,
+			<a href="?feed=http://feeds.feedburner.com/ok-cancel" title="Usability comics and commentary">OK/Cancel</a>,
+			<a href="?feed=http://osnews.com/files/recent.rdf" title="News about every OS ever">OS News</a>,
+			<a href="?feed=http://weblog.philringnalda.com/feed/" title="Test: Atom 1.0 Support">Phil Ringnalda</a>,
+			<a href="?feed=http://kabili.libsyn.com/rss" title="Test: Improved enclosure type sniffing">Photoshop Videocast</a>,
+			<a href="?feed=http://www.pariurisportive.com/blog/xmlsrv/rss2.php?blog=2" title="Test: ISO-8859-1 Encoding">Romanian Language</a>,
+			<a href="?feed=http://www.erased.info/rss2.php" title="Test: KOI8-R Encoding">Russian Language</a>,
+			<a href="?feed=http://www.upsaid.com/isis/index.rdf" title="Test: BIG5 Encoding">Traditional Chinese Language</a>,
+			<a href="?feed=http://technorati.com/watchlists/rss.html?wid=29290" title="Technorati watch for SimplePie">Technorati</a>,
+			<a href="?feed=http://www.tbray.org/ongoing/ongoing.atom" title="Test: Atom 1.0 Support">Tim Bray</a>,
+			<a href="?feed=http://tuaw.com/rss.xml" title="Apple News">TUAW</a>,
+			<a href="?feed=http://www.tvgasm.com/atom.xml&amp;image=true" title="Test: Bypass Image Hotlink Blocking">TVgasm</a>,
+			<a href="?feed=http://uneasysilence.com/feed/" title="Interesting tech randomness">UNEASYsilence</a>,
+			<a href="?feed=http://feeds.feedburner.com/web20Show" title="Test: Embedded Enclosures">Web 2.0 Show</a>,
+			<a href="?feed=http://windowsvistablog.com/blogs/MainFeed.aspx" title="Test: Tag Stripping">Windows Vista Blog</a>,
+			<a href="?feed=http://xkcd.com/rss.xml" title="Test: LightHTTPd and GZipping">XKCD</a>,
+			<a href="?feed=http://rss.news.yahoo.com/rss/topstories" title="World News">Yahoo! News</a>,
+			<a href="?feed=http://youtube.com/rss/global/top_favorites.rss" title="Funny user-submitted videos">You Tube</a>,
 			<a href="?feed=http://zeldman.com/rss/" title="The father of the web standards movement">Zeldman</a></p>
 
 		</div>
@@ -240,7 +240,7 @@ $feed->handle_content_type();
 								echo '<p class="footnote" align="center">(' . $enclosure->get_type();
 								if ($enclosure->get_size())
 								{
-									echo '; ' . $enclosure->get_size() . ' MB';								
+									echo '; ' . $enclosure->get_size() . ' MB';
 								}
 								echo ')</p>';
 							}

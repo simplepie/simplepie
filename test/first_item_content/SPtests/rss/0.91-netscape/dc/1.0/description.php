@@ -4,7 +4,7 @@ class SimplePie_First_Item_Content_Test_RSS_091_Netscape_DC_10_Description exten
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -14,7 +14,7 @@ class SimplePie_First_Item_Content_Test_RSS_091_Netscape_DC_10_Description exten
 	</channel>
 </rss>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Description';

@@ -4,7 +4,7 @@ class SimplePie_First_Item_Author_Name_Atom_03_Inheritance_Feed_Name extends Sim
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<author>
 		<name>Item Author</name>
@@ -14,7 +14,7 @@ class SimplePie_First_Item_Author_Name_Atom_03_Inheritance_Feed_Name extends Sim
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Author';

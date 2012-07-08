@@ -4,7 +4,7 @@ class SimplePie_First_Item_Permalink_Test_Bug_176_Test_1 extends SimplePie_First
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<link rel="alternate" href="http://example.com/alternate"/>
@@ -13,7 +13,7 @@ class SimplePie_First_Item_Permalink_Test_Bug_176_Test_1 extends SimplePie_First
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'http://example.com/alternate';

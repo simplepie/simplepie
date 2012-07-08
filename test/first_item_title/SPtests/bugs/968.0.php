@@ -12,7 +12,7 @@ class SimplePie_First_Item_Title_Test_Bug_968_Test_0 extends SimplePie_First_Ite
 	</entry>
 </feed>', 1, "\x00");
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Item Title';

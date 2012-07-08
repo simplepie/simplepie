@@ -6,7 +6,7 @@ class SimplePie_Date_Test_Bug_157_Test_0 extends SimplePie_Date_Test
 	{
 		$this->data = 'meep';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = false;

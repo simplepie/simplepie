@@ -2774,7 +2774,7 @@ class SimplePie
 
 	function get_latitude()
 	{
-		
+
 		if ($return = $this->get_channel_tags(SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO, 'lat'))
 		{
 			return (float) $return[0]['data'];

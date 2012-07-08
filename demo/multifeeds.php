@@ -2,12 +2,12 @@
 /********************************************************************
 MULTIFEEDS TEST PAGE
 
-Nothing too exciting here.  Just a sample page that demos integrated 
-Multifeeds support as well as cached favicons and perhaps a few other 
+Nothing too exciting here.  Just a sample page that demos integrated
+Multifeeds support as well as cached favicons and perhaps a few other
 things.
 
-Lots of this code is commented to help explain some of the new stuff.  
-Code was tested in PHP 5.2.2, but *should* also work with earlier 
+Lots of this code is commented to help explain some of the new stuff.
+Code was tested in PHP 5.2.2, but *should* also work with earlier
 versions of PHP, as supported by SimplePie (PHP 4.1).
 
 ********************************************************************/
@@ -36,8 +36,8 @@ $feed->handle_content_type();
 
 // Begin the (X)HTML page.
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">	
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>Multifeeds Test page</title>
 	<link rel="stylesheet" href="../demo/for_the_demo/simplepie.css" type="text/css" media="screen" title="SimplePie Styles" charset="utf-8" />
