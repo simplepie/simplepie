@@ -204,7 +204,8 @@ $feed->handle_content_type();
 						        $title = "<a href='$link' title='$title'>$title</a>"; 
 						}
 						echo $title;
-					?></h3>
+					?>
+					</h3>
 
 					<!-- If the feed has a description, display it. -->
 					<?php echo $feed->get_description(); ?>
