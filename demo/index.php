@@ -200,8 +200,9 @@ $feed->handle_content_type();
 					<?php 
 						$link = $feed->get_link();
 						$title = $feed->get_title();
-						if ($link) { 
-						        $title = "<a href='$link' title='$title'>$title</a>"; 
+						if ($link) 
+						{ 
+							$title = "<a href='$link' title='$title'>$title</a>"; 
 						}
 						echo $title;
 					?>
