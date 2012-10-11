@@ -97,8 +97,8 @@ class CacheTest extends PHPUnit_Framework_TestCase
 		$feed->get_registry()->register('File', 'Mock_File');
 		$feed->set_feed_url('http://example.com/feed/');
 
-		// Ignore E_DEPRECATED
-		$old = error_reporting(E_ALL & ~E_DEPRECATED);
+		// Ignore E_DEPRECATED and E_NOTICE
+		$old = error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
 		$feed->init();
 		error_reporting($old);
 	}
