@@ -203,6 +203,22 @@ class SimplePie_Registry
 	{
 		$class = $this->get_class($type);
 
+		if (in_array($class, $this->legacy))
+		{
+			switch ($type)
+			{
+				case 'Cache':
+					// For backwards compatibility with old non-static
+					// Cache::create() methods
+					if ($method === 'get_handler')
+					{
+						$result = @call_user_func_array(array($class, 'create'), $parameters);
+						return $result;
+					}
+					break;
+			}
+		}
+
 		$result = call_user_func_array(array($class, $method), $parameters);
 		return $result;
 	}
