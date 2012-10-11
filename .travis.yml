@@ -4,6 +4,5 @@ php:
   - 5.3
   - 5.4
 branches:
-  only:
-    - master
-    - one-dot-three
+  except:
+    - one-dot-two
