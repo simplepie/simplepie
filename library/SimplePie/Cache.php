@@ -79,7 +79,7 @@ class SimplePie_Cache
 	 * @param string $extension 'spi' or 'spc'
 	 * @return SimplePie_Cache_Base Type of object depends on scheme of `$location`
 	 */
-	public static function create($location, $filename, $extension)
+	public static function get_handler($location, $filename, $extension)
 	{
 		$type = explode(':', $location, 2);
 		$type = $type[0];
@@ -90,6 +90,16 @@ class SimplePie_Cache
 		}
 
 		return new SimplePie_Cache_File($location, $filename, $extension);
+	}
+
+	/**
+	 * Create a new SimplePie_Cache object
+	 *
+	 * @deprecated Use {@see get_handler} instead
+	 */
+	public function create($location, $filename, $extension)
+	{
+		return self::get_handler($location, $filename, $extension);
 	}
 
 	/**
