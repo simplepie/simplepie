@@ -57,6 +57,7 @@ class AllTests
 		$suite = new PHPUnit_Framework_TestSuite();
 		$suite->setName('SimplePie');
 
+		$suite->addTestSuite('CacheTest');
 		$suite->addTestSuite('EncodingTest');
 		$suite->addTestSuite('IRITest');
 		$suite->addTestSuite('LocatorTest');
