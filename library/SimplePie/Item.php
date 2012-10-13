@@ -821,7 +821,7 @@ class SimplePie_Item
 			if (!empty($this->data['updated']['raw']))
 			{
 				$parser = $this->registry->call('Parse_Date', 'get');
-				$this->data['updated']['parsed'] = $parser->parse($this->data['date']['raw']);
+				$this->data['updated']['parsed'] = $parser->parse($this->data['updated']['raw']);
 			}
 			else
 			{
