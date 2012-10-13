@@ -1500,10 +1500,20 @@ class SimplePie
 			{
 				// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
 				unset($file);
-				if (!($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds)))
+				try
 				{
-					$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
-					$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
+					if (!($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds)))
+					{
+						$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
+						$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
+						return false;
+					}
+				}
+				catch (SimplePie_Exception $e)
+				{
+					// This is usually because DOMDocument doesn't exist
+					$this->error = $e->getMessage();
+					$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()));
 					return false;
 				}
 				if ($cache)
