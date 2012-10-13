@@ -72,11 +72,18 @@ class SimplePie_Locator
 		$this->timeout = $timeout;
 		$this->max_checked_feeds = $max_checked_feeds;
 
-		$this->dom = new DOMDocument();
+		if (class_exists('DOMDocument'))
+		{
+			$this->dom = new DOMDocument();
 
-		set_error_handler(array('SimplePie_Misc', 'silence_errors'));
-		$this->dom->loadHTML($this->file->body);
-		restore_error_handler();
+			set_error_handler(array('SimplePie_Misc', 'silence_errors'));
+			$this->dom->loadHTML($this->file->body);
+			restore_error_handler();
+		}
+		else
+		{
+			$this->dom = null;
+		}
 	}
 
 	public function set_registry(SimplePie_Registry $registry)
@@ -162,6 +169,10 @@ class SimplePie_Locator
 
 	public function get_base()
 	{
+		if ($this->dom === null)
+		{
+			throw new SimplePie_Exception('DOMDocument not found, unable to use locator');
+		}
 		$this->http_base = $this->file->url;
 		$this->base = $this->http_base;
 		$elements = $this->dom->getElementsByTagName('base');
@@ -196,6 +207,11 @@ class SimplePie_Locator
 
 	protected function search_elements_by_tag($name, &$done, $feeds)
 	{
+		if ($this->dom === null)
+		{
+			throw new SimplePie_Exception('DOMDocument not found, unable to use locator');
+		}
+
 		$links = $this->dom->getElementsByTagName($name);
 		foreach ($links as $link)
 		{
@@ -238,6 +254,11 @@ class SimplePie_Locator
 
 	public function get_links()
 	{
+		if ($this->dom === null)
+		{
+			throw new SimplePie_Exception('DOMDocument not found, unable to use locator');
+		}
+
 		$links = $this->dom->getElementsByTagName('a');
 		foreach ($links as $link)
 		{
