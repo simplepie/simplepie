@@ -73,18 +73,6 @@ class Mock_CacheNew extends SimplePie_Cache
 	}
 }
 
-class Mock_FakeFile extends SimplePie_File
-{
-	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
-	{
-		$this->url = $url;
-		$this->useragent = $useragent;
-		$this->headers = $parser->headers;
-		$this->body = $parser->body;
-		$this->status_code = $parser->status_code;
-	}
-}
-
 class CacheTest extends PHPUnit_Framework_TestCase
 {
 	/**
