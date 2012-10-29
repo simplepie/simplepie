@@ -2912,6 +2912,36 @@ class SimplePie
 	}
 
 	/**
+	 * Set the favicon handler
+	 *
+	 * @deprecated Use your own favicon handling instead
+	 */
+	public function set_favicon_handler($page = false, $qs = 'i')
+	{
+		$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+		trigger_error('Favicon handling has been removed, please use your own handling', $level);
+		return false;
+	}
+
+	/**
+	 * Get the favicon for the current feed
+	 *
+	 * @deprecated Use your own favicon handling instead
+	 */
+	public function get_favicon()
+	{
+		$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+		trigger_error('Favicon handling has been removed, please use your own handling', $level);
+
+		if (($url = $this->get_link()) !== null)
+		{
+			return 'http://g.etfv.co/' . urlencode($url);
+		}
+
+		return false;
+	}
+
+	/**
 	 * Sorting callback for items
 	 *
 	 * @access private
