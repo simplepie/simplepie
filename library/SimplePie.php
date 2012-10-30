@@ -2954,6 +2954,35 @@ class SimplePie
 	}
 
 	/**
+	 * Magic method handler
+	 *
+	 * @param string $method Method name
+	 * @param array $args Arguments to the method
+	 * @return mixed
+	 */
+	public function __call($method, $args)
+	{
+		if (strpos($method, 'subscribe_') === 0)
+		{
+			$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+			trigger_error('subscribe_*() has been deprecated, implement the callback yourself', $level);
+			return '';
+		}
+		if ($method === 'enable_xml_dump')
+		{
+			$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+			trigger_error('enable_xml_dump() has been deprecated, use get_raw_data() instead', $level);
+			return false;
+		}
+
+		$class = get_class($this);
+		$trace = debug_backtrace();
+		$file = $trace[0]['file'];
+		$line = $trace[0]['line'];
+		trigger_error("Call to undefined method $class::$method() in $file on line $line", E_USER_ERROR);
+	}
+
+	/**
 	 * Sorting callback for items
 	 *
 	 * @access private
