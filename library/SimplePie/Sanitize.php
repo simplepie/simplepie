@@ -356,7 +356,11 @@ class SimplePie_Sanitize
 
 			if ($type & SIMPLEPIE_CONSTRUCT_IRI)
 			{
-				$data = $this->registry->call('Misc', 'absolutize_url', array($data, $base));
+				$absolute = $this->registry->call('Misc', 'absolutize_url', array($data, $base));
+				if ($absolute !== false)
+				{
+					$data = $absolute;
+				}
 			}
 
 			if ($type & (SIMPLEPIE_CONSTRUCT_TEXT | SIMPLEPIE_CONSTRUCT_IRI))
@@ -412,7 +416,10 @@ class SimplePie_Sanitize
 					if ($element->hasAttribute($attribute))
 					{
 						$value = $this->registry->call('Misc', 'absolutize_url', array($element->getAttribute($attribute), $this->base));
-						$element->setAttribute($attribute, $value);
+						if ($value !== false)
+						{
+							$element->setAttribute($attribute, $value);
+						}
 					}
 				}
 			}
