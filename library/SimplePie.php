@@ -636,7 +636,19 @@ class SimplePie
 
 		if (func_num_args() > 0)
 		{
-			trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_location() directly.');
+			$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+			trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_location() directly.', $level);
+
+			$args = func_get_args();
+			switch (count($args)) {
+				case 3:
+					$this->set_cache_duration($args[2]);
+				case 2:
+					$this->set_cache_location($args[1]);
+				case 1:
+					$this->set_feed_url($args[0]);
+					$this->init();
+			}
 		}
 	}
 
