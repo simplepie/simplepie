@@ -82,7 +82,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
 	{
 		$feed = new SimplePie();
 		$feed->set_cache_class('Mock_CacheLegacy');
-		$feed->get_registry()->register('File', 'Mock_File');
+		$feed->get_registry()->register('File', 'MockSimplePie_File');
 		$feed->set_feed_url('http://example.com/feed/');
 
 		$feed->init();
@@ -95,7 +95,7 @@ class CacheTest extends PHPUnit_Framework_TestCase
 	{
 		$feed = new SimplePie();
 		$feed->get_registry()->register('Cache', 'Mock_CacheNew');
-		$feed->get_registry()->register('File', 'Mock_File');
+		$feed->get_registry()->register('File', 'MockSimplePie_File');
 		$feed->set_feed_url('http://example.com/feed/');
 
 		$feed->init();
