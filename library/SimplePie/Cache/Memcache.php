@@ -147,7 +147,7 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 
 		if ($data !== false)
 		{
-			// essentially ignore the mtime because Memcache expires on it's own
+			// essentially ignore the mtime because Memcache expires on its own
 			return time();
 		}
 
