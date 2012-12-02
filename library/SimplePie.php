@@ -1269,6 +1269,31 @@ class SimplePie
 	}
 
 	/**
+	 * Get a single item from the feed
+	 *
+	 * This is better suited for {@link http://php.net/for for()} loops, whereas
+	 * {@see get_items()} is better suited for
+	 * {@link http://php.net/foreach foreach()} loops.
+	 *
+	 * @see get_item_quantity()
+	 * @since Beta 2
+	 * @param int $key The item that you want to return.  Remember that arrays begin with 0, not 1
+	 * @return SimplePie_Item|null
+	 */
+	public function get_item($key = 0)
+	{
+		$items = $this->get_items();
+		if (isset($items[$key]))
+		{
+			return $items[$key];
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
 	 * Get all items from the feed
 	 *
 	 * This is better suited for {@link http://php.net/for for()} loops, whereas
