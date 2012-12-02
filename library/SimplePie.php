@@ -683,6 +683,62 @@ class SimplePie
 	}
 
 	/**
+	 * Set an instance of {@see SimplePie_File} to use as a feed
+	 *
+	 * @param SimplePie_File &$file
+	 * @param boolean $append True to add to existing feeds, false to override
+	 * @return bool True on success, false on failure
+	 */
+	public function set_file(&$file, $append = false)
+	{
+		if ($file instanceof SimplePie_File)
+		{
+			$feed = new SimplePie_Feed($this);
+			$feed->set_file($file);
+			if ($append === true)
+			{
+				$this->multifeed_objects[] = $feed;
+			}
+			else
+			{
+				$this->multifeed_objects = array($feed);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Set the raw XML data to parse
+	 *
+	 * Allows you to use a string of RSS/Atom data instead of a remote feed.
+	 *
+	 * If you have a feed available as a string in PHP, you can tell SimplePie
+	 * to parse that data string instead of a remote feed. Any set feed URL
+	 * takes precedence.
+	 *
+	 * @deprecated
+	 * @since 1.0 Beta 3
+	 * @param string $data RSS or Atom data as a string.
+	 * @param boolean $append True to add to existing feeds, false to override
+	 * @see set_feed_url()
+	 */
+	public function set_raw_data($data, $append = false)
+	{
+		$feed = new SimplePie_Feed($this);
+		$feed->set_raw_data($data);
+		if ($append === true)
+		{
+			$this->multifeed_objects[] = $feed;
+		}
+		else
+		{
+			$this->multifeed_objects = array($feed);
+		}
+		return true;
+	}
+
+	/**
 	 * Set the the default timeout for fetching remote feeds
 	 *
 	 * This allows you to change the maximum time the feed's server to respond
@@ -1164,24 +1220,27 @@ class SimplePie
 		$this->sanitize->pass_cache_data($this->cache, $this->cache_location, $this->cache_name_function, $this->registry->get_class('Cache'));
 		$this->sanitize->pass_file_data($this->registry->get_class('File'), $this->timeout, $this->useragent, $this->force_fsockopen);
 
-		if (empty($this->multifeed_url))
+		if (empty($this->multifeed_url) && empty($this->multifeed_objects))
 		{
 			return false;
 		}
 
-		$i = 0;
-		$success = 0;
-		$this->multifeed_objects = array();
-		$this->error = array();
+		$i = count($this->multifeed_objects);
 		foreach ($this->multifeed_url as $url)
 		{
 			$this->multifeed_objects[$i] = new SimplePie_Feed($this);
 			$this->multifeed_objects[$i]->set_feed_url($url);
-			$single_success = $this->multifeed_objects[$i]->init();
+		}
+
+		$success = 0;
+		$this->error = array();
+		foreach ($this->multifeed_objects as $i => $feed)
+		{
+			$single_success = $feed->init();
 			$success |= $single_success;
 			if (!$single_success)
 			{
-				$this->error[$i] = $this->multifeed_objects[$i]->error();
+				$this->error[$i] = $feed->error();
 			}
 			$i++;
 		}
