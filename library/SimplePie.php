@@ -1269,6 +1269,33 @@ class SimplePie
 	}
 
 	/**
+	 * Get a feed object
+	 *
+	 * @param int $num The item that you want to return.  Remember that arrays begin with 0, not 1
+	 * @return SimplePie_Feed|null
+	 */
+	public function get_feed($num = 0)
+	{
+		if (isset($this->multifeed_objects[$num]))
+		{
+			return $this->multifeed_objects[$num];
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get all feeds
+	 *
+	 * @return array List of {@see SimplePIe_Feed} objects
+	 */
+	public function get_feeds()
+	{
+		return $this->multifeed_objects;
+	}
+
+	/**
 	 * Get a single item from the feed
 	 *
 	 * This is better suited for {@link http://php.net/for for()} loops, whereas
