@@ -96,22 +96,10 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 				'prefix' => '',
 			),
 		);
-        $parsed = SimplePie_Cache::parse_URL($location);
+        
+        $this->options = SimplePie_Misc::array_merge_recursive($this->options, SimplePie_Cache::parse_URL($location));
 
-        foreach( $parsed as $key => $value )
-        {
-            if( is_array($value) )
-            {
-                foreach( $value as $array_key => $array_value )
-                {
-                    $this->options[$key][$array_key] = $array_value;
-                }
-            }
-            else
-            {
-                $this->options[$key] = $value;
-            }            
-        }
+       
 
 		// Path is prefixed with a "/"
 		$this->options['dbname'] = substr($this->options['path'], 1);
