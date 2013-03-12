@@ -227,18 +227,18 @@ class SimplePie_Misc
 	public static function array_merge_recursive($array1, $array2)
 	{
 		foreach ($array2 as $key => $value)
-        {
-            if (is_array($value))
-            {
-                $array1[$key] = SimplePie_Misc::array_merge_recursive($array1[$key], $value);
-            }
-            else
-            {
-                $array1[$key] = $value;
-            }            
-        }
-
-        return $array1;
+		{
+			if (is_array($value))
+			{
+				$array1[$key] = SimplePie_Misc::array_merge_recursive($array1[$key], $value);
+			}
+			else
+			{
+				$array1[$key] = $value;
+			}            
+		}
+		
+		return $array1;
 	}
 
 	public static function parse_url($url)
