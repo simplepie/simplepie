@@ -282,7 +282,7 @@ class SimplePie_File
 		else
 		{
 			$this->method = SIMPLEPIE_FILE_SOURCE_LOCAL | SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS;
-			if (!$this->body = file_get_contents($url))
+			if (empty($url) || !($this->body = file_get_contents($url)))
 			{
 				$this->error = 'file_get_contents could not read the file';
 				$this->success = false;
