@@ -809,7 +809,8 @@ class SimplePie_IRI
 	public function set_iri($iri, $clear_cache = false)
 	{
 		static $cache;
-		if ($clear_cache) {
+		if ($clear_cache) 
+		{
 			$cache = null;
 			return;
 		}
@@ -895,7 +896,8 @@ class SimplePie_IRI
 	public function set_authority($authority, $clear_cache = false)
 	{
 		static $cache;
-		if ($clear_cache) {
+		if ($clear_cache)
+		{
 			$cache = null;
 			return;
 		}
@@ -1069,7 +1071,8 @@ class SimplePie_IRI
 	public function set_path($ipath, $clear_cache = false)
 	{
 		static $cache;
-		if ($clear_cache) {
+		if ($clear_cache) 
+		{
 			$cache = null;
 			return;
 		}
