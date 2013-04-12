@@ -260,6 +260,15 @@ class SimplePie_IRI
 	}
 
 	/**
+	 * Clean up
+	 */
+	public function __destruct() {
+	    $this->set_iri(null, true);
+	    $this->set_path(null, true);
+	    $this->set_authority(null, true);
+	}
+
+	/**
 	 * Create a new IRI object by resolving a relative IRI
 	 *
 	 * Returns false if $base is not absolute, otherwise an IRI.
@@ -797,9 +806,13 @@ class SimplePie_IRI
 	 * @param string $iri
 	 * @return bool
 	 */
-	public function set_iri($iri)
+	public function set_iri($iri, $clear_cache = false)
 	{
 		static $cache;
+		if ($clear_cache) {
+			$cache = null;
+			return;
+		}
 		if (!$cache)
 		{
 			$cache = array();
@@ -879,9 +892,13 @@ class SimplePie_IRI
 	 * @param string $authority
 	 * @return bool
 	 */
-	public function set_authority($authority)
+	public function set_authority($authority, $clear_cache = false)
 	{
 		static $cache;
+		if ($clear_cache) {
+			$cache = null;
+			return;
+		}
 		if (!$cache)
 			$cache = array();
 
@@ -1049,9 +1066,13 @@ class SimplePie_IRI
 	 * @param string $ipath
 	 * @return bool
 	 */
-	public function set_path($ipath)
+	public function set_path($ipath, $clear_cache = false)
 	{
 		static $cache;
+		if ($clear_cache) {
+			$cache = null;
+			return;
+		}
 		if (!$cache)
 		{
 			$cache = array();
