@@ -340,11 +340,12 @@ class SimplePie_Sanitize
 					$document->removeChild($document->firstChild);
 				}
 
-				// Get body node
-				$bodyNode = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
+				// Move everything from the body to the root
+				$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
+				$document->replaceChild($real_body, $document->firstChild);
 
-				// Finally, convert to a HTML string
-				$data = trim($document->saveHTML($bodyNode));
+ 				// Finally, convert to a HTML string
+				$data = trim(preg_replace('|^<[?]xml[^>]+>|ism', '', trim($document->saveXML())));
 
 				if ($this->remove_div)
 				{
