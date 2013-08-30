@@ -163,7 +163,7 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 
 		if ($data !== false)
 		{
-			return $this->cache->set($this->name, $data, MEMCACHE_COMPRESSED, (int) $this->duration);
+			return $this->cache->set($this->name, $data, MEMCACHE_COMPRESSED, (int) $this->options['extras']['timeout']);
 		}
 
 		return false;
