@@ -34,7 +34,7 @@
  *
  * @package SimplePie
  * @version 1.4-dev
- * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @copyright 2004-2011 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
@@ -43,91 +43,61 @@
  */
 
 /**
- * Used to create cache objects
- *
- * This class can be overloaded with {@see SimplePie::set_cache_class()},
- * although the preferred way is to create your own handler
- * via {@see register()}
- *
- * @package SimplePie
- * @subpackage Caching
+ * This is a dirty, dirty hack
  */
-class SimplePie_Cache
+class Exception_Success extends Exception {
+
+}
+
+class Mock_CacheLegacy extends SimplePie_Cache
 {
-	/**
-	 * Cache handler classes
-	 *
-	 * These receive 3 parameters to their constructor, as documented in
-	 * {@see register()}
-	 * @var array
-	 */
-	protected static $handlers = array(
-		'mysql' => 'SimplePie_Cache_MySQL',
-		'memcache' => 'SimplePie_Cache_Memcache',
-	);
-
-	/**
-	 * Don't call the constructor. Please.
-	 */
-	private function __construct() { }
-
-	/**
-	 * Create a new SimplePie_Cache object
-	 *
-	 * @param string $location URL location (scheme is used to determine handler)
-	 * @param string $filename Unique identifier for cache object
-	 * @param string $extension 'spi' or 'spc'
-	 * @return SimplePie_Cache_Base Type of object depends on scheme of `$location`
-	 */
 	public static function get_handler($location, $filename, $extension)
 	{
-		$type = explode(':', $location, 2);
-		$type = $type[0];
-		if (!empty(self::$handlers[$type]))
-		{
-			$class = self::$handlers[$type];
-			return new $class($location, $filename, $extension);
-		}
-
-		return new SimplePie_Cache_File($location, $filename, $extension);
+		trigger_error('Legacy cache class should not have get_handler() called');
 	}
-
-	/**
-	 * Create a new SimplePie_Cache object
-	 *
-	 * @deprecated Use {@see get_handler} instead
-	 */
 	public function create($location, $filename, $extension)
 	{
-		trigger_error('Cache::create() has been replaced with Cache::get_handler(). Switch to the registry system to use this.', E_USER_DEPRECATED);
-		return self::get_handler($location, $filename, $extension);
+		throw new Exception_Success('Correct function called');
+	}
+}
+
+class Mock_CacheNew extends SimplePie_Cache
+{
+	public static function get_handler($location, $filename, $extension)
+	{
+		throw new Exception_Success('Correct function called');
+	}
+	public function create($location, $filename, $extension)
+	{
+		trigger_error('New cache class should not have create() called');
+	}
+}
+
+class CacheTest extends PHPUnit_Framework_TestCase
+{
+	/**
+	 * @expectedException Exception_Success
+	 */
+	public function testDirectOverrideLegacy()
+	{
+		$feed = new SimplePie();
+		$feed->set_cache_class('Mock_CacheLegacy');
+		$feed->get_registry()->register('File', 'MockSimplePie_File');
+		$feed->set_feed_url('http://example.com/feed/');
+
+		$feed->init();
 	}
 
 	/**
-	 * Register a handler
-	 *
-	 * @param string $type DSN type to register for
-	 * @param string $class Name of handler class. Must implement SimplePie_Cache_Base
+	 * @expectedException Exception_Success
 	 */
-	public static function register($type, $class)
+	public function testDirectOverrideNew()
 	{
-		self::$handlers[$type] = $class;
-	}
+		$feed = new SimplePie();
+		$feed->get_registry()->register('Cache', 'Mock_CacheNew');
+		$feed->get_registry()->register('File', 'MockSimplePie_File');
+		$feed->set_feed_url('http://example.com/feed/');
 
-	/**
-	 * Parse a URL into an array
-	 *
-	 * @param string $url
-	 * @return array
-	 */
-	public static function parse_URL($url)
-	{
-		$params = parse_url($url);
-		$params['extras'] = array();
-		if (isset($params['query']))
-		{
-			parse_str($params['query'], $params['extras']);
-		}
-		return $params;
+		$feed->init();
 	}
 }

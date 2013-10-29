@@ -80,6 +80,10 @@ class SimplePie_Misc
 	public static function absolutize_url($relative, $base)
 	{
 		$iri = SimplePie_IRI::absolutize(new SimplePie_IRI($base), $relative);
+		if ($iri === false)
+		{
+			return false;
+		}
 		return $iri->get_uri();
 	}
 
@@ -120,7 +124,7 @@ class SimplePie_Misc
 						{
 							$attribs[$j][2] = $attribs[$j][1];
 						}
-						$return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode(end($attribs[$j]), 'UTF-8');
+						$return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode(end($attribs[$j]));
 					}
 				}
 			}
@@ -218,6 +222,23 @@ class SimplePie_Misc
 		{
 			return $url;
 		}
+	}
+
+	public static function array_merge_recursive($array1, $array2)
+	{
+		foreach ($array2 as $key => $value)
+		{
+			if (is_array($value))
+			{
+				$array1[$key] = SimplePie_Misc::array_merge_recursive($array1[$key], $value);
+			}
+			else
+			{
+				$array1[$key] = $value;
+			}            
+		}
+		
+		return $array1;
 	}
 
 	public static function parse_url($url)
