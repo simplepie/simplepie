@@ -238,13 +238,9 @@ class SimplePie_Item
 			{
 				return $this->sanitize($this->data['attribs'][SIMPLEPIE_NAMESPACE_RDF]['about'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			elseif (($return = $this->get_permalink()) !== null)
+			else
 			{
-				return $return;
-			}
-			elseif (($return = $this->get_title()) !== null)
-			{
-				return $return;
+				return md5($this->get_permalink() . $this->get_title() . $this->get_content());
 			}
 		}
 		if ($this->get_permalink() !== null || $this->get_title() !== null)
