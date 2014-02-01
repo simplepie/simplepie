@@ -240,7 +240,7 @@ class SimplePie_Item
 			}
 			else
 			{
-				return md5($this->get_permalink() . $this->get_title() . $this->get_content());
+				return md5(serialize($this->data));
 			}
 		}
 		if ($this->get_permalink() !== null || $this->get_title() !== null)
