@@ -68,6 +68,7 @@ class SimplePie_Parser
 	var $datas = array(array());
 	var $current_xhtml_construct = -1;
 	var $encoding;
+	var $checkDate = false;
 	protected $registry;
 
 	public function set_registry(SimplePie_Registry $registry)
@@ -268,6 +269,9 @@ class SimplePie_Parser
 	public function tag_open($parser, $tag, $attributes)
 	{
 		list($this->namespace[], $this->element[]) = $this->split_ns($tag);
+		if (end($this->element) == "published" || end($this->element) == "pubDate") {
+			$this->checkDate = true;
+		}
 
 		$attribs = array();
 		foreach ($attributes as $name => $value)
@@ -334,6 +338,16 @@ class SimplePie_Parser
 
 	public function cdata($parser, $cdata)
 	{
+		if ($this->checkDate) {
+			$timestamp = strtotime($cdata);
+			// Force all items to have a timestamp, and don't allow timestamps in the
+			// future, otherwise they get stuck at the top of the feed.
+			if (!$timestamp || $timestamp > time())
+			{
+				$cdata = date("F j Y g:ia");
+			}
+			$this->checkDate = false;
+		}
 		if ($this->current_xhtml_construct >= 0)
 		{
 			$this->data['data'] .= htmlspecialchars($cdata, ENT_QUOTES, $this->encoding);
