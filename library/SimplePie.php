@@ -2862,26 +2862,12 @@ class SimplePie
 			return array();
 		}
 
-		// If we want to order it by date, check if all items have a date, and then sort it
 		if ($this->order_by_date)
 		{
 			if (!isset($this->data['ordered_items']))
 			{
-				$do_sort = true;
-				foreach ($this->data['items'] as $item)
-				{
-					if (!$item->get_date('U'))
-					{
-						$do_sort = false;
-						break;
-					}
-				}
-				$item = null;
 				$this->data['ordered_items'] = $this->data['items'];
-			       	if ($do_sort)
-				{
-					usort($this->data['ordered_items'], array(get_class($this), 'sort_items'));
-				}
+				usort($this->data['ordered_items'], array(get_class($this), 'sort_items'));
 		 	}
 			$items = $this->data['ordered_items'];
 		}
@@ -2910,7 +2896,22 @@ class SimplePie
 	 */
 	public static function sort_items($a, $b)
 	{
-		return $a->get_date('U') <= $b->get_date('U');
+		$a_date = $a->get_date('U');
+		$b_date = $b->get_date('U');
+		if ($a_date && $b_date) {
+			if ($a_date == $b_date) {
+				return 0;
+			}
+			return $a_date > $b_date ? -1 : 1;
+		}
+		// Sort items without dates to the top.
+		if ($a_date) {
+			return 1;
+		}
+		if ($b_date) {
+			return -1;
+		}
+		return 0;
 	}
 
 	/**
@@ -2943,20 +2944,7 @@ class SimplePie
 				}
 			}
 
-			$do_sort = true;
-			foreach ($items as $item)
-			{
-				if (!$item->get_date('U'))
-				{
-					$do_sort = false;
-					break;
-				}
-			}
-			$item = null;
-			if ($do_sort)
-			{
-				usort($items, array(get_class($urls[0]), 'sort_items'));
-			}
+			usort($items, array(get_class($urls[0]), 'sort_items'));
 
 			if ($end === 0)
 			{
