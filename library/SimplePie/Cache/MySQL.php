@@ -159,11 +159,16 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return false;
 		}
 
-		$count = $this->mysql->query('DELETE i, cd FROM `' . $this->options['extras']['prefix'] . 'sp_cache_data` cd, ' .
+		$query = $this->mysql->prepare('DELETE i, cd FROM `' . $this->options['extras']['prefix'] . 'sp_cache_data` cd, ' .
 			'`' . $this->options['extras']['prefix'] . 'items` i ' .
-			'WHERE cd.id = i.feed_id ' .
-			'AND cd.mtime < (unix_timestamp() - ' . $this->options['extras']['cache_purge_time'] . ')'
-			);
+			'WHERE `cd.id` = `i.feed_id` ' .
+			'AND `cd.mtime` < (unix_timestamp() - :purge_time)');
+		$query->bindValue(':purge_time', $this->options['extras']['cache_purge_time']);
+
+		if (!$query->execute())
+		{
+			return false;
+		}
 
 		if ($data instanceof SimplePie)
 		{
