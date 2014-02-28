@@ -720,7 +720,7 @@ class SimplePie_Parse_Date
 		{
 			$output .= substr($string, $position, $pos - $position);
 			$position = $pos + 1;
-			if ($string[$pos - 1] !== '\\')
+			if ($pos === 0 || $string[$pos - 1] !== '\\')
 			{
 				$depth++;
 				while ($depth && $position < $length)
