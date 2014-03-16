@@ -316,11 +316,20 @@ class SimplePie_IRI
 							}
 							elseif (($last_segment = strrpos($base->ipath, '/')) !== false)
 							{
-								$target->ipath = substr($base->ipath, 0, $last_segment + 1) . $relative->ipath;
+								// If there's a trailing slash can just concatenate the base
+								// and the relative path, otherwise a separator is required.
+								if (strlen($base->ipath) === $last_segment + 1)
+								{
+									$target->ipath = $base->ipath . $relative->ipath;
+								}
+								else
+								{
+									$target->ipath = $base->ipath . '/' . $relative->ipath;
+								}
 							}
 							else
 							{
-								$target->ipath = $relative->ipath;
+								$target->ipath = $base->ipath . '/' . $relative->ipath;
 							}
 							$target->ipath = $target->remove_dot_segments($target->ipath);
 							$target->iquery = $relative->iquery;

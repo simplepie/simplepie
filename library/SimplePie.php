@@ -1272,6 +1272,7 @@ class SimplePie
 				return true;
 			}
 			elseif ($fetched === false) {
+				$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
 				return false;
 			}
 
