@@ -107,6 +107,17 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_REFERER, $url);
 				curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+				if (SIMPLEPIE_FILE_PROXY_HOST != null)
+				{
+					curl_setopt($fp, CURLOPT_PROXY, SIMPLEPIE_FILE_PROXY_HOST);
+					if (SIMPLEPIE_FILE_PROXY_PORT != null) {
+						curl_setopt($fp, CURLOPT_PROXYPORT, SIMPLEPIE_FILE_PROXY_PORT);
+					}
+	                                if (SIMPLEPIE_FILE_PROXY_USERPWD!= null)
+	                                {
+	                                	curl_setopt($ch, CURLOPT_PROXYUSERPWD, SIMPLEPIE_FILE_PROXY_USERPWD);
+	                                }
+				}
 				if (!ini_get('open_basedir') && !ini_get('safe_mode') && version_compare(SimplePie_Misc::get_curl_version(), '7.15.2', '>='))
 				{
 					curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
