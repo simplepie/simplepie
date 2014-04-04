@@ -398,6 +398,13 @@ define('SIMPLEPIE_FILE_SOURCE_FSOCKOPEN', 4);
 define('SIMPLEPIE_FILE_SOURCE_CURL', 8);
 
 /**
+ * cURL proxy options
+ */
+define('SIMPLEPIE_FILE_PROXY_HOST', null);
+define('SIMPLEPIE_FILE_PROXY_PORT', 8080);
+define('SIMPLEPIE_FILE_PROXY_USERPWD', null);
+
+/**
  * file_get_contents() file source
  */
 define('SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS', 16);
