@@ -479,21 +479,21 @@ class SimplePie
 	 * @see SimplePie::proxyhost()
 	 * @access private
 	 */
-	public $proxyhost = null;
+	private $proxyhost = null;
 	
 	/**
 	 * @var int set the HTTP proxy port for cURL
 	 * @see SimplePie::proxyport()
 	 * @access private
 	 */
-	public $proxyport = null;
+	private $proxyport = null;
 	
 	/**
 	 * @var string set the HTTP proxy user and password for cURL
 	 * @see SimplePie::proxyuserpwd()
 	 * @access private
 	 */
-	public $proxyuserpwd = null;
+	private $proxyuserpwd = null;
 
 	/**
 	 * @var bool Force the given data/URL to be treated as a feed no matter what
@@ -818,7 +818,7 @@ class SimplePie
 	 * @param string $proxyhost
 	 */
 	 
-	 public function proxyhost($proxyhost = null)
+	 public function set_proxyhost($proxyhost)
 	 {
 	 	$this->proxyhost = (string) $proxyhost;
 	 }
@@ -829,7 +829,7 @@ class SimplePie
 	 * @param int $proxyport
 	 */
 	 
-	 public function proxyport($proxyport = null)
+	 public function set_proxyport($proxyport)
 	 {
 	 	$this->proxyport = (int) $proxyport;
 	 }
@@ -840,7 +840,7 @@ class SimplePie
 	 * @param int $proxyport
 	 */
 	 
-	 public function proxyuserpwd($proxyuserpwd = null)
+	 public function set_proxyuserpwd($proxyuserpwd)
 	 {
 	 	$this->proxyuserpwd = (string) $proxyuserpwd;
 	 }
