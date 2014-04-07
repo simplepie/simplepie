@@ -473,6 +473,27 @@ class SimplePie
 	 * @access private
 	 */
 	public $force_fsockopen = false;
+	
+	/**
+	 * @var string set the HTTP proxy address for cURL
+	 * @see SimplePie::proxyhost()
+	 * @access private
+	 */
+	public $proxyhost = null;
+	
+	/**
+	 * @var int set the HTTP proxy port for cURL
+	 * @see SimplePie::proxyport()
+	 * @access private
+	 */
+	public $proxyport = null;
+	
+	/**
+	 * @var string set the HTTP proxy user and password for cURL
+	 * @see SimplePie::proxyuserpwd()
+	 * @access private
+	 */
+	public $proxyuserpwd = null;
 
 	/**
 	 * @var bool Force the given data/URL to be treated as a feed no matter what
@@ -790,6 +811,39 @@ class SimplePie
 	{
 		$this->force_fsockopen = (bool) $enable;
 	}
+	
+	/**
+	 * Specify a proxy host to use with cURL
+	 * 
+	 * @param string $proxyhost
+	 */
+	 
+	 public function proxyhost($proxyhost = null)
+	 {
+	 	$this->proxyhost = (string) $proxyhost;
+	 }
+	 
+	 /**
+	 * Specify a proxy port to use with cURL
+	 * 
+	 * @param int $proxyport
+	 */
+	 
+	 public function proxyport($proxyport = null)
+	 {
+	 	$this->proxyport = (int) $proxyport;
+	 }
+	 
+	 /**
+	 * Specify a proxy user and password to use with cURL
+	 * 
+	 * @param int $proxyport
+	 */
+	 
+	 public function proxyuserpwd($proxyuserpwd = null)
+	 {
+	 	$this->proxyuserpwd = (string) $proxyuserpwd;
+	 }
 
 	/**
 	 * Enable/disable caching in SimplePie.
@@ -1461,7 +1515,7 @@ class SimplePie
 							$headers['if-none-match'] = $this->data['headers']['etag'];
 						}
 
-						$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen));
+						$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->proxyhost, $this->proxyport, $this->proxyuserpwd));
 
 						if ($file->success)
 						{
