@@ -2904,11 +2904,13 @@ class SimplePie
 		if (!empty($this->data['items']))
 		{
 			// If we want to order it by date, check if all items have a date, and then sort it
-			if ($this->order_by_date && empty($this->multifeed_objects))
+			//if ($this->order_by_date && empty($this->multifeed_objects))
+            if ($this->order_by_date)
 			{
 				if (!isset($this->data['ordered_items']))
 				{
 					$do_sort = true;
+/* XXX
 					foreach ($this->data['items'] as $item)
 					{
 						if (!$item->get_date('U'))
@@ -2917,6 +2919,7 @@ class SimplePie
 							break;
 						}
 					}
+dw                 */
 					$item = null;
 					$this->data['ordered_items'] = $this->data['items'];
 					if ($do_sort)
