@@ -1306,7 +1306,7 @@ class SimplePie
 		// First check to see if input has been overridden.
 		if ($this->input_encoding !== false)
 		{
-			$encodings[] = $this->input_encoding;
+			$encodings[] = strtoupper($this->input_encoding);
 		}
 
 		$application_types = array('application/xml', 'application/xml-dtd', 'application/xml-external-parsed-entity');
@@ -1328,7 +1328,7 @@ class SimplePie
 			{
 				if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
 				{
-					$encodings[] = $charset[1];
+					$encodings[] = strtoupper($charset[1]);
 				}
 				$encodings[] = 'US-ASCII';
 			}
