@@ -59,7 +59,7 @@ define('SIMPLEPIE_VERSION', '1.4-dev');
  * SimplePie Build
  * @todo Hardcode for release (there's no need to have to call SimplePie_Misc::get_build() only every load of simplepie.inc)
  */
-define('SIMPLEPIE_BUILD', '20140429182050');
+define('SIMPLEPIE_BUILD', '20140429182702');
 
 /**
  * SimplePie Website URL
