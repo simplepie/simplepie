@@ -846,7 +846,7 @@ class SimplePie
 	 */
 	public function enable_order_by_date($enable = true)
 	{
-		$this->order_by_date = (bool) $enable;
+		$this->order_by_date = $enable;
 	}
 
 	/**
@@ -2906,7 +2906,7 @@ class SimplePie
 		if (!empty($this->data['items']))
 		{
 			// If we want to order it by date, check if all items have a date, and then sort it
-			if ($this->order_by_date && empty($this->multifeed_objects) || $this->order_by_date === 'force')
+			if (($this->order_by_date && empty($this->multifeed_objects)) || $this->order_by_date === 'force')
 			{
 				if (!isset($this->data['ordered_items']))
 				{
