@@ -92,6 +92,37 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($feed, null);
 	}
 
+	public function testDirectNoDOM()
+	{
+		$data = new MockSimplePie_File('http://example.com/feed.xml');
+
+		$registry = new SimplePie_Registry();
+		$locator = new SimplePie_Locator($data, 0, null, false);
+		$locator->dom = null;
+		$locator->set_registry($registry);
+
+		$this->assertTrue($locator->is_feed($data));
+		$this->assertEquals($locator->find(SIMPLEPIE_LOCATOR_ALL, $found), $data);
+	}
+
+	/**
+	 * @expectedException SimplePie_Exception
+	 */
+	public function testFailDiscoveryNoDOM()
+	{
+		$data = new MockSimplePie_File('http://example.com/feed.xml');
+		$data->headers['content-type'] = 'text/html';
+		$data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
+
+		$registry = new SimplePie_Registry();
+		$locator = new SimplePie_Locator($data, 0, null, false);
+		$locator->dom = null;
+		$locator->set_registry($registry);
+
+		$this->assertFalse($locator->is_feed($data));
+		$this->assertFalse($locator->find(SIMPLEPIE_LOCATOR_ALL, $found));
+	}
+
 	/**
 	 * Tests from Firefox
 	 *
@@ -151,22 +182,5 @@ class LocatorTest extends PHPUnit_Framework_TestCase
 	protected static function map_url_file($file)
 	{
 		return $file->url;
-	}
-}
-
-/**
- * Acts as a fake feed request
- */
-class MockSimplePie_File extends SimplePie_File
-{
-	public function __construct($url)
-	{
-		$this->url = $url;
-		$this->headers = array(
-			'content-type' => 'application/atom+xml'
-		);
-		$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
-		$this->body = '<?xml charset="utf-8"?><feed />';
-		$this->status_code = 200;
 	}
 }

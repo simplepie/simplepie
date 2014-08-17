@@ -30,7 +30,7 @@ CREATE TABLE `cache_data` (
 CREATE TABLE `items` (
 	`feed_id` TEXT CHARACTER SET utf8 NOT NULL,
 	`id` TEXT CHARACTER SET utf8 NOT NULL,
-	`data` TEXT CHARACTER SET utf8 NOT NULL,
+	`data` MEDIUMBLOB CHARACTER SET utf8 NOT NULL,
 	`posted` INT UNSIGNED NOT NULL,
 	INDEX `feed_id` (
 		`feed_id`(125)

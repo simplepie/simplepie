@@ -636,7 +636,19 @@ class SimplePie
 
 		if (func_num_args() > 0)
 		{
-			trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_location() directly.');
+			$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+			trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_duration() directly.', $level);
+
+			$args = func_get_args();
+			switch (count($args)) {
+				case 3:
+					$this->set_cache_duration($args[2]);
+				case 2:
+					$this->set_cache_location($args[1]);
+				case 1:
+					$this->set_feed_url($args[0]);
+					$this->init();
+			}
 		}
 	}
 
@@ -1184,6 +1196,16 @@ class SimplePie
 	}
 
 	/**
+	 * Enable throwing exceptions
+	 *
+	 * @param boolean $enable Should we throw exceptions, or use the old-style error property?
+	 */
+	public function enable_exceptions($enable = true)
+	{
+		$this->enable_exceptions = $enable;
+	}
+
+	/**
 	 * Initialize the feed object
 	 *
 	 * This is what makes everything happen.  Period.  This is where all of the
@@ -1263,7 +1285,7 @@ class SimplePie
 			// Decide whether to enable caching
 			if ($this->cache && $parsed_feed_url['scheme'] !== '')
 			{
-				$cache = $this->registry->call('Cache', 'create', array($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc'));
+				$cache = $this->registry->call('Cache', 'get_handler', array($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc'));
 			}
 
 			// Fetch the data via SimplePie_File into $this->raw_data
@@ -1285,7 +1307,7 @@ class SimplePie
 		// First check to see if input has been overridden.
 		if ($this->input_encoding !== false)
 		{
-			$encodings[] = $this->input_encoding;
+			$encodings[] = strtoupper($this->input_encoding);
 		}
 
 		$application_types = array('application/xml', 'application/xml-dtd', 'application/xml-external-parsed-entity');
@@ -1307,7 +1329,7 @@ class SimplePie
 			{
 				if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset))
 				{
-					$encodings[] = $charset[1];
+					$encodings[] = strtoupper($charset[1]);
 				}
 				$encodings[] = 'US-ASCII';
 			}
@@ -1501,10 +1523,20 @@ class SimplePie
 			{
 				// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
 				unset($file);
-				if (!($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds)))
+				try
 				{
-					$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
-					$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
+					if (!($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds)))
+					{
+						$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
+						$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
+						return false;
+					}
+				}
+				catch (SimplePie_Exception $e)
+				{
+					// This is usually because DOMDocument doesn't exist
+					$this->error = $e->getMessage();
+					$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()));
 					return false;
 				}
 				if ($cache)
@@ -1514,7 +1546,7 @@ class SimplePie
 					{
 						trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
 					}
-					$cache = $this->registry->call('Cache', 'create', array($this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc'));
+					$cache = $this->registry->call('Cache', 'get_handler', array($this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc'));
 				}
 				$this->feed_url = $file->url;
 			}
@@ -1942,7 +1974,21 @@ class SimplePie
 	 */
 	public function sanitize($data, $type, $base = '')
 	{
-		return $this->sanitize->sanitize($data, $type, $base);
+		try
+		{
+			return $this->sanitize->sanitize($data, $type, $base);
+		}
+		catch (SimplePie_Exception $e)
+		{
+			if (!$this->enable_exceptions)
+			{
+				$this->error = $e->getMessage();
+				$this->registry->call('Misc', 'error', array($this->error, E_USER_WARNING, $e->getFile(), $e->getLine()));
+				return '';
+			}
+
+			throw $e;
+		}
 	}
 
 	/**
@@ -2885,6 +2931,65 @@ class SimplePie
 		{
 			return array_slice($items, $start, $end);
 		}
+	}
+
+	/**
+	 * Set the favicon handler
+	 *
+	 * @deprecated Use your own favicon handling instead
+	 */
+	public function set_favicon_handler($page = false, $qs = 'i')
+	{
+		$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+		trigger_error('Favicon handling has been removed, please use your own handling', $level);
+		return false;
+	}
+
+	/**
+	 * Get the favicon for the current feed
+	 *
+	 * @deprecated Use your own favicon handling instead
+	 */
+	public function get_favicon()
+	{
+		$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+		trigger_error('Favicon handling has been removed, please use your own handling', $level);
+
+		if (($url = $this->get_link()) !== null)
+		{
+			return 'http://g.etfv.co/' . urlencode($url);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Magic method handler
+	 *
+	 * @param string $method Method name
+	 * @param array $args Arguments to the method
+	 * @return mixed
+	 */
+	public function __call($method, $args)
+	{
+		if (strpos($method, 'subscribe_') === 0)
+		{
+			$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+			trigger_error('subscribe_*() has been deprecated, implement the callback yourself', $level);
+			return '';
+		}
+		if ($method === 'enable_xml_dump')
+		{
+			$level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
+			trigger_error('enable_xml_dump() has been deprecated, use get_raw_data() instead', $level);
+			return false;
+		}
+
+		$class = get_class($this);
+		$trace = debug_backtrace();
+		$file = $trace[0]['file'];
+		$line = $trace[0]['line'];
+		trigger_error("Call to undefined method $class::$method() in $file on line $line", E_USER_ERROR);
 	}
 
 	/**

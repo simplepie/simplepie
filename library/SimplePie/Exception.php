@@ -34,7 +34,7 @@
  *
  * @package SimplePie
  * @version 1.4-dev
- * @copyright 2004-2011 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
@@ -42,29 +42,11 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
-
-require_once dirname(__FILE__) . '/EncodingTest.php';
-require_once dirname(__FILE__) . '/IRITest.php';
-require_once dirname(__FILE__) . '/LocatorTest.php';
-require_once dirname(__FILE__) . '/ItemTest.php';
-require_once dirname(__FILE__) . '/oldtests.php';
- 
-class AllTests
+/**
+ * General SimplePie exception class
+ *
+ * @package SimplePie
+ */
+class SimplePie_Exception extends Exception
 {
-	public static function suite()
-	{
-		$suite = new PHPUnit_Framework_TestSuite();
-		$suite->setName('SimplePie');
-
-		$suite->addTestSuite('CacheTest');
-		$suite->addTestSuite('EncodingTest');
-		$suite->addTestSuite('IRITest');
-		$suite->addTestSuite('LocatorTest');
-		$suite->addTestSuite('HTTPParserTest');
-		$suite->addTestSuite('ItemTest');
-		$suite->addTestSuite('OldTest');
- 
-		return $suite;
-	}
 }
