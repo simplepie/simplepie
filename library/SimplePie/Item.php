@@ -391,6 +391,30 @@ class SimplePie_Item
 			return null;
 		}
 	}
+	
+	/**
+	 * Get the media:thumbnail of the item
+	 *
+	 * Uses `<media:thumbnail>`
+	 *
+	 * 
+	 * @return array|null
+	 */
+	public function get_thumbnail()
+	{
+		if (!isset($this->data['thumbnail']))
+		{
+			if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_MEDIARSS, 'thumbnail'))
+			{
+				$this->data['thumbnail'] = $return[0]['attribs'][''];
+			}
+			else
+			{
+				$this->data['thumbnail'] = null;
+			}
+		}
+		return $this->data['thumbnail'];
+	}	
 
 	/**
 	 * Get a category for the item
