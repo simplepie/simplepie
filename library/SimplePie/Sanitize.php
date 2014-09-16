@@ -338,13 +338,6 @@ class SimplePie_Sanitize
 					}
 				}
 
-				// Remove the DOCTYPE
-				// Seems to cause segfaulting if we don't do this
-				if ($document->firstChild instanceof DOMDocumentType)
-				{
-					$document->removeChild($document->firstChild);
-				}
-
 				// Finally, convert to a HTML string
 				$data = trim($document->saveHTML());
 
