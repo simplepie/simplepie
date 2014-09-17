@@ -273,6 +273,11 @@ class SimplePie_Sanitize
 				}
 				$document = new DOMDocument();
 				$document->encoding = 'UTF-8';
+
+				// See https://github.com/simplepie/simplepie/issues/334
+				$unique_tag = '#'.uniqid().'#';
+				$data = trim($unique_tag . $data . $unique_tag);
+
 				$data = $this->preprocess($data, $type);
 
 				set_error_handler(array('SimplePie_Misc', 'silence_errors'));
@@ -362,19 +367,10 @@ class SimplePie_Sanitize
 					}
 				}
 
-				// Remove the DOCTYPE
-				// Seems to cause segfaulting if we don't do this
-				if ($document->firstChild instanceof DOMDocumentType)
-				{
-					$document->removeChild($document->firstChild);
-				}
-
-				// Move everything from the body to the root
-				$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
-				$document->replaceChild($real_body, $document->firstChild);
-
 				// Finally, convert to a HTML string
 				$data = trim($document->saveHTML());
+
+				list($_, $data, $_) = explode($unique_tag, $data);
 
 				if ($this->remove_div)
 				{
