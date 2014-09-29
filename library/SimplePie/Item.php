@@ -2733,7 +2733,9 @@ class SimplePie_Item
 						{
 							foreach ($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['thumbnail'] as $thumbnail)
 							{
-								$thumbnails[] = $this->sanitize($thumbnail['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+								if (isset($thumbnail['attribs']['']['url'])) {
+									$thumbnails[] = $this->sanitize($thumbnail['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+								}
 							}
 							if (is_array($thumbnails))
 							{
