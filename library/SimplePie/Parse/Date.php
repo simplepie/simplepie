@@ -332,6 +332,7 @@ class SimplePie_Parse_Date
 		'CDT' => -18000,
 		'CEDT' => 7200,
 		'CET' => 3600,
+		'CEST' => 7200,
 		'CGST' => -7200,
 		'CGT' => -10800,
 		'CHADT' => 49500,
