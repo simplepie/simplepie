@@ -253,6 +253,8 @@ class SimplePie_Sanitize
 				}
 				$document = new DOMDocument();
 				$document->encoding = 'UTF-8';
+				$unique_tag = '#'.uniqid().'#';
+				$data = $unique_tag.$data.$unique_tag;
 				$data = $this->preprocess($data, $type);
 
 				set_error_handler(array('SimplePie_Misc', 'silence_errors'));
@@ -341,11 +343,12 @@ class SimplePie_Sanitize
 				}
 
 				// Move everything from the body to the root
-				$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
-				$document->replaceChild($real_body, $document->firstChild);
+				//$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
+				//$document->replaceChild($real_body, $document->firstChild);
 
 				// Finally, convert to a HTML string
 				$data = trim($document->saveHTML());
+				list($_, $data, $_) = explode($unique_tag, $data);
 
 				if ($this->remove_div)
 				{
