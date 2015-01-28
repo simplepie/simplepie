@@ -53,7 +53,7 @@
  *
  * @package    SimplePie
  * @subpackage Caching
- * @author     Paul L. McNeely
+ *
  * @uses       Memcached
  */
 class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
@@ -108,7 +108,8 @@ class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
         if ($data instanceof SimplePie) {
             $data = $data->data;
         }
-        return $this->cache->set($this->name, serialize($data), (int)$this->options['extras']['timeout']);
+
+        return $this->setdata(serialize($data));
     }
 
     /**
@@ -129,14 +130,8 @@ class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
      * @return int Timestamp
      */
     public function mtime() {
-        $data = $this->cache->get($this->name);
-
-        if ($data !== false) {
-            // essentially ignore the mtime because Memcached expires on its own
-            return time();
-        }
-
-        return false;
+        $data = $this->cache->get($this->name . '_mtime');
+        return (int) $data;
     }
 
     /**
@@ -145,12 +140,7 @@ class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
      */
     public function touch() {
         $data = $this->cache->get($this->name);
-
-        if ($data !== false) {
-            return $this->cache->set($this->name, $data, (int)$this->options['extras']['timeout']);
-        }
-
-        return false;
+        return $this->setdata($data);
     }
 
     /**
@@ -159,5 +149,19 @@ class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
      */
     public function unlink() {
         return $this->cache->delete($this->name, 0);
+    }
+
+    /**
+     * Set the last modified time and data to Memcached
+     * @return bool Success status
+     */
+    private function setdata($data) {
+
+        if ($data !== false) {
+            $this->cache->set($this->name . '_mtime', time(), (int)$this->options['extras']['timeout']);
+            return $this->cache->set($this->name, $data, (int)$this->options['extras']['timeout']);
+        }
+
+        return false;
     }
 }
