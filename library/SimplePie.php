@@ -1501,10 +1501,8 @@ class SimplePie
 								$cache->touch();
 								return true;
 							}
-							else {
-								unset($file);
-							}
 
+							unset($file);
 						}
 					}
 				}
