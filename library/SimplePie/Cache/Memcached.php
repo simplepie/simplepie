@@ -53,7 +53,7 @@
  *
  * @package    SimplePie
  * @subpackage Caching
- *
+ * @author     Paul L. McNeely
  * @uses       Memcached
  */
 class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
