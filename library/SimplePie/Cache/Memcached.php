@@ -109,7 +109,7 @@ class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
             $data = $data->data;
         }
 
-        return $this->setdata(serialize($data));
+        return $this->setData(serialize($data));
     }
 
     /**
@@ -140,7 +140,7 @@ class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
      */
     public function touch() {
         $data = $this->cache->get($this->name);
-        return $this->setdata($data);
+        return $this->setData($data);
     }
 
     /**
@@ -155,7 +155,7 @@ class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
      * Set the last modified time and data to Memcached
      * @return bool Success status
      */
-    private function setdata($data) {
+    private function setData($data) {
 
         if ($data !== false) {
             $this->cache->set($this->name . '_mtime', time(), (int)$this->options['extras']['timeout']);
