@@ -124,7 +124,7 @@ class SimplePie_Misc
 						{
 							$attribs[$j][2] = $attribs[$j][1];
 						}
-						$return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode(end($attribs[$j]));
+						$return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = SimplePie_Misc::entities_decode(end($attribs[$j]), 'UTF-8');
 					}
 				}
 			}
@@ -138,7 +138,7 @@ class SimplePie_Misc
 		foreach ($element['attribs'] as $key => $value)
 		{
 			$key = strtolower($key);
-			$full .= " $key=\"" . htmlspecialchars($value['data']) . '"';
+			$full .= " $key=\"" . htmlspecialchars($value['data'], ENT_COMPAT, 'UTF-8') . '"';
 		}
 		if ($element['self_closing'])
 		{
