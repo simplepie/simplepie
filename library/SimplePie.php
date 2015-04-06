@@ -1548,13 +1548,15 @@ class SimplePie
 
 			if (!$locate->is_feed($file))
 			{
+				$copyStatusCode = $file->status_code;
+				$copyContentType = $file->headers['content-type'];
 				// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
 				unset($file);
 				try
 				{
 					if (!($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds)))
 					{
-						$this->error = "A feed could not be found at $this->feed_url. A feed with an invalid mime type may fall victim to this error, or " . SIMPLEPIE_NAME . " was unable to auto-discover it.. Use force_feed() if you are certain this URL is a real feed.";
+						$this->error = "A feed could not be found at `$this->feed_url`; the status code is `$copyStatusCode` and content-type is `$copyContentType`";
 						$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
 						return false;
 					}
