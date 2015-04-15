@@ -1,5 +1,5 @@
 {
-	"name": "simplepie/simplepie",
+	"name": "andre-sa/simplepie",
 	"description": "A simple Atom/RSS parsing library for PHP",
 	"type": "library",
 	"version": "1.3",
