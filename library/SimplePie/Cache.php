@@ -65,6 +65,7 @@ class SimplePie_Cache
 		'mysql'     => 'SimplePie_Cache_MySQL',
 		'memcache'  => 'SimplePie_Cache_Memcache',
 		'memcached' => 'SimplePie_Cache_Memcached',
+    'redis'     => 'SimplePie_Cache_Redis',
 	);
 
 	/**
