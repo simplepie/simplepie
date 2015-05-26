@@ -66,7 +66,7 @@ class SimplePie_File
 	var $method = SIMPLEPIE_FILE_SOURCE_NONE;
 	var $permanent_url;	//FreshRSS
 
-	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
+	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = array())
 	{
 		if (class_exists('idna_convert'))
 		{
@@ -114,6 +114,9 @@ class SimplePie_File
 					curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
 					curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
 				}
+                foreach ($curl_options as $curl_param => $curl_value) {
+                    curl_setopt($fp, $curl_param, $curl_value);
+                }
 
 				$this->headers = curl_exec($fp);
 				if (curl_errno($fp) === 23 || curl_errno($fp) === 61)
