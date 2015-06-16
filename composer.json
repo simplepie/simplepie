@@ -2,7 +2,6 @@
 	"name": "simplepie/simplepie",
 	"description": "A simple Atom/RSS parsing library for PHP",
 	"type": "library",
-	"version": "1.3",
 	"keywords": ["rss", "atom", "feeds"],
 	"homepage": "http://simplepie.org/",
 	"license": "BSD-3-Clause",
