@@ -643,11 +643,14 @@ class SimplePie
 			switch (count($args)) {
 				case 3:
 					$this->set_cache_duration($args[2]);
+					break;
 				case 2:
 					$this->set_cache_location($args[1]);
+					break;
 				case 1:
 					$this->set_feed_url($args[0]);
 					$this->init();
+					break;
 			}
 		}
 	}
