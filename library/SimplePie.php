@@ -1386,7 +1386,7 @@ class SimplePie
 		if (isset($parser))
 		{
 			// We have an error, just set SimplePie_Misc::error to it and quit
-			$this->error = sprintf('This XML document is invalid, likely due to invalid characters. XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
+			$this->error = sprintf('This XML document is invalid, likely due to invalid characters. XML error: %s at line %d, column %d, encoding %s, URL: %s', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column(), $encoding, $this->feed_url);
 		}
 		else
 		{
