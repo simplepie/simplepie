@@ -130,7 +130,7 @@ class IRITest extends PHPUnit_Framework_TestCase
 			array('http://a/b/', 'c', 'http://a/b/c'),
 			array('http://a/', 'b', 'http://a/b'),
 			array('http://a/', '/b', 'http://a/b'),
-			array('http://a/b', 'c', 'http://a/b/c'),
+			array('http://a/b', 'c', 'http://a/c'),
 			array('http://a/b/', "c\x0Ad", 'http://a/b/c%0Ad'),
 			array('http://a/b/', "c\x0A\x0B", 'http://a/b/c%0A%0B'),
 			array('http://a/b/c', '//0', 'http://0/'),
