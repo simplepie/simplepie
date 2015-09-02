@@ -2658,7 +2658,9 @@ class SimplePie_Item
 						// PLAYER
 						if (isset($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['player']))
 						{
-							$player = $this->sanitize($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+							if (isset($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'])) {
+								$player = $this->sanitize($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], SIMPLEPIE_CONSTRUCT_IRI);
+							}
 						}
 						else
 						{
