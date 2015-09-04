@@ -57,6 +57,7 @@ class SimplePie_File
 {
 	var $url;
 	var $useragent;
+	var $bind;
 	var $success = true;
 	var $headers = array();
 	var $body;
@@ -65,7 +66,7 @@ class SimplePie_File
 	var $error;
 	var $method = SIMPLEPIE_FILE_SOURCE_NONE;
 
-	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
+	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $bindaddress = null)
 	{
 		if (class_exists('idna_convert'))
 		{
@@ -75,6 +76,8 @@ class SimplePie_File
 		}
 		$this->url = $url;
 		$this->useragent = $useragent;
+		$this->bind = $bindaddress;
+
 		if (preg_match('/^http(s)?:\/\//i', $url))
 		{
 			if ($useragent === null)
@@ -107,6 +110,12 @@ class SimplePie_File
 				curl_setopt($fp, CURLOPT_REFERER, $url);
 				curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
 				curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+
+				if ($this->bind)
+				{
+					curl_setopt($fp, CURLOPT_INTERFACE, $this->bind);
+				}
+
 				if (!ini_get('open_basedir') && !ini_get('safe_mode') && version_compare(SimplePie_Misc::get_curl_version(), '7.15.2', '>='))
 				{
 					curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
