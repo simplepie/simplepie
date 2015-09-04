@@ -1205,6 +1205,11 @@ class SimplePie
 		$this->enable_exceptions = $enable;
 	}
 
+	function cleanMd5($rss)
+	{
+		return md5(preg_replace(array('#<(lastBuildDate|pubDate|updated|feedDate|dc:date|slash:comments)>[^<]+</\\1>#', '#<!--.+?-->#s'), '', $rss));
+	}
+
 	/**
 	 * Initialize the feed object
 	 *
@@ -1212,7 +1217,7 @@ class SimplePie
 	 * configuration options get processed, feeds are fetched, cached, and
 	 * parsed, and all of that other good stuff.
 	 *
-	 * @return boolean True if successful, false otherwise
+	 * @return positive integer with modification time if using cache, boolean true if otherwise successful, false otherwise
 	 */
 	public function init()
 	{
@@ -1291,13 +1296,18 @@ class SimplePie
 			// Fetch the data via SimplePie_File into $this->raw_data
 			if (($fetched = $this->fetch_data($cache)) === true)
 			{
-				return true;
+				return $this->data['mtime'];
 			}
 			elseif ($fetched === false) {
 				return false;
 			}
 
 			list($headers, $sniffed) = $fetched;
+
+			if (isset($this->data['md5']))
+			{
+				$md5 = $this->data['md5'];
+			}
 		}
 
 		// Set up array of possible encodings
@@ -1372,6 +1382,8 @@ class SimplePie
 						$this->data['headers'] = $headers;
 					}
 					$this->data['build'] = SIMPLEPIE_BUILD;
+					$this->data['mtime'] = time();
+					$this->data['md5'] = empty($md5) ? $this->cleanMd5($this->raw_data) : $md5;
 
 					// Cache the file if caching is enabled
 					if ($cache && !$cache->save($this))
@@ -1412,7 +1424,12 @@ class SimplePie
 		{
 			// Load the Cache
 			$this->data = $cache->load();
-			if (!empty($this->data))
+			if ($cache->mtime() + $this->cache_duration > time())
+			{
+				$this->raw_data = false;
+				return true;	// If the cache is still valid, just return true
+			}
+			elseif (!empty($this->data))
 			{
 				// If the cache is for an outdated build of SimplePie
 				if (!isset($this->data['build']) || $this->data['build'] !== SIMPLEPIE_BUILD)
@@ -1444,50 +1461,50 @@ class SimplePie
 					}
 				}
 				// Check if the cache has been updated
-				elseif ($cache->mtime() + $this->cache_duration < time())
-				{
-					// If we have last-modified and/or etag set
-					if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag']))
-					{
-						$headers = array(
-							'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-						);
-						if (isset($this->data['headers']['last-modified']))
-						{
-							$headers['if-modified-since'] = $this->data['headers']['last-modified'];
-						}
-						if (isset($this->data['headers']['etag']))
-						{
-							$headers['if-none-match'] = $this->data['headers']['etag'];
-						}
-
-						$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen));
-
-						if ($file->success)
-						{
-							if ($file->status_code === 304)
-							{
-								$cache->touch();
-								return true;
-							}
-						}
-						else
-						{
-							unset($file);
-						}
-					}
-				}
-				// If the cache is still valid, just return true
 				else
 				{
-					$this->raw_data = false;
-					return true;
+					$headers = array(
+						'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+					);
+					if (isset($this->data['headers']['last-modified']))
+					{
+						$headers['if-modified-since'] = $this->data['headers']['last-modified'];
+					}
+					if (isset($this->data['headers']['etag']))
+					{
+						$headers['if-none-match'] = $this->data['headers']['etag'];
+					}
+
+					$file = $this->registry->create('File', array($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen));
+
+					if ($file->success)
+					{
+						if ($file->status_code === 304)
+						{
+							$cache->touch();
+							return true;
+						}
+					}
+					else
+					{
+						$cache->touch();
+						$this->error = $file->error;
+						return !empty($this->data);
+					}
+
+					$md5 = $this->cleanMd5($file->body);
+					if ($this->data['md5'] === $md5) {
+						$cache->touch();
+						return true;	//Content unchanged even though server did not send a 304
+					} else {
+						$this->data['md5'] = $md5;
+					}
 				}
 			}
-			// If the cache is empty, delete it
+			// If the cache is empty
 			else
 			{
-				$cache->unlink();
+				$cache->touch();	//To keep the date/time of the last tentative update
 				$this->data = array();
 			}
 		}
@@ -1541,6 +1558,8 @@ class SimplePie
 				if ($cache)
 				{
 					$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
+					$this->data['mtime'] = time();
+					$this->data['md5'] = empty($md5) ? $this->cleanMd5($file->body) : $md5;
 					if (!$cache->save($this))
 					{
 						trigger_error("$this->cache_location is not writeable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
