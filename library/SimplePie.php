@@ -475,6 +475,13 @@ class SimplePie
 	public $force_fsockopen = false;
 
 	/**
+	 * @var string Allows CURL to bind to a specific IP address or interface
+	 * @see SimplePie::bind_address()
+	 * @access private
+	 */
+	public $bind_address = null;
+
+	/**
 	 * @var bool Force the given data/URL to be treated as a feed no matter what
 	 * it appears like
 	 * @see SimplePie::force_feed()
@@ -698,6 +705,16 @@ class SimplePie
 	public function force_feed($enable = false)
 	{
 		$this->force_feed = (bool) $enable;
+	}
+
+	/**
+	 * Allow the user to bind the CURL request to a specific IP
+	 *
+	 * @param string $bind The String, IP or Interface to bind to
+	 */
+	public function bind_address($bind = null)
+	{
+		$this->bind_address = $bind;
 	}
 
 	/**
@@ -1461,7 +1478,7 @@ class SimplePie
 							$headers['if-none-match'] = $this->data['headers']['etag'];
 						}
 
-						$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen));
+						$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->bind_address));
 
 						if ($file->success)
 						{
@@ -1503,7 +1520,7 @@ class SimplePie
 				$headers = array(
 					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 				);
-				$file = $this->registry->create('File', array($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen));
+				$file = $this->registry->create('File', array($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->bind_address));
 			}
 		}
 		// If the file connection has an error, set SimplePie::error to that and quit
