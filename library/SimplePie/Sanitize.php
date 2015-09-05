@@ -344,8 +344,8 @@ class SimplePie_Sanitize
 				$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
 				$document->replaceChild($real_body, $document->firstChild);
 
-				// Finally, convert to a HTML string
-				$data = trim($document->saveHTML());
+ 				// Finally, convert to a HTML string
+				$data = trim(preg_replace('|^<[?]xml[^>]+>|ism', '', trim($document->saveXML())));
 
 				if ($this->remove_div)
 				{
