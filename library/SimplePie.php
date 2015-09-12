@@ -518,7 +518,8 @@ class SimplePie
 	public $cache_name_function = 'md5';
 
 	/**
-	 * @var bool Reorder feed by date descending
+     * @var mixed Reorder feed by date descending, if 'force' then
+     * do not abort sort if we find items without a date
 	 * @see SimplePie::enable_order_by_date()
 	 * @access private
 	 */
@@ -840,11 +841,12 @@ class SimplePie
 	/**
 	 * Set whether feed items should be sorted into reverse chronological order
 	 *
-	 * @param bool $enable Sort as reverse chronological order.
+	 * @param mixed $enable Sort as reverse chronological order.
+     * if 'force' then do not abort sort if we find items without dates
 	 */
 	public function enable_order_by_date($enable = true)
 	{
-		$this->order_by_date = (bool) $enable;
+		$this->order_by_date = $enable;
 	}
 
 	/**
@@ -2904,19 +2906,21 @@ class SimplePie
 		if (!empty($this->data['items']))
 		{
 			// If we want to order it by date, check if all items have a date, and then sort it
-			if ($this->order_by_date && empty($this->multifeed_objects))
+			if (($this->order_by_date && empty($this->multifeed_objects)) || $this->order_by_date === 'force')
 			{
 				if (!isset($this->data['ordered_items']))
 				{
 					$do_sort = true;
-					foreach ($this->data['items'] as $item)
-					{
-						if (!$item->get_date('U'))
-						{
-							$do_sort = false;
-							break;
-						}
-					}
+                    if($this->order_by_date !== 'force') {
+					    foreach ($this->data['items'] as $item)
+					    {
+						    if (!$item->get_date('U'))
+						    {
+							    $do_sort = false;
+							    break;
+						    }
+					    }
+                    }
 					$item = null;
 					$this->data['ordered_items'] = $this->data['items'];
 					if ($do_sort)
