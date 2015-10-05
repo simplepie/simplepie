@@ -75,8 +75,16 @@ class SimplePie_Parser
 		$this->registry = $registry;
 	}
 
-	public function parse(&$data, $encoding)
+	public function parse(&$data, $encoding, $url = '')
 	{
+		if ($position = strpos($data, 'h-entry')) {
+			$start = $position < 200 ? 0 : $position - 200;
+			$check = substr($data, $start, 400);
+			if (preg_match('/class="[^"]*h-entry/', $check)) {
+				return $this->parse_microformats($data, $url);
+			}
+		}
+
 		// Use UTF-8 if we get passed US-ASCII, as every US-ASCII character is a UTF-8 character
 		if (strtoupper($encoding) === 'US-ASCII')
 		{
@@ -403,5 +411,60 @@ class SimplePie_Parser
 			}
 		}
 		return $cache[$string];
+	}
+
+	private function parse_microformats(&$data, $url) {
+		if (!function_exists('Mf2\parse')) return false;
+
+		$mf = Mf2\parse($data, $url);
+		foreach ($mf['items'] as $microformat) {
+			if ($microformat['type'][0] == 'h-entry') {
+				$entry = array();
+				if (isset($microformat['properties']['url'][0])) {
+					$link = $microformat['properties']['url'][0];
+					$entry['link'] = array(array('data' => $link));
+				}
+				if (isset($microformat['properties']['name'][0])) {
+					$title = htmlspecialchars($microformat['properties']['name'][0]);
+					$entry['title'] = array(array('data' => $title));
+				}
+				if (isset($microformat['properties']['author'][0])) {
+					$author = htmlspecialchars($microformat['properties']['author'][0]);
+					$entry['author'] = array(array('data' => $author));
+				}
+				if (isset($microformat['properties']['content'][0]['html'])) {
+					$description = $microformat['properties']['content'][0]['html'];
+					$entry['description'] = array(array('data' => $description));
+				}
+				if (isset($microformat['properties']['category'])) {
+					$category = implode(',', $microformat['properties']['category']);
+					$category = htmlspecialchars($category);
+					$entry['category'] = array(array('data' => $category));
+				}
+				if (isset($microformat['properties']['published'][0])) {
+					$timestamp = strtotime($microformat['properties']['published'][0]);
+					$pub_date = date('F j Y g:ia', $timestamp).' GMT';
+					$entry['pubDate'] = array(array('data' => $pub_date));
+				}
+				$items[] = array('child' => array('' => $entry));
+			}
+		}
+		// Mimic RSS data format when storing microformats.
+		$link = array(array('data' => $url));
+		// Get the title from the html, or use the url again if not found.
+		if ($position = strpos($data, '<title>')) {
+			$start = $position < 200 ? 0 : $position - 200;
+			$check = substr($data, $start, 400);
+			$matches = array();
+			if (preg_match('/<title>(.+)<\/title>/', $check, $matches)) {
+				$title = array(array('data' => htmlspecialchars($matches[1])));
+			}
+		}
+		$channel = array('channel' => array(array('child' => array('' =>
+			array('link' => $link, 'title' => $title, 'item' => $items)))));
+		$rss = array(array('attribs' => array('' => array('version' => '2.0')),
+		                   'child' => array('' => $channel)));
+		$this->data = array('child' => array('' => array('rss' => $rss)));
+		return true;
 	}
 }

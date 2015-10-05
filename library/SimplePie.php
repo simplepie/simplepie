@@ -802,7 +802,7 @@ class SimplePie
 	{
 		$this->timeout = (int) $timeout;
 	}
-    
+
 	/**
 	 * Set custom curl options
 	 *
@@ -1340,7 +1340,6 @@ class SimplePie
 				return true;
 			}
 			elseif ($fetched === false) {
-				$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
 				return false;
 			}
 
@@ -1404,7 +1403,7 @@ class SimplePie
 				$parser = $this->registry->create('Parser');
 
 				// If it's parsed fine
-				if ($parser->parse($utf8_data, 'UTF-8'))
+				if ($parser->parse($utf8_data, 'UTF-8', $this->permanent_url))
 				{
 					$this->data = $parser->get_data();
 					if (!($this->get_type() & ~SIMPLEPIE_TYPE_NONE))
@@ -1570,19 +1569,35 @@ class SimplePie
 			{
 				$copyStatusCode = $file->status_code;
 				$copyContentType = $file->headers['content-type'];
-				// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
-				unset($file);
 				try
 				{
-					if (!($file = $locate->find($this->autodiscovery, $this->all_discovered_feeds)))
+					if ($discovered = $locate->find($this->autodiscovery, $this->all_discovered_feeds))
 					{
-						$this->error = "A feed could not be found at `$this->feed_url`; the status code is `$copyStatusCode` and content-type is `$copyContentType`";
-						$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
-						return false;
+						$file = $discovered;
+					}
+					else
+					{
+						// If a feed wasn't discovered, look for h-entry microformats in
+						// the original html file.
+						$microformats = false;
+						if ($position = strpos($file->body, 'h-entry')) {
+							$start = $position < 200 ? 0 : $position - 200;
+							$check = substr($file->body, $start, 400);
+							$microformats = preg_match('/class="[^"]*h-entry/', $check);
+						}
+						if (!$microformats) {
+							// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
+							unset($file);
+							$this->error = "A feed could not be found at `$this->feed_url`; the status code is `$copyStatusCode` and content-type is `$copyContentType`";
+							$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
+							return false;
+						}
 					}
 				}
 				catch (SimplePie_Exception $e)
 				{
+					// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
+					unset($file);
 					// This is usually because DOMDocument doesn't exist
 					$this->error = $e->getMessage();
 					$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()));
@@ -2949,7 +2964,7 @@ class SimplePie
 				}
 			}
 			if ($items = $this->get_feed_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'item'))
-	       		{
+			{
 				$keys = array_keys($items);
 				foreach ($keys as $key)
 				{
