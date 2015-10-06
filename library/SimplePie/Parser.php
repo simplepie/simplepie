@@ -418,7 +418,7 @@ class SimplePie_Parser
 
 		$mf = Mf2\parse($data, $url);
 		foreach ($mf['items'] as $microformat) {
-			if ($microformat['type'][0] == 'h-entry') {
+			if (in_array('h-entry', $microformat['type'])) {
 				$entry = array();
 				if (isset($microformat['properties']['url'][0])) {
 					$link = $microformat['properties']['url'][0];
@@ -429,8 +429,12 @@ class SimplePie_Parser
 					$entry['title'] = array(array('data' => $title));
 				}
 				if (isset($microformat['properties']['author'][0])) {
-					$author = htmlspecialchars($microformat['properties']['author'][0]);
-					$entry['author'] = array(array('data' => $author));
+					$author = $microformat['properties']['author'][0];
+					// author is a special case, it can be plain text or an h-card array.
+					if (is_array($author)) {
+						$author = isset($author['value']) ? $author['value'] : '';
+					}
+					$entry['author'] = array(array('data' => htmlspecialchars($author)));
 				}
 				if (isset($microformat['properties']['content'][0]['html'])) {
 					$description = $microformat['properties']['content'][0]['html'];
