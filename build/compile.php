@@ -51,8 +51,10 @@ $compiled .= remove_header($contents) . "\n";
 $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(SP_PATH . '/library/SimplePie'));
 foreach($files as $file_path => $info)
 {
-	$contents = file_get_contents($file_path);
-	$compiled .= remove_header($contents) . "\n";
+	if (!is_dir($file_path)) {
+		$contents = file_get_contents($file_path);
+		$compiled .= remove_header($contents) . "\n";
+	}
 }
 
 // Strip excess whitespace
