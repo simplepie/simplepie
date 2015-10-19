@@ -789,7 +789,7 @@ class SimplePie
     //CURLOPT_PROXYAUTH => CURLAUTH_BASIC,
     //CURLOPT_PROXYUSERPWD => 'user:password',
 	//),
-	public function set_curl_options(array $proxy = array())
+	public function set_curl_options(array $curl_options = array())
 	{
 		$this->curl_options = $curl_options;
 	}
