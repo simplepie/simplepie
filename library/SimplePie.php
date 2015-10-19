@@ -780,6 +780,20 @@ class SimplePie
 		$this->timeout = (int) $timeout;
 	}
 
+	public $curl_options = array();
+
+	//'curl_options' => array(
+    //CURLOPT_PROXYTYPE => CURLPROXY_HTTP,
+    //CURLOPT_PROXY => '127.0.0.1',
+    //CURLOPT_PROXYPORT => 8080,
+    //CURLOPT_PROXYAUTH => CURLAUTH_BASIC,
+    //CURLOPT_PROXYUSERPWD => 'user:password',
+	//),
+	public function set_curl_options(array $proxy = array())
+	{
+		$this->curl_options = $curl_options;
+	}
+
 	/**
 	 * Force SimplePie to use fsockopen() instead of cURL
 	 *
@@ -1246,7 +1260,9 @@ class SimplePie
 		// Pass whatever was set with config options over to the sanitizer.
 		// Pass the classes in for legacy support; new classes should use the registry instead
 		$this->sanitize->pass_cache_data($this->cache, $this->cache_location, $this->cache_name_function, $this->registry->get_class('Cache'));
-		$this->sanitize->pass_file_data($this->registry->get_class('File'), $this->timeout, $this->useragent, $this->force_fsockopen);
+		// $this->sanitize->pass_file_data($this->registry->get_class('File'), $this->timeout, $this->useragent, $this->force_fsockopen);
+
+		$this->sanitize->pass_file_data($this->registry->get_class('File'), $this->timeout, $this->useragent, $this->force_fsockopen, $this->curl_options);
 
 		if (!empty($this->multifeed_url))
 		{
@@ -1461,7 +1477,9 @@ class SimplePie
 							$headers['if-none-match'] = $this->data['headers']['etag'];
 						}
 
-						$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen));
+						// $file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen));
+
+						$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options));
 
 						if ($file->success)
 						{
@@ -1503,7 +1521,9 @@ class SimplePie
 				$headers = array(
 					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 				);
-				$file = $this->registry->create('File', array($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen));
+				// $file = $this->registry->create('File', array($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen));
+
+				$file = $this->registry->create('File', array($this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options));
 			}
 		}
 		// If the file connection has an error, set SimplePie::error to that and quit
