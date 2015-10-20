@@ -1572,7 +1572,8 @@ class SimplePie
 			$locate = null;
 		}
 
-		$this->raw_data = $file->body;
+		// 去除不可见的字符
+		$this->raw_data = preg_replace('/[^\P{C}\n]+/u','', $file->body); // $file->body;
 
 		$headers = $file->headers;
 		$sniffer = $this->registry->create('Content_Type_Sniffer', array(&$file));
