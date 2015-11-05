@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.4-dev
+ * @version 1.3.1
  * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
@@ -247,12 +247,13 @@ class SimplePie_Sanitize
 			if ($type & (SIMPLEPIE_CONSTRUCT_HTML | SIMPLEPIE_CONSTRUCT_XHTML))
 			{
 
-				if (!class_exists('DOMDocument'))
-				{
-					throw new SimplePie_Exception('DOMDocument not found, unable to use sanitizer');
-				}
 				$document = new DOMDocument();
 				$document->encoding = 'UTF-8';
+
+				//修复开始
+				$unique_tag = '#'.uniqid().'#';
+				$data = $unique_tag.$data.$unique_tag;
+				//修复结束
 				$data = $this->preprocess($data, $type);
 
 				set_error_handler(array('SimplePie_Misc', 'silence_errors'));
@@ -314,7 +315,7 @@ class SimplePie_Sanitize
 							}
 							else
 							{
-								$file = $this->registry->create('File', array($img->getAttribute('src'), $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen));
+								$file = $this->registry->create('File', array($img['attribs']['src']['data'], $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen));
 								$headers = $file->headers;
 
 								if ($file->success && ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
@@ -341,11 +342,14 @@ class SimplePie_Sanitize
 				}
 
 				// Move everything from the body to the root
-				$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
-				$document->replaceChild($real_body, $document->firstChild);
+				//$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
+				//$document->replaceChild($real_body, $document->firstChild);
 
 				// Finally, convert to a HTML string
 				$data = trim($document->saveHTML());
+
+				//添加此行
+				list($_, $data, $_) = explode($unique_tag, $data);
 
 				if ($this->remove_div)
 				{
