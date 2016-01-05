@@ -608,6 +608,8 @@ class SimplePie
 	 */
 	public $item_limit = 0;
 
+	public $check_modified = false;
+
 	/**
 	 * @var array Stores the default attributes to be stripped by strip_attributes().
 	 * @see SimplePie::strip_attributes()
@@ -1321,6 +1323,7 @@ class SimplePie
 
 		$this->error = null;
 		$this->data = array();
+		$this->check_modified = false;
 		$this->multifeed_objects = array();
 		$cache = false;
 
@@ -1381,7 +1384,7 @@ class SimplePie
 			// Text MIME-type default
 			elseif (substr($sniffed, 0, 5) === 'text/')
 			{
-				$encodings[] = 'US-ASCII';
+				$encodings[] = 'UTF-8';
 			}
 		}
 
@@ -1493,7 +1496,10 @@ class SimplePie
 				// Check if the cache has been updated
 				elseif ($cache->mtime() + $this->cache_duration < time())
 				{
-					// If we have last-modified and/or etag set
+					// Want to know if we tried to send last-modified and/or etag headers
+					// when requesting this file. (Note that it's up to the file to
+					// support this, but we don't always send the headers either.)
+					$this->check_modified = true;
 					if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag']))
 					{
 						$headers = array(
@@ -1514,12 +1520,16 @@ class SimplePie
 						{
 							if ($file->status_code === 304)
 							{
+								// Set raw_data to false here too, to signify that the cache
+								// is still valid.
+								$this->raw_data = false;
 								$cache->touch();
 								return true;
 							}
 						}
 						else
 						{
+							$this->check_modified = false;
 							unset($file);
 						}
 					}
