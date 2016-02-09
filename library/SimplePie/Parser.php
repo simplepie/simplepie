@@ -441,6 +441,7 @@ class SimplePie_Parser
 
 		$feed_title = '';
 		$icon = '';
+		$author_cache = array();
 		$items = array();
 		$entries = array();
 		$mf = Mf2\parse($data, $url);
@@ -479,9 +480,36 @@ class SimplePie_Parser
 				}
 				if (isset($entry['properties']['author'][0])) {
 					// author is a special case, it can be plain text or an h-card array.
+					// If it's plain text it can also be a url that should be followed to
+					// get the actual h-card.
 					$author = $entry['properties']['author'][0];
 					if (is_array($author)) {
 						$author = $this->parse_hcard($author);
+					}
+					else if (strpos($author, 'http') === 0) {
+						if (isset($author_cache[$author])) {
+							$author = $author_cache[$author];
+						}
+						else {
+							$mf = Mf2\fetch($author);
+							foreach ($mf['items'] as $hcard) {
+								// Only interested in an h-card by itself in this case.
+								if (!in_array('h-card', $hcard['type'])) {
+									continue;
+								}
+								// It must have a url property matching what we fetched.
+								if (!isset($hcard['properties']['url']) ||
+										!(in_array($author, $hcard['properties']['url']))) {
+									continue;
+								}
+								// Save parse_hcard the trouble of finding the correct url.
+								$hcard['properties']['url'][0] = $author;
+								// Cache this h-card for the next h-entry to check.
+								$author_cache[$author] = $this->parse_hcard($hcard, $author);
+								$author = $author_cache[$author];
+								break;
+							}
+						}
 					}
 					$item['author'] = array(array('data' => $author));
 				}

@@ -1581,22 +1581,34 @@ class SimplePie
 				$copyContentType = $file->headers['content-type'];
 				try
 				{
-					if ($discovered = $locate->find($this->autodiscovery, $this->all_discovered_feeds))
+					// First check for h-entry microformats in the current file.
+					$microformats = false;
+					if ($position = strpos($file->body, 'h-entry'))
 					{
-						$file = $discovered;
+						$start = $position < 200 ? 0 : $position - 200;
+						$check = substr($file->body, $start, 400);
+						$microformats = preg_match('/class="[^"]*h-entry/', $check);
+					}
+					// Now also do feed discovery, but if an h-entry was found don't
+					// overwrite the current value of file.
+					$discovered = $locate->find($this->autodiscovery,
+					                            $this->all_discovered_feeds);
+					if ($microformats)
+					{
+						// Push the current file onto all_discovered feeds so the user can
+						// be shown this as one of the options.
+						$this->all_discovered_feeds[] = $file;
 					}
 					else
 					{
-						// If a feed wasn't discovered, look for h-entry microformats in
-						// the original html file.
-						$microformats = false;
-						if ($position = strpos($file->body, 'h-entry')) {
-							$start = $position < 200 ? 0 : $position - 200;
-							$check = substr($file->body, $start, 400);
-							$microformats = preg_match('/class="[^"]*h-entry/', $check);
+						if ($discovered)
+						{
+							$file = $discovered;
 						}
-						if (!$microformats) {
-							// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
+						else
+						{
+							// We need to unset this so that if SimplePie::set_file() has
+							// been called that object is untouched
 							unset($file);
 							$this->error = "A feed could not be found at `$this->feed_url`; the status code is `$copyStatusCode` and content-type is `$copyContentType`";
 							$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
