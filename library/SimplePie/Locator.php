@@ -121,22 +121,22 @@ class SimplePie_Locator
 		{
 			if ($type & SIMPLEPIE_LOCATOR_LOCAL_EXTENSION && $working = $this->extension($this->local))
 			{
-				return $working;
+				return $working[0];
 			}
 
 			if ($type & SIMPLEPIE_LOCATOR_LOCAL_BODY && $working = $this->body($this->local))
 			{
-				return $working;
+				return $working[0];
 			}
 
 			if ($type & SIMPLEPIE_LOCATOR_REMOTE_EXTENSION && $working = $this->extension($this->elsewhere))
 			{
-				return $working;
+				return $working[0];
 			}
 
 			if ($type & SIMPLEPIE_LOCATOR_REMOTE_BODY && $working = $this->body($this->elsewhere))
 			{
-				return $working;
+				return $working[0];
 			}
 		}
 		return null;
@@ -337,7 +337,7 @@ class SimplePie_Locator
 				$feed = $this->registry->create('File', array($value, $this->timeout, 5, $headers, $this->useragent));
 				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
-					return $feed;
+					return array($feed);
 				}
 				else
 				{
@@ -365,7 +365,7 @@ class SimplePie_Locator
 				$feed = $this->registry->create('File', array($value, $this->timeout, 5, null, $this->useragent));
 				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
-					return $feed;
+					return array($feed);
 				}
 				else
 				{

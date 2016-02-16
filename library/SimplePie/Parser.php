@@ -77,7 +77,8 @@ class SimplePie_Parser
 
 	public function parse(&$data, $encoding, $url = '')
 	{
-		if ($position = strpos($data, 'h-entry')) {
+		$position = 0;
+		while ($position = strpos($data, 'h-entry', $position + 7)) {
 			$start = $position < 200 ? 0 : $position - 200;
 			$check = substr($data, $start, 400);
 			if (preg_match('/class="[^"]*h-entry/', $check)) {
@@ -445,31 +446,44 @@ class SimplePie_Parser
 		$items = array();
 		$entries = array();
 		$mf = Mf2\parse($data, $url);
-		if (isset($mf['items'][0]['type'])) {
-			// If this item is an h-feed, look for it's h-entry children.
-			if (in_array('h-feed', $mf['items'][0]['type'])) {
-				$entries = $mf['items'][0]['children'];
-				// Also set the feed title and icon from the h-feed if available.
-				if (isset($mf['items'][0]['properties']['name'][0])) {
-					$feed_title = $mf['items'][0]['properties']['name'][0];
-				}
-				if (isset($mf['items'][0]['properties']['author'][0])) {
-					$author = $mf['items'][0]['properties']['author'][0];
-					if (is_array($author) &&
-							isset($author['type']) && in_array('h-card', $author['type'])) {
-						if (isset($author['properties']['photo'][0])) {
-							$icon = $author['properties']['photo'][0];
-						}
+		// First look for an h-feed.
+		$h_feed = array();
+		foreach ($mf['items'] as $mf_item) {
+			if (in_array('h-feed', $mf_item['type'])) {
+				$h_feed = $mf_item;
+				break;
+			}
+			// Also look for an h-feed in the children of each top level item.
+			if (!isset($mf_item['children'][0]['type'])) continue;
+			if (in_array('h-feed', $mf_item['children'][0]['type'])) {
+				$h_feed = $mf_item['children'][0];
+				break;
+			}
+		}
+		if (isset($h_feed['children'])) {
+			$entries = $h_feed['children'];
+			// Also set the feed title and icon from the h-feed if available.
+			if (isset($mf['items'][0]['properties']['name'][0])) {
+				$feed_title = $mf['items'][0]['properties']['name'][0];
+			}
+			if (isset($mf['items'][0]['properties']['author'][0])) {
+				$author = $mf['items'][0]['properties']['author'][0];
+				if (is_array($author) &&
+						isset($author['type']) && in_array('h-card', $author['type'])) {
+					if (isset($author['properties']['photo'][0])) {
+						$icon = $author['properties']['photo'][0];
 					}
 				}
 			}
-			else {
-				$entries = $mf['items'];
-			}
 		}
-		foreach ($entries as $entry) {
+		else {
+			$entries = $mf['items'];
+		}
+		for ($i = 0; $i < count($entries); $i++) {
+			$entry = $entries[$i];
 			if (in_array('h-entry', $entry['type'])) {
 				$item = array();
+				$description = '';
 				if (isset($entry['properties']['url'][0])) {
 					$link = $entry['properties']['url'][0];
 					$item['link'] = array(array('data' => $link));
@@ -513,8 +527,26 @@ class SimplePie_Parser
 					}
 					$item['author'] = array(array('data' => $author));
 				}
+				if (isset($entry['properties']['photo'][0])) {
+					// When there's more than one photo show the first and use a lightbox.
+					$count = count($entry['properties']['photo']);
+					if ($count > 1) {
+						$description = '<p>';
+						for ($j = 0; $j < count($entry['properties']['photo']); $j++) {
+							$img = $entry['properties']['photo'][$j];
+							$hidden = $j === 0 ? '' : 'class="hidden" ';
+							$description .= '<a href="'.$img.'" '.$hidden.
+								'data-lightbox="image-set-'.$i.'"><img src="'.$img.'"></a>';
+						}
+						$description .= '<br><b>'.$count.' photos</b></p>';
+					}
+					else {
+						$description =
+							'<p><img src="'.$entry['properties']['photo'][0].'"></p>';
+					}
+				}
 				if (isset($entry['properties']['content'][0]['html'])) {
-					$description = $entry['properties']['content'][0]['html'];
+					$description .= $entry['properties']['content'][0]['html'];
 					$item['description'] = array(array('data' => $description));
 				}
 				if (isset($entry['properties']['category'])) {

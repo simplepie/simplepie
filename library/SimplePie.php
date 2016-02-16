@@ -1583,11 +1583,15 @@ class SimplePie
 				{
 					// First check for h-entry microformats in the current file.
 					$microformats = false;
-					if ($position = strpos($file->body, 'h-entry'))
+					$position = 0;
+					while ($position = strpos($file->body, 'h-entry', $position + 7))
 					{
 						$start = $position < 200 ? 0 : $position - 200;
 						$check = substr($file->body, $start, 400);
-						$microformats = preg_match('/class="[^"]*h-entry/', $check);
+						if ($microformats = preg_match('/class="[^"]*h-entry/', $check))
+						{
+							break;
+						}
 					}
 					// Now also do feed discovery, but if an h-entry was found don't
 					// overwrite the current value of file.
@@ -1597,7 +1601,9 @@ class SimplePie
 					{
 						// Push the current file onto all_discovered feeds so the user can
 						// be shown this as one of the options.
-						$this->all_discovered_feeds[] = $file;
+						if (isset($this->all_discovered_feeds)) {
+							$this->all_discovered_feeds[] = $file;
+						}
 					}
 					else
 					{
