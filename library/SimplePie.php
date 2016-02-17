@@ -1854,14 +1854,19 @@ class SimplePie
 		{
 			if ($this->permanent_url !== null)
 			{
-				return $this->sanitize($this->permanent_url, SIMPLEPIE_CONSTRUCT_IRI);
+				// sanitize encodes ampersands which are required when used in a url.
+				return str_replace('&amp;', '&',
+				                   $this->sanitize($this->permanent_url,
+				                                   SIMPLEPIE_CONSTRUCT_IRI));
 			}
 		}
 		else
 		{
 			if ($this->feed_url !== null)
 			{
-				return $this->sanitize($this->feed_url, SIMPLEPIE_CONSTRUCT_IRI);
+				return str_replace('&amp;', '&',
+				                   $this->sanitize($this->feed_url,
+				                                   SIMPLEPIE_CONSTRUCT_IRI));
 			}
 		}
 		return null;
@@ -2144,7 +2149,7 @@ class SimplePie
 	 * Get a category for the feed
 	 *
 	 * @since Unknown
-	 * @param int $key The category that you want to return.  Remember that arrays begin with 0, not 1
+	 * @param int $key The category that you want to return. Remember that arrays begin with 0, not 1
 	 * @return SimplePie_Category|null
 	 */
 	public function get_category($key = 0)
