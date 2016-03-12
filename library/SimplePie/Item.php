@@ -767,6 +767,10 @@ class SimplePie_Item
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
+			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'pubdate'))
+			{
+				$this->data['date']['raw'] = $return[0]['data'];
+			}
 			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'date'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
