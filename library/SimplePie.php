@@ -606,7 +606,7 @@ class SimplePie
 	 * @see SimplePie::add_attributes()
 	 * @access private
 	 */
-	public $add_attributes = array('audio' => array('preload' => 'none'), 'iframe' => array('sandbox' => 'allow-scripts allow-same-origin'), 'video' => array('preload' => 'none'));	//FreshRSS
+	public $add_attributes = array('audio' => array('preload' => 'none'), 'iframe' => array('sandbox' => 'allow-scripts allow-same-origin'), 'video' => array('preload' => 'none'));
 
 	/**
 	 * @var array Stores the default tags to be stripped by strip_htmltags().
@@ -1127,7 +1127,7 @@ class SimplePie
 		$this->sanitize->strip_attributes($attribs);
 	}
 
-	public function add_attributes($attribs = '')	//FreshRSS
+	public function add_attributes($attribs = '')
 	{
 		if ($attribs === '')
 		{
