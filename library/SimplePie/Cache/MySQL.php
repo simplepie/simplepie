@@ -94,6 +94,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			'path' => '',
 			'extras' => array(
 				'prefix' => '',
+				'cache_purge_time' => 2592000
 			),
 		);
 		
@@ -154,6 +155,17 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 	public function save($data)
 	{
 		if ($this->mysql === null)
+		{
+			return false;
+		}
+
+		$query = $this->mysql->prepare('DELETE i, cd FROM `' . $this->options['extras']['prefix'] . 'cache_data` cd, ' .
+			'`' . $this->options['extras']['prefix'] . 'items` i ' .
+			'WHERE `cd.id` = `i.feed_id` ' .
+			'AND `cd.mtime` < (unix_timestamp() - :purge_time)');
+		$query->bindValue(':purge_time', $this->options['extras']['cache_purge_time']);
+
+		if (!$query->execute())
 		{
 			return false;
 		}

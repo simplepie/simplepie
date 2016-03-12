@@ -61,7 +61,8 @@ class SimplePie_Sanitize
 	var $image_handler = '';
 	var $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 	var $encode_instead_of_strip = false;
-	var $strip_attributes = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
+	var $strip_attributes = array('bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
+	var $add_attributes = array('audio' => array('preload' => 'none'), 'iframe' => array('sandbox' => 'allow-scripts allow-same-origin'), 'video' => array('preload' => 'none'));
 	var $strip_comments = false;
 	var $output_encoding = 'UTF-8';
 	var $enable_cache = true;
@@ -160,7 +161,7 @@ class SimplePie_Sanitize
 		$this->encode_instead_of_strip = (bool) $encode;
 	}
 
-	public function strip_attributes($attribs = array('bgsound', 'class', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'))
+	public function strip_attributes($attribs = array('bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'))
 	{
 		if ($attribs)
 		{
@@ -176,6 +177,25 @@ class SimplePie_Sanitize
 		else
 		{
 			$this->strip_attributes = false;
+		}
+	}
+
+	public function add_attributes($attribs = array('audio' => array('preload' => 'none'), 'iframe' => array('sandbox' => 'allow-scripts allow-same-origin'), 'video' => array('preload' => 'none')))
+	{
+		if ($attribs)
+		{
+			if (is_array($attribs))
+			{
+				$this->add_attributes = $attribs;
+			}
+			else
+			{
+				$this->add_attributes = explode(',', $attribs);
+			}
+		}
+		else
+		{
+			$this->add_attributes = false;
 		}
 	}
 
@@ -253,16 +273,22 @@ class SimplePie_Sanitize
 				}
 				$document = new DOMDocument();
 				$document->encoding = 'UTF-8';
+
+				// See https://github.com/simplepie/simplepie/issues/334
+				$unique_tag = '#'.uniqid().'#';
+				$data = trim($unique_tag . $data . $unique_tag);
+
 				$data = $this->preprocess($data, $type);
 
 				set_error_handler(array('SimplePie_Misc', 'silence_errors'));
 				$document->loadHTML($data);
 				restore_error_handler();
 
+				$xpath = new DOMXPath($document);
+
 				// Strip comments
 				if ($this->strip_comments)
 				{
-					$xpath = new DOMXPath($document);
 					$comments = $xpath->query('//comment()');
 
 					foreach ($comments as $comment)
@@ -278,7 +304,7 @@ class SimplePie_Sanitize
 				{
 					foreach ($this->strip_htmltags as $tag)
 					{
-						$this->strip_tag($tag, $document, $type);
+						$this->strip_tag($tag, $document, $xpath, $type);
 					}
 				}
 
@@ -286,7 +312,15 @@ class SimplePie_Sanitize
 				{
 					foreach ($this->strip_attributes as $attrib)
 					{
-						$this->strip_attr($attrib, $document);
+						$this->strip_attr($attrib, $xpath);
+					}
+				}
+
+				if ($this->add_attributes)
+				{
+					foreach ($this->add_attributes as $tag => $valuePairs)
+					{
+						$this->add_attr($tag, $valuePairs, $document);
 					}
 				}
 
@@ -333,19 +367,10 @@ class SimplePie_Sanitize
 					}
 				}
 
-				// Remove the DOCTYPE
-				// Seems to cause segfaulting if we don't do this
-				if ($document->firstChild instanceof DOMDocumentType)
-				{
-					$document->removeChild($document->firstChild);
-				}
-
-				// Move everything from the body to the root
-				$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
-				$document->replaceChild($real_body, $document->firstChild);
-
 				// Finally, convert to a HTML string
 				$data = trim($document->saveHTML());
+
+				list($_, $data, $_) = explode($unique_tag, $data);
 
 				if ($this->remove_div)
 				{
@@ -383,6 +408,7 @@ class SimplePie_Sanitize
 	protected function preprocess($html, $type)
 	{
 		$ret = '';
+		$html = preg_replace('%</?(?:html|body)[^>]*?'.'>%is', '', $html);
 		if ($type & ~SIMPLEPIE_CONSTRUCT_XHTML)
 		{
 			// Atom XHTML constructs are wrapped with a div by default
@@ -455,9 +481,8 @@ class SimplePie_Sanitize
 		}
 	}
 
-	protected function strip_tag($tag, $document, $type)
+	protected function strip_tag($tag, $document, $xpath, $type)
 	{
-		$xpath = new DOMXPath($document);
 		$elements = $xpath->query('body//' . $tag);
 		if ($this->encode_instead_of_strip)
 		{
@@ -540,14 +565,25 @@ class SimplePie_Sanitize
 		}
 	}
 
-	protected function strip_attr($attrib, $document)
+	protected function strip_attr($attrib, $xpath)
 	{
-		$xpath = new DOMXPath($document);
 		$elements = $xpath->query('//*[@' . $attrib . ']');
 
 		foreach ($elements as $element)
 		{
 			$element->removeAttribute($attrib);
+		}
+	}
+
+	protected function add_attr($tag, $valuePairs, $document)
+	{
+		$elements = $document->getElementsByTagName($tag);
+		foreach ($elements as $element)
+		{
+			foreach ($valuePairs as $attrib => $value)
+			{
+				$element->setAttribute($attrib, $value);
+			}
 		}
 	}
 }

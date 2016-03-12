@@ -64,8 +64,9 @@ class SimplePie_File
 	var $redirects = 0;
 	var $error;
 	var $method = SIMPLEPIE_FILE_SOURCE_NONE;
+	var $permanent_url;
 
-	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false)
+	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = array())
 	{
 		if (class_exists('idna_convert'))
 		{
@@ -74,6 +75,7 @@ class SimplePie_File
 			$url = SimplePie_Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
 		}
 		$this->url = $url;
+		$this->permanent_url = $url;
 		$this->useragent = $useragent;
 		if (preg_match('/^http(s)?:\/\//i', $url))
 		{
@@ -112,6 +114,9 @@ class SimplePie_File
 					curl_setopt($fp, CURLOPT_FOLLOWLOCATION, 1);
 					curl_setopt($fp, CURLOPT_MAXREDIRS, $redirects);
 				}
+				foreach ($curl_options as $curl_param => $curl_value) {
+					curl_setopt($fp, $curl_param, $curl_value);
+				}
 
 				$this->headers = curl_exec($fp);
 				if (curl_errno($fp) === 23 || curl_errno($fp) === 61)
@@ -126,7 +131,10 @@ class SimplePie_File
 				}
 				else
 				{
-					$info = curl_getinfo($fp);
+					// Use the updated url provided by curl_getinfo after any redirects.
+					if ($info = curl_getinfo($fp)) {
+						$this->url = $info['url'];
+					}
 					curl_close($fp);
 					$this->headers = explode("\r\n\r\n", $this->headers, $info['redirect_count'] + 1);
 					$this->headers = array_pop($this->headers);
@@ -140,7 +148,10 @@ class SimplePie_File
 						{
 							$this->redirects++;
 							$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-							return $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+							$previousStatusCode = $this->status_code;
+							$this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+							$this->permanent_url = ($previousStatusCode == 301) ? $location : $url;
+							return;
 						}
 					}
 				}
@@ -222,7 +233,10 @@ class SimplePie_File
 							{
 								$this->redirects++;
 								$location = SimplePie_Misc::absolutize_url($this->headers['location'], $url);
-								return $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+								$previousStatusCode = $this->status_code;
+								$this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen);
+								$this->permanent_url = ($previousStatusCode == 301) ? $location : $url;
+								return;
 							}
 							if (isset($this->headers['content-encoding']))
 							{

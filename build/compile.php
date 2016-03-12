@@ -48,8 +48,14 @@ $contents = file_get_contents(SP_PATH . '/library/SimplePie.php');
 $compiled .= remove_header($contents) . "\n";
 
 // Add all the files in the SimplePie directory
-$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(SP_PATH . '/library/SimplePie'));
+$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(SP_PATH . '/library/SimplePie', FilesystemIterator::SKIP_DOTS));
+$file_paths = array();
 foreach($files as $file_path => $info)
+{
+	$file_paths[] = $file_path;
+}
+natsort($file_paths);
+foreach($file_paths as $file_path)
 {
 	$contents = file_get_contents($file_path);
 	$compiled .= remove_header($contents) . "\n";
