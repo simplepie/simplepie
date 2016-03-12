@@ -528,21 +528,32 @@ class SimplePie_Parser
 					$item['author'] = array(array('data' => $author));
 				}
 				if (isset($entry['properties']['photo'][0])) {
+					// If a photo is also in content, don't need to add it again here.
+					$content = '';
+					if (isset($entry['properties']['content'][0]['html'])) {
+						$content = $entry['properties']['content'][0]['html'];
+					}
+					$photo_list = array();
+					for ($j = 0; $j < count($entry['properties']['photo']); $j++) {
+						$photo = $entry['properties']['photo'][$j];
+						if (strpos($content, $photo) === false) {
+							$photo_list[] = $photo;
+						}
+					}
 					// When there's more than one photo show the first and use a lightbox.
-					$count = count($entry['properties']['photo']);
+					$count = count($photo_list);
 					if ($count > 1) {
 						$description = '<p>';
-						for ($j = 0; $j < count($entry['properties']['photo']); $j++) {
-							$img = $entry['properties']['photo'][$j];
+						for ($j = 0; $j < $count; $j++) {
 							$hidden = $j === 0 ? '' : 'class="hidden" ';
-							$description .= '<a href="'.$img.'" '.$hidden.
-								'data-lightbox="image-set-'.$i.'"><img src="'.$img.'"></a>';
+							$description .= '<a href="'.$photo_list[$j].'" '.$hidden.
+								'data-lightbox="image-set-'.$i.'">'.
+								'<img src="'.$photo_list[$j].'"></a>';
 						}
 						$description .= '<br><b>'.$count.' photos</b></p>';
 					}
-					else {
-						$description =
-							'<p><img src="'.$entry['properties']['photo'][0].'"></p>';
+					else if ($count == 1) {
+						$description = '<p><img src="'.$photo_list[0].'"></p>';
 					}
 				}
 				if (isset($entry['properties']['content'][0]['html'])) {
