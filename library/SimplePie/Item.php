@@ -747,6 +747,18 @@ class SimplePie_Item
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
+			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'pubDate'))
+			{
+				$this->data['date']['raw'] = $return[0]['data'];
+			}
+			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'date'))
+			{
+				$this->data['date']['raw'] = $return[0]['data'];
+			}
+			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'date'))
+			{
+				$this->data['date']['raw'] = $return[0]['data'];
+			}
 			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'updated'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
@@ -760,18 +772,6 @@ class SimplePie_Item
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
 			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'modified'))
-			{
-				$this->data['date']['raw'] = $return[0]['data'];
-			}
-			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'pubDate'))
-			{
-				$this->data['date']['raw'] = $return[0]['data'];
-			}
-			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'date'))
-			{
-				$this->data['date']['raw'] = $return[0]['data'];
-			}
-			elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'date'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
