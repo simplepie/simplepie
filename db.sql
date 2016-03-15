@@ -17,6 +17,8 @@ CREATE INDEX feed_id ON items(feed_id);
 
 
 /* MySQL */
+--- Don't paste this to create tables, since SimplePie will create
+--- tables by its own.
 CREATE TABLE `cache_data` (
 	`id` TEXT CHARACTER SET utf8 NOT NULL,
 	`items` SMALLINT NOT NULL DEFAULT 0,
@@ -30,7 +32,7 @@ CREATE TABLE `cache_data` (
 CREATE TABLE `items` (
 	`feed_id` TEXT CHARACTER SET utf8 NOT NULL,
 	`id` TEXT CHARACTER SET utf8 NOT NULL,
-	`data` MEDIUMBLOB CHARACTER SET utf8 NOT NULL,
+	`data` MEDIUMBLOB NOT NULL,
 	`posted` INT UNSIGNED NOT NULL,
 	INDEX `feed_id` (
 		`feed_id`(125)
