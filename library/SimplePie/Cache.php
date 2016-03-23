@@ -62,8 +62,10 @@ class SimplePie_Cache
 	 * @var array
 	 */
 	protected static $handlers = array(
-		'mysql' => 'SimplePie_Cache_MySQL',
-		'memcache' => 'SimplePie_Cache_Memcache',
+		'mysql'     => 'SimplePie_Cache_MySQL',
+		'memcache'  => 'SimplePie_Cache_Memcache',
+		'memcached' => 'SimplePie_Cache_Memcached',
+		'redis'     => 'SimplePie_Cache_Redis'
 	);
 
 	/**

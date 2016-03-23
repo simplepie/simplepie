@@ -451,7 +451,7 @@ class SimplePie_Enclosure
 	/**
 	 * Get the duration of the enclosure
 	 *
-	 * @param string $convert Convert seconds into hh:mm:ss
+	 * @param bool $convert Convert seconds into hh:mm:ss
 	 * @return string|int|null 'hh:mm:ss' string if `$convert` was specified, otherwise integer (or null if none found)
 	 */
 	public function get_duration($convert = false)
