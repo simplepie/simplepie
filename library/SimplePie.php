@@ -504,6 +504,14 @@ class SimplePie
 	public $cache = true;
 
 	/**
+	 * @var bool Force SimplePie to fallback to expired cache, if enabled,
+	 * when feed is unavailable.
+	 * @see SimplePie::force_cache_fallback()
+	 * @access private
+	 */
+	public $force_cache_fallback = false;
+
+	/**
 	 * @var int Cache duration (in seconds)
 	 * @see SimplePie::set_cache_duration()
 	 * @access private
@@ -841,6 +849,21 @@ class SimplePie
 	public function enable_cache($enable = true)
 	{
 		$this->cache = (bool) $enable;
+	}
+
+	/**
+	 * SimplePie to continue to fall back to expired cache, if enabled, when
+	 * feed is unavailable.
+	 *
+	 * This tells SimplePie to ignore any file errors and fall back to cache
+	 * instead. This only works if caching is enabled and cached content
+	 * still exists.
+
+	 * @param bool $enable Force use of cache on fail.
+	 */
+	public function force_cache_fallback($enable = false)
+	{
+		$this->force_cache_fallback= (bool) $enable;
 	}
 
 	/**
@@ -1529,7 +1552,13 @@ class SimplePie
 						}
 						else
 						{
-							$this->check_modified = false;
+                            $this->check_modified = false;
+							if($this->force_cache_fallback)
+							{
+								$cache->touch();
+								return true;
+							}
+
 							unset($file);
 						}
 					}
