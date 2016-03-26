@@ -77,6 +77,7 @@ class SimplePie_Cache_Redis implements SimplePie_Cache_Base {
         }
 
         $this->name = $this->options['prefix'] . $name;
+        $this->options['expire'] =  SimplePie::$cache_duration;        
     }
 
     /**

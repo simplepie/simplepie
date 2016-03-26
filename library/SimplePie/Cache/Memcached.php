@@ -94,6 +94,7 @@ class SimplePie_Cache_Memcached implements SimplePie_Cache_Base
         $this->options = SimplePie_Misc::array_merge_recursive($this->options, SimplePie_Cache::parse_URL($location));
 
         $this->name = $this->options['extras']['prefix'] . md5("$name:$type");
+        $this->options['extras']['timeout'] = SimplePie::$cache_duration;
 
         $this->cache = new Memcached();
         $this->cache->addServer($this->options['host'], (int)$this->options['port']);
