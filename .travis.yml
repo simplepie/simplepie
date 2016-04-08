@@ -9,6 +9,7 @@ php:
 matrix: 
   allow_failures:
     - php: hhvm
+    - php: 7.0
 branches:
   except:
     - one-dot-two
