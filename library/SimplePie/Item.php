@@ -441,7 +441,7 @@ class SimplePie_Item
 	 * Uses `<atom:category>`, `<category>` or `<dc:subject>`
 	 *
 	 * @since Beta 3
-	 * @return array|null List of {@see SimplePie_Category} objects
+	 * @return SimplePie_Category[]|null List of {@see SimplePie_Category} objects
 	 */
 	public function get_categories()
 	{
