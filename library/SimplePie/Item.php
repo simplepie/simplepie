@@ -441,7 +441,7 @@ class SimplePie_Item
 	 * Uses `<atom:category>`, `<category>` or `<dc:subject>`
 	 *
 	 * @since Beta 3
-	 * @return array|null List of {@see SimplePie_Category} objects
+	 * @return SimplePie_Category[]|null List of {@see SimplePie_Category} objects
 	 */
 	public function get_categories()
 	{
@@ -1089,7 +1089,7 @@ class SimplePie_Item
 	 * @since Beta 2
 	 * @todo Add support for end-user defined sorting of enclosures by type/handler (so we can prefer the faster-loading FLV over MP4).
 	 * @todo If an element exists at a level, but its value is empty, we should fall back to the value from the parent (if it exists).
-	 * @return array|null List of SimplePie_Enclosure items
+	 * @return SimplePie_Enclosure[]|null List of SimplePie_Enclosure items
 	 */
 	public function get_enclosures()
 	{
