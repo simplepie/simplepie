@@ -202,14 +202,13 @@ class SimplePie_Item
 	 *
 	 * Uses `<atom:id>`, `<guid>`, `<dc:identifier>` or the `about` attribute
 	 * for RDF. If none of these are supplied (or `$hash` is true), creates an
-	 * MD5 hash based on the permalink and title. If either of those are not
-	 * supplied, creates a hash based on the full feed data.
+	 * MD5 hash based on the permalink, title and content.
 	 *
 	 * @since Beta 2
 	 * @param boolean $hash Should we force using a hash instead of the supplied ID?
 	 * @return string
 	 */
-	public function get_id($hash = false)
+	public function get_id($hash = false, $fn = '')
 	{
 		if (!$hash)
 		{
@@ -238,7 +237,9 @@ class SimplePie_Item
 				return $this->sanitize($this->data['attribs'][SIMPLEPIE_NAMESPACE_RDF]['about'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 		}
-		return md5(serialize($this->data));
+		if ($fn === '' || !is_callable($fn)) $fn = 'md5';
+		return call_user_func($fn,
+		       $this->get_permalink().$this->get_title().$this->get_content());
 	}
 
 	/**

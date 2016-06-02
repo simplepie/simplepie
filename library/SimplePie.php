@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.4
+ * @version 1.4.1
  * @copyright 2004-2016 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
@@ -50,7 +50,7 @@ define('SIMPLEPIE_NAME', 'SimplePie');
 /**
  * SimplePie Version
  */
-define('SIMPLEPIE_VERSION', '1.4');
+define('SIMPLEPIE_VERSION', '1.4.1');
 
 /**
  * SimplePie Build
@@ -616,6 +616,10 @@ class SimplePie
 	 */
 	public $item_limit = 0;
 
+	/**
+	 * @var bool Stores if last-modified and/or etag headers were sent with the
+	 * request when checking a feed.
+	 */
 	public $check_modified = false;
 
 	/**
@@ -1195,11 +1199,11 @@ class SimplePie
 	 *
 	 * Allows you to override SimplePie's output to match that of your webpage.
 	 * This is useful for times when your webpages are not being served as
-	 * UTF-8.  This setting will be obeyed by {@see handle_content_type()}, and
+	 * UTF-8. This setting will be obeyed by {@see handle_content_type()}, and
 	 * is similar to {@see set_input_encoding()}.
 	 *
 	 * It should be noted, however, that not all character encodings can support
-	 * all characters.  If your page is being served as ISO-8859-1 and you try
+	 * all characters. If your page is being served as ISO-8859-1 and you try
 	 * to display a Japanese feed, you'll likely see garbled characters.
 	 * Because of this, it is highly recommended to ensure that your webpages
 	 * are served as UTF-8.
@@ -1279,7 +1283,7 @@ class SimplePie
 	/**
 	 * Initialize the feed object
 	 *
-	 * This is what makes everything happen.  Period.  This is where all of the
+	 * This is what makes everything happen. Period. This is where all of the
 	 * configuration options get processed, feeds are fetched, cached, and
 	 * parsed, and all of that other good stuff.
 	 *
@@ -1552,7 +1556,7 @@ class SimplePie
 						}
 						else
 						{
-                            $this->check_modified = false;
+							$this->check_modified = false;
 							if($this->force_cache_fallback)
 							{
 								$cache->touch();
@@ -1613,7 +1617,7 @@ class SimplePie
 					// First check for h-entry microformats in the current file.
 					$microformats = false;
 					$position = 0;
-					while ($position = strpos($file->body, 'h-entry', $position + 7))
+					while ($position = strpos($file->body, 'h-entry', $position))
 					{
 						$start = $position < 200 ? 0 : $position - 200;
 						$check = substr($file->body, $start, 400);
@@ -1621,6 +1625,7 @@ class SimplePie
 						{
 							break;
 						}
+						$position += 7;
 					}
 					// Now also do feed discovery, but if an h-entry was found don't
 					// overwrite the current value of file.
@@ -1676,6 +1681,7 @@ class SimplePie
 
 		$this->raw_data = $file->body;
 		$this->permanent_url = $file->permanent_url;
+		$this->store_links($file);
 		$headers = $file->headers;
 		$sniffer = $this->registry->create('Content_Type_Sniffer', array(&$file));
 		$sniffed = $sniffer->get_type();
@@ -1874,7 +1880,7 @@ class SimplePie
 	 * @todo Support <itunes:new-feed-url>
 	 * @todo Also, |atom:link|@rel=self
 	 * @param bool $permanent Permanent mode to return only the original URL or the first redirection
-	 *  iff it is a 301 redirection
+	 * iff it is a 301 redirection
 	 * @return string|null
 	 */
 	public function subscribe_url($permanent = false)
@@ -2263,7 +2269,7 @@ class SimplePie
 	 * Get an author for the feed
 	 *
 	 * @since 1.1
-	 * @param int $key The author that you want to return.  Remember that arrays begin with 0, not 1
+	 * @param int $key The author that you want to return. Remember that arrays begin with 0, not 1
 	 * @return SimplePie_Author|null
 	 */
 	public function get_author($key = 0)
@@ -2361,7 +2367,7 @@ class SimplePie
 	 * Get a contributor for the feed
 	 *
 	 * @since 1.1
-	 * @param int $key The contrbutor that you want to return.  Remember that arrays begin with 0, not 1
+	 * @param int $key The contrbutor that you want to return. Remember that arrays begin with 0, not 1
 	 * @return SimplePie_Author|null
 	 */
 	public function get_contributor($key = 0)
@@ -2447,7 +2453,7 @@ class SimplePie
 	 * Get a single link for the feed
 	 *
 	 * @since 1.0 (previously called `get_feed_link` since Preview Release, `get_feed_permalink()` since 0.8)
-	 * @param int $key The link that you want to return.  Remember that arrays begin with 0, not 1
+	 * @param int $key The link that you want to return. Remember that arrays begin with 0, not 1
 	 * @param string $rel The relationship of the link to return
 	 * @return string|null Link URL
 	 */
@@ -2556,6 +2562,12 @@ class SimplePie
 		if (isset($this->data['links'][$rel]))
 		{
 			return $this->data['links'][$rel];
+		}
+		else if (isset($this->data['headers']['link']) &&
+		         preg_match('/<([^>]+)>; rel='.preg_quote($rel).'/',
+		                    $this->data['headers']['link'], $match))
+		{
+			return array($match[1]);
 		}
 		else
 		{
@@ -2958,7 +2970,7 @@ class SimplePie
 	 *
 	 * @see get_item_quantity()
 	 * @since Beta 2
-	 * @param int $key The item that you want to return.  Remember that arrays begin with 0, not 1
+	 * @param int $key The item that you want to return. Remember that arrays begin with 0, not 1
 	 * @return SimplePie_Item|null
 	 */
 	public function get_item($key = 0)
@@ -3201,6 +3213,77 @@ class SimplePie
 		{
 			trigger_error('Cannot merge zero SimplePie objects', E_USER_WARNING);
 			return array();
+		}
+	}
+
+	/**
+	 * Store PubSubHubbub links as headers
+	 *
+	 * There is no way to find PuSH links in the body of a microformats feed,
+	 * so they are added to the headers when found, to be used later by get_links.
+	 * @param SimplePie_File
+	 */
+	private function store_links(&$file) {
+		if (isset($file->headers['link']['hub']) ||
+			  (isset($file->headers['link']) &&
+			   preg_match('/rel=hub/', $file->headers['link'])))
+		{
+			return;
+		}
+		$hub = '';
+		$self = '';
+		$position = 0;
+		$regex1 = '/<(?:link|a) href="([^"]*)" rel="[^"]*hub[^"]*"/';
+		$regex2 = '/<(?:link|a) rel="[^"]*hub[^"]*" href="([^"]*)"/';
+		while ($position = strpos($file->body, 'rel="hub"', $position + 7))
+		{
+			$start = $position < 200 ? 0 : $position - 200;
+			$check = substr($file->body, $start, 400);
+			if (preg_match($regex1, $check, $match))
+			{
+				$hub = $match[1] === '' ? $file->url : $match[1];
+			}
+			else if (preg_match($regex2, $check, $match))
+			{
+				$hub = $match[1] === '' ? $file->url : $match[1];
+			}
+			if ($hub !== '') break;
+		}
+		$position = 0;
+		$regex1 = '/<(?:link|a) href="([^"]*)" rel="[^"]*self[^"]*"/';
+		$regex2 = '/<(?:link|a) rel="[^"]*self[^"]*" href="([^"]*)"/';
+		while ($position = strpos($file->body, 'rel="self"', $position + 7))
+		{
+			$start = $position < 200 ? 0 : $position - 200;
+			$check = substr($file->body, $start, 400);
+			if (preg_match($regex1, $check, $match))
+			{
+				$self = $match[1] === '' ? $file->url : $match[1];
+			}
+			if (preg_match($regex2, $check, $match))
+			{
+				$self = $match[1] === '' ? $file->url : $match[1];
+			}
+			if ($self !== '') break;
+		}
+		if ($hub !== '')
+		{
+			if (isset($file->headers['link']))
+			{
+				if ($file->headers['link'] !== '')
+				{
+					$file->headers['link'] = ', ';
+				}
+			}
+			else
+			{
+				$file->headers['link'] = '';
+			}
+			$file->headers['link'] .= '<'.$hub.'>; rel=hub';
+			if ($self !== '')
+			{
+				$file->headers['link'] .= ', <'.$self.'>; rel=self';
+			}
 		}
 	}
 }
