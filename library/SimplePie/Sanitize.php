@@ -368,8 +368,9 @@ class SimplePie_Sanitize
 
 				// Finally, convert to a HTML string
 				$data = trim($document->saveHTML());
-
-				list($_, $data, $_) = explode($unique_tag, $data);
+				$result = explode($unique_tag, $data);
+				// The tags may not be found again if there was invalid markup.
+				$data = count($result) === 3 ? $result[1] : '';
 
 				if ($this->remove_div)
 				{

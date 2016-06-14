@@ -76,14 +76,27 @@ class SimplePie_Parser
 
 	public function parse(&$data, $encoding, $url = '')
 	{
-		$position = 0;
-		while ($position = strpos($data, 'h-entry', $position)) {
-			$start = $position < 200 ? 0 : $position - 200;
-			$check = substr($data, $start, 400);
-			if (preg_match('/class="[^"]*h-entry/', $check)) {
-				return $this->parse_microformats($data, $url);
+		if (function_exists('Mf2\parse')) {
+			// Check for both h-feed and h-entry, as both a feed with no entries
+			// and a list of entries without an h-feed wrapper are both valid.
+			$position = 0;
+			while ($position = strpos($data, 'h-feed', $position)) {
+				$start = $position < 200 ? 0 : $position - 200;
+				$check = substr($data, $start, 400);
+				if (preg_match('/class="[^"]*h-feed/', $check)) {
+					return $this->parse_microformats($data, $url);
+				}
+				$position += 7;
 			}
-			$position += 7;
+			$position = 0;
+			while ($position = strpos($data, 'h-entry', $position)) {
+				$start = $position < 200 ? 0 : $position - 200;
+				$check = substr($data, $start, 400);
+				if (preg_match('/class="[^"]*h-entry/', $check)) {
+					return $this->parse_microformats($data, $url);
+				}
+				$position += 7;
+			}
 		}
 
 		// Use UTF-8 if we get passed US-ASCII, as every US-ASCII character is a UTF-8 character
@@ -439,10 +452,8 @@ class SimplePie_Parser
 	}
 
 	private function parse_microformats(&$data, $url) {
-		if (!function_exists('Mf2\parse')) return false;
-
 		$feed_title = '';
-		$icon = '';
+		$feed_author = NULL;
 		$author_cache = array();
 		$items = array();
 		$entries = array();
@@ -458,23 +469,20 @@ class SimplePie_Parser
 			if (!isset($mf_item['children'][0]['type'])) continue;
 			if (in_array('h-feed', $mf_item['children'][0]['type'])) {
 				$h_feed = $mf_item['children'][0];
+				// In this case the parent of the h-feed may be an h-card, so use it as
+				// the feed_author.
+				if (in_array('h-card', $mf_item['type'])) $feed_author = $mf_item;
 				break;
 			}
 		}
 		if (isset($h_feed['children'])) {
 			$entries = $h_feed['children'];
-			// Also set the feed title and icon from the h-feed if available.
+			// Also set the feed title and store author from the h-feed if available.
 			if (isset($mf['items'][0]['properties']['name'][0])) {
 				$feed_title = $mf['items'][0]['properties']['name'][0];
 			}
 			if (isset($mf['items'][0]['properties']['author'][0])) {
-				$author = $mf['items'][0]['properties']['author'][0];
-				if (is_array($author) &&
-						isset($author['type']) && in_array('h-card', $author['type'])) {
-					if (isset($author['properties']['photo'][0])) {
-						$icon = $author['properties']['photo'][0];
-					}
-				}
+				$feed_author = $mf['items'][0]['properties']['author'][0];
 			}
 		}
 		else {
@@ -501,12 +509,13 @@ class SimplePie_Parser
 					if (isset($title['value'])) $title = $title['value'];
 					$item['title'] = array(array('data' => $title));
 				}
-				if (isset($entry['properties']['author'][0])) {
+				if (isset($entry['properties']['author'][0]) || isset($feed_author)) {
 					// author is a special case, it can be plain text or an h-card array.
 					// If it's plain text it can also be a url that should be followed to
 					// get the actual h-card.
-					$author = $entry['properties']['author'][0];
-					if (is_array($author)) {
+					$author = isset($entry['properties']['author'][0]) ?
+						$entry['properties']['author'][0] : $feed_author;
+					if (!is_string($author)) {
 						$author = $this->parse_hcard($author);
 					}
 					else if (strpos($author, 'http') === 0) {
@@ -574,6 +583,11 @@ class SimplePie_Parser
 						$item['title'] = array(array('data' => $title));
 					}
 					$description .= $entry['properties']['content'][0]['html'];
+					if (isset($entry['properties']['in-reply-to'][0]['value'])) {
+						$in_reply_to = $entry['properties']['in-reply-to'][0]['value'];
+						$description .= '<p><span class="in-reply-to"></span> '.
+							'<a href="'.$in_reply_to.'">'.$in_reply_to.'</a><p>';
+					}
 					$item['description'] = array(array('data' => $description));
 				}
 				if (isset($entry['properties']['category'])) {
@@ -608,9 +622,10 @@ class SimplePie_Parser
 		// Mimic RSS data format when storing microformats.
 		$link = array(array('data' => $url));
 		$image = '';
-		if ($icon !== '') {
-			array(array('child' => array('' =>
-			      array('url' => array(array('data' => $icon))))));
+		if (!is_string($feed_author) &&
+				isset($feed_author['properties']['photo'][0])) {
+			$image = array(array('child' => array('' => array('url' =>
+				array(array('data' => $feed_author['properties']['photo'][0]))))));
 		}
 		// Use the a name given for the h-feed, or get the title from the html.
 		if ($feed_title !== '') {

@@ -776,24 +776,20 @@ class SimplePie_IRI
 	 */
 	public function is_valid()
 	{
-		$isauthority = $this->iuserinfo !== null || $this->ihost !== null || $this->port !== null;
-		if ($this->ipath !== '' &&
-			(
-				$isauthority && (
-					$this->ipath[0] !== '/' ||
-					substr($this->ipath, 0, 2) === '//'
-				) ||
-				(
-					$this->scheme === null &&
-					!$isauthority &&
-					strpos($this->ipath, ':') !== false &&
-					(strpos($this->ipath, '/') === false ? true : strpos($this->ipath, ':') < strpos($this->ipath, '/'))
-				)
-			)
-		)
-		{
-			return false;
-		}
+		if ($this->ipath === '') return true;
+
+		$isauthority = $this->iuserinfo !== null || $this->ihost !== null ||
+			$this->port !== null;
+		if ($isauthority && $this->ipath[0] === '/') return true;
+
+		if (!$isauthority && (substr($this->ipath, 0, 2) === '//')) return false;
+
+		// Relative urls cannot have a colon in the first path segment (and the
+		// slashes themselves are not included so skip the first character).
+		if (!$this->scheme && !$isauthority &&
+		    strpos($this->ipath, ':') !== false &&
+		    strpos($this->ipath, '/', 1) !== false &&
+		    strpos($this->ipath, ':') < strpos($this->ipath, '/', 1)) return false;
 
 		return true;
 	}

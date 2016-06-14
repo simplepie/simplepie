@@ -1614,18 +1614,32 @@ class SimplePie
 				$copyContentType = $file->headers['content-type'];
 				try
 				{
-					// First check for h-entry microformats in the current file.
 					$microformats = false;
-					$position = 0;
-					while ($position = strpos($file->body, 'h-entry', $position))
-					{
-						$start = $position < 200 ? 0 : $position - 200;
-						$check = substr($file->body, $start, 400);
-						if ($microformats = preg_match('/class="[^"]*h-entry/', $check))
+					if (function_exists('Mf2\parse')) {
+						// Check for both h-feed and h-entry, as both a feed with no entries
+						// and a list of entries without an h-feed wrapper are both valid.
+						$position = 0;
+						while ($position = strpos($file->body, 'h-feed', $position))
 						{
-							break;
+							$start = $position < 200 ? 0 : $position - 200;
+							$check = substr($file->body, $start, 400);
+							if ($microformats = preg_match('/class="[^"]*h-feed/', $check))
+							{
+								break;
+							}
+							$position += 7;
 						}
-						$position += 7;
+						$position = 0;
+						while ($position = strpos($file->body, 'h-entry', $position))
+						{
+							$start = $position < 200 ? 0 : $position - 200;
+							$check = substr($file->body, $start, 400);
+							if ($microformats = preg_match('/class="[^"]*h-entry/', $check))
+							{
+								break;
+							}
+							$position += 7;
+						}
 					}
 					// Now also do feed discovery, but if an h-entry was found don't
 					// overwrite the current value of file.
@@ -1633,6 +1647,11 @@ class SimplePie
 					                            $this->all_discovered_feeds);
 					if ($microformats)
 					{
+						if ($hub = $locate->get_rel_link('hub'))
+						{
+							$self = $locate->get_rel_link('self');
+							$this->store_links($file, $hub, $self);
+						}
 						// Push the current file onto all_discovered feeds so the user can
 						// be shown this as one of the options.
 						if (isset($this->all_discovered_feeds)) {
@@ -1681,7 +1700,6 @@ class SimplePie
 
 		$this->raw_data = $file->body;
 		$this->permanent_url = $file->permanent_url;
-		$this->store_links($file);
 		$headers = $file->headers;
 		$sniffer = $this->registry->create('Content_Type_Sniffer', array(&$file));
 		$sniffed = $sniffer->get_type();
@@ -3221,52 +3239,19 @@ class SimplePie
 	 *
 	 * There is no way to find PuSH links in the body of a microformats feed,
 	 * so they are added to the headers when found, to be used later by get_links.
-	 * @param SimplePie_File
+	 * @param SimplePie_File $file
+	 * @param string $hub
+	 * @param string $self
 	 */
-	private function store_links(&$file) {
+	private function store_links(&$file, $hub, $self) {
 		if (isset($file->headers['link']['hub']) ||
 			  (isset($file->headers['link']) &&
 			   preg_match('/rel=hub/', $file->headers['link'])))
 		{
 			return;
 		}
-		$hub = '';
-		$self = '';
-		$position = 0;
-		$regex1 = '/<(?:link|a) href="([^"]*)" rel="[^"]*hub[^"]*"/';
-		$regex2 = '/<(?:link|a) rel="[^"]*hub[^"]*" href="([^"]*)"/';
-		while ($position = strpos($file->body, 'rel="hub"', $position + 7))
-		{
-			$start = $position < 200 ? 0 : $position - 200;
-			$check = substr($file->body, $start, 400);
-			if (preg_match($regex1, $check, $match))
-			{
-				$hub = $match[1] === '' ? $file->url : $match[1];
-			}
-			else if (preg_match($regex2, $check, $match))
-			{
-				$hub = $match[1] === '' ? $file->url : $match[1];
-			}
-			if ($hub !== '') break;
-		}
-		$position = 0;
-		$regex1 = '/<(?:link|a) href="([^"]*)" rel="[^"]*self[^"]*"/';
-		$regex2 = '/<(?:link|a) rel="[^"]*self[^"]*" href="([^"]*)"/';
-		while ($position = strpos($file->body, 'rel="self"', $position + 7))
-		{
-			$start = $position < 200 ? 0 : $position - 200;
-			$check = substr($file->body, $start, 400);
-			if (preg_match($regex1, $check, $match))
-			{
-				$self = $match[1] === '' ? $file->url : $match[1];
-			}
-			if (preg_match($regex2, $check, $match))
-			{
-				$self = $match[1] === '' ? $file->url : $match[1];
-			}
-			if ($self !== '') break;
-		}
-		if ($hub !== '')
+
+		if ($hub)
 		{
 			if (isset($file->headers['link']))
 			{
@@ -3280,7 +3265,7 @@ class SimplePie
 				$file->headers['link'] = '';
 			}
 			$file->headers['link'] .= '<'.$hub.'>; rel=hub';
-			if ($self !== '')
+			if ($self)
 			{
 				$file->headers['link'] .= ', <'.$self.'>; rel=self';
 			}
