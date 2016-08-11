@@ -3,7 +3,7 @@
 /**
  * IRI test cases
  *
- * Copyright (c) 2008-2012 Geoffrey Sneddon.
+ * Copyright (c) 2008-2016 Geoffrey Sneddon.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
  *
  * @package IRI
  * @author Geoffrey Sneddon
- * @copyright 2008-2012 Geoffrey Sneddon
+ * @copyright 2008-2016 Geoffrey Sneddon
  * @license http://www.opensource.org/licenses/bsd-license.php
  * @link http://hg.gsnedders.com/iri/
  *
@@ -380,9 +380,26 @@ class IRITest extends PHPUnit_Framework_TestCase
 		$this->assertFalse(SimplePie_IRI::absolutize('://not a URL', '../'));
 	}
 
-	public function testInvalidAbsolutizeRelative()
+	public function testInvalidPathNoHost()
 	{
-		$this->assertFalse(SimplePie_IRI::absolutize('http://example.com/', 'http://example.com//not a URL'));
+		$iri = new SimplePie_IRI();
+		$iri->scheme = 'http';
+		$iri->path = '//test';
+		$this->assertFalse($iri->is_valid());
+	}
+
+	public function testInvalidRelativePathContainsColon()
+	{
+		$iri = new SimplePie_IRI();
+		$iri->path = '/test:/';
+		$this->assertFalse($iri->is_valid());
+	}
+
+  public function testValidRelativePathContainsColon()
+	{
+		$iri = new SimplePie_IRI();
+		$iri->path = '/test/:';
+		$this->assertTrue($iri->is_valid());
 	}
 
 	public function testFullGamut()
@@ -411,22 +428,22 @@ class IRITest extends PHPUnit_Framework_TestCase
 		$iri->path = '/test/';
 		$iri->fragment = 'test';
 
-		$this->assertEquals('http', $iri->ischeme);
-		$this->assertEquals('user:password', $iri->iuserinfo);
-		$this->assertEquals('example.com', $iri->ihost);
-		$this->assertEquals(80, $iri->iport);
-		$this->assertEquals('/test/', $iri->ipath);
-		$this->assertEquals('test', $iri->ifragment);
+		$this->assertEquals('http', $iri->scheme);
+		$this->assertEquals('user:password', $iri->userinfo);
+		$this->assertEquals('example.com', $iri->host);
+		$this->assertEquals(80, $iri->port);
+		$this->assertEquals('/test/', $iri->path);
+		$this->assertEquals('test', $iri->fragment);
 	}
 
 	public function testWriteAliased()
 	{
 		$iri = new SimplePie_IRI();
 		$iri->scheme = 'http';
-		$iri->iuserinfo = 'user:password';
-		$iri->ihost = 'example.com';
-		$iri->ipath = '/test/';
-		$iri->ifragment = 'test';
+		$iri->userinfo = 'user:password';
+		$iri->host = 'example.com';
+		$iri->path = '/test/';
+		$iri->fragment = 'test';
 
 		$this->assertEquals('http', $iri->scheme);
 		$this->assertEquals('user:password', $iri->userinfo);

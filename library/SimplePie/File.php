@@ -142,7 +142,7 @@ class SimplePie_File
 					if ($parser->parse())
 					{
 						$this->headers = $parser->headers;
-						$this->body = $parser->body;
+						$this->body = trim($parser->body);
 						$this->status_code = $parser->status_code;
 						if ((in_array($this->status_code, array(300, 301, 302, 303, 307)) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects)
 						{
@@ -253,7 +253,7 @@ class SimplePie_File
 										}
 										else
 										{
-											$this->body = $decoder->data;
+											$this->body = trim($decoder->data);
 										}
 										break;
 
@@ -296,7 +296,7 @@ class SimplePie_File
 		else
 		{
 			$this->method = SIMPLEPIE_FILE_SOURCE_LOCAL | SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS;
-			if (empty($url) || !($this->body = file_get_contents($url)))
+			if (empty($url) || !($this->body = trim(file_get_contents($url))))
 			{
 				$this->error = 'file_get_contents could not read the file';
 				$this->success = false;
