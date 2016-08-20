@@ -1467,7 +1467,14 @@ class SimplePie
 		}
 		else
 		{
-			$this->error = 'The data could not be converted to UTF-8. You MUST have either the iconv or mbstring extension installed. Upgrading to PHP 5.x (which includes iconv) is highly recommended.';
+			$this->error = 'The data could not be converted to UTF-8.';
+			if (!extension_loaded('mbstring') && !extension_loaded('iconv')) {
+				$this->error .= ' You MUST have either the iconv or mbstring extension installed.';
+			} elseif (!extension_loaded('mbstring')) {
+				$this->error .= ' Try installing the mbstring extension.';
+			} elseif (!extension_loaded('mbstring')) {
+				$this->error .= ' Try installing the iconv extension.';
+			}
 		}
 
 		$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
