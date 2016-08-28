@@ -659,9 +659,9 @@ class SimplePie
 	 */
 	public function __construct()
 	{
-		if (version_compare(PHP_VERSION, '5.2', '<'))
+		if (version_compare(PHP_VERSION, '5.3', '<'))
 		{
-			trigger_error('PHP 4.x, 5.0 and 5.1 are no longer supported. Please upgrade to PHP 5.2 or newer.');
+			trigger_error('Please upgrade to PHP 5.3 or newer.');
 			die();
 		}
 
