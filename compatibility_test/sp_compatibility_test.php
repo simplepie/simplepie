@@ -42,7 +42,7 @@ header('Content-type: text/html; charset=UTF-8');
 
 <html lang="en">
 <head>
-<title>SimplePie: Server Compatibility Test 1.4.1</title>
+<title>SimplePie: Server Compatibility Test</title>
 
 <style type="text/css">
 body {
