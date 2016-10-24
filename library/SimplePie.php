@@ -1547,6 +1547,7 @@ class SimplePie
 						if (isset($this->data['headers']['etag']))
 						{
 							$headers['if-none-match'] = $this->data['headers']['etag'];
+							$headers['a-im'] = 'feed';
 						}
 
 						$file = $this->registry->create('File', array($this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options));
