@@ -78,7 +78,7 @@ echo sprintf($testRow,str_pad(($zlib_ok ? 'Passed' : 'Failed'), 7),str_pad('Zlib
 echo sprintf($testRow,str_pad(($mbstring_ok ? 'Passed' : 'Failed'), 7),str_pad('mbstring',20),str_pad('Enabled', 20),str_pad(( $mbstring_ok ? 'Enabled' : 'Disabled' ), 20));
 
 
-echo sprintf($testRow,str_pad(($iconv_ok ? 'Passed' : 'Failed'), 7),str_pad('mbstring',20),str_pad('Enabled', 20),str_pad(( $iconv_ok ? 'Enabled' : 'Disabled' ), 20));
+echo sprintf($testRow,str_pad(($iconv_ok ? 'Passed' : 'Failed'), 7),str_pad('iconv',20),str_pad('Enabled', 20),str_pad(( $iconv_ok ? 'Enabled' : 'Disabled' ), 20));
 
 
 echo "\n\n";
