@@ -14,7 +14,7 @@ else if (isset($_GET['background']))
 	exit;
 }
 
-$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.2.0', '>='));
+$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.3.0', '>='));
 $pcre_ok = extension_loaded('pcre');
 $curl_ok = function_exists('curl_exec');
 $zlib_ok = extension_loaded('zlib');
@@ -36,13 +36,160 @@ else
 	$xml_ok = false;
 }
 
+
+
+if( php_sapi_name() === 'cli' ):
+
+$testHeader = <<<EOF
+
+         +-----------------------------------------------------------------+
+         |               SimplePie: Server Compatibility Test              |
+         +-----------------------------------------------------------------+
+         |        Test         |        Should Be    |     What You Have   |
++--------------------------------------------------------------------------+
+EOF;
+
+$testRow = <<<EOF
+
+| %s| %s| %s| %s|
++--------------------------------------------------------------------------+
+EOF;
+
+echo $testHeader;
+
+
+echo sprintf($testRow,str_pad(($php_ok ? 'Passed' : 'Failed'), 7),str_pad('PHP',20),str_pad('5.3.0 or higher', 20),str_pad(phpversion(), 20));
+
+
+
+echo sprintf($testRow,str_pad(($xml_ok ? 'Passed' : 'Failed'), 7),str_pad('XML',20),str_pad('Enabled', 20),str_pad(($xml_ok ? 'Enabled, and sane' : 'Disabled, or broken'), 20));
+
+
+echo sprintf($testRow,str_pad(($pcre_ok ? 'Passed' : 'Failed'), 7),str_pad('PCRE ^^^',20),str_pad('Enabled', 20),str_pad(($pcre_ok ? 'Enabled' : 'Disabled'), 20));
+
+
+echo sprintf($testRow,str_pad(($curl_ok ? 'Passed' : 'Failed'), 7),str_pad('cURL',20),str_pad('Enabled', 20),str_pad((extension_loaded('curl') ? 'Enabled' : 'Disabled'), 20));
+
+
+
+echo sprintf($testRow,str_pad(($zlib_ok ? 'Passed' : 'Failed'), 7),str_pad('Zlib',20),str_pad('Enabled', 20),str_pad(($zlib_ok ? 'Enabled' : 'Disabled'), 20));
+
+
+echo sprintf($testRow,str_pad(($mbstring_ok ? 'Passed' : 'Failed'), 7),str_pad('mbstring',20),str_pad('Enabled', 20),str_pad(( $mbstring_ok ? 'Enabled' : 'Disabled' ), 20));
+
+
+echo sprintf($testRow,str_pad(($iconv_ok ? 'Passed' : 'Failed'), 7),str_pad('iconv',20),str_pad('Enabled', 20),str_pad(( $iconv_ok ? 'Enabled' : 'Disabled' ), 20));
+
+
+echo "\n\n";
+
+echo "What does this mean? \n\n";
+
+if ($php_ok && $xml_ok && $pcre_ok && $mbstring_ok && $iconv_ok && $curl_ok && $zlib_ok):
+	echo "You have everything you need to run SimplePie properly!  Congratulations!\n\n";
+else:
+	if ($php_ok):
+		echo "PHP: You are running a supported version of PHP.  No problems here.\n";
+
+		if ($xml_ok):
+			echo "XML: You have XMLReader support or a version of XML support that isn't broken installed.  No problems here.\n";
+		if ($pcre_ok):
+			echo "PCRE: You have PCRE support installed.  No problems here.\n";
+            if ($curl_ok):
+                echo "cURL: You have cURL support installed.  No problems here.\n";
+            else:
+                echo "cURL: The cURL extension is not available.  SimplePie will use fsockopen() instead.\n";
+            endif;
+
+            if ($zlib_ok):
+                echo "Zlib: You have Zlib enabled.  This allows SimplePie to support GZIP-encoded feeds.  No problems here.\n";
+            else:
+                echo "Zlib: The Zlib extension is not available.  SimplePie will ignore any GZIP-encoding, and instead handle feeds as uncompressed text.\n";
+            endif;
+
+            if ($mbstring_ok && $iconv_ok):
+                echo "mbstring and iconv: You have both mbstring and iconv installed!  This will allow SimplePie to handle the greatest number of languages. \nCheck the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
+            elseif ($mbstring_ok):
+                echo "mbstring: mbstring is installed, but iconv is not.  Check the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
+            elseif ($iconv_ok):
+                echo "iconv: iconv is installed, but mbstring is not.  Check the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
+            else:
+                echo "mbstring and iconv: You do not have either of the extensions installed. This will significantly impair your ability to read non-English feeds, as well as even some English ones.  Check the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
+            endif;
+
+        else:
+            echo "PCRE: Your PHP installation doesn't support Perl-Compatible Regular Expressions.  SimplePie is a no-go at the moment.\n";
+        endif;
+
+
+        else:
+            echo "XML: Your PHP installation doesn't support XML parsing. SimplePie is a no-go at the moment.\n";
+        endif;
+	
+	else:
+		echo "PHP: You are running an unsupported version of PHP.  SimplePie is a no-go at the moment.\n";
+    endif;
+
+endif;
+
+
+$bottomLineFooter = <<<EOF
+You can download the latest version of SimplePie from http://simplepie.org/downloads/ and install it by http://simplepie.org/wiki/setup/start .
+You can find example uses with http://simplepie.org/ideas/ .
+Take the time to read http://simplepie.org/wiki/setup/start to make sure you're prepared to use SimplePie. No seriously, read them.
+
+Note: Passing this test does not guarantee that SimplePie will run on your webhost -- it only ensures that the basic requirements have been addressed.
+EOF;
+
+if ($php_ok && $xml_ok && $pcre_ok && $mbstring_ok && $iconv_ok):
+
+echo <<<EOF
+
+Bottom Line: Yes, you can!
+Your webhost has its act together!"
+
+{$bottomLineFooter}
+EOF;
+
+
+elseif ($php_ok && $xml_ok && $pcre_ok):
+echo <<<EOF
+
+Bottom Line: Yes, you can!
+For most feeds, it'll run with no problems. There are http://simplepie.org/wiki/faq/supported_character_encodings that you might have a hard time with though.
+	
+{$bottomLineFooter}
+EOF;
+
+else:
+
+echo <<<EOF
+
+Bottom Line: We're sorry ...
+Your webhost does not support the minimum requirements for SimplePie. 
+It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the xmlreader, xml, mbstring, iconv, curl, and zlib extensions.
+
+EOF;
+
+endif;
+
+
+
+echo "\n\n^^^ Some recent versions of the PCRE (PERL-Compatible Regular Expression) engine compiled into PHP have been buggy, and are the source of PHP segmentation faults (e.g. crashes) which cause random things like blank, white screens. Check the http://simplepie.org/support/ for the latest information on patches and ongoing fixes.\n";
+
+exit(0);
+
+endif;
+
+
+
 header('Content-type: text/html; charset=UTF-8');
 
 ?><!DOCTYPE html>
 
 <html lang="en">
 <head>
-<title>SimplePie: Server Compatibility Test 1.4.1</title>
+<title>SimplePie: Server Compatibility Test</title>
 
 <style type="text/css">
 body {
@@ -215,7 +362,7 @@ function fnLoadPngs() {
 				<tbody>
 					<tr class="<?php echo ($php_ok) ? 'enabled' : 'disabled'; ?>">
 						<td>PHP</td>
-						<td>5.2.0 or higher</td>
+						<td>5.3.0 or higher</td>
 						<td><?php echo phpversion(); ?></td>
 					</tr>
 					<tr class="<?php echo ($xml_ok) ? 'enabled, and sane' : 'disabled, or broken'; ?>">

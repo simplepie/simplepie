@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.4.1
+ * @version 1.4.2
  * @copyright 2004-2016 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
@@ -50,7 +50,7 @@ define('SIMPLEPIE_NAME', 'SimplePie');
 /**
  * SimplePie Version
  */
-define('SIMPLEPIE_VERSION', '1.4.1');
+define('SIMPLEPIE_VERSION', '1.4.2');
 
 /**
  * SimplePie Build
@@ -659,9 +659,9 @@ class SimplePie
 	 */
 	public function __construct()
 	{
-		if (version_compare(PHP_VERSION, '5.2', '<'))
+		if (version_compare(PHP_VERSION, '5.3', '<'))
 		{
-			trigger_error('PHP 4.x, 5.0 and 5.1 are no longer supported. Please upgrade to PHP 5.2 or newer.');
+			trigger_error('Please upgrade to PHP 5.3 or newer.');
 			die();
 		}
 
@@ -1294,6 +1294,7 @@ class SimplePie
 		// Check absolute bare minimum requirements.
 		if (!extension_loaded('xml') || !extension_loaded('pcre'))
 		{
+			$this->error = 'XML or PCRE extensions not loaded!';
 			return false;
 		}
 		// Then check the xml extension is sane (i.e., libxml 2.7.x issue on PHP < 5.2.9 and libxml 2.7.0 to 2.7.2 on any version) if we don't have xmlreader.

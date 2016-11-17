@@ -11,14 +11,13 @@ compatibility and standards compliance][what_is].
 
 Requirements
 ------------
-* PHP 5.2.0 or newer
+* PHP 5.3.0+ (5.3.6+ recommended since SimplePie 1.4.3+)
+	* Support for PHP 5.2 stopped in branch `one-dot-three`
+	* Support for PHP 4 stopped in branch `one-dot-two`
 * libxml2 (certain 2.7.x releases are too buggy for words, and will crash)
 * Either the iconv or mbstring extension
 * cURL or fsockopen()
 * PCRE support
-
-If you're looking for PHP 4.x support, pull the "one-dot-two" branch, as that's
-the last version to support PHP 4.x.
 
 
 What comes in the package?
