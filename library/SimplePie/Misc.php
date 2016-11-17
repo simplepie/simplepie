@@ -333,8 +333,13 @@ class SimplePie_Misc
 		{
 			return $return;
  		}
-		// This is last, as behaviour of this varies with OS userland and PHP version
+		// This is third, as behaviour of this varies with OS userland and PHP version
 		elseif (function_exists('iconv') && ($return = SimplePie_Misc::change_encoding_iconv($data, $input, $output)))
+		{
+			return $return;
+		}
+		// This is last, as behaviour of this varies with OS userland and PHP version
+		elseif (class_exists('\UConverter') && ($return = SimplePie_Misc::change_encoding_uconverter($data, $input, $output)))
 		{
 			return $return;
 		}
@@ -386,6 +391,17 @@ class SimplePie_Misc
 	protected static function change_encoding_iconv($data, $input, $output)
 	{
 		return @iconv($input, $output, $data);
+	}
+
+	/**
+	 * @param string $data
+	 * @param string $input
+	 * @param string $output
+	 * @return string|false
+	 */
+	protected static function change_encoding_uconverter($data, $input, $output)
+	{
+		return @\UConverter::transcode($data, $output, $input);
 	}
 
 	/**
