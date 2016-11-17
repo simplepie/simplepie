@@ -67,6 +67,16 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(function_exists('iconv'));
 	}
 
+	/**
+	 * Test if we have iconv (crazy if we don't)
+	 *
+	 * Used for depends
+	 */
+	public function test_has_uconverter()
+	{
+		$this->assertTrue(class_exists('\UConverter'));
+	}
+
 	/**#@+
 	 * UTF-8 methods
 	 */
@@ -103,6 +113,16 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	 * Special cases with iconv handling
 	 */
 	public static function toUTF8_iconv()
+	{
+		return array(
+			array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
+		);
+	}
+
+	/**
+	 * Special cases with uconverter handling
+	 */
+	public static function toUTF8_uconverter()
 	{
 		return array(
 			array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
@@ -156,6 +176,25 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 		}
 		else {
 			$this->assertEquals($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
+		}
+	}
+
+	/**
+	 * Convert * to UTF-8 using UConverter
+	 *
+	 * Special cases only
+	 * @depends test_has_uconverter
+	 * @dataProvider toUTF8_uconverter
+	 */
+	public function test_convert_UTF8_uconverter($input, $expected, $encoding)
+	{
+		$encoding = SimplePie_Misc::encoding($encoding);
+		if (version_compare(phpversion(), '5.3', '<'))
+		{
+			$this->assertEquals($expected, Mock_Misc::__callStatic('change_encoding_uconverter', array($input, $encoding, 'UTF-8')));
+		}
+		else {
+			$this->assertEquals($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
 		}
 	}
 	/**#@-*/

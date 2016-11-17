@@ -1481,7 +1481,7 @@ class SimplePie
 				if (!extension_loaded('mbstring')) {
 					$missingExtensions[] = 'mbstring';
 				}
-				$this->error .= ' Try installing/enabling the ' . implode(' or ', $missingExtensions) . 'extension.';
+				$this->error .= ' Try installing/enabling the ' . implode(' or ', $missingExtensions) . ' extension.';
 			}
 		}
 
