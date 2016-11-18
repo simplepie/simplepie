@@ -11,11 +11,11 @@ compatibility and standards compliance][what_is].
 
 Requirements
 ------------
-* PHP 5.3.0+ (5.3.6+ recommended since SimplePie 1.4.3+)
+* PHP 5.3.0+ (5.3.6+ recommended since SimplePie 1.4.2)
 	* Support for PHP 5.2 stopped in branch `one-dot-three`
 	* Support for PHP 4 stopped in branch `one-dot-two`
 * libxml2 (certain 2.7.x releases are too buggy for words, and will crash)
-* Either the iconv or mbstring extension
+* One of iconv, mbstring or intl extensions
 * cURL or fsockopen()
 * PCRE support
 
@@ -41,12 +41,7 @@ Since SimplePie 1.3, we've split the classes into separate files to make it easi
 to maintain and use.
 
 If you'd like a single monolithic file, you can run `php build/compile.php` to
-generate `SimplePie.compiled.php`, or grab a copy from
-[dev.simplepie.org][dev_compiled] (this is kept up-to-date with the latest
-code from Git).
-
-[dev_compiled]: http://dev.simplepie.org/SimplePie.compiled.php
-
+generate `SimplePie.compiled.php`.
 
 To start the demo
 -----------------
@@ -73,7 +68,7 @@ the [issue tracker][].
 
 Project status
 --------------
-SimplePie is currently maintained by Ryan McCue.
+SimplePie is currently maintained by Malcolm Blaney.
 
 As an open source project, SimplePie is maintained on a somewhat sporadic basis.
 This means that feature requests may not be fulfilled straight away, as time has
@@ -89,14 +84,16 @@ be aware of our [coding standards][].
 Authors and contributors
 ------------------------
 ### Current
-* [Ryan McCue][] (Maintainer, support)
+* [Malcolm Blaney][] (Maintainer, support)
 
 ### Alumni
+* [Ryan McCue][] (developer, support)
 * [Ryan Parman][] (Creator, developer, evangelism, support)
 * [Geoffrey Sneddon][] (Lead developer)
 * [Michael Shipley][] (Submitter of patches, support)
 * [Steve Minutillo][] (Submitter of patches)
 
+[Malcolm Blaney]: https://unicyclic.com/mal
 [Ryan McCue]: http://ryanmccue.info
 [Ryan Parman]: http://ryanparman.com
 [Geoffrey Sneddon]: http://gsnedders.com
