@@ -1469,12 +1469,20 @@ class SimplePie
 		else
 		{
 			$this->error = 'The data could not be converted to UTF-8.';
-			if (!extension_loaded('mbstring') && !extension_loaded('iconv')) {
-				$this->error .= ' You MUST have either the iconv or mbstring extension installed.';
-			} elseif (!extension_loaded('mbstring')) {
-				$this->error .= ' Try installing the mbstring extension.';
-			} elseif (!extension_loaded('iconv')) {
-				$this->error .= ' Try installing the iconv extension.';
+			if (!extension_loaded('mbstring') && !extension_loaded('iconv') && !extension_loaded('intl')) {
+				$this->error .= ' You MUST have either the iconv, intl or mbstring extension installed and enabled.';
+			} else {
+				$missingExtensions = array();
+				if (!extension_loaded('iconv')) {
+					$missingExtensions[] = 'iconv';
+				}
+				if (!extension_loaded('intl')) {
+					$missingExtensions[] = 'intl';
+				}
+				if (!extension_loaded('mbstring')) {
+					$missingExtensions[] = 'mbstring';
+				}
+				$this->error .= ' Try installing/enabling the ' . implode(' or ', $missingExtensions) . ' extension.';
 			}
 		}
 

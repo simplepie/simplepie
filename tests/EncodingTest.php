@@ -110,6 +110,16 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Special cases with uconverter handling
+	 */
+	public static function toUTF8_uconverter()
+	{
+		return array(
+			array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
+		);
+	}
+
+	/**
 	 * Convert * to UTF-8
 	 *
 	 * @dataProvider toUTF8
@@ -144,6 +154,21 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
 		$this->assertEquals($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
+	}
+
+	/**
+	 * Convert * to UTF-8 using UConverter
+	 *
+	 * Special cases only
+	 * @dataProvider toUTF8_uconverter
+	 */
+	public function test_convert_UTF8_uconverter($input, $expected, $encoding)
+	{
+		$encoding = SimplePie_Misc::encoding($encoding);
+		if (version_compare(phpversion(), '5.5', '>='))
+		{
+			$this->assertEquals($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
+		}
 	}
 	/**#@-*/
 
