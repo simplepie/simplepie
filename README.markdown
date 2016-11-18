@@ -15,7 +15,7 @@ Requirements
 	* Support for PHP 5.2 stopped in branch `one-dot-three`
 	* Support for PHP 4 stopped in branch `one-dot-two`
 * libxml2 (certain 2.7.x releases are too buggy for words, and will crash)
-* Either the iconv or mbstring extension
+* One of iconv, mbstring or intl extensions
 * cURL or fsockopen()
 * PCRE support
 
@@ -68,7 +68,7 @@ the [issue tracker][].
 
 Project status
 --------------
-SimplePie is currently maintained by Ryan McCue.
+SimplePie is currently maintained by Malcolm Blaney.
 
 As an open source project, SimplePie is maintained on a somewhat sporadic basis.
 This means that feature requests may not be fulfilled straight away, as time has
