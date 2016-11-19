@@ -1376,6 +1376,13 @@ class SimplePie
 
 			list($headers, $sniffed) = $fetched;
 		}
+		
+		// Empty response check
+		if(empty($this->raw_data)){
+			$this->error = "A feed could not be found at $this->feed_url. Empty body.";
+			$this->registry->call('Misc', 'error', array($this->error, E_USER_NOTICE, __FILE__, __LINE__));
+			return false;
+		}
 
 		// Set up array of possible encodings
 		$encodings = array();
