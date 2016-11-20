@@ -20,6 +20,7 @@ $curl_ok = function_exists('curl_exec');
 $zlib_ok = extension_loaded('zlib');
 $mbstring_ok = extension_loaded('mbstring');
 $iconv_ok = extension_loaded('iconv');
+$intl_ok = version_compare(phpversion(), '5.5.0', '>=') && extension_loaded('intl');
 if (extension_loaded('xmlreader'))
 {
 	$xml_ok = true;
@@ -81,11 +82,14 @@ echo sprintf($testRow,str_pad(($mbstring_ok ? 'Passed' : 'Failed'), 7),str_pad('
 echo sprintf($testRow,str_pad(($iconv_ok ? 'Passed' : 'Failed'), 7),str_pad('iconv',20),str_pad('Enabled', 20),str_pad(( $iconv_ok ? 'Enabled' : 'Disabled' ), 20));
 
 
+echo sprintf($testRow,str_pad(($intl_ok ? 'Passed' : 'Failed'), 7),str_pad('intl',20),str_pad('Enabled', 20),str_pad(( $intl_ok ? 'Enabled' : 'Disabled' ), 20));
+
+
 echo "\n\n";
 
 echo "What does this mean? \n\n";
 
-if ($php_ok && $xml_ok && $pcre_ok && $mbstring_ok && $iconv_ok && $curl_ok && $zlib_ok):
+if ($php_ok && $xml_ok && $pcre_ok && $mbstring_ok && $iconv_ok && $intl_ok && $curl_ok && $zlib_ok):
 	echo "You have everything you need to run SimplePie properly!  Congratulations!\n\n";
 else:
 	if ($php_ok):
@@ -107,14 +111,30 @@ else:
                 echo "Zlib: The Zlib extension is not available.  SimplePie will ignore any GZIP-encoding, and instead handle feeds as uncompressed text.\n";
             endif;
 
-            if ($mbstring_ok && $iconv_ok):
-                echo "mbstring and iconv: You have both mbstring and iconv installed!  This will allow SimplePie to handle the greatest number of languages. \nCheck the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
-            elseif ($mbstring_ok):
-                echo "mbstring: mbstring is installed, but iconv is not.  Check the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
-            elseif ($iconv_ok):
-                echo "iconv: iconv is installed, but mbstring is not.  Check the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
+            if ($mbstring_ok && $iconv_ok && $intl_ok):
+                echo "mbstring, iconv and intl: You have both mbstring, iconv and intl installed and enabled!  This will allow SimplePie to handle the greatest number of languages. \nCheck the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
+            elseif (($mbstring_ok && $iconv_ok) ||
+                ($mbstring_ok && $intl_ok) ||
+                ($iconv_ok && $intl_ok)
+            ):
+                if ($mbstring_ok):
+                    echo "mbstring: mbstring is installed and enabled.\n";
+                else:
+                    echo "mbstring: mbstring extension is not available.\n";
+                endif;
+                if ($iconv_ok):
+                    echo "iconv: iconv is installed and enabled.\n";
+                else:
+                    echo "iconv: iconv extension is not available.\n";
+                endif;
+                if ($intl_ok):
+                    echo "intl: intl is installed and enabled.\n";
+                else:
+                    echo "intl: intl extension is not supported/available (PHP 5.5+).\n";
+                endif;
+                echo "Check the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
             else:
-                echo "mbstring and iconv: You do not have either of the extensions installed. This will significantly impair your ability to read non-English feeds, as well as even some English ones.  Check the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
+                echo "mbstring, iconv and intl: You do not have either of the extensions installed and enabled, (intl supported as of PHP 5.5+). This will significantly impair your ability to read non-English feeds, as well as even some English ones.  Check the http://simplepie.org/wiki/faq/supported_character_encodings chart to see what's supported on your webhost.\n";
             endif;
 
         else:
