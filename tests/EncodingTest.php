@@ -47,26 +47,6 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 
 class EncodingTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * Test if we have mbstring
-	 *
-	 * Used for depends
-	 */
-	public function test_has_mbstring()
-	{
-		$this->assertTrue(function_exists('mb_convert_encoding'));
-	}
-
-	/**
-	 * Test if we have iconv (crazy if we don't)
-	 *
-	 * Used for depends
-	 */
-	public function test_has_iconv()
-	{
-		$this->assertTrue(function_exists('iconv'));
-	}
-
 	/**#@+
 	 * UTF-8 methods
 	 */
@@ -134,26 +114,28 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	 * Convert * to UTF-8 using mbstring
 	 *
 	 * Special cases only
-	 * @depends test_has_mbstring
 	 * @dataProvider toUTF8_mbstring
 	 */
 	public function test_convert_UTF8_mbstring($input, $expected, $encoding)
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
-		$this->assertEquals($expected, Mock_Misc::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+		if (extension_loaded('mbstring')) {
+			$this->assertEquals($expected, Mock_Misc::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+		}
 	}
 
 	/**
 	 * Convert * to UTF-8 using iconv
 	 *
 	 * Special cases only
-	 * @depends test_has_iconv
 	 * @dataProvider toUTF8_iconv
 	 */
 	public function test_convert_UTF8_iconv($input, $expected, $encoding)
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
-		$this->assertEquals($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
+		if (extension_loaded('iconv')) {
+			$this->assertEquals($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
+		}
 	}
 
 	/**
@@ -165,8 +147,9 @@ class EncodingTest extends PHPUnit_Framework_TestCase
 	public function test_convert_UTF8_uconverter($input, $expected, $encoding)
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
-		if (version_compare(phpversion(), '5.5', '>='))
-		{
+		if (version_compare(phpversion(), '5.5', '>=') &&
+			extension_loaded('intl')
+		) {
 			$this->assertEquals($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
 		}
 	}
