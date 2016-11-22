@@ -90,7 +90,26 @@ class SimplePie_Item
 	public function __construct($feed, $data)
 	{
 		$this->feed = $feed;
-		$this->data = $data;
+		$this->data = $this->array_map_recursive('trim', $data);
+	}
+
+	/**
+	 * array_map recursive
+	 *
+	 * @param $callback
+	 * @param $array
+	 * @return mixed
+	 */
+	private function array_map_recursive($callback, &$array)
+	{
+		foreach ($array as &$value) {
+			if (is_string($value)) {
+				$value = $callback($value);
+			} elseif (is_array($value)) {
+				$this->array_map_recursive($callback, $value);
+			}
+		}
+		return $array;
 	}
 
 	/**
@@ -305,54 +324,47 @@ class SimplePie_Item
 	 * @param boolean $description_only Should we avoid falling back to the content?
 	 * @return string|null
 	 */
-	public function get_description($description_only = false)
-	{
-		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'summary'))
-		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'summary'))
-		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'summary'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML);
-		}
-
-		elseif (!$description_only)
-		{
-			return $this->get_content(true);
-		}
-		else
-		{
-			return null;
-		}
-	}
+    public function get_description($description_only = false)
+    {
+        if (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'summary')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'summary')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'description')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'description')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'description')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'description')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'summary')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'description')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML);
+        }
+        return $description_only ? null : $this->get_content(true);
+    }
 
 	/**
 	 * Get the content for the item
@@ -368,36 +380,30 @@ class SimplePie_Item
 	 * @param boolean $content_only Should we avoid falling back to the description?
 	 * @return string|null
 	 */
-	public function get_content($content_only = false)
-	{
-		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'content'))
-		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_content_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'content'))
-		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
-		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
-		}
-		elseif (!$content_only)
-		{
-			return $this->get_description(true);
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
+    public function get_content($content_only = false)
+    {
+        if (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'content')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_content_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'content')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+        } elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded')) &&
+            $return[0]['data']
+        ) {
+            return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+        }
+        return $content_only ? null : $this->get_description(true);
+    }
+
 	/**
 	 * Get the media:thumbnail of the item
 	 *
 	 * Uses `<media:thumbnail>`
 	 *
-	 * 
+	 *
 	 * @return array|null
 	 */
 	public function get_thumbnail()
@@ -414,7 +420,7 @@ class SimplePie_Item
 			}
 		}
 		return $this->data['thumbnail'];
-	}	
+	}
 
 	/**
 	 * Get a category for the item

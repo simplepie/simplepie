@@ -404,7 +404,7 @@ class SimplePie_Sanitize
 				$data = $this->registry->call('Misc', 'change_encoding', array($data, 'UTF-8', $this->output_encoding));
 			}
 		}
-		return $data;
+		return trim($data);
 	}
 
 	protected function preprocess($html, $type)
