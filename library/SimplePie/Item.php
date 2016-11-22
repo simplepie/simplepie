@@ -96,11 +96,11 @@ class SimplePie_Item
 	/**
 	 * array_map recursive
 	 *
-	 * @param $callback
-	 * @param $array
-	 * @return mixed
+	 * @param string $callback
+	 * @param array $array
+	 * @return array
 	 */
-	private function array_map_recursive($callback, &$array)
+	private function array_map_recursive($callback, array &$array)
 	{
 		foreach ($array as &$value) {
 			if (is_string($value)) {
