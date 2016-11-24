@@ -29,6 +29,9 @@
 	"require-dev": {
 		"phpunit/phpunit": "~4 || ~5"
 	},
+	"suggest": {
+		"mf2/mf2": "Microformat module that allows for parsing HTML for microformats"
+	},
 	"autoload": {
 		"psr-0": {
 			"SimplePie": "library"
