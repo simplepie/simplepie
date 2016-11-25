@@ -90,7 +90,26 @@ class SimplePie_Item
 	public function __construct($feed, $data)
 	{
 		$this->feed = $feed;
-		$this->data = $data;
+		$this->data = $this->array_map_recursive('trim', $data);
+	}
+
+	/**
+	 * array_map recursive
+	 *
+	 * @param string $callback
+	 * @param array $array
+	 * @return array
+	 */
+	private function array_map_recursive($callback, array &$array)
+	{
+		foreach ($array as &$value) {
+			if (is_string($value)) {
+				$value = $callback($value);
+			} elseif (is_array($value)) {
+				$this->array_map_recursive($callback, $value);
+			}
+		}
+		return $array;
 	}
 
 	/**
@@ -307,51 +326,61 @@ class SimplePie_Item
 	 */
 	public function get_description($description_only = false)
 	{
-		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'summary'))
-		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+		if (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'summary')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($tag[0]['attribs'])), $this->get_base($tag[0])))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'summary'))
-		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'summary')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($tag[0]['attribs'])), $this->get_base($tag[0])))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'description')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($tag[0])))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'description')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tag[0])))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'description')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'description')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'summary'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'summary')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tag[0])))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'description'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML);
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'description')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], SIMPLEPIE_CONSTRUCT_HTML))
+		) {
+			return $return;
 		}
-
-		elseif (!$description_only)
-		{
-			return $this->get_content(true);
-		}
-		else
-		{
-			return null;
-		}
+		return $description_only ? null : $this->get_content(true);
 	}
 
 	/**
@@ -368,36 +397,35 @@ class SimplePie_Item
 	 * @param boolean $content_only Should we avoid falling back to the description?
 	 * @return string|null
 	 */
-	public function get_content($content_only = false)
+    public function get_content($content_only = false)
 	{
-		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'content'))
-		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_content_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+		if (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'content')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], $this->registry->call('Misc', 'atom_10_content_construct_type', array($tag[0]['attribs'])), $this->get_base($tag[0])))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'content'))
-		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'content')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($tag[0]['attribs'])), $this->get_base($tag[0])))
+		) {
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded'))
-		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+		elseif (($tag = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded')) &&
+			$tag[0]['data'] &&
+			($return = $this->sanitize($tag[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tag[0])))
+		) {
+			return $return;
 		}
-		elseif (!$content_only)
-		{
-			return $this->get_description(true);
-		}
-		else
-		{
-			return null;
-		}
+		return $content_only ? null : $this->get_description(true);
 	}
-	
+
 	/**
 	 * Get the media:thumbnail of the item
 	 *
 	 * Uses `<media:thumbnail>`
 	 *
-	 * 
+	 *
 	 * @return array|null
 	 */
 	public function get_thumbnail()
@@ -414,7 +442,7 @@ class SimplePie_Item
 			}
 		}
 		return $this->data['thumbnail'];
-	}	
+	}
 
 	/**
 	 * Get a category for the item
@@ -1017,7 +1045,7 @@ class SimplePie_Item
 			}
 			if ($links = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'guid'))
 			{
-				if (!isset($links[0]['attribs']['']['isPermaLink']) || strtolower(trim($links[0]['attribs']['']['isPermaLink'])) === 'true')
+				if (!isset($links[0]['attribs']['']['isPermaLink']) || strtolower($links[0]['attribs']['']['isPermaLink']) === 'true')
 				{
 					$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
 				}
@@ -2154,10 +2182,10 @@ class SimplePie_Item
 							{
 								if (isset($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data']))
 								{
-									$temp = explode(',', $this->sanitize($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+									$temp = array_map('trim', explode(',', $this->sanitize($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT)));
 									foreach ($temp as $word)
 									{
-										$keywords[] = trim($word);
+										$keywords[] = $word;
 									}
 									unset($temp);
 								}
@@ -2170,10 +2198,10 @@ class SimplePie_Item
 							{
 								if (isset($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data']))
 								{
-									$temp = explode(',', $this->sanitize($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+									$temp = array_map('trim', explode(',', $this->sanitize($group['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT)));
 									foreach ($temp as $word)
 									{
-										$keywords[] = trim($word);
+										$keywords[] = $word;
 									}
 									unset($temp);
 								}
@@ -2647,10 +2675,10 @@ class SimplePie_Item
 						{
 							if (isset($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data']))
 							{
-								$temp = explode(',', $this->sanitize($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT));
+								$temp = array_map('trim', explode(',', $this->sanitize($content['child'][SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], SIMPLEPIE_CONSTRUCT_TEXT)));
 								foreach ($temp as $word)
 								{
-									$keywords[] = trim($word);
+									$keywords[] = $word;
 								}
 								unset($temp);
 							}
@@ -2914,7 +2942,7 @@ class SimplePie_Item
 		{
 			return (float) $return[0]['data'];
 		}
-		elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match))
+		elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', $return[0]['data'], $match))
 		{
 			return (float) $match[1];
 		}
@@ -2946,7 +2974,7 @@ class SimplePie_Item
 		{
 			return (float) $return[0]['data'];
 		}
-		elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match))
+		elseif (($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', $return[0]['data'], $match))
 		{
 			return (float) $match[2];
 		}

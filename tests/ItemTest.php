@@ -52,7 +52,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @param string $template 
 	 */
-	protected function checkFromTemplate($template, $data, $expected)
+	protected function checkFromTemplate($template, $data)
 	{
 		if (!is_array($data))
 		{
@@ -103,7 +103,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<title>%s</title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title);
 		$this->assertEquals($expected, $feed->get_title());
 	}
 
@@ -118,7 +118,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<dc:title>%s</dc:title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title);
 		$this->assertEquals($expected, $feed->get_title());
 	}
 
@@ -133,7 +133,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<dc:title>%s</dc:title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title);
 		$this->assertEquals($expected, $feed->get_title());
 	}
 
@@ -148,7 +148,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<a:title>%s</a:title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title);
 		$this->assertEquals($expected, $feed->get_title());
 	}
 
@@ -163,7 +163,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<a:title>%s</a:title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title);
 		$this->assertEquals($expected, $feed->get_title());
 	}
 
@@ -183,7 +183,7 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		</image>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title);
 		$this->assertEquals($expected, $feed->get_title());
 	}
 
@@ -203,7 +203,24 @@ class ItemTest extends PHPUnit_Framework_TestCase
 		<title>%s</title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title, $expected);
+		$feed = $this->checkFromTemplate($data, $title);
 		$this->assertEquals($expected, $feed->get_title());
+	}
+
+	public function testItemWithEmptyContent()
+	{
+		$data =
+'<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+	<channel>
+		<item>
+			<description>%s</description>
+			<content:encoded><![CDATA[ <script> ]]></content:encoded>
+		</item>
+	</channel>
+</rss>';
+		$content = 'item description';
+		$feed = $this->checkFromTemplate($data, $content);
+		$item = $feed->get_item();
+		$this->assertEquals($content, $item->get_content());
 	}
 }
