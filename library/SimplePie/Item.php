@@ -448,7 +448,8 @@ class SimplePie_Item
 	{
 		$categories = array();
 
-		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'category') as $category)
+		$type = 'category';
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, $type) as $category)
 		{
 			$term = null;
 			$scheme = null;
@@ -465,9 +466,9 @@ class SimplePie_Item
 			{
 				$label = $this->sanitize($category['attribs']['']['label'], SIMPLEPIE_CONSTRUCT_HTML);
 			}
-			$categories[] = $this->registry->create('Category', array($term, $scheme, $label));
+			$categories[] = $this->registry->create('Category', array($term, $scheme, $label, $type));
 		}
-		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'category') as $category)
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, $type) as $category)
 		{
 			// This is really the label, but keep this as the term also for BC.
 			// Label will also work on retrieving because that falls back to term.
@@ -480,15 +481,17 @@ class SimplePie_Item
 			{
 				$scheme = null;
 			}
-			$categories[] = $this->registry->create('Category', array($term, $scheme, null));
+			$categories[] = $this->registry->create('Category', array($term, $scheme, null, $type));
 		}
-		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'subject') as $category)
+
+		$type = 'subject';
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, $type) as $category)
 		{
-			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_HTML), null, null));
+			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_HTML), null, null, $type));
 		}
-		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'subject') as $category)
+		foreach ((array) $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, $type) as $category)
 		{
-			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_HTML), null, null));
+			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_HTML), null, null, $type));
 		}
 
 		if (!empty($categories))
