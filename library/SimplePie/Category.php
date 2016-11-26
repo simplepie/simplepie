@@ -143,9 +143,8 @@ class SimplePie_Category
 	 */
 	public function get_label($strict = false)
 	{
-		if ($this->label === null &&
-			$strict !== true
-		) {
+		if ($this->label === null && $strict !== true)
+		{
 			return $this->get_term();
 		}
 		return $this->label;
