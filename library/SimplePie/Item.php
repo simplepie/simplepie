@@ -307,41 +307,50 @@ class SimplePie_Item
 	 */
 	public function get_description($description_only = false)
 	{
-		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'summary'))
+		if (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'summary')) &&
+		    ($return = $this->sanitize($tags[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($tags[0]['attribs'])), $this->get_base($tags[0]))))
 		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'summary'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'summary')) &&
+		        ($return = $this->sanitize($tags[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($tags[0]['attribs'])), $this->get_base($tags[0]))))
 		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'description'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($tags[0]))))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'description'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tags[0]))))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'description'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT)))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'description'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_DC_10, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT)))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'summary'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'summary')) &&
+		        ($return = $this->sanitize($tags[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tags[0]))))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle')) &&
+		        ($return = $this->sanitize($tags[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT)))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_TEXT);
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'description'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_090, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], SIMPLEPIE_CONSTRUCT_HTML)))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML);
+			return $return;
 		}
 
 		elseif (!$description_only)
@@ -370,17 +379,20 @@ class SimplePie_Item
 	 */
 	public function get_content($content_only = false)
 	{
-		if ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'content'))
+		if (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'content')) &&
+		    ($return = $this->sanitize($tags[0]['data'], $this->registry->call('Misc', 'atom_10_content_construct_type', array($tags[0]['attribs'])), $this->get_base($tags[0]))))
 		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_content_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'content'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'content')) &&
+		        ($return = $this->sanitize($tags[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($tags[0]['attribs'])), $this->get_base($tags[0]))))
 		{
-			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
+			return $return;
 		}
-		elseif ($return = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded'))
+		elseif (($tags = $this->get_item_tags(SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded')) &&
+		        ($return = $this->sanitize($tags[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tags[0]))))
 		{
-			return $this->sanitize($return[0]['data'], SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($return[0]));
+			return $return;
 		}
 		elseif (!$content_only)
 		{
