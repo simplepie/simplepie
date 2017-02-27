@@ -644,6 +644,12 @@ class SimplePie
 	public $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 
 	/**
+	 * @var bool Should we throw exceptions, or use the old-style error property?
+	 * @access private
+	 */
+	public $enable_exceptions = false;
+	
+	/**
 	 * The SimplePie class contains feed level data and options
 	 *
 	 * To use SimplePie, create the SimplePie object with no parameters. You can
