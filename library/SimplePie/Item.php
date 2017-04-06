@@ -2814,9 +2814,17 @@ class SimplePie_Item
 					{
 						$length = ceil($link['attribs']['']['length']);
 					}
+					if (isset($link['attribs']['']['title']))
+					{
+						$title = $this->sanitize($link['attribs']['']['title'], SIMPLEPIE_CONSTRUCT_TEXT);
+					}
+					else
+					{
+						$title = $title_parent;
+					}
 
 					// Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-					$this->data['enclosures'][] = $this->registry->create('Enclosure', array($url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width));
+					$this->data['enclosures'][] = $this->registry->create('Enclosure', array($url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title, $width));
 				}
 			}
 
