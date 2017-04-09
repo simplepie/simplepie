@@ -206,9 +206,10 @@ class SimplePie_Item
 	 *
 	 * @since Beta 2
 	 * @param boolean $hash Should we force using a hash instead of the supplied ID?
-	 * @return string
+	 * @param string|false $fn User-supplied function to generate an hash
+	 * @return string|null
 	 */
-	public function get_id($hash = false, $fn = '')
+	public function get_id($hash = false, $fn = 'md5')
 	{
 		if (!$hash)
 		{
@@ -237,7 +238,15 @@ class SimplePie_Item
 				return $this->sanitize($this->data['attribs'][SIMPLEPIE_NAMESPACE_RDF]['about'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
 		}
-		if ($fn === '' || !is_callable($fn)) $fn = 'md5';
+		if ($fn === false)
+		{
+			return null;
+		}
+		elseif (!is_callable($fn))
+		{
+			trigger_error('User-supplied function $fn must be callable', E_USER_WARNING);
+			$fn = 'md5';
+		}
 		return call_user_func($fn,
 		       $this->get_permalink().$this->get_title().$this->get_content());
 	}
