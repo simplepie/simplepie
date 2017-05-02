@@ -98,6 +98,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		);
 		
 		$this->options = SimplePie_Misc::array_merge_recursive($this->options, SimplePie_Cache::parse_URL($location));
+		$this->options['extras']['cache_purge_time'] = SimplePie::$cache_duration;
 
 		// Path is prefixed with a "/"
 		$this->options['dbname'] = substr($this->options['path'], 1);
