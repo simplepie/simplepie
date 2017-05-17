@@ -1189,11 +1189,11 @@ class SimplePie_IRI
 		{
 			$iri .= $this->normalization[$this->scheme]['ipath'];
 		}
-		if ($this->iquery !== null)
+		if (!empty($this->iquery))
 		{
 			$iri .= '?' . $this->iquery;
 		}
-		if ($this->ifragment !== null)
+		if (!empty($this->ifragment))
 		{
 			$iri .= '#' . $this->ifragment;
 		}
