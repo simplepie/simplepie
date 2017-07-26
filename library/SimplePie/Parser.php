@@ -554,7 +554,7 @@ class SimplePie_Parser
 					$photo_list = array();
 					for ($j = 0; $j < count($entry['properties']['photo']); $j++) {
 						$photo = $entry['properties']['photo'][$j];
-						if (strpos($content, $photo) === false) {
+						if (!empty($photo) && strpos($content, $photo) === false) {
 							$photo_list[] = $photo;
 						}
 					}
