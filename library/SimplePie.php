@@ -1320,6 +1320,11 @@ class SimplePie
 			}
 		}
 
+		// The default sanitize class gets set in the constructor, check if it has
+		// changed.
+		if ($this->registry->get_class('Sanitize') !== 'SimplePie_Sanitize') {
+			$this->sanitize = $this->registry->create('Sanitize');
+		}
 		if (method_exists($this->sanitize, 'set_registry'))
 		{
 			$this->sanitize->set_registry($this->registry);
@@ -2606,15 +2611,15 @@ class SimplePie
 			}
 		}
 
-		if (isset($this->data['links'][$rel]))
-		{
-			return $this->data['links'][$rel];
-		}
-		else if (isset($this->data['headers']['link']) &&
-		         preg_match('/<([^>]+)>; rel='.preg_quote($rel).'/',
-		                    $this->data['headers']['link'], $match))
+		if (isset($this->data['headers']['link']) &&
+		    preg_match('/<([^>]+)>; rel='.preg_quote($rel).'/',
+		               $this->data['headers']['link'], $match))
 		{
 			return array($match[1]);
+		}
+		else if (isset($this->data['links'][$rel]))
+		{
+			return $this->data['links'][$rel];
 		}
 		else
 		{
