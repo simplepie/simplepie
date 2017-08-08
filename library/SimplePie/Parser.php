@@ -76,26 +76,17 @@ class SimplePie_Parser
 
 	public function parse(&$data, $encoding, $url = '')
 	{
-		if (function_exists('Mf2\parse')) {
+		if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
+			$doc = new DOMDocument();
+			@$doc->loadHTML($data);
+			$xpath = new DOMXpath($doc);
 			// Check for both h-feed and h-entry, as both a feed with no entries
 			// and a list of entries without an h-feed wrapper are both valid.
-			$position = 0;
-			while ($position = strpos($data, 'h-feed', $position)) {
-				$start = $position < 200 ? 0 : $position - 200;
-				$check = substr($data, $start, 400);
-				if (preg_match('/class="[^"]*h-feed/', $check)) {
-					return $this->parse_microformats($data, $url);
-				}
-				$position += 7;
-			}
-			$position = 0;
-			while ($position = strpos($data, 'h-entry', $position)) {
-				$start = $position < 200 ? 0 : $position - 200;
-				$check = substr($data, $start, 400);
-				if (preg_match('/class="[^"]*h-entry/', $check)) {
-					return $this->parse_microformats($data, $url);
-				}
-				$position += 7;
+			$query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
+				'contains(concat(" ", @class, " "), " h-entry ")]';
+			$result = $xpath->query($query);
+			if ($result->length !== 0) {
+				return $this->parse_microformats($data, $url);
 			}
 		}
 

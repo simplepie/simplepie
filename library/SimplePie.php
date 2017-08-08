@@ -1649,33 +1649,18 @@ class SimplePie
 				try
 				{
 					$microformats = false;
-					if (function_exists('Mf2\parse')) {
+					if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
+						$doc = new DOMDocument();
+						@$doc->loadHTML($file->body);
+						$xpath = new DOMXpath($doc);
 						// Check for both h-feed and h-entry, as both a feed with no entries
 						// and a list of entries without an h-feed wrapper are both valid.
-						$position = 0;
-						while ($position = strpos($file->body, 'h-feed', $position))
-						{
-							$start = $position < 200 ? 0 : $position - 200;
-							$check = substr($file->body, $start, 400);
-							if ($microformats = preg_match('/class="[^"]*h-feed/', $check))
-							{
-								break;
-							}
-							$position += 7;
-						}
-						$position = 0;
-						while ($position = strpos($file->body, 'h-entry', $position))
-						{
-							$start = $position < 200 ? 0 : $position - 200;
-							$check = substr($file->body, $start, 400);
-							if ($microformats = preg_match('/class="[^"]*h-entry/', $check))
-							{
-								break;
-							}
-							$position += 7;
-						}
+						$query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
+							'contains(concat(" ", @class, " "), " h-entry ")]';
+						$result = $xpath->query($query);
+						$microformats = $result->length !== 0;
 					}
-					// Now also do feed discovery, but if an h-entry was found don't
+					// Now also do feed discovery, but if microformats were found don't
 					// overwrite the current value of file.
 					$discovered = $locate->find($this->autodiscovery,
 					                            $this->all_discovered_feeds);
