@@ -804,7 +804,7 @@ class SimplePie
 	}
 
 	/**
-	 * Set the the default timeout for fetching remote feeds
+	 * Set the default timeout for fetching remote feeds
 	 *
 	 * This allows you to change the maximum time the feed's server to respond
 	 * and send the feed back.
