@@ -150,7 +150,7 @@ $feed->handle_content_type();
 			<a href="?feed=http://news.google.com/?output=rss" title="World News">Google News</a>,
 			<a href="?feed=http://blogs.law.harvard.edu/home/feed/rdf/" title="Test: Tag Stripping">Harvard Law</a>,
 			<a href="?feed=http://phobos.apple.com/WebObjects/MZStore.woa/wpa/MRSS/topsongs/limit=10/rss.xml&amp;orderbydate=false" title="Test: Tag Stripping">iTunes</a>,
-			<a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf" title="Test: EUC-JP Encoding">Japanese Language</a>,.us</a>,
+			<a href="?feed=http://blog.japan.cnet.com/lessig/index.rdf" title="Test: EUC-JP Encoding">Japanese Language</a>,
 			<a href="?feed=http://www.newspond.com/rss/main.xml" title="Tech and Science News">Newspond</a>,
 			<a href="?feed=http://feeds.feedburner.com/ok-cancel" title="Usability comics and commentary">OK/Cancel</a>,
 			<a href="?feed=http://osnews.com/files/recent.rdf" title="News about every OS ever">OS News</a>,
