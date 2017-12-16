@@ -42,7 +42,7 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
  
-class IRITest extends PHPUnit_Framework_TestCase
+class IRITest extends PHPUnit\Framework\TestCase
 {
 	public static function rfc3986_tests()
 	{
