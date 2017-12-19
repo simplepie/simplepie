@@ -16,6 +16,8 @@ matrix:
     - php: hhvm
     - php: 7.0
     - php: 7.1
+before_script:
+    - travis_retry composer install --no-interaction --prefer-dist
 branches:
   except:
     - one-dot-two
