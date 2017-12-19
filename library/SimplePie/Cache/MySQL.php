@@ -96,7 +96,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 				'cache_purge_time' => 2592000
 			),
 		);
-		
+
 		$this->options = SimplePie_Misc::array_merge_recursive($this->options, SimplePie_Cache::parse_URL($location));
 
 		// Path is prefixed with a "/"
@@ -395,10 +395,8 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		{
 			return $time;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -420,10 +418,8 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		{
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -446,9 +442,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		{
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 }

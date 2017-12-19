@@ -25,10 +25,8 @@ class SimplePie_Feed_Author_Test extends SimplePie_Feed_Test
 		{
 			return $author;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 }
 
@@ -41,10 +39,8 @@ class SimplePie_Feed_Category_Test extends SimplePie_Feed_Test
 		{
 			return $category;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 }
 
@@ -57,10 +53,8 @@ class SimplePie_First_Item_Test extends SimplePie_Feed_Test
 		{
 			return $item;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 }
 

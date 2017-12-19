@@ -214,10 +214,8 @@ class SimplePie_Locator
 		{
 			return array_values($feeds);
 		}
-		else
-		{
-			return null;
-		}
+
+		return null;
 	}
 
 	protected function search_elements_by_tag($name, &$done, $feeds)
@@ -430,4 +428,3 @@ class SimplePie_Locator
 		return null;
 	}
 }
-
