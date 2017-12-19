@@ -44,7 +44,7 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
-class SanitizeTest extends PHPUnit_Framework_TestCase
+class SanitizeTest extends PHPUnit\Framework\TestCase
 {
 	public function testSanitize()
 	{

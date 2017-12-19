@@ -45,7 +45,7 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
-class HTTPParserTest extends PHPUnit_Framework_TestCase
+class HTTPParserTest extends PHPUnit\Framework\TestCase
 {
 	public static function chunkedProvider()
 	{
