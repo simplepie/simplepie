@@ -1640,7 +1640,7 @@ class SimplePie
 		if (!$this->force_feed)
 		{
 			// Check if the supplied URL is a feed, if it isn't, look for it.
-			$locate = $this->registry->create('Locator', array(&$file, $this->timeout, $this->useragent, $this->max_checked_feeds));
+			$locate = $this->registry->create('Locator', array(&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options));
 
 			if (!$locate->is_feed($file))
 			{
