@@ -31,7 +31,7 @@ class Unit_Test2
     {
         return $this->name;
     }
-    
+
     public function run()
     {
         $this->init();
@@ -39,7 +39,7 @@ class Unit_Test2
         $this->expected();
         $this->test();
     }
-    
+
     protected function init() {}
     protected function data() {}
     protected function expected() {}
@@ -50,7 +50,7 @@ class Unit_Test2_Group
 {
     public $name;
     public $tests;
-    
+
     public function Unit_Test2_Group($name)
     {
         $this->name = $name;
@@ -174,9 +174,7 @@ class Unit_Test2_Files
         {
             return -1;
         }
-        else
-        {
-            return strnatcmp($a, $b);
-        }
+
+        return strnatcmp($a, $b);
     }
 }
