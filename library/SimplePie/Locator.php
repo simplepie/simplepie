@@ -158,14 +158,8 @@ class SimplePie_Locator
 			{
 				$mime_types[] = 'text/html';
 			}
-			if (in_array($sniffed, $mime_types))
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+
+			return in_array($sniffed, $mime_types);
 		}
 		elseif ($file->method & SIMPLEPIE_FILE_SOURCE_LOCAL)
 		{
