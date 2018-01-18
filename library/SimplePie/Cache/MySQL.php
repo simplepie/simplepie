@@ -414,12 +414,8 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		$query = $this->mysql->prepare('UPDATE `' . $this->options['extras']['prefix'] . 'cache_data` SET `mtime` = :time WHERE `id` = :id');
 		$query->bindValue(':time', time());
 		$query->bindValue(':id', $this->id);
-		if ($query->execute() && $query->rowCount() > 0)
-		{
-			return true;
-		}
 
-		return false;
+		return $query->execute() && $query->rowCount() > 0;
 	}
 
 	/**
@@ -438,11 +434,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		$query->bindValue(':id', $this->id);
 		$query2 = $this->mysql->prepare('DELETE FROM `' . $this->options['extras']['prefix'] . 'items` WHERE `feed_id` = :id');
 		$query2->bindValue(':id', $this->id);
-		if ($query->execute() && $query2->execute())
-		{
-			return true;
-		}
 
-		return false;
+		return $query->execute() && $query2->execute();
 	}
 }

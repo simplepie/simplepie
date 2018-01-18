@@ -223,12 +223,7 @@ class SimplePie_IRI
 	 */
 	public function __isset($name)
 	{
-		if (method_exists($this, 'get_' . $name) || isset($this->$name))
-		{
-			return true;
-		}
-
-		return false;
+		return method_exists($this, 'get_' . $name) || isset($this->$name);
 	}
 
 	/**
