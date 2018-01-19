@@ -117,6 +117,16 @@ class SimplePie_Item
 	}
 
 	/**
+	 * Get a json string of the item
+	 *
+	 * @return string
+	 */
+	public function toJson()
+	{
+		return json_encode(array_shift($this->data['child']));
+	}
+	
+	/**
 	 * Remove items that link back to this before destroying this object
 	 */
 	public function __destruct()
