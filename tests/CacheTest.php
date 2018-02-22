@@ -72,7 +72,7 @@ class Mock_CacheNew extends SimplePie_Cache
 	}
 }
 
-class CacheTest extends PHPUnit_Framework_TestCase
+class CacheTest extends PHPUnit\Framework\TestCase
 {
 	/**
 	 * @expectedException Exception_Success

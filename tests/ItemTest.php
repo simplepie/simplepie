@@ -45,7 +45,7 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
-class ItemTest extends PHPUnit_Framework_TestCase
+class ItemTest extends PHPUnit\Framework\TestCase
 {
 	/**
 	 * Run a test using a sprintf template and data

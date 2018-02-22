@@ -45,7 +45,7 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
-class LocatorTest extends PHPUnit_Framework_TestCase
+class LocatorTest extends PHPUnit\Framework\TestCase
 {
 	public static function feedmimetypes()
 	{

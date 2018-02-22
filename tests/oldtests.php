@@ -7,7 +7,7 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 require_once dirname(__FILE__) . '/oldtests/compat_test_harness.php';
 require_once dirname(__FILE__) . '/oldtests/functions.php';
 
-class OldTest extends PHPUnit_Framework_TestCase
+class OldTest extends PHPUnit\Framework\TestCase
 {
     public function getTests()
     {

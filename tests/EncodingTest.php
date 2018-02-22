@@ -45,7 +45,7 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
-class EncodingTest extends PHPUnit_Framework_TestCase
+class EncodingTest extends PHPUnit\Framework\TestCase
 {
 	/**#@+
 	 * UTF-8 methods

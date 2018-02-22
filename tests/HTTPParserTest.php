@@ -45,7 +45,7 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
-class HTTPParserTest extends PHPUnit_Framework_TestCase
+class HTTPParserTest extends PHPUnit\Framework\TestCase
 {
 	public static function chunkedProvider()
 	{
@@ -88,6 +88,22 @@ class HTTPParserTest extends PHPUnit_Framework_TestCase
 	public function testChunkedProxy($data, $expected)
 	{
 		$data = "HTTP/1.0 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
+		$data = SimplePie_HTTP_Parser::prepareHeaders($data);
+		$parser = new SimplePie_HTTP_Parser($data);
+		$this->assertTrue($parser->parse());
+		$this->assertEquals(1.1, $parser->http_version);
+		$this->assertEquals(200, $parser->status_code);
+		$this->assertEquals('OK', $parser->reason);
+		$this->assertEquals(array('content-type' => 'text/plain'), $parser->headers);
+		$this->assertEquals($expected, $parser->body);
+	}
+
+	/**
+	 * @dataProvider chunkedProvider
+	 */
+	public function testChunkedProxy11($data, $expected)
+	{
+		$data = "HTTP/1.1 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
 		$data = SimplePie_HTTP_Parser::prepareHeaders($data);
 		$parser = new SimplePie_HTTP_Parser($data);
 		$this->assertTrue($parser->parse());
