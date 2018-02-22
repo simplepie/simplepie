@@ -19,8 +19,8 @@ before_script:
     - travis_retry composer install
 
 script:
-    - if [ "$TRAVIS_PHP_VERSION" >= "7.0" ]; then composer test;    fi
-    - if [ "$TRAVIS_PHP_VERSION" <  "7.0" ]; then composer oldtest; fi
+    - if [ $(phpenv version-name) >= "7.0" ]; then composer test;    fi
+    - if [ $(phpenv version-name) <  "7.0" ]; then composer oldtest; fi
 
 branches:
   except:
