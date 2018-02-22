@@ -4,7 +4,7 @@ class SimplePie_First_Item_Title_Test_Bug_179_Post_10_Test_0 extends SimplePie_F
 {
 	function data()
 	{
-		$this->data = 
+		$this->data =
 '<feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<title>Title 1</title>
@@ -20,7 +20,7 @@ class SimplePie_First_Item_Title_Test_Bug_179_Post_10_Test_0 extends SimplePie_F
 	</entry>
 </feed>';
 	}
-	
+
 	function expected()
 	{
 		$this->expected = 'Title 1';

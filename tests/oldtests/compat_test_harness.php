@@ -11,7 +11,7 @@ class Unit_Test2
     /**
      * Set the test name to the class name by default, replacing "_" with " "
      */
-    public function Unit_Test2()
+    public function __construct()
     {
         $this->name = str_replace('_', ' ', get_class($this));
     }
@@ -51,7 +51,7 @@ class Unit_Test2_Group
     public $name;
     public $tests;
 
-    public function Unit_Test2_Group($name)
+    public function __construct($name)
     {
         $this->name = $name;
     }

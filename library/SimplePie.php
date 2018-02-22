@@ -3146,6 +3146,12 @@ class SimplePie
 	{
 		$a_date = $a->get_date('U');
 		$b_date = $b->get_date('U');
+		if(version_compare(phpversion(), '7.0.0', '>=')) {
+			if ($a_date === $b_date) {
+				return 0;
+			}
+			return ($a_date > $b_date) ? -1 : 1;
+		}
 		if ($a_date && $b_date) {
 			return $a_date > $b_date ? -1 : 1;
 		}

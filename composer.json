@@ -41,7 +41,6 @@
         "bin-dir": "bin"
     },
     "scripts": {
-        "test": "php ./bin/phpunit -c phpunit.xml.dist",
-        "oldtest": "php ./bin/phpunit -c phpunit.xml.old.dist"
+        "test": "php ./bin/phpunit -c phpunit.xml.dist"
     }
 }
