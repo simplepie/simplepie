@@ -1,23 +1,27 @@
-sudo: false
 language: php
+
+php:
+    - 5.4
+    - 5.5
+    - 5.6
+    - 7.0
+    - 7.1
+    - 7.2
+    - nightly
+    - hhvm
+
 matrix:
-  fast_finish: true
   include:
-    - php: 5.4
-    - php: 5.5
-    - php: 5.6
-    - php: 7.0
-    - php: 7.1
-    - php: hhvm
-      sudo: true
-      dist: trusty
-      group: edge # until the next Travis CI update
-  allow_failures:
-    - php: hhvm
-    - php: 7.0
-    - php: 7.1
+    - php: 5.3
+      dist: precise
+
 before_script:
-    - travis_retry composer install --no-interaction --prefer-dist
+    - travis_retry composer install
+
+script:
+    - if [ "$TRAVIS_PHP_VERSION" >= "7.0" ]; then composer test;    fi
+    - if [ "$TRAVIS_PHP_VERSION" <  "7.0" ]; then composer oldtest; fi
+
 branches:
   except:
     - one-dot-two
