@@ -41,9 +41,16 @@
  */
 
 require_once dirname(__FILE__) . '/bootstrap.php';
- 
+
 class IRITest extends PHPUnit\Framework\TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        if(class_exists('PHPUnit_Framework_Error_Notice')) {
+            class_alias('PHPUnit_Framework_Error_Notice', 'PHPUnit\Framework\Error\Notice');
+        }
+    }
+
 	public static function rfc3986_tests()
 	{
 		return array(
@@ -93,7 +100,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 			array('http:g', 'http:g'),
 		);
 	}
- 
+
 	/**
 	 * @dataProvider rfc3986_tests
 	 */
@@ -102,7 +109,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$base = new SimplePie_IRI('http://a/b/c/d;p?q');
 		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
- 
+
 	/**
 	 * @dataProvider rfc3986_tests
 	 */
@@ -122,7 +129,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 		$this->assertEquals($expected, (string) SimplePie_IRI::absolutize($base, $relative));
 	}
-	
+
 	public static function sp_tests()
 	{
 		return array(
@@ -144,7 +151,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 			array('http:g', 'a', 'http:a'),
 		);
 	}
- 
+
 	/**
 	 * @dataProvider sp_tests
 	 */
@@ -153,7 +160,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$base = new SimplePie_IRI($base);
 		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
- 
+
 	/**
 	 * @dataProvider sp_tests
 	 */
@@ -183,7 +190,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$base->set_query($query);
 		$this->assertEquals($expected, $base->get_iri());
 	}
- 
+
 	/**
 	 * @dataProvider query_tests
 	 */
@@ -202,7 +209,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 			array('http://example.com/#foo', '', 'http://example.com/'),
 		);
 	}
- 
+
 	/**
 	 * @dataProvider absolutize_tests
 	 */
@@ -211,7 +218,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$base = new SimplePie_IRI($base);
 		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
- 
+
 	/**
 	 * @dataProvider absolutize_tests
 	 */
@@ -221,7 +228,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$expected = new SimplePie_IRI($expected);
 		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative));
 	}
-	
+
 	public static function normalization_tests()
 	{
 		return array(
@@ -304,7 +311,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 			array('///', '///'),
 		);
 	}
- 
+
 	/**
 	 * @dataProvider normalization_tests
 	 */
@@ -313,7 +320,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$input = new SimplePie_IRI($input);
 		$this->assertEquals($output, $input->get_iri());
 	}
- 
+
 	/**
 	 * @dataProvider normalization_tests
 	 */
@@ -340,14 +347,14 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$input = new SimplePie_IRI($input);
 		$this->assertEquals($output, $input->get_uri());
 	}
-	
+
 	public static function equivalence_tests()
 	{
 		return array(
 			array('http://É.com', 'http://%C3%89.com'),
 		);
 	}
- 
+
 	/**
 	 * @dataProvider equivalence_tests
 	 */
@@ -357,14 +364,14 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$output = new SimplePie_IRI($output);
 		$this->assertEquals($output, $input);
 	}
-	
+
 	public static function not_equivalence_tests()
 	{
 		return array(
 			array('http://example.com/foo/bar', 'http://example.com/foo%2Fbar'),
 		);
 	}
- 
+
 	/**
 	 * @dataProvider not_equivalence_tests
 	 */
@@ -454,7 +461,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 	}
 
 	/**
-	 * @expectedException PHPUnit_Framework_Error_Notice
+	 * @expectedException PHPUnit\Framework\Error\Notice
 	 */
 	public function testNonexistantProperty()
 	{
