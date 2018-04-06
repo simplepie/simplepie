@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit colors="true" bootstrap="tests/bootstrap.php">
-    <testsuites>
+	<testsuites>
         <testsuite name="SimplePie Test Suite">
             <directory>./tests</directory>
         </testsuite>
@@ -10,12 +10,12 @@
         </testsuite>
     </testsuites>
 
-	<filter>
-		<blacklist>
-			<directory suffix=".php">tests</directory>
-		</blacklist>
-		<whitelist>
-			<directory suffix=".php">SimplePie</directory>
-		</whitelist>
-	</filter>
+    <filter>
+	    <blacklist>
+		    <directory suffix=".php">tests</directory>
+        </blacklist>
+        <whitelist>
+            <directory suffix=".php">SimplePie</directory>
+        </whitelist>
+    </filter>
 </phpunit>
