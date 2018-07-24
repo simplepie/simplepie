@@ -65,6 +65,7 @@ class SimplePie_Cache_Redis implements SimplePie_Cache_Base {
         $parsed = SimplePie_Cache::parse_URL($location);
         $redis = new Redis();
         $redis->connect($parsed['host'], $parsed['port']);
+        $redis->auth($parsed['pass']);
         $this->cache = $redis;
 
         if (!is_null($options) && is_array($options)) {
