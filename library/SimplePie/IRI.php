@@ -1166,7 +1166,7 @@ class SimplePie_IRI
 		{
 			$iri .= $this->ipath;
 		}
-		elseif (!empty($this->normalization[$this->scheme]['ipath']) && $iauthority !== null && $iauthority !== '')
+        elseif (!empty($this->normalization[$this->scheme]['ipath']) && $iauthority !== null && $iauthority !== '')
 		{
 			$iri .= $this->normalization[$this->scheme]['ipath'];
 		}
@@ -1210,7 +1210,7 @@ class SimplePie_IRI
 			{
 				$iauthority .= $this->ihost;
 			}
-			if ($this->port !== null)
+            if ($this->port !== null && $this->port !== 0)
 			{
 				$iauthority .= ':' . $this->port;
 			}
