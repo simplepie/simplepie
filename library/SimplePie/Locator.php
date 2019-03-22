@@ -154,7 +154,7 @@ class SimplePie_Locator
 			$mime_types = array('application/rss+xml', 'application/rdf+xml',
 			                    'text/rdf', 'application/atom+xml', 'text/xml',
 			                    'application/xml', 'application/x-rss+xml',
-					    'application/x-rss+xml, text/xml');
+					    'application/rss+xml, text/xml');
 			if ($check_html)
 			{
 				$mime_types[] = 'text/html';
