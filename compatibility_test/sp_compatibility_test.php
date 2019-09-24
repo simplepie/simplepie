@@ -14,7 +14,7 @@ else if (isset($_GET['background']))
 	exit;
 }
 
-$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.3.0', '>='));
+$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.6.0', '>='));
 $pcre_ok = extension_loaded('pcre');
 $curl_ok = function_exists('curl_exec');
 $zlib_ok = extension_loaded('zlib');
@@ -59,7 +59,7 @@ EOF;
 echo $testHeader;
 
 
-echo sprintf($testRow,str_pad(($php_ok ? 'Passed' : 'Failed'), 7),str_pad('PHP',20),str_pad('5.3.0 or higher', 20),str_pad(phpversion(), 20));
+echo sprintf($testRow,str_pad(($php_ok ? 'Passed' : 'Failed'), 7),str_pad('PHP',20),str_pad('5.6.0 or higher', 20),str_pad(phpversion(), 20));
 
 
 
@@ -382,7 +382,7 @@ function fnLoadPngs() {
 				<tbody>
 					<tr class="<?php echo ($php_ok) ? 'enabled' : 'disabled'; ?>">
 						<td>PHP</td>
-						<td>5.3.0 or higher</td>
+						<td>5.6.0 or higher</td>
 						<td><?php echo phpversion(); ?></td>
 					</tr>
 					<tr class="<?php echo ($xml_ok) ? 'enabled, and sane' : 'disabled, or broken'; ?>">

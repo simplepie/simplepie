@@ -665,9 +665,9 @@ class SimplePie
 	 */
 	public function __construct()
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
+		if (version_compare(PHP_VERSION, '5.6', '<'))
 		{
-			trigger_error('Please upgrade to PHP 5.3 or newer.');
+			trigger_error('Please upgrade to PHP 5.6 or newer.');
 			die();
 		}
 
@@ -706,7 +706,7 @@ class SimplePie
 	 */
 	public function __destruct()
 	{
-		if ((version_compare(PHP_VERSION, '5.3', '<') || !gc_enabled()) && !ini_get('zend.ze1_compatibility_mode'))
+		if ((version_compare(PHP_VERSION, '5.6', '<') || !gc_enabled()) && !ini_get('zend.ze1_compatibility_mode'))
 		{
 			if (!empty($this->data['items']))
 			{
