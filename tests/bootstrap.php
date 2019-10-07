@@ -14,7 +14,7 @@ class MockSimplePie_File extends SimplePie_File
 			'content-type' => 'application/atom+xml'
 		);
 		$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
-		$this->body = '<?xml charset="utf-8"?><feed />';
+		$this->body = '<?xml version="1.0" encoding="utf-8"?><feed />';
 		$this->status_code = 200;
 	}
 }
