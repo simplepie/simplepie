@@ -1712,8 +1712,8 @@ class SimplePie
 					}
 					$cache = $this->registry->call('Cache', 'get_handler', array($this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc'));
 				}
-				$this->feed_url = $file->url;
 			}
+			$this->feed_url = $file->url;
 			$locate = null;
 		}
 
@@ -1911,7 +1911,8 @@ class SimplePie
 	 *
 	 * When the 'permanent' mode is disabled (default),
 	 * may or may not be different from the URL passed to {@see set_feed_url()},
-	 * depending on whether auto-discovery was used.
+	 * depending on whether auto-discovery was used, and whether there were
+	 * any redirects along the way.
 	 *
 	 * @since Preview Release (previously called `get_feed_url()` since SimplePie 0.8.)
 	 * @todo Support <itunes:new-feed-url>

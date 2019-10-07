@@ -41,30 +41,18 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
-
-require_once dirname(__FILE__) . '/EncodingTest.php';
-require_once dirname(__FILE__) . '/IRITest.php';
-require_once dirname(__FILE__) . '/LocatorTest.php';
-require_once dirname(__FILE__) . '/ItemTest.php';
-require_once dirname(__FILE__) . '/oldtests.php';
- 
-class AllTests
+class SubscribeUrlTest extends PHPUnit\Framework\TestCase
 {
-	public static function suite()
+	public function testDirectOverrideLegacy()
 	{
-		$suite = new PHPUnit_Framework_TestSuite();
-		$suite->setName('SimplePie');
+		$feed = new SimplePie();
+		$feed->get_registry()->register('File', MockSimplePie_RedirectingFile::class);
+		$feed->enable_cache(false);
+		$feed->set_feed_url('http://example.com/feed/');
 
-		$suite->addTestSuite('CacheTest');
-		$suite->addTestSuite('EncodingTest');
-		$suite->addTestSuite('IRITest');
-		$suite->addTestSuite('LocatorTest');
-		$suite->addTestSuite('HTTPParserTest');
-		$suite->addTestSuite('ItemTest');
-		$suite->addTestSuite('OldTest');
-		$suite->addTestSuite('SubscribeUrlTest');
- 
-		return $suite;
+		$feed->init();
+
+		$this->assertEquals('https://example.com/feed/2019-10-07', $feed->subscribe_url());
+		$this->assertEquals('https://example.com/feed/', $feed->subscribe_url(true));
 	}
 }
