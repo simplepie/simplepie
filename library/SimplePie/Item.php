@@ -958,7 +958,7 @@ class SimplePie_Item
 	public function get_link($key = 0, $rel = 'alternate')
 	{
 		$links = $this->get_links($rel);
-		if ($links[$key] !== null)
+		if ($links && $links[$key] !== null)
 		{
 			return $links[$key];
 		}
