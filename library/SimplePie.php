@@ -1251,8 +1251,8 @@ class SimplePie
 	/**
 	 * Set the handler to enable the display of cached images.
 	 *
-	 * @param str $page Web-accessible path to the handler_image.php file.
-	 * @param str $qs The query string that the value should be passed to.
+	 * @param string $page Web-accessible path to the handler_image.php file.
+	 * @param string $qs The query string that the value should be passed to.
 	 */
 	public function set_image_handler($page = false, $qs = 'i')
 	{
