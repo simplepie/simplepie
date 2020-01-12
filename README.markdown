@@ -94,7 +94,7 @@ Authors and contributors
 [Malcolm Blaney]: https://unicyclic.com/mal
 [Ryan McCue]: http://ryanmccue.info
 [Ryan Parman]: http://ryanparman.com
-[Sam Sneddon]: http://gsnedders.com
+[Sam Sneddon]: https://gsnedders.com
 [Michael Shipley]: http://michaelpshipley.com
 [Steve Minutillo]: http://minutillo.com/steve/
 
