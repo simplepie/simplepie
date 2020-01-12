@@ -3,7 +3,7 @@
 /**
  * IRI test cases
  *
- * Copyright (c) 2008-2016 Geoffrey Sneddon.
+ * Copyright (c) 2008-2016 Sam Sneddon.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package IRI
- * @author Geoffrey Sneddon
- * @copyright 2008-2016 Geoffrey Sneddon
+ * @author Sam Sneddon
+ * @copyright 2008-2016 Sam Sneddon
  * @license http://www.opensource.org/licenses/bsd-license.php
  * @link http://hg.gsnedders.com/iri/
  *
