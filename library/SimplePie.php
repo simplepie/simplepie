@@ -1711,7 +1711,7 @@ class SimplePie
 					{
 						trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
 					}
-					$url = $this->feed_url . ($this->force_feed ? '#force_feed' : '');
+					$url = $this->feed_url . '#force_feed';
 					$cache = $this->registry->call('Cache', 'get_handler', array($this->cache_location, call_user_func($this->cache_name_function, $url), 'spc'));
 				}
 			}
