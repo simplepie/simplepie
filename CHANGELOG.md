@@ -7,9 +7,9 @@
 ## 1.5.4 (December 17, 2019)
 
 * PHP 5.6 or newer is now required. [#625](https://github.com/simplepie/simplepie/pull/625)
-* Fix invalid docblock parameter types [#633](https://github.com/simplepie/simplepie/pull/633)
+* Fixed invalid docblock parameter types [#633](https://github.com/simplepie/simplepie/pull/633)
 * Added support for German short forms for weekdays and months. [#632](https://github.com/simplepie/simplepie/pull/632)
-* PHP 7.4 support: Fix instances of accessing array offset on null type values. [#628](https://github.com/simplepie/simplepie/pull/628)
+* PHP 7.4 support: Fixed instances of accessing array offset on null type values. [#628](https://github.com/simplepie/simplepie/pull/628)
 * Return an effective feed URL when asking for non-permanent `subscribe_url`. [#627](https://github.com/simplepie/simplepie/pull/627)
 
 ## 1.5.3 (September 22, 2019)
