@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2017, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2017, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -34,9 +34,9 @@
  *
  * @package SimplePie
  * @version 1.5.4
- * @copyright 2004-2017 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @copyright 2004-2017 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
- * @author Geoffrey Sneddon
+ * @author Sam Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
@@ -706,7 +706,7 @@ class SimplePie
 	 */
 	public function __destruct()
 	{
-		if ((version_compare(PHP_VERSION, '5.6', '<') || !gc_enabled()) && !ini_get('zend.ze1_compatibility_mode'))
+		if (!gc_enabled())
 		{
 			if (!empty($this->data['items']))
 			{
@@ -1373,7 +1373,8 @@ class SimplePie
 			// Decide whether to enable caching
 			if ($this->cache && $parsed_feed_url['scheme'] !== '')
 			{
-				$cache = $this->registry->call('Cache', 'get_handler', array($this->cache_location, call_user_func($this->cache_name_function, $this->feed_url), 'spc'));
+				$url = $this->feed_url . ($this->force_feed ? '#force_feed' : '');
+				$cache = $this->registry->call('Cache', 'get_handler', array($this->cache_location, call_user_func($this->cache_name_function, $url), 'spc'));
 			}
 
 			// Fetch the data via SimplePie_File into $this->raw_data
