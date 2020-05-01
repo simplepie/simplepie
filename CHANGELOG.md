@@ -1,4 +1,4 @@
-## 1.5.5 (Unreleased)
+## 1.5.5 (May 1, 2020)
 
 * Ensure that feeds retrieved with `force_feed` do not share the same cache as those retrieved without. [#643](https://github.com/simplepie/simplepie/pull/643)
 * Removed references to removed PHP directives and some PHP < 5.6 checks. [#645](https://github.com/simplepie/simplepie/pull/645)
