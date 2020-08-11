@@ -5,9 +5,22 @@ php:
     - 7.0
     - 7.1
     - 7.2
+    - 7.3
+    - 7.4
+    - nightly
+
+matrix:
+  allow_failures:
+    # Allow failures for unstable builds.
+    - php: "nightly"
 
 before_script:
-    - travis_retry composer install --no-interaction
+  - |
+    if [[ $TRAVIS_PHP_VERSION == "nightly" ]]; then
+      travis_retry composer install --no-interaction --ignore-platform-reqs
+    else
+      travis_retry composer install --no-interaction
+    fi
 
 script:
     - composer test
