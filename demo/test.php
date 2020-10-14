@@ -6,7 +6,7 @@ include_once('../idn/idna_convert.class.php');
 $feed = new SimplePie();
 if (isset($_GET['feed']) && $_GET['feed'] !== '')
 {
-	if (get_magic_quotes_gpc())
+	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
 	{
 		$_GET['feed'] = stripslashes($_GET['feed']);
 	}
