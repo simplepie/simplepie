@@ -1153,6 +1153,7 @@ class SimplePie
 			$this->strip_attributes(false);
 			$this->add_attributes(false);
 			$this->set_image_handler(false);
+			$this->set_https_domains(array());
 		}
 	}
 
@@ -1253,6 +1254,19 @@ class SimplePie
 	public function set_url_replacements($element_attribute = null)
 	{
 		$this->sanitize->set_url_replacements($element_attribute);
+	}
+
+	/**
+	 * Set the list of domains for which to force HTTPS.
+	 * @see SimplePie_Sanitize::set_https_domains()
+	 * @param array List of HTTPS domains. Example array('biz', 'example.com', 'example.org', 'www.example.net').
+	 */
+	public function set_https_domains($domains = array())
+	{
+		if (is_array($domains))
+		{
+			$this->sanitize->set_https_domains($domains);
+		}
 	}
 
 	/**
