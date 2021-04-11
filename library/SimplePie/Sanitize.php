@@ -511,9 +511,9 @@ class SimplePie_Sanitize
 					if ($element->hasAttribute($attribute))
 					{
 						$value = $this->registry->call('Misc', 'absolutize_url', array($element->getAttribute($attribute), $this->base));
-						$value = $this->https_url($value);
-						if ($value)
+						if ($value !== false)
 						{
+							$value = $this->https_url($value);
 							$element->setAttribute($attribute, $value);
 						}
 					}
