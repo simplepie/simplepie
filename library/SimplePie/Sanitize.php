@@ -76,7 +76,7 @@ class SimplePie_Sanitize
 	 * List of domains for which to force HTTPS.
 	 * @see SimplePie_Sanitize::set_https_domains()
 	 * Array is a tree split at DNS levels. Example:
-	 * array('biz' => true, 'com' => array('example' => true), 'net' => array('example') => array('www' => true))
+	 * array('biz' => true, 'com' => array('example' => true), 'net' => array('example' => array('www' => true)))
 	 */
 	var $https_domains = array();
 
