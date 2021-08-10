@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit colors="true" bootstrap="tests/bootstrap.php">
-	<testsuites>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.5/phpunit.xsd"
+    backupGlobals="false"
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    >
+    <testsuites>
         <testsuite name="SimplePie Test Suite">
             <directory>./tests</directory>
         </testsuite>
         <testsuite name="Old Tests">
-			<file>tests/oldtests.php</file>
+            <file>tests/oldtests.php</file>
         </testsuite>
     </testsuites>
 
     <filter>
-	    <blacklist>
-		    <directory suffix=".php">tests</directory>
-        </blacklist>
-        <whitelist>
-            <directory suffix=".php">SimplePie</directory>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">library</directory>
         </whitelist>
     </filter>
 </phpunit>
