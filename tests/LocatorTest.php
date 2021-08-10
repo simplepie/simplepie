@@ -45,8 +45,12 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
+use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
+
 class LocatorTest extends PHPUnit\Framework\TestCase
 {
+	use ExpectPHPException;
+
 	public static function feedmimetypes()
 	{
 		return array(
@@ -104,11 +108,10 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 		$this->assertEquals($locator->find(SIMPLEPIE_LOCATOR_ALL, $found), $data);
 	}
 
-	/**
-	 * @expectedException SimplePie_Exception
-	 */
 	public function testFailDiscoveryNoDOM()
 	{
+		$this->expectException('SimplePie_Exception');
+
 		$data = new MockSimplePie_File('http://example.com/feed.xml');
 		$data->headers['content-type'] = 'text/html';
 		$data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';

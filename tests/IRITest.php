@@ -42,14 +42,11 @@
 
 require_once dirname(__FILE__) . '/bootstrap.php';
 
+use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
+
 class IRITest extends PHPUnit\Framework\TestCase
 {
-    public static function setUpBeforeClass()
-    {
-        if(class_exists('PHPUnit_Framework_Error_Notice')) {
-            class_alias('PHPUnit_Framework_Error_Notice', 'PHPUnit\Framework\Error\Notice');
-        }
-    }
+	use ExpectPHPException;
 
 	public static function rfc3986_tests()
 	{
@@ -460,11 +457,10 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$this->assertEquals('test', $iri->fragment);
 	}
 
-	/**
-	 * @expectedException PHPUnit\Framework\Error\Notice
-	 */
 	public function testNonexistantProperty()
 	{
+		$this->expectNotice();
+
 		$iri = new SimplePie_IRI();
 		$this->assertFalse(isset($iri->nonexistant_prop));
 		$should_fail = $iri->nonexistant_prop;
