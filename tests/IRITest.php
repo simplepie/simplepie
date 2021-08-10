@@ -104,7 +104,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 	public function testStringRFC3986($relative, $expected)
 	{
 		$base = new SimplePie_IRI('http://a/b/c/d;p?q');
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
 
 	/**
@@ -123,8 +123,8 @@ class IRITest extends PHPUnit\Framework\TestCase
 	public function testBothStringRFC3986($relative, $expected)
 	{
 		$base = 'http://a/b/c/d;p?q';
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
-		$this->assertEquals($expected, (string) SimplePie_IRI::absolutize($base, $relative));
+		$this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertSame($expected, (string) SimplePie_IRI::absolutize($base, $relative));
 	}
 
 	public static function sp_tests()
@@ -155,7 +155,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 	public function testStringSP($base, $relative, $expected)
 	{
 		$base = new SimplePie_IRI($base);
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
 
 	/**
@@ -185,7 +185,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 	{
 		$base = new SimplePie_IRI('http://example.com/');
 		$base->set_query($query);
-		$this->assertEquals($expected, $base->get_iri());
+		$this->assertSame($expected, $base->get_iri());
 	}
 
 	/**
@@ -213,7 +213,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 	public function testAbsolutizeString($base, $relative, $expected)
 	{
 		$base = new SimplePie_IRI($base);
-		$this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+		$this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
 	}
 
 	/**
@@ -315,7 +315,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 	public function testStringNormalization($input, $output)
 	{
 		$input = new SimplePie_IRI($input);
-		$this->assertEquals($output, $input->get_iri());
+		$this->assertSame($output, $input->get_iri());
 	}
 
 	/**
@@ -342,7 +342,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 	public function testURIConversion($input, $output)
 	{
 		$input = new SimplePie_IRI($input);
-		$this->assertEquals($output, $input->get_uri());
+		$this->assertSame($output, $input->get_uri());
 	}
 
 	public static function equivalence_tests()
@@ -415,12 +415,12 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$iri->path = '/test/';
 		$iri->fragment = 'test';
 
-		$this->assertEquals('http', $iri->scheme);
-		$this->assertEquals('user:password', $iri->userinfo);
-		$this->assertEquals('example.com', $iri->host);
-		$this->assertEquals(80, $iri->port);
-		$this->assertEquals('/test/', $iri->path);
-		$this->assertEquals('test', $iri->fragment);
+		$this->assertSame('http', $iri->scheme);
+		$this->assertSame('user:password', $iri->userinfo);
+		$this->assertSame('example.com', $iri->host);
+		$this->assertSame(80, $iri->port);
+		$this->assertSame('/test/', $iri->path);
+		$this->assertSame('test', $iri->fragment);
 	}
 
 	public function testReadAliased()
@@ -432,12 +432,12 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$iri->path = '/test/';
 		$iri->fragment = 'test';
 
-		$this->assertEquals('http', $iri->scheme);
-		$this->assertEquals('user:password', $iri->userinfo);
-		$this->assertEquals('example.com', $iri->host);
-		$this->assertEquals(80, $iri->port);
-		$this->assertEquals('/test/', $iri->path);
-		$this->assertEquals('test', $iri->fragment);
+		$this->assertSame('http', $iri->scheme);
+		$this->assertSame('user:password', $iri->userinfo);
+		$this->assertSame('example.com', $iri->host);
+		$this->assertSame(80, $iri->port);
+		$this->assertSame('/test/', $iri->path);
+		$this->assertSame('test', $iri->fragment);
 	}
 
 	public function testWriteAliased()
@@ -449,12 +449,12 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$iri->path = '/test/';
 		$iri->fragment = 'test';
 
-		$this->assertEquals('http', $iri->scheme);
-		$this->assertEquals('user:password', $iri->userinfo);
-		$this->assertEquals('example.com', $iri->host);
-		$this->assertEquals(80, $iri->port);
-		$this->assertEquals('/test/', $iri->path);
-		$this->assertEquals('test', $iri->fragment);
+		$this->assertSame('http', $iri->scheme);
+		$this->assertSame('user:password', $iri->userinfo);
+		$this->assertSame('example.com', $iri->host);
+		$this->assertSame(80, $iri->port);
+		$this->assertSame('/test/', $iri->path);
+		$this->assertSame('test', $iri->fragment);
 	}
 
 	public function testNonexistantProperty()
@@ -471,8 +471,8 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$iri = new SimplePie_IRI('http://example.com/a/?b=c#d');
 		$iri->host = null;
 
-		$this->assertEquals(null, $iri->host);
-		$this->assertEquals('http:/a/?b=c#d', (string) $iri);
+		$this->assertSame(null, $iri->host);
+		$this->assertSame('http:/a/?b=c#d', (string) $iri);
 	}
 
 	public function testBadPort()
@@ -480,7 +480,7 @@ class IRITest extends PHPUnit\Framework\TestCase
 		$iri = new SimplePie_IRI();
 		$iri->port = 'example';
 
-		$this->assertEquals(null, $iri->port);
+		$this->assertSame(null, $iri->port);
 	}
 }
 

@@ -52,7 +52,7 @@ class SubscribeUrlTest extends PHPUnit\Framework\TestCase
 
 		$feed->init();
 
-		$this->assertEquals('https://example.com/feed/2019-10-07', $feed->subscribe_url());
-		$this->assertEquals('https://example.com/feed/', $feed->subscribe_url(true));
+		$this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
+		$this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
 	}
 }

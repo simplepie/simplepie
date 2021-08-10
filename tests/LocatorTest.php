@@ -77,7 +77,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 		$locator->set_registry($registry);
 
 		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
-		$this->assertEquals($feed, $data);
+		$this->assertSame($feed, $data);
 	}
 
 	public function testInvalidMIMEType()
@@ -92,7 +92,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 		$locator->set_registry($registry);
 
 		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
-		$this->assertEquals($feed, null);
+		$this->assertSame($feed, null);
 	}
 
 	public function testDirectNoDOM()
@@ -105,7 +105,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 		$locator->set_registry($registry);
 
 		$this->assertTrue($locator->is_feed($data));
-		$this->assertEquals($locator->find(SIMPLEPIE_LOCATOR_ALL, $found), $data);
+		$this->assertSame($locator->find(SIMPLEPIE_LOCATOR_ALL, $found), $data);
 	}
 
 	public function testFailDiscoveryNoDOM()
@@ -173,7 +173,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 		$success = array_filter($expected, array(get_class(), 'filter_success'));
 
 		$found = array_map(array(get_class(), 'map_url_file'), $all);
-		$this->assertEquals($success, $found);
+		$this->assertSame($success, $found);
 	}
 
 	protected static function filter_success($url)
