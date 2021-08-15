@@ -107,7 +107,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 	public function test_convert_UTF8($input, $expected, $encoding)
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
-		$this->assertEquals($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-8'));
+		$this->assertEqualsBin2Hex($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-8'));
 	}
 
 	/**
@@ -120,7 +120,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
 		if (extension_loaded('mbstring')) {
-			$this->assertEquals($expected, Mock_Misc::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+			$this->assertEqualsBin2Hex($expected, Mock_Misc::change_encoding_mbstring($input, $encoding, 'UTF-8'));
 		}
 	}
 
@@ -134,7 +134,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
 		if (extension_loaded('iconv')) {
-			$this->assertEquals($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
+			$this->assertEqualsBin2Hex($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
 		}
 	}
 
@@ -150,7 +150,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 		if (version_compare(phpversion(), '5.5', '>=') &&
 			extension_loaded('intl')
 		) {
-			$this->assertEquals($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
+			$this->assertEqualsBin2Hex($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
 		}
 	}
 	/**#@-*/
@@ -173,7 +173,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 	public function test_convert_UTF16($input, $expected, $encoding)
 	{
 		$encoding = SimplePie_Misc::encoding($encoding);
-		$this->assertEquals($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-16'));
+		$this->assertEqualsBin2Hex($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-16'));
 	}
 	/**#@-*/
 
@@ -182,7 +182,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 		$this->assertFalse(SimplePie_Misc::change_encoding('', 'TESTENC', 'UTF-8'));
 	}
 
-	public static function assertEquals($expected, $actual, $message = '', $delta = 0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
+	public static function assertEqualsBin2Hex($expected, $actual, $message = '')
 	{
 		if (is_string($expected))
 		{
@@ -192,7 +192,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 		{
 			$actual = bin2hex($actual);
 		}
-		parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+		static::assertEquals($expected, $actual, $message);
 	}
 }
 

@@ -1,6 +1,7 @@
 <?php
 
-require_once dirname(dirname(__FILE__)) . '/autoloader.php';
+require_once dirname(__DIR__) . '/autoloader.php';
+require_once dirname(__DIR__) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 
 /**
  * Acts as a fake feed request

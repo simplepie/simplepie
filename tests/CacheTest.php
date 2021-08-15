@@ -41,6 +41,8 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
+use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
+
 /**
  * This is a dirty, dirty hack
  */
@@ -74,11 +76,12 @@ class Mock_CacheNew extends SimplePie_Cache
 
 class CacheTest extends PHPUnit\Framework\TestCase
 {
-	/**
-	 * @expectedException Exception_Success
-	 */
+	use ExpectPHPException;
+
 	public function testDirectOverrideLegacy()
 	{
+		$this->expectException('Exception_Success');
+
 		$feed = new SimplePie();
 		$feed->set_cache_class('Mock_CacheLegacy');
 		$feed->get_registry()->register('File', 'MockSimplePie_File');
@@ -87,11 +90,10 @@ class CacheTest extends PHPUnit\Framework\TestCase
 		$feed->init();
 	}
 
-	/**
-	 * @expectedException Exception_Success
-	 */
 	public function testDirectOverrideNew()
 	{
+		$this->expectException('Exception_Success');
+
 		$feed = new SimplePie();
 		$feed->get_registry()->register('Cache', 'Mock_CacheNew');
 		$feed->get_registry()->register('File', 'MockSimplePie_File');
