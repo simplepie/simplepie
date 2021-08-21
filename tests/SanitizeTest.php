@@ -50,7 +50,7 @@ class SanitizeTest extends PHPUnit\Framework\TestCase
 	{
 		$sanitize = new SimplePie_Sanitize();
 
-		$this->assertEquals(
+		$this->assertSame(
 <<<EOT
 &lt;head&gt; &amp; &lt;body&gt; /\ ' === ' &amp; " === ". Sbohem bez šátečku! Тут был Лёха.
 EOT

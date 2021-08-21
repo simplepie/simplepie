@@ -74,11 +74,11 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
 		$data = SimplePie_HTTP_Parser::prepareHeaders($data);
 		$parser = new SimplePie_HTTP_Parser($data);
 		$this->assertTrue($parser->parse());
-		$this->assertEquals(1.1, $parser->http_version);
-		$this->assertEquals(200, $parser->status_code);
-		$this->assertEquals('OK', $parser->reason);
-		$this->assertEquals(array('content-type' => 'text/plain'), $parser->headers);
-		$this->assertEquals($expected, $parser->body);
+		$this->assertSame(1.1, $parser->http_version);
+		$this->assertSame(200, $parser->status_code);
+		$this->assertSame('OK', $parser->reason);
+		$this->assertSame(array('content-type' => 'text/plain'), $parser->headers);
+		$this->assertSame($expected, $parser->body);
 
 	}
 
@@ -91,11 +91,11 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
 		$data = SimplePie_HTTP_Parser::prepareHeaders($data);
 		$parser = new SimplePie_HTTP_Parser($data);
 		$this->assertTrue($parser->parse());
-		$this->assertEquals(1.1, $parser->http_version);
-		$this->assertEquals(200, $parser->status_code);
-		$this->assertEquals('OK', $parser->reason);
-		$this->assertEquals(array('content-type' => 'text/plain'), $parser->headers);
-		$this->assertEquals($expected, $parser->body);
+		$this->assertSame(1.1, $parser->http_version);
+		$this->assertSame(200, $parser->status_code);
+		$this->assertSame('OK', $parser->reason);
+		$this->assertSame(array('content-type' => 'text/plain'), $parser->headers);
+		$this->assertSame($expected, $parser->body);
 	}
 
 	/**
@@ -107,10 +107,10 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
 		$data = SimplePie_HTTP_Parser::prepareHeaders($data);
 		$parser = new SimplePie_HTTP_Parser($data);
 		$this->assertTrue($parser->parse());
-		$this->assertEquals(1.1, $parser->http_version);
-		$this->assertEquals(200, $parser->status_code);
-		$this->assertEquals('OK', $parser->reason);
-		$this->assertEquals(array('content-type' => 'text/plain'), $parser->headers);
-		$this->assertEquals($expected, $parser->body);
+		$this->assertSame(1.1, $parser->http_version);
+		$this->assertSame(200, $parser->status_code);
+		$this->assertSame('OK', $parser->reason);
+		$this->assertSame(array('content-type' => 'text/plain'), $parser->headers);
+		$this->assertSame($expected, $parser->body);
 	}
 }

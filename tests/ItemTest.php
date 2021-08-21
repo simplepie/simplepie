@@ -104,7 +104,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 	</channel>
 </rss>';
 		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertEquals($expected, $feed->get_title());
+		$this->assertSame($expected, $feed->get_title());
 	}
 
 	/**
@@ -119,7 +119,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 	</channel>
 </rss>';
 		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertEquals($expected, $feed->get_title());
+		$this->assertSame($expected, $feed->get_title());
 	}
 
 	/**
@@ -134,7 +134,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 	</channel>
 </rss>';
 		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertEquals($expected, $feed->get_title());
+		$this->assertSame($expected, $feed->get_title());
 	}
 
 	/**
@@ -149,7 +149,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 	</channel>
 </rss>';
 		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertEquals($expected, $feed->get_title());
+		$this->assertSame($expected, $feed->get_title());
 	}
 
 	/**
@@ -164,7 +164,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 	</channel>
 </rss>';
 		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertEquals($expected, $feed->get_title());
+		$this->assertSame($expected, $feed->get_title());
 	}
 
 	/**
@@ -184,7 +184,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 	</channel>
 </rss>';
 		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertEquals($expected, $feed->get_title());
+		$this->assertSame($expected, $feed->get_title());
 	}
 
 	/**
@@ -204,7 +204,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 	</channel>
 </rss>';
 		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertEquals($expected, $feed->get_title());
+		$this->assertSame($expected, $feed->get_title());
 	}
 
 	public function testItemWithEmptyContent()
@@ -221,7 +221,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
 		$content = 'item description';
 		$feed = $this->checkFromTemplate($data, $content);
 		$item = $feed->get_item();
-		$this->assertEquals($content, $item->get_content());
+		$this->assertSame($content, $item->get_content());
 	}
 
 }
