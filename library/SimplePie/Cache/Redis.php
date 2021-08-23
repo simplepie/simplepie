@@ -16,9 +16,11 @@
  *
  * Registered for URLs with the "redis" protocol
  *
- * For example, `redis://localhost:6379/?timeout=3600&prefix=sp_&dbIndex=0` will
+ * For example, `redis://localhost:6379/?timeout=3600&prefix=sp_` will
  * connect to redis on `localhost` on port 6379. All tables will be
- * prefixed with `simple_primary-` and data will expire after 3600 seconds
+ * prefixed with `sp_` and data will expire after 3600 seconds
+ * If not specified, the default prefix is `rss:simple_primary:`
+ * and the data won't expire
  *
  * @package SimplePie
  * @subpackage Caching
@@ -73,15 +75,19 @@ class SimplePie_Cache_Redis implements SimplePie_Cache_Base {
         }
         $this->cache = $redis;
 
-        if (!is_null($options) && is_array($options)) {
-            $this->options = $options;
-        } else {
-            $this->options = array (
-                'prefix' => 'rss:simple_primary:',
-                'expire' => 0,
-            );
+        $options = [];
+        $parameters = $parsed['extras'];
+        if(isset($parameters['prefix']) && !empty($parameters['prefix'])){
+          $options['prefix'] = $parameters['prefix'];
+        }else{
+          $options['prefix'] = 'rss:simple_primary:';
         }
-
+        if(isset($parameters['timeout']) && is_numeric($parameters['timeout'])){
+          $options['expire'] = $parameters['timeout'];
+        }else{
+          $options['expire'] = 0;
+        }
+        $this->options = $options;
         $this->name = $this->options['prefix'] . $name;
     }
 
