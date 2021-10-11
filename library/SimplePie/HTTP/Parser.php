@@ -508,10 +508,12 @@ class SimplePie_HTTP_Parser
 		$data = explode("\r\n\r\n", $headers, $count);
 		$data = array_pop($data);
 		if (false !== stripos($data, "HTTP/1.0 200 Connection established\r\n")) {
-			$data = end(explode("\r\n\r\n", $data, 2));
+			$exploded = explode("\r\n\r\n", $data, 2);
+			$data = end($exploded);
 		}
 		if (false !== stripos($data, "HTTP/1.1 200 Connection established\r\n")) {
-			$data = end(explode("\r\n\r\n", $data, 2));
+			$exploded = explode("\r\n\r\n", $data, 2);
+			$data = end($exploded);
 		}
 		return $data;
 	}
