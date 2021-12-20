@@ -5,43 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased](https://github.com/simplepie/simplepie/compare/1.5.7...master)
 
 ## [1.5.7](https://github.com/simplepie/simplepie/compare/1.5.6...1.5.7) - 2021-12-19
 
-* Fix PHP8 crash due to insufficient isset test by @Alkarex in #670
-* gitignore tests by @Alkarex in #671
-* Reduce memory when parsing large feeds by @Alkarex in #672
-* PHP8 catch ValueError for loadHTML() by @Alkarex in #673
-* Provide access to HTTP status code by @Alkarex in #674
-* Fix wrong type hint by @Alkarex in #678
-* Force HTTPS for selected domains by @Alkarex in #676
-* Prevent cache polution by @Alkarex in #675
-* Fix typo in comment by @Alkarex in #680
-* Remove HTTP credentials in HTTP Referer by @Alkarex in #681
-* CI: switch to GH Actions by @jrfnl in #688
-* PHP 8.1: fix "passing null to non-nullable" deprecation notice by @jrfnl in #689
-* Tests: PHPUnit cross-version compatibility by @jrfnl in #690
-* Tests: use strict assertions by @jrfnl in #692
-* CacheTest: handle different exceptions PHP cross-version by @jrfnl in #691
-* GH Actions: don't allow builds to fail on PHP 8.0 or 8.1 by @jrfnl in #693
-* Tests: use the correct parameter order by @jrfnl in #694
-* PHPUnit: update configuration by @jrfnl in #696
-* fix: better deal with proxy returning proxy headers (in response to cURL's Proxy-Connection header) by @shunf4 in #698
-* Handle multiple Link headers by @voegelas in #700
-* PHP 8.2: explicitly declare properties by @jrfnl in #705
-* New Contributor: @shunf4 made their first contribution in #698
-* New Contributor: @voegelas made their first contribution in #700
+* Fix PHP8 crash due to insufficient isset test by @Alkarex in [#670](https://github.com/simplepie/simplepie/pull/670)
+* gitignore tests by @Alkarex in [#671](https://github.com/simplepie/simplepie/pull/671)
+* Reduce memory when parsing large feeds by @Alkarex in [#672](https://github.com/simplepie/simplepie/pull/672)
+* PHP8 catch ValueError for loadHTML() by @Alkarex in [#673](https://github.com/simplepie/simplepie/pull/673)
+* Provide access to HTTP status code by @Alkarex in [#674](https://github.com/simplepie/simplepie/pull/674)
+* Fix wrong type hint by @Alkarex in [#678](https://github.com/simplepie/simplepie/pull/678)
+* Force HTTPS for selected domains by @Alkarex in [#676](https://github.com/simplepie/simplepie/pull/676)
+* Prevent cache polution by @Alkarex in [#675](https://github.com/simplepie/simplepie/pull/675)
+* Fix typo in comment by @Alkarex in [#680](https://github.com/simplepie/simplepie/pull/680)
+* Remove HTTP credentials in HTTP Referer by @Alkarex in [#681](https://github.com/simplepie/simplepie/pull/681)
+* CI: switch to GH Actions by @jrfnl in [#688](https://github.com/simplepie/simplepie/pull/688)
+* PHP 8.1: fix "passing null to non-nullable" deprecation notice by @jrfnl in [#689](https://github.com/simplepie/simplepie/pull/689)
+* Tests: PHPUnit cross-version compatibility by @jrfnl in [#690](https://github.com/simplepie/simplepie/pull/690)
+* Tests: use strict assertions by @jrfnl in [#692](https://github.com/simplepie/simplepie/pull/692)
+* CacheTest: handle different exceptions PHP cross-version by @jrfnl in [#691](https://github.com/simplepie/simplepie/pull/691)
+* GH Actions: don't allow builds to fail on PHP 8.0 or 8.1 by @jrfnl in [#693](https://github.com/simplepie/simplepie/pull/693)
+* Tests: use the correct parameter order by @jrfnl in [#694](https://github.com/simplepie/simplepie/pull/694)
+* PHPUnit: update configuration by @jrfnl in [#696](https://github.com/simplepie/simplepie/pull/696)
+* fix: better deal with proxy returning proxy headers (in response to cURL's Proxy-Connection header) by @shunf4 in [#698](https://github.com/simplepie/simplepie/pull/698)
+* Handle multiple Link headers by @voegelas in [#700](https://github.com/simplepie/simplepie/pull/700)
+* PHP 8.2: explicitly declare properties by @jrfnl in [#705](https://github.com/simplepie/simplepie/pull/705)
+* New Contributor: @shunf4 made their first contribution in [#698](https://github.com/simplepie/simplepie/pull/698)
+* New Contributor: @voegelas made their first contribution in [#700](https://github.com/simplepie/simplepie/pull/700)
 
 ## [1.5.6](https://github.com/simplepie/simplepie/compare/1.5.5...1.5.6) - 2020-10-14
 
-* PHP 8.0: prevent ValueError for invalid encoding (#657)
-* Travis: test against more recent PHP versions (#653)
-* PHP 8.0: handle removal of get_magic_quotes_gpc() (#654)
-* PHP 7.4/8.0: curly brace array access deprecated & removed (#655)
-* PHP 8.0: required parameters are no longer allowed after optional parameters (#656)
-* Fix permanent_url for HTTP 301 (#660)
-* Fix typo in MIME type in Content_Type_Sniffer (#661) 
+* PHP 8.0: prevent ValueError for invalid encoding [#657](https://github.com/simplepie/simplepie/pull/657)
+* Travis: test against more recent PHP versions [#653](https://github.com/simplepie/simplepie/pull/653)
+* PHP 8.0: handle removal of get_magic_quotes_gpc() [#654](https://github.com/simplepie/simplepie/pull/654)
+* PHP 7.4/8.0: curly brace array access deprecated & removed [#655](https://github.com/simplepie/simplepie/pull/655)
+* PHP 8.0: required parameters are no longer allowed after optional parameters [#656](https://github.com/simplepie/simplepie/pull/656)
+* Fix permanent_url for HTTP 301 [#660](https://github.com/simplepie/simplepie/pull/660)
+* Fix typo in MIME type in Content_Type_Sniffer [#661](https://github.com/simplepie/simplepie/pull/661) 
 
 ## [1.5.5](https://github.com/simplepie/simplepie/compare/1.5.4...1.5.5) - 2020-05-01
 
