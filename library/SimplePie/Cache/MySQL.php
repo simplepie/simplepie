@@ -438,3 +438,5 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		return $query->execute() && $query2->execute();
 	}
 }
+
+class_alias('SimplePie_Cache_MySQL', 'SimplePie\Cache\MySQL', false);

@@ -49,3 +49,4 @@
 class SimplePie_Exception extends Exception
 {
 }
+class_alias('SimplePie_Exception', 'SimplePie\Exception', false);

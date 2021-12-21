@@ -161,3 +161,5 @@ class SimplePie_Category
 	}
 }
 
+
+class_alias('SimplePie_Category', 'SimplePie\Category', false);

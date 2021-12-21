@@ -40,9 +40,17 @@
 		"mf2/mf2": "Microformat module that allows for parsing HTML for microformats"
 	},
 	"autoload": {
+		"psr-4": {
+			"SimplePie\\": "src"
+		},
 		"psr-0": {
 			"SimplePie": "library"
 		}
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SimplePie\\Tests\\Unit\\": "tests/Unit"
+        }
     },
     "config": {
         "bin-dir": "bin"

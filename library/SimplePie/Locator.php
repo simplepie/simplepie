@@ -430,3 +430,5 @@ class SimplePie_Locator
 		return null;
 	}
 }
+
+class_alias('SimplePie_Locator', 'SimplePie\Locator', false);

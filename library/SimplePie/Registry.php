@@ -223,3 +223,5 @@ class SimplePie_Registry
 		return $result;
 	}
 }
+
+class_alias('SimplePie_Registry', 'SimplePie\Registry', false);
