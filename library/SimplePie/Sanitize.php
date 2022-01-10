@@ -453,6 +453,8 @@ class SimplePie_Sanitize
 				{
 					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
 				}
+
+				$data = str_replace('</source>', '', $data);
 			}
 
 			if ($type & SIMPLEPIE_CONSTRUCT_IRI)
