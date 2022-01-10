@@ -65,4 +65,45 @@ EOT
 			'XML input (with corresponding xml entities) should be cleaned and converted to utf-8 escaped HTML'
 		);
 	}
+
+    public function testSanitizeURLResolution()
+    {
+        $sanitize = new SimplePie_Sanitize();
+
+        $registry = new SimplePie_Registry();
+        $registry->register('Misc', 'SimplePie_Misc');
+        $sanitize->set_registry($registry);
+
+        $base = 'http://example.com/';
+
+        $tests = array(
+            'a 1 <a href="/path/to/doc">link</a>'
+                => 'a 1 <a href="http://example.com/path/to/doc">link</a>',
+            'other <img src="http://2.example.com/image.jpg">'
+                => 'other <img src="http://2.example.com/image.jpg">',
+            'img 1 <img src="image.jpg">'
+                => 'img 1 <img src="http://example.com/image.jpg">',
+            'img 2 <img src="/image.jpg">'
+                => 'img 2 <img src="http://example.com/image.jpg">',
+            'img 3 <img src="/path/image.jpg">'
+                => 'img 3 <img src="http://example.com/path/image.jpg">',
+            'audio 1 <audio src="a.mp3" />'
+                => 'audio 1 <audio src="http://example.com/a.mp3" preload="none"></audio>',
+            'audio 2 <audio><source src="/a/b.wav" /></audio>'
+                => 'audio 2 <audio preload="none"><source src="http://example.com/a/b.wav"></audio>',
+            'audio 3 <audio><source src="/a/b.wav" /><source src="/c/d.mp3" /></audio>'
+                => 'audio 3 <audio preload="none"><source src="http://example.com/a/b.wav"><source src="http://example.com/c/d.mp3"></audio>',
+            'video 1 <video src="./b.mpeg" />'
+                => 'video 1 <video src="http://example.com/b.mpeg" preload="none"></video>',
+            'video 2 <video><source src="a/b.mpeg"></video>'
+                => 'video 2 <video preload="none"><source src="http://example.com/a/b.mpeg"></video>',
+            'video 3 <video><source src="a/b.mpeg" /><source src="c/d.mov"></video>'
+                => 'video 3 <video preload="none"><source src="http://example.com/a/b.mpeg"><source src="http://example.com/c/d.mov"></video>',
+        );
+
+        foreach ($tests as $input => $expected)
+        {
+            $this->assertSame($expected, $sanitize->sanitize($input, SIMPLEPIE_CONSTRUCT_HTML, $base));
+        }
+    }
 }
