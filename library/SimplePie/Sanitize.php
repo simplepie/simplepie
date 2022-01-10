@@ -223,7 +223,7 @@ class SimplePie_Sanitize
 	 *
 	 * Defaults to |a|@href, |area|@href, |audio|@src, |blockquote|@cite,
 	 * |del|@cite, |form|@action, |img|@longdesc, |img|@src, |input|@src,
-	 * |ins|@cite, |q|@cite, |video|@src
+	 * |ins|@cite, |q|@cite, |source|@src, |video|@src
 	 *
 	 * @since 1.0
 	 * @param array|null $element_attribute Element/attribute key/value pairs, null for default
@@ -246,7 +246,11 @@ class SimplePie_Sanitize
 				'input' => 'src',
 				'ins' => 'cite',
 				'q' => 'cite',
-				'video' => 'src'
+				'source' => 'src',
+				'video' => array(
+					'poster',
+					'src'
+				)
 			);
 		}
 		$this->replace_url_attributes = (array) $element_attribute;
