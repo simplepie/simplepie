@@ -66,7 +66,53 @@ EOT
 		);
 	}
 
-    public function testSanitizeURLResolution()
+
+    public function sanitizeURLProvider()
+    {
+        return array(
+            'simple absolute valid a href, resolved' => array(
+                '<a href="/path/to/doc">link</a>',
+                '<a href="http://example.com/path/to/doc">link</a>'
+            ),
+            'image valid fully qualified src, no change expected' => array(
+                '<img src="http://2.example.com/image.jpg">',
+                '<img src="http://2.example.com/image.jpg">'
+            ),
+            'image valid relative src, resolved' => array(
+                '<img src="image.jpg">',
+                '<img src="http://example.com/image.jpg">'
+            ),
+            'image valid absolute src, resolved' => array(
+                '<img src="/image.jpg">',
+                '<img src="http://example.com/image.jpg">'
+            ),
+            'audio relative src, resolved, fixed' => array(
+                '<audio src="a.mp3" />',
+                '<audio src="http://example.com/a.mp3" preload="none"></audio>'
+            ),
+            'audio absolute source src path, resolved, fixed' => array(
+                '<audio><source src="/a/b.wav" /></audio>',
+                '<audio preload="none"><source src="http://example.com/a/b.wav"></audio>'
+            ),
+            'audio with alternative source src absolute paths, resolved, fixed' => array(
+                '<audio><source src="a/b.wav" /><source src="/c/d.mp3" /></audio>',
+                '<audio preload="none"><source src="http://example.com/a/b.wav"><source src="http://example.com/c/d.mp3"></audio>'
+            ),
+            'video src relative, resolved, fixed' => array(
+                '<video src="./b.mpeg" />',
+                '<video src="http://example.com/b.mpeg" preload="none"></video>'
+            ),
+            'video with alternative source src, resolved, fixed' => array(
+                '<video><source src="a/b.mpeg" /><source src="/c/../d.mov"></video>',
+                '<video preload="none"><source src="http://example.com/a/b.mpeg"><source src="http://example.com/d.mov"></video>'
+            )
+        );
+    }
+
+    /**
+     * @dataProvider sanitizeURLProvider
+     */
+    public function testSanitizeURLResolution($given, $expected)
     {
         $sanitize = new SimplePie_Sanitize();
 
@@ -76,34 +122,6 @@ EOT
 
         $base = 'http://example.com/';
 
-        $tests = array(
-            'a 1 <a href="/path/to/doc">link</a>'
-                => 'a 1 <a href="http://example.com/path/to/doc">link</a>',
-            'other <img src="http://2.example.com/image.jpg">'
-                => 'other <img src="http://2.example.com/image.jpg">',
-            'img 1 <img src="image.jpg">'
-                => 'img 1 <img src="http://example.com/image.jpg">',
-            'img 2 <img src="/image.jpg">'
-                => 'img 2 <img src="http://example.com/image.jpg">',
-            'img 3 <img src="/path/image.jpg">'
-                => 'img 3 <img src="http://example.com/path/image.jpg">',
-            'audio 1 <audio src="a.mp3" />'
-                => 'audio 1 <audio src="http://example.com/a.mp3" preload="none"></audio>',
-            'audio 2 <audio><source src="/a/b.wav" /></audio>'
-                => 'audio 2 <audio preload="none"><source src="http://example.com/a/b.wav"></audio>',
-            'audio 3 <audio><source src="/a/b.wav" /><source src="/c/d.mp3" /></audio>'
-                => 'audio 3 <audio preload="none"><source src="http://example.com/a/b.wav"><source src="http://example.com/c/d.mp3"></audio>',
-            'video 1 <video src="./b.mpeg" />'
-                => 'video 1 <video src="http://example.com/b.mpeg" preload="none"></video>',
-            'video 2 <video><source src="a/b.mpeg"></video>'
-                => 'video 2 <video preload="none"><source src="http://example.com/a/b.mpeg"></video>',
-            'video 3 <video><source src="a/b.mpeg" /><source src="c/d.mov"></video>'
-                => 'video 3 <video preload="none"><source src="http://example.com/a/b.mpeg"><source src="http://example.com/c/d.mov"></video>',
-        );
-
-        foreach ($tests as $input => $expected)
-        {
-            $this->assertSame($expected, $sanitize->sanitize($input, SIMPLEPIE_CONSTRUCT_HTML, $base));
-        }
+        $this->assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
     }
 }
