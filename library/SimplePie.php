@@ -1225,18 +1225,18 @@ class SimplePie
 		}
 	}
 
-	public function rename_attributes($tags = '', $encode = null)
-	{
-		if ($tags === '')
-		{
-			$tags = $this->rename_attributes;
-		}
-		$this->sanitize->rename_attributes($tags);
-	}
-
 	public function encode_instead_of_strip($enable = true)
 	{
 		$this->sanitize->encode_instead_of_strip($enable);
+	}
+
+	public function rename_attributes($attribs = '')
+	{
+		if ($attribs === '')
+		{
+			$attribs = $this->rename_attributes;
+		}
+		$this->sanitize->rename_attributes($attribs);
 	}
 
 	public function strip_attributes($attribs = '')
