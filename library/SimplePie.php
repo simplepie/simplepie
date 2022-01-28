@@ -651,7 +651,7 @@ class SimplePie
 	public $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
 
 	/**
-	 * @var array Stores the default tags to be stripped by rename_attributes().
+	 * @var array Stores the default attributes to be renamed by rename_attributes().
 	 * @see SimplePie::rename_attributes()
 	 * @access private
 	 */
