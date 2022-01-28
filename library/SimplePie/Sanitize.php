@@ -146,17 +146,17 @@ class SimplePie_Sanitize
 		}
 	}
 
-	public function rename_attributes($tags = array())
+	public function rename_attributes($attribs = array())
 	{
-		if ($tags)
+		if ($attribs)
 		{
-			if (is_array($tags))
+			if (is_array($attribs))
 			{
-				$this->rename_attributes = $tags;
+				$this->rename_attributes = $attribs;
 			}
 			else
 			{
-				$this->rename_attributes = explode(',', $tags);
+				$this->rename_attributes = explode(',', $attribs);
 			}
 		}
 		else
