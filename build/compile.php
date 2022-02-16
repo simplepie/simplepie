@@ -51,6 +51,10 @@ $compiled .= remove_header($contents) . "\n";
 $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(SP_PATH . '/library/SimplePie'));
 foreach($files as $file_path => $info)
 {
+	/** @var SplFileInfo $info */
+	if (in_array($info->getFilename(), array('.', '..'))) {
+		continue;
+	}
 	$contents = file_get_contents($file_path);
 	$compiled .= remove_header($contents) . "\n";
 }
