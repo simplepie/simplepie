@@ -48,13 +48,9 @@ $contents = file_get_contents(SP_PATH . '/library/SimplePie.php');
 $compiled .= remove_header($contents) . "\n";
 
 // Add all the files in the SimplePie directory
-$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(SP_PATH . '/library/SimplePie'));
+$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(SP_PATH . '/library/SimplePie', FilesystemIterator::SKIP_DOTS));
 foreach($files as $file_path => $info)
 {
-	/** @var SplFileInfo $info */
-	if (in_array($info->getFilename(), array('.', '..'))) {
-		continue;
-	}
 	$contents = file_get_contents($file_path);
 	$compiled .= remove_header($contents) . "\n";
 }
