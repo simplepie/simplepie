@@ -41,15 +41,15 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
- use SimplePie\Author;
+use SimplePie\Author;
 
- class_exists('SimplePie\Author');
+class_exists('SimplePie\Author');
 
- // @trigger_error(sprintf('Using the "SimplePie_Author" class is deprecated since SimplePie version 1.x, use "SimplePie\Author" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Author" class is deprecated since SimplePie version 1.x, use "SimplePie\Author" instead.'), \E_USER_DEPRECATED);
 
- if (\false) {
-     /** @deprecated since SimplePie 1.x, use "SimplePie\Author" instead */
-     class SimplePie_Author extends Author
-     {
-     }
- }
+if (\false) {
+	/** @deprecated since SimplePie 1.x, use "SimplePie\Author" instead */
+	class SimplePie_Author extends Author
+	{
+	}
+}

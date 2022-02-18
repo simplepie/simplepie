@@ -46,8 +46,6 @@
 
 namespace SimplePie;
 
-class_exists('SimplePie_Author');
-
 /**
  * Manages all author-related data
  *
