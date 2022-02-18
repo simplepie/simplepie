@@ -1768,7 +1768,7 @@ class SimplePie
 						}
 					}
 				}
-				catch (SimplePie_Exception $e)
+				catch (\SimplePie\Exception $e)
 				{
 					// We need to unset this so that if SimplePie::set_file() has been called that object is untouched
 					unset($file);
@@ -2243,7 +2243,7 @@ class SimplePie
 		{
 			return $this->sanitize->sanitize($data, $type, $base);
 		}
-		catch (SimplePie_Exception $e)
+		catch (\SimplePie\Exception $e)
 		{
 			if (!$this->enable_exceptions)
 			{

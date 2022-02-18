@@ -359,7 +359,7 @@ class SimplePie_Sanitize
 
 				if (!class_exists('DOMDocument'))
 				{
-					throw new SimplePie_Exception('DOMDocument not found, unable to use sanitizer');
+					throw new \SimplePie\Exception('DOMDocument not found, unable to use sanitizer');
 				}
 				$document = new DOMDocument();
 				$document->encoding = 'UTF-8';

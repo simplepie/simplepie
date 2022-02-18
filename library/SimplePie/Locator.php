@@ -183,7 +183,7 @@ class SimplePie_Locator
 	{
 		if ($this->dom === null)
 		{
-			throw new SimplePie_Exception('DOMDocument not found, unable to use locator');
+			throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
 		}
 		$this->http_base = $this->file->url;
 		$this->base = $this->http_base;
@@ -224,7 +224,7 @@ class SimplePie_Locator
 	{
 		if ($this->dom === null)
 		{
-			throw new SimplePie_Exception('DOMDocument not found, unable to use locator');
+			throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
 		}
 
 		$links = $this->dom->getElementsByTagName($name);
@@ -275,7 +275,7 @@ class SimplePie_Locator
 	{
 		if ($this->dom === null)
 		{
-			throw new SimplePie_Exception('DOMDocument not found, unable to use locator');
+			throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
 		}
 
 		$links = $this->dom->getElementsByTagName('a');
@@ -326,12 +326,12 @@ class SimplePie_Locator
 	{
 		if ($this->dom === null)
 		{
-			throw new SimplePie_Exception('DOMDocument not found, unable to use '.
+			throw new \SimplePie\Exception('DOMDocument not found, unable to use '.
 			                              'locator');
 		}
 		if (!class_exists('DOMXpath'))
 		{
-			throw new SimplePie_Exception('DOMXpath not found, unable to use '.
+			throw new \SimplePie\Exception('DOMXpath not found, unable to use '.
 			                              'get_rel_link');
 		}
 
