@@ -136,7 +136,7 @@ class Redis implements Base {
      * @return bool Successfulness
      */
     public function save($data) {
-        if ($data instanceof \SimplePie) {
+        if ($data instanceof \SimplePie\SimplePie) {
             $data = $data->data;
         }
         $response = $this->cache->set($this->name, serialize($data));

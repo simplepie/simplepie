@@ -102,7 +102,7 @@ class MySQL extends DB
 			),
 		);
 
-		$this->options = \SimplePie_Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
+		$this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
 
 		// Path is prefixed with a "/"
 		$this->options['dbname'] = substr($this->options['path'], 1);
@@ -178,7 +178,7 @@ class MySQL extends DB
 			return false;
 		}
 
-		if ($data instanceof \SimplePie)
+		if ($data instanceof \SimplePie\SimplePie)
 		{
 			$data = clone $data;
 

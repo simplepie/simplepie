@@ -97,7 +97,7 @@ class Memcached implements Base
                 'prefix'  => 'simplepie_',
             ),
         );
-        $this->options = \SimplePie_Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
+        $this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
 
         $this->name = $this->options['extras']['prefix'] . md5("$name:$type");
 
@@ -111,7 +111,7 @@ class Memcached implements Base
      * @return bool Successfulness
      */
     public function save($data) {
-        if ($data instanceof \SimplePie) {
+        if ($data instanceof \SimplePie\SimplePie) {
             $data = $data->data;
         }
 

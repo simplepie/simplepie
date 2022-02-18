@@ -108,7 +108,7 @@ class File implements Base
 	{
 		if (file_exists($this->name) && is_writable($this->name) || file_exists($this->location) && is_writable($this->location))
 		{
-			if ($data instanceof \SimplePie)
+			if ($data instanceof \SimplePie\SimplePie)
 			{
 				$data = $data->data;
 			}
