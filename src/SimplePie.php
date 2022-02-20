@@ -79,12 +79,12 @@ class SimplePie
 	 * SimplePie Useragent
 	 * @see SimplePie::set_useragent()
 	 */
-	public const SIMPLEPIE_USERAGENT = SIMPLEPIE_NAME . '/' . SIMPLEPIE_VERSION . ' (Feed Parser; ' . SIMPLEPIE_URL . '; Allow like Gecko) Build/' . SIMPLEPIE_BUILD;
+	public const SIMPLEPIE_USERAGENT = self::SIMPLEPIE_NAME . '/' . self::SIMPLEPIE_VERSION . ' (Feed Parser; ' . self::SIMPLEPIE_URL . '; Allow like Gecko) Build/' . SIMPLEPIE_BUILD;
 
 	/**
 	 * SimplePie Linkback
 	 */
-	public const SIMPLEPIE_LINKBACK = '<a href="' . SIMPLEPIE_URL . '" title="' . SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . '">' . SIMPLEPIE_NAME . '</a>';
+	public const SIMPLEPIE_LINKBACK = '<a href="' . self::SIMPLEPIE_URL . '" title="' . self::SIMPLEPIE_NAME . ' ' . self::SIMPLEPIE_VERSION . '">' . self::SIMPLEPIE_NAME . '</a>';
 
 	/**
 	 * No Autodiscovery
