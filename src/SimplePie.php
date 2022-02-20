@@ -66,7 +66,7 @@ class SimplePie
 
 	/**
 	 * SimplePie Build
-	 * @todo using a function is an invalid constant expression. Maybe we should deprecate SIMPLEPIE_BUILD?
+	 * @todo using a function is an invalid constant expression. Maybe we should deprecate SIMPLEPIE_BUILD in favor of \SimplePie\Misc::get_build()?
 	 */
 	// public const SIMPLEPIE_BUILD = gmdate('YmdHis', \SimplePie\Misc::get_build());
 
@@ -1539,7 +1539,7 @@ class SimplePie
 					{
 						$this->data['headers'] = $headers;
 					}
-					$this->data['build'] = SIMPLEPIE_BUILD;
+					$this->data['build'] = \SimplePie\Misc::get_build();
 
 					// Cache the file if caching is enabled
 					if ($cache && !$cache->save($this))
@@ -1599,7 +1599,7 @@ class SimplePie
 			if (!empty($this->data))
 			{
 				// If the cache is for an outdated build of SimplePie
-				if (!isset($this->data['build']) || $this->data['build'] !== SIMPLEPIE_BUILD)
+				if (!isset($this->data['build']) || $this->data['build'] !== \SimplePie\Misc::get_build())
 				{
 					$cache->unlink();
 					$this->data = array();
@@ -1781,7 +1781,7 @@ class SimplePie
 				}
 				if ($cache)
 				{
-					$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => SIMPLEPIE_BUILD);
+					$this->data = array('url' => $this->feed_url, 'feed_url' => $file->url, 'build' => \SimplePie\Misc::get_build());
 					if (!$cache->save($this))
 					{
 						trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);

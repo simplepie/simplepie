@@ -53,6 +53,8 @@ namespace SimplePie;
  */
 class Misc
 {
+	private static $SIMPLEPIE_BUILD = null;
+
 	public static function time_hms($seconds)
 	{
 		$time = '';
@@ -2130,10 +2132,16 @@ END;
 	 */
 	public static function get_build()
 	{
+		if (static::$SIMPLEPIE_BUILD !== null) {
+			return static::$SIMPLEPIE_BUILD;
+		}
+
 		$root = dirname(dirname(__FILE__));
 		if (file_exists($root . '/.git/index'))
 		{
-			return filemtime($root . '/.git/index');
+			static::$SIMPLEPIE_BUILD = filemtime($root . '/.git/index');
+
+			return static::$SIMPLEPIE_BUILD;
 		}
 		elseif (file_exists($root . '/SimplePie'))
 		{
@@ -2145,14 +2153,20 @@ END;
 					$time = $mtime;
 				}
 			}
-			return $time;
+			static::$SIMPLEPIE_BUILD = $time;
+
+			return static::$SIMPLEPIE_BUILD;
 		}
 		elseif (file_exists(dirname(__FILE__) . '/Core.php'))
 		{
-			return filemtime(dirname(__FILE__) . '/Core.php');
+			static::$SIMPLEPIE_BUILD = filemtime(dirname(__FILE__) . '/Core.php');
+
+			return static::$SIMPLEPIE_BUILD;
 		}
 
-		return filemtime(__FILE__);
+		static::$SIMPLEPIE_BUILD = filemtime(__FILE__);
+
+		return static::$SIMPLEPIE_BUILD;
 	}
 
 	/**
@@ -2160,7 +2174,7 @@ END;
 	 */
 	public static function debug(&$sp)
 	{
-		$info = 'SimplePie ' . \SimplePie\SimplePie::SIMPLEPIE_VERSION . ' Build ' . SIMPLEPIE_BUILD . "\n";
+		$info = 'SimplePie ' . \SimplePie\SimplePie::SIMPLEPIE_VERSION . ' Build ' . static::get_build() . "\n";
 		$info .= 'PHP ' . PHP_VERSION . "\n";
 		if ($sp->error() !== null)
 		{
