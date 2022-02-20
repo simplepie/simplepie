@@ -467,7 +467,7 @@ class Parser
 		$author_cache = array();
 		$items = array();
 		$entries = array();
-		$mf = Mf2\parse($data, $url);
+		$mf = \Mf2\parse($data, $url);
 		// First look for an h-feed.
 		$h_feed = array();
 		foreach ($mf['items'] as $mf_item) {
@@ -540,7 +540,7 @@ class Parser
 							$author = $author_cache[$author];
 						}
 						else {
-							$mf = Mf2\fetch($author);
+							$mf = \Mf2\fetch($author);
 							foreach ($mf['items'] as $hcard) {
 								// Only interested in an h-card by itself in this case.
 								if (!in_array('h-card', $hcard['type'])) {
