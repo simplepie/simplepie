@@ -65,12 +65,6 @@ class SimplePie
 	const SIMPLEPIE_VERSION = '1.5.8';
 
 	/**
-	 * SimplePie Build
-	 * @todo using a function is an invalid constant expression. Maybe we should deprecate SIMPLEPIE_BUILD in favor of \SimplePie\Misc::get_build()?
-	 */
-	// const SIMPLEPIE_BUILD = gmdate('YmdHis', \SimplePie\Misc::get_build());
-
-	/**
 	 * SimplePie Website URL
 	 */
 	const SIMPLEPIE_URL = 'http://simplepie.org';
