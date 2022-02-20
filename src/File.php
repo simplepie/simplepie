@@ -67,7 +67,7 @@ class File
 	var $status_code;
 	var $redirects = 0;
 	var $error;
-	var $method = SIMPLEPIE_FILE_SOURCE_NONE;
+	var $method = \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_NONE;
 	var $permanent_url;
 
 	public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = array())
@@ -94,7 +94,7 @@ class File
 			}
 			if (!$force_fsockopen && function_exists('curl_exec'))
 			{
-				$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE | SIMPLEPIE_FILE_SOURCE_CURL;
+				$this->method = \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE | \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_CURL;
 				$fp = curl_init();
 				$headers2 = array();
 				foreach ($headers as $key => $value)
@@ -158,7 +158,7 @@ class File
 			}
 			else
 			{
-				$this->method = SIMPLEPIE_FILE_SOURCE_REMOTE | SIMPLEPIE_FILE_SOURCE_FSOCKOPEN;
+				$this->method = \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE | \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_FSOCKOPEN;
 				$url_parts = parse_url($url);
 				$socket_host = $url_parts['host'];
 				if (isset($url_parts['scheme']) && strtolower($url_parts['scheme']) === 'https')
@@ -295,7 +295,7 @@ class File
 		}
 		else
 		{
-			$this->method = SIMPLEPIE_FILE_SOURCE_LOCAL | SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS;
+			$this->method = \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_LOCAL | \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS;
 			if (empty($url) || !($this->body = trim(file_get_contents($url))))
 			{
 				$this->error = 'file_get_contents could not read the file';

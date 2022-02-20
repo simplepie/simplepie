@@ -1808,11 +1808,11 @@ class Misc
 	{
 		if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode']) === 'base64'))
 		{
-			$mode = SIMPLEPIE_CONSTRUCT_BASE64;
+			$mode = \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_BASE64;
 		}
 		else
 		{
-			$mode = SIMPLEPIE_CONSTRUCT_NONE;
+			$mode = \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE;
 		}
 		if (isset($attribs['']['type']))
 		{
@@ -1820,22 +1820,22 @@ class Misc
 			{
 				case 'text':
 				case 'text/plain':
-					return SIMPLEPIE_CONSTRUCT_TEXT | $mode;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT | $mode;
 
 				case 'html':
 				case 'text/html':
-					return SIMPLEPIE_CONSTRUCT_HTML | $mode;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML | $mode;
 
 				case 'xhtml':
 				case 'application/xhtml+xml':
-					return SIMPLEPIE_CONSTRUCT_XHTML | $mode;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML | $mode;
 
 				default:
-					return SIMPLEPIE_CONSTRUCT_NONE | $mode;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE | $mode;
 			}
 		}
 
-		return SIMPLEPIE_CONSTRUCT_TEXT | $mode;
+		return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT | $mode;
 	}
 
 	public static function atom_10_construct_type($attribs)
@@ -1845,19 +1845,19 @@ class Misc
 			switch (strtolower(trim($attribs['']['type'])))
 			{
 				case 'text':
-					return SIMPLEPIE_CONSTRUCT_TEXT;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
 
 				case 'html':
-					return SIMPLEPIE_CONSTRUCT_HTML;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML;
 
 				case 'xhtml':
-					return SIMPLEPIE_CONSTRUCT_XHTML;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML;
 
 				default:
-					return SIMPLEPIE_CONSTRUCT_NONE;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE;
 			}
 		}
-		return SIMPLEPIE_CONSTRUCT_TEXT;
+		return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
 	}
 
 	public static function atom_10_content_construct_type($attribs)
@@ -1868,25 +1868,25 @@ class Misc
 			switch ($type)
 			{
 				case 'text':
-					return SIMPLEPIE_CONSTRUCT_TEXT;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
 
 				case 'html':
-					return SIMPLEPIE_CONSTRUCT_HTML;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML;
 
 				case 'xhtml':
-					return SIMPLEPIE_CONSTRUCT_XHTML;
+					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML;
 			}
 			if (in_array(substr($type, -4), array('+xml', '/xml')) || substr($type, 0, 5) === 'text/')
 			{
-				return SIMPLEPIE_CONSTRUCT_NONE;
+				return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE;
 			}
 			else
 			{
-				return SIMPLEPIE_CONSTRUCT_BASE64;
+				return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_BASE64;
 			}
 		}
 
-		return SIMPLEPIE_CONSTRUCT_TEXT;
+		return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
 	}
 
 	public static function is_isegment_nz_nc($string)
@@ -2160,7 +2160,7 @@ END;
 	 */
 	public static function debug(&$sp)
 	{
-		$info = 'SimplePie ' . SIMPLEPIE_VERSION . ' Build ' . SIMPLEPIE_BUILD . "\n";
+		$info = 'SimplePie ' . \SimplePie\SimplePie::SIMPLEPIE_VERSION . ' Build ' . SIMPLEPIE_BUILD . "\n";
 		$info .= 'PHP ' . PHP_VERSION . "\n";
 		if ($sp->error() !== null)
 		{
