@@ -79,8 +79,9 @@ define('SIMPLEPIE_URL', NamespacedSimplePie::SIMPLEPIE_URL);
 /**
  * SimplePie Useragent
  * @see SimplePie::set_useragent()
+ * @deprecated since SimplePie 1.x, use \SimplePie\Misc::get_default_useragent() instead.
  */
-define('SIMPLEPIE_USERAGENT', NamespacedSimplePie::SIMPLEPIE_USERAGENT);
+define('SIMPLEPIE_USERAGENT', \SimplePie\Misc::get_default_useragent());
 
 /**
  * SimplePie Linkback

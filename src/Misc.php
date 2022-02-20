@@ -2170,6 +2170,16 @@ END;
 	}
 
 	/**
+	 * Get the default user agent string
+	 *
+	 * @return string
+	 */
+	public static function get_default_useragent()
+	{
+		return \SimplePie\SimplePie::SIMPLEPIE_NAME . '/' . \SimplePie\SimplePie::SIMPLEPIE_VERSION . ' (Feed Parser; ' . \SimplePie\SimplePie::SIMPLEPIE_URL . '; Allow like Gecko) Build/' . static::get_build();
+	}
+
+	/**
 	 * Format debugging information
 	 */
 	public static function debug(&$sp)

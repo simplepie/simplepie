@@ -76,12 +76,6 @@ class SimplePie
 	const SIMPLEPIE_URL = 'http://simplepie.org';
 
 	/**
-	 * SimplePie Useragent
-	 * @see SimplePie::set_useragent()
-	 */
-	const SIMPLEPIE_USERAGENT = self::SIMPLEPIE_NAME . '/' . self::SIMPLEPIE_VERSION . ' (Feed Parser; ' . self::SIMPLEPIE_URL . '; Allow like Gecko) Build/' . SIMPLEPIE_BUILD;
-
-	/**
 	 * SimplePie Linkback
 	 */
 	const SIMPLEPIE_LINKBACK = '<a href="' . self::SIMPLEPIE_URL . '" title="' . self::SIMPLEPIE_NAME . ' ' . self::SIMPLEPIE_VERSION . '">' . self::SIMPLEPIE_NAME . '</a>';
@@ -445,7 +439,7 @@ class SimplePie
 	 * @see SimplePie::set_useragent()
 	 * @access private
 	 */
-	public $useragent = self::SIMPLEPIE_USERAGENT;
+	public $useragent = '';
 
 	/**
 	 * @var string Feed URL
@@ -686,6 +680,8 @@ class SimplePie
 			trigger_error('Please upgrade to PHP 5.6 or newer.');
 			die();
 		}
+
+		$this->set_useragent();
 
 		// Other objects, instances created here so we can set options on them
 		$this->sanitize = new \SimplePie\Sanitize();
@@ -938,7 +934,7 @@ class SimplePie
 		{
 			$options[CURLOPT_TIMEOUT] = $this->timeout;
 		}
-		if ($this->useragent !== self::SIMPLEPIE_USERAGENT)
+		if ($this->useragent !== \SimplePie\Misc::get_default_useragent())
 		{
 			$options[CURLOPT_USERAGENT] = $this->useragent;
 		}
@@ -1158,8 +1154,12 @@ class SimplePie
 	 *
 	 * @param string $ua New user agent string.
 	 */
-	public function set_useragent($ua = self::SIMPLEPIE_USERAGENT)
+	public function set_useragent($ua = null)
 	{
+		if ($ua === null) {
+			$ua = \SimplePie\Misc::get_default_useragent();
+		}
+
 		$this->useragent = (string) $ua;
 	}
 
