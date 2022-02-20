@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/simplepie/simplepie/compare/1.5.7...master)
+## [Unreleased](https://github.com/simplepie/simplepie/compare/1.5.8...master)
+
+### Added
+
+- New methods `SimplePie::rename_attributes()` and `SimplePie_Sanitize::rename_attributes()` allow renaming attributes by @math-GH in [#717](https://github.com/simplepie/simplepie/pull/717)
+
+## [1.5.8](https://github.com/simplepie/simplepie/compare/1.5.7...1.5.8) - 2021-12-24
+
+### Fixed
+
+- bump version for constant `SIMPLEPIE_VERSION`
 
 ## [1.5.7](https://github.com/simplepie/simplepie/compare/1.5.6...1.5.7) - 2021-12-19
 
