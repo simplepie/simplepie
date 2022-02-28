@@ -2211,7 +2211,7 @@ class SimplePie
 	 */
 	public function get_base($element = array())
 	{
-		if (!($this->get_type() & self::SIMPLEPIE_TYPE_RSS_SYNDICATION) && !empty($element['xml_base_explicit']) && isset($element['xml_base']))
+		if (!empty($element['xml_base_explicit']) && isset($element['xml_base']))
 		{
 			return $element['xml_base'];
 		}
