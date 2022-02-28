@@ -170,3 +170,5 @@ class SimplePie_Cache_Redis implements SimplePie_Cache_Base {
     }
 
 }
+
+class_alias('SimplePie_Cache_Redis', 'SimplePie\Cache\Redis', false);

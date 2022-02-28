@@ -299,3 +299,5 @@ class SimplePie_File
 		}
 	}
 }
+
+class_alias('SimplePie_File', 'SimplePie\File', false);

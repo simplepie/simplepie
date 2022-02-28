@@ -518,3 +518,5 @@ class SimplePie_HTTP_Parser
 		return $data;
 	}
 }
+
+class_alias('SimplePie_HTTP_Parser', 'SimplePie\HTTP\Parser', false);
