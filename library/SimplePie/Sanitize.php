@@ -693,3 +693,5 @@ class SimplePie_Sanitize
 		}
 	}
 }
+
+class_alias('SimplePie_Sanitize', 'SimplePie\Sanitize', false);

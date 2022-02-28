@@ -3332,3 +3332,5 @@ class SimplePie
 		}
 	}
 }
+
+class_alias('SimplePie', 'SimplePie\SimplePie', false);
