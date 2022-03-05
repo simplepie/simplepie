@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New methods `SimplePie::rename_attributes()` and `SimplePie_Sanitize::rename_attributes()` allow renaming attributes by @math-GH in [#717](https://github.com/simplepie/simplepie/pull/717)
+- Add audio, video @src elements/attribute for URL resolution by @rdalverny in [#716](https://github.com/simplepie/simplepie/pull/716)
 - Added new namespaced aliases and PSR-4 support for every class by @Art4 in [#711](https://github.com/simplepie/simplepie/pull/711)
 
 ### Changed
