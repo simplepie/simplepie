@@ -3,7 +3,7 @@ include_once('../autoloader.php');
 include_once('../idn/idna_convert.class.php');
 
 // Parse it
-$feed = new SimplePie();
+$feed = new \SimplePie\SimplePie();
 if (isset($_GET['feed']) && $_GET['feed'] !== '')
 {
 	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())

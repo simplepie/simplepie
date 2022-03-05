@@ -9,13 +9,13 @@ include_once('../autoloader.php');
 include_once('../idn/idna_convert.class.php');
 
 // Create a new instance of the SimplePie object
-$feed = new SimplePie();
+$feed = new \SimplePie\SimplePie();
 
 //$feed->force_fsockopen(true);
 
 if (isset($_GET['js']))
 {
-	SimplePie_Misc::output_javascript();
+	\SimplePie\Misc::output_javascript();
 	die();
 }
 
@@ -175,12 +175,12 @@ $feed->handle_content_type();
 
 					<!-- If the feed has a link back to the site that publishes it (which 99% of them do), link the feed's title to it. -->
 					<h3 class="header">
-					<?php 
+					<?php
 						$link = $feed->get_link();
 						$title = $feed->get_title();
-						if ($link) 
-						{ 
-							$title = "<a href='$link' title='$title'>$title</a>"; 
+						if ($link)
+						{
+							$title = "<a href='$link' title='$title'>$title</a>";
 						}
 						echo $title;
 					?>
