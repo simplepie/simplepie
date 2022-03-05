@@ -65,4 +65,63 @@ EOT
 			'XML input (with corresponding xml entities) should be cleaned and converted to utf-8 escaped HTML'
 		);
 	}
+
+
+    public function sanitizeURLProvider()
+    {
+        return array(
+            'simple absolute valid a href, resolved' => array(
+                '<a href="/path/to/doc">link</a>',
+                '<a href="http://example.com/path/to/doc">link</a>'
+            ),
+            'image valid fully qualified src, no change expected' => array(
+                '<img src="http://2.example.com/image.jpg">',
+                '<img src="http://2.example.com/image.jpg">'
+            ),
+            'image valid relative src, resolved' => array(
+                '<img src="image.jpg">',
+                '<img src="http://example.com/image.jpg">'
+            ),
+            'image valid absolute src, resolved' => array(
+                '<img src="/image.jpg">',
+                '<img src="http://example.com/image.jpg">'
+            ),
+            'audio relative src, resolved, fixed' => array(
+                '<audio src="a.mp3" />',
+                '<audio src="http://example.com/a.mp3" preload="none"></audio>'
+            ),
+            'audio absolute source src path, resolved, fixed' => array(
+                '<audio><source src="/a/b.wav" /></audio>',
+                '<audio preload="none"><source src="http://example.com/a/b.wav"></audio>'
+            ),
+            'audio with alternative source src absolute paths, resolved, fixed' => array(
+                '<audio><source src="a/b.wav" /><source src="/c/d.mp3" /></audio>',
+                '<audio preload="none"><source src="http://example.com/a/b.wav"><source src="http://example.com/c/d.mp3"></audio>'
+            ),
+            'video src relative, resolved, fixed' => array(
+                '<video src="./b.mpeg" />',
+                '<video src="http://example.com/b.mpeg" preload="none"></video>'
+            ),
+            'video with alternative source src, resolved, fixed' => array(
+                '<video><source src="a/b.mpeg" /><source src="/c/../d.mov"></video>',
+                '<video preload="none"><source src="http://example.com/a/b.mpeg"><source src="http://example.com/d.mov"></video>'
+            )
+        );
+    }
+
+    /**
+     * @dataProvider sanitizeURLProvider
+     */
+    public function testSanitizeURLResolution($given, $expected)
+    {
+        $sanitize = new SimplePie_Sanitize();
+
+        $registry = new SimplePie_Registry();
+        $registry->register('Misc', 'SimplePie_Misc');
+        $sanitize->set_registry($registry);
+
+        $base = 'http://example.com/';
+
+        $this->assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
+    }
 }
