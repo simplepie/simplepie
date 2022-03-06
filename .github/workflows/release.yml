@@ -29,4 +29,5 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "SimplePie.compiled.php"
+        allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
