@@ -1307,3 +1307,5 @@ class SimplePie_Enclosure
 		return $type;
 	}
 }
+
+class_alias('SimplePie_Enclosure', 'SimplePie\Enclosure', false);
