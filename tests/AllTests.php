@@ -41,14 +41,12 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
-
 require_once dirname(__FILE__) . '/EncodingTest.php';
 require_once dirname(__FILE__) . '/IRITest.php';
 require_once dirname(__FILE__) . '/LocatorTest.php';
 require_once dirname(__FILE__) . '/ItemTest.php';
 require_once dirname(__FILE__) . '/oldtests.php';
- 
+
 class AllTests
 {
 	public static function suite()
@@ -64,7 +62,7 @@ class AllTests
 		$suite->addTestSuite('ItemTest');
 		$suite->addTestSuite('OldTest');
 		$suite->addTestSuite('SubscribeUrlTest');
- 
+
 		return $suite;
 	}
 }

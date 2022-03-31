@@ -43,8 +43,6 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
-
 class HTTPParserTest extends PHPUnit\Framework\TestCase
 {
 	public static function chunkedProvider()
