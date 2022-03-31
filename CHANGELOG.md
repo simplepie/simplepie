@@ -5,7 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/simplepie/simplepie/compare/1.5.7...master)
+## [Unreleased](https://github.com/simplepie/simplepie/compare/1.5.8...master)
+
+### Added
+
+- New methods `SimplePie::rename_attributes()` and `SimplePie_Sanitize::rename_attributes()` allow renaming attributes by @math-GH in [#717](https://github.com/simplepie/simplepie/pull/717)
+- Add audio, video @src elements/attribute for URL resolution by @rdalverny in [#716](https://github.com/simplepie/simplepie/pull/716)
+- Added new namespaced aliases and PSR-4 support for every class by @Art4 in [#711](https://github.com/simplepie/simplepie/pull/711)
+
+### Changed
+
+- GH Actions: version update for ramsey/composer-install by @jrfnl in [#713](https://github.com/simplepie/simplepie/pull/713)
+
+### Fixed
+
+- Bugfix in MySQL cache by @Art4 in [#720](https://github.com/simplepie/simplepie/pull/720)
+- Re-enable xml:base for all supported RSS formats by @Alkarex in [#723](https://github.com/simplepie/simplepie/pull/723)
+
+## [1.5.8](https://github.com/simplepie/simplepie/compare/1.5.7...1.5.8) - 2021-12-24
+
+### Changed
+
+- Update CHANGELOG.md, follow keepachangelog format by @Art4 in [#709](https://github.com/simplepie/simplepie/pull/709)
+
+### Fixed
+
+- Fix a small typo in the error() function Docblock by @audrasjb in [#712](https://github.com/simplepie/simplepie/pull/712)
+- Fix/708 version bump for constant `SIMPLEPIE_VERSION` for 1.5.8 release by @faisal-alvi in [#710](https://github.com/simplepie/simplepie/pull/710)
 
 ## [1.5.7](https://github.com/simplepie/simplepie/compare/1.5.6...1.5.7) - 2021-12-19
 
@@ -41,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * PHP 7.4/8.0: curly brace array access deprecated & removed [#655](https://github.com/simplepie/simplepie/pull/655)
 * PHP 8.0: required parameters are no longer allowed after optional parameters [#656](https://github.com/simplepie/simplepie/pull/656)
 * Fix permanent_url for HTTP 301 [#660](https://github.com/simplepie/simplepie/pull/660)
-* Fix typo in MIME type in Content_Type_Sniffer [#661](https://github.com/simplepie/simplepie/pull/661) 
+* Fix typo in MIME type in Content_Type_Sniffer [#661](https://github.com/simplepie/simplepie/pull/661)
 
 ## [1.5.5](https://github.com/simplepie/simplepie/compare/1.5.4...1.5.5) - 2020-05-01
 
@@ -118,13 +144,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Use the latest HHVM version in testing (3.15.2). [#480](https://github.com/simplepie/simplepie/pull/480)
 * Added PHPUnit as a `dev-dependency` in Composer. [#463](https://github.com/simplepie/simplepie/pull/463)
 * Added `mf2/mf2` as a suggestion in Composer for use with microformats. [#491](https://github.com/simplepie/simplepie/pull/491)
-* Fixed misspelled occurrences of "separated". [#459](https://github.com/simplepie/simplepie/pull/459) 
+* Fixed misspelled occurrences of "separated". [#459](https://github.com/simplepie/simplepie/pull/459)
 * Improvements to the compatibility test and error messages. [#488](https://github.com/simplepie/simplepie/pull/488)
 
 ## [1.4.2](https://github.com/simplepie/simplepie/compare/1.4.1...1.4.2) - 2016-06-14
 
 * Fixed a bug with IRI parsing.
-* More cleanly separates discovery of microformats and parsing when php-mf2 is not present. 
+* More cleanly separates discovery of microformats and parsing when php-mf2 is not present.
 
 ## [1.4.1](https://github.com/simplepie/simplepie/compare/1.4.0...1.4.1) - 2016-06-02
 
@@ -147,7 +173,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added support for `application/x-rss+xml` in `SimplePie_Locator`. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Added photo de-duping in microformats. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Added decoding for special characters in MAYBE_HTML. [#400](https://github.com/simplepie/simplepie/pull/400)
-* Added `SimplePie_Exception` for internally reporting errors. Also, use this to show an error when trying to load the class instead of causing a failure. [#241](https://github.com/simplepie/simplepie/pull/241) 
+* Added `SimplePie_Exception` for internally reporting errors. Also, use this to show an error when trying to load the class instead of causing a failure. [#241](https://github.com/simplepie/simplepie/pull/241)
 * Added sanitization of the `</html>` and `</body>` tags. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Added support for media thumbnails through `SimplePie_Item->get_thumbnail()`. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Added the `feed_url` to a returned error message. [#348](https://github.com/simplepie/simplepie/pull/348)
@@ -170,7 +196,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed an error caused when trying to instantiate a `SimplePie_File` object with a bad URI. [#272](https://github.com/simplepie/simplepie/pull/272)
 * Fixed a PHP notice that occurs when a date starts with `(`. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Fixed uninitialized string offeset PHP notices. [#353](https://github.com/simplepie/simplepie/pull/353)
-* Fixed call to non-existent property in Memcache. [#311](https://github.com/simplepie/simplepie/pull/311) 
+* Fixed call to non-existent property in Memcache. [#311](https://github.com/simplepie/simplepie/pull/311)
 * Fixed a bug where MySQL statements were not being passed thorugh `prepare()`. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Fixed an instance where an error message in `SimplePie` was not being triggered correctly. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Fixed a bug with Russian feeds. [#348](https://github.com/simplepie/simplepie/pull/348)
