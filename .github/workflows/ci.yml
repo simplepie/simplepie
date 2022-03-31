@@ -70,5 +70,8 @@ jobs:
       - name: Run build script
         run: php build/compile.php
 
+      - name: Rename src and library folders
+        run: mv src src.bak && mv library library.bak
+
       - name: Run unit tests using compiled file
         run: bin/phpunit --bootstrap=build/bootstrap.php
