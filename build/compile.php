@@ -78,6 +78,9 @@ foreach($files as $file_path => $info)
 
 natsort($file_paths);
 array_unshift($file_paths, $first_file);
+array_push($file_paths, str_replace('SimplePie.php', 'SimplePie/Misc.php', $last_file));
+array_push($file_paths, str_replace('SimplePie.php', 'SimplePie/Core.php', $last_file));
+array_push($file_paths, str_replace('SimplePie.php', 'SimplePie/Decode/HTML/Entities.php', $last_file));
 array_push($file_paths, $last_file);
 
 foreach($file_paths as $file_path)
