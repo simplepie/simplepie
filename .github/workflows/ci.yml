@@ -44,3 +44,31 @@ jobs:
 
       - name: Run unit tests
         run: composer test
+
+  test-compiled:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          ini-values: error_reporting=-1, display_errors=On, log_errors_max_len=0
+          coverage: none
+          tools: none
+
+      # Install dependencies and handle caching in one go.
+      # @link https://github.com/marketplace/actions/install-composer-dependencies
+      - name: "Install Composer dependencies"
+        uses: "ramsey/composer-install@v2"
+        with:
+          composer-options: --ignore-platform-reqs
+
+      - name: Run build script
+        run: php build/compile.php
+
+      - name: Run unit tests using compiled file
+        run: bin/phpunit --bootstrap=build/bootstrap.php
