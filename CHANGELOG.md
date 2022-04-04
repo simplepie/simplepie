@@ -5,13 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/simplepie/simplepie/compare/1.5.8...master)
+## [Unreleased](https://github.com/simplepie/simplepie/compare/1.6.0...master)
+
+## [1.6.0](https://github.com/simplepie/simplepie/compare/1.5.8...1.6.0) - 2022-04-04
 
 ### Added
 
 - New methods `SimplePie::rename_attributes()` and `SimplePie_Sanitize::rename_attributes()` allow renaming attributes by @math-GH in [#717](https://github.com/simplepie/simplepie/pull/717)
 - Add audio, video @src elements/attribute for URL resolution by @rdalverny in [#716](https://github.com/simplepie/simplepie/pull/716)
 - Added new namespaced aliases and PSR-4 support for every class by @Art4 in [#711](https://github.com/simplepie/simplepie/pull/711)
+- Add .editorconfig by @Alkarex in [#724](https://github.com/simplepie/simplepie/pull/724)
+- Upload compiled file as release asset by @Art4 in [#725](https://github.com/simplepie/simplepie/pull/725)
 
 ### Changed
 
