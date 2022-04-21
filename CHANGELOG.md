@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/simplepie/simplepie/compare/1.6.0...master)
 
-## [1.6.0](https://github.com/simplepie/simplepie/compare/1.5.8...1.6.0) - 2022-04-15
+## [1.6.0](https://github.com/simplepie/simplepie/compare/1.5.8...1.6.0) - 2022-04-21
 
 ### Added
 
