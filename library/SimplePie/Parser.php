@@ -581,7 +581,7 @@ class SimplePie_Parser
 							$hidden = $j === 0 ? '' : 'class="hidden" ';
 							$description .= '<a href="'.$photo_list[$j].'" '.$hidden.
 								'data-lightbox="image-set-'.$image_set_id.'">'.
-								'<img src="'.$photo_list[$j].'"></a>';
+								'<img src="'.$photo_list[$j].'" alt="" /></a>';
 						}
 						$description .= '<br><b>'.$count.' photos</b></p>';
 					}
