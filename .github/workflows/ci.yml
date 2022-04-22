@@ -22,7 +22,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install PHP
+      - name: Install PHP <= 7.1 with composer 2.2.x LTS
+        if: ${{ matrix.php <= '7.1' }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          ini-values: error_reporting=-1, display_errors=On, log_errors_max_len=0
+          coverage: none
+          tools: composer:2.2.*
+
+      - name: Install PHP with latest composer
+        if: ${{ matrix.php >= '7.2' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
