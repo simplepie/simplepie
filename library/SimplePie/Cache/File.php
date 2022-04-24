@@ -45,10 +45,10 @@ use SimplePie\Cache\File;
 
 class_exists('SimplePie\Cache\File');
 
-// @trigger_error(sprintf('Using the "SimplePie_Cache_File" class is deprecated since SimplePie version 1.x, use "SimplePie\Cache\File" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Cache_File" class is deprecated since SimplePie 1.7, use "SimplePie\Cache\File" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.x, use "SimplePie\Cache\File" instead */
+	/** @deprecated since SimplePie 1.7, use "SimplePie\Cache\File" instead */
 	class SimplePie_Cache_File extends File
 	{
 	}

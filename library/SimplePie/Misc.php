@@ -45,7 +45,7 @@ use SimplePie\Misc;
 
 class_exists('SimplePie\Misc');
 
-// @trigger_error(sprintf('Using the "SimplePie_Misc" class is deprecated since SimplePie version 1.x, use "SimplePie\Misc" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Misc" class is deprecated since SimplePie 1.7, use "SimplePie\Misc" instead.'), \E_USER_DEPRECATED);
 
 /**
  * Miscellanous utilities

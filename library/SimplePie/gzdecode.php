@@ -45,10 +45,10 @@ use SimplePie\Gzdecode;
 
 class_exists('SimplePie\Gzdecode');
 
-// @trigger_error(sprintf('Using the "SimplePie_gzdecode" class is deprecated since SimplePie version 1.x, use "SimplePie\Gzdecode" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_gzdecode" class is deprecated since SimplePie 1.7, use "SimplePie\Gzdecode" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.x, use "SimplePie\Gzdecode" instead */
+	/** @deprecated since SimplePie 1.7, use "SimplePie\Gzdecode" instead */
 	class SimplePie_gzdecode extends Gzdecode
 	{
 	}

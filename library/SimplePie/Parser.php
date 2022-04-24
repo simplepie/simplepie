@@ -45,10 +45,10 @@ use SimplePie\Parser;
 
 class_exists('SimplePie\Parser');
 
-// @trigger_error(sprintf('Using the "SimplePie_Parser" class is deprecated since SimplePie version 1.x, use "SimplePie\Parser" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Parser" class is deprecated since SimplePie 1.7, use "SimplePie\Parser" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.x, use "SimplePie\Parser" instead */
+	/** @deprecated since SimplePie 1.7, use "SimplePie\Parser" instead */
 	class SimplePie_Parser extends Parser
 	{
 	}

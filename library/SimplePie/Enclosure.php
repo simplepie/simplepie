@@ -45,10 +45,10 @@ use SimplePie\Enclosure;
 
 class_exists('SimplePie\Enclosure');
 
-// @trigger_error(sprintf('Using the "SimplePie_Enclosure" class is deprecated since SimplePie version 1.x, use "SimplePie\Enclosure" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Enclosure" class is deprecated since SimplePie 1.7, use "SimplePie\Enclosure" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.x, use "SimplePie\Enclosure" instead */
+	/** @deprecated since SimplePie 1.7, use "SimplePie\Enclosure" instead */
 	class SimplePie_Enclosure extends Enclosure
 	{
 	}

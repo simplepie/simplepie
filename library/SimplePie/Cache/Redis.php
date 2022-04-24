@@ -14,10 +14,10 @@ use SimplePie\Cache\Redis;
 
 class_exists('SimplePie\Cache\Redis');
 
-// @trigger_error(sprintf('Using the "SimplePie_Cache_Redis" class is deprecated since SimplePie version 1.x, use "SimplePie\Cache\Redis" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Cache_Redis" class is deprecated since SimplePie 1.7, use "SimplePie\Cache\Redis" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.x, use "SimplePie\Cache\Redis" instead */
+	/** @deprecated since SimplePie 1.7, use "SimplePie\Cache\Redis" instead */
 	class SimplePie_Cache_Redis extends Redis
 	{
 	}

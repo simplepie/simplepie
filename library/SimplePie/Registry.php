@@ -45,10 +45,10 @@ use SimplePie\Registry;
 
 class_exists('SimplePie\Registry');
 
-// @trigger_error(sprintf('Using the "SimplePie_Registry" class is deprecated since SimplePie version 1.x, use "SimplePie\Registry" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Registry" class is deprecated since SimplePie 1.7, use "SimplePie\Registry" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.x, use "SimplePie\Registry" instead */
+	/** @deprecated since SimplePie 1.7, use "SimplePie\Registry" instead */
 	class SimplePie_Registry extends Registry
 	{
 	}
