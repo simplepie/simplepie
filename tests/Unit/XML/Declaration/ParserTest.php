@@ -44,7 +44,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-namespace Simplepie\Tests\Unit\XML\Declaration;
+namespace SimplePie\Tests\Unit\XML\Declaration;
 
 use PHPUnit\Framework\TestCase;
 

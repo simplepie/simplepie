@@ -44,9 +44,11 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-namespace Simplepie\Tests\Unit;
+namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Misc;
+use SimplePie\Tests\Fixtures\MiscWithPublicStaticMethodsMock;
 
 class MiscTest extends TestCase
 {
@@ -58,5 +60,157 @@ class MiscTest extends TestCase
 	public function testClassExists()
 	{
 		$this->assertTrue(class_exists('SimplePie_Misc'));
+	}
+
+	/**
+	 * #@+
+	 * UTF-8 methods
+	 *
+	 * Provider for the convert toUTF8* tests
+	 */
+	public function utf8DataProvider()
+	{
+		return array(
+			array('A', 'A', 'ASCII'),
+			array("\xa1\xdb", "\xe2\x88\x9e", 'Big5'),
+			array("\xa1\xe7", "\xe2\x88\x9e", 'EUC-JP'),
+			array("\xa1\xde", "\xe2\x88\x9e", 'GBK'),
+			array("\x81\x87", "\xe2\x88\x9e", 'Shift_JIS'),
+			array("\x2b\x49\x68\x34\x2d", "\xe2\x88\x9e", 'UTF-7'),
+			array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
+			array("\xff\xfe\x1e\x22", "\xe2\x88\x9e", 'UTF-16'),
+			array("\x22\x1e", "\xe2\x88\x9e", 'UTF-16BE'),
+			array("\x1e\x22", "\xe2\x88\x9e", 'UTF-16LE'),
+		);
+	}
+
+	/**
+	 * Convert * to UTF-8
+	 *
+	 * @dataProvider utf8DataProvider
+	 */
+	public function test_convert_UTF8($input, $expected, $encoding)
+	{
+		$encoding = Misc::encoding($encoding);
+		$this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-8'));
+	}
+
+	/**
+	 * Special cases with mbstring handling
+	 */
+	public function utf8MbstringDataProvider()
+	{
+		return array(
+			array("\xa1\xc4", "\xe2\x88\x9e", 'EUC-KR'),
+		);
+	}
+
+	/**
+	 * Convert * to UTF-8 using mbstring
+	 *
+	 * Special cases only
+	 * @dataProvider utf8MbstringDataProvider
+	 */
+	public function test_convert_UTF8_mbstring($input, $expected, $encoding)
+	{
+		if (! extension_loaded('mbstring')) {
+			$this->markTestSkipped('Skipping test because mbstring extension is not available.');
+		}
+
+		$encoding = Misc::encoding($encoding);
+		$this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+	}
+
+	/**
+	 * Special cases with iconv handling
+	 */
+	public function utf8IconvDataProvider()
+	{
+		return array(
+			array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
+		);
+	}
+
+	/**
+	 * Convert * to UTF-8 using iconv
+	 *
+	 * Special cases only
+	 * @dataProvider utf8IconvDataProvider
+	 */
+	public function test_convert_UTF8_iconv($input, $expected, $encoding)
+	{
+		if (! extension_loaded('iconv')) {
+			$this->markTestSkipped('Skipping test because iconv extension is not available.');
+		}
+
+		$encoding = Misc::encoding($encoding);
+		$this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_iconv($input, $encoding, 'UTF-8'));
+	}
+
+	/**
+	 * Special cases with uconverter handling
+	 */
+	public function utf8IntlDataProvider()
+	{
+		return array(
+			array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
+		);
+	}
+
+	/**
+	 * Convert * to UTF-8 using UConverter
+	 *
+	 * Special cases only
+	 * @dataProvider utf8IntlDataProvider
+	 */
+	public function test_convert_UTF8_uconverter($input, $expected, $encoding)
+	{
+		if (! extension_loaded('intl')) {
+			$this->markTestSkipped('Skipping test because intl extension is not available.');
+		}
+
+		$encoding = Misc::encoding($encoding);
+		$this->assertSameBin2Hex($expected, Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
+	}
+	/**#@-*/
+
+	/**#@+
+	 * UTF-16 methods
+	 */
+	public function utf16DataProvider()
+	{
+		return array(
+			array("\x22\x1e", "\x22\x1e", 'UTF-16BE'),
+			array("\x1e\x22", "\x22\x1e", 'UTF-16LE'),
+		);
+	}
+
+	/**
+	 * Convert * to UTF-16
+	 * @dataProvider utf16DataProvider
+	 */
+	public function test_convert_UTF16($input, $expected, $encoding)
+	{
+		$encoding = Misc::encoding($encoding);
+		$this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-16'));
+	}
+	/**#@-*/
+
+	public function test_nonexistant()
+	{
+		$this->assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
+	}
+
+	public function assertSameBin2Hex($expected, $actual, $message = '')
+	{
+		if (is_string($expected))
+		{
+			$expected = bin2hex($expected);
+		}
+		if (is_string($actual))
+		{
+			$actual = bin2hex($actual);
+		}
+		$this->assertSame($expected, $actual, $message);
 	}
 }

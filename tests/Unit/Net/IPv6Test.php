@@ -44,7 +44,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-namespace Simplepie\Tests\Unit\Net;
+namespace SimplePie\Tests\Unit\Net;
 
 use PHPUnit\Framework\TestCase;
 
