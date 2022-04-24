@@ -170,7 +170,7 @@ class MiscTest extends TestCase
 		}
 
 		$encoding = Misc::encoding($encoding);
-		$this->assertSameBin2Hex($expected, Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
+		$this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_uconverter($input, $encoding, 'UTF-8'));
 	}
 	/**#@-*/
 
