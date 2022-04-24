@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/simplepie/simplepie/compare/1.6.0...master)
 
+### Added
+
+- New class `SimplePie\SimplePie` as a replacement for class `SimplePie`
+
+### Deprecated
+
+- `SimplePie` is deprecated, use `SimplePie\SimplePie` instead
+- The use of PSR-0 classes (all classes without namespaces in the `library` directory) is deprecated, use PSR-4 classes (see `src` directory) instead
+- All global constants are deprecated, use the constants from the class `SimplePie\SimplePie` instead (e.g. replace `SIMPLEPIE_VERSION` with `SimplePie\SimplePie::SIMPLEPIE_VERSION`)
+
 ## [1.6.0](https://github.com/simplepie/simplepie/compare/1.5.8...1.6.0) - 2022-04-21
 
 ### Added
