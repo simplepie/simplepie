@@ -47,9 +47,13 @@
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\SimplePie;
+use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class SimplePieTest extends TestCase
 {
+	use ExpectPHPException;
+
 	public function testNamespacedClassExists()
 	{
 		$this->assertTrue(class_exists('SimplePie\SimplePie'));
@@ -58,5 +62,36 @@ class SimplePieTest extends TestCase
 	public function testClassExists()
 	{
 		$this->assertTrue(class_exists('SimplePie'));
+	}
+
+	public function testLegacyCallOfSetCacheClass()
+	{
+		if (PHP_VERSION_ID < 80000) {
+			$this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
+		} else {
+			// PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
+			// This is no longer supported in PHP, so there is just no way to continue to provide BC
+			// for the old non-static cache methods.
+			$this->expectError();
+		}
+
+		$feed = new SimplePie();
+		$feed->set_cache_class('SimplePie\Tests\Fixtures\Cache\LegacyCacheMock');
+		$feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+		$feed->set_feed_url('http://example.com/feed/');
+
+		$feed->init();
+	}
+
+	public function testDirectOverrideNew()
+	{
+		$this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
+
+		$feed = new SimplePie();
+		$feed->get_registry()->register('Cache', 'SimplePie\Tests\Fixtures\Cache\NewCacheMock');
+		$feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+		$feed->set_feed_url('http://example.com/feed/');
+
+		$feed->init();
 	}
 }
