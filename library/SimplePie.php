@@ -429,7 +429,7 @@ class SimplePie
 	 * @see SimplePie::status_code()
 	 * @access private
 	 */
-	public $status_code;
+	public $status_code = 0;
 
 	/**
 	 * @var object Instance of SimplePie_Sanitize (or other class)
