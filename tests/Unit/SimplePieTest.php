@@ -48,6 +48,7 @@ namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use SimplePie\SimplePie;
+use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class SimplePieTest extends TestCase
@@ -270,5 +271,18 @@ class SimplePieTest extends TestCase
 		$feed->set_feed_url('http://example.com/feed/');
 
 		$feed->init();
+	}
+
+	public function testDirectOverrideLegacy()
+	{
+		$feed = new SimplePie();
+		$feed->get_registry()->register('File', FileWithRedirectMock::class);
+		$feed->enable_cache(false);
+		$feed->set_feed_url('http://example.com/feed/');
+
+		$feed->init();
+
+		$this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
+		$this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
 	}
 }
