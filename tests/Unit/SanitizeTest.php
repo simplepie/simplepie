@@ -67,13 +67,13 @@ class SanitizeTest extends TestCase
 		$sanitize = new Sanitize();
 
 		$this->assertSame(
-			<<<EOT
-			&lt;head&gt; &amp; &lt;body&gt; /\ ' === ' &amp; " === ". Sbohem bez šátečku! Тут был Лёха.
-			EOT,
+<<<EOT
+&lt;head&gt; &amp; &lt;body&gt; /\ ' === ' &amp; " === ". Sbohem bez šátečku! Тут был Лёха.
+EOT,
 			$sanitize->sanitize(
-				<<<EOT
-				&#60;head&#62; &amp; &lt;body&gt; /\ ' === &apos; &#38; " === &quot;. Sbohem bez šátečku! Тут был Лёха.<script>alert('XSS')</script>
-				EOT,
+<<<EOT
+&#60;head&#62; &amp; &lt;body&gt; /\ ' === &apos; &#38; " === &quot;. Sbohem bez šátečku! Тут был Лёха.<script>alert('XSS')</script>
+EOT,
 				SIMPLEPIE_CONSTRUCT_MAYBE_HTML
 			),
 			'XML input (with corresponding xml entities) should be cleaned and converted to utf-8 escaped HTML'
