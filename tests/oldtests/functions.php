@@ -89,15 +89,6 @@ class SimplePie_First_Item_Contributor_Test extends SimplePie_First_Item_Test
 	}
 }
 
-class SimplePie_Feed_Image_Link_Test extends SimplePie_Feed_Test
-{
-	function test()
-	{
-		$feed = $this->feed();
-		$this->result = $feed->get_image_link();
-	}
-}
-
 class SimplePie_Feed_Image_Title_Test extends SimplePie_Feed_Test
 {
 	function test()

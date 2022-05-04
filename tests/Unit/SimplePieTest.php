@@ -1297,4 +1297,98 @@ EOT
 
 		$this->assertSame($expected, $feed->get_image_height());
 	}
+
+	public function getImageLinkDataProvider()
+	{
+		return [
+			'Test RSS 0.90 Link' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
+	<image>
+		<link>http://example.com/</link>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				'http://example.com/',
+			],
+			'Test RSS 0.91-Netscape Link' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<image>
+			<link>http://example.com/</link>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'Test RSS 0.91-Userland Link' => [
+<<<EOT
+<rss version="0.91">
+	<channel>
+		<image>
+			<link>http://example.com/</link>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'Test RSS 0.92 Link' => [
+<<<EOT
+<rss version="0.92">
+	<channel>
+		<image>
+			<link>http://example.com/</link>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'Test RSS 1.0 Link' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+	<image>
+		<link>http://example.com/</link>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				'http://example.com/',
+			],
+			'Test RSS 2.0 Link' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<image>
+			<link>http://example.com/</link>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider getImageLinkDataProvider
+	 */
+	public function test_get_image_link($data, $expected)
+	{
+		$feed = new SimplePie();
+		$feed->set_raw_data($data);
+		$feed->enable_cache(false);
+		$feed->init();
+
+		$this->assertSame($expected, $feed->get_image_link());
+	}
 }
