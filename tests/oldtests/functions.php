@@ -103,14 +103,6 @@ class SimplePie_First_Item_Contributor_Test extends SimplePie_First_Item_Test
 	}
 }
 
-class SimplePie_Absolutize_Test extends SimplePie_Unit_Test2
-{
-	function test()
-	{
-		$this->result = SimplePie_Misc::absolutize_url($this->data['relative'], $this->data['base']);
-	}
-}
-
 class SimplePie_Date_Test extends SimplePie_Unit_Test2
 {
 	function test()

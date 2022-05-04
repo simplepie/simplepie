@@ -404,4 +404,106 @@ class MiscTest extends TestCase
 			Misc::absolutize_url($relative, $base)
 		);
 	}
+
+	public function absolutizeUrlBugsDataProvider()
+	{
+		return [
+			'bug 274.0' => [
+				'http://a/b/',
+				'c',
+				'http://a/b/c',
+			],
+			'bug 274.1' => [
+				'http://a/',
+				'b',
+				'http://a/b',
+			],
+			'bug 274.2' => [
+				'http://a/',
+				'/b',
+				'http://a/b',
+			],
+			'bug 274.3' => [
+				'http://a/b',
+				'c',
+				'http://a/c',
+			],
+			'bug 579.0' => [
+				'http://a/b/',
+				"b\x0Ac",
+				'http://a/b/b%0Ac',
+			],
+			'bug 691.0' => [
+				'http://a/b/c',
+				'zero://a/b/c',
+				'zero://a/b/c',
+			],
+			'bug 691.1' => [
+				'http://a/b/c',
+				'//0',
+				'http://0/',
+			],
+			'bug 691.2' => [
+				'http://a/b/c',
+				'0',
+				'http://a/b/0',
+			],
+			'bug 691.3' => [
+				'http://a/b/c',
+				'?0',
+				'http://a/b/c?0',
+			],
+			'bug 691.4' => [
+				'http://a/b/c',
+				'#0',
+				'http://a/b/c#0',
+			],
+			'bug 691.5' => [
+				'zero://a/b/c',
+				'd',
+				'zero://a/b/d',
+			],
+			'bug 691.6' => [
+				'http://0/b/c',
+				'd',
+				'http://0/b/d',
+			],
+			'bug 691.7' => [
+				'http://a/b/c?0',
+				'd',
+				'http://a/b/d',
+			],
+			'bug 691.8' => [
+				'http://a/b/c#0',
+				'd',
+				'http://a/b/d',
+			],
+			'bug 1091.0.1' => [
+				'http://example.com',
+				'//example.net',
+				'http://example.net/',
+			],
+			'bug 1091.0' => [
+				'http:g',
+				'a',
+				'http:a',
+			],
+			'bug pct_encoding_invalid_second_char' => [
+				'http://a/b/c/d',
+				'f%0o',
+				'http://a/b/c/f%250o',
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider absolutizeUrlBugsDataProvider
+	 */
+	public function test_absolutize_url_bugs($base, $relative, $expected)
+	{
+		$this->assertSame(
+			$expected,
+			Misc::absolutize_url($relative, $base)
+		);
+	}
 }
