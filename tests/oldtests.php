@@ -11,8 +11,6 @@ class OldTest extends PHPUnit\Framework\TestCase
     public function getTests()
     {
         $test_folders = array(
-            'absolutize',
-            'date',
             'feed_category_label',
             'feed_copyright',
             'feed_description',

@@ -506,4 +506,251 @@ class MiscTest extends TestCase
 			Misc::absolutize_url($relative, $base)
 		);
 	}
+
+	public function parseDateDataProvider()
+	{
+		return [
+			// The tests enclosed within come from RFC 3339 section 5.8
+			'RFC3339 section 5.8 test 1' => [
+				'1985-04-12T23:20:50.52Z',
+				482196051,
+			],
+			'RFC3339 section 5.8 test 2' => [
+				'1996-12-19T16:39:57-08:00',
+				851042397,
+			],
+			'RFC3339 section 5.8 test 3' => [
+				'1996-12-20T00:39:57Z',
+				851042397,
+			],
+			// The tests enclosed within come from the W3C Date and Time Formats note
+			'W3CDTF test 1' => [
+				'1994-11-05T08:15:30-05:00',
+				784041330,
+			],
+			'W3CDTF test 2' => [
+				'1994-11-05T13:15:30Z',
+				784041330,
+			],
+			// The tests enclosed within come from the RFC 2822
+			// valid
+			'RFC2822 test 1' => [
+				'Fri, 05 Nov 94 13:15:30 GMT',
+				784041330,
+			],
+			'RFC2822 test 2' => [
+				'05 Nov 94 13:15:30 GMT',
+				784041330,
+			],
+			'RFC2822 test 3' => [
+				'Fri, 5 Nov 94 13:15:30 GMT',
+				784041330,
+			],
+			'RFC2822 test 4' => [
+				'Fri, 05 Nov 94 13:15 GMT',
+				784041300,
+			],
+			'RFC2822 test 5' => [
+				'Fri, 05 Nov 94 13:15:30 UT',
+				784041330,
+			],
+			'RFC2822 test 6' => [
+				'Fri, 05 Nov 94 08:15:30 EST',
+				784041330,
+			],
+			'RFC2822 test 7' => [
+				'Fri, 05 Nov 94 09:15:30 EDT',
+				784041330,
+			],
+			'RFC2822 test 8' => [
+				'Fri, 05 Nov 94 07:15:30 CST',
+				784041330,
+			],
+			'RFC2822 test 9' => [
+				'Fri, 05 Nov 94 08:15:30 CDT',
+				784041330,
+			],
+			'RFC2822 test 10' => [
+				'Fri, 05 Nov 94 06:15:30 MST',
+				784041330,
+			],
+			'RFC2822 test 11' => [
+				'Fri, 05 Nov 94 07:15:30 MDT',
+				784041330,
+			],
+			'RFC2822 test 12' => [
+				'Fri, 05 Nov 94 05:15:30 PST',
+				784041330,
+			],
+			'RFC2822 test 13' => [
+				'Fri, 05 Nov 94 06:15:30 PDT',
+				784041330,
+			],
+			'RFC2822 test 14' => [
+				'Fri, 05 Nov 94 13:15:30 A',
+				784041330,
+			],
+			'RFC2822 test 15' => [
+				'Fri, 05 Nov 94 13:15:30 B',
+				784041330,
+			],
+			'RFC2822 test 16' => [
+				'Fri, 05 Nov 94 13:15:30 C',
+				784041330,
+			],
+			'RFC2822 test 17' => [
+				'Fri, 05 Nov 94 13:15:30 D',
+				784041330,
+			],
+			'RFC2822 test 18' => [
+				'Fri, 05 Nov 94 13:15:30 E',
+				784041330,
+			],
+			'RFC2822 test 19' => [
+				'Fri, 05 Nov 94 13:15:30 F',
+				784041330,
+			],
+			'RFC2822 test 20' => [
+				'Fri, 05 Nov 94 13:15:30 G',
+				784041330,
+			],
+			'RFC2822 test 21' => [
+				'Fri, 05 Nov 94 13:15:30 H',
+				784041330,
+			],
+			'RFC2822 test 22' => [
+				'Fri, 05 Nov 94 13:15:30 I',
+				784041330,
+			],
+			'RFC2822 test 23' => [
+				'Fri, 05 Nov 94 13:15:30 K',
+				784041330,
+			],
+			'RFC2822 test 24' => [
+				'Fri, 05 Nov 94 13:15:30 L',
+				784041330,
+			],
+			'RFC2822 test 25' => [
+				'Fri, 05 Nov 94 13:15:30 M',
+				784041330,
+			],
+			'RFC2822 test 26' => [
+				'Fri, 05 Nov 94 13:15:30 N',
+				784041330,
+			],
+			'RFC2822 test 27' => [
+				'Fri, 05 Nov 94 13:15:30 O',
+				784041330,
+			],
+			'RFC2822 test 28' => [
+				'Fri, 05 Nov 94 13:15:30 P',
+				784041330,
+			],
+			'RFC2822 test 29' => [
+				'Fri, 05 Nov 94 13:15:30 Q',
+				784041330,
+			],
+			'RFC2822 test 30' => [
+				'Fri, 05 Nov 94 13:15:30 R',
+				784041330,
+			],
+			'RFC2822 test 31' => [
+				'Fri, 05 Nov 94 13:15:30 S',
+				784041330,
+			],
+			'RFC2822 test 32' => [
+				'Fri, 05 Nov 94 13:15:30 T',
+				784041330,
+			],
+			'RFC2822 test 33' => [
+				'Fri, 05 Nov 94 13:15:30 U',
+				784041330,
+			],
+			'RFC2822 test 34' => [
+				'Fri, 05 Nov 94 13:15:30 V',
+				784041330,
+			],
+			'RFC2822 test 35' => [
+				'Fri, 05 Nov 94 13:15:30 W',
+				784041330,
+			],
+			'RFC2822 test 36' => [
+				'Fri, 05 Nov 94 13:15:30 X',
+				784041330,
+			],
+			'RFC2822 test 37' => [
+				'Fri, 05 Nov 94 13:15:30 Y',
+				784041330,
+			],
+			'RFC2822 test 38' => [
+				'Fri, 05 Nov 94 13:15:30 Z',
+				784041330,
+			],
+			'RFC2822 test 39' => [
+				'Fri, 05 Nov 94 13:15:30 +0000',
+				784041330,
+			],
+			'RFC2822 test 40' => [
+				'Fri, 05 Nov 94 13:15:30 -0000',
+				784041330,
+			],
+			'RFC2822 test 41' => [
+				'Fri, 05 Nov 94 14:15:30 +0100',
+				784041330,
+			],
+			'RFC2822 test 42' => [
+				'Fri, 05 Nov 94 12:15:30 -0100',
+				784041330,
+			],
+			'RFC2822 test 43' => [
+				'Fri(day), 05 Nov(ember) 94 13:15:30 GMT',
+				784041330,
+			],
+			'RFC2822 test 44' => [
+				'Fri(day), 05 Nov(ember) 94 13:15:30 A',
+				784041330,
+			],
+			// invalid
+			'RFC2822 test four_digit_year' => [
+				'Fri, 05 Nov 1994 13:15:30 GMT',
+				784041330,
+			],
+			'RFC2822 test full_name_of_day' => [
+				'Friday, 05 Nov 94 13:15:30 GMT',
+				784041330,
+			],
+			'RFC2822 test invalid_day' => [
+				'Vendredi, 05 Nov 94 13:15:30 GMT',
+				784041330,
+			],
+			'RFC2822 test invalid_timezone' => [
+				'Fri, 05 Nov 94 13:15:30 UTC',
+				784041330,
+			],
+			'RFC2822 test mismatch_name_of_day' => [
+				'Mon, 05 Nov 94 13:15:30 GMT',
+				784041330,
+			],
+			// Bug tests
+			'bug 157 test 0' => [
+				'meep',
+				false,
+			],
+			'bug 259 test 0' => [
+				'1994-11-05T08:15:30-0500',
+				784041330,
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider parseDateDataProvider
+	 */
+	public function test_parse_date($data, $expected)
+	{
+		$this->assertSame(
+			$expected,
+			Misc::parse_date($data)
+		);
+	}
 }
