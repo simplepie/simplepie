@@ -285,4 +285,314 @@ class SimplePieTest extends TestCase
 		$this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
 		$this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
 	}
+
+	public function getCopyrightDataProvider()
+	{
+		return [
+			'Test Atom 0.3 DC 1.0' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<dc:rights>Example Copyright Information</dc:rights>
+</feed>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test Atom 0.3 DC 1.1' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<dc:rights>Example Copyright Information</dc:rights>
+</feed>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test Atom 1.0 DC 1.0' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<dc:rights>Example Copyright Information</dc:rights>
+</feed>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test Atom 1.0 DC 1.1' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<dc:rights>Example Copyright Information</dc:rights>
+</feed>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test Atom 1.0 Rights' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<rights>Example Copyright Information</rights>
+</feed>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.90 Atom 1.0 Rights' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:rights>Example Copyright Information</a:rights>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.90 DC 1.0 Rights' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.90 DC 1.1 Rights' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.91-Netscape Atom 1.0 Rights' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:rights>Example Copyright Information</a:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.91-Netscape DC 1.0 Rights' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.91-Netscape DC 1.1 Rights' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.91-Netscape Copyright' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<copyright>Example Copyright Information</copyright>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.91-Userland Atom 1.0 Rights' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:rights>Example Copyright Information</a:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.91-Userland DC 1.0 Rights' => [
+<<<EOT
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.91-Userland DC 1.0 Rights' => [
+<<<EOT
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.91-Userland Copyright' => [
+<<<EOT
+<rss version="0.91">
+	<channel>
+		<copyright>Example Copyright Information</copyright>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.92 Atom 1.0 Rights' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:rights>Example Copyright Information</a:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.92 DC 1.0 Rights' => [
+<<<EOT
+<rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.92 DC 1.1 Rights' => [
+<<<EOT
+<rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 0.92 Copyright' => [
+<<<EOT
+<rss version="0.92">
+	<channel>
+		<copyright>Example Copyright Information</copyright>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 1.0 Atom 1.0 Rights' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:rights>Example Copyright Information</a:rights>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 1.0 DC 1.0 Rights' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 1.0 DC 1.1 Rights' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 2.0 Atom 1.0 Rights' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:rights>Example Copyright Information</a:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 2.0 DC 1.0 Rights' => [
+<<<EOT
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 2.0 DC 1.1 Rights' => [
+<<<EOT
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<dc:rights>Example Copyright Information</dc:rights>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+			'Test RSS 2.0 Copyright' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<copyright>Example Copyright Information</copyright>
+	</channel>
+</rss>
+EOT
+				,
+				'Example Copyright Information',
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider getCopyrightDataProvider
+	 */
+	public function test_get_copyright($data, $expected)
+	{
+		$feed = new SimplePie();
+		$feed->set_raw_data($data);
+		$feed->enable_cache(false);
+		$feed->init();
+
+		$this->assertSame($expected, $feed->get_copyright());
+	}
 }
