@@ -1391,4 +1391,248 @@ EOT
 
 		$this->assertSame($expected, $feed->get_image_link());
 	}
+
+	public function getImageTitleDataProvider()
+	{
+		return [
+			'Test RSS 0.90 DC 1.0 Title' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<image>
+		<dc:title>Image Title</dc:title>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.90 DC 1.1 Title' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<image>
+		<dc:title>Image Title</dc:title>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.90 Title' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
+	<image>
+		<title>Image Title</title>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.91-Netscape DC 1.0 Title' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<image>
+			<dc:title>Image Title</dc:title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.91-Netscape DC 1.1 Title' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<image>
+			<dc:title>Image Title</dc:title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.91-Netscape Title' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<image>
+			<title>Image Title</title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.91-Userland DC 1.0 Title' => [
+<<<EOT
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<image>
+			<dc:title>Image Title</dc:title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.91-Userland DC 1.1 Title' => [
+<<<EOT
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<image>
+			<dc:title>Image Title</dc:title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.91-Userland Title' => [
+<<<EOT
+<rss version="0.91">
+	<channel>
+		<image>
+			<title>Image Title</title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.92 DC 1.0 Title' => [
+<<<EOT
+<rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<image>
+			<dc:title>Image Title</dc:title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.92 DC 1.1 Title' => [
+<<<EOT
+<rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<image>
+			<dc:title>Image Title</dc:title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 0.92 Title' => [
+<<<EOT
+<rss version="0.92">
+	<channel>
+		<image>
+			<title>Image Title</title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 1.0 DC 1.0 Title' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<image>
+		<dc:title>Image Title</dc:title>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 1.0 DC 1.1 Title' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<image>
+		<dc:title>Image Title</dc:title>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 1.0 Title' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+	<image>
+		<title>Image Title</title>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 2.0 DC 1.0 Title' => [
+<<<EOT
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<image>
+			<dc:title>Image Title</dc:title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 2.0 DC 1.1 Title' => [
+<<<EOT
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<image>
+			<dc:title>Image Title</dc:title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+			'Test RSS 2.0 Title' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<image>
+			<title>Image Title</title>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				'Image Title',
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider getImageTitleDataProvider
+	 */
+	public function test_get_image_title($data, $expected)
+	{
+		$feed = new SimplePie();
+		$feed->set_raw_data($data);
+		$feed->enable_cache(false);
+		$feed->init();
+
+		$this->assertSame($expected, $feed->get_image_title());
+	}
 }
