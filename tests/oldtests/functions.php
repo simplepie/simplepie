@@ -30,20 +30,6 @@ class SimplePie_Feed_Author_Test extends SimplePie_Feed_Test
 	}
 }
 
-class SimplePie_Feed_Category_Test extends SimplePie_Feed_Test
-{
-	function category()
-	{
-		$feed = $this->feed();
-		if ($category = $feed->get_category())
-		{
-			return $category;
-		}
-
-		return false;
-	}
-}
-
 class SimplePie_First_Item_Test extends SimplePie_Feed_Test
 {
 	function first_item()
@@ -100,25 +86,6 @@ class SimplePie_First_Item_Contributor_Test extends SimplePie_First_Item_Test
 			}
 		}
 		return false;
-	}
-}
-
-class SimplePie_Date_Test extends SimplePie_Unit_Test2
-{
-	function test()
-	{
-		$this->result = SimplePie_Misc::parse_date($this->data);
-	}
-}
-
-class SimplePie_Feed_Category_Label_Test extends SimplePie_Feed_Category_Test
-{
-	function test()
-	{
-		if ($category = $this->category())
-		{
-			$this->result = $category->get_label();
-		}
 	}
 }
 
