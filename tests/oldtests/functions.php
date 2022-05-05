@@ -44,17 +44,6 @@ class SimplePie_First_Item_Test extends SimplePie_Feed_Test
 	}
 }
 
-class SimplePie_First_Item_Latitude_Test extends SimplePie_First_Item_Test
-{
-	function test()
-	{
-		if ($item = $this->first_item())
-		{
-			$this->result = $item->get_latitude();
-		}
-	}
-}
-
 class SimplePie_First_Item_Longitude_Test extends SimplePie_First_Item_Test
 {
 	function test()

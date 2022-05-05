@@ -2405,4 +2405,228 @@ EOT
 
 		$this->assertSame($expected, $item->get_id());
 	}
+
+	public function getLatitudeDataProvider()
+	{
+		return [
+			'Test Atom 0.3 Geo Lat' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+	<entry>
+		<geo:lat>55.701</geo:lat>
+		<geo:long>12.552</geo:long>
+	</entry>
+</feed>
+EOT
+				,
+				55.701,
+			],
+			'Test Atom 0.3 Georss Point' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:georss="http://www.georss.org/georss">
+	<entry>
+		<georss:point>55.701 12.552</georss:point>
+	</entry>
+</feed>
+EOT
+				,
+				55.701,
+			],
+			'Test Atom 1.0 Geo Lat' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+	<entry>
+		<geo:lat>55.701</geo:lat>
+		<geo:long>12.552</geo:long>
+	</entry>
+</feed>
+EOT
+				,
+				55.701,
+			],
+			'Test Atom 1.0 Georss Point' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:georss="http://www.georss.org/georss">
+	<entry>
+		<georss:point>55.701 12.552</georss:point>
+	</entry>
+</feed>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 0.90 Geo Lat' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+	<item>
+		<geo:lat>55.701</geo:lat>
+		<geo:long>12.552</geo:long>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 0.90 Georss Point' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:georss="http://www.georss.org/georss">
+	<item>
+		<georss:point>55.701 12.552</georss:point>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 0.91-Netscape Geo Lat' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+	<channel>
+		<item>
+			<geo:lat>55.701</geo:lat>
+			<geo:long>12.552</geo:long>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 0.91-Netscape Georss Point' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:georss="http://www.georss.org/georss">
+	<channel>
+		<item>
+			<georss:point>55.701 12.552</georss:point>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 0.91-Userland Geo Lat' => [
+<<<EOT
+<rss version="0.91" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+	<channel>
+		<item>
+			<geo:lat>55.701</geo:lat>
+			<geo:long>12.552</geo:long>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 0.91-Userland Georss Point' => [
+<<<EOT
+<rss version="0.91" xmlns:georss="http://www.georss.org/georss">
+	<channel>
+		<item>
+			<georss:point>55.701 12.552</georss:point>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 0.92 Geo Lat' => [
+<<<EOT
+<rss version="0.92" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+	<channel>
+		<item>
+			<geo:lat>55.701</geo:lat>
+			<geo:long>12.552</geo:long>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 0.92 Georss Point' => [
+<<<EOT
+<rss version="0.92" xmlns:georss="http://www.georss.org/georss">
+	<channel>
+		<item>
+			<georss:point>55.701 12.552</georss:point>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 1.0 Geo Lat' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+	<item>
+		<geo:lat>55.701</geo:lat>
+		<geo:long>12.552</geo:long>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 1.0 Georss Point' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:georss="http://www.georss.org/georss">
+	<item>
+		<georss:point>55.701 12.552</georss:point>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 2.0 Geo Lat' => [
+<<<EOT
+<rss version="2.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+	<channel>
+		<item>
+			<geo:lat>55.701</geo:lat>
+			<geo:long>12.552</geo:long>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				55.701,
+			],
+			'Test RSS 2.0 Georss Point' => [
+<<<EOT
+<rss version="2.0" xmlns:georss="http://www.georss.org/georss">
+	<channel>
+		<item>
+			<georss:point>55.701 12.552</georss:point>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				55.701,
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider getLatitudeDataProvider
+	 */
+	public function test_get_latitude($data, $expected)
+	{
+		$feed = new SimplePie();
+		$feed->set_raw_data($data);
+		$feed->enable_cache(false);
+		$feed->init();
+
+		$item = $feed->get_item(0);
+		$this->assertInstanceOf(Item::class, $item);
+
+		$this->assertSame($expected, $item->get_latitude());
+	}
 }
