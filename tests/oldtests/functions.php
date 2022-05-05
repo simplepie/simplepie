@@ -59,17 +59,6 @@ class SimplePie_First_Item_Contributor_Test extends SimplePie_First_Item_Test
 	}
 }
 
-class SimplePie_First_Item_Content_Test extends SimplePie_First_Item_Test
-{
-	function test()
-	{
-		if ($item = $this->first_item())
-		{
-			$this->result = $item->get_content();
-		}
-	}
-}
-
 class SimplePie_First_Item_Contributor_Name_Test extends SimplePie_First_Item_Contributor_Test
 {
 	function test()
