@@ -697,4 +697,676 @@ EOT
 
 		$this->assertSame($expected, $item->get_content());
 	}
+
+	public function getDateDataProvider()
+	{
+		return [
+			'Test Atom 0.3 Created' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<created>2007-01-11T16:00:00Z</created>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Atom 0.3 DC 1.0 Date' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<entry>
+		<dc:date>2007-01-11T16:00:00Z</dc:date>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Atom 0.3 DC 1.1 Date' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<entry>
+		<dc:date>2007-01-11T16:00:00Z</dc:date>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Atom 0.3 Issued' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<issued>2007-01-11T16:00:00Z</issued>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Atom 0.3 Modified' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<modified>2007-01-11T16:00:00Z</modified>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Atom 1.0 DC 1.0 Date' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<entry>
+		<dc:date>2007-01-11T16:00:00Z</dc:date>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Atom 1.0 DC 1.1 Date' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<entry>
+		<dc:date>2007-01-11T16:00:00Z</dc:date>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Atom 1.0 Published' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<published>2007-01-11T16:00:00Z</published>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Atom 1.0 Updated' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<updated>2007-01-11T16:00:00Z</updated>
+	</entry>
+</feed>
+EOT
+				,
+				1168531200,
+			],
+			'Test Bug 876 Test 0' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<pubDate></pubDate>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				null,
+			],
+			'Test RSS 0.90 Atom 0.3 Created' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:created>2007-01-11T16:00:00Z</a:created>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.90 Atom 0.3 Issued' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:issued>2007-01-11T16:00:00Z</a:issued>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.90 Atom 0.3 Modified' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:modified>2007-01-11T16:00:00Z</a:modified>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.90 Atom 1.0 Published' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
+	<item>
+		<a:published>2007-01-11T16:00:00Z</a:published>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.90 Atom 1.0 Updated' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
+	<item>
+		<a:updated>2007-01-11T16:00:00Z</a:updated>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.90 DC 1.0 Date' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<item>
+		<dc:date>2007-01-11T16:00:00Z</dc:date>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.90 DC 1.1 Date' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<item>
+		<dc:date>2007-01-11T16:00:00Z</dc:date>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Netscape Atom 0.3 Created' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:created>2007-01-11T16:00:00Z</a:created>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Netscape Atom 0.3 Issued' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:issued>2007-01-11T16:00:00Z</a:issued>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Netscape Atom 0.3 Modified' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:modified>2007-01-11T16:00:00Z</a:modified>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Netscape Atom 1.0 Published' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:published>2007-01-11T16:00:00Z</a:published>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Netscape Atom 1.0 Updated' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:updated>2007-01-11T16:00:00Z</a:updated>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Netscape DC 1.0 Date' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<item>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Netscape DC 1.1 Date' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Userland Atom 0.3 Created' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:created>2007-01-11T16:00:00Z</a:created>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Userland Atom 0.3 Issued' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:issued>2007-01-11T16:00:00Z</a:issued>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Userland Atom 0.3 Modified' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:modified>2007-01-11T16:00:00Z</a:modified>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Userland Atom 1.0 Published' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:published>2007-01-11T16:00:00Z</a:published>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Userland Atom 1.0 Updated' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:updated>2007-01-11T16:00:00Z</a:updated>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Userland DC 1.0 Date' => [
+<<<EOT
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<item>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.91-Userland DC 1.1 Date' => [
+<<<EOT
+<rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.92 Atom 0.3 Created' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:created>2007-01-11T16:00:00Z</a:created>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.92 Atom 0.3 Issued' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:issued>2007-01-11T16:00:00Z</a:issued>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.92 Atom 0.3 Modified' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:modified>2007-01-11T16:00:00Z</a:modified>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.92 Atom 1.0 Published' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:published>2007-01-11T16:00:00Z</a:published>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.92 Atom 1.0 Updated' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:updated>2007-01-11T16:00:00Z</a:updated>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.92 DC 1.0 Date' => [
+<<<EOT
+<rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<item>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 0.92 DC 1.1 Date' => [
+<<<EOT
+<rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 1.0 Atom 0.3 Created' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:created>2007-01-11T16:00:00Z</a:created>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 1.0 Atom 0.3 Issued' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:issued>2007-01-11T16:00:00Z</a:issued>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 1.0 Atom 0.3 Modified' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:modified>2007-01-11T16:00:00Z</a:modified>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 1.0 Atom 1.0 Published' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
+	<item>
+		<a:published>2007-01-11T16:00:00Z</a:published>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 1.0 Atom 1.0 Updated' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
+	<item>
+		<a:updated>2007-01-11T16:00:00Z</a:updated>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 1.0 DC 1.0 Date' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<item>
+		<dc:date>2007-01-11T16:00:00Z</dc:date>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 1.0 DC 1.1 Date' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<item>
+		<dc:date>2007-01-11T16:00:00Z</dc:date>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 2.0 Atom 0.3 Created' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:created>2007-01-11T16:00:00Z</a:created>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 2.0 Atom 0.3 Issued' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:issued>2007-01-11T16:00:00Z</a:issued>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 2.0 Atom 0.3 Modified' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:modified>2007-01-11T16:00:00Z</a:modified>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 2.0 Atom 1.0 Published' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:published>2007-01-11T16:00:00Z</a:published>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 2.0 Atom 1.0 Updated' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:updated>2007-01-11T16:00:00Z</a:updated>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 2.0 DC 1.0 Date' => [
+<<<EOT
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<item>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 2.0 DC 1.1 Date' => [
+<<<EOT
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+			'Test RSS 2.0 pubDate' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<pubDate>2007-01-11T16:00:00Z</pubDate>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				1168531200,
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider getDateDataProvider
+	 */
+	public function test_get_date($data, $expected)
+	{
+		$feed = new SimplePie();
+		$feed->set_raw_data($data);
+		$feed->enable_cache(false);
+		$feed->init();
+
+		$item = $feed->get_item(0);
+		$this->assertInstanceOf(Item::class, $item);
+
+		$this->assertSame($expected, $item->get_date('U'));
+	}
 }

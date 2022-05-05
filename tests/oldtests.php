@@ -11,7 +11,6 @@ class OldTest extends PHPUnit\Framework\TestCase
     public function getTests()
     {
         $test_folders = array(
-            'first_item_date',
             'first_item_description',
             'first_item_id',
             'first_item_latitude',
