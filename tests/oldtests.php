@@ -10,18 +10,7 @@ class OldTest extends PHPUnit\Framework\TestCase
 {
     public function getTests()
     {
-        $test_folders = array(
-            'itunes_rss'
-        );
-
         $master = new Unit_Test2_Group('SimplePie Test Suite');
-
-        foreach ($test_folders as $test)
-        {
-            $test_group = new SimplePie_Unit_Test2_Group(ucwords(str_replace('_', ' ', $test)));
-            $test_group->load_folder(dirname(__FILE__) . '/oldtests/' . $test);
-            $master->add($test_group);
-        }
 
         $test_group = new SimplePie_Unit_Test2_Group('Who knows a <title> from a hole in the ground?');
         $test_group->load_folder(dirname(__FILE__) . '/oldtests/who_knows_a_title_from_a_hole_in_the_ground');

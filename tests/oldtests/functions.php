@@ -55,23 +55,4 @@ class SimplePie_First_Item_Title_Test extends SimplePie_First_Item_Test
 	}
 }
 
-class SimplePie_iTunesRSS_Channel_Block_Test extends SimplePie_First_Item_Test
-{
-	function test()
-	{
-		if ($item = $this->first_item())
-		{
-			if ($enclosure = $item->get_enclosure())
-			{
-				if ($restriction = $enclosure->get_restriction())
-				{
-					$this->result = $restriction->get_relationship();
-					return;
-				}
-			}
-		}
-		$this->result = false;
-	}
-}
-
 ?>
