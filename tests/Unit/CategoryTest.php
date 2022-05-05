@@ -47,6 +47,7 @@
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Category;
 use SimplePie\SimplePie;
 
 class CategoryTest extends TestCase
@@ -421,6 +422,7 @@ EOT
 		$feed->init();
 
 		$category = $feed->get_category();
+		$this->assertInstanceOf(Category::class, $category);
 
 		$this->assertSame($expected, $category->get_label());
 	}

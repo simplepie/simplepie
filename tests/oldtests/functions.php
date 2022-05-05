@@ -44,21 +44,6 @@ class SimplePie_First_Item_Test extends SimplePie_Feed_Test
 	}
 }
 
-class SimplePie_First_Item_Author_Test extends SimplePie_First_Item_Test
-{
-	function author()
-	{
-		if ($item = $this->first_item())
-		{
-			if ($author = $item->get_author())
-			{
-				return $author;
-			}
-		}
-		return false;
-	}
-}
-
 class SimplePie_First_Item_Category_Test extends SimplePie_First_Item_Test
 {
 	function category()
@@ -86,17 +71,6 @@ class SimplePie_First_Item_Contributor_Test extends SimplePie_First_Item_Test
 			}
 		}
 		return false;
-	}
-}
-
-class SimplePie_First_Item_Author_Name_Test extends SimplePie_First_Item_Author_Test
-{
-	function test()
-	{
-		if ($author = $this->author())
-		{
-			$this->result = $author->get_name();
-		}
 	}
 }
 
