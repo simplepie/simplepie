@@ -1881,4 +1881,305 @@ EOT
 
 		$this->assertSame($expected, $feed->get_image_url());
 	}
+
+	public function getImageWidthDataProvider()
+	{
+		return [
+			'Test Atom 1.0 Icon Default' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<icon>http://example.com/</icon>
+</feed>
+EOT
+				,
+				NULL,
+			],
+	}
+			'Test Atom 1.0 Logo Default' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<logo>http://example.com/</logo>
+</feed>
+EOT
+				,
+				NULL,
+			],
+	}
+			'Test RSS 0.90 Atom 1.0 Icon' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:icon>http://example.com/</a:icon>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.90 Atom 1.0 Logo' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:logo>http://example.com/</a:logo>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.90' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
+	<image>
+		<url>http://example.com/</url>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.91-Netscape Atom 1.0 Icon' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:icon>http://example.com/</a:icon>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.91-Netscape Atom 1.0 Logo' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:logo>http://example.com/</a:logo>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.91-Netscape' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<image>
+			<url>http://example.com/</url>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				88.0,
+			],
+			'Test RSS 0.91-Netscape Width' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<image>
+			<width>100</width>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				100.0,
+			],
+			'Test RSS 0.91-Userland Atom 1.0 Icon' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:icon>http://example.com/</a:icon>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.91-Userland Atom 1.0 Logo' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:logo>http://example.com/</a:logo>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.91-Userland' => [
+<<<EOT
+<rss version="0.91">
+	<channel>
+		<image>
+			<url>http://example.com/</url>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				88.0,
+			],
+			'Test RSS 0.91-Userland Width' => [
+<<<EOT
+<rss version="0.91">
+	<channel>
+		<image>
+			<width>100</width>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				100.0,
+			],
+			'Test RSS 0.92 Atom 1.0 Icon' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:icon>http://example.com/</a:icon>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.92 Atom 1.0 Logo' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:logo>http://example.com/</a:logo>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 0.92' => [
+<<<EOT
+<rss version="0.92">
+	<channel>
+		<image>
+			<url>http://example.com/</url>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				88.0,
+			],
+			'Test RSS 0.92 Width' => [
+<<<EOT
+<rss version="0.92">
+	<channel>
+		<image>
+			<width>100</width>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				100.0,
+			],
+			'Test RSS 1.0 Atom 1.0 Icon' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:icon>http://example.com/</a:icon>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 1.0 Atom 1.0 Logo' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:logo>http://example.com/</a:logo>
+	</channel>
+</rdf:RDF>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 1.0' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+	<image>
+		<url>http://example.com/</url>
+	</image>
+</rdf:RDF>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 2.0 Atom 1.0 Icon' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:icon>http://example.com/</a:icon>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 2.0 Atom 1.0 Logo' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<a:logo>http://example.com/</a:logo>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'Test RSS 2.0' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<image>
+			<url>http://example.com/</url>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				88.0,
+			],
+			'Test RSS 2.0 Width' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<image>
+			<width>100</width>
+		</image>
+	</channel>
+</rss>
+EOT
+				,
+				100.0,
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider getImageWidthDataProvider
+	 */
+	public function test_get_image_width($data, $expected)
+	{
+		$feed = new SimplePie();
+		$feed->set_raw_data($data);
+		$feed->enable_cache(false);
+		$feed->init();
+
+		$this->assertSame($expected, $feed->get_image_width());
+	}
 }
