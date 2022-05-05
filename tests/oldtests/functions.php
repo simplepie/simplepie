@@ -44,17 +44,6 @@ class SimplePie_First_Item_Test extends SimplePie_Feed_Test
 	}
 }
 
-class SimplePie_First_Item_Permalink_Test extends SimplePie_First_Item_Test
-{
-	function test()
-	{
-		if ($item = $this->first_item())
-		{
-			$this->result = $item->get_permalink();
-		}
-	}
-}
-
 class SimplePie_First_Item_Title_Test extends SimplePie_First_Item_Test
 {
 	function test()

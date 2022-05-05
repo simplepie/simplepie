@@ -2853,4 +2853,482 @@ EOT
 
 		$this->assertSame($expected, $item->get_longitude());
 	}
+
+	public function getPermalinkDataProvider()
+	{
+		return [
+			'SimplePie_First_Item_Permalink_Test_Atom_0.3_Enclosure' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<link href="http://example.com/" rel="enclosure"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_Atom_0.3_Link' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<link href="http://example.com/"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_Atom_1.0_Enclosure' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<link href="http://example.com/" rel="enclosure"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_Atom_1.0_Link' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<link href="http://example.com/"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_10_Test_0' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<guid>http://example.com/</guid>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_10_Test_1' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<guid isPermaLink="true">http://example.com/</guid>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_10_Test_2' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<guid isPermaLink="meep">http://example.com/</guid>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_10_Test_3' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<guid isPermaLink="false">http://example.com/</guid>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				NULL,
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_156_Test_0' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<enclosure url="http://example.com/" length="1" type="audio/mpeg"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_176_Test_0' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<link rel="related" href="http://example.com/related"/>
+		<link rel="via" href="http://example.com/via"/>
+		<link rel="alternate" href="http://example.com/alternate"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/alternate',
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_176_Test_1' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<link rel="alternate" href="http://example.com/alternate"/>
+		<link rel="related" href="http://example.com/related"/>
+		<link rel="via" href="http://example.com/via"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/alternate',
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_176_Test_2' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<link rel="related" href="http://example.com/related"/>
+		<link rel="alternate" href="http://example.com/alternate"/>
+		<link rel="via" href="http://example.com/via"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/alternate',
+			],
+			'SimplePie_First_Item_Permalink_Test_Bug_640_Test_0' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/" >
+	<entry>
+		<link href=""/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.90_Atom_0.3_Link' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:link href="http://example.com/"/>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.90_Atom_1.0_Link' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
+	<item>
+		<a:link href="http://example.com/"/>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.90_Link' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
+	<item>
+		<link>http://example.com/</link>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Netscape_Atom_0.3_Link' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:link href="http://example.com/"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Netscape_Atom_1.0_Link' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:link href="http://example.com/"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Netscape_Link' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<item>
+			<link>http://example.com/</link>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Link' => [
+<<<EOT
+<rss version="0.91">
+	<channel>
+		<item>
+			<link>http://example.com/</link>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Atom_0.3_Link_Enclosure' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:link href="http://example.com/" rel="enclosure"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Atom_0.3_Link' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:link href="http://example.com/"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Atom_1.0_Link_Enclosure' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:link href="http://example.com/" rel="enclosure"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Atom_1.0_Link' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:link href="http://example.com/"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.92_Atom_0.3_Link' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:link href="http://example.com/"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.92_Atom_1.0_Link' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:link href="http://example.com/"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_0.92_Link' => [
+<<<EOT
+<rss version="0.92">
+	<channel>
+		<item>
+			<link>http://example.com/</link>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_1.0_Atom_0.3_Link' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:link href="http://example.com/"/>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_1.0_Atom_1.0_Link' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
+	<item>
+		<a:link href="http://example.com/"/>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_1.0_Link' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+	<item>
+		<link>http://example.com/</link>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_2.0_Atom_0.3_Link' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:link href="http://example.com/"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_2.0_Atom_1.0_Link' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:link href="http://example.com/"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_2.0_Enclosure' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<enclosure url="http://example.com/" length="1" type="text/html"/>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_RSS_2.0_Link' => [
+<<<EOT
+<rss version="2.0">
+	<channel>
+		<item>
+			<link>http://example.com/</link>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'http://example.com/',
+			],
+			'SimplePie_First_Item_Permalink_Test_Atom_1.0_xmlbase_1' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/">
+	<entry>
+		<link rel="alternate" href="/alternate"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/alternate',
+			],
+			'SimplePie_First_Item_Permalink_Test_Atom_1.0_xmlbase_2' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry xml:base="http://example.com/">
+		<link rel="alternate" href="/alternate"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/alternate',
+			],
+			'SimplePie_First_Item_Permalink_Test_Atom_1.0_xmlbase_3' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.org/">
+	<entry>
+		<link rel="alternate" href="//example.com/alternate"/>
+	</entry>
+</feed>
+EOT
+				,
+				'http://example.com/alternate',
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider getPermalinkDataProvider
+	 */
+	public function test_get_permalink($data, $expected)
+	{
+		$feed = new SimplePie();
+		$feed->set_raw_data($data);
+		$feed->enable_cache(false);
+		$feed->init();
+
+		$item = $feed->get_item(0);
+		$this->assertInstanceOf(Item::class, $item);
+
+		$this->assertSame($expected, $item->get_permalink());
+	}
 }
