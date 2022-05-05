@@ -44,21 +44,6 @@ class SimplePie_First_Item_Test extends SimplePie_Feed_Test
 	}
 }
 
-class SimplePie_First_Item_Category_Test extends SimplePie_First_Item_Test
-{
-	function category()
-	{
-		if ($item = $this->first_item())
-		{
-			if ($category = $item->get_category())
-			{
-				return $category;
-			}
-		}
-		return false;
-	}
-}
-
 class SimplePie_First_Item_Contributor_Test extends SimplePie_First_Item_Test
 {
 	function contributor()
@@ -71,17 +56,6 @@ class SimplePie_First_Item_Contributor_Test extends SimplePie_First_Item_Test
 			}
 		}
 		return false;
-	}
-}
-
-class SimplePie_First_Item_Category_Label_Test extends SimplePie_First_Item_Category_Test
-{
-	function test()
-	{
-		if ($category = $this->category())
-		{
-			$this->result = $category->get_label();
-		}
 	}
 }
 
