@@ -44,32 +44,6 @@ class SimplePie_First_Item_Test extends SimplePie_Feed_Test
 	}
 }
 
-class SimplePie_First_Item_Contributor_Test extends SimplePie_First_Item_Test
-{
-	function contributor()
-	{
-		if ($item = $this->first_item())
-		{
-			if ($contributor = $item->get_contributor())
-			{
-				return $contributor;
-			}
-		}
-		return false;
-	}
-}
-
-class SimplePie_First_Item_Contributor_Name_Test extends SimplePie_First_Item_Contributor_Test
-{
-	function test()
-	{
-		if ($contributor = $this->contributor())
-		{
-			$this->result = $contributor->get_name();
-		}
-	}
-}
-
 class SimplePie_First_Item_Date_Test extends SimplePie_First_Item_Test
 {
 	function test()

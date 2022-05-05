@@ -63,7 +63,7 @@ class AuthorTest extends TestCase
 		$this->assertTrue(class_exists('SimplePie_Author'));
 	}
 
-	public function getNameDataProvider()
+	public function getAuthorNameDataProvider()
 	{
 		return [
 			'Test Atom 0.3 DC 1.0 Creator' => [
@@ -520,9 +520,9 @@ EOT
 	}
 
 	/**
-	 * @dataProvider getNameDataProvider
+	 * @dataProvider getAuthorNameDataProvider
 	 */
-	public function test_get_name($data, $expected)
+	public function test_get_name_from_author($data, $expected)
 	{
 		$feed = new SimplePie();
 		$feed->set_raw_data($data);
@@ -533,6 +533,231 @@ EOT
 		$this->assertInstanceOf(Item::class, $item);
 
 		$author = $item->get_author();
+		$this->assertInstanceOf(Author::class, $author);
+
+		$this->assertSame($expected, $author->get_name());
+	}
+
+	public function getContributorNameDataProvider()
+	{
+		return [
+			'Test Atom 0.3 Name' => [
+<<<EOT
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<entry>
+		<contributor>
+			<name>Item Contributor</name>
+		</contributor>
+	</entry>
+</feed>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test Atom 1.0 Name' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<entry>
+		<contributor>
+			<name>Item Contributor</name>
+		</contributor>
+	</entry>
+</feed>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 0.90 Atom 0.3 Name' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:contributor>
+			<a:name>Item Contributor</a:name>
+		</a:contributor>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 0.90 Atom 1.0 Name' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
+	<item>
+		<a:contributor>
+			<a:name>Item Contributor</a:name>
+		</a:contributor>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 0.91-Netscape Atom 0.3 Name' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:contributor>
+				<a:name>Item Contributor</a:name>
+			</a:contributor>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 0.91-Netscape Atom 1.0 Name' => [
+<<<EOT
+<!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:contributor>
+				<a:name>Item Contributor</a:name>
+			</a:contributor>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 0.91-Userland Atom 0.3 Name' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:contributor>
+				<a:name>Item Contributor</a:name>
+			</a:contributor>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 0.91-Userland Atom 1.0 Name' => [
+<<<EOT
+<rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:contributor>
+				<a:name>Item Contributor</a:name>
+			</a:contributor>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 0.92 Atom 0.3 Name' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:contributor>
+				<a:name>Item Contributor</a:name>
+			</a:contributor>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 0.92 Atom 1.0 Name' => [
+<<<EOT
+<rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:contributor>
+				<a:name>Item Contributor</a:name>
+			</a:contributor>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 1.0 Atom 0.3 Name' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
+	<item>
+		<a:contributor>
+			<a:name>Item Contributor</a:name>
+		</a:contributor>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 1.0 Atom 1.0 Name' => [
+<<<EOT
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
+	<item>
+		<a:contributor>
+			<a:name>Item Contributor</a:name>
+		</a:contributor>
+	</item>
+</rdf:RDF>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 2.0 Atom 0.3 Name' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
+	<channel>
+		<item>
+			<a:contributor>
+				<a:name>Item Contributor</a:name>
+			</a:contributor>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'Item Contributor',
+			],
+			'Test RSS 2.0 Atom 1.0 Name' => [
+<<<EOT
+<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
+	<channel>
+		<item>
+			<a:contributor>
+				<a:name>Item Contributor</a:name>
+			</a:contributor>
+		</item>
+	</channel>
+</rss>
+EOT
+				,
+				'Item Contributor',
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider getContributorNameDataProvider
+	 */
+	public function test_get_name_from_contributor($data, $expected)
+	{
+		$feed = new SimplePie();
+		$feed->set_raw_data($data);
+		$feed->enable_cache(false);
+		$feed->init();
+
+		$item = $feed->get_item(0);
+		$this->assertInstanceOf(Item::class, $item);
+
+		$author = $item->get_contributor();
 		$this->assertInstanceOf(Author::class, $author);
 
 		$this->assertSame($expected, $author->get_name());
