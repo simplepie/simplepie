@@ -45,7 +45,6 @@ require_once dirname(__FILE__) . '/EncodingTest.php';
 require_once dirname(__FILE__) . '/IRITest.php';
 require_once dirname(__FILE__) . '/LocatorTest.php';
 require_once dirname(__FILE__) . '/ItemTest.php';
-require_once dirname(__FILE__) . '/oldtests.php';
 
 class AllTests
 {
