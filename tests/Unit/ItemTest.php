@@ -2857,7 +2857,7 @@ EOT
 	public function getPermalinkDataProvider()
 	{
 		return [
-			'SimplePie_First_Item_Permalink_Test_Atom_0.3_Enclosure' => [
+			'Test Atom 0.3 Enclosure' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<entry>
@@ -2868,7 +2868,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_Atom_0.3_Link' => [
+			'Test Atom 0.3 Link' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<entry>
@@ -2879,7 +2879,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_Atom_1.0_Enclosure' => [
+			'Test Atom 1.0 Enclosure' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
@@ -2890,7 +2890,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_Atom_1.0_Link' => [
+			'Test Atom 1.0 Link' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
@@ -2901,7 +2901,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_10_Test_0' => [
+			'Test Bug 10 Test 0' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2914,7 +2914,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_10_Test_1' => [
+			'Test Bug 10 Test 1' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2927,7 +2927,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_10_Test_2' => [
+			'Test Bug 10 Test 2' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2940,7 +2940,7 @@ EOT
 				,
 				NULL,
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_10_Test_3' => [
+			'Test Bug 10 Test 3' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2953,7 +2953,7 @@ EOT
 				,
 				NULL,
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_156_Test_0' => [
+			'Test Bug 156 Test 0' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2966,7 +2966,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_176_Test_0' => [
+			'Test Bug 176 Test 0' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
@@ -2979,7 +2979,7 @@ EOT
 				,
 				'http://example.com/alternate',
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_176_Test_1' => [
+			'Test Bug 176 Test 1' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
@@ -2992,7 +2992,7 @@ EOT
 				,
 				'http://example.com/alternate',
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_176_Test_2' => [
+			'Test Bug 176 Test 2' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
@@ -3005,7 +3005,7 @@ EOT
 				,
 				'http://example.com/alternate',
 			],
-			'SimplePie_First_Item_Permalink_Test_Bug_640_Test_0' => [
+			'Test Bug 640 Test 0' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/" >
 	<entry>
@@ -3016,7 +3016,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.90_Atom_0.3_Link' => [
+			'Test RSS 0.90 Atom 0.3 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
 	<item>
@@ -3027,7 +3027,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.90_Atom_1.0_Link' => [
+			'Test RSS 0.90 Atom 1.0 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
@@ -3038,7 +3038,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.90_Link' => [
+			'Test RSS 0.90 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<item>
@@ -3049,7 +3049,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Netscape_Atom_0.3_Link' => [
+			'Test RSS 0.91-Netscape Atom 0.3 Link' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
@@ -3063,7 +3063,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Netscape_Atom_1.0_Link' => [
+			'Test RSS 0.91-Netscape Atom 1.0 Link' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -3077,7 +3077,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Netscape_Link' => [
+			'Test RSS 0.91-Netscape Link' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -3091,7 +3091,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Link' => [
+			'Test RSS 0.91-Userland Link' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -3104,7 +3104,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Atom_0.3_Link_Enclosure' => [
+			'Test RSS 0.91-Userland Atom 0.3 Link Enclosure' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -3117,7 +3117,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Atom_0.3_Link' => [
+			'Test RSS 0.91-Userland Atom 0.3 Link' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -3130,7 +3130,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Atom_1.0_Link_Enclosure' => [
+			'Test RSS 0.91-Userland Atom 1.0 Link Enclosure' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -3143,7 +3143,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.91-Userland_Atom_1.0_Link' => [
+			'Test RSS 0.91-Userland Atom 1.0 Link' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -3156,7 +3156,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.92_Atom_0.3_Link' => [
+			'Test RSS 0.92 Atom 0.3 Link' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -3169,7 +3169,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.92_Atom_1.0_Link' => [
+			'Test RSS 0.92 Atom 1.0 Link' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -3182,7 +3182,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_0.92_Link' => [
+			'Test RSS 0.92 Link' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -3195,7 +3195,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_1.0_Atom_0.3_Link' => [
+			'Test RSS 1.0 Atom 0.3 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
 	<item>
@@ -3206,7 +3206,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_1.0_Atom_1.0_Link' => [
+			'Test RSS 1.0 Atom 1.0 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
@@ -3217,7 +3217,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_1.0_Link' => [
+			'Test RSS 1.0 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<item>
@@ -3228,7 +3228,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_2.0_Atom_0.3_Link' => [
+			'Test RSS 2.0 Atom 0.3 Link' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -3241,7 +3241,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_2.0_Atom_1.0_Link' => [
+			'Test RSS 2.0 Atom 1.0 Link' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -3254,7 +3254,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_2.0_Enclosure' => [
+			'Test RSS 2.0 Enclosure' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -3267,7 +3267,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_RSS_2.0_Link' => [
+			'Test RSS 2.0 Link' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -3280,7 +3280,7 @@ EOT
 				,
 				'http://example.com/',
 			],
-			'SimplePie_First_Item_Permalink_Test_Atom_1.0_xmlbase_1' => [
+			'Test Atom 1.0 xmlbase 1' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/">
 	<entry>
@@ -3291,7 +3291,7 @@ EOT
 				,
 				'http://example.com/alternate',
 			],
-			'SimplePie_First_Item_Permalink_Test_Atom_1.0_xmlbase_2' => [
+			'Test Atom 1.0 xmlbase 2' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry xml:base="http://example.com/">
@@ -3302,7 +3302,7 @@ EOT
 				,
 				'http://example.com/alternate',
 			],
-			'SimplePie_First_Item_Permalink_Test_Atom_1.0_xmlbase_3' => [
+			'Test Atom 1.0 xmlbase 3' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.org/">
 	<entry>
@@ -4506,6 +4506,232 @@ EOT
 EOT
 				,
 				'<p><a href="http://example.com/bleh">Link</a></p>',
+			],
+			'Test Title from html cdata' => [
+<<<EOT
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<id>http://atomtests.philringnalda.com/tests/item/title/html-cdata.atom</id>
+<title>Atom item title html cdata</title>
+<updated>2005-12-18T00:13:00Z</updated>
+<author>
+  <name>Phil Ringnalda</name>
+  <uri>http://weblog.philringnalda.com/</uri>
+</author>
+<link rel="self" href="http://atomtests.philringnalda.com/tests/item/title/html-cdata.atom"/>
+<entry>
+  <id>http://atomtests.philringnalda.com/tests/item/title/html-cdata.atom/1</id>
+  <title type="html"><![CDATA[&lt;title>]]></title>
+  <updated>2005-12-18T00:13:00Z</updated>
+  <summary>An item with a type="html" title consisting of a less-than
+character, the word \'title\' and a greater-than character, where
+the character entity reference for the less-than is escaped by being
+in a CDATA section.</summary>
+  <link href="http://atomtests.philringnalda.com/alt/title-title.html"/>
+  <category term="item title"/>
+</entry>
+</feed>
+EOT
+				,
+				// This is really just nitpicking, but this should be fixed eventually.
+				// '&lt;title>',
+				'&lt;title&gt;',
+			],
+			'Test Title from html entity' => [
+<<<EOT
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<id>http://atomtests.philringnalda.com/tests/item/title/html-entity.atom</id>
+<title>Atom item title html entity</title>
+<updated>2005-12-18T00:13:00Z</updated>
+<author>
+  <name>Phil Ringnalda</name>
+  <uri>http://weblog.philringnalda.com/</uri>
+</author>
+<link rel="self" href="http://atomtests.philringnalda.com/tests/item/title/html-entity.atom"/>
+<entry>
+  <id>http://atomtests.philringnalda.com/tests/item/title/html-entity.atom/1</id>
+  <title type="html">&amp;lt;title></title>
+  <updated>2005-12-18T00:13:00Z</updated>
+  <summary>An item with a type="html" title consisting of a less-than
+character, the word \'title\' and a greater-than character, where the
+character entity reference for the less-than character is escaped by
+replacing the ampersand with a character entity reference.</summary>
+  <link href="http://atomtests.philringnalda.com/alt/title-title.html"/>
+  <category term="item title"/>
+</entry>
+</feed>
+EOT
+				,
+				// This is really just nitpicking, but this should be fixed eventually.
+				// '&lt;title>',
+				'&lt;title&gt;',
+			],
+			'Test Title from html ncr' => [
+<<<EOT
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<id>http://atomtests.philringnalda.com/tests/item/title/html-ncr.atom</id>
+<title>Atom item title html NCR</title>
+<updated>2005-12-18T00:13:00Z</updated>
+<author>
+  <name>Phil Ringnalda</name>
+  <uri>http://weblog.philringnalda.com/</uri>
+</author>
+<link rel="self" href="http://atomtests.philringnalda.com/tests/item/title/html-ncr.atom"/>
+<entry>
+  <id>http://atomtests.philringnalda.com/tests/item/title/html-ncr.atom/1</id>
+  <title type="html">&#38;lt;title></title>
+  <updated>2005-12-18T00:13:00Z</updated>
+  <summary>An item with a type="html" title consisting of a less-than
+character, the word \'title\' and a greater-than character, where
+the HTML\'s character entity reference is escaped by replacing the
+ampersand with a numeric character reference.</summary>
+  <link href="http://atomtests.philringnalda.com/alt/title-title.html"/>
+  <category term="item title"/>
+</entry>
+</feed>
+EOT
+				,
+				// This is really just nitpicking, but this should be fixed eventually.
+				// '&lt;title>',
+				'&lt;title&gt;',
+			],
+			'Test Title from text cdata' => [
+<<<EOT
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<id>http://atomtests.philringnalda.com/tests/item/title/text-cdata.atom</id>
+<title>Atom item title text in CDATA</title>
+<updated>2005-12-18T00:13:00Z</updated>
+<author>
+  <name>Phil Ringnalda</name>
+  <uri>http://weblog.philringnalda.com/</uri>
+</author>
+<link rel="self" href="http://atomtests.philringnalda.com/tests/item/title/text-cdata.atom"/>
+<entry>
+
+<id>http://atomtests.philringnalda.com/tests/item/title/text-cdata.atom/1</id>
+  <title type="text"><![CDATA[<title>]]></title>
+  <updated>2005-12-18T00:13:00Z</updated>
+  <summary>An item with a type="text" title consisting of a less-than
+character, the word \'title\' and a greater-than character, where
+the less-than is escaped by being in a CDATA section.</summary>
+  <link href="http://atomtests.philringnalda.com/alt/title-title.html"/>
+  <category term="item title"/>
+</entry>
+</feed>
+EOT
+				,
+				'&lt;title&gt;',
+			],
+			'Test Title from text entity' => [
+<<<EOT
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<id>http://atomtests.philringnalda.com/tests/item/title/text-entity.atom</id>
+<title>Atom item title text entity</title>
+<updated>2005-12-18T00:13:00Z</updated>
+<author>
+  <name>Phil Ringnalda</name>
+  <uri>http://weblog.philringnalda.com/</uri>
+</author>
+<link rel="self" href="http://atomtests.philringnalda.com/tests/item/title/text-entity.atom"/>
+<entry>
+  <id>http://atomtests.philringnalda.com/tests/item/title/text-entity.atom/1</id>
+  <title type="text">&lt;title></title>
+  <updated>2005-12-18T00:13:00Z</updated>
+  <summary>An item with a type="text" title consisting of a less-than
+character, the word \'title\' and a greater-than character, where the
+less-than is escaped with its character entity reference.</summary>
+  <link href="http://atomtests.philringnalda.com/alt/title-title.html"/>
+  <category term="item title"/>
+</entry>
+</feed>
+EOT
+				,
+				'&lt;title&gt;',
+			],
+			'Test Title from text ncr' => [
+<<<EOT
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<id>http://atomtests.philringnalda.com/tests/item/title/text-ncr.atom</id>
+<title>Atom item title text NCR</title>
+<updated>2005-12-18T00:13:00Z</updated>
+<author>
+  <name>Phil Ringnalda</name>
+  <uri>http://weblog.philringnalda.com/</uri>
+</author>
+<link rel="self" href="http://atomtests.philringnalda.com/tests/item/title/text-ncr.atom"/>
+<entry>
+  <id>http://atomtests.philringnalda.com/tests/item/title/text-ncr.atom/1</id>
+  <title type="text">&#60;title></title>
+  <updated>2005-12-18T00:13:00Z</updated>
+  <summary>An item with a type="text" title consisting of a less-than
+character, the word \'title\' and a greater-than character, where the
+less-than character is escaped with a numeric character reference.</summary>
+  <link href="http://atomtests.philringnalda.com/alt/title-title.html"/>
+  <category term="item title"/>
+</entry>
+</feed>
+EOT
+				,
+				'&lt;title&gt;',
+			],
+			'Test Title from xhtml entity' => [
+<<<EOT
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<id>http://atomtests.philringnalda.com/tests/item/title/xhtml-entity.atom</id>
+<title>Atom item title xhtml entity</title>
+<updated>2005-12-18T00:13:00Z</updated>
+<author>
+  <name>Phil Ringnalda</name>
+  <uri>http://weblog.philringnalda.com/</uri>
+</author>
+<link rel="self" href="http://atomtests.philringnalda.com/tests/item/title/xhtml-entity.atom"/>
+<entry>
+  <id>http://atomtests.philringnalda.com/tests/item/title/xhtml-entity.atom/1</id>
+  <title type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">&lt;title></div></title>
+  <updated>2005-12-18T00:13:00Z</updated>
+  <summary>An item with a type="xhtml" title consisting of a less-than
+character, the word \'title\' and a greater-than character, where the
+less-than character is escaped with its character entity reference.</summary>
+  <link href="http://atomtests.philringnalda.com/alt/title-title.html"/>
+  <category term="item title"/>
+</entry>
+</feed>
+EOT
+				,
+				'&lt;title&gt;',
+			],
+			'Test Title from xhtml ncr' => [
+<<<EOT
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<id>http://atomtests.philringnalda.com/tests/item/title/xhtml-ncr.atom</id>
+<title>Atom item title xhtml ncr</title>
+<updated>2005-12-18T00:13:00Z</updated>
+<author>
+  <name>Phil Ringnalda</name>
+  <uri>http://weblog.philringnalda.com/</uri>
+</author>
+<link rel="self" href="http://atomtests.philringnalda.com/tests/item/title/xhtml-ncr.atom"/>
+<entry>
+  <id>http://atomtests.philringnalda.com/tests/item/title/xhtml-ncr.atom/1</id>
+  <title type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">&#60;title></div></title>
+  <updated>2005-12-18T00:13:00Z</updated>
+  <summary>An item with a type="xhtml" title consisting of a less-than
+character, the word \'title\' and a greater-than character, where
+the less-than character is escaped with its numeric character reference.</summary>
+  <link href="http://atomtests.philringnalda.com/alt/title-title.html"/>
+  <category term="item title"/>
+</entry>
+</feed>
+EOT
+				,
+				'&lt;title&gt;',
 			],
 		];
 	}

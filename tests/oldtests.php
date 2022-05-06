@@ -13,28 +13,9 @@ class OldTest extends PHPUnit\Framework\TestCase
         $master = new Unit_Test2_Group('SimplePie Test Suite');
 
         $test_group = new SimplePie_Unit_Test2_Group('Who knows a <title> from a hole in the ground?');
-        $test_group->load_folder(dirname(__FILE__) . '/oldtests/who_knows_a_title_from_a_hole_in_the_ground');
         $master->add($test_group);
 
         $tests = array();
-        $groups = array($master);
-        while ($group = array_shift($groups))
-        {
-            foreach ($group->tests as $group_tests)
-            {
-                foreach ($group_tests as $test)
-                {
-                    if ($test instanceof Unit_Test2)
-                    {
-                        $tests[] = array($test);
-                    }
-                    elseif ($test instanceof Unit_Test2_Group)
-                    {
-                        $groups[] = $test;
-                    }
-                }
-            }
-        }
         return $tests;
     }
 
