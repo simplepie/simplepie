@@ -103,7 +103,7 @@ class Misc
 	 */
 	public static function get_element($realname, $string)
 	{
-		@trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+		// trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
 		$return = array();
 		$name = preg_quote($realname, '/');
@@ -1792,7 +1792,7 @@ class Misc
 	 */
 	public static function entities_decode($data)
 	{
-		@trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+		// trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
 		$decoder = new \SimplePie_Decode_HTML_Entities($data);
 		return $decoder->parse();
@@ -2306,3 +2306,5 @@ END;
 		return preg_replace('#^(https?://)[^/:@]+:[^/:@]+@#i', '$1', $url);
 	}
 }
+
+class_alias('SimplePie\Misc', 'SimplePie_Misc', false);
