@@ -174,7 +174,7 @@ class Item
 	 * @access private
 	 * @see \SimplePie\SimplePie::sanitize()
 	 * @param string $data Data to sanitize
-	 * @param int $type One of the \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_* constants
+	 * @param int $type One of the \SimplePie\SimplePie::CONSTRUCT_* constants
 	 * @param string $base Base URL to resolve URLs against
 	 * @return string Sanitized data
 	 */
@@ -215,29 +215,29 @@ class Item
 	{
 		if (!$hash)
 		{
-			if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'id'))
+			if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'id'))
 			{
-				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'id'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'id'))
 			{
-				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, 'guid'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'guid'))
 			{
-				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_11, 'identifier'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'identifier'))
 			{
-				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_10, 'identifier'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'identifier'))
 			{
-				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			elseif (isset($this->data['attribs'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RDF]['about']))
+			elseif (isset($this->data['attribs'][\SimplePie\SimplePie::NAMESPACE_RDF]['about']))
 			{
-				return $this->sanitize($this->data['attribs'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RDF]['about'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				return $this->sanitize($this->data['attribs'][\SimplePie\SimplePie::NAMESPACE_RDF]['about'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 		}
 		if ($fn === false)
@@ -265,33 +265,33 @@ class Item
 	{
 		if (!isset($this->data['title']))
 		{
-			if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'title'))
+			if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'title'))
 			{
 				$this->data['title'] = $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'title'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'title'))
 			{
 				$this->data['title'] = $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_10, 'title'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'title'))
 			{
-				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
+				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_090, 'title'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'title'))
 			{
-				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
+				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, 'title'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'title'))
 			{
-				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
+				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_11, 'title'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'title'))
 			{
-				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_10, 'title'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'title'))
 			{
-				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$this->data['title'] = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			else
 			{
@@ -318,48 +318,48 @@ class Item
 	 */
 	public function get_description($description_only = false)
 	{
-		if (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'summary')) &&
+		if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'summary')) &&
 		    ($return = $this->sanitize($tags[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($tags[0]['attribs'])), $this->get_base($tags[0]))))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'summary')) &&
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'summary')) &&
 		        ($return = $this->sanitize($tags[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($tags[0]['attribs'])), $this->get_base($tags[0]))))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_10, 'description')) &&
-		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_MAYBE_HTML, $this->get_base($tags[0]))))
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($tags[0]))))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, 'description')) &&
-		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tags[0]))))
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_HTML, $this->get_base($tags[0]))))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_11, 'description')) &&
-		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT)))
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT)))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_10, 'description')) &&
-		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT)))
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT)))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'summary')) &&
-		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tags[0]))))
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'summary')) &&
+		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_HTML, $this->get_base($tags[0]))))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'subtitle')) &&
-		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT)))
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'subtitle')) &&
+		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT)))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_090, 'description')) &&
-		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML)))
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'description')) &&
+		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_HTML)))
 		{
 			return $return;
 		}
@@ -388,18 +388,18 @@ class Item
 	 */
 	public function get_content($content_only = false)
 	{
-		if (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'content')) &&
+		if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'content')) &&
 		    ($return = $this->sanitize($tags[0]['data'], $this->registry->call('Misc', 'atom_10_content_construct_type', array($tags[0]['attribs'])), $this->get_base($tags[0]))))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'content')) &&
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'content')) &&
 		        ($return = $this->sanitize($tags[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($tags[0]['attribs'])), $this->get_base($tags[0]))))
 		{
 			return $return;
 		}
-		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded')) &&
-		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML, $this->get_base($tags[0]))))
+		elseif (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10_MODULES_CONTENT, 'encoded')) &&
+		        ($return = $this->sanitize($tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_HTML, $this->get_base($tags[0]))))
 		{
 			return $return;
 		}
@@ -423,7 +423,7 @@ class Item
 	{
 		if (!isset($this->data['thumbnail']))
 		{
-			if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'thumbnail'))
+			if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'thumbnail'))
 			{
 				$this->data['thumbnail'] = $return[0]['attribs'][''];
 			}
@@ -466,33 +466,33 @@ class Item
 		$categories = array();
 
 		$type = 'category';
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, $type) as $category)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, $type) as $category)
 		{
 			$term = null;
 			$scheme = null;
 			$label = null;
 			if (isset($category['attribs']['']['term']))
 			{
-				$term = $this->sanitize($category['attribs']['']['term'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$term = $this->sanitize($category['attribs']['']['term'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			if (isset($category['attribs']['']['scheme']))
 			{
-				$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			if (isset($category['attribs']['']['label']))
 			{
-				$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			$categories[] = $this->registry->create('Category', array($term, $scheme, $label, $type));
 		}
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, $type) as $category)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, $type) as $category)
 		{
 			// This is really the label, but keep this as the term also for BC.
 			// Label will also work on retrieving because that falls back to term.
-			$term = $this->sanitize($category['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+			$term = $this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			if (isset($category['attribs']['']['domain']))
 			{
-				$scheme = $this->sanitize($category['attribs']['']['domain'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$scheme = $this->sanitize($category['attribs']['']['domain'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			else
 			{
@@ -502,13 +502,13 @@ class Item
 		}
 
 		$type = 'subject';
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_11, $type) as $category)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, $type) as $category)
 		{
-			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT), null, null, $type));
+			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null, $type));
 		}
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_10, $type) as $category)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, $type) as $category)
 		{
-			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT), null, null, $type));
+			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null, $type));
 		}
 
 		if (!empty($categories))
@@ -566,44 +566,44 @@ class Item
 	public function get_contributors()
 	{
 		$contributors = array();
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'contributor') as $contributor)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'contributor') as $contributor)
 		{
 			$name = null;
 			$uri = null;
 			$email = null;
-			if (isset($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
+			if (isset($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['name'][0]['data']))
 			{
-				$name = $this->sanitize($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['name'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			if (isset($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
+			if (isset($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['uri'][0]['data']))
 			{
-				$uri = $this->sanitize($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
+				$uri = $this->sanitize($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['uri'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['uri'][0]));
 			}
-			if (isset($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
+			if (isset($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['email'][0]['data']))
 			{
-				$email = $this->sanitize($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['email'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
 				$contributors[] = $this->registry->create('Author', array($name, $uri, $email));
 			}
 		}
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'contributor') as $contributor)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'contributor') as $contributor)
 		{
 			$name = null;
 			$url = null;
 			$email = null;
-			if (isset($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
+			if (isset($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['name'][0]['data']))
 			{
-				$name = $this->sanitize($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['name'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			if (isset($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
+			if (isset($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$url = $this->sanitize($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['url'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['url'][0]));
 			}
-			if (isset($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
+			if (isset($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
-				$email = $this->sanitize($contributor['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['email'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
@@ -630,65 +630,65 @@ class Item
 	public function get_authors()
 	{
 		$authors = array();
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'author') as $author)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'author') as $author)
 		{
 			$name = null;
 			$uri = null;
 			$email = null;
-			if (isset($author['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data']))
+			if (isset($author['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['name'][0]['data']))
 			{
-				$name = $this->sanitize($author['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['name'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($author['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['name'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			if (isset($author['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data']))
+			if (isset($author['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['uri'][0]['data']))
 			{
-				$uri = $this->sanitize($author['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['uri'][0]));
+				$uri = $this->sanitize($author['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['uri'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($author['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['uri'][0]));
 			}
-			if (isset($author['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data']))
+			if (isset($author['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['email'][0]['data']))
 			{
-				$email = $this->sanitize($author['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10]['email'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($author['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['email'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
 				$authors[] = $this->registry->create('Author', array($name, $uri, $email));
 			}
 		}
-		if ($author = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
+		if ($author = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'author'))
 		{
 			$name = null;
 			$url = null;
 			$email = null;
-			if (isset($author[0]['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data']))
+			if (isset($author[0]['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['name'][0]['data']))
 			{
-				$name = $this->sanitize($author[0]['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['name'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$name = $this->sanitize($author[0]['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['name'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
-			if (isset($author[0]['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data']))
+			if (isset($author[0]['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['url'][0]['data']))
 			{
-				$url = $this->sanitize($author[0]['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($author[0]['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['url'][0]));
+				$url = $this->sanitize($author[0]['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['url'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($author[0]['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['url'][0]));
 			}
-			if (isset($author[0]['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data']))
+			if (isset($author[0]['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['email'][0]['data']))
 			{
-				$email = $this->sanitize($author[0]['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03]['email'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+				$email = $this->sanitize($author[0]['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['email'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
 				$authors[] = $this->registry->create('Author', array($name, $url, $email));
 			}
 		}
-		if ($author = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, 'author'))
+		if ($author = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'author'))
 		{
-			$authors[] = $this->registry->create('Author', array(null, null, $this->sanitize($author[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT)));
+			$authors[] = $this->registry->create('Author', array(null, null, $this->sanitize($author[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT)));
 		}
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $author)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'creator') as $author)
 		{
-			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT), null, null));
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null));
 		}
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $author)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'creator') as $author)
 		{
-			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT), null, null));
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null));
 		}
-		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
+		foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'author') as $author)
 		{
-			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT), null, null));
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null));
 		}
 
 		if (!empty($authors))
@@ -717,17 +717,17 @@ class Item
 	 */
 	public function get_copyright()
 	{
-		if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'rights'))
+		if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'rights'))
 		{
 			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 		}
-		elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_11, 'rights'))
+		elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'rights'))
 		{
-			return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 		}
-		elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_10, 'rights'))
+		elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'rights'))
 		{
-			return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 		}
 
 		return null;
@@ -751,35 +751,35 @@ class Item
 	{
 		if (!isset($this->data['date']))
 		{
-			if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'published'))
+			if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'published'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, 'pubDate'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'pubDate'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_11, 'date'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'date'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_10, 'date'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'date'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'updated'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'updated'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'issued'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'issued'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'created'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'created'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
-			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'modified'))
+			elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'modified'))
 			{
 				$this->data['date']['raw'] = $return[0]['data'];
 			}
@@ -800,7 +800,7 @@ class Item
 			switch ($date_format)
 			{
 				case '':
-					return $this->sanitize($this->data['date']['raw'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					return $this->sanitize($this->data['date']['raw'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 
 				case 'U':
 					return $this->data['date']['parsed'];
@@ -828,7 +828,7 @@ class Item
 	{
 		if (!isset($this->data['updated']))
 		{
-			if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'updated'))
+			if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'updated'))
 			{
 				$this->data['updated']['raw'] = $return[0]['data'];
 			}
@@ -849,7 +849,7 @@ class Item
 			switch ($date_format)
 			{
 				case '':
-					return $this->sanitize($this->data['updated']['raw'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					return $this->sanitize($this->data['updated']['raw'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 
 				case 'U':
 					return $this->data['updated']['parsed'];
@@ -879,7 +879,7 @@ class Item
 	{
 		if (!$date_format)
 		{
-			return $this->sanitize($this->get_date(''), \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+			return $this->sanitize($this->get_date(''), \SimplePie\SimplePie::CONSTRUCT_TEXT);
 		}
 		elseif (($date = $this->get_date('U')) !== null && $date !== false)
 		{
@@ -984,40 +984,40 @@ class Item
 		if (!isset($this->data['links']))
 		{
 			$this->data['links'] = array();
-			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'link') as $link)
+			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'link') as $link)
 			{
 				if (isset($link['attribs']['']['href']))
 				{
 					$link_rel = (isset($link['attribs']['']['rel'])) ? $link['attribs']['']['rel'] : 'alternate';
-					$this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
+					$this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($link));
 
 				}
 			}
-			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'link') as $link)
+			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'link') as $link)
 			{
 				if (isset($link['attribs']['']['href']))
 				{
 					$link_rel = (isset($link['attribs']['']['rel'])) ? $link['attribs']['']['rel'] : 'alternate';
-					$this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
+					$this->data['links'][$link_rel][] = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($link));
 				}
 			}
-			if ($links = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_10, 'link'))
+			if ($links = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'link'))
 			{
-				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
-			if ($links = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_090, 'link'))
+			if ($links = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'link'))
 			{
-				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
-			if ($links = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, 'link'))
+			if ($links = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'link'))
 			{
-				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
+				$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($links[0]));
 			}
-			if ($links = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, 'guid'))
+			if ($links = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'guid'))
 			{
 				if (!isset($links[0]['attribs']['']['isPermaLink']) || strtolower(trim($links[0]['attribs']['']['isPermaLink'])) === 'true')
 				{
-					$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($links[0]));
+					$this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($links[0]));
 				}
 			}
 
@@ -1026,17 +1026,17 @@ class Item
 			{
 				if ($this->registry->call('Misc', 'is_isegment_nz_nc', array($key)))
 				{
-					if (isset($this->data['links'][\SimplePie\SimplePie::SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY . $key]))
+					if (isset($this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key]))
 					{
-						$this->data['links'][\SimplePie\SimplePie::SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][\SimplePie\SimplePie::SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY . $key]);
-						$this->data['links'][$key] =& $this->data['links'][\SimplePie\SimplePie::SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY . $key];
+						$this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key]);
+						$this->data['links'][$key] =& $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key];
 					}
 					else
 					{
-						$this->data['links'][\SimplePie\SimplePie::SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY . $key] =& $this->data['links'][$key];
+						$this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key] =& $this->data['links'][$key];
 					}
 				}
-				elseif (substr($key, 0, 41) === \SimplePie\SimplePie::SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY)
+				elseif (substr($key, 0, 41) === \SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY)
 				{
 					$this->data['links'][substr($key, 41)] =& $this->data['links'][$key];
 				}
@@ -1111,7 +1111,7 @@ class Item
 			$parent = $this->get_feed();
 
 			// CAPTIONS
-			if ($captions = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'text'))
+			if ($captions = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'text'))
 			{
 				foreach ($captions as $caption)
 				{
@@ -1122,28 +1122,28 @@ class Item
 					$caption_text = null;
 					if (isset($caption['attribs']['']['type']))
 					{
-						$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($caption['attribs']['']['lang']))
 					{
-						$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($caption['attribs']['']['start']))
 					{
-						$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($caption['attribs']['']['end']))
 					{
-						$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($caption['data']))
 					{
-						$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$captions_parent[] = $this->registry->create('Caption', array($caption_type, $caption_lang, $caption_startTime, $caption_endTime, $caption_text));
 				}
 			}
-			elseif ($captions = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'text'))
+			elseif ($captions = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'text'))
 			{
 				foreach ($captions as $caption)
 				{
@@ -1154,23 +1154,23 @@ class Item
 					$caption_text = null;
 					if (isset($caption['attribs']['']['type']))
 					{
-						$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($caption['attribs']['']['lang']))
 					{
-						$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($caption['attribs']['']['start']))
 					{
-						$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($caption['attribs']['']['end']))
 					{
-						$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($caption['data']))
 					{
-						$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$captions_parent[] = $this->registry->create('Caption', array($caption_type, $caption_lang, $caption_startTime, $caption_endTime, $caption_text));
 				}
@@ -1181,18 +1181,18 @@ class Item
 			}
 
 			// CATEGORIES
-			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'category') as $category)
+			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'category') as $category)
 			{
 				$term = null;
 				$scheme = null;
 				$label = null;
 				if (isset($category['data']))
 				{
-					$term = $this->sanitize($category['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$term = $this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				if (isset($category['attribs']['']['scheme']))
 				{
-					$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				else
 				{
@@ -1200,22 +1200,22 @@ class Item
 				}
 				if (isset($category['attribs']['']['label']))
 				{
-					$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				$categories_parent[] = $this->registry->create('Category', array($term, $scheme, $label));
 			}
-			foreach ((array) $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'category') as $category)
+			foreach ((array) $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'category') as $category)
 			{
 				$term = null;
 				$scheme = null;
 				$label = null;
 				if (isset($category['data']))
 				{
-					$term = $this->sanitize($category['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$term = $this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				if (isset($category['attribs']['']['scheme']))
 				{
-					$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				else
 				{
@@ -1223,28 +1223,28 @@ class Item
 				}
 				if (isset($category['attribs']['']['label']))
 				{
-					$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				$categories_parent[] = $this->registry->create('Category', array($term, $scheme, $label));
 			}
-			foreach ((array) $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'category') as $category)
+			foreach ((array) $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'category') as $category)
 			{
 				$term = null;
 				$scheme = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
 				$label = null;
 				if (isset($category['attribs']['']['text']))
 				{
-					$label = $this->sanitize($category['attribs']['']['text'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$label = $this->sanitize($category['attribs']['']['text'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				$categories_parent[] = $this->registry->create('Category', array($term, $scheme, $label));
 
-				if (isset($category['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES]['category']))
+				if (isset($category['child'][\SimplePie\SimplePie::NAMESPACE_ITUNES]['category']))
 				{
-					foreach ((array) $category['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES]['category'] as $subcategory)
+					foreach ((array) $category['child'][\SimplePie\SimplePie::NAMESPACE_ITUNES]['category'] as $subcategory)
 					{
 						if (isset($subcategory['attribs']['']['text']))
 						{
-							$label = $this->sanitize($subcategory['attribs']['']['text'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$label = $this->sanitize($subcategory['attribs']['']['text'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						$categories_parent[] = $this->registry->create('Category', array($term, $scheme, $label));
 					}
@@ -1256,37 +1256,37 @@ class Item
 			}
 
 			// COPYRIGHT
-			if ($copyright = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'copyright'))
+			if ($copyright = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'copyright'))
 			{
 				$copyright_url = null;
 				$copyright_label = null;
 				if (isset($copyright[0]['attribs']['']['url']))
 				{
-					$copyright_url = $this->sanitize($copyright[0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$copyright_url = $this->sanitize($copyright[0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				if (isset($copyright[0]['data']))
 				{
-					$copyright_label = $this->sanitize($copyright[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$copyright_label = $this->sanitize($copyright[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				$copyrights_parent = $this->registry->create('Copyright', array($copyright_url, $copyright_label));
 			}
-			elseif ($copyright = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'copyright'))
+			elseif ($copyright = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'copyright'))
 			{
 				$copyright_url = null;
 				$copyright_label = null;
 				if (isset($copyright[0]['attribs']['']['url']))
 				{
-					$copyright_url = $this->sanitize($copyright[0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$copyright_url = $this->sanitize($copyright[0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				if (isset($copyright[0]['data']))
 				{
-					$copyright_label = $this->sanitize($copyright[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$copyright_label = $this->sanitize($copyright[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 				$copyrights_parent = $this->registry->create('Copyright', array($copyright_url, $copyright_label));
 			}
 
 			// CREDITS
-			if ($credits = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'credit'))
+			if ($credits = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'credit'))
 			{
 				foreach ($credits as $credit)
 				{
@@ -1295,11 +1295,11 @@ class Item
 					$credit_name = null;
 					if (isset($credit['attribs']['']['role']))
 					{
-						$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($credit['attribs']['']['scheme']))
 					{
-						$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					else
 					{
@@ -1307,12 +1307,12 @@ class Item
 					}
 					if (isset($credit['data']))
 					{
-						$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$credits_parent[] = $this->registry->create('Credit', array($credit_role, $credit_scheme, $credit_name));
 				}
 			}
-			elseif ($credits = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'credit'))
+			elseif ($credits = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'credit'))
 			{
 				foreach ($credits as $credit)
 				{
@@ -1321,11 +1321,11 @@ class Item
 					$credit_name = null;
 					if (isset($credit['attribs']['']['role']))
 					{
-						$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($credit['attribs']['']['scheme']))
 					{
-						$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					else
 					{
@@ -1333,7 +1333,7 @@ class Item
 					}
 					if (isset($credit['data']))
 					{
-						$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$credits_parent[] = $this->registry->create('Credit', array($credit_role, $credit_scheme, $credit_name));
 				}
@@ -1344,30 +1344,30 @@ class Item
 			}
 
 			// DESCRIPTION
-			if ($description_parent = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'description'))
+			if ($description_parent = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'description'))
 			{
 				if (isset($description_parent[0]['data']))
 				{
-					$description_parent = $this->sanitize($description_parent[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$description_parent = $this->sanitize($description_parent[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 			}
-			elseif ($description_parent = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'description'))
+			elseif ($description_parent = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'description'))
 			{
 				if (isset($description_parent[0]['data']))
 				{
-					$description_parent = $this->sanitize($description_parent[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$description_parent = $this->sanitize($description_parent[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 			}
 
 			// DURATION
-			if ($duration_parent = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'duration'))
+			if ($duration_parent = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'duration'))
 			{
 				$seconds = null;
 				$minutes = null;
 				$hours = null;
 				if (isset($duration_parent[0]['data']))
 				{
-					$temp = explode(':', $this->sanitize($duration_parent[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT));
+					$temp = explode(':', $this->sanitize($duration_parent[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
 					if (sizeof($temp) > 0)
 					{
 						$seconds = (int) array_pop($temp);
@@ -1388,7 +1388,7 @@ class Item
 			}
 
 			// HASHES
-			if ($hashes_iterator = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'hash'))
+			if ($hashes_iterator = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'hash'))
 			{
 				foreach ($hashes_iterator as $hash)
 				{
@@ -1396,11 +1396,11 @@ class Item
 					$algo = null;
 					if (isset($hash['data']))
 					{
-						$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($hash['attribs']['']['algo']))
 					{
-						$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					else
 					{
@@ -1409,7 +1409,7 @@ class Item
 					$hashes_parent[] = $algo.':'.$value;
 				}
 			}
-			elseif ($hashes_iterator = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'hash'))
+			elseif ($hashes_iterator = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'hash'))
 			{
 				foreach ($hashes_iterator as $hash)
 				{
@@ -1417,11 +1417,11 @@ class Item
 					$algo = null;
 					if (isset($hash['data']))
 					{
-						$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($hash['attribs']['']['algo']))
 					{
-						$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					else
 					{
@@ -1436,11 +1436,11 @@ class Item
 			}
 
 			// KEYWORDS
-			if ($keywords = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'keywords'))
+			if ($keywords = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'keywords'))
 			{
 				if (isset($keywords[0]['data']))
 				{
-					$temp = explode(',', $this->sanitize($keywords[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT));
+					$temp = explode(',', $this->sanitize($keywords[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
 					foreach ($temp as $word)
 					{
 						$keywords_parent[] = trim($word);
@@ -1448,11 +1448,11 @@ class Item
 				}
 				unset($temp);
 			}
-			elseif ($keywords = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'keywords'))
+			elseif ($keywords = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'keywords'))
 			{
 				if (isset($keywords[0]['data']))
 				{
-					$temp = explode(',', $this->sanitize($keywords[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT));
+					$temp = explode(',', $this->sanitize($keywords[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
 					foreach ($temp as $word)
 					{
 						$keywords_parent[] = trim($word);
@@ -1460,11 +1460,11 @@ class Item
 				}
 				unset($temp);
 			}
-			elseif ($keywords = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'keywords'))
+			elseif ($keywords = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'keywords'))
 			{
 				if (isset($keywords[0]['data']))
 				{
-					$temp = explode(',', $this->sanitize($keywords[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT));
+					$temp = explode(',', $this->sanitize($keywords[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
 					foreach ($temp as $word)
 					{
 						$keywords_parent[] = trim($word);
@@ -1472,11 +1472,11 @@ class Item
 				}
 				unset($temp);
 			}
-			elseif ($keywords = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'keywords'))
+			elseif ($keywords = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'keywords'))
 			{
 				if (isset($keywords[0]['data']))
 				{
-					$temp = explode(',', $this->sanitize($keywords[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT));
+					$temp = explode(',', $this->sanitize($keywords[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
 					foreach ($temp as $word)
 					{
 						$keywords_parent[] = trim($word);
@@ -1490,23 +1490,23 @@ class Item
 			}
 
 			// PLAYER
-			if ($player_parent = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'player'))
+			if ($player_parent = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'player'))
 			{
 				if (isset($player_parent[0]['attribs']['']['url']))
 				{
-					$player_parent = $this->sanitize($player_parent[0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+					$player_parent = $this->sanitize($player_parent[0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 				}
 			}
-			elseif ($player_parent = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'player'))
+			elseif ($player_parent = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'player'))
 			{
 				if (isset($player_parent[0]['attribs']['']['url']))
 				{
-					$player_parent = $this->sanitize($player_parent[0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+					$player_parent = $this->sanitize($player_parent[0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 				}
 			}
 
 			// RATINGS
-			if ($ratings = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'rating'))
+			if ($ratings = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'rating'))
 			{
 				foreach ($ratings as $rating)
 				{
@@ -1514,7 +1514,7 @@ class Item
 					$rating_value = null;
 					if (isset($rating['attribs']['']['scheme']))
 					{
-						$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					else
 					{
@@ -1522,12 +1522,12 @@ class Item
 					}
 					if (isset($rating['data']))
 					{
-						$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$ratings_parent[] = $this->registry->create('Rating', array($rating_scheme, $rating_value));
 				}
 			}
-			elseif ($ratings = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'explicit'))
+			elseif ($ratings = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'explicit'))
 			{
 				foreach ($ratings as $rating)
 				{
@@ -1535,12 +1535,12 @@ class Item
 					$rating_value = null;
 					if (isset($rating['data']))
 					{
-						$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$ratings_parent[] = $this->registry->create('Rating', array($rating_scheme, $rating_value));
 				}
 			}
-			elseif ($ratings = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'rating'))
+			elseif ($ratings = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'rating'))
 			{
 				foreach ($ratings as $rating)
 				{
@@ -1548,7 +1548,7 @@ class Item
 					$rating_value = null;
 					if (isset($rating['attribs']['']['scheme']))
 					{
-						$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					else
 					{
@@ -1556,12 +1556,12 @@ class Item
 					}
 					if (isset($rating['data']))
 					{
-						$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$ratings_parent[] = $this->registry->create('Rating', array($rating_scheme, $rating_value));
 				}
 			}
-			elseif ($ratings = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'explicit'))
+			elseif ($ratings = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'explicit'))
 			{
 				foreach ($ratings as $rating)
 				{
@@ -1569,7 +1569,7 @@ class Item
 					$rating_value = null;
 					if (isset($rating['data']))
 					{
-						$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$ratings_parent[] = $this->registry->create('Rating', array($rating_scheme, $rating_value));
 				}
@@ -1580,7 +1580,7 @@ class Item
 			}
 
 			// RESTRICTIONS
-			if ($restrictions = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'restriction'))
+			if ($restrictions = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'restriction'))
 			{
 				foreach ($restrictions as $restriction)
 				{
@@ -1589,20 +1589,20 @@ class Item
 					$restriction_value = null;
 					if (isset($restriction['attribs']['']['relationship']))
 					{
-						$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($restriction['attribs']['']['type']))
 					{
-						$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($restriction['data']))
 					{
-						$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$restrictions_parent[] = $this->registry->create('Restriction', array($restriction_relationship, $restriction_type, $restriction_value));
 				}
 			}
-			elseif ($restrictions = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'block'))
+			elseif ($restrictions = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'block'))
 			{
 				foreach ($restrictions as $restriction)
 				{
@@ -1616,7 +1616,7 @@ class Item
 					$restrictions_parent[] = $this->registry->create('Restriction', array($restriction_relationship, $restriction_type, $restriction_value));
 				}
 			}
-			elseif ($restrictions = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'restriction'))
+			elseif ($restrictions = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'restriction'))
 			{
 				foreach ($restrictions as $restriction)
 				{
@@ -1625,20 +1625,20 @@ class Item
 					$restriction_value = null;
 					if (isset($restriction['attribs']['']['relationship']))
 					{
-						$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($restriction['attribs']['']['type']))
 					{
-						$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($restriction['data']))
 					{
-						$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					$restrictions_parent[] = $this->registry->create('Restriction', array($restriction_relationship, $restriction_type, $restriction_value));
 				}
 			}
-			elseif ($restrictions = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES, 'block'))
+			elseif ($restrictions = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'block'))
 			{
 				foreach ($restrictions as $restriction)
 				{
@@ -1662,40 +1662,40 @@ class Item
 			}
 
 			// THUMBNAILS
-			if ($thumbnails = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'thumbnail'))
+			if ($thumbnails = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'thumbnail'))
 			{
 				foreach ($thumbnails as $thumbnail)
 				{
 					if (isset($thumbnail['attribs']['']['url']))
 					{
-						$thumbnails_parent[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+						$thumbnails_parent[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 					}
 				}
 			}
-			elseif ($thumbnails = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'thumbnail'))
+			elseif ($thumbnails = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'thumbnail'))
 			{
 				foreach ($thumbnails as $thumbnail)
 				{
 					if (isset($thumbnail['attribs']['']['url']))
 					{
-						$thumbnails_parent[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+						$thumbnails_parent[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 					}
 				}
 			}
 
 			// TITLES
-			if ($title_parent = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'title'))
+			if ($title_parent = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'title'))
 			{
 				if (isset($title_parent[0]['data']))
 				{
-					$title_parent = $this->sanitize($title_parent[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$title_parent = $this->sanitize($title_parent[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 			}
-			elseif ($title_parent = $parent->get_channel_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'title'))
+			elseif ($title_parent = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'title'))
 			{
 				if (isset($title_parent[0]['data']))
 				{
-					$title_parent = $this->sanitize($title_parent[0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+					$title_parent = $this->sanitize($title_parent[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 				}
 			}
 
@@ -1733,12 +1733,12 @@ class Item
 			$title = null;
 
 			// If we have media:group tags, loop through them.
-			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS, 'group') as $group)
+			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'group') as $group)
 			{
-				if(isset($group['child']) && isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['content']))
+				if(isset($group['child']) && isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['content']))
 				{
 					// If we have media:content tags, loop through them.
-					foreach ((array) $group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['content'] as $content)
+					foreach ((array) $group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['content'] as $content)
 					{
 						if (isset($content['attribs']['']['url']))
 						{
@@ -1775,15 +1775,15 @@ class Item
 							// Start checking the attributes of media:content
 							if (isset($content['attribs']['']['bitrate']))
 							{
-								$bitrate = $this->sanitize($content['attribs']['']['bitrate'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$bitrate = $this->sanitize($content['attribs']['']['bitrate'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['channels']))
 							{
-								$channels = $this->sanitize($content['attribs']['']['channels'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$channels = $this->sanitize($content['attribs']['']['channels'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['duration']))
 							{
-								$duration = $this->sanitize($content['attribs']['']['duration'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$duration = $this->sanitize($content['attribs']['']['duration'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							else
 							{
@@ -1791,19 +1791,19 @@ class Item
 							}
 							if (isset($content['attribs']['']['expression']))
 							{
-								$expression = $this->sanitize($content['attribs']['']['expression'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$expression = $this->sanitize($content['attribs']['']['expression'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['framerate']))
 							{
-								$framerate = $this->sanitize($content['attribs']['']['framerate'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$framerate = $this->sanitize($content['attribs']['']['framerate'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['height']))
 							{
-								$height = $this->sanitize($content['attribs']['']['height'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$height = $this->sanitize($content['attribs']['']['height'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['lang']))
 							{
-								$lang = $this->sanitize($content['attribs']['']['lang'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$lang = $this->sanitize($content['attribs']['']['lang'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['fileSize']))
 							{
@@ -1811,28 +1811,28 @@ class Item
 							}
 							if (isset($content['attribs']['']['medium']))
 							{
-								$medium = $this->sanitize($content['attribs']['']['medium'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$medium = $this->sanitize($content['attribs']['']['medium'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['samplingrate']))
 							{
-								$samplingrate = $this->sanitize($content['attribs']['']['samplingrate'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$samplingrate = $this->sanitize($content['attribs']['']['samplingrate'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['type']))
 							{
-								$type = $this->sanitize($content['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$type = $this->sanitize($content['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							if (isset($content['attribs']['']['width']))
 							{
-								$width = $this->sanitize($content['attribs']['']['width'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$width = $this->sanitize($content['attribs']['']['width'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
-							$url = $this->sanitize($content['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+							$url = $this->sanitize($content['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 
 							// Checking the other optional media: elements. Priority: media:content, media:group, item, channel
 
 							// CAPTIONS
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['text']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['text']))
 							{
-								foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['text'] as $caption)
+								foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['text'] as $caption)
 								{
 									$caption_type = null;
 									$caption_lang = null;
@@ -1841,23 +1841,23 @@ class Item
 									$caption_text = null;
 									if (isset($caption['attribs']['']['type']))
 									{
-										$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($caption['attribs']['']['lang']))
 									{
-										$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($caption['attribs']['']['start']))
 									{
-										$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($caption['attribs']['']['end']))
 									{
-										$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($caption['data']))
 									{
-										$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$captions[] = $this->registry->create('Caption', array($caption_type, $caption_lang, $caption_startTime, $caption_endTime, $caption_text));
 								}
@@ -1866,9 +1866,9 @@ class Item
 									$captions = array_values(array_unique($captions));
 								}
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['text']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['text']))
 							{
-								foreach ($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['text'] as $caption)
+								foreach ($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['text'] as $caption)
 								{
 									$caption_type = null;
 									$caption_lang = null;
@@ -1877,23 +1877,23 @@ class Item
 									$caption_text = null;
 									if (isset($caption['attribs']['']['type']))
 									{
-										$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($caption['attribs']['']['lang']))
 									{
-										$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($caption['attribs']['']['start']))
 									{
-										$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($caption['attribs']['']['end']))
 									{
-										$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($caption['data']))
 									{
-										$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$captions[] = $this->registry->create('Caption', array($caption_type, $caption_lang, $caption_startTime, $caption_endTime, $caption_text));
 								}
@@ -1908,20 +1908,20 @@ class Item
 							}
 
 							// CATEGORIES
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['category']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['category']))
 							{
-								foreach ((array) $content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['category'] as $category)
+								foreach ((array) $content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['category'] as $category)
 								{
 									$term = null;
 									$scheme = null;
 									$label = null;
 									if (isset($category['data']))
 									{
-										$term = $this->sanitize($category['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$term = $this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($category['attribs']['']['scheme']))
 									{
-										$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									else
 									{
@@ -1929,25 +1929,25 @@ class Item
 									}
 									if (isset($category['attribs']['']['label']))
 									{
-										$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$categories[] = $this->registry->create('Category', array($term, $scheme, $label));
 								}
 							}
-							if (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['category']))
+							if (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['category']))
 							{
-								foreach ((array) $group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['category'] as $category)
+								foreach ((array) $group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['category'] as $category)
 								{
 									$term = null;
 									$scheme = null;
 									$label = null;
 									if (isset($category['data']))
 									{
-										$term = $this->sanitize($category['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$term = $this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($category['attribs']['']['scheme']))
 									{
-										$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									else
 									{
@@ -1955,7 +1955,7 @@ class Item
 									}
 									if (isset($category['attribs']['']['label']))
 									{
-										$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$categories[] = $this->registry->create('Category', array($term, $scheme, $label));
 								}
@@ -1974,31 +1974,31 @@ class Item
 							}
 
 							// COPYRIGHTS
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright']))
 							{
 								$copyright_url = null;
 								$copyright_label = null;
-								if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url']))
+								if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url']))
 								{
-									$copyright_url = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$copyright_url = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
-								if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['data']))
+								if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['data']))
 								{
-									$copyright_label = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$copyright_label = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								$copyrights = $this->registry->create('Copyright', array($copyright_url, $copyright_label));
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright']))
 							{
 								$copyright_url = null;
 								$copyright_label = null;
-								if (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url']))
+								if (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url']))
 								{
-									$copyright_url = $this->sanitize($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$copyright_url = $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
-								if (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['data']))
+								if (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['data']))
 								{
-									$copyright_label = $this->sanitize($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$copyright_label = $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								$copyrights = $this->registry->create('Copyright', array($copyright_url, $copyright_label));
 							}
@@ -2008,20 +2008,20 @@ class Item
 							}
 
 							// CREDITS
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['credit']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['credit']))
 							{
-								foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['credit'] as $credit)
+								foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['credit'] as $credit)
 								{
 									$credit_role = null;
 									$credit_scheme = null;
 									$credit_name = null;
 									if (isset($credit['attribs']['']['role']))
 									{
-										$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($credit['attribs']['']['scheme']))
 									{
-										$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									else
 									{
@@ -2029,7 +2029,7 @@ class Item
 									}
 									if (isset($credit['data']))
 									{
-										$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$credits[] = $this->registry->create('Credit', array($credit_role, $credit_scheme, $credit_name));
 								}
@@ -2038,20 +2038,20 @@ class Item
 									$credits = array_values(array_unique($credits));
 								}
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['credit']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['credit']))
 							{
-								foreach ($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['credit'] as $credit)
+								foreach ($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['credit'] as $credit)
 								{
 									$credit_role = null;
 									$credit_scheme = null;
 									$credit_name = null;
 									if (isset($credit['attribs']['']['role']))
 									{
-										$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($credit['attribs']['']['scheme']))
 									{
-										$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									else
 									{
@@ -2059,7 +2059,7 @@ class Item
 									}
 									if (isset($credit['data']))
 									{
-										$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$credits[] = $this->registry->create('Credit', array($credit_role, $credit_scheme, $credit_name));
 								}
@@ -2074,13 +2074,13 @@ class Item
 							}
 
 							// DESCRIPTION
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['description']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['description']))
 							{
-								$description = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['description'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$description = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['description'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['description']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['description']))
 							{
-								$description = $this->sanitize($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['description'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$description = $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['description'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							else
 							{
@@ -2088,19 +2088,19 @@ class Item
 							}
 
 							// HASHES
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['hash']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['hash']))
 							{
-								foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['hash'] as $hash)
+								foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['hash'] as $hash)
 								{
 									$value = null;
 									$algo = null;
 									if (isset($hash['data']))
 									{
-										$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($hash['attribs']['']['algo']))
 									{
-										$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									else
 									{
@@ -2113,19 +2113,19 @@ class Item
 									$hashes = array_values(array_unique($hashes));
 								}
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['hash']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['hash']))
 							{
-								foreach ($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['hash'] as $hash)
+								foreach ($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['hash'] as $hash)
 								{
 									$value = null;
 									$algo = null;
 									if (isset($hash['data']))
 									{
-										$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($hash['attribs']['']['algo']))
 									{
-										$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									else
 									{
@@ -2144,11 +2144,11 @@ class Item
 							}
 
 							// KEYWORDS
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords']))
 							{
-								if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data']))
+								if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords'][0]['data']))
 								{
-									$temp = explode(',', $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT));
+									$temp = explode(',', $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
 									foreach ($temp as $word)
 									{
 										$keywords[] = trim($word);
@@ -2160,11 +2160,11 @@ class Item
 									$keywords = array_values(array_unique($keywords));
 								}
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords']))
 							{
-								if (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data']))
+								if (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords'][0]['data']))
 								{
-									$temp = explode(',', $this->sanitize($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT));
+									$temp = explode(',', $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
 									foreach ($temp as $word)
 									{
 										$keywords[] = trim($word);
@@ -2182,13 +2182,13 @@ class Item
 							}
 
 							// PLAYER
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['player']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player']))
 							{
-								$player = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+								$player = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['player']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player']))
 							{
-								$player = $this->sanitize($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+								$player = $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 							}
 							else
 							{
@@ -2196,15 +2196,15 @@ class Item
 							}
 
 							// RATINGS
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['rating']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['rating']))
 							{
-								foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['rating'] as $rating)
+								foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['rating'] as $rating)
 								{
 									$rating_scheme = null;
 									$rating_value = null;
 									if (isset($rating['attribs']['']['scheme']))
 									{
-										$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									else
 									{
@@ -2212,7 +2212,7 @@ class Item
 									}
 									if (isset($rating['data']))
 									{
-										$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$ratings[] = $this->registry->create('Rating', array($rating_scheme, $rating_value));
 								}
@@ -2221,15 +2221,15 @@ class Item
 									$ratings = array_values(array_unique($ratings));
 								}
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['rating']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['rating']))
 							{
-								foreach ($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['rating'] as $rating)
+								foreach ($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['rating'] as $rating)
 								{
 									$rating_scheme = null;
 									$rating_value = null;
 									if (isset($rating['attribs']['']['scheme']))
 									{
-										$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									else
 									{
@@ -2237,7 +2237,7 @@ class Item
 									}
 									if (isset($rating['data']))
 									{
-										$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$ratings[] = $this->registry->create('Rating', array($rating_scheme, $rating_value));
 								}
@@ -2252,24 +2252,24 @@ class Item
 							}
 
 							// RESTRICTIONS
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['restriction']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['restriction']))
 							{
-								foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['restriction'] as $restriction)
+								foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['restriction'] as $restriction)
 								{
 									$restriction_relationship = null;
 									$restriction_type = null;
 									$restriction_value = null;
 									if (isset($restriction['attribs']['']['relationship']))
 									{
-										$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($restriction['attribs']['']['type']))
 									{
-										$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($restriction['data']))
 									{
-										$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$restrictions[] = $this->registry->create('Restriction', array($restriction_relationship, $restriction_type, $restriction_value));
 								}
@@ -2278,24 +2278,24 @@ class Item
 									$restrictions = array_values(array_unique($restrictions));
 								}
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['restriction']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['restriction']))
 							{
-								foreach ($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['restriction'] as $restriction)
+								foreach ($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['restriction'] as $restriction)
 								{
 									$restriction_relationship = null;
 									$restriction_type = null;
 									$restriction_value = null;
 									if (isset($restriction['attribs']['']['relationship']))
 									{
-										$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($restriction['attribs']['']['type']))
 									{
-										$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									if (isset($restriction['data']))
 									{
-										$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+										$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 									}
 									$restrictions[] = $this->registry->create('Restriction', array($restriction_relationship, $restriction_type, $restriction_value));
 								}
@@ -2310,22 +2310,22 @@ class Item
 							}
 
 							// THUMBNAILS
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['thumbnail']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['thumbnail']))
 							{
-								foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['thumbnail'] as $thumbnail)
+								foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['thumbnail'] as $thumbnail)
 								{
-									$thumbnails[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+									$thumbnails[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 								}
 								if (is_array($thumbnails))
 								{
 									$thumbnails = array_values(array_unique($thumbnails));
 								}
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['thumbnail']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['thumbnail']))
 							{
-								foreach ($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['thumbnail'] as $thumbnail)
+								foreach ($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['thumbnail'] as $thumbnail)
 								{
-									$thumbnails[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+									$thumbnails[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 								}
 								if (is_array($thumbnails))
 								{
@@ -2338,13 +2338,13 @@ class Item
 							}
 
 							// TITLES
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['title']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['title']))
 							{
-								$title = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['title'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$title = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['title'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
-							elseif (isset($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['title']))
+							elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['title']))
 							{
-								$title = $this->sanitize($group['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['title'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$title = $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['title'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							else
 							{
@@ -2358,11 +2358,11 @@ class Item
 			}
 
 			// If we have standalone media:content tags, loop through them.
-			if (isset($this->data['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['content']))
+			if (isset($this->data['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['content']))
 			{
-				foreach ((array) $this->data['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['content'] as $content)
+				foreach ((array) $this->data['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['content'] as $content)
 				{
-					if (isset($content['attribs']['']['url']) || isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['player']))
+					if (isset($content['attribs']['']['url']) || isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player']))
 					{
 						// Attributes
 						$bitrate = null;
@@ -2397,15 +2397,15 @@ class Item
 						// Start checking the attributes of media:content
 						if (isset($content['attribs']['']['bitrate']))
 						{
-							$bitrate = $this->sanitize($content['attribs']['']['bitrate'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$bitrate = $this->sanitize($content['attribs']['']['bitrate'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['channels']))
 						{
-							$channels = $this->sanitize($content['attribs']['']['channels'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$channels = $this->sanitize($content['attribs']['']['channels'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['duration']))
 						{
-							$duration = $this->sanitize($content['attribs']['']['duration'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$duration = $this->sanitize($content['attribs']['']['duration'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						else
 						{
@@ -2413,19 +2413,19 @@ class Item
 						}
 						if (isset($content['attribs']['']['expression']))
 						{
-							$expression = $this->sanitize($content['attribs']['']['expression'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$expression = $this->sanitize($content['attribs']['']['expression'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['framerate']))
 						{
-							$framerate = $this->sanitize($content['attribs']['']['framerate'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$framerate = $this->sanitize($content['attribs']['']['framerate'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['height']))
 						{
-							$height = $this->sanitize($content['attribs']['']['height'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$height = $this->sanitize($content['attribs']['']['height'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['lang']))
 						{
-							$lang = $this->sanitize($content['attribs']['']['lang'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$lang = $this->sanitize($content['attribs']['']['lang'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['fileSize']))
 						{
@@ -2433,30 +2433,30 @@ class Item
 						}
 						if (isset($content['attribs']['']['medium']))
 						{
-							$medium = $this->sanitize($content['attribs']['']['medium'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$medium = $this->sanitize($content['attribs']['']['medium'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['samplingrate']))
 						{
-							$samplingrate = $this->sanitize($content['attribs']['']['samplingrate'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$samplingrate = $this->sanitize($content['attribs']['']['samplingrate'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['type']))
 						{
-							$type = $this->sanitize($content['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$type = $this->sanitize($content['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['width']))
 						{
-							$width = $this->sanitize($content['attribs']['']['width'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$width = $this->sanitize($content['attribs']['']['width'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						if (isset($content['attribs']['']['url']))
 						{
-							$url = $this->sanitize($content['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+							$url = $this->sanitize($content['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 						}
 						// Checking the other optional media: elements. Priority: media:content, media:group, item, channel
 
 						// CAPTIONS
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['text']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['text']))
 						{
-							foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['text'] as $caption)
+							foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['text'] as $caption)
 							{
 								$caption_type = null;
 								$caption_lang = null;
@@ -2465,23 +2465,23 @@ class Item
 								$caption_text = null;
 								if (isset($caption['attribs']['']['type']))
 								{
-									$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$caption_type = $this->sanitize($caption['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($caption['attribs']['']['lang']))
 								{
-									$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$caption_lang = $this->sanitize($caption['attribs']['']['lang'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($caption['attribs']['']['start']))
 								{
-									$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$caption_startTime = $this->sanitize($caption['attribs']['']['start'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($caption['attribs']['']['end']))
 								{
-									$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$caption_endTime = $this->sanitize($caption['attribs']['']['end'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($caption['data']))
 								{
-									$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$caption_text = $this->sanitize($caption['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								$captions[] = $this->registry->create('Caption', array($caption_type, $caption_lang, $caption_startTime, $caption_endTime, $caption_text));
 							}
@@ -2496,20 +2496,20 @@ class Item
 						}
 
 						// CATEGORIES
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['category']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['category']))
 						{
-							foreach ((array) $content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['category'] as $category)
+							foreach ((array) $content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['category'] as $category)
 							{
 								$term = null;
 								$scheme = null;
 								$label = null;
 								if (isset($category['data']))
 								{
-									$term = $this->sanitize($category['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$term = $this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($category['attribs']['']['scheme']))
 								{
-									$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$scheme = $this->sanitize($category['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								else
 								{
@@ -2517,7 +2517,7 @@ class Item
 								}
 								if (isset($category['attribs']['']['label']))
 								{
-									$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								$categories[] = $this->registry->create('Category', array($term, $scheme, $label));
 							}
@@ -2540,17 +2540,17 @@ class Item
 						}
 
 						// COPYRIGHTS
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright']))
 						{
 							$copyright_url = null;
 							$copyright_label = null;
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url']))
 							{
-								$copyright_url = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$copyright_url = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['data']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['data']))
 							{
-								$copyright_label = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['copyright'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+								$copyright_label = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['copyright'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 							}
 							$copyrights = $this->registry->create('Copyright', array($copyright_url, $copyright_label));
 						}
@@ -2560,20 +2560,20 @@ class Item
 						}
 
 						// CREDITS
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['credit']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['credit']))
 						{
-							foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['credit'] as $credit)
+							foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['credit'] as $credit)
 							{
 								$credit_role = null;
 								$credit_scheme = null;
 								$credit_name = null;
 								if (isset($credit['attribs']['']['role']))
 								{
-									$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$credit_role = $this->sanitize($credit['attribs']['']['role'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($credit['attribs']['']['scheme']))
 								{
-									$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$credit_scheme = $this->sanitize($credit['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								else
 								{
@@ -2581,7 +2581,7 @@ class Item
 								}
 								if (isset($credit['data']))
 								{
-									$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$credit_name = $this->sanitize($credit['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								$credits[] = $this->registry->create('Credit', array($credit_role, $credit_scheme, $credit_name));
 							}
@@ -2596,9 +2596,9 @@ class Item
 						}
 
 						// DESCRIPTION
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['description']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['description']))
 						{
-							$description = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['description'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$description = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['description'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						else
 						{
@@ -2606,19 +2606,19 @@ class Item
 						}
 
 						// HASHES
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['hash']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['hash']))
 						{
-							foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['hash'] as $hash)
+							foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['hash'] as $hash)
 							{
 								$value = null;
 								$algo = null;
 								if (isset($hash['data']))
 								{
-									$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$value = $this->sanitize($hash['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($hash['attribs']['']['algo']))
 								{
-									$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$algo = $this->sanitize($hash['attribs']['']['algo'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								else
 								{
@@ -2637,11 +2637,11 @@ class Item
 						}
 
 						// KEYWORDS
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords']))
 						{
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data']))
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords'][0]['data']))
 							{
-								$temp = explode(',', $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['keywords'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT));
+								$temp = explode(',', $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['keywords'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
 								foreach ($temp as $word)
 								{
 									$keywords[] = trim($word);
@@ -2659,10 +2659,10 @@ class Item
 						}
 
 						// PLAYER
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['player']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player']))
 						{
-							if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'])) {
-								$player = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+							if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'])) {
+								$player = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 							}
 						}
 						else
@@ -2671,15 +2671,15 @@ class Item
 						}
 
 						// RATINGS
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['rating']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['rating']))
 						{
-							foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['rating'] as $rating)
+							foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['rating'] as $rating)
 							{
 								$rating_scheme = null;
 								$rating_value = null;
 								if (isset($rating['attribs']['']['scheme']))
 								{
-									$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$rating_scheme = $this->sanitize($rating['attribs']['']['scheme'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								else
 								{
@@ -2687,7 +2687,7 @@ class Item
 								}
 								if (isset($rating['data']))
 								{
-									$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$rating_value = $this->sanitize($rating['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								$ratings[] = $this->registry->create('Rating', array($rating_scheme, $rating_value));
 							}
@@ -2702,24 +2702,24 @@ class Item
 						}
 
 						// RESTRICTIONS
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['restriction']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['restriction']))
 						{
-							foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['restriction'] as $restriction)
+							foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['restriction'] as $restriction)
 							{
 								$restriction_relationship = null;
 								$restriction_type = null;
 								$restriction_value = null;
 								if (isset($restriction['attribs']['']['relationship']))
 								{
-									$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$restriction_relationship = $this->sanitize($restriction['attribs']['']['relationship'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($restriction['attribs']['']['type']))
 								{
-									$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$restriction_type = $this->sanitize($restriction['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								if (isset($restriction['data']))
 								{
-									$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+									$restriction_value = $this->sanitize($restriction['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 								}
 								$restrictions[] = $this->registry->create('Restriction', array($restriction_relationship, $restriction_type, $restriction_value));
 							}
@@ -2734,12 +2734,12 @@ class Item
 						}
 
 						// THUMBNAILS
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['thumbnail']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['thumbnail']))
 						{
-							foreach ($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['thumbnail'] as $thumbnail)
+							foreach ($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['thumbnail'] as $thumbnail)
 							{
 								if (isset($thumbnail['attribs']['']['url'])) {
-									$thumbnails[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+									$thumbnails[] = $this->sanitize($thumbnail['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI);
 								}
 							}
 							if (is_array($thumbnails))
@@ -2753,9 +2753,9 @@ class Item
 						}
 
 						// TITLES
-						if (isset($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['title']))
+						if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['title']))
 						{
-							$title = $this->sanitize($content['child'][\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS]['title'][0]['data'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+							$title = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['title'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 						}
 						else
 						{
@@ -2767,7 +2767,7 @@ class Item
 				}
 			}
 
-			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'link') as $link)
+			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'link') as $link)
 			{
 				if (isset($link['attribs']['']['href']) && !empty($link['attribs']['']['rel']) && $link['attribs']['']['rel'] === 'enclosure')
 				{
@@ -2787,10 +2787,10 @@ class Item
 					$url = null;
 					$width = null;
 
-					$url = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
+					$url = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($link));
 					if (isset($link['attribs']['']['type']))
 					{
-						$type = $this->sanitize($link['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$type = $this->sanitize($link['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($link['attribs']['']['length']))
 					{
@@ -2798,7 +2798,7 @@ class Item
 					}
 					if (isset($link['attribs']['']['title']))
 					{
-						$title = $this->sanitize($link['attribs']['']['title'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$title = $this->sanitize($link['attribs']['']['title'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					else
 					{
@@ -2810,7 +2810,7 @@ class Item
 				}
 			}
 
-			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03, 'link') as $link)
+			foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'link') as $link)
 			{
 				if (isset($link['attribs']['']['href']) && !empty($link['attribs']['']['rel']) && $link['attribs']['']['rel'] === 'enclosure')
 				{
@@ -2830,10 +2830,10 @@ class Item
 					$url = null;
 					$width = null;
 
-					$url = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($link));
+					$url = $this->sanitize($link['attribs']['']['href'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($link));
 					if (isset($link['attribs']['']['type']))
 					{
-						$type = $this->sanitize($link['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$type = $this->sanitize($link['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($link['attribs']['']['length']))
 					{
@@ -2845,7 +2845,7 @@ class Item
 				}
 			}
 
-			if ($enclosure = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20, 'enclosure'))
+			if ($enclosure = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'enclosure'))
 			{
 				if (isset($enclosure[0]['attribs']['']['url']))
 				{
@@ -2865,11 +2865,11 @@ class Item
 					$url = null;
 					$width = null;
 
-					$url = $this->sanitize($enclosure[0]['attribs']['']['url'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI, $this->get_base($enclosure[0]));
+					$url = $this->sanitize($enclosure[0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($enclosure[0]));
 					$url = $this->feed->sanitize->https_url($url);
 					if (isset($enclosure[0]['attribs']['']['type']))
 					{
-						$type = $this->sanitize($enclosure[0]['attribs']['']['type'], \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+						$type = $this->sanitize($enclosure[0]['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
 					}
 					if (isset($enclosure[0]['attribs']['']['length']))
 					{
@@ -2911,11 +2911,11 @@ class Item
 	 */
 	public function get_latitude()
 	{
-		if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO, 'lat'))
+		if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'lat'))
 		{
 			return (float) $return[0]['data'];
 		}
-		elseif (($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match))
+		elseif (($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match))
 		{
 			return (float) $match[1];
 		}
@@ -2937,15 +2937,15 @@ class Item
 	 */
 	public function get_longitude()
 	{
-		if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO, 'long'))
+		if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'long'))
 		{
 			return (float) $return[0]['data'];
 		}
-		elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO, 'lon'))
+		elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'lon'))
 		{
 			return (float) $return[0]['data'];
 		}
-		elseif (($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match))
+		elseif (($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_GEORSS, 'point')) && preg_match('/^((?:-)?[0-9]+(?:\.[0-9]+)) ((?:-)?[0-9]+(?:\.[0-9]+))$/', trim($return[0]['data']), $match))
 		{
 			return (float) $match[2];
 		}
@@ -2961,7 +2961,7 @@ class Item
 	 */
 	public function get_source()
 	{
-		if ($return = $this->get_item_tags(\SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10, 'source'))
+		if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'source'))
 		{
 			return $this->registry->create('Source', array($this, $return[0]));
 		}

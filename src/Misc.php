@@ -1810,11 +1810,11 @@ class Misc
 	{
 		if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode']) === 'base64'))
 		{
-			$mode = \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_BASE64;
+			$mode = \SimplePie\SimplePie::CONSTRUCT_BASE64;
 		}
 		else
 		{
-			$mode = \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE;
+			$mode = \SimplePie\SimplePie::CONSTRUCT_NONE;
 		}
 		if (isset($attribs['']['type']))
 		{
@@ -1822,22 +1822,22 @@ class Misc
 			{
 				case 'text':
 				case 'text/plain':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT | $mode;
+					return \SimplePie\SimplePie::CONSTRUCT_TEXT | $mode;
 
 				case 'html':
 				case 'text/html':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML | $mode;
+					return \SimplePie\SimplePie::CONSTRUCT_HTML | $mode;
 
 				case 'xhtml':
 				case 'application/xhtml+xml':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML | $mode;
+					return \SimplePie\SimplePie::CONSTRUCT_XHTML | $mode;
 
 				default:
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE | $mode;
+					return \SimplePie\SimplePie::CONSTRUCT_NONE | $mode;
 			}
 		}
 
-		return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT | $mode;
+		return \SimplePie\SimplePie::CONSTRUCT_TEXT | $mode;
 	}
 
 	public static function atom_10_construct_type($attribs)
@@ -1847,19 +1847,19 @@ class Misc
 			switch (strtolower(trim($attribs['']['type'])))
 			{
 				case 'text':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
+					return \SimplePie\SimplePie::CONSTRUCT_TEXT;
 
 				case 'html':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML;
+					return \SimplePie\SimplePie::CONSTRUCT_HTML;
 
 				case 'xhtml':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML;
+					return \SimplePie\SimplePie::CONSTRUCT_XHTML;
 
 				default:
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE;
+					return \SimplePie\SimplePie::CONSTRUCT_NONE;
 			}
 		}
-		return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
+		return \SimplePie\SimplePie::CONSTRUCT_TEXT;
 	}
 
 	public static function atom_10_content_construct_type($attribs)
@@ -1870,25 +1870,25 @@ class Misc
 			switch ($type)
 			{
 				case 'text':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
+					return \SimplePie\SimplePie::CONSTRUCT_TEXT;
 
 				case 'html':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML;
+					return \SimplePie\SimplePie::CONSTRUCT_HTML;
 
 				case 'xhtml':
-					return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML;
+					return \SimplePie\SimplePie::CONSTRUCT_XHTML;
 			}
 			if (in_array(substr($type, -4), array('+xml', '/xml')) || substr($type, 0, 5) === 'text/')
 			{
-				return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE;
+				return \SimplePie\SimplePie::CONSTRUCT_NONE;
 			}
 			else
 			{
-				return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_BASE64;
+				return \SimplePie\SimplePie::CONSTRUCT_BASE64;
 			}
 		}
 
-		return \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
+		return \SimplePie\SimplePie::CONSTRUCT_TEXT;
 	}
 
 	public static function is_isegment_nz_nc($string)
@@ -2176,7 +2176,7 @@ END;
 	 */
 	public static function get_default_useragent()
 	{
-		return \SimplePie\SimplePie::SIMPLEPIE_NAME . '/' . \SimplePie\SimplePie::SIMPLEPIE_VERSION . ' (Feed Parser; ' . \SimplePie\SimplePie::SIMPLEPIE_URL . '; Allow like Gecko) Build/' . static::get_build();
+		return \SimplePie\SimplePie::NAME . '/' . \SimplePie\SimplePie::VERSION . ' (Feed Parser; ' . \SimplePie\SimplePie::URL . '; Allow like Gecko) Build/' . static::get_build();
 	}
 
 	/**
@@ -2184,7 +2184,7 @@ END;
 	 */
 	public static function debug(&$sp)
 	{
-		$info = 'SimplePie ' . \SimplePie\SimplePie::SIMPLEPIE_VERSION . ' Build ' . static::get_build() . "\n";
+		$info = 'SimplePie ' . \SimplePie\SimplePie::VERSION . ' Build ' . static::get_build() . "\n";
 		$info .= 'PHP ' . PHP_VERSION . "\n";
 		if ($sp->error() !== null)
 		{

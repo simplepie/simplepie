@@ -107,14 +107,14 @@ class Locator
 		$this->registry = $registry;
 	}
 
-	public function find($type = \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_ALL, &$working = null)
+	public function find($type = \SimplePie\SimplePie::LOCATOR_ALL, &$working = null)
 	{
 		if ($this->is_feed($this->file))
 		{
 			return $this->file;
 		}
 
-		if ($this->file->method & \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE)
+		if ($this->file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE)
 		{
 			$sniffer = $this->registry->create('Content_Type_Sniffer', array($this->file));
 			if ($sniffer->get_type() !== 'text/html')
@@ -123,34 +123,34 @@ class Locator
 			}
 		}
 
-		if ($type & ~\SimplePie\SimplePie::SIMPLEPIE_LOCATOR_NONE)
+		if ($type & ~\SimplePie\SimplePie::LOCATOR_NONE)
 		{
 			$this->get_base();
 		}
 
-		if ($type & \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_AUTODISCOVERY && $working = $this->autodiscovery())
+		if ($type & \SimplePie\SimplePie::LOCATOR_AUTODISCOVERY && $working = $this->autodiscovery())
 		{
 			return $working[0];
 		}
 
-		if ($type & (\SimplePie\SimplePie::SIMPLEPIE_LOCATOR_LOCAL_EXTENSION | \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_LOCAL_BODY | \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_REMOTE_EXTENSION | \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_REMOTE_BODY) && $this->get_links())
+		if ($type & (\SimplePie\SimplePie::LOCATOR_LOCAL_EXTENSION | \SimplePie\SimplePie::LOCATOR_LOCAL_BODY | \SimplePie\SimplePie::LOCATOR_REMOTE_EXTENSION | \SimplePie\SimplePie::LOCATOR_REMOTE_BODY) && $this->get_links())
 		{
-			if ($type & \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_LOCAL_EXTENSION && $working = $this->extension($this->local))
+			if ($type & \SimplePie\SimplePie::LOCATOR_LOCAL_EXTENSION && $working = $this->extension($this->local))
 			{
 				return $working[0];
 			}
 
-			if ($type & \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_LOCAL_BODY && $working = $this->body($this->local))
+			if ($type & \SimplePie\SimplePie::LOCATOR_LOCAL_BODY && $working = $this->body($this->local))
 			{
 				return $working[0];
 			}
 
-			if ($type & \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_REMOTE_EXTENSION && $working = $this->extension($this->elsewhere))
+			if ($type & \SimplePie\SimplePie::LOCATOR_REMOTE_EXTENSION && $working = $this->extension($this->elsewhere))
 			{
 				return $working[0];
 			}
 
-			if ($type & \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_REMOTE_BODY && $working = $this->body($this->elsewhere))
+			if ($type & \SimplePie\SimplePie::LOCATOR_REMOTE_BODY && $working = $this->body($this->elsewhere))
 			{
 				return $working[0];
 			}
@@ -160,7 +160,7 @@ class Locator
 
 	public function is_feed($file, $check_html = false)
 	{
-		if ($file->method & \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE)
+		if ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE)
 		{
 			$sniffer = $this->registry->create('Content_Type_Sniffer', array($file));
 			$sniffed = $sniffer->get_type();
@@ -174,7 +174,7 @@ class Locator
 
 			return in_array($sniffed, $mime_types);
 		}
-		elseif ($file->method & \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_LOCAL)
+		elseif ($file->method & \SimplePie\SimplePie::FILE_SOURCE_LOCAL)
 		{
 			return true;
 		}
@@ -264,7 +264,7 @@ class Locator
 						'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 					);
 					$feed = $this->registry->create('File', array($href, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options));
-					if ($feed->success && ($feed->method & \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true))
+					if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true))
 					{
 						$feeds[$href] = $feed;
 					}
@@ -394,7 +394,7 @@ class Locator
 					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 				);
 				$feed = $this->registry->create('File', array($value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options));
-				if ($feed->success && ($feed->method & \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
+				if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return array($feed);
 				}
@@ -422,7 +422,7 @@ class Locator
 					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 				);
 				$feed = $this->registry->create('File', array($value, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen, $this->curl_options));
-				if ($feed->success && ($feed->method & \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
+				if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return array($feed);
 				}

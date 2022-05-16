@@ -346,26 +346,26 @@ class Sanitize
 	public function sanitize($data, $type, $base = '')
 	{
 		$data = trim($data);
-		if ($data !== '' || $type & \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI)
+		if ($data !== '' || $type & \SimplePie\SimplePie::CONSTRUCT_IRI)
 		{
-			if ($type & \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_MAYBE_HTML)
+			if ($type & \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML)
 			{
-				if (preg_match('/(&(#(x[0-9a-fA-F]+|[0-9]+)|[a-zA-Z0-9]+)|<\/[A-Za-z][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E]*' . \SimplePie\SimplePie::SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>)/', $data))
+				if (preg_match('/(&(#(x[0-9a-fA-F]+|[0-9]+)|[a-zA-Z0-9]+)|<\/[A-Za-z][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E]*' . \SimplePie\SimplePie::PCRE_HTML_ATTRIBUTE . '>)/', $data))
 				{
-					$type |= \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML;
+					$type |= \SimplePie\SimplePie::CONSTRUCT_HTML;
 				}
 				else
 				{
-					$type |= \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT;
+					$type |= \SimplePie\SimplePie::CONSTRUCT_TEXT;
 				}
 			}
 
-			if ($type & \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_BASE64)
+			if ($type & \SimplePie\SimplePie::CONSTRUCT_BASE64)
 			{
 				$data = base64_decode($data);
 			}
 
-			if ($type & (\SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML | \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML))
+			if ($type & (\SimplePie\SimplePie::CONSTRUCT_HTML | \SimplePie\SimplePie::CONSTRUCT_XHTML))
 			{
 
 				if (!class_exists('DOMDocument'))
@@ -456,7 +456,7 @@ class Sanitize
 								$file = $this->registry->create('File', array($img->getAttribute('src'), $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen));
 								$headers = $file->headers;
 
-								if ($file->success && ($file->method & \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
+								if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
 								{
 									if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 									{
@@ -479,18 +479,18 @@ class Sanitize
 
 				if ($this->remove_div)
 				{
-					$data = preg_replace('/^<div' . \SimplePie\SimplePie::SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '', $data);
+					$data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '', $data);
 					$data = preg_replace('/<\/div>$/', '', $data);
 				}
 				else
 				{
-					$data = preg_replace('/^<div' . \SimplePie\SimplePie::SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
+					$data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
 				}
 
 				$data = str_replace('</source>', '', $data);
 			}
 
-			if ($type & \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI)
+			if ($type & \SimplePie\SimplePie::CONSTRUCT_IRI)
 			{
 				$absolute = $this->registry->call('Misc', 'absolutize_url', array($data, $base));
 				if ($absolute !== false)
@@ -499,7 +499,7 @@ class Sanitize
 				}
 			}
 
-			if ($type & (\SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT | \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI))
+			if ($type & (\SimplePie\SimplePie::CONSTRUCT_TEXT | \SimplePie\SimplePie::CONSTRUCT_IRI))
 			{
 				$data = htmlspecialchars($data, ENT_COMPAT, 'UTF-8');
 			}
@@ -516,7 +516,7 @@ class Sanitize
 	{
 		$ret = '';
 		$html = preg_replace('%</?(?:html|body)[^>]*?'.'>%is', '', $html);
-		if ($type & ~\SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML)
+		if ($type & ~\SimplePie\SimplePie::CONSTRUCT_XHTML)
 		{
 			// Atom XHTML constructs are wrapped with a div by default
 			// Note: No protection if $html contains a stray </div>!
@@ -610,12 +610,12 @@ class Sanitize
 							$value = $attr->value;
 
 							// In XHTML, empty values should never exist, so we repeat the value
-							if (empty($value) && ($type & \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML))
+							if (empty($value) && ($type & \SimplePie\SimplePie::CONSTRUCT_XHTML))
 							{
 								$value = $name;
 							}
 							// For HTML, empty is fine
-							elseif (empty($value) && ($type & \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML))
+							elseif (empty($value) && ($type & \SimplePie\SimplePie::CONSTRUCT_HTML))
 							{
 								$attrs[] = $name;
 								continue;
