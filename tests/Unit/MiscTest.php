@@ -47,16 +47,30 @@
 namespace Simplepie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Misc;
+use SimplePie_Misc;
 
 class MiscTest extends TestCase
 {
 	public function testNamespacedClassExists()
 	{
-		$this->assertTrue(class_exists('SimplePie\Misc'));
+		$this->assertTrue(class_exists(Misc::class));
 	}
 
 	public function testClassExists()
 	{
-		$this->assertTrue(class_exists('SimplePie_Misc'));
+		$this->assertTrue(class_exists(SimplePie_Misc::class));
+	}
+
+	public function test_existence_of_get_element()
+	{
+		// BC: make sure that get_element() exists
+		$this->assertSame([], Misc::get_element('', ''));
+	}
+
+	public function test_existence_of_entities_decode()
+	{
+		// BC: make sure that entities_decode() exists
+		$this->assertSame('', Misc::entities_decode(''));
 	}
 }

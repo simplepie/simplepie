@@ -93,6 +93,53 @@ class Misc
 		return $iri->get_uri();
 	}
 
+	/**
+	 * Get a HTML/XML element from a HTML string
+	 *
+	 * @deprecated Use DOMDocument instead (parsing HTML with regex is bad!)
+	 * @param string $realname Element name (including namespace prefix if applicable)
+	 * @param string $string HTML document
+	 * @return array
+	 */
+	public static function get_element($realname, $string)
+	{
+		@trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+
+		$return = array();
+		$name = preg_quote($realname, '/');
+		if (preg_match_all("/<($name)" . \SimplePie\SimplePie::PCRE_HTML_ATTRIBUTE . "(>(.*)<\/$name>|(\/)?>)/siU", $string, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE))
+		{
+			for ($i = 0, $total_matches = count($matches); $i < $total_matches; $i++)
+			{
+				$return[$i]['tag'] = $realname;
+				$return[$i]['full'] = $matches[$i][0][0];
+				$return[$i]['offset'] = $matches[$i][0][1];
+				if (strlen($matches[$i][3][0]) <= 2)
+				{
+					$return[$i]['self_closing'] = true;
+				}
+				else
+				{
+					$return[$i]['self_closing'] = false;
+					$return[$i]['content'] = $matches[$i][4][0];
+				}
+				$return[$i]['attribs'] = array();
+				if (isset($matches[$i][2][0]) && preg_match_all('/[\x09\x0A\x0B\x0C\x0D\x20]+([^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3D\x3E]*)(?:[\x09\x0A\x0B\x0C\x0D\x20]*=[\x09\x0A\x0B\x0C\x0D\x20]*(?:"([^"]*)"|\'([^\']*)\'|([^\x09\x0A\x0B\x0C\x0D\x20\x22\x27\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x3E]*)?))?/', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER))
+				{
+					for ($j = 0, $total_attribs = count($attribs); $j < $total_attribs; $j++)
+					{
+						if (count($attribs[$j]) === 2)
+						{
+							$attribs[$j][2] = $attribs[$j][1];
+						}
+						$return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode(end($attribs[$j]));
+					}
+				}
+			}
+		}
+		return $return;
+	}
+
 	public static function element_implode($element)
 	{
 		$full = "<$element[tag]";
@@ -1734,6 +1781,21 @@ class Misc
 	{
 		$parser = \SimplePie\Parse\Date::get();
 		return $parser->parse($dt);
+	}
+
+	/**
+	 * Decode HTML entities
+	 *
+	 * @deprecated Use DOMDocument instead
+	 * @param string $data Input data
+	 * @return string Output data
+	 */
+	public static function entities_decode($data)
+	{
+		@trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+
+		$decoder = new \SimplePie_Decode_HTML_Entities($data);
+		return $decoder->parse();
 	}
 
 	/**
