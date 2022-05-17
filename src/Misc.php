@@ -47,7 +47,7 @@
 namespace SimplePie;
 
 /**
- * Miscellanous utilities
+ * Miscellaneous utilities
  *
  * @package SimplePie
  */
