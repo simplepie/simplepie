@@ -57,15 +57,15 @@ if (\false) {
 
 /**
  * SimplePie Name
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAME instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAME instead.
  */
-define('SIMPLEPIE_NAME', NamespacedSimplePie::SIMPLEPIE_NAME);
+define('SIMPLEPIE_NAME', NamespacedSimplePie::NAME);
 
 /**
  * SimplePie Version
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_VERSION instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::VERSION instead.
  */
-define('SIMPLEPIE_VERSION', NamespacedSimplePie::SIMPLEPIE_VERSION);
+define('SIMPLEPIE_VERSION', NamespacedSimplePie::VERSION);
 
 /**
  * SimplePie Build
@@ -76,9 +76,9 @@ define('SIMPLEPIE_BUILD', gmdate('YmdHis', \SimplePie\Misc::get_build()));
 
 /**
  * SimplePie Website URL
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_URL instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::URL instead.
  */
-define('SIMPLEPIE_URL', NamespacedSimplePie::SIMPLEPIE_URL);
+define('SIMPLEPIE_URL', NamespacedSimplePie::URL);
 
 /**
  * SimplePie Useragent
@@ -89,398 +89,398 @@ define('SIMPLEPIE_USERAGENT', \SimplePie\Misc::get_default_useragent());
 
 /**
  * SimplePie Linkback
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LINKBACK instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LINKBACK instead.
  */
-define('SIMPLEPIE_LINKBACK', NamespacedSimplePie::SIMPLEPIE_LINKBACK);
+define('SIMPLEPIE_LINKBACK', NamespacedSimplePie::LINKBACK);
 
 /**
  * No Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_NONE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LOCATOR_NONE instead.
  */
-define('SIMPLEPIE_LOCATOR_NONE', NamespacedSimplePie::SIMPLEPIE_LOCATOR_NONE);
+define('SIMPLEPIE_LOCATOR_NONE', NamespacedSimplePie::LOCATOR_NONE);
 
 /**
  * Feed Link Element Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_AUTODISCOVERY instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LOCATOR_AUTODISCOVERY instead.
  */
-define('SIMPLEPIE_LOCATOR_AUTODISCOVERY', NamespacedSimplePie::SIMPLEPIE_LOCATOR_AUTODISCOVERY);
+define('SIMPLEPIE_LOCATOR_AUTODISCOVERY', NamespacedSimplePie::LOCATOR_AUTODISCOVERY);
 
 /**
  * Local Feed Extension Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_LOCAL_EXTENSION instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LOCATOR_LOCAL_EXTENSION instead.
  */
-define('SIMPLEPIE_LOCATOR_LOCAL_EXTENSION', NamespacedSimplePie::SIMPLEPIE_LOCATOR_LOCAL_EXTENSION);
+define('SIMPLEPIE_LOCATOR_LOCAL_EXTENSION', NamespacedSimplePie::LOCATOR_LOCAL_EXTENSION);
 
 /**
  * Local Feed Body Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_LOCAL_BODY instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LOCATOR_LOCAL_BODY instead.
  */
-define('SIMPLEPIE_LOCATOR_LOCAL_BODY', NamespacedSimplePie::SIMPLEPIE_LOCATOR_LOCAL_BODY);
+define('SIMPLEPIE_LOCATOR_LOCAL_BODY', NamespacedSimplePie::LOCATOR_LOCAL_BODY);
 
 /**
  * Remote Feed Extension Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_REMOTE_EXTENSION instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LOCATOR_REMOTE_EXTENSION instead.
  */
-define('SIMPLEPIE_LOCATOR_REMOTE_EXTENSION', NamespacedSimplePie::SIMPLEPIE_LOCATOR_REMOTE_EXTENSION);
+define('SIMPLEPIE_LOCATOR_REMOTE_EXTENSION', NamespacedSimplePie::LOCATOR_REMOTE_EXTENSION);
 
 /**
  * Remote Feed Body Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_REMOTE_BODY instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LOCATOR_REMOTE_BODY instead.
  */
-define('SIMPLEPIE_LOCATOR_REMOTE_BODY', NamespacedSimplePie::SIMPLEPIE_LOCATOR_REMOTE_BODY);
+define('SIMPLEPIE_LOCATOR_REMOTE_BODY', NamespacedSimplePie::LOCATOR_REMOTE_BODY);
 
 /**
  * All Feed Autodiscovery
  * @see SimplePie::set_autodiscovery_level()
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LOCATOR_ALL instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LOCATOR_ALL instead.
  */
-define('SIMPLEPIE_LOCATOR_ALL', NamespacedSimplePie::SIMPLEPIE_LOCATOR_ALL);
+define('SIMPLEPIE_LOCATOR_ALL', NamespacedSimplePie::LOCATOR_ALL);
 
 /**
  * No known feed type
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_NONE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_NONE instead.
  */
-define('SIMPLEPIE_TYPE_NONE', NamespacedSimplePie::SIMPLEPIE_TYPE_NONE);
+define('SIMPLEPIE_TYPE_NONE', NamespacedSimplePie::TYPE_NONE);
 
 /**
  * RSS 0.90
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_090 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_090 instead.
  */
-define('SIMPLEPIE_TYPE_RSS_090', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_090);
+define('SIMPLEPIE_TYPE_RSS_090', NamespacedSimplePie::TYPE_RSS_090);
 
 /**
  * RSS 0.91 (Netscape)
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_091_NETSCAPE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_091_NETSCAPE instead.
  */
-define('SIMPLEPIE_TYPE_RSS_091_NETSCAPE', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_091_NETSCAPE);
+define('SIMPLEPIE_TYPE_RSS_091_NETSCAPE', NamespacedSimplePie::TYPE_RSS_091_NETSCAPE);
 
 /**
  * RSS 0.91 (Userland)
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_091_USERLAND instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_091_USERLAND instead.
  */
-define('SIMPLEPIE_TYPE_RSS_091_USERLAND', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_091_USERLAND);
+define('SIMPLEPIE_TYPE_RSS_091_USERLAND', NamespacedSimplePie::TYPE_RSS_091_USERLAND);
 
 /**
  * RSS 0.91 (both Netscape and Userland)
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_091 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_091 instead.
  */
-define('SIMPLEPIE_TYPE_RSS_091', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_091);
+define('SIMPLEPIE_TYPE_RSS_091', NamespacedSimplePie::TYPE_RSS_091);
 
 /**
  * RSS 0.92
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_092 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_092 instead.
  */
-define('SIMPLEPIE_TYPE_RSS_092', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_092);
+define('SIMPLEPIE_TYPE_RSS_092', NamespacedSimplePie::TYPE_RSS_092);
 
 /**
  * RSS 0.93
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_093 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_093 instead.
  */
-define('SIMPLEPIE_TYPE_RSS_093', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_093);
+define('SIMPLEPIE_TYPE_RSS_093', NamespacedSimplePie::TYPE_RSS_093);
 
 /**
  * RSS 0.94
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_094 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_094 instead.
  */
-define('SIMPLEPIE_TYPE_RSS_094', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_094);
+define('SIMPLEPIE_TYPE_RSS_094', NamespacedSimplePie::TYPE_RSS_094);
 
 /**
  * RSS 1.0
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_10 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_10 instead.
  */
-define('SIMPLEPIE_TYPE_RSS_10', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_10);
+define('SIMPLEPIE_TYPE_RSS_10', NamespacedSimplePie::TYPE_RSS_10);
 
 /**
  * RSS 2.0
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_20 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_20 instead.
  */
-define('SIMPLEPIE_TYPE_RSS_20', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_20);
+define('SIMPLEPIE_TYPE_RSS_20', NamespacedSimplePie::TYPE_RSS_20);
 
 /**
  * RDF-based RSS
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_RDF instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_RDF instead.
  */
-define('SIMPLEPIE_TYPE_RSS_RDF', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_RDF);
+define('SIMPLEPIE_TYPE_RSS_RDF', NamespacedSimplePie::TYPE_RSS_RDF);
 
 /**
  * Non-RDF-based RSS (truly intended as syndication format)
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_SYNDICATION instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_SYNDICATION instead.
  */
-define('SIMPLEPIE_TYPE_RSS_SYNDICATION', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_SYNDICATION);
+define('SIMPLEPIE_TYPE_RSS_SYNDICATION', NamespacedSimplePie::TYPE_RSS_SYNDICATION);
 
 /**
  * All RSS
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_RSS_ALL instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_RSS_ALL instead.
  */
-define('SIMPLEPIE_TYPE_RSS_ALL', NamespacedSimplePie::SIMPLEPIE_TYPE_RSS_ALL);
+define('SIMPLEPIE_TYPE_RSS_ALL', NamespacedSimplePie::TYPE_RSS_ALL);
 
 /**
  * Atom 0.3
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_ATOM_03 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_ATOM_03 instead.
  */
-define('SIMPLEPIE_TYPE_ATOM_03', NamespacedSimplePie::SIMPLEPIE_TYPE_ATOM_03);
+define('SIMPLEPIE_TYPE_ATOM_03', NamespacedSimplePie::TYPE_ATOM_03);
 
 /**
  * Atom 1.0
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_ATOM_10 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_ATOM_10 instead.
  */
-define('SIMPLEPIE_TYPE_ATOM_10', NamespacedSimplePie::SIMPLEPIE_TYPE_ATOM_10);
+define('SIMPLEPIE_TYPE_ATOM_10', NamespacedSimplePie::TYPE_ATOM_10);
 
 /**
  * All Atom
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_ATOM_ALL instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_ATOM_ALL instead.
  */
-define('SIMPLEPIE_TYPE_ATOM_ALL', NamespacedSimplePie::SIMPLEPIE_TYPE_ATOM_ALL);
+define('SIMPLEPIE_TYPE_ATOM_ALL', NamespacedSimplePie::TYPE_ATOM_ALL);
 
 /**
  * All feed types
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_TYPE_ALL instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::TYPE_ALL instead.
  */
-define('SIMPLEPIE_TYPE_ALL', NamespacedSimplePie::SIMPLEPIE_TYPE_ALL);
+define('SIMPLEPIE_TYPE_ALL', NamespacedSimplePie::TYPE_ALL);
 
 /**
  * No construct
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_NONE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::CONSTRUCT_NONE instead.
  */
-define('SIMPLEPIE_CONSTRUCT_NONE', NamespacedSimplePie::SIMPLEPIE_CONSTRUCT_NONE);
+define('SIMPLEPIE_CONSTRUCT_NONE', NamespacedSimplePie::CONSTRUCT_NONE);
 
 /**
  * Text construct
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_TEXT instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::CONSTRUCT_TEXT instead.
  */
-define('SIMPLEPIE_CONSTRUCT_TEXT', NamespacedSimplePie::SIMPLEPIE_CONSTRUCT_TEXT);
+define('SIMPLEPIE_CONSTRUCT_TEXT', NamespacedSimplePie::CONSTRUCT_TEXT);
 
 /**
  * HTML construct
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_HTML instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::CONSTRUCT_HTML instead.
  */
-define('SIMPLEPIE_CONSTRUCT_HTML', NamespacedSimplePie::SIMPLEPIE_CONSTRUCT_HTML);
+define('SIMPLEPIE_CONSTRUCT_HTML', NamespacedSimplePie::CONSTRUCT_HTML);
 
 /**
  * XHTML construct
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_XHTML instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::CONSTRUCT_XHTML instead.
  */
-define('SIMPLEPIE_CONSTRUCT_XHTML', NamespacedSimplePie::SIMPLEPIE_CONSTRUCT_XHTML);
+define('SIMPLEPIE_CONSTRUCT_XHTML', NamespacedSimplePie::CONSTRUCT_XHTML);
 
 /**
  * base64-encoded construct
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_BASE64 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::CONSTRUCT_BASE64 instead.
  */
-define('SIMPLEPIE_CONSTRUCT_BASE64', NamespacedSimplePie::SIMPLEPIE_CONSTRUCT_BASE64);
+define('SIMPLEPIE_CONSTRUCT_BASE64', NamespacedSimplePie::CONSTRUCT_BASE64);
 
 /**
  * IRI construct
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_IRI instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::CONSTRUCT_IRI instead.
  */
-define('SIMPLEPIE_CONSTRUCT_IRI', NamespacedSimplePie::SIMPLEPIE_CONSTRUCT_IRI);
+define('SIMPLEPIE_CONSTRUCT_IRI', NamespacedSimplePie::CONSTRUCT_IRI);
 
 /**
  * A construct that might be HTML
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_MAYBE_HTML instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML instead.
  */
-define('SIMPLEPIE_CONSTRUCT_MAYBE_HTML', NamespacedSimplePie::SIMPLEPIE_CONSTRUCT_MAYBE_HTML);
+define('SIMPLEPIE_CONSTRUCT_MAYBE_HTML', NamespacedSimplePie::CONSTRUCT_MAYBE_HTML);
 
 /**
  * All constructs
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_CONSTRUCT_ALL instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::CONSTRUCT_ALL instead.
  */
-define('SIMPLEPIE_CONSTRUCT_ALL', NamespacedSimplePie::SIMPLEPIE_CONSTRUCT_ALL);
+define('SIMPLEPIE_CONSTRUCT_ALL', NamespacedSimplePie::CONSTRUCT_ALL);
 
 /**
  * Don't change case
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_SAME_CASE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SAME_CASE instead.
  */
-define('SIMPLEPIE_SAME_CASE', NamespacedSimplePie::SIMPLEPIE_SAME_CASE);
+define('SIMPLEPIE_SAME_CASE', NamespacedSimplePie::SAME_CASE);
 
 /**
  * Change to lowercase
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_LOWERCASE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::LOWERCASE instead.
  */
-define('SIMPLEPIE_LOWERCASE', NamespacedSimplePie::SIMPLEPIE_LOWERCASE);
+define('SIMPLEPIE_LOWERCASE', NamespacedSimplePie::LOWERCASE);
 
 /**
  * Change to uppercase
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_UPPERCASE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::UPPERCASE instead.
  */
-define('SIMPLEPIE_UPPERCASE', NamespacedSimplePie::SIMPLEPIE_UPPERCASE);
+define('SIMPLEPIE_UPPERCASE', NamespacedSimplePie::UPPERCASE);
 
 /**
  * PCRE for HTML attributes
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_PCRE_HTML_ATTRIBUTE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::PCRE_HTML_ATTRIBUTE instead.
  */
-define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', NamespacedSimplePie::SIMPLEPIE_PCRE_HTML_ATTRIBUTE);
+define('SIMPLEPIE_PCRE_HTML_ATTRIBUTE', NamespacedSimplePie::PCRE_HTML_ATTRIBUTE);
 
 /**
  * PCRE for XML attributes
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_PCRE_XML_ATTRIBUTE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE instead.
  */
-define('SIMPLEPIE_PCRE_XML_ATTRIBUTE', NamespacedSimplePie::SIMPLEPIE_PCRE_XML_ATTRIBUTE);
+define('SIMPLEPIE_PCRE_XML_ATTRIBUTE', NamespacedSimplePie::PCRE_XML_ATTRIBUTE);
 
 /**
  * XML Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_XML instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_XML instead.
  */
-define('SIMPLEPIE_NAMESPACE_XML', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_XML);
+define('SIMPLEPIE_NAMESPACE_XML', NamespacedSimplePie::NAMESPACE_XML);
 
 /**
  * Atom 1.0 Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_10 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_ATOM_10 instead.
  */
-define('SIMPLEPIE_NAMESPACE_ATOM_10', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_ATOM_10);
+define('SIMPLEPIE_NAMESPACE_ATOM_10', NamespacedSimplePie::NAMESPACE_ATOM_10);
 
 /**
  * Atom 0.3 Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ATOM_03 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_ATOM_03 instead.
  */
-define('SIMPLEPIE_NAMESPACE_ATOM_03', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_ATOM_03);
+define('SIMPLEPIE_NAMESPACE_ATOM_03', NamespacedSimplePie::NAMESPACE_ATOM_03);
 
 /**
  * RDF Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RDF instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_RDF instead.
  */
-define('SIMPLEPIE_NAMESPACE_RDF', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_RDF);
+define('SIMPLEPIE_NAMESPACE_RDF', NamespacedSimplePie::NAMESPACE_RDF);
 
 /**
  * RSS 0.90 Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_090 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_RSS_090 instead.
  */
-define('SIMPLEPIE_NAMESPACE_RSS_090', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_RSS_090);
+define('SIMPLEPIE_NAMESPACE_RSS_090', NamespacedSimplePie::NAMESPACE_RSS_090);
 
 /**
  * RSS 1.0 Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_10 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_RSS_10 instead.
  */
-define('SIMPLEPIE_NAMESPACE_RSS_10', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_RSS_10);
+define('SIMPLEPIE_NAMESPACE_RSS_10', NamespacedSimplePie::NAMESPACE_RSS_10);
 
 /**
  * RSS 1.0 Content Module Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_RSS_10_MODULES_CONTENT instead.
  */
-define('SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT);
+define('SIMPLEPIE_NAMESPACE_RSS_10_MODULES_CONTENT', NamespacedSimplePie::NAMESPACE_RSS_10_MODULES_CONTENT);
 
 /**
  * RSS 2.0 Namespace
  * (Stupid, I know, but I'm certain it will confuse people less with support.)
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_RSS_20 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_RSS_20 instead.
  */
-define('SIMPLEPIE_NAMESPACE_RSS_20', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_RSS_20);
+define('SIMPLEPIE_NAMESPACE_RSS_20', NamespacedSimplePie::NAMESPACE_RSS_20);
 
 /**
  * DC 1.0 Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_10 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_DC_10 instead.
  */
-define('SIMPLEPIE_NAMESPACE_DC_10', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_DC_10);
+define('SIMPLEPIE_NAMESPACE_DC_10', NamespacedSimplePie::NAMESPACE_DC_10);
 
 /**
  * DC 1.1 Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_DC_11 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_DC_11 instead.
  */
-define('SIMPLEPIE_NAMESPACE_DC_11', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_DC_11);
+define('SIMPLEPIE_NAMESPACE_DC_11', NamespacedSimplePie::NAMESPACE_DC_11);
 
 /**
  * W3C Basic Geo (WGS84 lat/long) Vocabulary Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO instead.
  */
-define('SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO);
+define('SIMPLEPIE_NAMESPACE_W3C_BASIC_GEO', NamespacedSimplePie::NAMESPACE_W3C_BASIC_GEO);
 
 /**
  * GeoRSS Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_GEORSS instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_GEORSS instead.
  */
-define('SIMPLEPIE_NAMESPACE_GEORSS', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_GEORSS);
+define('SIMPLEPIE_NAMESPACE_GEORSS', NamespacedSimplePie::NAMESPACE_GEORSS);
 
 /**
  * Media RSS Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_MEDIARSS instead.
  */
-define('SIMPLEPIE_NAMESPACE_MEDIARSS', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS);
+define('SIMPLEPIE_NAMESPACE_MEDIARSS', NamespacedSimplePie::NAMESPACE_MEDIARSS);
 
 /**
  * Wrong Media RSS Namespace. Caused by a long-standing typo in the spec.
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_MEDIARSS_WRONG instead.
  */
-define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG);
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG', NamespacedSimplePie::NAMESPACE_MEDIARSS_WRONG);
 
 /**
  * Wrong Media RSS Namespace #2. New namespace introduced in Media RSS 1.5.
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG2 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_MEDIARSS_WRONG2 instead.
  */
-define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG2', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG2);
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG2', NamespacedSimplePie::NAMESPACE_MEDIARSS_WRONG2);
 
 /**
  * Wrong Media RSS Namespace #3. A possible typo of the Media RSS 1.5 namespace.
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG3 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_MEDIARSS_WRONG3 instead.
  */
-define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG3', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG3);
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG3', NamespacedSimplePie::NAMESPACE_MEDIARSS_WRONG3);
 
 /**
  * Wrong Media RSS Namespace #4. New spec location after the RSS Advisory Board takes it over, but not a valid namespace.
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG4 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_MEDIARSS_WRONG4 instead.
  */
-define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG4', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG4);
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG4', NamespacedSimplePie::NAMESPACE_MEDIARSS_WRONG4);
 
 /**
  * Wrong Media RSS Namespace #5. A possible typo of the RSS Advisory Board URL.
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG5 instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_MEDIARSS_WRONG5 instead.
  */
-define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG5', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG5);
+define('SIMPLEPIE_NAMESPACE_MEDIARSS_WRONG5', NamespacedSimplePie::NAMESPACE_MEDIARSS_WRONG5);
 
 /**
  * iTunes RSS Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_ITUNES instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_ITUNES instead.
  */
-define('SIMPLEPIE_NAMESPACE_ITUNES', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_ITUNES);
+define('SIMPLEPIE_NAMESPACE_ITUNES', NamespacedSimplePie::NAMESPACE_ITUNES);
 
 /**
  * XHTML Namespace
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_NAMESPACE_XHTML instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::NAMESPACE_XHTML instead.
  */
-define('SIMPLEPIE_NAMESPACE_XHTML', NamespacedSimplePie::SIMPLEPIE_NAMESPACE_XHTML);
+define('SIMPLEPIE_NAMESPACE_XHTML', NamespacedSimplePie::NAMESPACE_XHTML);
 
 /**
  * IANA Link Relations Registry
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY instead.
  */
-define('SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY', NamespacedSimplePie::SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY);
+define('SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY', NamespacedSimplePie::IANA_LINK_RELATIONS_REGISTRY);
 
 /**
  * No file source
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_NONE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::FILE_SOURCE_NONE instead.
  */
-define('SIMPLEPIE_FILE_SOURCE_NONE', NamespacedSimplePie::SIMPLEPIE_FILE_SOURCE_NONE);
+define('SIMPLEPIE_FILE_SOURCE_NONE', NamespacedSimplePie::FILE_SOURCE_NONE);
 
 /**
  * Remote file source
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::FILE_SOURCE_REMOTE instead.
  */
-define('SIMPLEPIE_FILE_SOURCE_REMOTE', NamespacedSimplePie::SIMPLEPIE_FILE_SOURCE_REMOTE);
+define('SIMPLEPIE_FILE_SOURCE_REMOTE', NamespacedSimplePie::FILE_SOURCE_REMOTE);
 
 /**
  * Local file source
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_LOCAL instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::FILE_SOURCE_LOCAL instead.
  */
-define('SIMPLEPIE_FILE_SOURCE_LOCAL', NamespacedSimplePie::SIMPLEPIE_FILE_SOURCE_LOCAL);
+define('SIMPLEPIE_FILE_SOURCE_LOCAL', NamespacedSimplePie::FILE_SOURCE_LOCAL);
 
 /**
  * fsockopen() file source
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_FSOCKOPEN instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::FILE_SOURCE_FSOCKOPEN instead.
  */
-define('SIMPLEPIE_FILE_SOURCE_FSOCKOPEN', NamespacedSimplePie::SIMPLEPIE_FILE_SOURCE_FSOCKOPEN);
+define('SIMPLEPIE_FILE_SOURCE_FSOCKOPEN', NamespacedSimplePie::FILE_SOURCE_FSOCKOPEN);
 
 /**
  * cURL file source
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_CURL instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::FILE_SOURCE_CURL instead.
  */
-define('SIMPLEPIE_FILE_SOURCE_CURL', NamespacedSimplePie::SIMPLEPIE_FILE_SOURCE_CURL);
+define('SIMPLEPIE_FILE_SOURCE_CURL', NamespacedSimplePie::FILE_SOURCE_CURL);
 
 /**
  * file_get_contents() file source
- * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS instead.
+ * @deprecated since SimplePie 1.7, use \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS instead.
  */
-define('SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS', NamespacedSimplePie::SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS);
+define('SIMPLEPIE_FILE_SOURCE_FILE_GET_CONTENTS', NamespacedSimplePie::FILE_SOURCE_FILE_GET_CONTENTS);
