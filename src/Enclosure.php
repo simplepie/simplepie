@@ -56,163 +56,163 @@ namespace SimplePie;
 class Enclosure
 {
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_bitrate()
 	 */
 	var $bitrate;
 
 	/**
-	 * @var array
+	 * @var Caption[]|null
 	 * @see get_captions()
 	 */
 	var $captions;
 
 	/**
-	 * @var array
+	 * @var Category[]|null
 	 * @see get_categories()
 	 */
 	var $categories;
 
 	/**
-	 * @var int
+	 * @var int|null
 	 * @see get_channels()
 	 */
 	var $channels;
 
 	/**
-	 * @var \SimplePie\Copyright
+	 * @var Copyright|null
 	 * @see get_copyright()
 	 */
 	var $copyright;
 
 	/**
-	 * @var array
+	 * @var Credit[]|null
 	 * @see get_credits()
 	 */
 	var $credits;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_description()
 	 */
 	var $description;
 
 	/**
-	 * @var int
+	 * @var int|null
 	 * @see get_duration()
 	 */
 	var $duration;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_expression()
 	 */
 	var $expression;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_framerate()
 	 */
 	var $framerate;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_handler()
 	 */
 	var $handler;
 
 	/**
-	 * @var array
+	 * @var string[]|null
 	 * @see get_hashes()
 	 */
 	var $hashes;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_height()
 	 */
 	var $height;
 
 	/**
 	 * @deprecated
-	 * @var null
+	 * @var null|null
 	 */
 	var $javascript;
 
 	/**
-	 * @var array
+	 * @var string[]|null
 	 * @see get_keywords()
 	 */
 	var $keywords;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_language()
 	 */
 	var $lang;
 
 	/**
-	 * @var string
+	 * @var int|null
 	 * @see get_length()
 	 */
 	var $length;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_link()
 	 */
 	var $link;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_medium()
 	 */
 	var $medium;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_player()
 	 */
 	var $player;
 
 	/**
-	 * @var array
+	 * @var Rating[]|null
 	 * @see get_ratings()
 	 */
 	var $ratings;
 
 	/**
-	 * @var array
+	 * @var Restriction[]|null
 	 * @see get_restrictions()
 	 */
 	var $restrictions;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_sampling_rate()
 	 */
 	var $samplingrate;
 
 	/**
-	 * @var array
+	 * @var array|null
 	 * @see get_thumbnails()
 	 */
 	var $thumbnails;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_title()
 	 */
 	var $title;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_type()
 	 */
 	var $type;
 
 	/**
-	 * @var string
+	 * @var string|null
 	 * @see get_width()
 	 */
 	var $width;
@@ -241,7 +241,7 @@ class Enclosure
 		$this->height = $height;
 		$this->keywords = $keywords;
 		$this->lang = $lang;
-		$this->length = $length;
+		$this->length = $length !== null ? (int) $length : null;
 		$this->link = $link;
 		$this->medium = $medium;
 		$this->player = $player;
@@ -256,8 +256,8 @@ class Enclosure
 		if (class_exists('idna_convert'))
 		{
 			$idn = new \idna_convert();
-			$parsed = \SimplePie\Misc::parse_url($link);
-			$this->link = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
+			$parsed = Misc::parse_url($link);
+			$this->link = Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
 		}
 		$this->handler = $this->get_handler(); // Needs to load last
 	}
@@ -292,7 +292,7 @@ class Enclosure
 	 * Get a single caption
 	 *
 	 * @param int $key
-	 * @return \SimplePie\Caption|null
+	 * @return Caption|null
 	 */
 	public function get_caption($key = 0)
 	{
@@ -308,7 +308,7 @@ class Enclosure
 	/**
 	 * Get all captions
 	 *
-	 * @return array|null Array of {@see \SimplePie\Caption} objects
+	 * @return Caption[]|null Array of {@see \SimplePie\Caption} objects
 	 */
 	public function get_captions()
 	{
@@ -324,7 +324,7 @@ class Enclosure
 	 * Get a single category
 	 *
 	 * @param int $key
-	 * @return \SimplePie\Category|null
+	 * @return Category|null
 	 */
 	public function get_category($key = 0)
 	{
@@ -340,7 +340,7 @@ class Enclosure
 	/**
 	 * Get all categories
 	 *
-	 * @return array|null Array of {@see \SimplePie\Category} objects
+	 * @return Category[]|null Array of {@see \SimplePie\Category} objects
 	 */
 	public function get_categories()
 	{
@@ -370,7 +370,7 @@ class Enclosure
 	/**
 	 * Get the copyright information
 	 *
-	 * @return \SimplePie\Copyright|null
+	 * @return Copyright|null
 	 */
 	public function get_copyright()
 	{
@@ -386,7 +386,7 @@ class Enclosure
 	 * Get a single credit
 	 *
 	 * @param int $key
-	 * @return \SimplePie\Credit|null
+	 * @return Credit|null
 	 */
 	public function get_credit($key = 0)
 	{
@@ -402,7 +402,7 @@ class Enclosure
 	/**
 	 * Get all credits
 	 *
-	 * @return array|null Array of {@see \SimplePie\Credit} objects
+	 * @return Credit[]|null Array of {@see \SimplePie\Credit} objects
 	 */
 	public function get_credits()
 	{
@@ -441,7 +441,7 @@ class Enclosure
 		{
 			if ($convert)
 			{
-				$time = \SimplePie\Misc::time_hms($this->duration);
+				$time = Misc::time_hms($this->duration);
 				return $time;
 			}
 
@@ -475,7 +475,7 @@ class Enclosure
 	{
 		if ($this->link !== null)
 		{
-			$url = \SimplePie\Misc::parse_url($this->link);
+			$url = Misc::parse_url($this->link);
 			if ($url['path'] !== '')
 			{
 				return pathinfo($url['path'], PATHINFO_EXTENSION);
@@ -530,7 +530,7 @@ class Enclosure
 	/**
 	 * Get all credits
 	 *
-	 * @return array|null Array of strings, see {@see get_hash()}
+	 * @return string[]|null Array of strings, see {@see get_hash()}
 	 */
 	public function get_hashes()
 	{
@@ -593,7 +593,7 @@ class Enclosure
 	/**
 	 * Get all keywords
 	 *
-	 * @return array|null Array of strings
+	 * @return string[]|null Array of strings
 	 */
 	public function get_keywords()
 	{
@@ -608,7 +608,8 @@ class Enclosure
 	/**
 	 * Get length
 	 *
-	 * @return float Length in bytes
+	 *
+	 * @return int|null Length in bytes
 	 */
 	public function get_length()
 	{
@@ -671,7 +672,7 @@ class Enclosure
 	 * Get a single rating
 	 *
 	 * @param int $key
-	 * @return \SimplePie\Rating|null
+	 * @return Rating|null
 	 */
 	public function get_rating($key = 0)
 	{
@@ -687,7 +688,7 @@ class Enclosure
 	/**
 	 * Get all ratings
 	 *
-	 * @return array|null Array of {@see \SimplePie\Rating} objects
+	 * @return Rating[]|null Array of {@see \SimplePie\Rating} objects
 	 */
 	public function get_ratings()
 	{
@@ -703,7 +704,7 @@ class Enclosure
 	 * Get a single restriction
 	 *
 	 * @param int $key
-	 * @return \SimplePie\Restriction|null
+	 * @return Restriction|null
 	 */
 	public function get_restriction($key = 0)
 	{
@@ -719,7 +720,7 @@ class Enclosure
 	/**
 	 * Get all restrictions
 	 *
-	 * @return array|null Array of {@see \SimplePie\Restriction} objects
+	 * @return Restriction[]|null Array of {@see \SimplePie\Restriction} objects
 	 */
 	public function get_restrictions()
 	{
@@ -975,8 +976,7 @@ class Enclosure
 			}
 		}
 
-		$mime = explode('/', $type, 2);
-		$mime = $mime[0];
+		$mime = $type !== null ? explode('/', $type, 2)[0] : null;
 
 		// Process values for 'auto'
 		if ($width === 'auto')
@@ -1048,6 +1048,10 @@ class Enclosure
 		elseif ($mime === 'video')
 		{
 			$placeholder = $video;
+		}
+		else
+		{
+			$placeholder = '';
 		}
 
 		$embed = '';
@@ -1130,8 +1134,10 @@ class Enclosure
 	 * extension
 	 *
 	 * @see get_type()
+	 *
 	 * @param bool $find_handler Internal use only, use {@see get_handler()} instead
-	 * @return string MIME type
+	 *
+	 * @return string|null MIME type
 	 */
 	public function get_real_type($find_handler = false)
 	{
@@ -1142,13 +1148,10 @@ class Enclosure
 		$types_wmedia = array('application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx'); // Windows Media
 		$types_mp3 = array('audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg'); // MP3
 
-		if ($this->get_type() !== null)
+		$type = $this->get_type();
+		if ($type !== null)
 		{
-			$type = strtolower($this->type);
-		}
-		else
-		{
-			$type = null;
+			$type = strtolower($type);
 		}
 
 		// If we encounter an unsupported mime-type, check the file extension and guess intelligently.
