@@ -41,8 +41,6 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
-
 require_once dirname(__FILE__) . '/EncodingTest.php';
 require_once dirname(__FILE__) . '/IRITest.php';
 require_once dirname(__FILE__) . '/LocatorTest.php';

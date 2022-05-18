@@ -43,10 +43,15 @@
 
 namespace SimplePie;
 
-class_exists('SimplePie_Exception');
+use Exception as NativeException;
 
-if (\false) {
-	class Exception extends \SimplePie_Exception
-	{
-	}
+/**
+ * General SimplePie exception class
+ *
+ * @package SimplePie
+ */
+class Exception extends NativeException
+{
 }
+
+class_alias('SimplePie\Exception', 'SimplePie_Exception');

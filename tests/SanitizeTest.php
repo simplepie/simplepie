@@ -42,8 +42,6 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
-
 class SanitizeTest extends PHPUnit\Framework\TestCase
 {
 	public function testSanitize()

@@ -1,11 +1,13 @@
 <?php
 /**
+ * Encoding tests for SimplePie_Misc::change_encoding() and SimplePie_Misc::encoding()
+ *
  * SimplePie
  *
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2016, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -41,15 +43,29 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-use SimplePie\Source;
-
-class_exists('SimplePie\Source');
-
-// @trigger_error(sprintf('Using the "SimplePie_Source" class is deprecated since SimplePie 1.7, use "SimplePie\Source" instead.'), \E_USER_DEPRECATED);
-
-if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\Source" instead */
-	class SimplePie_Source extends Source
+class BCTest extends PHPUnit\Framework\TestCase
+{
+	/**
+	 * Test class SimplePie_Core exists
+	 */
+	public function test_class_SimplePie_Core_exists()
 	{
+		$this->assertTrue(class_exists('SimplePie_Core'));
+	}
+
+	/**
+	 * Test class SimplePie_Misc exists
+	 */
+	public function test_class_SimplePie_Misc_exists()
+	{
+		$this->assertTrue(class_exists('SimplePie_Misc'));
+	}
+
+	/**
+	 * Test class SimplePie_Decode_HTML_Entities exists
+	 */
+	public function test_class_SimplePie_Decode_HTML_Entities_exists()
+	{
+		$this->assertTrue(class_exists('SimplePie_Decode_HTML_Entities'));
 	}
 }

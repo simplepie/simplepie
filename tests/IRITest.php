@@ -40,8 +40,6 @@
  *
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
-
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class IRITest extends PHPUnit\Framework\TestCase

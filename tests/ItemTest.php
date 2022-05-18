@@ -43,14 +43,12 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-require_once dirname(__FILE__) . '/bootstrap.php';
-
 class ItemTest extends PHPUnit\Framework\TestCase
 {
 	/**
 	 * Run a test using a sprintf template and data
 	 *
-	 * @param string $template 
+	 * @param string $template
 	 */
 	protected function checkFromTemplate($template, $data)
 	{

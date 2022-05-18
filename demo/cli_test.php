@@ -3,7 +3,7 @@
 include_once('../autoloader.php');
 
 // Parse it
-$feed = new SimplePie();
+$feed = new \SimplePie\SimplePie();
 if (isset($argv[1]) && $argv[1] !== '')
 {
 	$feed->set_feed_url($argv[1]);

@@ -9,13 +9,13 @@ include_once('../autoloader.php');
 include_once('../idn/idna_convert.class.php');
 
 // Create a new instance of the SimplePie object
-$feed = new SimplePie();
+$feed = new \SimplePie\SimplePie();
 
 //$feed->force_fsockopen(true);
 
 if (isset($_GET['js']))
 {
-	SimplePie_Misc::output_javascript();
+	\SimplePie\Misc::output_javascript();
 	die();
 }
 
@@ -175,12 +175,12 @@ $feed->handle_content_type();
 
 					<!-- If the feed has a link back to the site that publishes it (which 99% of them do), link the feed's title to it. -->
 					<h3 class="header">
-					<?php 
+					<?php
 						$link = $feed->get_link();
 						$title = $feed->get_title();
-						if ($link) 
-						{ 
-							$title = "<a href='$link' title='$title'>$title</a>"; 
+						if ($link)
+						{
+							$title = "<a href='$link' title='$title'>$title</a>";
 						}
 						echo $title;
 					?>
@@ -246,7 +246,7 @@ $feed->handle_content_type();
 			<p class="footnote">Page processed in <?php $mtime = explode(' ', microtime()); echo round($mtime[0] + $mtime[1] - $starttime, 3); ?> seconds.</p>
 
 			<!-- Display the version of SimplePie being loaded. -->
-			<p class="footnote">Powered by <a href="<?php echo SIMPLEPIE_URL; ?>"><?php echo SIMPLEPIE_NAME . ' ' . SIMPLEPIE_VERSION . ', Build ' . SIMPLEPIE_BUILD; ?></a>.  Run the <a href="../compatibility_test/sp_compatibility_test.php">SimplePie Compatibility Test</a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, Ryan Parman and Sam Sneddon, and licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.</p>
+			<p class="footnote">Powered by <a href="<?php echo \SimplePie\SimplePie::URL; ?>"><?php echo \SimplePie\SimplePie::NAME . ' ' . \SimplePie\SimplePie::VERSION . ', Build ' . \SimplePie\Misc::get_build(); ?></a>.  Run the <a href="../compatibility_test/sp_compatibility_test.php">SimplePie Compatibility Test</a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, Ryan Parman and Sam Sneddon, and licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.</p>
 		</div>
 
 	</div>

@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Install PHP <= 7.1 with composer 2.2.x LTS
         if: ${{ matrix.php <= '7.1' }}
         uses: shivammathur/setup-php@v2
@@ -79,6 +79,9 @@ jobs:
 
       - name: Run build script
         run: php build/compile.php
+
+      - name: Rename src and library folders
+        run: mv src src.bak && mv library library.bak
 
       - name: Run unit tests using compiled file
         run: bin/phpunit --bootstrap=build/bootstrap.php
