@@ -86,12 +86,27 @@ class Parser
 	 */
 	public $body = '';
 
+	const STATE_HTTP_VERSION = 'http_version';
+	const STATE_STATUS = 'status';
+	const STATE_REASON = 'reason';
+	const STATE_NEW_LINE = 'new_line';
+	const STATE_BODY = 'body';
+	const STATE_NAME = 'name';
+	const STATE_VALUE = 'value';
+	const STATE_VALUE_CHAR = 'value_char';
+	const STATE_QUOTE = 'quote';
+	const STATE_QUOTE_ESCAPED = 'quote_escaped';
+	const STATE_QUOTE_CHAR = 'quote_char';
+	const STATE_CHUNKED = 'chunked';
+	const STATE_EMIT = 'emit';
+	const STATE_ERROR = false;
+
 	/**
 	 * Current state of the state machine
 	 *
-	 * @var string
+	 * @var self::STATE_*
 	 */
-	protected $state = 'http_version';
+	protected $state = self::STATE_HTTP_VERSION;
 
 	/**
 	 * Input data
@@ -146,13 +161,13 @@ class Parser
 	 */
 	public function parse()
 	{
-		while ($this->state && $this->state !== 'emit' && $this->has_data())
+		while ($this->state && $this->state !== self::STATE_EMIT && $this->has_data())
 		{
 			$state = $this->state;
 			$this->$state();
 		}
 		$this->data = '';
-		if ($this->state === 'emit' || $this->state === 'body')
+		if ($this->state === self::STATE_EMIT || $this->state === self::STATE_BODY)
 		{
 			return true;
 		}
@@ -203,16 +218,16 @@ class Parser
 			{
 				$this->http_version = (float) $this->http_version;
 				$this->position += strspn($this->data, "\x09\x20", $this->position);
-				$this->state = 'status';
+				$this->state = self::STATE_STATUS;
 			}
 			else
 			{
-				$this->state = false;
+				$this->state = self::STATE_ERROR;
 			}
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -225,11 +240,11 @@ class Parser
 		{
 			$this->status_code = (int) substr($this->data, $this->position, $len);
 			$this->position += $len;
-			$this->state = 'reason';
+			$this->state = self::STATE_REASON;
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -241,7 +256,7 @@ class Parser
 		$len = strcspn($this->data, "\x0A", $this->position);
 		$this->reason = trim(substr($this->data, $this->position, $len), "\x09\x0D\x20");
 		$this->position += $len + 1;
-		$this->state = 'new_line';
+		$this->state = self::STATE_NEW_LINE;
 	}
 
 	/**
@@ -268,16 +283,16 @@ class Parser
 		if (substr($this->data[$this->position], 0, 2) === "\x0D\x0A")
 		{
 			$this->position += 2;
-			$this->state = 'body';
+			$this->state = self::STATE_BODY;
 		}
 		elseif ($this->data[$this->position] === "\x0A")
 		{
 			$this->position++;
-			$this->state = 'body';
+			$this->state = self::STATE_BODY;
 		}
 		else
 		{
-			$this->state = 'name';
+			$this->state = self::STATE_NAME;
 		}
 	}
 
@@ -292,18 +307,18 @@ class Parser
 			if ($this->data[$this->position + $len] === "\x0A")
 			{
 				$this->position += $len;
-				$this->state = 'new_line';
+				$this->state = self::STATE_NEW_LINE;
 			}
 			else
 			{
 				$this->name = substr($this->data, $this->position, $len);
 				$this->position += $len + 1;
-				$this->state = 'value';
+				$this->state = self::STATE_VALUE;
 			}
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -347,20 +362,20 @@ class Parser
 					{
 						$this->value .= '"';
 						$this->position++;
-						$this->state = 'value_char';
+						$this->state = self::STATE_VALUE_CHAR;
 						break;
 					}
 					$this->position++;
-					$this->state = 'quote';
+					$this->state = self::STATE_QUOTE;
 					break;
 
 				case "\x0A":
 					$this->position++;
-					$this->state = 'new_line';
+					$this->state = self::STATE_NEW_LINE;
 					break;
 
 				default:
-					$this->state = 'value_char';
+					$this->state = self::STATE_VALUE_CHAR;
 					break;
 			}
 		}
@@ -374,7 +389,7 @@ class Parser
 		$len = strcspn($this->data, "\x09\x20\x0A\"", $this->position);
 		$this->value .= substr($this->data, $this->position, $len);
 		$this->position += $len;
-		$this->state = 'value';
+		$this->state = self::STATE_VALUE;
 	}
 
 	/**
@@ -392,21 +407,21 @@ class Parser
 			{
 				case '"':
 					$this->position++;
-					$this->state = 'value';
+					$this->state = self::STATE_VALUE;
 					break;
 
 				case "\x0A":
 					$this->position++;
-					$this->state = 'new_line';
+					$this->state = self::STATE_NEW_LINE;
 					break;
 
 				case '\\':
 					$this->position++;
-					$this->state = 'quote_escaped';
+					$this->state = self::STATE_QUOTE_ESCAPED;
 					break;
 
 				default:
-					$this->state = 'quote_char';
+					$this->state = self::STATE_QUOTE_CHAR;
 					break;
 			}
 		}
@@ -420,7 +435,7 @@ class Parser
 		$len = strcspn($this->data, "\x09\x20\x0A\"\\", $this->position);
 		$this->value .= substr($this->data, $this->position, $len);
 		$this->position += $len;
-		$this->state = 'value';
+		$this->state = self::STATE_VALUE;
 	}
 
 	/**
@@ -430,7 +445,7 @@ class Parser
 	{
 		$this->value .= $this->data[$this->position];
 		$this->position++;
-		$this->state = 'quote';
+		$this->state = self::STATE_QUOTE;
 	}
 
 	/**
@@ -442,11 +457,11 @@ class Parser
 		if (!empty($this->headers['transfer-encoding']))
 		{
 			unset($this->headers['transfer-encoding']);
-			$this->state = 'chunked';
+			$this->state = self::STATE_CHUNKED;
 		}
 		else
 		{
-			$this->state = 'emit';
+			$this->state = self::STATE_EMIT;
 		}
 	}
 
@@ -457,7 +472,7 @@ class Parser
 	{
 		if (!preg_match('/^([0-9a-f]+)[^\r\n]*\r\n/i', trim($this->body)))
 		{
-			$this->state = 'emit';
+			$this->state = self::STATE_EMIT;
 			return;
 		}
 
@@ -470,7 +485,7 @@ class Parser
 			if (!$is_chunked)
 			{
 				// Looks like it's not chunked after all
-				$this->state = 'emit';
+				$this->state = self::STATE_EMIT;
 				return;
 			}
 
@@ -478,7 +493,7 @@ class Parser
 			if ($length === 0)
 			{
 				// Ignore trailer headers
-				$this->state = 'emit';
+				$this->state = self::STATE_EMIT;
 				$this->body = $decoded;
 				return;
 			}
@@ -489,7 +504,7 @@ class Parser
 
 			if (trim($encoded) === '0' || empty($encoded))
 			{
-				$this->state = 'emit';
+				$this->state = self::STATE_EMIT;
 				$this->body = $decoded;
 				return;
 			}
