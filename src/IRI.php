@@ -59,49 +59,49 @@ class IRI
 	/**
 	 * Scheme
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $scheme = null;
 
 	/**
 	 * User Information
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $iuserinfo = null;
 
 	/**
 	 * ihost
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $ihost = null;
 
 	/**
 	 * Port
 	 *
-	 * @var string
+	 * @var int|null
 	 */
 	protected $port = null;
 
 	/**
 	 * ipath
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $ipath = '';
 
 	/**
 	 * iquery
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $iquery = null;
 
 	/**
 	 * ifragment
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $ifragment = null;
 
@@ -138,7 +138,7 @@ class IRI
 	 */
 	public function __toString()
 	{
-		return $this->get_iri();
+		return $this->get_iri() ?: '';
 	}
 
 	/**
@@ -358,7 +358,8 @@ class IRI
 	 * Parse an IRI into scheme/authority/path/query/fragment segments
 	 *
 	 * @param string $iri
-	 * @return array
+	 *
+	 * @return array{scheme: ?string, authority: ?string, path: ?string, query: ?string, fragment: ?string}|false
 	 */
 	protected function parse_iri($iri)
 	{
@@ -425,12 +426,12 @@ class IRI
 			elseif (strpos($input, '/../') === 0)
 			{
 				$input = substr($input, 3);
-				$output = substr_replace($output, '', strrpos($output, '/'));
+				$output = substr_replace($output, '', strrpos($output, '/') ?: 0);
 			}
 			elseif ($input === '/..')
 			{
 				$input = '/';
-				$output = substr_replace($output, '', strrpos($output, '/'));
+				$output = substr_replace($output, '', strrpos($output, '/') ?: 0);
 			}
 			// D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
 			elseif ($input === '.' || $input === '..')
@@ -729,6 +730,9 @@ class IRI
 		return $string;
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function scheme_normalization()
 	{
 		if (isset($this->normalization[$this->scheme]['iuserinfo']) && $this->iuserinfo === $this->normalization[$this->scheme]['iuserinfo'])
@@ -788,6 +792,8 @@ class IRI
 	 * are any invalid characters).
 	 *
 	 * @param string $iri
+	 * @param bool $clear_cache
+	 *
 	 * @return bool
 	 */
 	public function set_iri($iri, $clear_cache = false)
@@ -873,6 +879,8 @@ class IRI
 	 * any invalid characters).
 	 *
 	 * @param string $authority
+	 * @param bool $clear_cache
+	 *
 	 * @return bool
 	 */
 	public function set_authority($authority, $clear_cache = false)
@@ -913,11 +921,13 @@ class IRI
 		{
 			$iuserinfo = null;
 		}
-		if (($port_start = strpos($remaining, ':', strpos($remaining, ']'))) !== false)
+		if (($port_start = strpos($remaining, ':', strpos($remaining, ']') ?: 0)) !== false)
 		{
 			if (($port = substr($remaining, $port_start + 1)) === false)
 			{
 				$port = null;
+			} else {
+				$port = (int) $port;
 			}
 			$remaining = substr($remaining, 0, $port_start);
 		}
@@ -975,9 +985,9 @@ class IRI
 		}
 		elseif (substr($ihost, 0, 1) === '[' && substr($ihost, -1) === ']')
 		{
-			if (\SimplePie\Net\IPv6::check_ipv6(substr($ihost, 1, -1)))
+			if (Net\IPv6::check_ipv6(substr($ihost, 1, -1)))
 			{
-				$this->ihost = '[' . \SimplePie\Net\IPv6::compress(substr($ihost, 1, -1)) . ']';
+				$this->ihost = '[' . Net\IPv6::compress(substr($ihost, 1, -1)) . ']';
 			}
 			else
 			{
@@ -1044,7 +1054,9 @@ class IRI
 	 * Set the ipath.
 	 *
 	 * @param string $ipath
-	 * @return bool
+	 * @param bool $clear_cache
+	 *
+	 * @return true|null
 	 */
 	public function set_path($ipath, $clear_cache = false)
 	{
@@ -1122,6 +1134,8 @@ class IRI
 	 * Convert an IRI to a URI (or parts thereof)
 	 *
 	 * @return string
+	 *
+	 * @param string $string
 	 */
 	public function to_uri($string)
 	{
@@ -1146,7 +1160,8 @@ class IRI
 	/**
 	 * Get the complete IRI
 	 *
-	 * @return string
+	 *
+	 * @return string|false
 	 */
 	public function get_iri()
 	{
@@ -1197,7 +1212,8 @@ class IRI
 	/**
 	 * Get the complete iauthority
 	 *
-	 * @return string
+	 *
+	 * @return string|null
 	 */
 	protected function get_iauthority()
 	{
@@ -1212,7 +1228,7 @@ class IRI
 			{
 				$iauthority .= $this->ihost;
 			}
-            if ($this->port !== null && $this->port !== 0)
+			if ($this->port !== null && $this->port !== 0)
 			{
 				$iauthority .= ':' . $this->port;
 			}
@@ -1225,7 +1241,8 @@ class IRI
 	/**
 	 * Get the complete authority
 	 *
-	 * @return string
+	 *
+	 * @return string|null
 	 */
 	protected function get_authority()
 	{
