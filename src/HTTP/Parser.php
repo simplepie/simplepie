@@ -61,9 +61,9 @@ class Parser
 	/**
 	 * Status code
 	 *
-	 * @var int
+	 * @var int|null
 	 */
-	public $status_code = 0;
+	public $status_code = null;
 
 	/**
 	 * Reason phrase
@@ -142,6 +142,7 @@ class Parser
 	/**
 	 * Parse the input data
 	 *
+	 * @psalm-assert-if-true int $this->status_code
 	 * @return bool true on success, false on failure
 	 */
 	public function parse()
@@ -158,7 +159,7 @@ class Parser
 		}
 
 		$this->http_version = '';
-		$this->status_code = 0;
+		$this->status_code = null;
 		$this->reason = '';
 		$this->headers = array();
 		$this->body = '';
@@ -221,16 +222,21 @@ class Parser
 	 */
 	protected function status()
 	{
-		if ($len = strspn($this->data, '0123456789', $this->position))
-		{
-			$this->status_code = (int) substr($this->data, $this->position, $len);
-			$this->position += $len;
-			$this->state = 'reason';
-		}
-		else
+		if (($len = strspn($this->data, '0123456789', $this->position)) === 0)
 		{
 			$this->state = false;
+			return;
 		}
+
+		$this->status_code = (int) substr($this->data, $this->position, $len);
+
+		if ($this->status_code === 0) {
+			$this->state = false;
+			return;
+		}
+
+		$this->position += $len;
+		$this->state = 'reason';
 	}
 
 	/**

@@ -10,7 +10,7 @@ function normalize_character_set($charset)
 function build_character_set_list()
 {
 	$file = new SimplePie_File('http://www.iana.org/assignments/character-sets');
-	if (!$file->success && !($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
+	if (!$file->success && $file->method & SIMPLEPIE_FILE_SOURCE_REMOTE !== 0 && $file->status_code !== 200 && !($file->status_code > 206 && $file->status_code < 300))
 	{
 		return false;
 	}

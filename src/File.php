@@ -61,7 +61,7 @@ class File
 	var $success = true;
 	var $headers = array();
 	var $body;
-	var $status_code = 0;
+	var $status_code = null;
 	var $redirects = 0;
 	var $error;
 	var $method = \SimplePie\SimplePie::FILE_SOURCE_NONE;
@@ -121,7 +121,7 @@ class File
 					curl_setopt($fp, CURLOPT_ENCODING, 'none');
 					$this->headers = curl_exec($fp);
 				}
-				$this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
+				$this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE) ?: null;
 				if (curl_errno($fp))
 				{
 					$this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);

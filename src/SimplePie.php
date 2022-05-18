@@ -412,11 +412,11 @@ class SimplePie
 	public $error;
 
 	/**
-	 * @var int HTTP status code
+	 * @var int|null HTTP status code
 	 * @see SimplePie::status_code()
 	 * @access private
 	 */
-	public $status_code = 0;
+	public $status_code = null;
 
 	/**
 	 * @var object Instance of \SimplePie\Sanitize (or other class)
@@ -1698,7 +1698,7 @@ class SimplePie
 		$this->status_code = $file->status_code;
 
 		// If the file connection has an error, set SimplePie::error to that and quit
-		if (!$file->success && !($file->method & self::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
+		if (!$file->success && $file->method & self::FILE_SOURCE_REMOTE !== 0 && $file->status_code !== 200 && !($file->status_code > 206 && $file->status_code < 300))
 		{
 			$this->error = $file->error;
 			return !empty($this->data);
@@ -1711,7 +1711,7 @@ class SimplePie
 
 			if (!$locate->is_feed($file))
 			{
-				$copyStatusCode = $file->status_code;
+				$copyStatusCode = $file->status_code ?: '(not available)';
 				$copyContentType = $file->headers['content-type'];
 				try
 				{
@@ -1806,7 +1806,7 @@ class SimplePie
 	/**
 	 * Get the last HTTP status code
 	 *
-	 * @return int Status code
+	 * @return int|null Status code
 	 */
 	public function status_code()
 	{
