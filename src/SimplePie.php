@@ -59,7 +59,7 @@ class SimplePie
 	/**
 	 * SimplePie Version
 	 */
-	const VERSION = '1.6.0';
+	const VERSION = '1.7.0';
 
 	/**
 	 * SimplePie Website URL

@@ -5,12 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/simplepie/simplepie/compare/1.6.0...master)
+## [Unreleased](https://github.com/simplepie/simplepie/compare/1.7.0...master)
+
+## [1.7.0](https://github.com/simplepie/simplepie/compare/1.6.0...1.7.0) - 2022-05-??
 
 ### Added
 
 - New class `SimplePie\SimplePie` as a replacement for class `SimplePie`
 - New method `SimplePie\Misc::get_default_useragent` as a replacement for constant `SIMPLEPIE_USERAGENT`
+
+### Fixed
+
+- Fix status_code type by @Alkarex in [#728](https://github.com/simplepie/simplepie/pull/728)
+- Fix parsing of HTTP Links by @Alkarex in [#729](https://github.com/simplepie/simplepie/pull/729)
 
 ### Deprecated
 
