@@ -187,7 +187,7 @@ class Parser
 	 */
 	protected function has_data()
 	{
-		return (bool) ($this->position < $this->data_length);
+		return $this->position < $this->data_length;
 	}
 
 	/**
@@ -197,11 +197,11 @@ class Parser
 	 */
 	protected function is_linear_whitespace()
 	{
-		return (bool) ($this->data[$this->position] === "\x09"
+		return $this->data[$this->position] === "\x09"
 			|| $this->data[$this->position] === "\x20"
 			|| ($this->data[$this->position] === "\x0A"
 				&& isset($this->data[$this->position + 1])
-				&& ($this->data[$this->position + 1] === "\x09" || $this->data[$this->position + 1] === "\x20")));
+				&& ($this->data[$this->position + 1] === "\x09" || $this->data[$this->position + 1] === "\x20"));
 	}
 
 	/**

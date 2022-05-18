@@ -440,7 +440,7 @@ class SimplePie
 	public $feed_url;
 
 	/**
-	 * @var string Original feed URL, or new feed URL iff HTTP 301 Moved Permanently
+	 * @var string|null Original feed URL, or new feed URL iff HTTP 301 Moved Permanently
 	 * @see SimplePie::subscribe_url()
 	 * @access private
 	 */
@@ -597,7 +597,7 @@ class SimplePie
 	public $multifeed_objects = array();
 
 	/**
-	 * @var array Stores the get_object_vars() array for use with multifeeds.
+	 * @var array|null Stores the get_object_vars() array for use with multifeeds.
 	 * @see SimplePie::set_feed_url()
 	 * @access private
 	 */
@@ -2226,7 +2226,7 @@ class SimplePie
 	 * @access private
 	 * @see \SimplePie\Sanitize::sanitize()
 	 * @param string $data Data to sanitize
-	 * @param int $type One of the \SimplePie\SimplePie::CONSTRUCT_* constants
+	 * @param SimplePie::CONSTRUCT_* $type One of the SimplePie::CONSTRUCT_* constants
 	 * @param string $base Base URL to resolve URLs against
 	 * @return string Sanitized data
 	 */
@@ -3144,7 +3144,7 @@ class SimplePie
 			if (!isset($this->data['ordered_items']))
 			{
 				$this->data['ordered_items'] = $this->data['items'];
-				usort($this->data['ordered_items'], array(get_class($this), 'sort_items'));
+				usort($this->data['ordered_items'], array(self::class, 'sort_items'));
 		 	}
 			$items = $this->data['ordered_items'];
 		}
@@ -3213,7 +3213,7 @@ class SimplePie
 			return false;
 		}
 
-		$class = get_class($this);
+		$class = self::class;
 		$trace = debug_backtrace();
 		$file = $trace[0]['file'];
 		$line = $trace[0]['line'];
@@ -3226,7 +3226,7 @@ class SimplePie
 	 * @access private
 	 * @param SimplePie $a
 	 * @param SimplePie $b
-	 * @return boolean
+	 * @return -1|0|1
 	 */
 	public static function sort_items($a, $b)
 	{
@@ -3275,7 +3275,7 @@ class SimplePie
 				}
 			}
 
-			usort($items, array(get_class($urls[0]), 'sort_items'));
+			usort($items, [self::class, 'sort_items']);
 
 			if ($end === 0)
 			{

@@ -58,7 +58,7 @@ class Author
 	/**
 	 * Author's name
 	 *
-	 * @var string
+	 * @var string|null
 	 * @see get_name()
 	 */
 	var $name;
@@ -66,7 +66,7 @@ class Author
 	/**
 	 * Author's link
 	 *
-	 * @var string
+	 * @var string|null
 	 * @see get_link()
 	 */
 	var $link;
@@ -74,7 +74,7 @@ class Author
 	/**
 	 * Author's email address
 	 *
-	 * @var string
+	 * @var string|null
 	 * @see get_email()
 	 */
 	var $email;

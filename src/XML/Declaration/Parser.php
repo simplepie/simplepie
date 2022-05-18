@@ -166,7 +166,7 @@ class Parser
 	 */
 	public function has_data()
 	{
-		return (bool) ($this->position < $this->data_length);
+		return $this->position < $this->data_length;
 	}
 
 	/**
