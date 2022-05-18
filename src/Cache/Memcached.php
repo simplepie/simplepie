@@ -44,6 +44,7 @@
 namespace SimplePie\Cache;
 
 use Memcached as NativeMemcached;
+use SimplePie\SimplePie;
 
 /**
  * Caches data to memcached
@@ -108,7 +109,7 @@ class Memcached implements Base
      * @return bool Successfulness
      */
     public function save($data) {
-        if ($data instanceof \SimplePie\SimplePie) {
+        if ($data instanceof SimplePie) {
             $data = $data->data;
         }
 
@@ -117,7 +118,7 @@ class Memcached implements Base
 
     /**
      * Retrieve the data saved to the cache
-     * @return array Data for SimplePie::$data
+     * @return array|false Data for SimplePie::$data
      */
     public function load() {
         $data = $this->cache->get($this->name);

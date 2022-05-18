@@ -43,6 +43,8 @@
 
 namespace SimplePie\Cache;
 
+use SimplePie\SimplePie;
+
 /**
  * Caches data to the filesystem
  *
@@ -105,7 +107,7 @@ class File implements Base
 	{
 		if (file_exists($this->name) && is_writable($this->name) || file_exists($this->location) && is_writable($this->location))
 		{
-			if ($data instanceof \SimplePie\SimplePie)
+			if ($data instanceof SimplePie)
 			{
 				$data = $data->data;
 			}
@@ -119,7 +121,7 @@ class File implements Base
 	/**
 	 * Retrieve the data saved to the cache
 	 *
-	 * @return array Data for SimplePie::$data
+	 * @return array|false Data for SimplePie::$data
 	 */
 	public function load()
 	{

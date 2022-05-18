@@ -63,10 +63,10 @@ class Cache
 	 * @var array
 	 */
 	protected static $handlers = array(
-		'mysql'     => 'SimplePie\Cache\MySQL',
-		'memcache'  => 'SimplePie\Cache\Memcache',
-		'memcached' => 'SimplePie\Cache\Memcached',
-		'redis'     => 'SimplePie\Cache\Redis'
+		'mysql'     => Cache\MySQL::class,
+		'memcache'  => Cache\Memcache::class,
+		'memcached' => Cache\Memcached::class,
+		'redis'     => Cache\Redis::class,
 	);
 
 	/**
@@ -75,12 +75,12 @@ class Cache
 	private function __construct() { }
 
 	/**
-	 * Create a new SimplePie\Cache object
+	 * Create a new Cache object
 	 *
 	 * @param string $location URL location (scheme is used to determine handler)
 	 * @param string $filename Unique identifier for cache object
 	 * @param string $extension 'spi' or 'spc'
-	 * @return \SimplePie\Cache\Base Type of object depends on scheme of `$location`
+	 * @return Cache\Base Type of object depends on scheme of `$location`
 	 */
 	public static function get_handler($location, $filename, $extension)
 	{
@@ -92,11 +92,11 @@ class Cache
 			return new $class($location, $filename, $extension);
 		}
 
-		return new \SimplePie\Cache\File($location, $filename, $extension);
+		return new Cache\File($location, $filename, $extension);
 	}
 
 	/**
-	 * Create a new SimplePie\Cache object
+	 * Create a new Cache object
 	 *
 	 * @deprecated Use {@see get_handler} instead
 	 */
@@ -110,7 +110,7 @@ class Cache
 	 * Register a handler
 	 *
 	 * @param string $type DSN type to register for
-	 * @param string $class Name of handler class. Must implement \SimplePie\Cache\Base
+	 * @param class-string<Cache\Base> $class Name of handler class. Must implement Cache\Base
 	 */
 	public static function register($type, $class)
 	{

@@ -43,6 +43,8 @@
 
 namespace SimplePie\Cache;
 
+use SimplePie\SimplePie;
+
 /**
  * Caches data to a MySQL database
  *
@@ -60,7 +62,7 @@ class MySQL extends DB
 	/**
 	 * PDO instance
 	 *
-	 * @var PDO
+	 * @var \PDO|null
 	 */
 	protected $mysql;
 
@@ -175,7 +177,7 @@ class MySQL extends DB
 			return false;
 		}
 
-		if ($data instanceof \SimplePie\SimplePie)
+		if ($data instanceof SimplePie)
 		{
 			$data = clone $data;
 
@@ -224,6 +226,7 @@ class MySQL extends DB
 				$ids = array_keys($prepared[1]);
 				if (!empty($ids))
 				{
+					$database_ids = [];
 					foreach ($ids as $id)
 					{
 						$database_ids[] = $this->mysql->quote($id);
@@ -304,7 +307,7 @@ class MySQL extends DB
 	/**
 	 * Retrieve the data saved to the cache
 	 *
-	 * @return array Data for SimplePie::$data
+	 * @return array|false Data for SimplePie::$data
 	 */
 	public function load()
 	{
@@ -330,21 +333,21 @@ class MySQL extends DB
 
 			if ($items !== 0)
 			{
-				if (isset($data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['feed'][0]))
+				if (isset($data['child'][SimplePie::NAMESPACE_ATOM_10]['feed'][0]))
 				{
-					$feed =& $data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['feed'][0];
+					$feed =& $data['child'][SimplePie::NAMESPACE_ATOM_10]['feed'][0];
 				}
-				elseif (isset($data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['feed'][0]))
+				elseif (isset($data['child'][SimplePie::NAMESPACE_ATOM_03]['feed'][0]))
 				{
-					$feed =& $data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['feed'][0];
+					$feed =& $data['child'][SimplePie::NAMESPACE_ATOM_03]['feed'][0];
 				}
-				elseif (isset($data['child'][\SimplePie\SimplePie::NAMESPACE_RDF]['RDF'][0]))
+				elseif (isset($data['child'][SimplePie::NAMESPACE_RDF]['RDF'][0]))
 				{
-					$feed =& $data['child'][\SimplePie\SimplePie::NAMESPACE_RDF]['RDF'][0];
+					$feed =& $data['child'][SimplePie::NAMESPACE_RDF]['RDF'][0];
 				}
-				elseif (isset($data['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['rss'][0]))
+				elseif (isset($data['child'][SimplePie::NAMESPACE_RSS_20]['rss'][0]))
 				{
-					$feed =& $data['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['rss'][0];
+					$feed =& $data['child'][SimplePie::NAMESPACE_RSS_20]['rss'][0];
 				}
 				else
 				{
@@ -365,7 +368,8 @@ class MySQL extends DB
 					{
 						while ($row = $query->fetchColumn())
 						{
-							$feed['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['entry'][] = unserialize($row);
+							assert(is_string($row));
+							$feed['child'][SimplePie::NAMESPACE_ATOM_10]['entry'][] = unserialize($row);
 						}
 					}
 					else
@@ -382,7 +386,7 @@ class MySQL extends DB
 	/**
 	 * Retrieve the last modified time for the cache
 	 *
-	 * @return int Timestamp
+	 * @return int|false Timestamp
 	 */
 	public function mtime()
 	{
@@ -395,6 +399,7 @@ class MySQL extends DB
 		$query->bindValue(':id', $this->id);
 		if ($query->execute() && ($time = $query->fetchColumn()))
 		{
+			assert(is_int($time));
 			return $time;
 		}
 

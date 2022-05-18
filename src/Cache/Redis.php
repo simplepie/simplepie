@@ -44,6 +44,7 @@
 namespace SimplePie\Cache;
 
 use Redis as NativeRedis;
+use SimplePie\SimplePie;
 
 /**
  * Caches data to redis
@@ -133,7 +134,7 @@ class Redis implements Base {
      * @return bool Successfulness
      */
     public function save($data) {
-        if ($data instanceof \SimplePie\SimplePie) {
+        if ($data instanceof SimplePie) {
             $data = $data->data;
         }
         $response = $this->cache->set($this->name, serialize($data));
@@ -147,7 +148,7 @@ class Redis implements Base {
     /**
      * Retrieve the data saved to the cache
      *
-     * @return array Data for SimplePie::$data
+     * @return array|false Data for SimplePie::$data
      */
     public function load() {
         $data = $this->cache->get($this->name);
@@ -161,7 +162,7 @@ class Redis implements Base {
     /**
      * Retrieve the last modified time for the cache
      *
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function mtime() {
 

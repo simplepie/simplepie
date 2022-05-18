@@ -43,6 +43,8 @@
 
 namespace SimplePie\Cache;
 
+use SimplePie\SimplePie;
+
 /**
  * Base class for database-based caches
  *
@@ -80,21 +82,21 @@ abstract class DB implements Base
 				}
 			}
 
-			if (isset($data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['feed'][0]))
+			if (isset($data->data['child'][SimplePie::NAMESPACE_ATOM_10]['feed'][0]))
 			{
-				$channel =& $data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['feed'][0];
+				$channel =& $data->data['child'][SimplePie::NAMESPACE_ATOM_10]['feed'][0];
 			}
-			elseif (isset($data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['feed'][0]))
+			elseif (isset($data->data['child'][SimplePie::NAMESPACE_ATOM_03]['feed'][0]))
 			{
-				$channel =& $data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['feed'][0];
+				$channel =& $data->data['child'][SimplePie::NAMESPACE_ATOM_03]['feed'][0];
 			}
-			elseif (isset($data->data['child'][\SimplePie\SimplePie::NAMESPACE_RDF]['RDF'][0]))
+			elseif (isset($data->data['child'][SimplePie::NAMESPACE_RDF]['RDF'][0]))
 			{
-				$channel =& $data->data['child'][\SimplePie\SimplePie::NAMESPACE_RDF]['RDF'][0];
+				$channel =& $data->data['child'][SimplePie::NAMESPACE_RDF]['RDF'][0];
 			}
-			elseif (isset($data->data['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['rss'][0]['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['channel'][0]))
+			elseif (isset($data->data['child'][SimplePie::NAMESPACE_RSS_20]['rss'][0]['child'][SimplePie::NAMESPACE_RSS_20]['channel'][0]))
 			{
-				$channel =& $data->data['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['rss'][0]['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['channel'][0];
+				$channel =& $data->data['child'][SimplePie::NAMESPACE_RSS_20]['rss'][0]['child'][SimplePie::NAMESPACE_RSS_20]['channel'][0];
 			}
 			else
 			{
@@ -103,25 +105,25 @@ abstract class DB implements Base
 
 			if ($channel !== null)
 			{
-				if (isset($channel['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['entry']))
+				if (isset($channel['child'][SimplePie::NAMESPACE_ATOM_10]['entry']))
 				{
-					unset($channel['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['entry']);
+					unset($channel['child'][SimplePie::NAMESPACE_ATOM_10]['entry']);
 				}
-				if (isset($channel['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['entry']))
+				if (isset($channel['child'][SimplePie::NAMESPACE_ATOM_03]['entry']))
 				{
-					unset($channel['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['entry']);
+					unset($channel['child'][SimplePie::NAMESPACE_ATOM_03]['entry']);
 				}
-				if (isset($channel['child'][\SimplePie\SimplePie::NAMESPACE_RSS_10]['item']))
+				if (isset($channel['child'][SimplePie::NAMESPACE_RSS_10]['item']))
 				{
-					unset($channel['child'][\SimplePie\SimplePie::NAMESPACE_RSS_10]['item']);
+					unset($channel['child'][SimplePie::NAMESPACE_RSS_10]['item']);
 				}
-				if (isset($channel['child'][\SimplePie\SimplePie::NAMESPACE_RSS_090]['item']))
+				if (isset($channel['child'][SimplePie::NAMESPACE_RSS_090]['item']))
 				{
-					unset($channel['child'][\SimplePie\SimplePie::NAMESPACE_RSS_090]['item']);
+					unset($channel['child'][SimplePie::NAMESPACE_RSS_090]['item']);
 				}
-				if (isset($channel['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['item']))
+				if (isset($channel['child'][SimplePie::NAMESPACE_RSS_20]['item']))
 				{
-					unset($channel['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['item']);
+					unset($channel['child'][SimplePie::NAMESPACE_RSS_20]['item']);
 				}
 			}
 			if (isset($data->data['items']))

@@ -1587,7 +1587,7 @@ class SimplePie
 		{
 			// Load the Cache
 			$this->data = $cache->load();
-			if (!empty($this->data))
+			if ($this->data !== false && !empty($this->data))
 			{
 				// If the cache is for an outdated build of SimplePie
 				if (!isset($this->data['build']) || $this->data['build'] !== \SimplePie\Misc::get_build())
@@ -1605,7 +1605,7 @@ class SimplePie
 				elseif (isset($this->data['feed_url']))
 				{
 					// If the autodiscovery cache is still valid use it.
-					if ($cache->mtime() + $this->autodiscovery_cache_duration > time())
+					if (($mtime = $cache->mtime()) !== false && $mtime + $this->autodiscovery_cache_duration > time())
 					{
 						// Do not need to do feed autodiscovery yet.
 						if ($this->data['feed_url'] !== $this->data['url'])
@@ -1619,7 +1619,7 @@ class SimplePie
 					}
 				}
 				// Check if the cache has been updated
-				elseif ($cache->mtime() + $this->cache_duration < time())
+				elseif (($mtime = $cache->mtime()) !== false && $mtime + $this->cache_duration < time())
 				{
 					// Want to know if we tried to send last-modified and/or etag headers
 					// when requesting this file. (Note that it's up to the file to
