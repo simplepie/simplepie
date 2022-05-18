@@ -51,6 +51,7 @@ namespace SimplePie\XML\Declaration;
  */
 class Parser
 {
+
 	/**
 	 * XML Version
 	 *
@@ -75,13 +76,26 @@ class Parser
 	 */
 	var $standalone = false;
 
+	const STATE_BEFORE_VERSION_NAME = 'before_version_name';
+	const STATE_VERSION_NAME = 'version_name';
+	const STATE_VERSION_EQUALS = 'version_equals';
+	const STATE_VERSION_VALUE = 'version_value';
+	const STATE_ENCODING_NAME = 'encoding_name';
+	const STATE_EMIT = 'emit';
+	const STATE_ENCODING_EQUALS = 'encoding_equals';
+	const STATE_STANDALONE_NAME = 'standalone_name';
+	const STATE_ENCODING_VALUE = 'encoding_value';
+	const STATE_STANDALONE_EQUALS = 'standalone_equals';
+	const STATE_STANDALONE_VALUE = 'standalone_value';
+	const STATE_ERROR = false;
+
 	/**
 	 * Current state of the state machine
 	 *
 	 * @access private
-	 * @var string
+	 * @var self::STATE_*
 	 */
-	var $state = 'before_version_name';
+	var $state = self::STATE_BEFORE_VERSION_NAME;
 
 	/**
 	 * Input data
@@ -127,13 +141,13 @@ class Parser
 	 */
 	public function parse()
 	{
-		while ($this->state && $this->state !== 'emit' && $this->has_data())
+		while ($this->state && $this->state !== self::STATE_EMIT && $this->has_data())
 		{
 			$state = $this->state;
 			$this->$state();
 		}
 		$this->data = '';
-		if ($this->state === 'emit')
+		if ($this->state === self::STATE_EMIT)
 		{
 			return true;
 		}
@@ -191,11 +205,11 @@ class Parser
 	{
 		if ($this->skip_whitespace())
 		{
-			$this->state = 'version_name';
+			$this->state = self::STATE_VERSION_NAME;
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -205,11 +219,11 @@ class Parser
 		{
 			$this->position += 7;
 			$this->skip_whitespace();
-			$this->state = 'version_equals';
+			$this->state = self::STATE_VERSION_EQUALS;
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -219,11 +233,11 @@ class Parser
 		{
 			$this->position++;
 			$this->skip_whitespace();
-			$this->state = 'version_value';
+			$this->state = self::STATE_VERSION_VALUE;
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -234,16 +248,16 @@ class Parser
 			$this->skip_whitespace();
 			if ($this->has_data())
 			{
-				$this->state = 'encoding_name';
+				$this->state = self::STATE_ENCODING_NAME;
 			}
 			else
 			{
-				$this->state = 'emit';
+				$this->state = self::STATE_EMIT;
 			}
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -253,11 +267,11 @@ class Parser
 		{
 			$this->position += 8;
 			$this->skip_whitespace();
-			$this->state = 'encoding_equals';
+			$this->state = self::STATE_ENCODING_EQUALS;
 		}
 		else
 		{
-			$this->state = 'standalone_name';
+			$this->state = self::STATE_STANDALONE_NAME;
 		}
 	}
 
@@ -267,11 +281,11 @@ class Parser
 		{
 			$this->position++;
 			$this->skip_whitespace();
-			$this->state = 'encoding_value';
+			$this->state = self::STATE_ENCODING_VALUE;
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -282,16 +296,16 @@ class Parser
 			$this->skip_whitespace();
 			if ($this->has_data())
 			{
-				$this->state = 'standalone_name';
+				$this->state = self::STATE_STANDALONE_NAME;
 			}
 			else
 			{
-				$this->state = 'emit';
+				$this->state = self::STATE_EMIT;
 			}
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -301,11 +315,11 @@ class Parser
 		{
 			$this->position += 10;
 			$this->skip_whitespace();
-			$this->state = 'standalone_equals';
+			$this->state = self::STATE_STANDALONE_EQUALS;
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -315,11 +329,11 @@ class Parser
 		{
 			$this->position++;
 			$this->skip_whitespace();
-			$this->state = 'standalone_value';
+			$this->state = self::STATE_STANDALONE_VALUE;
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 
@@ -338,23 +352,23 @@ class Parser
 					break;
 
 				default:
-					$this->state = false;
+					$this->state = self::STATE_ERROR;
 					return;
 			}
 
 			$this->skip_whitespace();
 			if ($this->has_data())
 			{
-				$this->state = false;
+				$this->state = self::STATE_ERROR;
 			}
 			else
 			{
-				$this->state = 'emit';
+				$this->state = self::STATE_EMIT;
 			}
 		}
 		else
 		{
-			$this->state = false;
+			$this->state = self::STATE_ERROR;
 		}
 	}
 }
