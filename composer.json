@@ -49,6 +49,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "SimplePie\\Tests\\Fixtures\\": "tests/Fixtures",
             "SimplePie\\Tests\\Unit\\": "tests/Unit"
         }
     },
