@@ -53,33 +53,41 @@ namespace SimplePie;
 class Registry
 {
     /**
-     * Default class mapping
-     *
-     * Overriding classes *must* subclass these.
-     *
-     * @var array
+     * Mapping of names that could be used to refer to a class instance
+     * when talking to Registry instead of full class-string.
+     * @var array<class-string, string>
      */
-    protected $default = [
-        'Cache' => Cache::class,
-        'Locator' => Locator::class,
-        'Parser' => Parser::class,
-        'File' => File::class,
-        'Sanitize' => Sanitize::class,
-        'Item' => Item::class,
-        'Author' => Author::class,
-        'Category' => Category::class,
-        'Enclosure' => Enclosure::class,
-        'Caption' => Caption::class,
-        'Copyright' => Copyright::class,
-        'Credit' => Credit::class,
-        'Rating' => Rating::class,
-        'Restriction' => Restriction::class,
-        'Content_Type_Sniffer' => Content\Type\Sniffer::class,
-        'Source' => Source::class,
-        'Misc' => Misc::class,
-        'XML_Declaration_Parser' => XML\Declaration\Parser::class,
-        'Parse_Date' => Parse\Date::class,
+    private $legacyClassNames = [
+        Cache::class => 'Cache',
+        Locator::class => 'Locator',
+        Parser::class => 'Parser',
+        File::class => 'File',
+        Sanitize::class => 'Sanitize',
+        Item::class => 'Item',
+        Author::class => 'Author',
+        Category::class => 'Category',
+        Enclosure::class => 'Enclosure',
+        Caption::class => 'Caption',
+        Copyright::class => 'Copyright',
+        Credit::class => 'Credit',
+        Rating::class => 'Rating',
+        Restriction::class => 'Restriction',
+        Content\Type\Sniffer::class => 'Content_Type_Sniffer',
+        Source::class => 'Source',
+        Misc::class => 'Misc',
+        XML\Declaration\Parser::class => 'XML_Declaration_Parser',
+        Parse\Date::class => 'Parse_Date',
     ];
+
+    /**
+     * Legacy mapping of names that can be used to refer to classes.
+     *
+     * (Inverted $this->legacyClassNames)
+     *
+     *
+     * @var array<string, class-string>
+     */
+    protected $default = [];
 
     /**
      * Class mapping
@@ -104,19 +112,24 @@ class Registry
      */
     public function __construct()
     {
+        $this->default = array_flip($this->legacyClassNames);
     }
 
     /**
      * Register a class
      *
-     * @param string $type See {@see $default} for names
+     * @param string $type See {@see $legacyClassNames} for names
      * @param string $class Class name, must subclass the corresponding default
      * @param bool $legacy Whether to enable legacy support for this class
      * @return bool Successfulness
      */
     public function register($type, $class, $legacy = false)
     {
-        if (!@is_subclass_of($class, $this->default[$type])) {
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        if (!((isset($this->legacyClassNames[$type]) && is_subclass_of($class, $type)) || (isset($this->default[$type]) && is_subclass_of($class, $this->default[$type])))) {
             return false;
         }
 
@@ -134,11 +147,25 @@ class Registry
      *
      * Where possible, use {@see create()} or {@see call()} instead
      *
-     * @param string $type
-     * @return string|null
+     * @template T
+     * @param class-string<T> $type
+     * @return class-string<T>|null
      */
     public function get_class($type)
     {
+        if (!empty($this->classes[$type])) {
+            return $this->classes[$type];
+        }
+        if (!empty($this->default[$type])) {
+            return $this->default[$type];
+        }
+
+        if (!isset($this->legacyClassNames[$type])) {
+            return null;
+        }
+
+        // Try again with the legacy type resolved.
+        $type = $this->legacyClassNames[$type];
         if (!empty($this->classes[$type])) {
             return $this->classes[$type];
         }
@@ -152,9 +179,10 @@ class Registry
     /**
      * Create a new instance of a given type
      *
-     * @param string $type
+     * @template T class-string $type
+     * @param class-string<T> $type
      * @param array $parameters Parameters to pass to the constructor
-     * @return object Instance of class
+     * @return T Instance of class
      */
     public function &create($type, $parameters = [])
     {
@@ -187,7 +215,7 @@ class Registry
     /**
      * Call a static method for a type
      *
-     * @param string $type
+     * @param class-string $type
      * @param string $method
      * @param array $parameters
      * @return mixed
