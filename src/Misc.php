@@ -1979,7 +1979,7 @@ class Misc
         // UTF-32 Big Endian Without BOM
         elseif (substr($data, 0, 20) === "\x00\x00\x00\x3C\x00\x00\x00\x3F\x00\x00\x00\x78\x00\x00\x00\x6D\x00\x00\x00\x6C") {
             if ($pos = strpos($data, "\x00\x00\x00\x3F\x00\x00\x00\x3E")) {
-                $parser = $registry->create('XML_Declaration_Parser', [Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8')]);
+                $parser = $registry->create(XML\Declaration\Parser::class, [Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8')]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }
@@ -1989,7 +1989,7 @@ class Misc
         // UTF-32 Little Endian Without BOM
         elseif (substr($data, 0, 20) === "\x3C\x00\x00\x00\x3F\x00\x00\x00\x78\x00\x00\x00\x6D\x00\x00\x00\x6C\x00\x00\x00") {
             if ($pos = strpos($data, "\x3F\x00\x00\x00\x3E\x00\x00\x00")) {
-                $parser = $registry->create('XML_Declaration_Parser', [Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8')]);
+                $parser = $registry->create(XML\Declaration\Parser::class, [Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8')]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }
@@ -1999,7 +1999,7 @@ class Misc
         // UTF-16 Big Endian Without BOM
         elseif (substr($data, 0, 10) === "\x00\x3C\x00\x3F\x00\x78\x00\x6D\x00\x6C") {
             if ($pos = strpos($data, "\x00\x3F\x00\x3E")) {
-                $parser = $registry->create('XML_Declaration_Parser', [Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8')]);
+                $parser = $registry->create(XML\Declaration\Parser::class, [Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8')]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }
@@ -2009,7 +2009,7 @@ class Misc
         // UTF-16 Little Endian Without BOM
         elseif (substr($data, 0, 10) === "\x3C\x00\x3F\x00\x78\x00\x6D\x00\x6C\x00") {
             if ($pos = strpos($data, "\x3F\x00\x3E\x00")) {
-                $parser = $registry->create('XML_Declaration_Parser', [Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8')]);
+                $parser = $registry->create(XML\Declaration\Parser::class, [Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8')]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }
@@ -2019,7 +2019,7 @@ class Misc
         // US-ASCII (or superset)
         elseif (substr($data, 0, 5) === "\x3C\x3F\x78\x6D\x6C") {
             if ($pos = strpos($data, "\x3F\x3E")) {
-                $parser = $registry->create('XML_Declaration_Parser', [substr($data, 5, $pos - 5)]);
+                $parser = $registry->create(XML\Declaration\Parser::class, [substr($data, 5, $pos - 5)]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }

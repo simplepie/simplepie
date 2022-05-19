@@ -401,7 +401,7 @@ class Sanitize
                             if ($cache->get_data($image_url, false)) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
-                                $file = $this->registry->create('File', [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen]);
+                                $file = $this->registry->create(File::class, [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen]);
                                 $headers = $file->headers;
 
                                 if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
@@ -432,7 +432,7 @@ class Sanitize
             }
 
             if ($type & \SimplePie\SimplePie::CONSTRUCT_IRI) {
-                $absolute = $this->registry->call('Misc', 'absolutize_url', [$data, $base]);
+                $absolute = $this->registry->call(Misc::class, 'absolutize_url', [$data, $base]);
                 if ($absolute !== false) {
                     $data = $absolute;
                 }
@@ -443,7 +443,7 @@ class Sanitize
             }
 
             if ($this->output_encoding !== 'UTF-8') {
-                $data = $this->registry->call('Misc', 'change_encoding', [$data, 'UTF-8', $this->output_encoding]);
+                $data = $this->registry->call(Misc::class, 'change_encoding', [$data, 'UTF-8', $this->output_encoding]);
             }
         }
         return $data;
@@ -481,7 +481,7 @@ class Sanitize
             foreach ($elements as $element) {
                 foreach ($attributes as $attribute) {
                     if ($element->hasAttribute($attribute)) {
-                        $value = $this->registry->call('Misc', 'absolutize_url', [$element->getAttribute($attribute), $this->base]);
+                        $value = $this->registry->call(Misc::class, 'absolutize_url', [$element->getAttribute($attribute), $this->base]);
                         if ($value !== false) {
                             $value = $this->https_url($value);
                             $element->setAttribute($attribute, $value);
@@ -617,7 +617,7 @@ class Sanitize
     {
         if ($this->cache === null) {
             // @trigger_error(sprintf('Not providing as PSR-16 cache implementation is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);
-            $cache = $this->registry->call('Cache', 'get_handler', [
+            $cache = $this->registry->call(Cache::class, 'get_handler', [
                 $this->cache_location,
                 $image_url,
                 Base::TYPE_IMAGE
