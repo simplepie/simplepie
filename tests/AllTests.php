@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
+ * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
  * @author Ryan McCue
@@ -45,7 +45,6 @@ require_once dirname(__FILE__) . '/EncodingTest.php';
 require_once dirname(__FILE__) . '/IRITest.php';
 require_once dirname(__FILE__) . '/LocatorTest.php';
 require_once dirname(__FILE__) . '/ItemTest.php';
-require_once dirname(__FILE__) . '/oldtests.php';
 
 class AllTests
 {
