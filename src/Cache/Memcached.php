@@ -85,7 +85,8 @@ class Memcached implements Base
      * @param string $name     Unique ID for the cache
      * @param string $type     Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
      */
-    public function __construct($location, $name, $type) {
+    public function __construct($location, $name, $type)
+    {
         $this->options = array(
             'host'   => '127.0.0.1',
             'port'   => 11211,
@@ -107,7 +108,8 @@ class Memcached implements Base
      * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data) {
+    public function save($data)
+    {
         if ($data instanceof \SimplePie\SimplePie) {
             $data = $data->data;
         }
@@ -119,7 +121,8 @@ class Memcached implements Base
      * Retrieve the data saved to the cache
      * @return array Data for SimplePie::$data
      */
-    public function load() {
+    public function load()
+    {
         $data = $this->cache->get($this->name);
 
         if ($data !== false) {
@@ -132,7 +135,8 @@ class Memcached implements Base
      * Retrieve the last modified time for the cache
      * @return int Timestamp
      */
-    public function mtime() {
+    public function mtime()
+    {
         $data = $this->cache->get($this->name . '_mtime');
         return (int) $data;
     }
@@ -141,7 +145,8 @@ class Memcached implements Base
      * Set the last modified time to the current time
      * @return bool Success status
      */
-    public function touch() {
+    public function touch()
+    {
         $data = $this->cache->get($this->name);
         return $this->setData($data);
     }
@@ -150,7 +155,8 @@ class Memcached implements Base
      * Remove the cache
      * @return bool Success status
      */
-    public function unlink() {
+    public function unlink()
+    {
         return $this->cache->delete($this->name, 0);
     }
 
@@ -158,8 +164,8 @@ class Memcached implements Base
      * Set the last modified time and data to NativeMemcached
      * @return bool Success status
      */
-    private function setData($data) {
-
+    private function setData($data)
+    {
         if ($data !== false) {
             $this->cache->set($this->name . '_mtime', time(), (int)$this->options['extras']['timeout']);
             return $this->cache->set($this->name, $data, (int)$this->options['extras']['timeout']);
