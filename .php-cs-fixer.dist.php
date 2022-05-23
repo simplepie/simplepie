@@ -1,6 +1,7 @@
 <?php
 
 $finder = (new PhpCsFixer\Finder())
+    ->in('build')
     ->in('library')
 ;
 
