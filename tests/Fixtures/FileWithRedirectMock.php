@@ -8,10 +8,10 @@ namespace SimplePie\Tests\Fixtures;
  */
 class FileWithRedirectMock extends FileMock
 {
-	public function __construct($url)
-	{
-		parent::__construct($url);
-		$this->permanent_url = str_replace('http://', 'https://', $url); // simulate 301
-		$this->url = $this->permanent_url . '2019-10-07'; // simulate 302
-	}
+    public function __construct($url)
+    {
+        parent::__construct($url);
+        $this->permanent_url = str_replace('http://', 'https://', $url); // simulate 301
+        $this->url = $this->permanent_url . '2019-10-07'; // simulate 302
+    }
 }

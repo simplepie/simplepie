@@ -47,13 +47,13 @@ use PHPUnit\Framework\TestCase;
 
 class SnifferTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\Content\Type\Sniffer'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\Content\Type\Sniffer'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Content_Type_Sniffer'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Content_Type_Sniffer'));
+    }
 }

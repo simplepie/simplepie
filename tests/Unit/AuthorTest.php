@@ -50,20 +50,20 @@ use SimplePie\SimplePie;
 
 class AuthorTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\Author'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\Author'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Author'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Author'));
+    }
 
-	public function getAuthorNameDataProvider()
-	{
-		return [
-			'Test Atom 0.3 DC 1.0 Creator' => [
+    public function getAuthorNameDataProvider()
+    {
+        return [
+            'Test Atom 0.3 DC 1.0 Creator' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<entry>
@@ -71,10 +71,10 @@ class AuthorTest extends TestCase
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Test Atom 0.3 DC 1.1 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test Atom 0.3 DC 1.1 Creator' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<entry>
@@ -82,10 +82,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Atom 0.3 Inheritance Feed Name' => [
+                ,
+                'Item Author',
+            ],
+            'Atom 0.3 Inheritance Feed Name' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<author>
@@ -96,10 +96,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Test Atom 0.3 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test Atom 0.3 Name' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<entry>
@@ -109,10 +109,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Test Atom 1.0 DC 1.0 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test Atom 1.0 DC 1.0 Creator' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<entry>
@@ -120,10 +120,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Test Atom 1.0 DC 1.1 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test Atom 1.0 DC 1.1 Creator' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<entry>
@@ -131,10 +131,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Atom 1.0 Inheritance Feed Name' => [
+                ,
+                'Item Author',
+            ],
+            'Atom 1.0 Inheritance Feed Name' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<author>
@@ -145,10 +145,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Test Atom 1.0 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test Atom 1.0 Name' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
@@ -158,10 +158,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Atom 1.0 Inheritance Source Name' => [
+                ,
+                'Item Author',
+            ],
+            'Atom 1.0 Inheritance Source Name' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
@@ -173,10 +173,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.90 Atom 0.3 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.90 Atom 0.3 Name' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
 	<item>
@@ -186,10 +186,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.90 Atom 1.0 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.90 Atom 1.0 Name' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
@@ -199,10 +199,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.90 DC 1.0 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.90 DC 1.0 Creator' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<item>
@@ -210,10 +210,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.90 DC 1.1 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.90 DC 1.1 Creator' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<item>
@@ -221,10 +221,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.91-Netscape Atom 0.3 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.91-Netscape Atom 0.3 Name' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
@@ -237,10 +237,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Name' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -253,10 +253,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.91-Netscape DC 1.0 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.91-Netscape DC 1.0 Creator' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -267,10 +267,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.91-Netscape DC 1.1 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.91-Netscape DC 1.1 Creator' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -281,10 +281,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.91-Userland Atom 0.3 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.91-Userland Atom 0.3 Name' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -296,10 +296,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Name' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -311,10 +311,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.91-Userland DC 1.0 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.91-Userland DC 1.0 Creator' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -324,10 +324,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.91-Userland DC 1.1 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.91-Userland DC 1.1 Creator' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -337,10 +337,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.92 Atom 0.3 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.92 Atom 0.3 Name' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -352,10 +352,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.92 Atom 1.0 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.92 Atom 1.0 Name' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -367,10 +367,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.92 DC 1.0 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.92 DC 1.0 Creator' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -380,10 +380,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 0.92 DC 1.1 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 0.92 DC 1.1 Creator' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -393,10 +393,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 1.0 Atom 0.3 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 1.0 Atom 0.3 Name' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
 	<item>
@@ -406,10 +406,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 1.0 Atom 1.0 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 1.0 Atom 1.0 Name' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
@@ -419,10 +419,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 1.0 DC 1.0 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 1.0 DC 1.0 Creator' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<item>
@@ -430,10 +430,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 1.0 DC 1.1 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 1.0 DC 1.1 Creator' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<item>
@@ -441,10 +441,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 2.0 Atom 0.3 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 2.0 Atom 0.3 Name' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -456,10 +456,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 2.0 Atom 1.0 Name' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 2.0 Atom 1.0 Name' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -471,10 +471,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 2.0 Author' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 2.0 Author' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -484,10 +484,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 2.0 DC 1.0 Creator' => [
+                ,
+                null,
+            ],
+            'Test RSS 2.0 DC 1.0 Creator' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -497,10 +497,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-			'Test RSS 2.0 DC 1.1 Creator' => [
+                ,
+                'Item Author',
+            ],
+            'Test RSS 2.0 DC 1.1 Creator' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -510,35 +510,35 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Author',
-			],
-		];
-	}
+                ,
+                'Item Author',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getAuthorNameDataProvider
-	 */
-	public function test_get_name_from_author($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getAuthorNameDataProvider
+     */
+    public function test_get_name_from_author($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$item = $feed->get_item(0);
-		$this->assertInstanceOf(Item::class, $item);
+        $item = $feed->get_item(0);
+        $this->assertInstanceOf(Item::class, $item);
 
-		$author = $item->get_author();
-		$this->assertInstanceOf(Author::class, $author);
+        $author = $item->get_author();
+        $this->assertInstanceOf(Author::class, $author);
 
-		$this->assertSame($expected, $author->get_name());
-	}
+        $this->assertSame($expected, $author->get_name());
+    }
 
-	public function getContributorNameDataProvider()
-	{
-		return [
-			'Test Atom 0.3 Name' => [
+    public function getContributorNameDataProvider()
+    {
+        return [
+            'Test Atom 0.3 Name' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<entry>
@@ -548,10 +548,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test Atom 1.0 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test Atom 1.0 Name' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
@@ -561,10 +561,10 @@ EOT
 	</entry>
 </feed>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 0.90 Atom 0.3 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 0.90 Atom 0.3 Name' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
 	<item>
@@ -574,10 +574,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 0.90 Atom 1.0 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 0.90 Atom 1.0 Name' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
@@ -587,10 +587,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 0.91-Netscape Atom 0.3 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 0.91-Netscape Atom 0.3 Name' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
@@ -603,10 +603,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Name' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -619,10 +619,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 0.91-Userland Atom 0.3 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 0.91-Userland Atom 0.3 Name' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -634,10 +634,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Name' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -649,10 +649,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 0.92 Atom 0.3 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 0.92 Atom 0.3 Name' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -664,10 +664,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 0.92 Atom 1.0 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 0.92 Atom 1.0 Name' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -679,10 +679,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 1.0 Atom 0.3 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 1.0 Atom 0.3 Name' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
 	<item>
@@ -692,10 +692,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 1.0 Atom 1.0 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 1.0 Atom 1.0 Name' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
@@ -705,10 +705,10 @@ EOT
 	</item>
 </rdf:RDF>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 2.0 Atom 0.3 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 2.0 Atom 0.3 Name' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -720,10 +720,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Contributor',
-			],
-			'Test RSS 2.0 Atom 1.0 Name' => [
+                ,
+                'Item Contributor',
+            ],
+            'Test RSS 2.0 Atom 1.0 Name' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -735,28 +735,28 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Item Contributor',
-			],
-		];
-	}
+                ,
+                'Item Contributor',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getContributorNameDataProvider
-	 */
-	public function test_get_name_from_contributor($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getContributorNameDataProvider
+     */
+    public function test_get_name_from_contributor($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$item = $feed->get_item(0);
-		$this->assertInstanceOf(Item::class, $item);
+        $item = $feed->get_item(0);
+        $this->assertInstanceOf(Item::class, $item);
 
-		$author = $item->get_contributor();
-		$this->assertInstanceOf(Author::class, $author);
+        $author = $item->get_contributor();
+        $this->assertInstanceOf(Author::class, $author);
 
-		$this->assertSame($expected, $author->get_name());
-	}
+        $this->assertSame($expected, $author->get_name());
+    }
 }

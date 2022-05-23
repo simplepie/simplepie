@@ -47,13 +47,13 @@ use PHPUnit\Framework\TestCase;
 
 class BaseTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(interface_exists('SimplePie\Cache\Base'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(interface_exists('SimplePie\Cache\Base'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(interface_exists('SimplePie_Cache_Base'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(interface_exists('SimplePie_Cache_Base'));
+    }
 }

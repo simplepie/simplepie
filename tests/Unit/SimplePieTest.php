@@ -50,146 +50,145 @@ use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class SimplePieTest extends TestCase
 {
-	use ExpectPHPException;
+    use ExpectPHPException;
 
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\SimplePie'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\SimplePie'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie'));
+    }
 
-	/**
-	 * Run a test using a sprintf template and data
-	 *
-	 * @param string $template
-	 */
-	private function createFeedWithTemplate($template, $data)
-	{
-		if (!is_array($data))
-		{
-			$data = array($data);
-		}
-		$xml = vsprintf($template, $data);
-		$feed = new SimplePie();
-		$feed->set_raw_data($xml);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * Run a test using a sprintf template and data
+     *
+     * @param string $template
+     */
+    private function createFeedWithTemplate($template, $data)
+    {
+        if (!is_array($data)) {
+            $data = array($data);
+        }
+        $xml = vsprintf($template, $data);
+        $feed = new SimplePie();
+        $feed->set_raw_data($xml);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		return $feed;
-	}
+        return $feed;
+    }
 
-	public static function titleDataProvider()
-	{
-		return array(
-			array('Feed Title', 'Feed Title'),
+    public static function titleDataProvider()
+    {
+        return array(
+            array('Feed Title', 'Feed Title'),
 
-			// RSS Profile tests
-			array('AT&amp;T', 'AT&amp;T'),
-			array('AT&#x26;T', 'AT&amp;T'),
-			array("Bill &amp; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"),
-			array("Bill &#x26; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"),
-			array('The &amp; entity', 'The &amp; entity'),
-			array('The &#x26; entity', 'The &amp; entity'),
-			array('The &amp;amp; entity', 'The &amp;amp; entity'),
-			array('The &#x26;amp; entity', 'The &amp;amp; entity'),
-			array('I &lt;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'),
-			array('I &#x3C;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'),
-			array('A &lt; B', 'A &lt; B'),
-			array('A &#x3C; B', 'A &lt; B'),
-			array('A&lt;B', 'A&lt;B'),
-			array('A&#x3C;B', 'A&lt;B'),
-			array("Nice &lt;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"),
-			array("Nice &#x3C;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"),
-		);
-	}
+            // RSS Profile tests
+            array('AT&amp;T', 'AT&amp;T'),
+            array('AT&#x26;T', 'AT&amp;T'),
+            array("Bill &amp; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"),
+            array("Bill &#x26; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"),
+            array('The &amp; entity', 'The &amp; entity'),
+            array('The &#x26; entity', 'The &amp; entity'),
+            array('The &amp;amp; entity', 'The &amp;amp; entity'),
+            array('The &#x26;amp; entity', 'The &amp;amp; entity'),
+            array('I &lt;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'),
+            array('I &#x3C;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'),
+            array('A &lt; B', 'A &lt; B'),
+            array('A &#x3C; B', 'A &lt; B'),
+            array('A&lt;B', 'A&lt;B'),
+            array('A&#x3C;B', 'A&lt;B'),
+            array("Nice &lt;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"),
+            array("Nice &#x3C;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"),
+        );
+    }
 
-	/**
-	 * @dataProvider titleDataProvider
-	 */
-	public function testTitleRSS20($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleDataProvider
+     */
+    public function testTitleRSS20($title, $expected)
+    {
+        $data =
 '<rss version="2.0">
 	<channel>
 		<title>%s</title>
 	</channel>
 </rss>';
-		$feed = $this->createFeedWithTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->createFeedWithTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * @dataProvider titleDataProvider
-	 */
-	public function testTitleRSS20WithDC10($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleDataProvider
+     */
+    public function testTitleRSS20WithDC10($title, $expected)
+    {
+        $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<dc:title>%s</dc:title>
 	</channel>
 </rss>';
-		$feed = $this->createFeedWithTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->createFeedWithTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * @dataProvider titleDataProvider
-	 */
-	public function testTitleRSS20WithDC11($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleDataProvider
+     */
+    public function testTitleRSS20WithDC11($title, $expected)
+    {
+        $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<dc:title>%s</dc:title>
 	</channel>
 </rss>';
-		$feed = $this->createFeedWithTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->createFeedWithTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * @dataProvider titleDataProvider
-	 */
-	public function testTitleRSS20WithAtom03($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleDataProvider
+     */
+    public function testTitleRSS20WithAtom03($title, $expected)
+    {
+        $data =
 '<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
 		<a:title>%s</a:title>
 	</channel>
 </rss>';
-		$feed = $this->createFeedWithTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->createFeedWithTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * @dataProvider titleDataProvider
-	 */
-	public function testTitleRSS20WithAtom10($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleDataProvider
+     */
+    public function testTitleRSS20WithAtom10($title, $expected)
+    {
+        $data =
 '<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:title>%s</a:title>
 	</channel>
 </rss>';
-		$feed = $this->createFeedWithTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->createFeedWithTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * Based on a test from old bug 18
-	 *
-	 * @dataProvider titleDataProvider
-	 */
-	public function testTitleRSS20WithImageTitle($title, $expected)
-	{
-		$data =
+    /**
+     * Based on a test from old bug 18
+     *
+     * @dataProvider titleDataProvider
+     */
+    public function testTitleRSS20WithImageTitle($title, $expected)
+    {
+        $data =
 '<rss version="2.0">
 	<channel>
 		<title>%s</title>
@@ -198,18 +197,18 @@ class SimplePieTest extends TestCase
 		</image>
 	</channel>
 </rss>';
-		$feed = $this->createFeedWithTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->createFeedWithTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * Based on a test from old bug 18
-	 *
-	 * @dataProvider titleDataProvider
-	 */
-	public function testTitleRSS20WithImageTitleReversed($title, $expected)
-	{
-		$data =
+    /**
+     * Based on a test from old bug 18
+     *
+     * @dataProvider titleDataProvider
+     */
+    public function testTitleRSS20WithImageTitleReversed($title, $expected)
+    {
+        $data =
 '<rss version="2.0">
 	<channel>
 		<image>
@@ -218,13 +217,13 @@ class SimplePieTest extends TestCase
 		<title>%s</title>
 	</channel>
 </rss>';
-		$feed = $this->createFeedWithTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->createFeedWithTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	public function testItemWithEmptyContent()
-	{
-		$data =
+    public function testItemWithEmptyContent()
+    {
+        $data =
 '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 	<channel>
 		<item>
@@ -233,105 +232,105 @@ class SimplePieTest extends TestCase
 		</item>
 	</channel>
 </rss>';
-		$content = 'item description';
-		$feed = $this->createFeedWithTemplate($data, $content);
-		$item = $feed->get_item();
-		$this->assertSame($content, $item->get_content());
-	}
+        $content = 'item description';
+        $feed = $this->createFeedWithTemplate($data, $content);
+        $item = $feed->get_item();
+        $this->assertSame($content, $item->get_content());
+    }
 
-	public function testLegacyCallOfSetCacheClass()
-	{
-		if (PHP_VERSION_ID < 80000) {
-			$this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
-		} else {
-			// PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
-			// This is no longer supported in PHP, so there is just no way to continue to provide BC
-			// for the old non-static cache methods.
-			$this->expectError();
-		}
+    public function testLegacyCallOfSetCacheClass()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
+        } else {
+            // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
+            // This is no longer supported in PHP, so there is just no way to continue to provide BC
+            // for the old non-static cache methods.
+            $this->expectError();
+        }
 
-		$feed = new SimplePie();
-		$feed->set_cache_class('SimplePie\Tests\Fixtures\Cache\LegacyCacheMock');
-		$feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
-		$feed->set_feed_url('http://example.com/feed/');
+        $feed = new SimplePie();
+        $feed->set_cache_class('SimplePie\Tests\Fixtures\Cache\LegacyCacheMock');
+        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $feed->set_feed_url('http://example.com/feed/');
 
-		$feed->init();
-	}
+        $feed->init();
+    }
 
-	public function testDirectOverrideNew()
-	{
-		$this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
+    public function testDirectOverrideNew()
+    {
+        $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
 
-		$feed = new SimplePie();
-		$feed->get_registry()->register('Cache', 'SimplePie\Tests\Fixtures\Cache\NewCacheMock');
-		$feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
-		$feed->set_feed_url('http://example.com/feed/');
+        $feed = new SimplePie();
+        $feed->get_registry()->register('Cache', 'SimplePie\Tests\Fixtures\Cache\NewCacheMock');
+        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $feed->set_feed_url('http://example.com/feed/');
 
-		$feed->init();
-	}
+        $feed->init();
+    }
 
-	public function testDirectOverrideLegacy()
-	{
-		$feed = new SimplePie();
-		$feed->get_registry()->register('File', FileWithRedirectMock::class);
-		$feed->enable_cache(false);
-		$feed->set_feed_url('http://example.com/feed/');
+    public function testDirectOverrideLegacy()
+    {
+        $feed = new SimplePie();
+        $feed->get_registry()->register('File', FileWithRedirectMock::class);
+        $feed->enable_cache(false);
+        $feed->set_feed_url('http://example.com/feed/');
 
-		$feed->init();
+        $feed->init();
 
-		$this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
-		$this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
-	}
+        $this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
+        $this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
+    }
 
-	public function getCopyrightDataProvider()
-	{
-		return [
-			'Test Atom 0.3 DC 1.0' => [
+    public function getCopyrightDataProvider()
+    {
+        return [
+            'Test Atom 0.3 DC 1.0' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:rights>Example Copyright Information</dc:rights>
 </feed>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test Atom 0.3 DC 1.1' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test Atom 0.3 DC 1.1' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:rights>Example Copyright Information</dc:rights>
 </feed>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test Atom 1.0 DC 1.0' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test Atom 1.0 DC 1.0' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:rights>Example Copyright Information</dc:rights>
 </feed>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test Atom 1.0 DC 1.1' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test Atom 1.0 DC 1.1' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:rights>Example Copyright Information</dc:rights>
 </feed>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test Atom 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test Atom 1.0 Rights' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<rights>Example Copyright Information</rights>
 </feed>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.90 Atom 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.90 Atom 1.0 Rights' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -339,10 +338,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.90 DC 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.90 DC 1.0 Rights' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -350,10 +349,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.90 DC 1.1 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.90 DC 1.1 Rights' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -361,10 +360,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Rights' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -373,10 +372,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.91-Netscape DC 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.91-Netscape DC 1.0 Rights' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -385,10 +384,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.91-Netscape DC 1.1 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.91-Netscape DC 1.1 Rights' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -397,10 +396,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.91-Netscape Copyright' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.91-Netscape Copyright' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -409,10 +408,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Rights' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -420,10 +419,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.91-Userland DC 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.91-Userland DC 1.0 Rights' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -431,10 +430,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.91-Userland DC 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.91-Userland DC 1.0 Rights' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -442,10 +441,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.91-Userland Copyright' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.91-Userland Copyright' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -453,10 +452,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.92 Atom 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.92 Atom 1.0 Rights' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -464,10 +463,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.92 DC 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.92 DC 1.0 Rights' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -475,10 +474,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.92 DC 1.1 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.92 DC 1.1 Rights' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -486,10 +485,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 0.92 Copyright' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 0.92 Copyright' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -497,10 +496,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 1.0 Atom 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 1.0 Atom 1.0 Rights' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -508,10 +507,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 1.0 DC 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 1.0 DC 1.0 Rights' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -519,10 +518,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 1.0 DC 1.1 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 1.0 DC 1.1 Rights' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -530,10 +529,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 2.0 Atom 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 2.0 Atom 1.0 Rights' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -541,10 +540,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 2.0 DC 1.0 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 2.0 DC 1.0 Rights' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -552,10 +551,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 2.0 DC 1.1 Rights' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 2.0 DC 1.1 Rights' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -563,10 +562,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-			'Test RSS 2.0 Copyright' => [
+                ,
+                'Example Copyright Information',
+            ],
+            'Test RSS 2.0 Copyright' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -574,83 +573,83 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Example Copyright Information',
-			],
-		];
-	}
+                ,
+                'Example Copyright Information',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getCopyrightDataProvider
-	 */
-	public function test_get_copyright($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getCopyrightDataProvider
+     */
+    public function test_get_copyright($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_copyright());
-	}
+        $this->assertSame($expected, $feed->get_copyright());
+    }
 
-	public function getDescriptionDataProvider()
-	{
-		return [
-			'Test Atom 0.3 DC 1.0 Description' => [
+    public function getDescriptionDataProvider()
+    {
+        return [
+            'Test Atom 0.3 DC 1.0 Description' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:description>Feed Description</dc:description>
 </feed>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test Atom 0.3 DC 1.1 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test Atom 0.3 DC 1.1 Description' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:description>Feed Description</dc:description>
 </feed>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test Atom 0.3 Tagline' => [
+                ,
+                'Feed Description',
+            ],
+            'Test Atom 0.3 Tagline' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<tagline>Feed Description</tagline>
 </feed>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test Atom 1.0 DC 1.0 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test Atom 1.0 DC 1.0 Description' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:description>Feed Description</dc:description>
 </feed>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test Atom 1.0 DC 1.1 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test Atom 1.0 DC 1.1 Description' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:description>Feed Description</dc:description>
 </feed>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test Atom 1.0 Subtitle' => [
+                ,
+                'Feed Description',
+            ],
+            'Test Atom 1.0 Subtitle' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<subtitle>Feed Description</subtitle>
 </feed>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.90 Atom 0.3 Tagline' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.90 Atom 0.3 Tagline' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -658,10 +657,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.90 Atom 1.0 Subtitle' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.90 Atom 1.0 Subtitle' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -669,10 +668,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.90 DC 1.0 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.90 DC 1.0 Description' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -680,10 +679,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.90 DC 1.1 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.90 DC 1.1 Description' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -691,10 +690,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.90 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.90 Description' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<channel>
@@ -702,10 +701,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Netscape Atom 0.3 Tagline' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Netscape Atom 0.3 Tagline' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
@@ -714,10 +713,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Subtitle' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Subtitle' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -726,10 +725,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Netscape DC 1.0 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Netscape DC 1.0 Description' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -738,10 +737,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Netscape DC 1.1 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Netscape DC 1.1 Description' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -750,10 +749,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Netscape Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Netscape Description' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -762,10 +761,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Userland Atom 0.3 Tagline' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Userland Atom 0.3 Tagline' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -773,10 +772,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Subtitle' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Subtitle' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -784,10 +783,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Userland DC 1.0 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Userland DC 1.0 Description' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -795,10 +794,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Userland DC 1.1 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Userland DC 1.1 Description' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -806,10 +805,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.91-Userland Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.91-Userland Description' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -817,10 +816,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.92 Atom 0.3 Tagline' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.92 Atom 0.3 Tagline' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -828,10 +827,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.92 Atom 1.0 Subtitle' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.92 Atom 1.0 Subtitle' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -839,10 +838,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.92 DC 1.0 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.92 DC 1.0 Description' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -850,10 +849,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.92 DC 1.1 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.92 DC 1.1 Description' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -861,10 +860,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 0.92 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 0.92 Description' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -872,10 +871,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 1.0 Atom 0.3 Tagline' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 1.0 Atom 0.3 Tagline' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -883,10 +882,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 1.0 Atom 1.0 Subtitle' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 1.0 Atom 1.0 Subtitle' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -894,10 +893,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 1.0 DC 1.0 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 1.0 DC 1.0 Description' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -905,10 +904,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 1.0 DC 1.1 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 1.0 DC 1.1 Description' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -916,10 +915,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 1.0 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 1.0 Description' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<channel>
@@ -927,10 +926,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 20 Atom 0.3 Tagline' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 20 Atom 0.3 Tagline' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -938,10 +937,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 20 Atom 1.0 Subtitle' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 20 Atom 1.0 Subtitle' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -949,10 +948,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 20 DC 1.0 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 20 DC 1.0 Description' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -960,10 +959,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 20 DC 1.1 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 20 DC 1.1 Description' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -971,10 +970,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-			'Test RSS 20 Description' => [
+                ,
+                'Feed Description',
+            ],
+            'Test RSS 20 Description' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -982,45 +981,45 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Description',
-			],
-		];
-	}
+                ,
+                'Feed Description',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getDescriptionDataProvider
-	 */
-	public function test_get_description($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getDescriptionDataProvider
+     */
+    public function test_get_description($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_description());
-	}
+        $this->assertSame($expected, $feed->get_description());
+    }
 
-	public function getImageHeightDataProvider()
-	{
-		return [
-			'Test Atom 1.0 Icon Default' => [
+    public function getImageHeightDataProvider()
+    {
+        return [
+            'Test Atom 1.0 Icon Default' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<icon>http://example.com/</icon>
 </feed>'
 EOT				,
-				NULL,
-			],
-			'Test Atom 1.0 Logo Default' => [
+                null,
+            ],
+            'Test Atom 1.0 Logo Default' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<logo>http://example.com/</logo>
 </feed>'
 EOT				,
-				NULL,
-			],
-			'Test RSS 0.90 Atom 1.0 Icon Default' => [
+                null,
+            ],
+            'Test RSS 0.90 Atom 1.0 Icon Default' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1028,9 +1027,9 @@ EOT				,
 	</channel>
 </rdf:RDF>'
 EOT				,
-				NULL,
-			],
-			'Test RSS 0.90 Atom 1.0 Logo Default' => [
+                null,
+            ],
+            'Test RSS 0.90 Atom 1.0 Logo Default' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1038,9 +1037,9 @@ EOT				,
 	</channel>
 </rdf:RDF>'
 EOT				,
-				NULL,
-			],
-			'Test RSS 0.90 URL Default' => [
+                null,
+            ],
+            'Test RSS 0.90 URL Default' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<image>
@@ -1048,9 +1047,9 @@ EOT				,
 	</image>
 </rdf:RDF>'
 EOT				,
-				NULL,
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Icon Default' => [
+                null,
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Icon Default' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -1059,10 +1058,10 @@ EOT				,
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Logo Default' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Logo Default' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -1071,10 +1070,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Netscape Height' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Netscape Height' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -1085,10 +1084,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				100.0,
-			],
-			'Test RSS 0.91-Netscape URL Default' => [
+                ,
+                100.0,
+            ],
+            'Test RSS 0.91-Netscape URL Default' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -1099,10 +1098,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				31.0,
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Icon Default' => [
+                ,
+                31.0,
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Icon Default' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1110,10 +1109,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Logo Default' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Logo Default' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1121,10 +1120,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Userland Height' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Userland Height' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -1134,10 +1133,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				100.0,
-			],
-			'Test RSS 0.91-Userland URL Default' => [
+                ,
+                100.0,
+            ],
+            'Test RSS 0.91-Userland URL Default' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -1147,10 +1146,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				31.0,
-			],
-			'Test RSS 0.92 Atom 1.0 Icon Default' => [
+                ,
+                31.0,
+            ],
+            'Test RSS 0.92 Atom 1.0 Icon Default' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1158,10 +1157,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.92 Atom 1.0 Logo Default' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.92 Atom 1.0 Logo Default' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1169,10 +1168,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.92 Height' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.92 Height' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -1182,10 +1181,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				100.0,
-			],
-			'Test RSS 0.92 URL Default' => [
+                ,
+                100.0,
+            ],
+            'Test RSS 0.92 URL Default' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -1195,10 +1194,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				31.0,
-			],
-			'Test RSS 1.0 Atom 1.0 Icon Default' => [
+                ,
+                31.0,
+            ],
+            'Test RSS 1.0 Atom 1.0 Icon Default' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1206,10 +1205,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 1.0 Atom 1.0 Logo Default' => [
+                ,
+                null,
+            ],
+            'Test RSS 1.0 Atom 1.0 Logo Default' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1217,10 +1216,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 1.0 URL Default' => [
+                ,
+                null,
+            ],
+            'Test RSS 1.0 URL Default' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<image>
@@ -1228,10 +1227,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 2.0 Atom 1.0 Icon Default' => [
+                ,
+                null,
+            ],
+            'Test RSS 2.0 Atom 1.0 Icon Default' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1239,10 +1238,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 2.0 Atom 1.0 Logo Default' => [
+                ,
+                null,
+            ],
+            'Test RSS 2.0 Atom 1.0 Logo Default' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1250,10 +1249,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 2.0 Height' => [
+                ,
+                null,
+            ],
+            'Test RSS 2.0 Height' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -1263,10 +1262,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				100.0,
-			],
-			'Test RSS 2.0 URL Default' => [
+                ,
+                100.0,
+            ],
+            'Test RSS 2.0 URL Default' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -1276,29 +1275,29 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				31.0,
-			],
-		];
-	}
+                ,
+                31.0,
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getImageHeightDataProvider
-	 */
-	public function test_get_image_height($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getImageHeightDataProvider
+     */
+    public function test_get_image_height($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_image_height());
-	}
+        $this->assertSame($expected, $feed->get_image_height());
+    }
 
-	public function getImageLinkDataProvider()
-	{
-		return [
-			'Test RSS 0.90 Link' => [
+    public function getImageLinkDataProvider()
+    {
+        return [
+            'Test RSS 0.90 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<image>
@@ -1306,10 +1305,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Netscape Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Netscape Link' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -1320,10 +1319,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Userland Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Userland Link' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -1333,10 +1332,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.92 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.92 Link' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -1346,10 +1345,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 1.0 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<image>
@@ -1357,10 +1356,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 2.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 2.0 Link' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -1370,29 +1369,29 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-		];
-	}
+                ,
+                'http://example.com/',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getImageLinkDataProvider
-	 */
-	public function test_get_image_link($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getImageLinkDataProvider
+     */
+    public function test_get_image_link($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_image_link());
-	}
+        $this->assertSame($expected, $feed->get_image_link());
+    }
 
-	public function getImageTitleDataProvider()
-	{
-		return [
-			'Test RSS 0.90 DC 1.0 Title' => [
+    public function getImageTitleDataProvider()
+    {
+        return [
+            'Test RSS 0.90 DC 1.0 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<image>
@@ -1400,10 +1399,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.90 DC 1.1 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.90 DC 1.1 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<image>
@@ -1411,10 +1410,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.90 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.90 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<image>
@@ -1422,10 +1421,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.91-Netscape DC 1.0 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.91-Netscape DC 1.0 Title' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -1436,10 +1435,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.91-Netscape DC 1.1 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.91-Netscape DC 1.1 Title' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -1450,10 +1449,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.91-Netscape Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.91-Netscape Title' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -1464,10 +1463,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.91-Userland DC 1.0 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.91-Userland DC 1.0 Title' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -1477,10 +1476,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.91-Userland DC 1.1 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.91-Userland DC 1.1 Title' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -1490,10 +1489,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.91-Userland Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.91-Userland Title' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -1503,10 +1502,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.92 DC 1.0 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.92 DC 1.0 Title' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -1516,10 +1515,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.92 DC 1.1 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.92 DC 1.1 Title' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -1529,10 +1528,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 0.92 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 0.92 Title' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -1542,10 +1541,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 1.0 DC 1.0 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 1.0 DC 1.0 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<image>
@@ -1553,10 +1552,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 1.0 DC 1.1 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 1.0 DC 1.1 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<image>
@@ -1564,10 +1563,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 1.0 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 1.0 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<image>
@@ -1575,10 +1574,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 2.0 DC 1.0 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 2.0 DC 1.0 Title' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -1588,10 +1587,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 2.0 DC 1.1 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 2.0 DC 1.1 Title' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -1601,10 +1600,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-			'Test RSS 2.0 Title' => [
+                ,
+                'Image Title',
+            ],
+            'Test RSS 2.0 Title' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -1614,47 +1613,47 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Image Title',
-			],
-		];
-	}
+                ,
+                'Image Title',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getImageTitleDataProvider
-	 */
-	public function test_get_image_title($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getImageTitleDataProvider
+     */
+    public function test_get_image_title($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_image_title());
-	}
+        $this->assertSame($expected, $feed->get_image_title());
+    }
 
-	public function getImageUrlDataProvider()
-	{
-		return [
-			'Test Atom 1.0 Icon' => [
+    public function getImageUrlDataProvider()
+    {
+        return [
+            'Test Atom 1.0 Icon' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<icon>http://example.com/</icon>
 </feed>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test Atom 1.0 Logo' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test Atom 1.0 Logo' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<logo>http://example.com/</logo>
 </feed>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.90 Atom 1.0 Icon' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.90 Atom 1.0 Icon' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1662,10 +1661,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.90 Atom 1.0 Logo' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.90 Atom 1.0 Logo' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1673,10 +1672,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.90 URL' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.90 URL' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<image>
@@ -1684,10 +1683,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Icon' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Icon' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -1696,10 +1695,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Logo' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Logo' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -1708,10 +1707,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Netscape URL' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Netscape URL' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -1722,10 +1721,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Icon' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Icon' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1733,10 +1732,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Logo' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Logo' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1744,10 +1743,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Userland URL' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Userland URL' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -1757,10 +1756,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.92 Atom 1.0 Icon' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.92 Atom 1.0 Icon' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1768,10 +1767,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.92 Atom 1.0 Logo' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.92 Atom 1.0 Logo' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1779,10 +1778,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.92 URL' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.92 URL' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -1792,10 +1791,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 1.0 Atom 1.0 Icon' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 1.0 Atom 1.0 Icon' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1803,10 +1802,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 1.0 Atom 1.0 Logo' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 1.0 Atom 1.0 Logo' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1814,10 +1813,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 1.0 URL' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 1.0 URL' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<image>
@@ -1825,10 +1824,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 2.0 Atom 1.0 Icon' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 2.0 Atom 1.0 Icon' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1836,10 +1835,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 2.0 Atom 1.0 Logo' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 2.0 Atom 1.0 Logo' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1847,10 +1846,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 2.0 URL' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 2.0 URL' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -1860,47 +1859,47 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-		];
-	}
+                ,
+                'http://example.com/',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getImageUrlDataProvider
-	 */
-	public function test_get_image_url($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getImageUrlDataProvider
+     */
+    public function test_get_image_url($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_image_url());
-	}
+        $this->assertSame($expected, $feed->get_image_url());
+    }
 
-	public function getImageWidthDataProvider()
-	{
-		return [
-			'Test Atom 1.0 Icon Default' => [
+    public function getImageWidthDataProvider()
+    {
+        return [
+            'Test Atom 1.0 Icon Default' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<icon>http://example.com/</icon>
 </feed>
 EOT
-				,
-				NULL,
-			],
-			'Test Atom 1.0 Logo Default' => [
+                ,
+                null,
+            ],
+            'Test Atom 1.0 Logo Default' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<logo>http://example.com/</logo>
 </feed>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.90 Atom 1.0 Icon' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.90 Atom 1.0 Icon' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1908,10 +1907,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.90 Atom 1.0 Logo' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.90 Atom 1.0 Logo' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1919,10 +1918,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.90' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.90' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<image>
@@ -1930,10 +1929,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Icon' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Icon' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -1942,10 +1941,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Logo' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Logo' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -1954,10 +1953,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Netscape' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Netscape' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -1968,10 +1967,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				88.0,
-			],
-			'Test RSS 0.91-Netscape Width' => [
+                ,
+                88.0,
+            ],
+            'Test RSS 0.91-Netscape Width' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -1982,10 +1981,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				100.0,
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Icon' => [
+                ,
+                100.0,
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Icon' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -1993,10 +1992,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Logo' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Logo' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2004,10 +2003,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.91-Userland' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.91-Userland' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -2017,10 +2016,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				88.0,
-			],
-			'Test RSS 0.91-Userland Width' => [
+                ,
+                88.0,
+            ],
+            'Test RSS 0.91-Userland Width' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -2030,10 +2029,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				100.0,
-			],
-			'Test RSS 0.92 Atom 1.0 Icon' => [
+                ,
+                100.0,
+            ],
+            'Test RSS 0.92 Atom 1.0 Icon' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2041,10 +2040,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.92 Atom 1.0 Logo' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.92 Atom 1.0 Logo' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2052,10 +2051,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 0.92' => [
+                ,
+                null,
+            ],
+            'Test RSS 0.92' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -2065,10 +2064,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				88.0,
-			],
-			'Test RSS 0.92 Width' => [
+                ,
+                88.0,
+            ],
+            'Test RSS 0.92 Width' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -2078,10 +2077,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				100.0,
-			],
-			'Test RSS 1.0 Atom 1.0 Icon' => [
+                ,
+                100.0,
+            ],
+            'Test RSS 1.0 Atom 1.0 Icon' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2089,10 +2088,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 1.0 Atom 1.0 Logo' => [
+                ,
+                null,
+            ],
+            'Test RSS 1.0 Atom 1.0 Logo' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2100,10 +2099,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 1.0' => [
+                ,
+                null,
+            ],
+            'Test RSS 1.0' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<image>
@@ -2111,10 +2110,10 @@ EOT
 	</image>
 </rdf:RDF>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 2.0 Atom 1.0 Icon' => [
+                ,
+                null,
+            ],
+            'Test RSS 2.0 Atom 1.0 Icon' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2122,10 +2121,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 2.0 Atom 1.0 Logo' => [
+                ,
+                null,
+            ],
+            'Test RSS 2.0 Atom 1.0 Logo' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2133,10 +2132,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				NULL,
-			],
-			'Test RSS 2.0' => [
+                ,
+                null,
+            ],
+            'Test RSS 2.0' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2146,10 +2145,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				88.0,
-			],
-			'Test RSS 2.0 Width' => [
+                ,
+                88.0,
+            ],
+            'Test RSS 2.0 Width' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2159,83 +2158,83 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				100.0,
-			],
-		];
-	}
+                ,
+                100.0,
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getImageWidthDataProvider
-	 */
-	public function test_get_image_width($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getImageWidthDataProvider
+     */
+    public function test_get_image_width($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_image_width());
-	}
+        $this->assertSame($expected, $feed->get_image_width());
+    }
 
-	public function getLanguageDataProvider()
-	{
-		return [
-			'Test Atom 0.3 DC 1.0 Language' => [
+    public function getLanguageDataProvider()
+    {
+        return [
+            'Test Atom 0.3 DC 1.0 Language' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:language>en-GB</dc:language>
 </feed>
 EOT
-				,
-				'en-GB',
-			],
-			'Test Atom 0.3 DC 1.1 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test Atom 0.3 DC 1.1 Language' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:language>en-GB</dc:language>
 </feed>
 EOT
-				,
-				'en-GB',
-			],
-			'Test Atom 0.3 xmllang' => [
+                ,
+                'en-GB',
+            ],
+            'Test Atom 0.3 xmllang' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xml:lang="en-GB">
 	<title>Feed Title</title>
 </feed>
 EOT
-				,
-				'en-GB',
-			],
-			'Test Atom 1.0 DC 1.0 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test Atom 1.0 DC 1.0 Language' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:language>en-GB</dc:language>
 </feed>
 EOT
-				,
-				'en-GB',
-			],
-			'Test Atom 1.0 DC 1.1 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test Atom 1.0 DC 1.1 Language' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:language>en-GB</dc:language>
 </feed>
 EOT
-				,
-				'en-GB',
-			],
-			'Test Atom 1.0 xmllang' => [
+                ,
+                'en-GB',
+            ],
+            'Test Atom 1.0 xmllang' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-GB">
 	<title>Feed Title</title>
 </feed>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.90 DC 1.0 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.90 DC 1.0 Language' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -2243,10 +2242,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.90 DC 1.1 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.90 DC 1.1 Language' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -2254,10 +2253,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.91-Netscape DC 1.0 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.91-Netscape DC 1.0 Language' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -2266,10 +2265,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.91-Netscape DC 1.1 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.91-Netscape DC 1.1 Language' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -2278,10 +2277,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.91-Netscape Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.91-Netscape Language' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -2290,10 +2289,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.91-Userland DC 1.0 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.91-Userland DC 1.0 Language' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -2301,10 +2300,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.91-Userland DC 1.1 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.91-Userland DC 1.1 Language' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -2312,10 +2311,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.91-Userland Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.91-Userland Language' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -2323,10 +2322,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.92 DC 1.0 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.92 DC 1.0 Language' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -2334,10 +2333,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.92 DC 1.1 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.92 DC 1.1 Language' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -2345,10 +2344,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 0.92 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 0.92 Language' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -2356,10 +2355,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 1.0 DC 1.0 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 1.0 DC 1.0 Language' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -2367,10 +2366,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 1.0 DC 1.1 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 1.0 DC 1.1 Language' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -2378,10 +2377,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 2.0 DC 1.0 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 2.0 DC 1.0 Language' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -2389,10 +2388,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 2.0 DC 1.1 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 2.0 DC 1.1 Language' => [
 <<<EOT
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -2400,10 +2399,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-			'Test RSS 2.0 Language' => [
+                ,
+                'en-GB',
+            ],
+            'Test RSS 2.0 Language' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2411,74 +2410,74 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'en-GB',
-			],
-		];
-	}
+                ,
+                'en-GB',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getLanguageDataProvider
-	 */
-	public function test_get_language($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getLanguageDataProvider
+     */
+    public function test_get_language($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_language());
-	}
+        $this->assertSame($expected, $feed->get_language());
+    }
 
-	public function getLinkDataProvider()
-	{
-		return [
-			'Test Atom 0.3 Link' => [
+    public function getLinkDataProvider()
+    {
+        return [
+            'Test Atom 0.3 Link' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<link href="http://example.com/"/>
 </feed>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test Atom 0.3 Link Alternate' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test Atom 0.3 Link Alternate' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<link href="http://example.com/" rel="alternate"/>
 </feed>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test Atom 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test Atom 1.0 Link' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<link href="http://example.com/"/>
 </feed>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test Atom 1.0 Link Absolute IRI' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test Atom 1.0 Link Absolute IRI' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<link href="http://example.com/" rel="http://www.iana.org/assignments/relation/alternate"/>
 </feed>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test Atom 1.0 Link Relative IRI' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test Atom 1.0 Link Relative IRI' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<link href="http://example.com/" rel="alternate"/>
 </feed>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.90 Atom 0.3 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.90 Atom 0.3 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -2486,10 +2485,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.90 Atom 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.90 Atom 1.0 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2497,10 +2496,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.90 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.90 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<channel>
@@ -2508,10 +2507,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Netscape Atom 0.3 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Netscape Atom 0.3 Link' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
@@ -2520,10 +2519,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Link' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -2532,10 +2531,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Netscape Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Netscape Link' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -2544,10 +2543,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Userland Atom 0.3 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Userland Atom 0.3 Link' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -2555,10 +2554,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Link' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2566,10 +2565,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.91-Userland Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.91-Userland Link' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -2577,10 +2576,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.92 Atom 0.3 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.92 Atom 0.3 Link' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -2588,10 +2587,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.92 Atom 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.92 Atom 1.0 Link' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2599,10 +2598,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 0.92 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 0.92 Link' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -2610,10 +2609,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 1.0 Atom 0.3 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 1.0 Atom 0.3 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -2621,10 +2620,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 1.0 Atom 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 1.0 Atom 1.0 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2632,10 +2631,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 1.0 Link' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<channel>
@@ -2643,10 +2642,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 2.0 Atom 0.3 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 2.0 Atom 0.3 Link' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -2654,10 +2653,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 2.0 Atom 1.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 2.0 Atom 1.0 Link' => [
 <<<EOT
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2665,10 +2664,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-			'Test RSS 2.0 Link' => [
+                ,
+                'http://example.com/',
+            ],
+            'Test RSS 2.0 Link' => [
 <<<EOT
 <rss version="2.0">
 	<channel>
@@ -2676,83 +2675,83 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'http://example.com/',
-			],
-		];
-	}
+                ,
+                'http://example.com/',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getLinkDataProvider
-	 */
-	public function test_get_link($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getLinkDataProvider
+     */
+    public function test_get_link($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_link());
-	}
+        $this->assertSame($expected, $feed->get_link());
+    }
 
-	public function getTitleDataProvider()
-	{
-		return [
-			'Test Atom 0.3 DC 1.0 Title' => [
+    public function getTitleDataProvider()
+    {
+        return [
+            'Test Atom 0.3 DC 1.0 Title' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:title>Feed Title</dc:title>
 </feed>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test Atom 0.3 DC 1.1 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test Atom 0.3 DC 1.1 Title' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:title>Feed Title</dc:title>
 </feed>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test Atom 0.3 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test Atom 0.3 Title' => [
 <<<EOT
 <feed version="0.3" xmlns="http://purl.org/atom/ns#">
 	<title>Feed Title</title>
 </feed>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test Atom 1.0 DC 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test Atom 1.0 DC 1.0 Title' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:title>Feed Title</dc:title>
 </feed>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test Atom 1.0 DC 1.1 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test Atom 1.0 DC 1.1 Title' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:title>Feed Title</dc:title>
 </feed>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test Atom 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test Atom 1.0 Title' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>Feed Title</title>
 </feed>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test Bug 16 Test 0' => [
+                ,
+                'Feed Title',
+            ],
+            'Test Bug 16 Test 0' => [
 <<<EOT
 <!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
 "http://my.netscape.com/publish/formats/rss-0.91.dtd">
@@ -2762,65 +2761,65 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed with DOCTYPE',
-			],
-			'Test Bug 174 Test 0' => [
+                ,
+                'Feed with DOCTYPE',
+            ],
+            'Test Bug 174 Test 0' => [
 <<<EOT
 <?xml version = "1.0" encoding = "UTF-8" ?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>Spaces in prolog</title>
 </feed>
 EOT
-				,
-				'Spaces in prolog',
-			],
-			'Test Bug 20 Test 0' => [
+                ,
+                'Spaces in prolog',
+            ],
+            'Test Bug 20 Test 0' => [
 <<<EOT
 <a:feed xmlns:a="http://www.w3.org/2005/Atom" xmlns="http://www.w3.org/1999/xhtml">
 	<a:title>Non-default namespace</a:title>
 </a:feed>
 EOT
-				,
-				'Non-default namespace',
-			],
-			'Test Bug 20 Test 1' => [
+                ,
+                'Non-default namespace',
+            ],
+            'Test Bug 20 Test 1' => [
 <<<EOT
 <a:feed xmlns:a="http://www.w3.org/2005/Atom" xmlns="http://www.w3.org/1999/xhtml">
 	<a:title type="xhtml"><div>Non-default namespace</div></a:title>
 </a:feed>
 EOT
-				,
-				'Non-default namespace',
-			],
-			'Test Bug 20 Test 2' => [
+                ,
+                'Non-default namespace',
+            ],
+            'Test Bug 20 Test 2' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:h="http://www.w3.org/1999/xhtml">
 	<title type="xhtml"><h:div>Non-default namespace</h:div></title>
 </feed>
 EOT
-				,
-				'Non-default namespace',
-			],
-			'Test Bug 272 Test 0' => [
+                ,
+                'Non-default namespace',
+            ],
+            'Test Bug 272 Test 0' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>Ampersand: <![CDATA[&]]></title>
 </feed>
 EOT
-				,
-				'Ampersand: &amp;',
-			],
-			'Test Bug 272 Test 1' => [
+                ,
+                'Ampersand: &amp;',
+            ],
+            'Test Bug 272 Test 1' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title><![CDATA[&]]>: Ampersand</title>
 </feed>
 EOT
-				,
-				'&amp;: Ampersand',
-			],
-			'Test RSS 0.90 Atom 0.3 Title' => [
+                ,
+                '&amp;: Ampersand',
+            ],
+            'Test RSS 0.90 Atom 0.3 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -2828,10 +2827,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.90 Atom 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.90 Atom 1.0 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2839,10 +2838,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.90 DC 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.90 DC 1.0 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -2850,10 +2849,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.90 DC 1.1 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.90 DC 1.1 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -2861,10 +2860,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.90 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.90 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">
 	<channel>
@@ -2872,10 +2871,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Netscape Atom 0.3 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Netscape Atom 0.3 Title' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
@@ -2884,10 +2883,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Netscape Atom 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Netscape Atom 1.0 Title' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
@@ -2896,10 +2895,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Netscape DC 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Netscape DC 1.0 Title' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -2908,10 +2907,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Netscape DC 1.1 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Netscape DC 1.1 Title' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -2920,10 +2919,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Netscape Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Netscape Title' => [
 <<<EOT
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91">
@@ -2932,10 +2931,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Userland Atom 0.3 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Userland Atom 0.3 Title' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -2943,10 +2942,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Userland Atom 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Userland Atom 1.0 Title' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -2954,10 +2953,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Userland DC 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Userland DC 1.0 Title' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -2965,10 +2964,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Userland DC 1.1 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Userland DC 1.1 Title' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -2976,10 +2975,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.91-Userland Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.91-Userland Title' => [
 <<<EOT
 <rss version="0.91">
 	<channel>
@@ -2987,10 +2986,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.92 Atom 0.3 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.92 Atom 0.3 Title' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -2998,10 +2997,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.92 Atom 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.92 Atom 1.0 Title' => [
 <<<EOT
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -3009,10 +3008,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.92 DC 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.92 DC 1.0 Title' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -3020,10 +3019,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.92 DC 1.1 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.92 DC 1.1 Title' => [
 <<<EOT
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -3031,10 +3030,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 0.92 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 0.92 Title' => [
 <<<EOT
 <rss version="0.92">
 	<channel>
@@ -3042,10 +3041,10 @@ EOT
 	</channel>
 </rss>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 1.0 Atom 0.3 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 1.0 Atom 0.3 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
@@ -3053,10 +3052,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 1.0 Atom 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 1.0 Atom 1.0 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -3064,10 +3063,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 1.0 DC 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 1.0 DC 1.0 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -3075,10 +3074,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 1.0 DC 1.1 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 1.0 DC 1.1 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -3086,10 +3085,10 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-			'Test RSS 1.0 Title' => [
+                ,
+                'Feed Title',
+            ],
+            'Test RSS 1.0 Title' => [
 <<<EOT
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
 	<channel>
@@ -3097,22 +3096,22 @@ EOT
 	</channel>
 </rdf:RDF>
 EOT
-				,
-				'Feed Title',
-			],
-		];
-	}
+                ,
+                'Feed Title',
+            ],
+        ];
+    }
 
-	/**
-	 * @dataProvider getTitleDataProvider
-	 */
-	public function test_get_title($data, $expected)
-	{
-		$feed = new SimplePie();
-		$feed->set_raw_data($data);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * @dataProvider getTitleDataProvider
+     */
+    public function test_get_title($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $this->assertSame($expected, $feed->get_title());
+    }
 }
