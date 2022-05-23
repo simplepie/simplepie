@@ -48,8 +48,8 @@ class_exists('SimplePie\Cache\DB');
 // @trigger_error(sprintf('Using the "SimplePie_Cache_DB" class is deprecated since SimplePie 1.7, use "SimplePie\Cache\DB" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\Cache\DB" instead */
-	abstract class SimplePie_Cache_DB extends DB
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\Cache\DB" instead */
+    abstract class SimplePie_Cache_DB extends DB
+    {
+    }
 }
