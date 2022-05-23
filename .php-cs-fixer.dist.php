@@ -4,6 +4,7 @@ $finder = (new PhpCsFixer\Finder())
     ->in('build')
     ->in('demo')
     ->in('library')
+    ->in('src')
     ->in('tests')
 ;
 
