@@ -30,7 +30,7 @@
 		"ext-xmlreader": "*"
 	},
 	"require-dev": {
-		"friendsofphp/php-cs-fixer": "^3.8",
+		"friendsofphp/php-cs-fixer": "^2.19 || ^3.8",
 		"yoast/phpunit-polyfills": "^1.0.1"
 	},
 	"suggest": {
