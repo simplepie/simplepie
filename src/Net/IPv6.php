@@ -180,10 +180,10 @@ class IPv6
             $pos = strrpos($ip, ':');
             $ipv6_part = substr($ip, 0, $pos);
             $ipv4_part = substr($ip, $pos + 1);
-            return array($ipv6_part, $ipv4_part);
+            return [$ipv6_part, $ipv4_part];
         }
 
-        return array($ip, '');
+        return [$ip, ''];
     }
 
     /**

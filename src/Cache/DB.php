@@ -62,7 +62,7 @@ abstract class DB implements Base
     protected static function prepare_simplepie_object_for_cache($data)
     {
         $items = $data->get_items();
-        $items_by_id = array();
+        $items_by_id = [];
 
         if (!empty($items)) {
             foreach ($items as $item) {
@@ -70,7 +70,7 @@ abstract class DB implements Base
             }
 
             if (count($items_by_id) !== count($items)) {
-                $items_by_id = array();
+                $items_by_id = [];
                 foreach ($items as $item) {
                     $items_by_id[$item->get_id(true)] = $item;
                 }
@@ -112,7 +112,7 @@ abstract class DB implements Base
                 unset($data->data['ordered_items']);
             }
         }
-        return array(serialize($data->data), $items_by_id);
+        return [serialize($data->data), $items_by_id];
     }
 }
 

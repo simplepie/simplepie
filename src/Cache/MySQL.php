@@ -87,17 +87,17 @@ class MySQL extends DB
      */
     public function __construct($location, $name, $type)
     {
-        $this->options = array(
+        $this->options = [
             'user' => null,
             'pass' => null,
             'host' => '127.0.0.1',
             'port' => '3306',
             'path' => '',
-            'extras' => array(
+            'extras' => [
                 'prefix' => '',
                 'cache_purge_time' => 2592000
-            ),
-        );
+            ],
+        ];
 
         $this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
 
@@ -105,7 +105,7 @@ class MySQL extends DB
         $this->options['dbname'] = substr($this->options['path'], 1);
 
         try {
-            $this->mysql = new \PDO("mysql:dbname={$this->options['dbname']};host={$this->options['host']};port={$this->options['port']}", $this->options['user'], $this->options['pass'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+            $this->mysql = new \PDO("mysql:dbname={$this->options['dbname']};host={$this->options['host']};port={$this->options['port']}", $this->options['user'], $this->options['pass'], [\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']);
         } catch (\PDOException $e) {
             $this->mysql = null;
             return;
@@ -118,7 +118,7 @@ class MySQL extends DB
             return;
         }
 
-        $db = array();
+        $db = [];
         while ($row = $query->fetchColumn()) {
             $db[] = $row;
         }
@@ -210,7 +210,7 @@ class MySQL extends DB
                     $query->bindValue(':feed', $this->id);
 
                     if ($query->execute()) {
-                        $existing_ids = array();
+                        $existing_ids = [];
                         while ($row = $query->fetchColumn()) {
                             $existing_ids[] = $row;
                         }

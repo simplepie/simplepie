@@ -112,10 +112,10 @@ class Redis implements Base
         if (!is_null($options) && is_array($options)) {
             $this->options = $options;
         } else {
-            $this->options = array(
+            $this->options = [
                 'prefix' => 'rss:simple_primary:',
                 'expire' => 0,
-            );
+            ];
         }
 
         $this->name = $this->options['prefix'] . $name;

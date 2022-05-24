@@ -11,6 +11,7 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
+        '@PHP54Migration' => true,
         // TODO: Allow `const` after bump requirements to PHP >=7.1
         'visibility_required' => ['elements' => ['property', 'method', /* 'const' */]],
     ])

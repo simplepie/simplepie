@@ -47,20 +47,20 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
 {
     public static function chunkedProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 "25\r\nThis is the data in the first chunk\r\n\r\n1A\r\nand this is the second one\r\n0\r\n",
                 "This is the data in the first chunk\r\nand this is the second one"
-            ),
-            array(
+            ],
+            [
                 "02\r\nab\r\n04\r\nra\nc\r\n06\r\nadabra\r\n0\r\nnothing\n",
                 "abra\ncadabra"
-            ),
-            array(
+            ],
+            [
                 "02\r\nab\r\n04\r\nra\nc\r\n06\r\nadabra\r\n0c\r\n\nall we got\n",
                 "abra\ncadabra\nall we got\n"
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -75,7 +75,7 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
         $this->assertSame(1.1, $parser->http_version);
         $this->assertSame(200, $parser->status_code);
         $this->assertSame('OK', $parser->reason);
-        $this->assertSame(array('content-type' => 'text/plain'), $parser->headers);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
         $this->assertSame($expected, $parser->body);
     }
 
@@ -91,7 +91,7 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
         $this->assertSame(1.1, $parser->http_version);
         $this->assertSame(200, $parser->status_code);
         $this->assertSame('OK', $parser->reason);
-        $this->assertSame(array('content-type' => 'text/plain'), $parser->headers);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
         $this->assertSame($expected, $parser->body);
     }
 
@@ -107,7 +107,7 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
         $this->assertSame(1.1, $parser->http_version);
         $this->assertSame(200, $parser->status_code);
         $this->assertSame('OK', $parser->reason);
-        $this->assertSame(array('content-type' => 'text/plain'), $parser->headers);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
         $this->assertSame($expected, $parser->body);
     }
 }

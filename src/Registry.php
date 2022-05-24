@@ -59,7 +59,7 @@ class Registry
      *
      * @var array
      */
-    protected $default = array(
+    protected $default = [
         'Cache' => 'SimplePie_Cache',
         'Locator' => 'SimplePie_Locator',
         'Parser' => 'SimplePie_Parser',
@@ -79,7 +79,7 @@ class Registry
         'Misc' => 'SimplePie_Misc',
         'XML_Declaration_Parser' => 'SimplePie_XML_Declaration_Parser',
         'Parse_Date' => 'SimplePie_Parse_Date',
-    );
+    ];
 
     /**
      * Class mapping
@@ -87,7 +87,7 @@ class Registry
      * @see register()
      * @var array
      */
-    protected $classes = array();
+    protected $classes = [];
 
     /**
      * Legacy classes
@@ -95,7 +95,7 @@ class Registry
      * @see register()
      * @var array
      */
-    protected $legacy = array();
+    protected $legacy = [];
 
     /**
      * Constructor
@@ -156,7 +156,7 @@ class Registry
      * @param array $parameters Parameters to pass to the constructor
      * @return object Instance of class
      */
-    public function &create($type, $parameters = array())
+    public function &create($type, $parameters = [])
     {
         $class = $this->get_class($type);
 
@@ -165,7 +165,7 @@ class Registry
                 case 'locator':
                     // Legacy: file, timeout, useragent, file_class, max_checked_feeds, content_type_sniffer_class
                     // Specified: file, timeout, useragent, max_checked_feeds
-                    $replacement = array($this->get_class('file'), $parameters[3], $this->get_class('content_type_sniffer'));
+                    $replacement = [$this->get_class('file'), $parameters[3], $this->get_class('content_type_sniffer')];
                     array_splice($parameters, 3, 1, $replacement);
                     break;
             }
@@ -192,7 +192,7 @@ class Registry
      * @param array $parameters
      * @return mixed
      */
-    public function &call($type, $method, $parameters = array())
+    public function &call($type, $method, $parameters = [])
     {
         $class = $this->get_class($type);
 
@@ -203,14 +203,14 @@ class Registry
                     // Cache::create() methods in PHP < 8.0.
                     // No longer supported as of PHP 8.0.
                     if ($method === 'get_handler') {
-                        $result = @call_user_func_array(array($class, 'create'), $parameters);
+                        $result = @call_user_func_array([$class, 'create'], $parameters);
                         return $result;
                     }
                     break;
             }
         }
 
-        $result = call_user_func_array(array($class, $method), $parameters);
+        $result = call_user_func_array([$class, $method], $parameters);
         return $result;
     }
 }

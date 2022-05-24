@@ -80,18 +80,18 @@ class MiscTest extends TestCase
      */
     public function utf8DataProvider()
     {
-        return array(
-            array('A', 'A', 'ASCII'),
-            array("\xa1\xdb", "\xe2\x88\x9e", 'Big5'),
-            array("\xa1\xe7", "\xe2\x88\x9e", 'EUC-JP'),
-            array("\xa1\xde", "\xe2\x88\x9e", 'GBK'),
-            array("\x81\x87", "\xe2\x88\x9e", 'Shift_JIS'),
-            array("\x2b\x49\x68\x34\x2d", "\xe2\x88\x9e", 'UTF-7'),
-            array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
-            array("\xff\xfe\x1e\x22", "\xe2\x88\x9e", 'UTF-16'),
-            array("\x22\x1e", "\xe2\x88\x9e", 'UTF-16BE'),
-            array("\x1e\x22", "\xe2\x88\x9e", 'UTF-16LE'),
-        );
+        return [
+            ['A', 'A', 'ASCII'],
+            ["\xa1\xdb", "\xe2\x88\x9e", 'Big5'],
+            ["\xa1\xe7", "\xe2\x88\x9e", 'EUC-JP'],
+            ["\xa1\xde", "\xe2\x88\x9e", 'GBK'],
+            ["\x81\x87", "\xe2\x88\x9e", 'Shift_JIS'],
+            ["\x2b\x49\x68\x34\x2d", "\xe2\x88\x9e", 'UTF-7'],
+            ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
+            ["\xff\xfe\x1e\x22", "\xe2\x88\x9e", 'UTF-16'],
+            ["\x22\x1e", "\xe2\x88\x9e", 'UTF-16BE'],
+            ["\x1e\x22", "\xe2\x88\x9e", 'UTF-16LE'],
+        ];
     }
 
     /**
@@ -110,9 +110,9 @@ class MiscTest extends TestCase
      */
     public function utf8MbstringDataProvider()
     {
-        return array(
-            array("\xa1\xc4", "\xe2\x88\x9e", 'EUC-KR'),
-        );
+        return [
+            ["\xa1\xc4", "\xe2\x88\x9e", 'EUC-KR'],
+        ];
     }
 
     /**
@@ -136,9 +136,9 @@ class MiscTest extends TestCase
      */
     public function utf8IconvDataProvider()
     {
-        return array(
-            array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
-        );
+        return [
+            ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
+        ];
     }
 
     /**
@@ -162,9 +162,9 @@ class MiscTest extends TestCase
      */
     public function utf8IntlDataProvider()
     {
-        return array(
-            array("\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'),
-        );
+        return [
+            ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
+        ];
     }
 
     /**
@@ -189,10 +189,10 @@ class MiscTest extends TestCase
      */
     public function utf16DataProvider()
     {
-        return array(
-            array("\x22\x1e", "\x22\x1e", 'UTF-16BE'),
-            array("\x1e\x22", "\x22\x1e", 'UTF-16LE'),
-        );
+        return [
+            ["\x22\x1e", "\x22\x1e", 'UTF-16BE'],
+            ["\x1e\x22", "\x22\x1e", 'UTF-16LE'],
+        ];
     }
 
     /**

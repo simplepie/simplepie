@@ -62,12 +62,12 @@ class Cache
      * {@see register()}
      * @var array
      */
-    protected static $handlers = array(
+    protected static $handlers = [
         'mysql'     => 'SimplePie\Cache\MySQL',
         'memcache'  => 'SimplePie\Cache\Memcache',
         'memcached' => 'SimplePie\Cache\Memcached',
         'redis'     => 'SimplePie\Cache\Redis'
-    );
+    ];
 
     /**
      * Don't call the constructor. Please.
@@ -127,7 +127,7 @@ class Cache
     public static function parse_URL($url)
     {
         $params = parse_url($url);
-        $params['extras'] = array();
+        $params['extras'] = [];
         if (isset($params['query'])) {
             parse_str($params['query'], $params['extras']);
         }

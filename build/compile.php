@@ -55,7 +55,7 @@ $compiled .= "\n";
 
 // Add all the files in the SimplePie directory
 $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(SP_PATH . '/src', FilesystemIterator::SKIP_DOTS));
-$file_paths = array();
+$file_paths = [];
 $first_file = '';
 $last_file = '';
 

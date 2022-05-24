@@ -65,7 +65,7 @@ class Date
      * @access protected
      * @var array
      */
-    public $day = array(
+    public $day = [
         // English
         'mon' => 1,
         'monday' => 1,
@@ -162,7 +162,7 @@ class Date
         'Пт.' => 5,
         'Сб.' => 6,
         'Вс.' => 7,
-    );
+    ];
 
     /**
      * List of months, calendar month name => calendar month number
@@ -170,7 +170,7 @@ class Date
      * @access protected
      * @var array
      */
-    public $month = array(
+    public $month = [
         // English
         'jan' => 1,
         'january' => 1,
@@ -344,7 +344,7 @@ class Date
         'Дек' => 12,
         'декабря' => 12,
 
-    );
+    ];
 
     /**
      * List of timezones, abbreviation => offset from UTC
@@ -352,7 +352,7 @@ class Date
      * @access protected
      * @var array
      */
-    public $timezone = array(
+    public $timezone = [
         'ACDT' => 37800,
         'ACIT' => 28800,
         'ACST' => 34200,
@@ -553,7 +553,7 @@ class Date
         'YAPT' => 36000,
         'YEKST' => 21600,
         'YEKT' => 18000,
-    );
+    ];
 
     /**
      * Cached PCRE for Date::$day
@@ -577,7 +577,7 @@ class Date
      * @access private
      * @var array
      */
-    public $built_in = array();
+    public $built_in = [];
 
     /**
      * Array of user-added callback methods
@@ -585,7 +585,7 @@ class Date
      * @access private
      * @var array
      */
-    public $user = array();
+    public $user = [];
 
     /**
      * Create new Date object, and set self::day_pcre,
@@ -645,7 +645,7 @@ class Date
         }
 
         foreach ($this->built_in as $method) {
-            if (($returned = call_user_func(array($this, $method), $date)) !== false) {
+            if (($returned = call_user_func([$this, $method], $date)) !== false) {
                 return $returned;
             }
         }

@@ -59,7 +59,7 @@ class File
     public $url;
     public $useragent;
     public $success = true;
-    public $headers = array();
+    public $headers = [];
     public $body;
     public $status_code = 0;
     public $redirects = 0;
@@ -67,7 +67,7 @@ class File
     public $method = \SimplePie\SimplePie::FILE_SOURCE_NONE;
     public $permanent_url;
 
-    public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = array())
+    public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
     {
         if (class_exists('idna_convert')) {
             $idn = new \idna_convert();
@@ -83,12 +83,12 @@ class File
                 $this->useragent = $useragent;
             }
             if (!is_array($headers)) {
-                $headers = array();
+                $headers = [];
             }
             if (!$force_fsockopen && function_exists('curl_exec')) {
                 $this->method = \SimplePie\SimplePie::FILE_SOURCE_REMOTE | \SimplePie\SimplePie::FILE_SOURCE_CURL;
                 $fp = curl_init();
-                $headers2 = array();
+                $headers2 = [];
                 foreach ($headers as $key => $value) {
                     $headers2[] = "$key: $value";
                 }
@@ -129,7 +129,7 @@ class File
                         $this->headers = $parser->headers;
                         $this->body = trim($parser->body);
                         $this->status_code = $parser->status_code;
-                        if ((in_array($this->status_code, array(300, 301, 302, 303, 307)) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
+                        if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($this->headers['location'], $url);
                             $previousStatusCode = $this->status_code;
@@ -194,7 +194,7 @@ class File
                             $this->headers = $parser->headers;
                             $this->body = $parser->body;
                             $this->status_code = $parser->status_code;
-                            if ((in_array($this->status_code, array(300, 301, 302, 303, 307)) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
+                            if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
                                 $this->redirects++;
                                 $location = \SimplePie\Misc::absolutize_url($this->headers['location'], $url);
                                 $previousStatusCode = $this->status_code;

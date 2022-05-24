@@ -56,20 +56,20 @@ class Locator
     public $useragent;
     public $timeout;
     public $file;
-    public $local = array();
-    public $elsewhere = array();
-    public $cached_entities = array();
+    public $local = [];
+    public $elsewhere = [];
+    public $cached_entities = [];
     public $http_base;
     public $base;
     public $base_location = 0;
     public $checked_feeds = 0;
     public $max_checked_feeds = 10;
     public $force_fsockopen = false;
-    public $curl_options = array();
+    public $curl_options = [];
     public $dom;
     protected $registry;
 
-    public function __construct(\SimplePie\File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = array())
+    public function __construct(\SimplePie\File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [])
     {
         $this->file = $file;
         $this->useragent = $useragent;
@@ -81,7 +81,7 @@ class Locator
         if (class_exists('DOMDocument') && $this->file->body != '') {
             $this->dom = new \DOMDocument();
 
-            set_error_handler(array('SimplePie\Misc', 'silence_errors'));
+            set_error_handler(['SimplePie\Misc', 'silence_errors']);
             try {
                 $this->dom->loadHTML($this->file->body);
             } catch (\Throwable $ex) {
@@ -105,7 +105,7 @@ class Locator
         }
 
         if ($this->file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
-            $sniffer = $this->registry->create('Content_Type_Sniffer', array($this->file));
+            $sniffer = $this->registry->create('Content_Type_Sniffer', [$this->file]);
             if ($sniffer->get_type() !== 'text/html') {
                 return null;
             }
@@ -142,11 +142,11 @@ class Locator
     public function is_feed($file, $check_html = false)
     {
         if ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
-            $sniffer = $this->registry->create('Content_Type_Sniffer', array($file));
+            $sniffer = $this->registry->create('Content_Type_Sniffer', [$file]);
             $sniffed = $sniffer->get_type();
-            $mime_types = array('application/rss+xml', 'application/rdf+xml',
+            $mime_types = ['application/rss+xml', 'application/rdf+xml',
                                 'text/rdf', 'application/atom+xml', 'text/xml',
-                                'application/xml', 'application/x-rss+xml');
+                                'application/xml', 'application/x-rss+xml'];
             if ($check_html) {
                 $mime_types[] = 'text/html';
             }
@@ -169,7 +169,7 @@ class Locator
         $elements = $this->dom->getElementsByTagName('base');
         foreach ($elements as $element) {
             if ($element->hasAttribute('href')) {
-                $base = $this->registry->call('Misc', 'absolutize_url', array(trim($element->getAttribute('href')), $this->http_base));
+                $base = $this->registry->call('Misc', 'absolutize_url', [trim($element->getAttribute('href')), $this->http_base]);
                 if ($base === false) {
                     continue;
                 }
@@ -182,8 +182,8 @@ class Locator
 
     public function autodiscovery()
     {
-        $done = array();
-        $feeds = array();
+        $done = [];
+        $feeds = [];
         $feeds = array_merge($feeds, $this->search_elements_by_tag('link', $done, $feeds));
         $feeds = array_merge($feeds, $this->search_elements_by_tag('a', $done, $feeds));
         $feeds = array_merge($feeds, $this->search_elements_by_tag('area', $done, $feeds));
@@ -207,24 +207,24 @@ class Locator
                 break;
             }
             if ($link->hasAttribute('href') && $link->hasAttribute('rel')) {
-                $rel = array_unique($this->registry->call('Misc', 'space_separated_tokens', array(strtolower($link->getAttribute('rel')))));
+                $rel = array_unique($this->registry->call('Misc', 'space_separated_tokens', [strtolower($link->getAttribute('rel'))]));
                 $line = method_exists($link, 'getLineNo') ? $link->getLineNo() : 1;
 
                 if ($this->base_location < $line) {
-                    $href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->base));
+                    $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
                 } else {
-                    $href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->http_base));
+                    $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
                 }
                 if ($href === false) {
                     continue;
                 }
 
-                if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower($this->registry->call('Misc', 'parse_mime', array($link->getAttribute('type')))), array('text/html', 'application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href])) {
+                if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower($this->registry->call('Misc', 'parse_mime', [$link->getAttribute('type')])), ['text/html', 'application/rss+xml', 'application/atom+xml'])) && !isset($feeds[$href])) {
                     $this->checked_feeds++;
-                    $headers = array(
+                    $headers = [
                         'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-                    );
-                    $feed = $this->registry->create('File', array($href, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options));
+                    ];
+                    $feed = $this->registry->create('File', [$href, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                     if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true)) {
                         $feeds[$href] = $feed;
                     }
@@ -246,18 +246,18 @@ class Locator
         foreach ($links as $link) {
             if ($link->hasAttribute('href')) {
                 $href = trim($link->getAttribute('href'));
-                $parsed = $this->registry->call('Misc', 'parse_url', array($href));
+                $parsed = $this->registry->call('Misc', 'parse_url', [$href]);
                 if ($parsed['scheme'] === '' || preg_match('/^(https?|feed)?$/i', $parsed['scheme'])) {
                     if (method_exists($link, 'getLineNo') && $this->base_location < $link->getLineNo()) {
-                        $href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->base));
+                        $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
                     } else {
-                        $href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->http_base));
+                        $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
                     }
                     if ($href === false) {
                         continue;
                     }
 
-                    $current = $this->registry->call('Misc', 'parse_url', array($this->file->url));
+                    $current = $this->registry->call('Misc', 'parse_url', [$this->file->url]);
 
                     if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
                         $this->local[] = $href;
@@ -290,7 +290,7 @@ class Locator
         $query = '//a[@rel and @href] | //link[@rel and @href]';
         foreach ($xpath->query($query) as $link) {
             $href = trim($link->getAttribute('href'));
-            $parsed = $this->registry->call('Misc', 'parse_url', array($href));
+            $parsed = $this->registry->call('Misc', 'parse_url', [$href]);
             if ($parsed['scheme'] === '' ||
                 preg_match('/^https?$/i', $parsed['scheme'])) {
                 if (method_exists($link, 'getLineNo') &&
@@ -299,16 +299,16 @@ class Locator
                         $this->registry->call(
                             'Misc',
                             'absolutize_url',
-                            array(trim($link->getAttribute('href')),
-                                                    $this->base)
+                            [trim($link->getAttribute('href')),
+                                                    $this->base]
                         );
                 } else {
                     $href =
                         $this->registry->call(
                             'Misc',
                             'absolutize_url',
-                            array(trim($link->getAttribute('href')),
-                                                    $this->http_base)
+                            [trim($link->getAttribute('href')),
+                                                    $this->http_base]
                         );
                 }
                 if ($href === false) {
@@ -329,15 +329,15 @@ class Locator
             if ($this->checked_feeds === $this->max_checked_feeds) {
                 break;
             }
-            if (in_array(strtolower(strrchr($value, '.')), array('.rss', '.rdf', '.atom', '.xml'))) {
+            if (in_array(strtolower(strrchr($value, '.')), ['.rss', '.rdf', '.atom', '.xml'])) {
                 $this->checked_feeds++;
 
-                $headers = array(
+                $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-                );
-                $feed = $this->registry->create('File', array($value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options));
+                ];
+                $feed = $this->registry->create('File', [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                 if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
-                    return array($feed);
+                    return [$feed];
                 } else {
                     unset($array[$key]);
                 }
@@ -354,12 +354,12 @@ class Locator
             }
             if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
                 $this->checked_feeds++;
-                $headers = array(
+                $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-                );
-                $feed = $this->registry->create('File', array($value, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen, $this->curl_options));
+                ];
+                $feed = $this->registry->create('File', [$value, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                 if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
-                    return array($feed);
+                    return [$feed];
                 } else {
                     unset($array[$key]);
                 }

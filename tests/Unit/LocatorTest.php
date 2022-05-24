@@ -69,14 +69,14 @@ class LocatorTest extends TestCase
 
     public function feedmimetypes()
     {
-        return array(
-            array('application/rss+xml'),
-            array('application/rdf+xml'),
-            array('text/rdf'),
-            array('application/atom+xml'),
-            array('text/xml'),
-            array('application/xml'),
-        );
+        return [
+            ['application/rss+xml'],
+            ['application/rdf+xml'],
+            ['text/rdf'],
+            ['application/atom+xml'],
+            ['text/xml'],
+            ['application/xml'],
+        ];
     }
     /**
      * @dataProvider feedmimetypes
@@ -149,11 +149,11 @@ class LocatorTest extends TestCase
      */
     public function firefoxTestDataProvider()
     {
-        $data = array(
-            array(new File(dirname(__DIR__) . '/data/fftests.html'))
-        );
+        $data = [
+            [new File(dirname(__DIR__) . '/data/fftests.html')]
+        ];
         foreach ($data as &$row) {
-            $row[0]->headers = array('content-type' => 'text/html');
+            $row[0]->headers = ['content-type' => 'text/html'];
             $row[0]->method = SimplePie::FILE_SOURCE_REMOTE;
             $row[0]->url = 'http://example.com/';
         }
@@ -172,7 +172,7 @@ class LocatorTest extends TestCase
         $registry->register('File', 'SimplePie\Tests\Fixtures\FileMock');
         $locator->set_registry($registry);
 
-        $expected = array();
+        $expected = [];
         $document = new DOMDocument();
         $document->loadHTML($data->body);
         $xpath = new DOMXPath($document);
@@ -184,9 +184,9 @@ class LocatorTest extends TestCase
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
         $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
         $this->assertInstanceOf('SimplePie\Tests\Fixtures\FileMock', $feed);
-        $success = array_filter($expected, array(get_class(), 'filter_success'));
+        $success = array_filter($expected, [get_class(), 'filter_success']);
 
-        $found = array_map(array(get_class(), 'map_url_file'), $all);
+        $found = array_map([get_class(), 'map_url_file'], $all);
         $this->assertSame($success, $found);
     }
 

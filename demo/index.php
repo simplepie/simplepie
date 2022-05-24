@@ -204,12 +204,12 @@ $feed->handle_content_type();
                         if ($enclosure = $item->get_enclosure(0)) {
                             // Use the embed() method to embed the enclosure into the page inline.
                             echo '<div align="center">';
-                            echo '<p>' . $enclosure->embed(array(
+                            echo '<p>' . $enclosure->embed([
                                 'audio' => './for_the_demo/place_audio.png',
                                 'video' => './for_the_demo/place_video.png',
                                 'mediaplayer' => './for_the_demo/mediaplayer.swf',
                                 'altclass' => 'download'
-                            )) . '</p>';
+                            ]) . '</p>';
 
                             if ($enclosure->get_link() && $enclosure->get_type()) {
                                 echo '<p class="footnote" align="center">(' . $enclosure->get_type();

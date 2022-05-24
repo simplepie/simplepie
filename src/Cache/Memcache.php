@@ -90,14 +90,14 @@ class Memcache implements Base
      */
     public function __construct($location, $name, $type)
     {
-        $this->options = array(
+        $this->options = [
             'host' => '127.0.0.1',
             'port' => 11211,
-            'extras' => array(
+            'extras' => [
                 'timeout' => 3600, // one hour
                 'prefix' => 'simplepie_',
-            ),
-        );
+            ],
+        ];
         $this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
 
         $this->name = $this->options['extras']['prefix'] . md5("$name:$type");

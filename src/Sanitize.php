@@ -60,11 +60,11 @@ class Sanitize
     // Options
     public $remove_div = true;
     public $image_handler = '';
-    public $strip_htmltags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style');
+    public $strip_htmltags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'];
     public $encode_instead_of_strip = false;
-    public $strip_attributes = array('bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc');
-    public $rename_attributes = array();
-    public $add_attributes = array('audio' => array('preload' => 'none'), 'iframe' => array('sandbox' => 'allow-scripts allow-same-origin'), 'video' => array('preload' => 'none'));
+    public $strip_attributes = ['bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'];
+    public $rename_attributes = [];
+    public $add_attributes = ['audio' => ['preload' => 'none'], 'iframe' => ['sandbox' => 'allow-scripts allow-same-origin'], 'video' => ['preload' => 'none']];
     public $strip_comments = false;
     public $output_encoding = 'UTF-8';
     public $enable_cache = true;
@@ -82,7 +82,7 @@ class Sanitize
      * Array is a tree split at DNS levels. Example:
      * array('biz' => true, 'com' => array('example' => true), 'net' => array('example' => array('www' => true)))
      */
-    public $https_domains = array();
+    public $https_domains = [];
 
     public function __construct()
     {
@@ -139,7 +139,7 @@ class Sanitize
         }
     }
 
-    public function strip_htmltags($tags = array('base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'))
+    public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
     {
         if ($tags) {
             if (is_array($tags)) {
@@ -157,7 +157,7 @@ class Sanitize
         $this->encode_instead_of_strip = (bool) $encode;
     }
 
-    public function rename_attributes($attribs = array())
+    public function rename_attributes($attribs = [])
     {
         if ($attribs) {
             if (is_array($attribs)) {
@@ -170,7 +170,7 @@ class Sanitize
         }
     }
 
-    public function strip_attributes($attribs = array('bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'))
+    public function strip_attributes($attribs = ['bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'])
     {
         if ($attribs) {
             if (is_array($attribs)) {
@@ -183,7 +183,7 @@ class Sanitize
         }
     }
 
-    public function add_attributes($attribs = array('audio' => array('preload' => 'none'), 'iframe' => array('sandbox' => 'allow-scripts allow-same-origin'), 'video' => array('preload' => 'none')))
+    public function add_attributes($attribs = ['audio' => ['preload' => 'none'], 'iframe' => ['sandbox' => 'allow-scripts allow-same-origin'], 'video' => ['preload' => 'none']])
     {
         if ($attribs) {
             if (is_array($attribs)) {
@@ -220,26 +220,26 @@ class Sanitize
     public function set_url_replacements($element_attribute = null)
     {
         if ($element_attribute === null) {
-            $element_attribute = array(
+            $element_attribute = [
                 'a' => 'href',
                 'area' => 'href',
                 'audio' => 'src',
                 'blockquote' => 'cite',
                 'del' => 'cite',
                 'form' => 'action',
-                'img' => array(
+                'img' => [
                     'longdesc',
                     'src'
-                ),
+                ],
                 'input' => 'src',
                 'ins' => 'cite',
                 'q' => 'cite',
                 'source' => 'src',
-                'video' => array(
+                'video' => [
                     'poster',
                     'src'
-                )
-            );
+                ]
+            ];
         }
         $this->replace_url_attributes = (array) $element_attribute;
     }
@@ -251,7 +251,7 @@ class Sanitize
      */
     public function set_https_domains($domains)
     {
-        $this->https_domains = array();
+        $this->https_domains = [];
         foreach ($domains as $domain) {
             $domain = trim($domain, ". \t\n\r\0\x0B");
             $segments = array_reverse(explode('.', $domain));
@@ -261,7 +261,7 @@ class Sanitize
                     break;
                 }
                 if (!isset($node[$segment])) {
-                    $node[$segment] = array();
+                    $node[$segment] = [];
                 }
                 $node =& $node[$segment];
             }
@@ -323,7 +323,7 @@ class Sanitize
 
                 $data = $this->preprocess($data, $type);
 
-                set_error_handler(array('SimplePie\Misc', 'silence_errors'));
+                set_error_handler(['SimplePie\Misc', 'silence_errors']);
                 $document->loadHTML($data);
                 restore_error_handler();
 
@@ -377,16 +377,16 @@ class Sanitize
                     foreach ($images as $img) {
                         if ($img->hasAttribute('src')) {
                             $image_url = call_user_func($this->cache_name_function, $img->getAttribute('src'));
-                            $cache = $this->registry->call('Cache', 'get_handler', array($this->cache_location, $image_url, 'spi'));
+                            $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $image_url, 'spi']);
 
                             if ($cache->load()) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
-                                $file = $this->registry->create('File', array($img->getAttribute('src'), $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen));
+                                $file = $this->registry->create('File', [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen]);
                                 $headers = $file->headers;
 
                                 if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
-                                    if ($cache->save(array('headers' => $file->headers, 'body' => $file->body))) {
+                                    if ($cache->save(['headers' => $file->headers, 'body' => $file->body])) {
                                         $img->setAttribute('src', $this->image_handler . $image_url);
                                     } else {
                                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
@@ -413,7 +413,7 @@ class Sanitize
             }
 
             if ($type & \SimplePie\SimplePie::CONSTRUCT_IRI) {
-                $absolute = $this->registry->call('Misc', 'absolutize_url', array($data, $base));
+                $absolute = $this->registry->call('Misc', 'absolutize_url', [$data, $base]);
                 if ($absolute !== false) {
                     $data = $absolute;
                 }
@@ -424,7 +424,7 @@ class Sanitize
             }
 
             if ($this->output_encoding !== 'UTF-8') {
-                $data = $this->registry->call('Misc', 'change_encoding', array($data, 'UTF-8', $this->output_encoding));
+                $data = $this->registry->call('Misc', 'change_encoding', [$data, 'UTF-8', $this->output_encoding]);
             }
         }
         return $data;
@@ -454,7 +454,7 @@ class Sanitize
     public function replace_urls($document, $tag, $attributes)
     {
         if (!is_array($attributes)) {
-            $attributes = array($attributes);
+            $attributes = [$attributes];
         }
 
         if (!is_array($this->strip_htmltags) || !in_array($tag, $this->strip_htmltags)) {
@@ -462,7 +462,7 @@ class Sanitize
             foreach ($elements as $element) {
                 foreach ($attributes as $attribute) {
                     if ($element->hasAttribute($attribute)) {
-                        $value = $this->registry->call('Misc', 'absolutize_url', array($element->getAttribute($attribute), $this->base));
+                        $value = $this->registry->call('Misc', 'absolutize_url', [$element->getAttribute($attribute), $this->base]);
                         if ($value !== false) {
                             $value = $this->https_url($value);
                             $element->setAttribute($attribute, $value);
@@ -476,14 +476,14 @@ class Sanitize
     public function do_strip_htmltags($match)
     {
         if ($this->encode_instead_of_strip) {
-            if (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style'))) {
+            if (isset($match[4]) && !in_array(strtolower($match[1]), ['script', 'style'])) {
                 $match[1] = htmlspecialchars($match[1], ENT_COMPAT, 'UTF-8');
                 $match[2] = htmlspecialchars($match[2], ENT_COMPAT, 'UTF-8');
                 return "&lt;$match[1]$match[2]&gt;$match[3]&lt;/$match[1]&gt;";
             } else {
                 return htmlspecialchars($match[0], ENT_COMPAT, 'UTF-8');
             }
-        } elseif (isset($match[4]) && !in_array(strtolower($match[1]), array('script', 'style'))) {
+        } elseif (isset($match[4]) && !in_array(strtolower($match[1]), ['script', 'style'])) {
             return $match[4];
         } else {
             return '';
@@ -498,10 +498,10 @@ class Sanitize
                 $fragment = $document->createDocumentFragment();
 
                 // For elements which aren't script or style, include the tag itself
-                if (!in_array($tag, array('script', 'style'))) {
+                if (!in_array($tag, ['script', 'style'])) {
                     $text = '<' . $tag;
                     if ($element->hasAttributes()) {
-                        $attrs = array();
+                        $attrs = [];
                         foreach ($element->attributes as $name => $attr) {
                             $value = $attr->value;
 
@@ -530,7 +530,7 @@ class Sanitize
                     $fragment->appendChild($child);
                 }
 
-                if (!in_array($tag, array('script', 'style'))) {
+                if (!in_array($tag, ['script', 'style'])) {
                     $fragment->appendChild(new \DOMText('</' . $tag . '>'));
                 }
 
@@ -538,7 +538,7 @@ class Sanitize
             }
 
             return;
-        } elseif (in_array($tag, array('script', 'style'))) {
+        } elseif (in_array($tag, ['script', 'style'])) {
             foreach ($elements as $element) {
                 $element->parentNode->removeChild($element);
             }

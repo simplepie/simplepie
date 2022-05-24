@@ -70,7 +70,7 @@ class SimplePieTest extends TestCase
     private function createFeedWithTemplate($template, $data)
     {
         if (!is_array($data)) {
-            $data = array($data);
+            $data = [$data];
         }
         $xml = vsprintf($template, $data);
         $feed = new SimplePie();
@@ -83,27 +83,27 @@ class SimplePieTest extends TestCase
 
     public static function titleDataProvider()
     {
-        return array(
-            array('Feed Title', 'Feed Title'),
+        return [
+            ['Feed Title', 'Feed Title'],
 
             // RSS Profile tests
-            array('AT&amp;T', 'AT&amp;T'),
-            array('AT&#x26;T', 'AT&amp;T'),
-            array("Bill &amp; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"),
-            array("Bill &#x26; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"),
-            array('The &amp; entity', 'The &amp; entity'),
-            array('The &#x26; entity', 'The &amp; entity'),
-            array('The &amp;amp; entity', 'The &amp;amp; entity'),
-            array('The &#x26;amp; entity', 'The &amp;amp; entity'),
-            array('I &lt;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'),
-            array('I &#x3C;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'),
-            array('A &lt; B', 'A &lt; B'),
-            array('A &#x3C; B', 'A &lt; B'),
-            array('A&lt;B', 'A&lt;B'),
-            array('A&#x3C;B', 'A&lt;B'),
-            array("Nice &lt;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"),
-            array("Nice &#x3C;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"),
-        );
+            ['AT&amp;T', 'AT&amp;T'],
+            ['AT&#x26;T', 'AT&amp;T'],
+            ["Bill &amp; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"],
+            ["Bill &#x26; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"],
+            ['The &amp; entity', 'The &amp; entity'],
+            ['The &#x26; entity', 'The &amp; entity'],
+            ['The &amp;amp; entity', 'The &amp;amp; entity'],
+            ['The &#x26;amp; entity', 'The &amp;amp; entity'],
+            ['I &lt;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'],
+            ['I &#x3C;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'],
+            ['A &lt; B', 'A &lt; B'],
+            ['A &#x3C; B', 'A &lt; B'],
+            ['A&lt;B', 'A&lt;B'],
+            ['A&#x3C;B', 'A&lt;B'],
+            ["Nice &lt;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"],
+            ["Nice &#x3C;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"],
+        ];
     }
 
     /**

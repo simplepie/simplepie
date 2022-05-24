@@ -77,7 +77,7 @@ class Parser
      *
      * @var array
      */
-    public $headers = array();
+    public $headers = [];
 
     /**
      * Body of the response
@@ -158,7 +158,7 @@ class Parser
         $this->http_version = '';
         $this->status_code = 0;
         $this->reason = '';
-        $this->headers = array();
+        $this->headers = [];
         $this->body = '';
         return false;
     }

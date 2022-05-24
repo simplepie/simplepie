@@ -60,13 +60,13 @@ class Parser
     public $current_column;
     public $current_byte;
     public $separator = ' ';
-    public $namespace = array('');
-    public $element = array('');
-    public $xml_base = array('');
-    public $xml_base_explicit = array(false);
-    public $xml_lang = array('');
-    public $data = array();
-    public $datas = array(array());
+    public $namespace = [''];
+    public $element = [''];
+    public $xml_base = [''];
+    public $xml_base_explicit = [false];
+    public $xml_lang = [''];
+    public $data = [];
+    public $datas = [[]];
     public $current_xhtml_construct = -1;
     public $encoding;
     protected $registry;
@@ -122,7 +122,7 @@ class Parser
         }
 
         if (substr($data, 0, 5) === '<?xml' && strspn(substr($data, 5, 1), "\x09\x0A\x0D\x20") && ($pos = strpos($data, '?>')) !== false) {
-            $declaration = $this->registry->create('XML_Declaration_Parser', array(substr($data, 5, $pos - 5)));
+            $declaration = $this->registry->create('XML_Declaration_Parser', [substr($data, 5, $pos - 5)]);
             if ($declaration->parse()) {
                 $data = substr($data, $pos + 2);
                 $data = '<?xml version="' . $declaration->version . '" encoding="' . $encoding . '" standalone="' . (($declaration->standalone) ? 'yes' : 'no') . '"?>' ."\n". $this->declare_html_entities() . $data;
@@ -199,7 +199,7 @@ class Parser
                     } else {
                         $tagName = $xml->localName;
                     }
-                    $attributes = array();
+                    $attributes = [];
                     while ($xml->moveToNextAttribute()) {
                         if ($xml->namespaceURI !== '') {
                             $attrName = $xml->namespaceURI . $this->separator . $xml->localName;
@@ -265,14 +265,14 @@ class Parser
     {
         list($this->namespace[], $this->element[]) = $this->split_ns($tag);
 
-        $attribs = array();
+        $attribs = [];
         foreach ($attributes as $name => $value) {
             list($attrib_namespace, $attribute) = $this->split_ns($name);
             $attribs[$attrib_namespace][$attribute] = $value;
         }
 
         if (isset($attribs[\SimplePie\SimplePie::NAMESPACE_XML]['base'])) {
-            $base = $this->registry->call('Misc', 'absolutize_url', array($attribs[\SimplePie\SimplePie::NAMESPACE_XML]['base'], end($this->xml_base)));
+            $base = $this->registry->call('Misc', 'absolutize_url', [$attribs[\SimplePie\SimplePie::NAMESPACE_XML]['base'], end($this->xml_base)]);
             if ($base !== false) {
                 $this->xml_base[] = $base;
                 $this->xml_base_explicit[] = true;
@@ -302,12 +302,12 @@ class Parser
         } else {
             $this->datas[] =& $this->data;
             $this->data =& $this->data['child'][end($this->namespace)][end($this->element)][];
-            $this->data = array('data' => '', 'attribs' => $attribs, 'xml_base' => end($this->xml_base), 'xml_base_explicit' => end($this->xml_base_explicit), 'xml_lang' => end($this->xml_lang));
-            if ((end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_ATOM_03 && in_array(end($this->element), array('title', 'tagline', 'copyright', 'info', 'summary', 'content')) && isset($attribs['']['mode']) && $attribs['']['mode'] === 'xml')
-            || (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_ATOM_10 && in_array(end($this->element), array('rights', 'subtitle', 'summary', 'info', 'title', 'content')) && isset($attribs['']['type']) && $attribs['']['type'] === 'xhtml')
-            || (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_RSS_20 && in_array(end($this->element), array('title')))
-            || (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_RSS_090 && in_array(end($this->element), array('title')))
-            || (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_RSS_10 && in_array(end($this->element), array('title')))) {
+            $this->data = ['data' => '', 'attribs' => $attribs, 'xml_base' => end($this->xml_base), 'xml_base_explicit' => end($this->xml_base_explicit), 'xml_lang' => end($this->xml_lang)];
+            if ((end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_ATOM_03 && in_array(end($this->element), ['title', 'tagline', 'copyright', 'info', 'summary', 'content']) && isset($attribs['']['mode']) && $attribs['']['mode'] === 'xml')
+            || (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_ATOM_10 && in_array(end($this->element), ['rights', 'subtitle', 'summary', 'info', 'title', 'content']) && isset($attribs['']['type']) && $attribs['']['type'] === 'xhtml')
+            || (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_RSS_20 && in_array(end($this->element), ['title']))
+            || (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_RSS_090 && in_array(end($this->element), ['title']))
+            || (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_RSS_10 && in_array(end($this->element), ['title']))) {
                 $this->current_xhtml_construct = 0;
             }
         }
@@ -326,7 +326,7 @@ class Parser
     {
         if ($this->current_xhtml_construct >= 0) {
             $this->current_xhtml_construct--;
-            if (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_XHTML && !in_array(end($this->element), array('area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param'))) {
+            if (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_XHTML && !in_array(end($this->element), ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param'])) {
                 $this->data['data'] .= '</' . end($this->element) . '>';
             }
         }
@@ -344,7 +344,7 @@ class Parser
 
     public function split_ns($string)
     {
-        static $cache = array();
+        static $cache = [];
         if (!isset($cache[$string])) {
             if ($pos = strpos($string, $this->separator)) {
                 static $separator_length;
@@ -365,9 +365,9 @@ class Parser
                     $namespace === \SimplePie\SimplePie::NAMESPACE_MEDIARSS_WRONG5) {
                     $namespace = \SimplePie\SimplePie::NAMESPACE_MEDIARSS;
                 }
-                $cache[$string] = array($namespace, $local_name);
+                $cache[$string] = [$namespace, $local_name];
             } else {
-                $cache[$string] = array('', $string);
+                $cache[$string] = ['', $string];
             }
         }
         return $cache[$string];
@@ -401,12 +401,12 @@ class Parser
     {
         $feed_title = '';
         $feed_author = null;
-        $author_cache = array();
-        $items = array();
-        $entries = array();
+        $author_cache = [];
+        $items = [];
+        $entries = [];
         $mf = \Mf2\parse($data, $url);
         // First look for an h-feed.
-        $h_feed = array();
+        $h_feed = [];
         foreach ($mf['items'] as $mf_item) {
             if (in_array('h-feed', $mf_item['type'])) {
                 $h_feed = $mf_item;
@@ -449,7 +449,7 @@ class Parser
         for ($i = 0; $i < count($entries); $i++) {
             $entry = $entries[$i];
             if (in_array('h-entry', $entry['type'])) {
-                $item = array();
+                $item = [];
                 $title = '';
                 $description = '';
                 if (isset($entry['properties']['url'][0])) {
@@ -457,21 +457,21 @@ class Parser
                     if (isset($link['value'])) {
                         $link = $link['value'];
                     }
-                    $item['link'] = array(array('data' => $link));
+                    $item['link'] = [['data' => $link]];
                 }
                 if (isset($entry['properties']['uid'][0])) {
                     $guid = $entry['properties']['uid'][0];
                     if (isset($guid['value'])) {
                         $guid = $guid['value'];
                     }
-                    $item['guid'] = array(array('data' => $guid));
+                    $item['guid'] = [['data' => $guid]];
                 }
                 if (isset($entry['properties']['name'][0])) {
                     $title = $entry['properties']['name'][0];
                     if (isset($title['value'])) {
                         $title = $title['value'];
                     }
-                    $item['title'] = array(array('data' => $title));
+                    $item['title'] = [['data' => $title]];
                 }
                 if (isset($entry['properties']['author'][0]) || isset($feed_author)) {
                     // author is a special case, it can be plain text or an h-card array.
@@ -505,7 +505,7 @@ class Parser
                             }
                         }
                     }
-                    $item['author'] = array(array('data' => $author));
+                    $item['author'] = [['data' => $author]];
                 }
                 if (isset($entry['properties']['photo'][0])) {
                     // If a photo is also in content, don't need to add it again here.
@@ -513,7 +513,7 @@ class Parser
                     if (isset($entry['properties']['content'][0]['html'])) {
                         $content = $entry['properties']['content'][0]['html'];
                     }
-                    $photo_list = array();
+                    $photo_list = [];
                     for ($j = 0; $j < count($entry['properties']['photo']); $j++) {
                         $photo = $entry['properties']['photo'][$j];
                         if (!empty($photo) && strpos($content, $photo) === false) {
@@ -544,7 +544,7 @@ class Parser
                     // that alt text from images is not included in the title.
                     if ($entry['properties']['content'][0]['value'] === $title) {
                         $title = strip_tags($entry['properties']['content'][0]['html']);
-                        $item['title'] = array(array('data' => $title));
+                        $item['title'] = [['data' => $title]];
                     }
                     $description .= $entry['properties']['content'][0]['html'];
                     if (isset($entry['properties']['in-reply-to'][0])) {
@@ -559,7 +559,7 @@ class Parser
                                 '<a href="'.$in_reply_to.'">'.$in_reply_to.'</a><p>';
                         }
                     }
-                    $item['description'] = array(array('data' => $description));
+                    $item['description'] = [['data' => $description]];
                 }
                 if (isset($entry['properties']['category'])) {
                     $category_csv = '';
@@ -575,47 +575,47 @@ class Parser
                             $category_csv .= $this->parse_hcard($category, true);
                         }
                     }
-                    $item['category'] = array(array('data' => $category_csv));
+                    $item['category'] = [['data' => $category_csv]];
                 }
                 if (isset($entry['properties']['published'][0])) {
                     $timestamp = strtotime($entry['properties']['published'][0]);
                     $pub_date = date('F j Y g:ia', $timestamp).' GMT';
-                    $item['pubDate'] = array(array('data' => $pub_date));
+                    $item['pubDate'] = [['data' => $pub_date]];
                 }
                 // The title and description are set to the empty string to represent
                 // a deleted item (which also makes it an invalid rss item).
                 if (isset($entry['properties']['deleted'][0])) {
-                    $item['title'] = array(array('data' => ''));
-                    $item['description'] = array(array('data' => ''));
+                    $item['title'] = [['data' => '']];
+                    $item['description'] = [['data' => '']];
                 }
-                $items[] = array('child' => array('' => $item));
+                $items[] = ['child' => ['' => $item]];
             }
         }
         // Mimic RSS data format when storing microformats.
-        $link = array(array('data' => $url));
+        $link = [['data' => $url]];
         $image = '';
         if (!is_string($feed_author) &&
                 isset($feed_author['properties']['photo'][0])) {
-            $image = array(array('child' => array('' => array('url' =>
-                array(array('data' => $feed_author['properties']['photo'][0]))))));
+            $image = [['child' => ['' => ['url' =>
+                [['data' => $feed_author['properties']['photo'][0]]]]]]];
         }
         // Use the name given for the h-feed, or get the title from the html.
         if ($feed_title !== '') {
-            $feed_title = array(array('data' => htmlspecialchars($feed_title)));
+            $feed_title = [['data' => htmlspecialchars($feed_title)]];
         } elseif ($position = strpos($data, '<title>')) {
             $start = $position < 200 ? 0 : $position - 200;
             $check = substr($data, $start, 400);
-            $matches = array();
+            $matches = [];
             if (preg_match('/<title>(.+)<\/title>/', $check, $matches)) {
-                $feed_title = array(array('data' => htmlspecialchars($matches[1])));
+                $feed_title = [['data' => htmlspecialchars($matches[1])]];
             }
         }
-        $channel = array('channel' => array(array('child' => array('' =>
-            array('link' => $link, 'image' => $image, 'title' => $feed_title,
-                  'item' => $items)))));
-        $rss = array(array('attribs' => array('' => array('version' => '2.0')),
-                           'child' => array('' => $channel)));
-        $this->data = array('child' => array('' => array('rss' => $rss)));
+        $channel = ['channel' => [['child' => ['' =>
+            ['link' => $link, 'image' => $image, 'title' => $feed_title,
+                  'item' => $items]]]]];
+        $rss = [['attribs' => ['' => ['version' => '2.0']],
+                           'child' => ['' => $channel]]];
+        $this->data = ['child' => ['' => ['rss' => $rss]]];
         return true;
     }
 
