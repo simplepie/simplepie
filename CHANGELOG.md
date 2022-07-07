@@ -7,12 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/simplepie/simplepie/compare/1.7.0...master)
 
-## [1.7.0](https://github.com/simplepie/simplepie/compare/1.6.0...1.7.0) - 2022-05-??
+## [1.7.0](https://github.com/simplepie/simplepie/compare/1.6.0...1.7.0) - 2022-07-??
 
 ### Added
 
 - New class `SimplePie\SimplePie` as a replacement for class `SimplePie`
-- New method `SimplePie\Misc::get_default_useragent` as a replacement for constant `SIMPLEPIE_USERAGENT`
+- New method `SimplePie\Misc::get_default_useragent()` as a replacement for constant `SIMPLEPIE_USERAGENT`
+
+### Changed
+
+- Do not use magic values for state machine state by @jtojnar in [#735](https://github.com/simplepie/simplepie/pull/735)
+- Use PSR-4 classes in Registry by @Art4 in [#736](https://github.com/simplepie/simplepie/pull/736)
+- GH Actions: run tests against PHP 8.2 by @jrfnl in [#739](https://github.com/simplepie/simplepie/pull/739)
 
 ### Fixed
 
