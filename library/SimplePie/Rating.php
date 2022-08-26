@@ -48,8 +48,8 @@ class_exists('SimplePie\Rating');
 // @trigger_error(sprintf('Using the "SimplePie_Rating" class is deprecated since SimplePie 1.7, use "SimplePie\Rating" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\Rating" instead */
-	class SimplePie_Rating extends Rating
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\Rating" instead */
+    class SimplePie_Rating extends Rating
+    {
+    }
 }

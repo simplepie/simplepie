@@ -48,8 +48,8 @@ class_exists('SimplePie\Copyright');
 // @trigger_error(sprintf('Using the "SimplePie_Copyright" class is deprecated since SimplePie 1.7, use "SimplePie\Copyright" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\Copyright" instead */
-	class SimplePie_Copyright extends Copyright
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\Copyright" instead */
+    class SimplePie_Copyright extends Copyright
+    {
+    }
 }

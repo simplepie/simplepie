@@ -48,8 +48,8 @@ class_exists('SimplePie\IRI');
 // @trigger_error(sprintf('Using the "SimplePie_IRI" class is deprecated since SimplePie 1.7, use "SimplePie\IRI" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\IRI" instead */
-	class SimplePie_IRI extends IRI
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\IRI" instead */
+    class SimplePie_IRI extends IRI
+    {
+    }
 }

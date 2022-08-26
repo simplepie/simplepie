@@ -47,13 +47,13 @@ use PHPUnit\Framework\TestCase;
 
 class ExceptionTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\Exception'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\Exception'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Exception'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Exception'));
+    }
 }

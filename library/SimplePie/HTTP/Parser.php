@@ -48,8 +48,8 @@ class_exists('SimplePie\HTTP\Parser');
 // @trigger_error(sprintf('Using the "SimplePie_HTTP_Parser" class is deprecated since SimplePie 1.7, use "SimplePie\HTTP\Parser" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\HTTP\Parser" instead */
-	class SimplePie_HTTP_Parser extends Parser
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\HTTP\Parser" instead */
+    class SimplePie_HTTP_Parser extends Parser
+    {
+    }
 }

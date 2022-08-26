@@ -48,8 +48,8 @@ class_exists('SimplePie\Enclosure');
 // @trigger_error(sprintf('Using the "SimplePie_Enclosure" class is deprecated since SimplePie 1.7, use "SimplePie\Enclosure" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\Enclosure" instead */
-	class SimplePie_Enclosure extends Enclosure
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\Enclosure" instead */
+    class SimplePie_Enclosure extends Enclosure
+    {
+    }
 }

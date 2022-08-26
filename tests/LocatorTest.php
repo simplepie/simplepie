@@ -47,140 +47,138 @@ use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class LocatorTest extends PHPUnit\Framework\TestCase
 {
-	use ExpectPHPException;
+    use ExpectPHPException;
 
-	public static function feedmimetypes()
-	{
-		return array(
-			array('application/rss+xml'),
-			array('application/rdf+xml'),
-			array('text/rdf'),
-			array('application/atom+xml'),
-			array('text/xml'),
-			array('application/xml'),
-		);
-	}
-	/**
-	 * @dataProvider feedmimetypes
-	 */
-	public function testAutodiscoverOnFeed($mime)
-	{
-		$data = new MockSimplePie_File('http://example.com/feed.xml');
-		$data->headers['content-type'] = $mime;
+    public static function feedmimetypes()
+    {
+        return [
+            ['application/rss+xml'],
+            ['application/rdf+xml'],
+            ['text/rdf'],
+            ['application/atom+xml'],
+            ['text/xml'],
+            ['application/xml'],
+        ];
+    }
+    /**
+     * @dataProvider feedmimetypes
+     */
+    public function testAutodiscoverOnFeed($mime)
+    {
+        $data = new MockSimplePie_File('http://example.com/feed.xml');
+        $data->headers['content-type'] = $mime;
 
-		$locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, false);
 
-		$registry = new SimplePie_Registry();
-		$registry->register('File', 'MockSimplePie_File');
-		$locator->set_registry($registry);
+        $registry = new SimplePie_Registry();
+        $registry->register('File', 'MockSimplePie_File');
+        $locator->set_registry($registry);
 
-		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
-		$this->assertSame($data, $feed);
-	}
+        $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
+        $this->assertSame($data, $feed);
+    }
 
-	public function testInvalidMIMEType()
-	{
-		$data = new MockSimplePie_File('http://example.com/feed.xml');
-		$data->headers['content-type'] = 'application/pdf';
+    public function testInvalidMIMEType()
+    {
+        $data = new MockSimplePie_File('http://example.com/feed.xml');
+        $data->headers['content-type'] = 'application/pdf';
 
-		$locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, false);
 
-		$registry = new SimplePie_Registry();
-		$registry->register('File', 'MockSimplePie_File');
-		$locator->set_registry($registry);
+        $registry = new SimplePie_Registry();
+        $registry->register('File', 'MockSimplePie_File');
+        $locator->set_registry($registry);
 
-		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
-		$this->assertSame(null, $feed);
-	}
+        $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
+        $this->assertSame(null, $feed);
+    }
 
-	public function testDirectNoDOM()
-	{
-		$data = new MockSimplePie_File('http://example.com/feed.xml');
+    public function testDirectNoDOM()
+    {
+        $data = new MockSimplePie_File('http://example.com/feed.xml');
 
-		$registry = new SimplePie_Registry();
-		$locator = new SimplePie_Locator($data, 0, null, false);
-		$locator->dom = null;
-		$locator->set_registry($registry);
+        $registry = new SimplePie_Registry();
+        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator->dom = null;
+        $locator->set_registry($registry);
 
-		$this->assertTrue($locator->is_feed($data));
-		$this->assertSame($data, $locator->find(SIMPLEPIE_LOCATOR_ALL, $found));
-	}
+        $this->assertTrue($locator->is_feed($data));
+        $this->assertSame($data, $locator->find(SIMPLEPIE_LOCATOR_ALL, $found));
+    }
 
-	public function testFailDiscoveryNoDOM()
-	{
-		$this->expectException('SimplePie_Exception');
+    public function testFailDiscoveryNoDOM()
+    {
+        $this->expectException('SimplePie_Exception');
 
-		$data = new MockSimplePie_File('http://example.com/feed.xml');
-		$data->headers['content-type'] = 'text/html';
-		$data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
+        $data = new MockSimplePie_File('http://example.com/feed.xml');
+        $data->headers['content-type'] = 'text/html';
+        $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
-		$registry = new SimplePie_Registry();
-		$locator = new SimplePie_Locator($data, 0, null, false);
-		$locator->dom = null;
-		$locator->set_registry($registry);
+        $registry = new SimplePie_Registry();
+        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator->dom = null;
+        $locator->set_registry($registry);
 
-		$this->assertFalse($locator->is_feed($data));
-		$this->assertFalse($locator->find(SIMPLEPIE_LOCATOR_ALL, $found));
-	}
+        $this->assertFalse($locator->is_feed($data));
+        $this->assertFalse($locator->find(SIMPLEPIE_LOCATOR_ALL, $found));
+    }
 
-	/**
-	 * Tests from Firefox
-	 *
-	 * Tests are used under the LGPL license, see file for license
-	 * information
-	 */
-	public static function firefoxtests()
-	{
-		$data = array(
-			array(new SimplePie_File(dirname(__FILE__) . '/data/fftests.html'))
-		);
-		foreach ($data as &$row)
-		{
-			$row[0]->headers = array('content-type' => 'text/html');
-			$row[0]->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
-			$row[0]->url = 'http://example.com/';
-		}
+    /**
+     * Tests from Firefox
+     *
+     * Tests are used under the LGPL license, see file for license
+     * information
+     */
+    public static function firefoxtests()
+    {
+        $data = [
+            [new SimplePie_File(dirname(__FILE__) . '/data/fftests.html')]
+        ];
+        foreach ($data as &$row) {
+            $row[0]->headers = ['content-type' => 'text/html'];
+            $row[0]->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
+            $row[0]->url = 'http://example.com/';
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
-	/**
-	 * @dataProvider firefoxtests
-	 */
-	public function test_from_file($data)
-	{
-		$locator = new SimplePie_Locator($data, 0, null, false);
+    /**
+     * @dataProvider firefoxtests
+     */
+    public function test_from_file($data)
+    {
+        $locator = new SimplePie_Locator($data, 0, null, false);
 
-		$registry = new SimplePie_Registry();
-		$registry->register('File', 'MockSimplePie_File');
-		$locator->set_registry($registry);
+        $registry = new SimplePie_Registry();
+        $registry->register('File', 'MockSimplePie_File');
+        $locator->set_registry($registry);
 
-		$expected = array();
-		$document = new DOMDocument();
-		$document->loadHTML($data->body);
-		$xpath = new DOMXPath($document);
-		foreach ($xpath->query('//link') as $element)
-		{
-			$expected[] = 'http://example.com' . $element->getAttribute('href');
-		}
-		//$expected = SimplePie_Misc::get_element('link', $data->body);
+        $expected = [];
+        $document = new DOMDocument();
+        $document->loadHTML($data->body);
+        $xpath = new DOMXPath($document);
+        foreach ($xpath->query('//link') as $element) {
+            $expected[] = 'http://example.com' . $element->getAttribute('href');
+        }
+        //$expected = SimplePie_Misc::get_element('link', $data->body);
 
-		$feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
-		$this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
-		$this->assertInstanceOf('MockSimplePie_File', $feed);
-		$success = array_filter($expected, array(get_class(), 'filter_success'));
+        $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
+        $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
+        $this->assertInstanceOf('MockSimplePie_File', $feed);
+        $success = array_filter($expected, [get_class(), 'filter_success']);
 
-		$found = array_map(array(get_class(), 'map_url_file'), $all);
-		$this->assertSame($success, $found);
-	}
+        $found = array_map([get_class(), 'map_url_file'], $all);
+        $this->assertSame($success, $found);
+    }
 
-	protected static function filter_success($url)
-	{
-		return (stripos($url, 'bogus') === false);
-	}
+    protected static function filter_success($url)
+    {
+        return (stripos($url, 'bogus') === false);
+    }
 
-	protected static function map_url_file($file)
-	{
-		return $file->url;
-	}
+    protected static function map_url_file($file)
+    {
+        return $file->url;
+    }
 }

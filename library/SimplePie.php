@@ -49,10 +49,10 @@ class_exists('SimplePie\SimplePie');
 // @trigger_error(sprintf('Using the "SimplePie" class is deprecated since SimplePie 1.7, use "SimplePie\SimplePie" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\SimplePie" instead */
-	class SimplePie extends NamespacedSimplePie
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\SimplePie" instead */
+    class SimplePie extends NamespacedSimplePie
+    {
+    }
 }
 
 /**

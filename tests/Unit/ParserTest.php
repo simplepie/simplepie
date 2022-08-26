@@ -47,13 +47,13 @@ use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\Parser'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\Parser'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Parser'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Parser'));
+    }
 }

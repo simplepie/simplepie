@@ -45,134 +45,133 @@
 
 class ItemTest extends PHPUnit\Framework\TestCase
 {
-	/**
-	 * Run a test using a sprintf template and data
-	 *
-	 * @param string $template
-	 */
-	protected function checkFromTemplate($template, $data)
-	{
-		if (!is_array($data))
-		{
-			$data = array($data);
-		}
-		$xml = vsprintf($template, $data);
-		$feed = new SimplePie();
-		$feed->set_raw_data($xml);
-		$feed->enable_cache(false);
-		$feed->init();
+    /**
+     * Run a test using a sprintf template and data
+     *
+     * @param string $template
+     */
+    protected function checkFromTemplate($template, $data)
+    {
+        if (!is_array($data)) {
+            $data = [$data];
+        }
+        $xml = vsprintf($template, $data);
+        $feed = new SimplePie();
+        $feed->set_raw_data($xml);
+        $feed->enable_cache(false);
+        $feed->init();
 
-		return $feed;
-	}
+        return $feed;
+    }
 
-	public static function titleprovider()
-	{
-		return array(
-			array('Feed Title', 'Feed Title'),
+    public static function titleprovider()
+    {
+        return [
+            ['Feed Title', 'Feed Title'],
 
-			// RSS Profile tests
-			array('AT&amp;T', 'AT&amp;T'),
-			array('AT&#x26;T', 'AT&amp;T'),
-			array("Bill &amp; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"),
-			array("Bill &#x26; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"),
-			array('The &amp; entity', 'The &amp; entity'),
-			array('The &#x26; entity', 'The &amp; entity'),
-			array('The &amp;amp; entity', 'The &amp;amp; entity'),
-			array('The &#x26;amp; entity', 'The &amp;amp; entity'),
-			array('I &lt;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'),
-			array('I &#x3C;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'),
-			array('A &lt; B', 'A &lt; B'),
-			array('A &#x3C; B', 'A &lt; B'),
-			array('A&lt;B', 'A&lt;B'),
-			array('A&#x3C;B', 'A&lt;B'),
-			array("Nice &lt;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"),
-			array("Nice &#x3C;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"),
-		);
-	}
+            // RSS Profile tests
+            ['AT&amp;T', 'AT&amp;T'],
+            ['AT&#x26;T', 'AT&amp;T'],
+            ["Bill &amp; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"],
+            ["Bill &#x26; Ted's Excellent Adventure", "Bill &amp; Ted's Excellent Adventure"],
+            ['The &amp; entity', 'The &amp; entity'],
+            ['The &#x26; entity', 'The &amp; entity'],
+            ['The &amp;amp; entity', 'The &amp;amp; entity'],
+            ['The &#x26;amp; entity', 'The &amp;amp; entity'],
+            ['I &lt;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'],
+            ['I &#x3C;3 Phil Ringnalda', 'I &lt;3 Phil Ringnalda'],
+            ['A &lt; B', 'A &lt; B'],
+            ['A &#x3C; B', 'A &lt; B'],
+            ['A&lt;B', 'A&lt;B'],
+            ['A&#x3C;B', 'A&lt;B'],
+            ["Nice &lt;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"],
+            ["Nice &#x3C;gorilla&gt; what's he weigh?", "Nice &lt;gorilla&gt; what's he weigh?"],
+        ];
+    }
 
-	/**
-	 * @dataProvider titleprovider
-	 */
-	public function testTitleRSS20($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleprovider
+     */
+    public function testTitleRSS20($title, $expected)
+    {
+        $data =
 '<rss version="2.0">
 	<channel>
 		<title>%s</title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->checkFromTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * @dataProvider titleprovider
-	 */
-	public function testTitleRSS20WithDC10($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleprovider
+     */
+    public function testTitleRSS20WithDC10($title, $expected)
+    {
+        $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<dc:title>%s</dc:title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->checkFromTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * @dataProvider titleprovider
-	 */
-	public function testTitleRSS20WithDC11($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleprovider
+     */
+    public function testTitleRSS20WithDC11($title, $expected)
+    {
+        $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<dc:title>%s</dc:title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->checkFromTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * @dataProvider titleprovider
-	 */
-	public function testTitleRSS20WithAtom03($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleprovider
+     */
+    public function testTitleRSS20WithAtom03($title, $expected)
+    {
+        $data =
 '<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
 	<channel>
 		<a:title>%s</a:title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->checkFromTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * @dataProvider titleprovider
-	 */
-	public function testTitleRSS20WithAtom10($title, $expected)
-	{
-		$data =
+    /**
+     * @dataProvider titleprovider
+     */
+    public function testTitleRSS20WithAtom10($title, $expected)
+    {
+        $data =
 '<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:title>%s</a:title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->checkFromTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * Based on a test from old bug 18
-	 *
-	 * @dataProvider titleprovider
-	 */
-	public function testTitleRSS20WithImageTitle($title, $expected)
-	{
-		$data =
+    /**
+     * Based on a test from old bug 18
+     *
+     * @dataProvider titleprovider
+     */
+    public function testTitleRSS20WithImageTitle($title, $expected)
+    {
+        $data =
 '<rss version="2.0">
 	<channel>
 		<title>%s</title>
@@ -181,18 +180,18 @@ class ItemTest extends PHPUnit\Framework\TestCase
 		</image>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->checkFromTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	/**
-	 * Based on a test from old bug 18
-	 *
-	 * @dataProvider titleprovider
-	 */
-	public function testTitleRSS20WithImageTitleReversed($title, $expected)
-	{
-		$data =
+    /**
+     * Based on a test from old bug 18
+     *
+     * @dataProvider titleprovider
+     */
+    public function testTitleRSS20WithImageTitleReversed($title, $expected)
+    {
+        $data =
 '<rss version="2.0">
 	<channel>
 		<image>
@@ -201,13 +200,13 @@ class ItemTest extends PHPUnit\Framework\TestCase
 		<title>%s</title>
 	</channel>
 </rss>';
-		$feed = $this->checkFromTemplate($data, $title);
-		$this->assertSame($expected, $feed->get_title());
-	}
+        $feed = $this->checkFromTemplate($data, $title);
+        $this->assertSame($expected, $feed->get_title());
+    }
 
-	public function testItemWithEmptyContent()
-	{
-		$data =
+    public function testItemWithEmptyContent()
+    {
+        $data =
 '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 	<channel>
 		<item>
@@ -216,10 +215,9 @@ class ItemTest extends PHPUnit\Framework\TestCase
 		</item>
 	</channel>
 </rss>';
-		$content = 'item description';
-		$feed = $this->checkFromTemplate($data, $content);
-		$item = $feed->get_item();
-		$this->assertSame($content, $item->get_content());
-	}
-
+        $content = 'item description';
+        $feed = $this->checkFromTemplate($data, $content);
+        $item = $feed->get_item();
+        $this->assertSame($content, $item->get_content());
+    }
 }

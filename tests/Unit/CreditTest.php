@@ -47,13 +47,13 @@ use PHPUnit\Framework\TestCase;
 
 class CreditTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\Credit'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\Credit'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Credit'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Credit'));
+    }
 }

@@ -47,13 +47,13 @@ use PHPUnit\Framework\TestCase;
 
 class RatingTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\Rating'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\Rating'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Rating'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Rating'));
+    }
 }

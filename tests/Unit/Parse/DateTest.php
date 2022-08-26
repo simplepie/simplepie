@@ -47,13 +47,13 @@ use PHPUnit\Framework\TestCase;
 
 class DateTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\Parse\Date'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\Parse\Date'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Parse_Date'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Parse_Date'));
+    }
 }

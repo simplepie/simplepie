@@ -45,27 +45,27 @@
 
 class BCTest extends PHPUnit\Framework\TestCase
 {
-	/**
-	 * Test class SimplePie_Core exists
-	 */
-	public function test_class_SimplePie_Core_exists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Core'));
-	}
+    /**
+     * Test class SimplePie_Core exists
+     */
+    public function test_class_SimplePie_Core_exists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Core'));
+    }
 
-	/**
-	 * Test class SimplePie_Misc exists
-	 */
-	public function test_class_SimplePie_Misc_exists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Misc'));
-	}
+    /**
+     * Test class SimplePie_Misc exists
+     */
+    public function test_class_SimplePie_Misc_exists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Misc'));
+    }
 
-	/**
-	 * Test class SimplePie_Decode_HTML_Entities exists
-	 */
-	public function test_class_SimplePie_Decode_HTML_Entities_exists()
-	{
-		$this->assertTrue(class_exists('SimplePie_Decode_HTML_Entities'));
-	}
+    /**
+     * Test class SimplePie_Decode_HTML_Entities exists
+     */
+    public function test_class_SimplePie_Decode_HTML_Entities_exists()
+    {
+        $this->assertTrue(class_exists('SimplePie_Decode_HTML_Entities'));
+    }
 }
