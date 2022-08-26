@@ -43,16 +43,16 @@
 
 class SubscribeUrlTest extends PHPUnit\Framework\TestCase
 {
-	public function testDirectOverrideLegacy()
-	{
-		$feed = new SimplePie();
-		$feed->get_registry()->register('File', MockSimplePie_RedirectingFile::class);
-		$feed->enable_cache(false);
-		$feed->set_feed_url('http://example.com/feed/');
+    public function testDirectOverrideLegacy()
+    {
+        $feed = new SimplePie();
+        $feed->get_registry()->register('File', MockSimplePie_RedirectingFile::class);
+        $feed->enable_cache(false);
+        $feed->set_feed_url('http://example.com/feed/');
 
-		$feed->init();
+        $feed->init();
 
-		$this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
-		$this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
-	}
+        $this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
+        $this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
+    }
 }

@@ -48,20 +48,20 @@ require_once dirname(__FILE__) . '/ItemTest.php';
 
 class AllTests
 {
-	public static function suite()
-	{
-		$suite = new PHPUnit_Framework_TestSuite();
-		$suite->setName('SimplePie');
+    public static function suite()
+    {
+        $suite = new PHPUnit_Framework_TestSuite();
+        $suite->setName('SimplePie');
 
-		$suite->addTestSuite('CacheTest');
-		$suite->addTestSuite('EncodingTest');
-		$suite->addTestSuite('IRITest');
-		$suite->addTestSuite('LocatorTest');
-		$suite->addTestSuite('HTTPParserTest');
-		$suite->addTestSuite('ItemTest');
-		$suite->addTestSuite('OldTest');
-		$suite->addTestSuite('SubscribeUrlTest');
+        $suite->addTestSuite('CacheTest');
+        $suite->addTestSuite('EncodingTest');
+        $suite->addTestSuite('IRITest');
+        $suite->addTestSuite('LocatorTest');
+        $suite->addTestSuite('HTTPParserTest');
+        $suite->addTestSuite('ItemTest');
+        $suite->addTestSuite('OldTest');
+        $suite->addTestSuite('SubscribeUrlTest');
 
-		return $suite;
-	}
+        return $suite;
+    }
 }

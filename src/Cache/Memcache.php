@@ -60,127 +60,123 @@ use Memcache as NativeMemcache;
  */
 class Memcache implements Base
 {
-	/**
-	 * Memcache instance
-	 *
-	 * @var Memcache
-	 */
-	protected $cache;
+    /**
+     * Memcache instance
+     *
+     * @var Memcache
+     */
+    protected $cache;
 
-	/**
-	 * Options
-	 *
-	 * @var array
-	 */
-	protected $options;
+    /**
+     * Options
+     *
+     * @var array
+     */
+    protected $options;
 
-	/**
-	 * Cache name
-	 *
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * Cache name
+     *
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Create a new cache object
-	 *
-	 * @param string $location Location string (from SimplePie::$cache_location)
-	 * @param string $name Unique ID for the cache
-	 * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
-	 */
-	public function __construct($location, $name, $type)
-	{
-		$this->options = array(
-			'host' => '127.0.0.1',
-			'port' => 11211,
-			'extras' => array(
-				'timeout' => 3600, // one hour
-				'prefix' => 'simplepie_',
-			),
-		);
-		$this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
+    /**
+     * Create a new cache object
+     *
+     * @param string $location Location string (from SimplePie::$cache_location)
+     * @param string $name Unique ID for the cache
+     * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
+     */
+    public function __construct($location, $name, $type)
+    {
+        $this->options = [
+            'host' => '127.0.0.1',
+            'port' => 11211,
+            'extras' => [
+                'timeout' => 3600, // one hour
+                'prefix' => 'simplepie_',
+            ],
+        ];
+        $this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
 
-		$this->name = $this->options['extras']['prefix'] . md5("$name:$type");
+        $this->name = $this->options['extras']['prefix'] . md5("$name:$type");
 
-		$this->cache = new NativeMemcache();
-		$this->cache->addServer($this->options['host'], (int) $this->options['port']);
-	}
+        $this->cache = new NativeMemcache();
+        $this->cache->addServer($this->options['host'], (int) $this->options['port']);
+    }
 
-	/**
-	 * Save data to the cache
-	 *
-	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
-	 * @return bool Successfulness
-	 */
-	public function save($data)
-	{
-		if ($data instanceof \SimplePie\SimplePie)
-		{
-			$data = $data->data;
-		}
-		return $this->cache->set($this->name, serialize($data), MEMCACHE_COMPRESSED, (int) $this->options['extras']['timeout']);
-	}
+    /**
+     * Save data to the cache
+     *
+     * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+     * @return bool Successfulness
+     */
+    public function save($data)
+    {
+        if ($data instanceof \SimplePie\SimplePie) {
+            $data = $data->data;
+        }
+        return $this->cache->set($this->name, serialize($data), MEMCACHE_COMPRESSED, (int) $this->options['extras']['timeout']);
+    }
 
-	/**
-	 * Retrieve the data saved to the cache
-	 *
-	 * @return array Data for SimplePie::$data
-	 */
-	public function load()
-	{
-		$data = $this->cache->get($this->name);
+    /**
+     * Retrieve the data saved to the cache
+     *
+     * @return array Data for SimplePie::$data
+     */
+    public function load()
+    {
+        $data = $this->cache->get($this->name);
 
-		if ($data !== false)
-		{
-			return unserialize($data);
-		}
-		return false;
-	}
+        if ($data !== false) {
+            return unserialize($data);
+        }
+        return false;
+    }
 
-	/**
-	 * Retrieve the last modified time for the cache
-	 *
-	 * @return int Timestamp
-	 */
-	public function mtime()
-	{
-		$data = $this->cache->get($this->name);
+    /**
+     * Retrieve the last modified time for the cache
+     *
+     * @return int Timestamp
+     */
+    public function mtime()
+    {
+        $data = $this->cache->get($this->name);
 
-		if ($data !== false)
-		{
-			// essentially ignore the mtime because Memcache expires on its own
-			return time();
-		}
+        if ($data !== false) {
+            // essentially ignore the mtime because Memcache expires on its own
+            return time();
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Set the last modified time to the current time
-	 *
-	 * @return bool Success status
-	 */
-	public function touch()
-	{
-		$data = $this->cache->get($this->name);
+    /**
+     * Set the last modified time to the current time
+     *
+     * @return bool Success status
+     */
+    public function touch()
+    {
+        $data = $this->cache->get($this->name);
 
-		if ($data !== false)
-		{
-			return $this->cache->set($this->name, $data, MEMCACHE_COMPRESSED, (int) $this->options['extras']['timeout']);
-		}
+        if ($data !== false) {
+            return $this->cache->set($this->name, $data, MEMCACHE_COMPRESSED, (int) $this->options['extras']['timeout']);
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Remove the cache
-	 *
-	 * @return bool Success status
-	 */
-	public function unlink()
-	{
-		return $this->cache->delete($this->name, 0);
-	}
+    /**
+     * Remove the cache
+     *
+     * @return bool Success status
+     */
+    public function unlink()
+    {
+        return $this->cache->delete($this->name, 0);
+    }
 }
 
 class_alias('SimplePie\Cache\Memcache', 'SimplePie_Cache_Memcache');

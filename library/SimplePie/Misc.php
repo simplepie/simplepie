@@ -48,8 +48,8 @@ class_exists('SimplePie\Misc');
 // @trigger_error(sprintf('Using the "SimplePie_Misc" class is deprecated since SimplePie 1.7, use "SimplePie\Misc" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\Misc" instead */
-	class SimplePie_Misc extends Misc
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\Misc" instead */
+    class SimplePie_Misc extends Misc
+    {
+    }
 }

@@ -48,8 +48,8 @@ class_exists('SimplePie\Restriction');
 // @trigger_error(sprintf('Using the "SimplePie_Restriction" class is deprecated since SimplePie 1.7, use "SimplePie\Restriction" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\Restriction" instead */
-	class SimplePie_Restriction extends Restriction
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\Restriction" instead */
+    class SimplePie_Restriction extends Restriction
+    {
+    }
 }

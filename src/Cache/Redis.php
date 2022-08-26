@@ -58,7 +58,8 @@ use Redis as NativeRedis;
  * @subpackage Caching
  * @uses Redis
  */
-class Redis implements Base {
+class Redis implements Base
+{
     /**
      * Redis instance
      *
@@ -94,7 +95,8 @@ class Redis implements Base {
      * @param string $name Unique ID for the cache
      * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
      */
-    public function __construct($location, $name, $options = null) {
+    public function __construct($location, $name, $options = null)
+    {
         //$this->cache = \flow\simple\cache\Redis::getRedisClientInstance();
         $parsed = \SimplePie\Cache::parse_URL($location);
         $redis = new NativeRedis();
@@ -110,10 +112,10 @@ class Redis implements Base {
         if (!is_null($options) && is_array($options)) {
             $this->options = $options;
         } else {
-            $this->options = array (
+            $this->options = [
                 'prefix' => 'rss:simple_primary:',
                 'expire' => 0,
-            );
+            ];
         }
 
         $this->name = $this->options['prefix'] . $name;
@@ -122,7 +124,8 @@ class Redis implements Base {
     /**
      * @param NativeRedis $cache
      */
-    public function setRedisClient(NativeRedis $cache) {
+    public function setRedisClient(NativeRedis $cache)
+    {
         $this->cache = $cache;
     }
 
@@ -132,7 +135,8 @@ class Redis implements Base {
      * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data) {
+    public function save($data)
+    {
         if ($data instanceof \SimplePie\SimplePie) {
             $data = $data->data;
         }
@@ -149,7 +153,8 @@ class Redis implements Base {
      *
      * @return array Data for SimplePie::$data
      */
-    public function load() {
+    public function load()
+    {
         $data = $this->cache->get($this->name);
 
         if ($data !== false) {
@@ -163,8 +168,8 @@ class Redis implements Base {
      *
      * @return int Timestamp
      */
-    public function mtime() {
-
+    public function mtime()
+    {
         $data = $this->cache->get($this->name);
 
         if ($data !== false) {
@@ -179,8 +184,8 @@ class Redis implements Base {
      *
      * @return bool Success status
      */
-    public function touch() {
-
+    public function touch()
+    {
         $data = $this->cache->get($this->name);
 
         if ($data !== false) {
@@ -199,10 +204,10 @@ class Redis implements Base {
      *
      * @return bool Success status
      */
-    public function unlink() {
+    public function unlink()
+    {
         return $this->cache->set($this->name, null);
     }
-
 }
 
 class_alias('SimplePie\Cache\Redis', 'SimplePie_Cache_Redis');

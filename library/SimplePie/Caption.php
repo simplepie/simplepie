@@ -48,8 +48,8 @@ class_exists('SimplePie\Caption');
 // @trigger_error(sprintf('Using the "SimplePie_Caption" class is deprecated since SimplePie 1.7, use "SimplePie\Caption" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-	/** @deprecated since SimplePie 1.7, use "SimplePie\Caption" instead */
-	class SimplePie_Caption extends Caption
-	{
-	}
+    /** @deprecated since SimplePie 1.7, use "SimplePie\Caption" instead */
+    class SimplePie_Caption extends Caption
+    {
+    }
 }

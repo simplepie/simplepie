@@ -47,13 +47,13 @@ use PHPUnit\Framework\TestCase;
 
 class GzdecodeTest extends TestCase
 {
-	public function testNamespacedClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie\Gzdecode'));
-	}
+    public function testNamespacedClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie\Gzdecode'));
+    }
 
-	public function testClassExists()
-	{
-		$this->assertTrue(class_exists('SimplePie_gzdecode'));
-	}
+    public function testClassExists()
+    {
+        $this->assertTrue(class_exists('SimplePie_gzdecode'));
+    }
 }
