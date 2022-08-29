@@ -63,10 +63,15 @@ class Psr16Test extends TestCase
     {
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('set')->with(
-            '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7',
-            $data,
-            3600
+        $psr16->expects($this->exactly(2))->method('set')->withConsecutive(
+            [
+                '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7',
+                $data,
+                3600,
+            ],
+            [
+                '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7_mtime'
+            ]
         );
 
         Psr16::store_psr16_cache($psr16);
@@ -79,11 +84,9 @@ class Psr16Test extends TestCase
     {
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('set')->with(
-            '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7',
-            $data,
-            3600
-        )->willThrowException($this->createMock(CacheException::class));
+        $psr16->expects($this->once())->method('set')->willThrowException(
+            $this->createMock(CacheException::class)
+        );
 
         Psr16::store_psr16_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');

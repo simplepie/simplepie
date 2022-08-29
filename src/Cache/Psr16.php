@@ -132,6 +132,7 @@ class Psr16 implements Base
 
         try {
             $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
+            $this->psr16cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
         } catch (CacheException $e) {
             return false;
         }
@@ -167,14 +168,16 @@ class Psr16 implements Base
     public function mtime()
     {
         try {
-            if ($this->psr16cache->get($this->cacheKey, $this) === $this) {
-                return 0;
-            }
+            $data = $this->psr16cache->get($this->cacheKey . '_mtime', $this);
         } catch (CacheException $th) {
             return 0;
         }
 
-        return time();
+        if ($data === $this || ! is_int($data)) {
+            return 0;
+        }
+
+        return $data;
     }
 
     /**
@@ -191,9 +194,8 @@ class Psr16 implements Base
                 return false;
             }
 
-            $this->psr16cache->delete($this->cacheKey);
-
             $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
+            $this->psr16cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
         } catch (CacheException $th) {
             return false;
         }
@@ -209,11 +211,10 @@ class Psr16 implements Base
     public function unlink()
     {
         try {
-            $this->psr16cache->delete($this->cacheKey);
+            return $this->psr16cache->delete($this->cacheKey);
+            return $this->psr16cache->delete($this->cacheKey . '_mtime');
         } catch (CacheException $th) {
             return false;
         }
-
-        return true;
     }
 }
