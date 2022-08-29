@@ -88,6 +88,13 @@ class Psr16 implements Base
     private $cacheKey;
 
     /**
+     * cache time to live
+     *
+     * @var int
+     */
+    private $ttl = 3600;
+
+    /**
      * Create a new cache object
      *
      * @param string $location Location string (from SimplePie::$cache_location)
@@ -124,7 +131,7 @@ class Psr16 implements Base
         }
 
         try {
-            $this->psr16cache->set($this->cacheKey, serialize($data));
+            $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
         } catch (CacheException $e) {
             return false;
         }
@@ -149,7 +156,7 @@ class Psr16 implements Base
             return false;
         }
 
-        return unserialize($data);
+        return $data;
     }
 
     /**
@@ -186,7 +193,7 @@ class Psr16 implements Base
 
             $this->psr16cache->delete($this->cacheKey);
 
-            $this->psr16cache->set($this->cacheKey, $data);
+            $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
         } catch (CacheException $th) {
             return false;
         }
