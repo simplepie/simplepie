@@ -45,6 +45,7 @@ namespace SimplePie\Tests\Unit\Cache;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Psr16;
 
@@ -56,5 +57,62 @@ class Psr16Test extends TestCase
         $this->expectExceptionMessage('You must set an implementation of `Psr\SimpleCache\CacheInterface` via `SimplePie\SimplePie::set_psr16_cache()` first.');
 
         new Psr16('location', 'name', 'type');
+    }
+
+    public function testSaveReturnsTrue()
+    {
+        $data = [];
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('set')->with(
+            '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7',
+            $data,
+            3600
+        );
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertTrue($cache->save($data));
+    }
+
+    public function testSaveReturnsFalse()
+    {
+        $data = [];
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('set')->with(
+            '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7',
+            $data,
+            3600
+        )->willThrowException($this->createMock(CacheException::class));
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertFalse($cache->save($data));
+    }
+
+    public function testLoadReturnsData()
+    {
+        $data = [];
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn($data);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame($data, $cache->load());
+    }
+
+    public function testLoadReturnsFalse()
+    {
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturnCallback(function($a, $b) {
+            return $b;
+        });
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(false, $cache->load());
     }
 }
