@@ -44,6 +44,7 @@
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\CacheInterface;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
@@ -236,6 +237,19 @@ class SimplePieTest extends TestCase
         $feed = $this->createFeedWithTemplate($data, $content);
         $item = $feed->get_item();
         $this->assertSame($content, $item->get_content());
+    }
+
+    public function testSetPsr16Cache()
+    {
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn('a:0:{}');
+
+        $feed = new SimplePie();
+        $feed->set_psr16_cache($psr16);
+        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $feed->set_feed_url('http://example.com/feed/');
+
+        $feed->init();
     }
 
     public function testLegacyCallOfSetCacheClass()

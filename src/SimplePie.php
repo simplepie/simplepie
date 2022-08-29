@@ -43,6 +43,9 @@
 
 namespace SimplePie;
 
+use Psr\SimpleCache\CacheInterface;
+use SimplePie\Cache\Psr16;
+
 /**
  * SimplePie
  *
@@ -852,6 +855,18 @@ class SimplePie
     public function enable_cache($enable = true)
     {
         $this->cache = (bool) $enable;
+    }
+
+    /**
+     * Set a PSR-16 implementation as cache
+     *
+     * @param CacheInterface $psr16cache The PSR-16 cache implementation
+     */
+    public function set_psr16_cache(CacheInterface $psr16cache)
+    {
+        Psr16::store_psr16_cache($psr16cache);
+        $this->registry->call('Cache', 'register', ['psr16', Psr16::class]);
+        $this->cache_location = 'psr16';
     }
 
     /**

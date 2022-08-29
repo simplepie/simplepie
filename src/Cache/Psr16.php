@@ -57,6 +57,23 @@ use SimplePie\SimplePie as SimplePieInstance;
 class Psr16 implements Base
 {
     /**
+     * stored PSR-16 cache implemtentation
+     *
+     * @var CacheInterface
+     */
+    private static $psr16storage = null;
+
+    /**
+     * stored a globally PSR-16 cache implemtentation
+     *
+     * @param CacheInterface $psr16cache
+     */
+    public static function store_psr16_cache(CacheInterface $psr16cache)
+    {
+        static::$psr16storage = $psr16cache;
+    }
+
+    /**
      * PSR-16 cache implemtentation
      *
      * @var CacheInterface
@@ -76,27 +93,18 @@ class Psr16 implements Base
      * @param string $location Location string (from SimplePie::$cache_location)
      * @param string $name Unique ID for the cache
      * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
-     * @param CacheInterface $psr16cache
      */
-    public function __construct($location, $name, $type/* , CacheInterface $psr16cache*/)
+    public function __construct($location, $name, $type)
     {
-        if (4 !== func_num_args()) {
+        if (static::$psr16storage === null) {
             throw new Exception(sprintf(
-                'Too few arguments to function %s, 3 passed, but exactly 4 expected.',
-                __METHOD__
+                'You must set an implementation of `%s` via `%s::set_psr16_cache()` first.',
+                CacheInterface::class,
+                SimplePieInstance::class
             ), \E_USER_ERROR);
         }
 
-        $psr16cache = func_get_arg(3);
-
-        if (! $psr16cache instanceof CacheInterface) {
-            throw new Exception(sprintf(
-                'Argument #4 ($psr16cache) in %s must be of type Psr\SimpleCache\CacheInterface.',
-                __METHOD__
-            ), \E_USER_ERROR);
-        }
-
-        $this->psr16cache = $psr16cache;
+        $this->psr16cache = static::$psr16storage;
 
         // BC: hashAlgo sha256 support was added in PHP 7.1
         $hashAlgo = in_array('sha256', hash_algos()) ? 'sha256' : 'sha1';

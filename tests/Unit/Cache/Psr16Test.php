@@ -50,19 +50,11 @@ use SimplePie\Cache\Psr16;
 
 class Psr16Test extends TestCase
 {
-    public function testConstructorArgument4IsPassed()
+    public function testImplementationIsGloballyStored()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Too few arguments to function SimplePie\Cache\Psr16::__construct, 3 passed, but exactly 4 expected.');
+        $this->expectExceptionMessage('You must set an implementation of `Psr\SimpleCache\CacheInterface` via `SimplePie\SimplePie::set_psr16_cache()` first.');
 
         new Psr16('location', 'name', 'type');
-    }
-
-    public function testConstructorArgument4IsCacheInterface()
-    {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Argument #4 ($psr16cache) in SimplePie\Cache\Psr16::__construct must be of type Psr\SimpleCache\CacheInterface.');
-
-        new Psr16('location', 'name', 'type', 'wrong type');
     }
 }
