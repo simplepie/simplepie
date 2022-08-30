@@ -83,13 +83,7 @@ class Psr16Test extends TestCase
 
     public function testSaveReturnsFalse()
     {
-        $e = $this->createMock(CacheException::class);
-
-        if (version_compare(PHP_VERSION, '7.0', '<')) {
-            $e = new Psr16CacheException();
-        } else if (version_compare(PHP_VERSION, '8.0', '<')) {
-            $e = new class extends \Exception implements CacheException {};
-        }
+        $e = new Psr16CacheException();
 
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
