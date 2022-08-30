@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.2.0",
         "ext-pcre": "*",
         "ext-xml": "*",
         "ext-xmlreader": "*"
