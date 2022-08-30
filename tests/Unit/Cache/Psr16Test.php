@@ -48,6 +48,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Psr16;
+use SimplePie\Tests\Fixtures\Exception\Psr16CacheException;
 
 class Psr16Test extends TestCase
 {
@@ -84,8 +85,9 @@ class Psr16Test extends TestCase
     {
         $e = $this->createMock(CacheException::class);
 
-        // BC
-        if (version_compare(PHP_VERSION, '8.0', '<')) {
+        if (version_compare(PHP_VERSION, '7.0', '<')) {
+            $e = new Psr16CacheException();
+        } else if (version_compare(PHP_VERSION, '8.0', '<')) {
             $e = new class extends \Exception implements CacheException {};
         }
 
