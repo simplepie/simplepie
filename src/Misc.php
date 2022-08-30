@@ -1933,7 +1933,7 @@ class Misc
 
         foreach ($str as $section) {
             if (strpos($section, '=') !== false) {
-                list($name, $value) = explode('=', $section, 2);
+                [$name, $value] = explode('=', $section, 2);
                 $return[urldecode($name)][] = urldecode($value);
             } else {
                 $return[urldecode($section)][] = null;

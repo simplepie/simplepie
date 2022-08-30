@@ -89,59 +89,59 @@ class Parser
     /**
      * @access private
      */
-    const STATE_HTTP_VERSION = 'http_version';
+    public const STATE_HTTP_VERSION = 'http_version';
     /**
      * @access private
      */
-    const STATE_STATUS = 'status';
+    public const STATE_STATUS = 'status';
     /**
      * @access private
      */
-    const STATE_REASON = 'reason';
+    public const STATE_REASON = 'reason';
     /**
      * @access private
      */
-    const STATE_NEW_LINE = 'new_line';
+    public const STATE_NEW_LINE = 'new_line';
     /**
      * @access private
      */
-    const STATE_BODY = 'body';
+    public const STATE_BODY = 'body';
     /**
      * @access private
      */
-    const STATE_NAME = 'name';
+    public const STATE_NAME = 'name';
     /**
      * @access private
      */
-    const STATE_VALUE = 'value';
+    public const STATE_VALUE = 'value';
     /**
      * @access private
      */
-    const STATE_VALUE_CHAR = 'value_char';
+    public const STATE_VALUE_CHAR = 'value_char';
     /**
      * @access private
      */
-    const STATE_QUOTE = 'quote';
+    public const STATE_QUOTE = 'quote';
     /**
      * @access private
      */
-    const STATE_QUOTE_ESCAPED = 'quote_escaped';
+    public const STATE_QUOTE_ESCAPED = 'quote_escaped';
     /**
      * @access private
      */
-    const STATE_QUOTE_CHAR = 'quote_char';
+    public const STATE_QUOTE_CHAR = 'quote_char';
     /**
      * @access private
      */
-    const STATE_CHUNKED = 'chunked';
+    public const STATE_CHUNKED = 'chunked';
     /**
      * @access private
      */
-    const STATE_EMIT = 'emit';
+    public const STATE_EMIT = 'emit';
     /**
      * @access private
      */
-    const STATE_ERROR = false;
+    public const STATE_ERROR = false;
 
     /**
      * Current state of the state machine
