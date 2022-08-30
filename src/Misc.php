@@ -2076,7 +2076,7 @@ END;
             return static::$SIMPLEPIE_BUILD;
         }
 
-        $root = dirname(dirname(__FILE__));
+        $root = dirname(__FILE__, 2);
         if (file_exists($root . '/.git/index')) {
             static::$SIMPLEPIE_BUILD = filemtime($root . '/.git/index');
 

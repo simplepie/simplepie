@@ -12,7 +12,7 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
         '@PHP71Migration' => true,
-        '@PHP56Migration:risky' => true,
+        'combine_nested_dirname' => true,
     ])
     ->setFinder($finder)
 ;
