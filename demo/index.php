@@ -193,37 +193,37 @@ $feed->handle_content_type();
 						<h4><?php if ($item->get_permalink()) {
 						    echo '<a href="' . $item->get_permalink() . '">';
 						} echo $item->get_title();
-						if ($item->get_permalink()) {
-						    echo '</a>';
-						} ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y, g:i a'); ?></span></h4>
+				    if ($item->get_permalink()) {
+				        echo '</a>';
+				    } ?>&nbsp;<span class="footnote"><?php echo $item->get_date('j M Y, g:i a'); ?></span></h4>
 
 						<!-- Display the item's primary content. -->
 						<?php echo $item->get_content(); ?>
 
 						<?php
-						    // Check for enclosures.  If an item has any, set the first one to the $enclosure variable.
-						    if ($enclosure = $item->get_enclosure(0)) {
-						        // Use the embed() method to embed the enclosure into the page inline.
-						        echo '<div align="center">';
-						        echo '<p>' . $enclosure->embed([
-						            'audio' => './for_the_demo/place_audio.png',
-						            'video' => './for_the_demo/place_video.png',
-						            'mediaplayer' => './for_the_demo/mediaplayer.swf',
-						            'altclass' => 'download'
-						        ]) . '</p>';
+				        // Check for enclosures.  If an item has any, set the first one to the $enclosure variable.
+				        if ($enclosure = $item->get_enclosure(0)) {
+				            // Use the embed() method to embed the enclosure into the page inline.
+				            echo '<div align="center">';
+				            echo '<p>' . $enclosure->embed([
+				                'audio' => './for_the_demo/place_audio.png',
+				                'video' => './for_the_demo/place_video.png',
+				                'mediaplayer' => './for_the_demo/mediaplayer.swf',
+				                'altclass' => 'download'
+				            ]) . '</p>';
 
-						        if ($enclosure->get_link() && $enclosure->get_type()) {
-						            echo '<p class="footnote" align="center">(' . $enclosure->get_type();
-						            if ($enclosure->get_size()) {
-						                echo '; ' . $enclosure->get_size() . ' MB';
-						            }
-						            echo ')</p>';
-						        }
-						        if ($enclosure->get_thumbnail()) {
-						            echo '<div><img src="' . $enclosure->get_thumbnail() . '" alt="" /></div>';
-						        }
-						        echo '</div>';
-						    }
+				            if ($enclosure->get_link() && $enclosure->get_type()) {
+				                echo '<p class="footnote" align="center">(' . $enclosure->get_type();
+				                if ($enclosure->get_size()) {
+				                    echo '; ' . $enclosure->get_size() . ' MB';
+				                }
+				                echo ')</p>';
+				            }
+				            if ($enclosure->get_thumbnail()) {
+				                echo '<div><img src="' . $enclosure->get_thumbnail() . '" alt="" /></div>';
+				            }
+				            echo '</div>';
+				        }
 				    ?>
 
 					</div>
@@ -239,7 +239,7 @@ $feed->handle_content_type();
 		<div>
 			<!-- Display how fast the page was rendered. -->
 			<p class="footnote">Page processed in <?php $mtime = explode(' ', microtime());
-			echo round($mtime[0] + $mtime[1] - $starttime, 3); ?> seconds.</p>
+echo round($mtime[0] + $mtime[1] - $starttime, 3); ?> seconds.</p>
 
 			<!-- Display the version of SimplePie being loaded. -->
 			<p class="footnote">Powered by <a href="<?php echo \SimplePie\SimplePie::URL; ?>"><?php echo \SimplePie\SimplePie::NAME . ' ' . \SimplePie\SimplePie::VERSION . ', Build ' . \SimplePie\Misc::get_build(); ?></a>.  Run the <a href="../compatibility_test/sp_compatibility_test.php">SimplePie Compatibility Test</a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, Ryan Parman and Sam Sneddon, and licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.</p>
