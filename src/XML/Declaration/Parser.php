@@ -75,54 +75,29 @@ class Parser
      */
     public $standalone = false;
 
-    /**
-     * @access private
-     */
-    public const STATE_BEFORE_VERSION_NAME = 'before_version_name';
-    /**
-     * @access private
-     */
-    public const STATE_VERSION_NAME = 'version_name';
-    /**
-     * @access private
-     */
-    public const STATE_VERSION_EQUALS = 'version_equals';
-    /**
-     * @access private
-     */
-    public const STATE_VERSION_VALUE = 'version_value';
-    /**
-     * @access private
-     */
-    public const STATE_ENCODING_NAME = 'encoding_name';
-    /**
-     * @access private
-     */
-    public const STATE_EMIT = 'emit';
-    /**
-     * @access private
-     */
-    public const STATE_ENCODING_EQUALS = 'encoding_equals';
-    /**
-     * @access private
-     */
-    public const STATE_STANDALONE_NAME = 'standalone_name';
-    /**
-     * @access private
-     */
-    public const STATE_ENCODING_VALUE = 'encoding_value';
-    /**
-     * @access private
-     */
-    public const STATE_STANDALONE_EQUALS = 'standalone_equals';
-    /**
-     * @access private
-     */
-    public const STATE_STANDALONE_VALUE = 'standalone_value';
-    /**
-     * @access private
-     */
-    public const STATE_ERROR = false;
+    private const STATE_BEFORE_VERSION_NAME = 'before_version_name';
+
+    private const STATE_VERSION_NAME = 'version_name';
+
+    private const STATE_VERSION_EQUALS = 'version_equals';
+
+    private const STATE_VERSION_VALUE = 'version_value';
+
+    private const STATE_ENCODING_NAME = 'encoding_name';
+
+    private const STATE_EMIT = 'emit';
+
+    private const STATE_ENCODING_EQUALS = 'encoding_equals';
+
+    private const STATE_STANDALONE_NAME = 'standalone_name';
+
+    private const STATE_ENCODING_VALUE = 'encoding_value';
+
+    private const STATE_STANDALONE_EQUALS = 'standalone_equals';
+
+    private const STATE_STANDALONE_VALUE = 'standalone_value';
+
+    private const STATE_ERROR = false;
 
     /**
      * Current state of the state machine
