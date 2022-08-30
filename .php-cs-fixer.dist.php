@@ -12,7 +12,6 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
         '@PHP71Migration' => true,
-        'combine_nested_dirname' => true,
     ])
     ->setFinder($finder)
 ;
