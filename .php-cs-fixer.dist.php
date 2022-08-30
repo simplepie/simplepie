@@ -15,6 +15,7 @@ return (new PhpCsFixer\Config())
         '@PHP71Migration:risky' => true,
         'declare_strict_types' => false,
         'void_return' => false,
+        '@PHPUnit84Migration:risky' => true,
     ])
     ->setFinder($finder)
 ;
