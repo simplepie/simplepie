@@ -12,6 +12,9 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
         '@PHP71Migration' => true,
+        '@PHP71Migration:risky' => true,
+        'declare_strict_types' => false,
+        'void_return' => false,
     ])
     ->setFinder($finder)
 ;
