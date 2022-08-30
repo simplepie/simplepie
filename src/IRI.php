@@ -717,14 +717,17 @@ class IRI
         if ($iri === null) {
             return true;
         } elseif (isset($cache[$iri])) {
-            [$this->scheme,
+            [
+                $this->scheme,
                 $this->iuserinfo,
                 $this->ihost,
                 $this->port,
                 $this->ipath,
                 $this->iquery,
                 $this->ifragment,
-                $return] = $cache[$iri];
+                $return
+            ] = $cache[$iri];
+
             return $return;
         }
 
@@ -739,14 +742,17 @@ class IRI
             && $this->set_query($parsed['query'])
             && $this->set_fragment($parsed['fragment']);
 
-        $cache[$iri] = [$this->scheme,
-                             $this->iuserinfo,
-                             $this->ihost,
-                             $this->port,
-                             $this->ipath,
-                             $this->iquery,
-                             $this->ifragment,
-                             $return];
+        $cache[$iri] = [
+            $this->scheme,
+            $this->iuserinfo,
+            $this->ihost,
+            $this->port,
+            $this->ipath,
+            $this->iquery,
+            $this->ifragment,
+            $return
+        ];
+
         return $return;
     }
 
@@ -822,10 +828,12 @@ class IRI
                   $this->set_host($remaining) &&
                   $this->set_port($port);
 
-        $cache[$authority] = [$this->iuserinfo,
-                                   $this->ihost,
-                                   $this->port,
-                                   $return];
+        $cache[$authority] = [
+            $this->iuserinfo,
+            $this->ihost,
+            $this->port,
+            $return
+        ];
 
         return $return;
     }
