@@ -240,7 +240,7 @@ class SimplePieTest extends TestCase
 
     public function testLegacyCallOfSetCacheClass()
     {
-        if (PHP_VERSION_ID < 80000) {
+        if (version_compare(PHP_VERSION, '8.0', '<')) {
             $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
         } else {
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.

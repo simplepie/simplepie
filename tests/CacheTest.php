@@ -80,7 +80,7 @@ class CacheTest extends PHPUnit\Framework\TestCase
 
     public function testDirectOverrideLegacy()
     {
-        if (PHP_VERSION_ID < 80000) {
+        if (version_compare(PHP_VERSION, '8.0', '<')) {
             $this->expectException('Exception_Success');
         } else {
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.

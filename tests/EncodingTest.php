@@ -145,9 +145,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
     public function test_convert_UTF8_uconverter($input, $expected, $encoding)
     {
         $encoding = SimplePie_Misc::encoding($encoding);
-        if (version_compare(phpversion(), '5.5', '>=') &&
-            extension_loaded('intl')
-        ) {
+        if (extension_loaded('intl')) {
             $this->assertSameBin2Hex($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
         }
     }
