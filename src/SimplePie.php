@@ -666,8 +666,8 @@ class SimplePie
      */
     public function __construct()
     {
-        if (version_compare(PHP_VERSION, '5.6', '<')) {
-            trigger_error('Please upgrade to PHP 5.6 or newer.');
+        if (version_compare(PHP_VERSION, '7.2', '<')) {
+            trigger_error('Please upgrade to PHP 7.2 or newer.');
             die();
         }
 
