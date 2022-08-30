@@ -73,7 +73,7 @@ class Psr16Test extends TestCase
             [
                 '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7_mtime'
             ]
-        );
+        )->willReturn(true);
 
         Psr16::store_psr16_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
@@ -82,6 +82,20 @@ class Psr16Test extends TestCase
     }
 
     public function testSaveReturnsFalse()
+    {
+        $e = new Psr16CacheException();
+
+        $data = [];
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->exactly(2))->method('set')->willReturn(false);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertFalse($cache->save($data));
+    }
+
+    public function testSaveCatchExceptionAndReturnsFalse()
     {
         $e = new Psr16CacheException();
 
@@ -110,7 +124,7 @@ class Psr16Test extends TestCase
     public function testLoadReturnsFalse()
     {
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willReturnCallback(function($a, $b) {
+        $psr16->expects($this->once())->method('get')->willReturnCallback(function ($a, $b) {
             return $b;
         });
 
@@ -118,5 +132,114 @@ class Psr16Test extends TestCase
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(false, $cache->load());
+    }
+
+    public function testMtimeReturnsCorrectInt()
+    {
+        $data = 1234568790;
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn($data);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame($data, $cache->mtime());
+    }
+
+    public function testMtimeReturnsZeroOnNonInteger()
+    {
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn(false);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(0, $cache->mtime());
+    }
+
+    public function testMtimeReturnsZeroOnException()
+    {
+        $e = new Psr16CacheException();
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willThrowException($e);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(0, $cache->mtime());
+    }
+
+    public function testTouchReturnsTrue()
+    {
+        $data = [];
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn(true);
+        $psr16->expects($this->exactly(2))->method('set')->willReturn(true);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(true, $cache->touch());
+    }
+
+    public function testTouchReturnsFalseOnNonInteger()
+    {
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn(false);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(false, $cache->touch());
+    }
+
+    public function testTouchReturnsFalseOnException()
+    {
+        $e = new Psr16CacheException();
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willThrowException($e);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(false, $cache->touch());
+    }
+
+    public function testUnlinkReturnsTrue()
+    {
+        $data = [];
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->exactly(2))->method('delete')->willReturn(true);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(true, $cache->unlink());
+    }
+
+    public function testUnlinkReturnsFalseOnFalse()
+    {
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->exactly(2))->method('delete')->willReturn(false);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(false, $cache->unlink());
+    }
+
+    public function testUnlinkReturnsFalseOnException()
+    {
+        $e = new Psr16CacheException();
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('delete')->willThrowException($e);
+
+        Psr16::store_psr16_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame(false, $cache->unlink());
     }
 }

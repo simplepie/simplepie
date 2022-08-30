@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
+ * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
  * @author Ryan McCue
@@ -131,13 +131,13 @@ class Psr16 implements Base
         }
 
         try {
-            $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
-            $this->psr16cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
+            $set1 = $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
+            $set2 = $this->psr16cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
         } catch (CacheException $e) {
             return false;
         }
 
-        return true;
+        return $set1 && $set2;
     }
 
     /**
@@ -194,13 +194,13 @@ class Psr16 implements Base
                 return false;
             }
 
-            $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
-            $this->psr16cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
+            $set1 = $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
+            $set2 = $this->psr16cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
         } catch (CacheException $th) {
             return false;
         }
 
-        return true;
+        return $set1 && $set2;
     }
 
     /**
@@ -211,10 +211,12 @@ class Psr16 implements Base
     public function unlink()
     {
         try {
-            return $this->psr16cache->delete($this->cacheKey);
-            return $this->psr16cache->delete($this->cacheKey . '_mtime');
+            $set1 = $this->psr16cache->delete($this->cacheKey);
+            $set2 = $this->psr16cache->delete($this->cacheKey . '_mtime');
         } catch (CacheException $th) {
             return false;
         }
+
+        return $set1 && $set2;
     }
 }

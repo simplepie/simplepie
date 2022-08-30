@@ -243,6 +243,7 @@ class SimplePieTest extends TestCase
     {
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn([]);
+        $psr16->expects($this->exactly(2))->method('set')->willReturn(true);
 
         $feed = new SimplePie();
         $feed->set_psr16_cache($psr16);
