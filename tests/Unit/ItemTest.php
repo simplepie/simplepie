@@ -3346,7 +3346,8 @@ EOT
         </content>
     </entry>
 </feed>
-EOT,
+EOT
+                ,
                 '<a href="http://example.net/tests/test2/hello.html#world">Hello</a>',
             ],
             'Test item get_base item link' => [
@@ -3363,7 +3364,8 @@ EOT,
         </content>
     </entry>
 </feed>
-EOT,
+EOT
+                ,
                 '<a href="http://example.net/tests/test1/hello.html#world">Hello</a>',
             ],
             'Test item get_base feed link' => [
@@ -3379,7 +3381,8 @@ EOT,
         </content>
     </entry>
 </feed>
-EOT,
+EOT
+                ,
                 '<a href="http://example.net/tests/hello.html#world">Hello</a>',
             ],
         ];
