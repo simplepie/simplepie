@@ -3314,6 +3314,81 @@ EOT
     }
 
     /**
+     * @dataProvider getBaseProvider
+     */
+    public function test_get_base($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        $this->assertInstanceOf(Item::class, $item);
+
+        $this->assertSame($expected, $item->get_content());
+    }
+
+    public function getBaseProvider()
+    {
+        return [
+            'Test item get_base xml:base' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title type="text">Test get_base 1</title>
+    <link rel="alternate" type="text/html" href="http://example.net/tests/"/>
+    <entry>
+        <title>Test get_base 1.1</title>
+        <link rel="alternate" type="text/html" href="http://example.net/tests/test1/example.html"/>
+        <id>tag:example.net,2022:1</id>
+        <content type="html" xml:base="http://example.net/tests/test2/">
+            &lt;a href="hello.html#world"&gt;Hello&lt;/a&gt;
+        </content>
+    </entry>
+</feed>
+EOT
+                ,
+                '<a href="http://example.net/tests/test2/hello.html#world">Hello</a>',
+            ],
+            'Test item get_base item link' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title type="text">Test get_base 2</title>
+    <link rel="alternate" type="text/html" href="http://example.net/tests/"/>
+    <entry>
+        <title>Test get_base 2.1</title>
+        <link rel="alternate" type="text/html" href="http://example.net/tests/test1/example.html"/>
+        <id>tag:example.net,2022:2</id>
+        <content type="html">
+            &lt;a href="hello.html#world"&gt;Hello&lt;/a&gt;
+        </content>
+    </entry>
+</feed>
+EOT
+                ,
+                '<a href="http://example.net/tests/test1/hello.html#world">Hello</a>',
+            ],
+            'Test item get_base feed link' => [
+<<<EOT
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title type="text">Test get_base 3</title>
+    <link rel="alternate" type="text/html" href="http://example.net/tests/"/>
+    <entry>
+        <title>Test get_base 3.1</title>
+        <id>tag:example.net,2022:3</id>
+        <content type="xhtml">
+            <div xmlns="http://www.w3.org/1999/xhtml"><a href="hello.html#world">Hello</a></div>
+        </content>
+    </entry>
+</feed>
+EOT
+                ,
+                '<a href="http://example.net/tests/hello.html#world">Hello</a>',
+            ],
+        ];
+    }
+
+    /**
      * @dataProvider getPermalinkDataProvider
      */
     public function test_get_permalink($data, $expected)
