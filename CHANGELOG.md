@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix status_code type by @Alkarex in [#728](https://github.com/simplepie/simplepie/pull/728)
 - Fix parsing of HTTP Links by @Alkarex in [#729](https://github.com/simplepie/simplepie/pull/729)
+- Fix using the best base link for an item content by @Alkarex in [#744](https://github.com/simplepie/simplepie/pull/744)
+- Fix .editorconfig regression by @Alkarex in [#745](https://github.com/simplepie/simplepie/pull/745)
 
 ### Deprecated
 
