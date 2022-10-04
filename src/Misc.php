@@ -142,7 +142,7 @@ class Misc
 
     public static function error($message, $level, $file, $line)
     {
-        if ((ini_get('error_reporting') & $level) > 0) {
+        if ((error_reporting() & $level) > 0) {
             switch ($level) {
                 case E_USER_ERROR:
                     $note = 'PHP Error';
