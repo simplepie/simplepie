@@ -45,7 +45,6 @@ namespace SimplePie\Tests\Unit\Cache;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Psr16;
 use SimplePie\Tests\Fixtures\Exception\Psr16CacheException;
@@ -55,7 +54,7 @@ class Psr16Test extends TestCase
     public function testImplementationIsGloballyStored()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('You must set an implementation of `Psr\SimpleCache\CacheInterface` via `SimplePie\SimplePie::set_psr16_cache()` first.');
+        $this->expectExceptionMessage('You must set an implementation of `Psr\SimpleCache\CacheInterface` via `SimplePie\SimplePie::set_cache()` first.');
 
         new Psr16('location', 'name', 'type');
     }
@@ -75,7 +74,7 @@ class Psr16Test extends TestCase
             ]
         )->willReturn(true);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertTrue($cache->save($data));
@@ -83,13 +82,11 @@ class Psr16Test extends TestCase
 
     public function testSaveReturnsFalse()
     {
-        $e = new Psr16CacheException();
-
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->exactly(2))->method('set')->willReturn(false);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertFalse($cache->save($data));
@@ -103,7 +100,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('set')->willThrowException($e);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertFalse($cache->save($data));
@@ -115,7 +112,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn($data);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame($data, $cache->load());
@@ -128,7 +125,7 @@ class Psr16Test extends TestCase
             return $b;
         });
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(false, $cache->load());
@@ -140,7 +137,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn($data);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame($data, $cache->mtime());
@@ -151,7 +148,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn(false);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(0, $cache->mtime());
@@ -164,7 +161,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(0, $cache->mtime());
@@ -172,12 +169,11 @@ class Psr16Test extends TestCase
 
     public function testTouchReturnsTrue()
     {
-        $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn(true);
         $psr16->expects($this->exactly(2))->method('set')->willReturn(true);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(true, $cache->touch());
@@ -188,7 +184,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn(false);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(false, $cache->touch());
@@ -201,7 +197,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(false, $cache->touch());
@@ -209,11 +205,10 @@ class Psr16Test extends TestCase
 
     public function testUnlinkReturnsTrue()
     {
-        $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->exactly(2))->method('delete')->willReturn(true);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(true, $cache->unlink());
@@ -224,7 +219,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->exactly(2))->method('delete')->willReturn(false);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(false, $cache->unlink());
@@ -237,7 +232,7 @@ class Psr16Test extends TestCase
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('delete')->willThrowException($e);
 
-        Psr16::store_psr16_cache($psr16);
+        Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
         $this->assertSame(false, $cache->unlink());

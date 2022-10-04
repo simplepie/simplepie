@@ -66,11 +66,11 @@ class Psr16 implements Base
     /**
      * stored a globally PSR-16 cache implemtentation
      *
-     * @param CacheInterface $psr16cache
+     * @param CacheInterface $cache
      */
-    public static function store_psr16_cache(CacheInterface $psr16cache)
+    public static function store_cache(CacheInterface $cache)
     {
-        static::$psr16storage = $psr16cache;
+        static::$psr16storage = $cache;
     }
 
     /**
@@ -78,7 +78,7 @@ class Psr16 implements Base
      *
      * @var CacheInterface
      */
-    private $psr16cache;
+    private $cache;
 
     /**
      * PSR-16 cache key
@@ -105,13 +105,13 @@ class Psr16 implements Base
     {
         if (static::$psr16storage === null) {
             throw new Exception(sprintf(
-                'You must set an implementation of `%s` via `%s::set_psr16_cache()` first.',
+                'You must set an implementation of `%s` via `%s::set_cache()` first.',
                 CacheInterface::class,
                 SimplePieInstance::class
             ), \E_USER_ERROR);
         }
 
-        $this->psr16cache = static::$psr16storage;
+        $this->cache = static::$psr16storage;
 
         // BC: hashAlgo sha256 support was added in PHP 7.1
         $hashAlgo = in_array('sha256', hash_algos()) ? 'sha256' : 'sha1';
@@ -131,8 +131,8 @@ class Psr16 implements Base
         }
 
         try {
-            $set1 = $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
-            $set2 = $this->psr16cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
+            $set1 = $this->cache->set($this->cacheKey, $data, $this->ttl);
+            $set2 = $this->cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
         } catch (CacheException $e) {
             return false;
         }
@@ -148,7 +148,7 @@ class Psr16 implements Base
     public function load()
     {
         try {
-            $data = $this->psr16cache->get($this->cacheKey, $this);
+            $data = $this->cache->get($this->cacheKey, $this);
 
             if ($data === $this) {
                 return false;
@@ -168,7 +168,7 @@ class Psr16 implements Base
     public function mtime()
     {
         try {
-            $data = $this->psr16cache->get($this->cacheKey . '_mtime', $this);
+            $data = $this->cache->get($this->cacheKey . '_mtime', $this);
         } catch (CacheException $th) {
             return 0;
         }
@@ -188,14 +188,14 @@ class Psr16 implements Base
     public function touch()
     {
         try {
-            $data = $this->psr16cache->get($this->cacheKey, $this);
+            $data = $this->cache->get($this->cacheKey, $this);
 
             if ($data === $this) {
                 return false;
             }
 
-            $set1 = $this->psr16cache->set($this->cacheKey, $data, $this->ttl);
-            $set2 = $this->psr16cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
+            $set1 = $this->cache->set($this->cacheKey, $data, $this->ttl);
+            $set2 = $this->cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
         } catch (CacheException $th) {
             return false;
         }
@@ -211,8 +211,8 @@ class Psr16 implements Base
     public function unlink()
     {
         try {
-            $set1 = $this->psr16cache->delete($this->cacheKey);
-            $set2 = $this->psr16cache->delete($this->cacheKey . '_mtime');
+            $set1 = $this->cache->delete($this->cacheKey);
+            $set2 = $this->cache->delete($this->cacheKey . '_mtime');
         } catch (CacheException $th) {
             return false;
         }

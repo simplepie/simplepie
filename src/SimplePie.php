@@ -862,9 +862,9 @@ class SimplePie
      *
      * @param CacheInterface $psr16cache The PSR-16 cache implementation
      */
-    public function set_psr16_cache(CacheInterface $psr16cache)
+    public function set_cache(CacheInterface $cache)
     {
-        Psr16::store_psr16_cache($psr16cache);
+        Psr16::store_cache($cache);
         $this->registry->call('Cache', 'register', ['psr16', Psr16::class]);
         $this->cache_location = 'psr16';
     }
