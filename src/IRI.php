@@ -800,10 +800,12 @@ class IRI
             $this->port = null;
             return true;
         } elseif (isset($cache[$authority])) {
-            [$this->iuserinfo,
+            [
+                $this->iuserinfo,
                 $this->ihost,
                 $this->port,
-                $return] = $cache[$authority];
+                $return
+            ] = $cache[$authority];
 
             return $return;
         }
