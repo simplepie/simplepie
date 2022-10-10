@@ -57,14 +57,14 @@ use SimplePie\SimplePie as SimplePieInstance;
 class Psr16 implements Base
 {
     /**
-     * stored PSR-16 cache implemtentation
+     * stored PSR-16 cache implementation
      *
      * @var CacheInterface
      */
     private static $psr16storage = null;
 
     /**
-     * stored a globally PSR-16 cache implemtentation
+     * stored a globally PSR-16 cache implementation
      *
      * @param CacheInterface $cache
      */
@@ -74,7 +74,7 @@ class Psr16 implements Base
     }
 
     /**
-     * PSR-16 cache implemtentation
+     * PSR-16 cache implementation
      *
      * @var CacheInterface
      */
