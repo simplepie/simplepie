@@ -47,6 +47,7 @@ use Exception;
 use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\SimplePie as SimplePieInstance;
+use stdClass;
 
 /**
  * Caches data to the PSR-16 cache implementation
@@ -147,10 +148,12 @@ class Psr16 implements Base
      */
     public function load()
     {
-        try {
-            $data = $this->cache->get($this->cacheKey, $this);
+        $cacheMiss = new stdClass();
 
-            if ($data === $this) {
+        try {
+            $data = $this->cache->get($this->cacheKey, $cacheMiss);
+
+            if ($data === $cacheMiss) {
                 return false;
             }
         } catch (CacheException $th) {
@@ -167,13 +170,15 @@ class Psr16 implements Base
      */
     public function mtime()
     {
+        $cacheMiss = new stdClass();
+
         try {
-            $data = $this->cache->get($this->cacheKey . '_mtime', $this);
+            $data = $this->cache->get($this->cacheKey . '_mtime', $cacheMiss);
         } catch (CacheException $th) {
             return 0;
         }
 
-        if ($data === $this || ! is_int($data)) {
+        if ($data === $cacheMiss || ! is_int($data)) {
             return 0;
         }
 
@@ -187,10 +192,12 @@ class Psr16 implements Base
      */
     public function touch()
     {
-        try {
-            $data = $this->cache->get($this->cacheKey, $this);
+        $cacheMiss = new stdClass();
 
-            if ($data === $this) {
+        try {
+            $data = $this->cache->get($this->cacheKey, $cacheMiss);
+
+            if ($data === $cacheMiss) {
                 return false;
             }
 
