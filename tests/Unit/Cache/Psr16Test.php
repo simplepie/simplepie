@@ -74,7 +74,7 @@ class Psr16Test extends TestCase
         $this->assertFalse($cache->save($data));
     }
 
-    public function testSaveReturnsTrue()
+    public function testSaveReturnsTrueIfDataAndMtimeCouldBeWritten()
     {
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
@@ -95,7 +95,7 @@ class Psr16Test extends TestCase
         $this->assertTrue($cache->save($data));
     }
 
-    public function testSaveReturnsFalse()
+    public function testSaveReturnsFalseIfDataOrMtimeCouldNotBeWritten()
     {
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
@@ -107,7 +107,7 @@ class Psr16Test extends TestCase
         $this->assertFalse($cache->save($data));
     }
 
-    public function testSaveCatchExceptionAndReturnsFalse()
+    public function testSaveCatchesCacheExceptionAndReturnsFalse()
     {
         $e = new Psr16CacheException();
 
@@ -121,7 +121,7 @@ class Psr16Test extends TestCase
         $this->assertFalse($cache->save($data));
     }
 
-    public function testLoadReturnsData()
+    public function testLoadReturnsCorrectData()
     {
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
@@ -133,11 +133,11 @@ class Psr16Test extends TestCase
         $this->assertSame($data, $cache->load());
     }
 
-    public function testLoadReturnsFalse()
+    public function testLoadReturnsFalseOnCacheMiss()
     {
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willReturnCallback(function ($a, $b) {
-            return $b;
+        $psr16->expects($this->once())->method('get')->willReturnCallback(function ($key, $default) {
+            return $default;
         });
 
         Psr16::store_cache($psr16);
@@ -169,7 +169,7 @@ class Psr16Test extends TestCase
         $this->assertSame(0, $cache->mtime());
     }
 
-    public function testMtimeReturnsZeroOnException()
+    public function testMtimeReturnsZeroOnCacheException()
     {
         $e = new Psr16CacheException();
 
@@ -182,7 +182,7 @@ class Psr16Test extends TestCase
         $this->assertSame(0, $cache->mtime());
     }
 
-    public function testTouchReturnsTrue()
+    public function testTouchReturnsTrueIfDataAndMtimeCouldBeWritten()
     {
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn(true);
@@ -205,7 +205,7 @@ class Psr16Test extends TestCase
         $this->assertSame(false, $cache->touch());
     }
 
-    public function testTouchReturnsFalseOnException()
+    public function testTouchReturnsFalseOnCacheException()
     {
         $e = new Psr16CacheException();
 
@@ -218,7 +218,7 @@ class Psr16Test extends TestCase
         $this->assertSame(false, $cache->touch());
     }
 
-    public function testUnlinkReturnsTrue()
+    public function testUnlinkReturnsTrueIfDataAndMtimeCouldBeDeleted()
     {
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->exactly(2))->method('delete')->willReturn(true);
@@ -229,7 +229,7 @@ class Psr16Test extends TestCase
         $this->assertSame(true, $cache->unlink());
     }
 
-    public function testUnlinkReturnsFalseOnFalse()
+    public function testUnlinkReturnsFalseIfDataOrMtimeCouldNotBeDeleted()
     {
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->exactly(2))->method('delete')->willReturn(false);
@@ -240,7 +240,7 @@ class Psr16Test extends TestCase
         $this->assertSame(false, $cache->unlink());
     }
 
-    public function testUnlinkReturnsFalseOnException()
+    public function testUnlinkReturnsFalseOnCacheException()
     {
         $e = new Psr16CacheException();
 
