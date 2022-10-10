@@ -56,7 +56,7 @@ use stdClass;
  * @package SimplePie
  * @subpackage Caching
  */
-class Psr16 implements Base
+final class Psr16 implements Base
 {
     /**
      * stored PSR-16 cache implementation
@@ -68,6 +68,7 @@ class Psr16 implements Base
     /**
      * stored a globally PSR-16 cache implementation
      *
+     * @internal
      * @param CacheInterface $cache
      */
     public static function store_cache(CacheInterface $cache)
