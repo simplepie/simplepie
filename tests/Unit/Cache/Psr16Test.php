@@ -148,14 +148,15 @@ class Psr16Test extends TestCase
 
     public function testMtimeReturnsCorrectInt()
     {
-        $data = 1234568790;
+        $mtime = 1234568790;
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willReturn($data);
+        // Modification time is stored as a separate cache key
+        $psr16->expects($this->once())->method('get')->willReturn($mtime);
 
         Psr16::store_cache($psr16);
         $cache = new Psr16('location', 'name', 'type');
 
-        $this->assertSame($data, $cache->mtime());
+        $this->assertSame($mtime, $cache->mtime());
     }
 
     public function testMtimeReturnsZeroOnNonInteger()
