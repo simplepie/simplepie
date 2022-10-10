@@ -218,12 +218,12 @@ class Psr16 implements Base
     public function unlink()
     {
         try {
-            $set1 = $this->cache->delete($this->cacheKey);
-            $set2 = $this->cache->delete($this->cacheKey . '_mtime');
+            $unset1 = $this->cache->delete($this->cacheKey);
+            $unset2 = $this->cache->delete($this->cacheKey . '_mtime');
         } catch (CacheException $th) {
             return false;
         }
 
-        return $set1 && $set2;
+        return $unset1 && $unset2;
     }
 }
