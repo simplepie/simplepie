@@ -44,6 +44,7 @@
 namespace SimplePie\Cache;
 
 use Exception;
+use InvalidArgumentException;
 use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\SimplePie as SimplePieInstance;
@@ -131,6 +132,14 @@ class Psr16 implements Base
             $data = $data->data;
         }
 
+        if (! is_array($data)) {
+            throw new InvalidArgumentException(sprintf(
+                '%s::save(): Argument #1 ($data) must be of type array|%s',
+                self::class,
+                SimplePieInstance::class
+            ));
+        }
+
         try {
             $set1 = $this->cache->set($this->cacheKey, $data, $this->ttl);
             $set2 = $this->cache->set($this->cacheKey . '_mtime', time(), $this->ttl);
@@ -153,7 +162,7 @@ class Psr16 implements Base
         try {
             $data = $this->cache->get($this->cacheKey, $cacheMiss);
 
-            if ($data === $cacheMiss) {
+            if ($data === $cacheMiss || ! is_array($data)) {
                 return false;
             }
         } catch (CacheException $th) {

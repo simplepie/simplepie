@@ -44,6 +44,7 @@
 namespace SimplePie\Tests\Unit\Cache;
 
 use Exception;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Psr16;
@@ -57,6 +58,20 @@ class Psr16Test extends TestCase
         $this->expectExceptionMessage('You must set an implementation of `Psr\SimpleCache\CacheInterface` via `SimplePie\SimplePie::set_cache()` first.');
 
         new Psr16('location', 'name', 'type');
+    }
+
+    public function testSaveWithWrongDataTypeThrowsInvalidArgumentException()
+    {
+        $data = 'string';
+        $psr16 = $this->createMock(CacheInterface::class);
+
+        Psr16::store_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('SimplePie\Cache\Psr16::save(): Argument #1 ($data) must be of type array|SimplePie\SimplePie');
+
+        $this->assertFalse($cache->save($data));
     }
 
     public function testSaveReturnsTrue()
