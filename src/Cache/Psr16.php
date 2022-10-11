@@ -55,6 +55,7 @@ use stdClass;
  *
  * @package SimplePie
  * @subpackage Caching
+ * @internal
  */
 final class Psr16 implements Base
 {
