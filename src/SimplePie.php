@@ -499,7 +499,7 @@ class SimplePie
      * @see SimplePie::enable_cache()
      * @access private
      */
-    public $cache = true;
+    private $enable_cache = true;
 
     /**
      * @var bool Force SimplePie to fallback to expired cache, if enabled,
@@ -855,7 +855,7 @@ class SimplePie
      */
     public function enable_cache($enable = true)
     {
-        $this->cache = (bool) $enable;
+        $this->enable_cache = (bool) $enable;
     }
 
     /**
@@ -1377,7 +1377,7 @@ class SimplePie
 
         // Pass whatever was set with config options over to the sanitizer.
         // Pass the classes in for legacy support; new classes should use the registry instead
-        $this->sanitize->pass_cache_data($this->cache, $this->cache_location, $this->cache_name_function, $this->registry->get_class('Cache'));
+        $this->sanitize->pass_cache_data($this->enable_cache, $this->cache_location, $this->cache_name_function, $this->registry->get_class('Cache'));
         $this->sanitize->pass_file_data($this->registry->get_class('File'), $this->timeout, $this->useragent, $this->force_fsockopen, $this->curl_options);
 
         if (!empty($this->multifeed_url)) {
@@ -1410,7 +1410,7 @@ class SimplePie
             $parsed_feed_url = $this->registry->call('Misc', 'parse_url', [$this->feed_url]);
 
             // Decide whether to enable caching
-            if ($this->cache && $parsed_feed_url['scheme'] !== '') {
+            if ($this->enable_cache && $parsed_feed_url['scheme'] !== '') {
                 $filename = $this->get_cache_filename($this->feed_url);
                 $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $filename, Base::TYPE_FEED]);
             }
