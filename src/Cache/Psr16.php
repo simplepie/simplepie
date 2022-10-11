@@ -57,7 +57,7 @@ use stdClass;
  * @subpackage Caching
  * @internal
  */
-final class Psr16 implements Base
+final class Psr16 implements Base, DataCache
 {
     /**
      * stored PSR-16 cache implementation
@@ -120,6 +120,77 @@ final class Psr16 implements Base
         // BC: hashAlgo sha256 support was added in PHP 7.1
         $hashAlgo = in_array('sha256', hash_algos()) ? 'sha256' : 'sha1';
         $this->cacheKey = hash($hashAlgo, "$location/$name.$type");
+    }
+
+    /**
+     * Fetches a value from the cache.
+     *
+     * Equivalent to \Psr\SimpleCache\CacheInterface::get()
+     * <code>
+     * public function get(string $key, mixed $default = null): mixed;
+     * </code>
+     *
+     * @param string $key     The unique key of this item in the cache.
+     * @param mixed  $default Default value to return if the key does not exist.
+     *
+     * @return array|mixed The value of the item from the cache, or $default in case of cache miss.
+     *
+     * @throws InvalidArgumentException
+     *   MUST be thrown if the $key string is not a legal value.
+     */
+    public function getData($key, $default = null)
+    {
+        $data = $this->cache->get($key, $default);
+
+        if (! is_array($data) || $data === $default) {
+            return $default;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
+     *
+     * Equivalent to \Psr\SimpleCache\CacheInterface::set()
+     * <code>
+     * public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool;
+     * </code>
+     *
+     * @param string   $key   The key of the item to store.
+     * @param array    $value The value of the item to store, must be serializable.
+     * @param null|int $ttl   Optional. The TTL value of this item. If no value is sent and
+     *                                      the driver supports TTL then the library may set a default value
+     *                                      for it or let the driver take care of that.
+     *
+     * @return bool True on success and false on failure.
+     *
+     * @throws InvalidArgumentException
+     *   MUST be thrown if the $key string is not a legal value.
+     */
+    public function setData($key, array $value, $ttl = null)
+    {
+        return $this->cache->set($key, $value, $ttl);
+    }
+
+    /**
+     * Delete an item from the cache by its unique key.
+     *
+     * Equivalent to \Psr\SimpleCache\CacheInterface::delete()
+     * <code>
+     * public function delete(string $key): bool;
+     * </code>
+     *
+     * @param string $key The unique cache key of the item to delete.
+     *
+     * @return bool True if the item was successfully removed. False if there was an error.
+     *
+     * @throws InvalidArgumentException
+     *   MUST be thrown if the $key string is not a legal value.
+     */
+    public function deleteData($key)
+    {
+        return $this->cache->delete($key);
     }
 
     /**

@@ -49,6 +49,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Psr16;
 use SimplePie\Tests\Fixtures\Exception\Psr16CacheException;
+use stdClass;
 
 class Psr16Test extends TestCase
 {
@@ -58,6 +59,104 @@ class Psr16Test extends TestCase
         $this->expectExceptionMessage('You must set an implementation of `Psr\SimpleCache\CacheInterface` via `SimplePie\SimplePie::set_cache()` first.');
 
         new Psr16('location', 'name', 'type');
+    }
+
+    public function testSetDataReturnsTrueIfDataCouldBeWritten()
+    {
+        $key = 'name';
+        $value = [];
+        $ttl = 3600;
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('set')->with($key, $value, $ttl)->willReturn(true);
+
+        Psr16::store_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertTrue($cache->setData($key, $value, $ttl));
+    }
+
+    public function testSetDataReturnsFalseIfDataCouldNotBeWritten()
+    {
+        $key = 'name';
+        $value = [];
+        $ttl = 3600;
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('set')->willReturn(false);
+
+        Psr16::store_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertFalse($cache->setData($key, $value, $ttl));
+    }
+
+    public function testGetDataReturnsCorrectData()
+    {
+        $key = 'name';
+        $value = [];
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn($value);
+
+        Psr16::store_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame($value, $cache->getData($key));
+    }
+
+    public function testGetDataWithCacheMissReturnsDefault()
+    {
+        $key = 'name';
+        $default = new stdClass();
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn($default);
+
+        Psr16::store_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame($default, $cache->getData($key, $default));
+    }
+
+    public function testGetDataWithCacheCorruptionReturnsDefault()
+    {
+        $key = 'name';
+        $default = new stdClass();
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn('this is not an array');
+
+        Psr16::store_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertSame($default, $cache->getData($key, $default));
+    }
+
+    public function testDeleteDataReturnsTrueIfDataCouldBeDeleted()
+    {
+        $key = 'name';
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('delete')->willReturn(true);
+
+        Psr16::store_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertTrue($cache->deleteData($key));
+    }
+
+    public function testDeleteDataReturnsFalseIfDataCouldNotBeDeleted()
+    {
+        $key = 'name';
+
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('delete')->willReturn(false);
+
+        Psr16::store_cache($psr16);
+        $cache = new Psr16('location', 'name', 'type');
+
+        $this->assertFalse($cache->deleteData($key));
     }
 
     public function testSaveWithWrongDataTypeThrowsInvalidArgumentException()
@@ -71,7 +170,7 @@ class Psr16Test extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('SimplePie\Cache\Psr16::save(): Argument #1 ($data) must be of type array|SimplePie\SimplePie');
 
-        $this->assertFalse($cache->save($data));
+        $cache->save($data);
     }
 
     public function testSaveReturnsTrueIfDataAndMtimeCouldBeWritten()
