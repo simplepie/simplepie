@@ -47,6 +47,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Base;
+use SimplePie\Misc;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\Cache\BaseCacheWithCallbacksMock;
 use SimplePie\Tests\Fixtures\FileMock;
@@ -119,15 +120,12 @@ class SimplePieTest extends TestCase
             BaseCacheWithCallbacksMock::resetAllCallbacks();
         }
 
-        // Fix build value
-        $writtenData['build'] = $expectedDataWritten['build'];
-
         $this->assertSame($expectedDataWritten, $writtenData);
     }
 
     public function provideSavedCacheData()
     {
-        $expectedDataWritten = [
+        $expectDefaultDataWritten = [
             'child' => [
                 'http://www.w3.org/2005/Atom' => [
                     'feed' => [
@@ -145,14 +143,29 @@ class SimplePieTest extends TestCase
             'headers' => [
                 'content-type' => 'application/atom+xml',
             ],
-            'build' => 1665559653,
+            'build' => Misc::get_build(),
         ];
 
-        $currentDataCached = [];
+        $expectNoDataWritten = [];
+
+        $currentlyNoDataIsCached = [];
+
+        $currentlyCachedDataWithWrongBuild = [
+            'build' => 0,
+        ];
+
+        $currentlyCachedDataWithCacheCollision = [
+            'url' => 'http://example.com/some-different-url',
+            'build' => Misc::get_build(),
+        ];
 
         return [
-            [Base::class, $currentDataCached, $expectedDataWritten],
-            [CacheInterface::class, $currentDataCached, $expectedDataWritten],
+            [Base::class,           $currentlyNoDataIsCached,               $expectDefaultDataWritten],
+            [CacheInterface::class, $currentlyNoDataIsCached,               $expectDefaultDataWritten],
+            [Base::class,           $currentlyCachedDataWithWrongBuild,     $expectDefaultDataWritten],
+            [CacheInterface::class, $currentlyCachedDataWithWrongBuild,     $expectDefaultDataWritten],
+            [Base::class,           $currentlyCachedDataWithCacheCollision, $expectNoDataWritten],
+            [CacheInterface::class, $currentlyCachedDataWithCacheCollision, $expectNoDataWritten],
         ];
     }
 }
