@@ -60,8 +60,12 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider provideSavedCacheData
      */
-    public function testInitWithEmptyCacheSavesCorrectDataInCache($testedCacheClass, $currentDataCached, $expectedDataWritten)
-    {
+    public function testInitWithEmptyCacheSavesCorrectDataInCache(
+        $testedCacheClass,
+        $currentDataCached,
+        $expectedDataWritten,
+        $currentMtime
+    ) {
         $writtenData = [];
 
         $feed = new SimplePie();
@@ -91,6 +95,11 @@ class SimplePieTest extends TestCase
                 // Set current cached data
                 BaseCacheWithCallbacksMock::setLoadCallback(function() use ($currentDataCached) {
                     return $currentDataCached;
+                });
+
+                // Set current mtime
+                BaseCacheWithCallbacksMock::setMtimeCallback(function() use ($currentMtime) {
+                    return $currentMtime;
                 });
 
                 // Test data written
@@ -159,13 +168,29 @@ class SimplePieTest extends TestCase
             'build' => Misc::get_build(),
         ];
 
+        $currentlyCachedDataWithFeedUrl = [
+            'url' => 'http://example.com/feed/',
+            'feed_url' => 'http://example.com/feed/',
+            'build' => Misc::get_build(),
+        ];
+
+        $defaultMtime = time();
+
         return [
-            [Base::class,           $currentlyNoDataIsCached,               $expectDefaultDataWritten],
-            [CacheInterface::class, $currentlyNoDataIsCached,               $expectDefaultDataWritten],
-            [Base::class,           $currentlyCachedDataWithWrongBuild,     $expectDefaultDataWritten],
-            [CacheInterface::class, $currentlyCachedDataWithWrongBuild,     $expectDefaultDataWritten],
-            [Base::class,           $currentlyCachedDataWithCacheCollision, $expectNoDataWritten],
-            [CacheInterface::class, $currentlyCachedDataWithCacheCollision, $expectNoDataWritten],
+            // If the cache is empty
+            [Base::class,           $currentlyNoDataIsCached,               $expectDefaultDataWritten, $defaultMtime],
+            [CacheInterface::class, $currentlyNoDataIsCached,               $expectDefaultDataWritten, $defaultMtime],
+            // If the cache is for an outdated build of SimplePie
+            [Base::class,           $currentlyCachedDataWithWrongBuild,     $expectDefaultDataWritten, $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataWithWrongBuild,     $expectDefaultDataWritten, $defaultMtime],
+            // If we've hit a collision just rerun it with caching disabled
+            [Base::class,           $currentlyCachedDataWithCacheCollision, $expectNoDataWritten,      $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataWithCacheCollision, $expectNoDataWritten,      $defaultMtime],
+            // If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
+            // If the autodiscovery cache is still valid use it.
+            // And we need to do feed autodiscovery.
+            [Base::class,           $currentlyCachedDataWithFeedUrl,        $expectDefaultDataWritten, $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataWithFeedUrl,        $expectDefaultDataWritten, $defaultMtime],
         ];
     }
 }
