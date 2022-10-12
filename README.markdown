@@ -85,7 +85,7 @@ be aware of our [coding standards](http://simplepie.org/wiki/misc/coding_standar
 The main development happens in branch `v1.x`.
 Please create your pull requests primarily against this branch.
 
-The branch `v1.7` may receive backport of features and security fixes (if possible).
+The branch `v1.7` may receive backport of features, bug fixes and security fixes (if possible).
 It will become end of life if [WordPress drops support for PHP 5.6](https://wordpress.org/about/requirements/).
 
 Authors and contributors
