@@ -59,9 +59,9 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider provideSavedCacheData
      */
-    public function testCachedDataWithPsr16Cache($expected, $testedCacheClass)
+    public function testInitWithEmptyCacheSavesCorrectDataInCache($testedCacheClass, $currentDataCached, $expectedDataWritten)
     {
-        $cacheData = [];
+        $writtenData = [];
 
         $feed = new SimplePie();
         $feed->get_registry()->register('File', FileMock::class);
@@ -70,11 +70,14 @@ class SimplePieTest extends TestCase
         switch ($testedCacheClass) {
             case CacheInterface::class:
                 $psr16 = $this->createMock(CacheInterface::class);
-                $psr16->method('get')->willReturn([]);
-                $psr16->expects($this->exactly(2))->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$cacheData) {
+                // Set current cached data
+                $psr16->method('get')->willReturn($currentDataCached);
+
+                // Test data written
+                $psr16->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$writtenData) {
                     // Ignore setting of the _mtime value
                     if (substr($key, - strlen('_mtime')) !== '_mtime') {
-                        $cacheData = $value;
+                        $writtenData = $value;
                     }
 
                     return true;
@@ -84,12 +87,18 @@ class SimplePieTest extends TestCase
                 break;
 
             case Base::class:
-                BaseCacheWithCallbacksMock::setSaveCallback(function($data) use (&$cacheData) {
+                // Set current cached data
+                BaseCacheWithCallbacksMock::setLoadCallback(function() use ($currentDataCached) {
+                    return $currentDataCached;
+                });
+
+                // Test data written
+                BaseCacheWithCallbacksMock::setSaveCallback(function($data) use (&$writtenData) {
                     if ($data instanceof SimplePie) {
                         $data = $data->data;
                     }
 
-                    $cacheData = $data;
+                    $writtenData = $data;
 
                     return true;
                 });
@@ -106,15 +115,19 @@ class SimplePieTest extends TestCase
 
         $feed->init();
 
-        // Fix build value
-        $cacheData['build'] = $expected['build'];
+        if ($testedCacheClass === Base::class) {
+            BaseCacheWithCallbacksMock::resetAllCallbacks();
+        }
 
-        $this->assertSame($expected, $cacheData);
+        // Fix build value
+        $writtenData['build'] = $expectedDataWritten['build'];
+
+        $this->assertSame($expectedDataWritten, $writtenData);
     }
 
     public function provideSavedCacheData()
     {
-        $expected = [
+        $expectedDataWritten = [
             'child' => [
                 'http://www.w3.org/2005/Atom' => [
                     'feed' => [
@@ -135,9 +148,11 @@ class SimplePieTest extends TestCase
             'build' => 1665559653,
         ];
 
+        $currentDataCached = [];
+
         return [
-            [$expected, Base::class],
-            [$expected, CacheInterface::class],
+            [Base::class, $currentDataCached, $expectedDataWritten],
+            [CacheInterface::class, $currentDataCached, $expectedDataWritten],
         ];
     }
 }
