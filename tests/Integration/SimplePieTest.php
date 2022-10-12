@@ -43,8 +43,10 @@
 
 namespace SimplePie\Tests\Integration;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
+use SimplePie\Cache\Base;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\Cache\BaseCacheWithCallbacksMock;
 use SimplePie\Tests\Fixtures\FileMock;
@@ -54,49 +56,55 @@ class SimplePieTest extends TestCase
 {
     use ExpectPHPException;
 
-    public function testCachedDataWithBaseCache()
+    /**
+     * @dataProvider provideSavedCacheData
+     */
+    public function testCachedDataWithPsr16Cache($expected, $testedCacheClass)
     {
-        $expected = [
-            'child' => [
-                'http://www.w3.org/2005/Atom' => [
-                    'feed' => [
-                        0 => [
-                            'data' => '',
-                            'attribs' => [],
-                            'xml_base' => '',
-                            'xml_base_explicit' => false,
-                            'xml_lang' => '',
-                         ],
-                    ],
-                ],
-            ],
-            'type' => 512,
-            'headers' => [
-                'content-type' => 'application/atom+xml',
-            ],
-            'build' => 1665559653,
-        ];
         $cacheData = [];
 
         $feed = new SimplePie();
         $feed->get_registry()->register('File', FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 
-        BaseCacheWithCallbacksMock::setSaveCallback(function($data) use (&$cacheData) {
-            if ($data instanceof SimplePie) {
-                $data = $data->data;
-            }
+        switch ($testedCacheClass) {
+            case CacheInterface::class:
+                $psr16 = $this->createMock(CacheInterface::class);
+                $psr16->method('get')->willReturn([]);
+                $psr16->expects($this->exactly(2))->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$cacheData) {
+                    // Ignore setting of the _mtime value
+                    if (substr($key, - strlen('_mtime')) !== '_mtime') {
+                        $cacheData = $value;
+                    }
 
-            $cacheData = $data;
+                    return true;
+                });
 
-            return true;
-        });
+                $feed->set_cache($psr16);
+                break;
 
-        $feed->get_registry()->call('Cache', 'register', ['mock', BaseCacheWithCallbacksMock::class]);
-        $feed->set_cache_location('mock');
+            case Base::class:
+                BaseCacheWithCallbacksMock::setSaveCallback(function($data) use (&$cacheData) {
+                    if ($data instanceof SimplePie) {
+                        $data = $data->data;
+                    }
+
+                    $cacheData = $data;
+
+                    return true;
+                });
+
+                $feed->get_registry()->call('Cache', 'register', ['mock', BaseCacheWithCallbacksMock::class]);
+                $feed->set_cache_location('mock');
+                break;
+
+            default:
+                throw new Exception($testedCacheClass . ' is not supported.');
+
+                break;
+        }
+
         $feed->init();
-
-        BaseCacheWithCallbacksMock::resetAllCallbacks();
 
         // Fix build value
         $cacheData['build'] = $expected['build'];
@@ -104,7 +112,7 @@ class SimplePieTest extends TestCase
         $this->assertSame($expected, $cacheData);
     }
 
-    public function testCachedDataWithPsr16Cache()
+    public function provideSavedCacheData()
     {
         $expected = [
             'child' => [
@@ -126,30 +134,10 @@ class SimplePieTest extends TestCase
             ],
             'build' => 1665559653,
         ];
-        $cacheData = [];
 
-        $feed = new SimplePie();
-        $feed->get_registry()->register('File', FileMock::class);
-        $feed->set_feed_url('http://example.com/feed/');
-
-        $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->method('get')->willReturn([]);
-        $psr16->expects($this->exactly(2))->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$cacheData) {
-            // Ignore setting of the _mtime value
-            if (substr($key, - strlen('_mtime')) !== '_mtime') {
-                $cacheData = $value;
-            }
-
-            return true;
-        });
-
-        $feed->set_cache($psr16);
-
-        $feed->init();
-
-        // Fix build value
-        $cacheData['build'] = $expected['build'];
-
-        $this->assertSame($expected, $cacheData);
+        return [
+            [$expected, Base::class],
+            [$expected, CacheInterface::class],
+        ];
     }
 }
