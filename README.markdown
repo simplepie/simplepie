@@ -77,16 +77,16 @@ If you'd like to contribute to SimplePie, the best way to get started is to fork
 the project on GitHub and send pull requests for patches. When doing so, please
 be aware of our [coding standards](http://simplepie.org/wiki/misc/coding_standards).
 
-| branch                                                   | requires    |
-|----------------------------------------------------------|-------------|
-| [v1.x](https://github.com/simplepie/simplepie/tree/v1.x) | PHP 7.2.0+  |
-| [v1.7](https://github.com/simplepie/simplepie/tree/v1.7) | PHP 5.6.0+  |
-
-The main development happens in branch `v1.x`.
+The main development for the next minor release happens in `master` branch.
 Please create your pull requests primarily against this branch.
 
-The branch `v1.7` may receive backport of features, bug fixes and security fixes (if possible).
+The branch `one-dot-seven` may receive backport of features, bug fixes and security fixes (if possible).
 It will become end of life if [WordPress drops support for PHP 5.6](https://wordpress.org/about/requirements/).
+
+| branch                                                                     | requires    |
+|----------------------------------------------------------------------------|-------------|
+| [master](https://github.com/simplepie/simplepie/tree/master)               | PHP 7.2.0+  |
+| [one-dot-seven](https://github.com/simplepie/simplepie/tree/one-dot-seven) | PHP 5.6.0+  |
 
 Authors and contributors
 ------------------------
