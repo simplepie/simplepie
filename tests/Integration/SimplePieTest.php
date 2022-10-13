@@ -137,6 +137,11 @@ class SimplePieTest extends TestCase
             BaseCacheWithCallbacksMock::resetAllCallbacks();
         }
 
+        // Adjust expected cache expiration time to prevent race conditions
+        if (array_key_exists('cache_expiration_time', $writtenData)) {
+            $expectedDataWritten['cache_expiration_time'] = $writtenData['cache_expiration_time'];
+        }
+
         $this->assertSame($expectedDataWritten, $writtenData);
     }
 
@@ -161,7 +166,11 @@ class SimplePieTest extends TestCase
                 'content-type' => 'application/atom+xml',
             ],
             'build' => Misc::get_build(),
+            'cache_expiration_time' => 0, // Needs to be adjust in test case
         ];
+
+        $defaultMtime = time();
+        $defaultExpirationTime = $defaultMtime + 3600;
 
         $expectNoDataWritten = [];
 
@@ -174,21 +183,22 @@ class SimplePieTest extends TestCase
         $currentlyCachedDataWithCacheCollision = [
             'url' => 'http://example.com/some-different-url',
             'build' => Misc::get_build(),
+            'cache_expiration_time' => $defaultExpirationTime,
         ];
 
         $currentlyCachedDataWithFeedUrl = [
             'url' => 'http://example.com/feed/',
             'feed_url' => 'http://example.com/feed/',
             'build' => Misc::get_build(),
+            'cache_expiration_time' => $defaultExpirationTime,
         ];
 
         $currentlyCachedDataWithNonFeedUrl = [
             'url' => 'http://example.com/feed/',
             'feed_url' => 'http://example.com/feed.xml/',
             'build' => Misc::get_build(),
+            'cache_expiration_time' => $defaultExpirationTime,
         ];
-
-        $defaultMtime = time();
 
         return [
             // If the cache is empty
