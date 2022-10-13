@@ -75,8 +75,16 @@ class SimplePieTest extends TestCase
         switch ($testedCacheClass) {
             case CacheInterface::class:
                 $psr16 = $this->createMock(CacheInterface::class);
-                // Set current cached data
-                $psr16->method('get')->willReturn($currentDataCached);
+                // Set current cached data and mtime
+                $psr16->method('get')->willReturnCallback(function($key, $default) use ($currentDataCached, $currentMtime) {
+                    // Set current mtime
+                    if (substr($key, - strlen('_mtime')) === '_mtime') {
+                        return $currentMtime;
+                    }
+
+                    // Set current cached data
+                    return $currentDataCached;
+                });
 
                 // Test data written
                 $psr16->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$writtenData) {
@@ -174,6 +182,12 @@ class SimplePieTest extends TestCase
             'build' => Misc::get_build(),
         ];
 
+        $currentlyCachedDataWithNonFeedUrl = [
+            'url' => 'http://example.com/feed/',
+            'feed_url' => 'http://example.com/feed.xml/',
+            'build' => Misc::get_build(),
+        ];
+
         $defaultMtime = time();
 
         return [
@@ -191,6 +205,11 @@ class SimplePieTest extends TestCase
             // And we need to do feed autodiscovery.
             [Base::class,           $currentlyCachedDataWithFeedUrl,        $expectDefaultDataWritten, $defaultMtime],
             [CacheInterface::class, $currentlyCachedDataWithFeedUrl,        $expectDefaultDataWritten, $defaultMtime],
+            // If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
+            // If the autodiscovery cache is still valid use it.
+            // Do not need to do feed autodiscovery yet.
+            [Base::class,           $currentlyCachedDataWithNonFeedUrl,     $expectNoDataWritten,      $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataWithNonFeedUrl,     $expectNoDataWritten,      $defaultMtime],
         ];
     }
 }
