@@ -123,7 +123,8 @@ class BaseCacheWithCallbacksMock implements Base
     public function __construct($location, $name, $type)
     {
         if (static::$constructCallback !== null) {
-            (static::$constructCallback)($location, $name, $type);
+            $callback = static::$constructCallback;
+            $callback($location, $name, $type);
         }
     }
 
@@ -138,7 +139,8 @@ class BaseCacheWithCallbacksMock implements Base
         $return = true;
 
         if (static::$saveCallback instanceof Closure) {
-            $return = (static::$saveCallback)($data);
+            $callback = static::$saveCallback;
+            $return = $callback($data);
         }
 
         return $return;
@@ -154,7 +156,8 @@ class BaseCacheWithCallbacksMock implements Base
         $return = [];
 
         if (static::$loadCallback instanceof Closure) {
-            $return = (static::$loadCallback)();
+            $callback = static::$loadCallback;
+            $return = $callback();
         }
 
         return $return;
@@ -170,7 +173,8 @@ class BaseCacheWithCallbacksMock implements Base
         $return = 0;
 
         if (static::$mtimeCallback instanceof Closure) {
-            $return = (static::$mtimeCallback)();
+            $callback = static::$mtimeCallback;
+            $return = $callback();
         }
 
         return $return;
@@ -186,7 +190,8 @@ class BaseCacheWithCallbacksMock implements Base
         $return = true;
 
         if (static::$touchCallback instanceof Closure) {
-            $return = (static::$touchCallback)();
+            $callback = static::$touchCallback;
+            $return = $callback();
         }
 
         return $return;
@@ -202,7 +207,8 @@ class BaseCacheWithCallbacksMock implements Base
         $return = true;
 
         if (static::$unlinkCallback instanceof Closure) {
-            $return = (static::$unlinkCallback)();
+            $callback = static::$unlinkCallback;
+            $return = $callback();
         }
 
         return $return;
