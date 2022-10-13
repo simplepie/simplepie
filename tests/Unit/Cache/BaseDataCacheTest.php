@@ -81,7 +81,7 @@ class BaseDataCacheTest extends TestCase
     public function testGetDataReturnsCorrectData()
     {
         $key = 'name';
-        $cachedValue = ['cache_expiration_time' => time() + 3600];
+        $cachedValue = ['__cache_expiration_time' => time() + 3600];
         $value = [];
 
         $baseCache = $this->createMock(Base::class);
@@ -108,7 +108,7 @@ class BaseDataCacheTest extends TestCase
     public function testGetDataWithCacheExpiredReturnsDefault()
     {
         $key = 'name';
-        $cachedValue = ['cache_expiration_time' => 0];
+        $cachedValue = ['__cache_expiration_time' => 0];
         $default = new stdClass();
 
         $baseCache = $this->createMock(Base::class);

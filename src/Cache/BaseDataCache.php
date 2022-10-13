@@ -87,15 +87,15 @@ class BaseDataCache implements DataCache
             return $default;
         }
 
-        if (! array_key_exists('cache_expiration_time', $data)) {
+        if (! array_key_exists('__cache_expiration_time', $data)) {
             return $default;
         }
 
-        if ($data['cache_expiration_time'] < time()) {
+        if ($data['__cache_expiration_time'] < time()) {
             return $default;
         }
 
-        unset($data['cache_expiration_time']);
+        unset($data['__cache_expiration_time']);
 
         return $data;
     }
@@ -125,7 +125,7 @@ class BaseDataCache implements DataCache
             $ttl = 3600;
         }
 
-        $value['cache_expiration_time'] = time() + $ttl;
+        $value['__cache_expiration_time'] = time() + $ttl;
 
         return $this->cache->save($value);
     }
