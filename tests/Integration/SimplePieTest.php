@@ -174,6 +174,28 @@ class SimplePieTest extends TestCase
 
         $expectNoDataWritten = [];
 
+        $currentlyCachedDataIsUpdated = [
+            'child' => [
+                'http://www.w3.org/2005/Atom' => [
+                    'feed' => [
+                        0 => [
+                            'data' => '',
+                            'attribs' => [],
+                            'xml_base' => '',
+                            'xml_base_explicit' => false,
+                            'xml_lang' => '',
+                         ],
+                    ],
+                ],
+            ],
+            'type' => 512,
+            'headers' => [
+                'content-type' => 'application/atom+xml',
+            ],
+            'build' => Misc::get_build(),
+            'cache_expiration_time' => $defaultExpirationTime,
+        ];
+
         $currentlyCachedDataIsValid = [
             'child' => [
                 'http://www.w3.org/2005/Atom' => [
@@ -242,6 +264,9 @@ class SimplePieTest extends TestCase
             // Do not need to do feed autodiscovery yet.
             [Base::class,           $currentlyCachedDataWithNonFeedUrl,     $expectNoDataWritten,      $defaultMtime],
             [CacheInterface::class, $currentlyCachedDataWithNonFeedUrl,     $expectNoDataWritten,      $defaultMtime],
+            // Check if the cache has been updated
+            [Base::class,           $currentlyCachedDataIsUpdated,          $expectDefaultDataWritten, $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataIsUpdated,          $expectDefaultDataWritten, $defaultMtime],
             // If the cache is still valid, just return true
             [Base::class,           $currentlyCachedDataIsValid,            $expectNoDataWritten,      $defaultMtime],
             [CacheInterface::class, $currentlyCachedDataIsValid,            $expectNoDataWritten,      $defaultMtime],
