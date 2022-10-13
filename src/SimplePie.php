@@ -1592,13 +1592,13 @@ class SimplePie
                                 // Set raw_data to false here too, to signify that the cache
                                 // is still valid.
                                 $this->raw_data = false;
-                                $cache->touch();
+                                $cache->save($this->data);
                                 return true;
                             }
                         } else {
                             $this->check_modified = false;
                             if ($this->force_cache_fallback) {
-                                $cache->touch();
+                                $cache->save($this->data);
                                 return true;
                             }
 
