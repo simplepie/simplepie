@@ -152,6 +152,9 @@ class SimplePieTest extends TestCase
 
     public function provideSavedCacheData()
     {
+        $defaultMtime = time();
+        $defaultExpirationTime = $defaultMtime + 3600;
+
         $expectDefaultDataWritten = [
             'child' => [
                 'http://www.w3.org/2005/Atom' => [
@@ -174,17 +177,14 @@ class SimplePieTest extends TestCase
             'cache_expiration_time' => 0, // Needs to be adjust in test case
         ];
 
+        $expectNoDataWritten = [];
+
         $expectDataWithNewFeedUrl = [
             'url' => 'http://example.com/feed.xml/',
             'feed_url' => 'http://example.com/feed.xml/',
             'build' => Misc::get_build(),
             'cache_expiration_time' => $defaultExpirationTime,
         ];
-
-        $defaultMtime = time();
-        $defaultExpirationTime = $defaultMtime + 3600;
-
-        $expectNoDataWritten = [];
 
         $currentlyCachedDataIsUpdated = [
             'child' => [
