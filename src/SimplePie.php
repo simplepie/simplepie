@@ -43,8 +43,11 @@
 
 namespace SimplePie;
 
+use InvalidArgumentException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Base;
+use SimplePie\Cache\BaseDataCache;
+use SimplePie\Cache\DataCache;
 use SimplePie\Cache\Psr16;
 
 /**
@@ -655,6 +658,11 @@ class SimplePie
     public $enable_exceptions = false;
 
     /**
+     * @var DataCache|null
+     */
+    private $cache = null;
+
+    /**
      * The SimplePie class contains feed level data and options
      *
      * To use SimplePie, create the SimplePie object with no parameters. You can
@@ -862,12 +870,15 @@ class SimplePie
      * Set a PSR-16 implementation as cache
      *
      * @param CacheInterface $psr16cache The PSR-16 cache implementation
+     *
+     * @return void
      */
     public function set_cache(CacheInterface $cache)
     {
+        // TODO: Psr16::__construct() needs to be refoctored, so we can remove Psr16::store_cache()
         Psr16::store_cache($cache);
-        $this->registry->call('Cache', 'register', ['psr16', Psr16::class]);
-        $this->cache_location = 'psr16';
+
+        $this->cache = new Psr16('', '', '');
     }
 
     /**
@@ -1377,7 +1388,13 @@ class SimplePie
 
         // Pass whatever was set with config options over to the sanitizer.
         // Pass the classes in for legacy support; new classes should use the registry instead
-        $this->sanitize->pass_cache_data($this->enable_cache, $this->cache_location, $this->cache_name_function, $this->registry->get_class('Cache'));
+        $this->sanitize->pass_cache_data(
+            $this->enable_cache,
+            $this->cache_location,
+            $this->cache_name_function,
+            $this->registry->get_class('Cache'),
+            $this->cache
+        );
         $this->sanitize->pass_file_data($this->registry->get_class('File'), $this->timeout, $this->useragent, $this->force_fsockopen, $this->curl_options);
 
         if (!empty($this->multifeed_url)) {
@@ -1411,8 +1428,7 @@ class SimplePie
 
             // Decide whether to enable caching
             if ($this->enable_cache && $parsed_feed_url['scheme'] !== '') {
-                $filename = $this->get_cache_filename($this->feed_url);
-                $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $filename, Base::TYPE_FEED]);
+                $cache = $this->get_cache($this->feed_url);
             }
 
             // Fetch the data via \SimplePie\File into $this->raw_data
@@ -1494,7 +1510,7 @@ class SimplePie
 
                     // Cache the file if caching is enabled
                     $this->data['cache_expiration_time'] = $this->cache_duration + time();
-                    if ($cache && !$cache->save($this)) {
+                    if ($cache && ! $cache->setData($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
                     return true;
@@ -1534,19 +1550,35 @@ class SimplePie
      * Fetch the data via \SimplePie\File
      *
      * If the data is already cached, attempt to fetch it from there instead
-     * @param \SimplePie\Cache\Base|false $cache Cache handler, or false to not load from the cache
+     * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
      * @return array|true Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
     protected function fetch_data(&$cache)
     {
+        if (is_object($cache) && ! $cache instanceof DataCache) {
+            // @trigger_error(sprintf('Providing $cache as "\SimplePie\Cache\Base" in %s() is deprecated since SimplePie 1.8.0, please provide "\SimplePie\Cache\DataCache" implementation instead.', __METHOD__), \E_USER_DEPRECATED);
+            $cache = new BaseDataCache($cache);
+        }
+
+        if ($cache !== false && ! $cache instanceof DataCache) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($cache) must be of type %s|false',
+                __METHOD__,
+                DataCache::class
+            ), 1);
+        }
+
+        $cacheKey = $this->get_cache_filename($this->feed_url);
+
         // If it's enabled, use the cache
         if ($cache) {
             // Load the Cache
-            $this->data = $cache->load();
+            $this->data = $cache->getData($cacheKey, []);
+
             if (!empty($this->data)) {
                 // If the cache is for an outdated build of SimplePie
                 if (!isset($this->data['build']) || $this->data['build'] !== \SimplePie\Misc::get_build()) {
-                    $cache->unlink();
+                    $cache->deleteData($cacheKey);
                     $this->data = [];
                 }
                 // If we've hit a collision just rerun it with caching disabled
@@ -1556,17 +1588,18 @@ class SimplePie
                 }
                 // If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
                 elseif (isset($this->data['feed_url'])) {
-                    // If the autodiscovery cache is still valid use it.
-                    if (isset($this->data['cache_expiration_time']) && $this->data['cache_expiration_time'] > time()) {
-                        // Do not need to do feed autodiscovery yet.
-                        if ($this->data['feed_url'] !== $this->data['url']) {
-                            $this->set_feed_url($this->data['feed_url']);
-                            return $this->init();
-                        }
+                    // Do not need to do feed autodiscovery yet.
+                    if ($this->data['feed_url'] !== $this->data['url']) {
+                        $this->set_feed_url($this->data['feed_url']);
+                        $this->data['url'] = $this->data['feed_url'];
 
-                        $cache->unlink();
-                        $this->data = [];
+                        $cache->setData($this->get_cache_filename($this->feed_url), $this->data, $this->autodiscovery_cache_duration);
+
+                        return $this->init();
                     }
+
+                    $cache->deleteData($this->get_cache_filename($this->feed_url));
+                    $this->data = [];
                 }
                 // Check if the cache has been updated
                 elseif (isset($this->data['cache_expiration_time']) && $this->data['cache_expiration_time'] > time()) {
@@ -1593,13 +1626,13 @@ class SimplePie
                                 // Set raw_data to false here too, to signify that the cache
                                 // is still valid.
                                 $this->raw_data = false;
-                                $cache->save($this->data);
+                                $cache->setData($cacheKey, $this->data, $this->cache_duration + time());
                                 return true;
                             }
                         } else {
                             $this->check_modified = false;
                             if ($this->force_cache_fallback) {
-                                $cache->save($this->data);
+                                $cache->setData($cacheKey, $this->data, $this->cache_duration + time());
                                 return true;
                             }
 
@@ -1613,12 +1646,12 @@ class SimplePie
                     return true;
                 }
             }
-            // If the cache is empty, delete it
+            // If the cache is empty
             else {
-                $cache->unlink();
                 $this->data = [];
             }
         }
+
         // If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
         if (!isset($file)) {
             if ($this->file instanceof \SimplePie\File && $this->file->url === $this->feed_url) {
@@ -1694,6 +1727,7 @@ class SimplePie
                     $this->registry->call('Misc', 'error', [$this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()]);
                     return false;
                 }
+
                 if ($cache) {
                     $this->data = [
                         'url' => $this->feed_url,
@@ -1701,10 +1735,10 @@ class SimplePie
                         'build' => \SimplePie\Misc::get_build(),
                         'cache_expiration_time' => $this->cache_duration + time(),
                     ];
-                    if (!$cache->save($this)) {
+
+                    if (!$cache->setData($cacheKey, $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
-                    $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, call_user_func($this->cache_name_function, $file->url), Base::TYPE_FEED]);
                 }
             }
             $this->feed_url = $file->url;
@@ -3013,6 +3047,29 @@ class SimplePie
                 $file->headers['link'] .= ', <'.$self.'>; rel=self';
             }
         }
+    }
+
+    /**
+     * Get a DataCache
+     *
+     * @param string $feed_url Only needed for BC, can be removed in SimplePie 2.0.0
+     *
+     * @return DataCache
+     */
+    private function get_cache($feed_url = '')
+    {
+        if ($this->cache === null) {
+            // @trigger_error(sprintf('Not providing as PSR-16 cache implementation is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);
+            $cache = $this->registry->call('Cache', 'get_handler', [
+                $this->cache_location,
+                $this->get_cache_filename($feed_url),
+                Base::TYPE_FEED
+            ]);
+
+            return new BaseDataCache($cache);
+        }
+
+        return $this->cache;
     }
 }
 

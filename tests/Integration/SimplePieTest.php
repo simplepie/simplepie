@@ -60,7 +60,7 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider provideSavedCacheData
      */
-    public function testInitWithEmptyCacheSavesCorrectDataInCache(
+    public function testInitWithDifferentCacheStateCallsCacheCorrectly(
         $testedCacheClass,
         $currentDataCached,
         $expectedDataWritten,
@@ -118,6 +118,11 @@ class SimplePieTest extends TestCase
 
                     $writtenData = $data;
 
+                    // Ignore internally setted '__cache_expiration_time'
+                    if (array_key_exists('__cache_expiration_time', $writtenData)) {
+                        unset($writtenData['__cache_expiration_time']);
+                    }
+
                     return true;
                 });
 
@@ -167,6 +172,13 @@ class SimplePieTest extends TestCase
             ],
             'build' => Misc::get_build(),
             'cache_expiration_time' => 0, // Needs to be adjust in test case
+        ];
+
+        $expectDataWithNewFeedUrl = [
+            'url' => 'http://example.com/feed.xml/',
+            'feed_url' => 'http://example.com/feed.xml/',
+            'build' => Misc::get_build(),
+            'cache_expiration_time' => $defaultExpirationTime,
         ];
 
         $defaultMtime = time();
@@ -252,7 +264,7 @@ class SimplePieTest extends TestCase
             [Base::class,           $currentlyCachedDataWithWrongBuild,     $expectDefaultDataWritten, $defaultMtime],
             [CacheInterface::class, $currentlyCachedDataWithWrongBuild,     $expectDefaultDataWritten, $defaultMtime],
             // If we've hit a collision just rerun it with caching disabled
-            [Base::class,           $currentlyCachedDataWithCacheCollision, $expectNoDataWritten,      $defaultMtime],
+            [Base::class,           $currentlyCachedDataWithCacheCollision, $expectDefaultDataWritten, $defaultMtime],
             [CacheInterface::class, $currentlyCachedDataWithCacheCollision, $expectNoDataWritten,      $defaultMtime],
             // If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
             // If the autodiscovery cache is still valid use it.
@@ -262,13 +274,13 @@ class SimplePieTest extends TestCase
             // If we've got a non feed_url stored (if the page isn't actually a feed, or is a redirect) use that URL.
             // If the autodiscovery cache is still valid use it.
             // Do not need to do feed autodiscovery yet.
-            [Base::class,           $currentlyCachedDataWithNonFeedUrl,     $expectNoDataWritten,      $defaultMtime],
-            [CacheInterface::class, $currentlyCachedDataWithNonFeedUrl,     $expectNoDataWritten,      $defaultMtime],
+            [Base::class,           $currentlyCachedDataWithNonFeedUrl,     $expectDefaultDataWritten, $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataWithNonFeedUrl,     $expectDataWithNewFeedUrl, $defaultMtime],
             // Check if the cache has been updated
             [Base::class,           $currentlyCachedDataIsUpdated,          $expectDefaultDataWritten, $defaultMtime],
             [CacheInterface::class, $currentlyCachedDataIsUpdated,          $expectDefaultDataWritten, $defaultMtime],
             // If the cache is still valid, just return true
-            [Base::class,           $currentlyCachedDataIsValid,            $expectNoDataWritten,      $defaultMtime],
+            [Base::class,           $currentlyCachedDataIsValid,            $expectDefaultDataWritten, $defaultMtime],
             [CacheInterface::class, $currentlyCachedDataIsValid,            $expectNoDataWritten,      $defaultMtime],
         ];
     }
