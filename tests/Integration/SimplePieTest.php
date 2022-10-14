@@ -76,7 +76,7 @@ class SimplePieTest extends TestCase
             case CacheInterface::class:
                 $psr16 = $this->createMock(CacheInterface::class);
                 // Set current cached data and mtime
-                $psr16->method('get')->willReturnCallback(function($key, $default) use ($currentDataCached, $currentMtime) {
+                $psr16->method('get')->willReturnCallback(function ($key, $default) use ($currentDataCached, $currentMtime) {
                     // Set current mtime
                     if (substr($key, - strlen('_mtime')) === '_mtime') {
                         return $currentMtime;
@@ -101,17 +101,17 @@ class SimplePieTest extends TestCase
 
             case Base::class:
                 // Set current cached data
-                BaseCacheWithCallbacksMock::setLoadCallback(function() use ($currentDataCached) {
+                BaseCacheWithCallbacksMock::setLoadCallback(function () use ($currentDataCached) {
                     return $currentDataCached;
                 });
 
                 // Set current mtime
-                BaseCacheWithCallbacksMock::setMtimeCallback(function() use ($currentMtime) {
+                BaseCacheWithCallbacksMock::setMtimeCallback(function () use ($currentMtime) {
                     return $currentMtime;
                 });
 
                 // Test data written
-                BaseCacheWithCallbacksMock::setSaveCallback(function($data) use (&$writtenData) {
+                BaseCacheWithCallbacksMock::setSaveCallback(function ($data) use (&$writtenData) {
                     if ($data instanceof SimplePie) {
                         $data = $data->data;
                     }

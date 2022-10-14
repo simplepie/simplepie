@@ -620,7 +620,8 @@ class Sanitize
             $cache = $this->registry->call('Cache', 'get_handler', [
                 $this->cache_location,
                 $image_url,
-                Base::TYPE_IMAGE]);
+                Base::TYPE_IMAGE
+            ]);
 
             return new BaseDataCache($cache);
         }
