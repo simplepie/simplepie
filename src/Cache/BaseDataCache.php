@@ -46,12 +46,13 @@ namespace SimplePie\Cache;
 use InvalidArgumentException;
 
 /**
- * Adapter for \SimplePie\Cache\Base implementations
+ * Adapter for deprecated \SimplePie\Cache\Base implementations
  *
  * @package SimplePie
  * @subpackage Caching
+ * @internal
  */
-class BaseDataCache implements DataCache
+final class BaseDataCache implements DataCache
 {
     /**
      * @var Base
@@ -87,14 +88,17 @@ class BaseDataCache implements DataCache
             return $default;
         }
 
+        // ingore data if internal cache expiration time is not set
         if (! array_key_exists('__cache_expiration_time', $data)) {
             return $default;
         }
 
+        // ingore data if internal cache expiration time is expired
         if ($data['__cache_expiration_time'] < time()) {
             return $default;
         }
 
+        // remove internal cache expiration time
         unset($data['__cache_expiration_time']);
 
         return $data;
@@ -125,6 +129,7 @@ class BaseDataCache implements DataCache
             $ttl = 3600;
         }
 
+        // place internal cache expiration time
         $value['__cache_expiration_time'] = time() + $ttl;
 
         return $this->cache->save($value);
