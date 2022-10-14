@@ -1019,6 +1019,8 @@ class SimplePie
      */
     /**
      * Set which class SimplePie uses for caching
+     *
+     * @deprecated Use {@see set_cache()} instead
      */
     public function set_cache_class($class = 'SimplePie\Cache')
     {

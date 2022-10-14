@@ -57,6 +57,7 @@ use Redis as NativeRedis;
  * @package SimplePie
  * @subpackage Caching
  * @uses Redis
+ * @deprecated since SimplePie 1.8, use implementation of "Psr\SimpleCache\CacheInterface" instead
  */
 class Redis implements Base
 {

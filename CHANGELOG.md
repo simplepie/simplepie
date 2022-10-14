@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New method `SimplePie\SimplePie::set_cache()` for providing a PSR-16 cache implementation
 
+### Deprecated
+
+- The class `SimplePie\Cache` is deprecated, use implementation of `SimplePie\SimplePie::set_cache()` instead
+- The class `SimplePie\Cache\DB` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
+- The class `SimplePie\Cache\File` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
+- The class `SimplePie\Cache\Memcache` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
+- The class `SimplePie\Cache\Memcached` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
+- The class `SimplePie\Cache\MySQL` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
+- The class `SimplePie\Cache\Redis` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
+- The interface `SimplePie\Cache\Base` is deprecated, use interface `Psr\SimpleCache\CacheInterface` instead
+
 ## [1.7.0](https://github.com/simplepie/simplepie/compare/1.6.0...1.7.0) - 2022-09-30
 
 ### Added

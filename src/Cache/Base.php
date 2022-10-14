@@ -51,6 +51,7 @@ namespace SimplePie\Cache;
  *
  * @package SimplePie
  * @subpackage Caching
+ * @deprecated since SimplePie 1.8, use "Psr\SimpleCache\CacheInterface" instead
  */
 interface Base
 {
