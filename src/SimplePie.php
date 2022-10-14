@@ -875,10 +875,7 @@ class SimplePie
      */
     public function set_cache(CacheInterface $cache)
     {
-        // TODO: Psr16::__construct() needs to be refoctored, so we can remove Psr16::store_cache()
-        Psr16::store_cache($cache);
-
-        $this->cache = new Psr16('', '', '');
+        $this->cache = new Psr16($cache);
     }
 
     /**
