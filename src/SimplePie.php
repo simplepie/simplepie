@@ -43,6 +43,8 @@
 
 namespace SimplePie;
 
+use SimplePie\HTTP\FileClient;
+
 /**
  * SimplePie
  *
@@ -1522,6 +1524,8 @@ class SimplePie
      */
     protected function fetch_data(&$cache)
     {
+        $http_client = new FileClient($this->registry);
+
         // If it's enabled, use the cache
         if ($cache) {
             // Load the Cache
@@ -1568,7 +1572,19 @@ class SimplePie
                             $headers['if-none-match'] = $this->data['headers']['etag'];
                         }
 
-                        $file = $this->registry->create('File', [$this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                        $response = $http_client->request(
+                            $http_client::METHOD_GET,
+                            $this->feed_url,
+                            $headers,
+                            [
+                                'timeout' => $this->timeout/10,
+                                'redirects' => 5,
+                                'useragent' => $this->useragent,
+                                'force_fsockopen' => $this->force_fsockopen,
+                                'curl_options' => $this->curl_options,
+                            ]
+                        );
+                        $file = $response->getFile();
                         $this->status_code = $file->status_code;
 
                         if ($file->success) {
@@ -1610,7 +1626,19 @@ class SimplePie
                 $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                 ];
-                $file = $this->registry->create('File', [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                $response = $http_client->request(
+                    $http_client::METHOD_GET,
+                    $this->feed_url,
+                    $headers,
+                    [
+                        'timeout' => $this->timeout,
+                        'redirects' => 5,
+                        'useragent' => $this->useragent,
+                        'force_fsockopen' => $this->force_fsockopen,
+                        'curl_options' => $this->curl_options,
+                    ]
+                );
+                $file = $response->getFile();
             }
         }
         $this->status_code = $file->status_code;
