@@ -43,6 +43,8 @@
 
 namespace SimplePie;
 
+use SimplePie\HTTP\FileClient;
+
 /**
  * Used for data cleanup and post-processing
  *
@@ -374,6 +376,8 @@ class Sanitize
                 // If image handling (caching, etc.) is enabled, cache and rewrite all the image tags.
                 if (isset($this->image_handler) && ((string) $this->image_handler) !== '' && $this->enable_cache) {
                     $images = $document->getElementsByTagName('img');
+                    $http_client = new FileClient($this->registry);
+
                     foreach ($images as $img) {
                         if ($img->hasAttribute('src')) {
                             $image_url = call_user_func($this->cache_name_function, $img->getAttribute('src'));
@@ -382,8 +386,21 @@ class Sanitize
                             if ($cache->load()) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
-                                $file = $this->registry->create('File', [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen]);
-                                $headers = $file->headers;
+                                $response = $http_client->request(
+                                    $http_client::METHOD_GET,
+                                    $img->getAttribute('src'),
+                                    [
+                                        'X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR'],
+                                    ],
+                                    [
+                                        'timeout' => $this->timeout,
+                                        'redirects' => 5,
+                                        'useragent' => $this->useragent,
+                                        'force_fsockopen' => $this->force_fsockopen,
+                                        'curl_options' => $this->curl_options,
+                                    ]
+                                );
+                                $file = $response->getFile();
 
                                 if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
                                     if ($cache->save(['headers' => $file->headers, 'body' => $file->body])) {
