@@ -43,6 +43,8 @@
 
 namespace SimplePie;
 
+use SimplePie\HTTP\FileClient;
+
 /**
  * Used for feed auto-discovery
  *
@@ -98,6 +100,9 @@ class Locator
         $this->registry = $registry;
     }
 
+    /**
+     * @return File|null|bool
+     */
     public function find($type = \SimplePie\SimplePie::LOCATOR_ALL, &$working = null)
     {
         if ($this->is_feed($this->file)) {
@@ -224,7 +229,20 @@ class Locator
                     $headers = [
                         'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                     ];
-                    $feed = $this->registry->create('File', [$href, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                    $http_client = new FileClient($this->registry);
+                    $response = $http_client->request(
+                        $http_client::METHOD_GET,
+                        $href,
+                        $headers,
+                        [
+                            'timeout' => $this->timeout,
+                            'redirects' => 5,
+                            'useragent' => $this->useragent,
+                            'force_fsockopen' => $this->force_fsockopen,
+                            'curl_options' => $this->curl_options,
+                        ]
+                    );
+                    $feed = $response->getFile();
                     if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true)) {
                         $feeds[$href] = $feed;
                     }
@@ -335,7 +353,22 @@ class Locator
                 $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                 ];
-                $feed = $this->registry->create('File', [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+
+                $http_client = new FileClient($this->registry);
+                $response = $http_client->request(
+                    $http_client::METHOD_GET,
+                    $value,
+                    $headers,
+                    [
+                        'timeout' => $this->timeout,
+                        'redirects' => 5,
+                        'useragent' => $this->useragent,
+                        'force_fsockopen' => $this->force_fsockopen,
+                        'curl_options' => $this->curl_options,
+                    ]
+                );
+                $feed = $response->getFile();
+
                 if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
                     return [$feed];
                 } else {
@@ -354,10 +387,22 @@ class Locator
             }
             if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
                 $this->checked_feeds++;
-                $headers = [
-                    'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-                ];
-                $feed = $this->registry->create('File', [$value, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+
+                $http_client = new FileClient($this->registry);
+                $response = $http_client->request(
+                    $http_client::METHOD_GET,
+                    $value,
+                    [],
+                    [
+                        'timeout' => $this->timeout,
+                        'redirects' => 5,
+                        'useragent' => $this->useragent,
+                        'force_fsockopen' => $this->force_fsockopen,
+                        'curl_options' => $this->curl_options,
+                    ]
+                );
+                $feed = $response->getFile();
+
                 if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
                     return [$feed];
                 } else {
