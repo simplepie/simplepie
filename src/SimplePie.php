@@ -43,6 +43,7 @@
 
 namespace SimplePie;
 
+use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
 
 /**
@@ -1572,37 +1573,36 @@ class SimplePie
                             $headers['if-none-match'] = $this->data['headers']['etag'];
                         }
 
-                        $response = $http_client->request(
-                            $http_client::METHOD_GET,
-                            $this->feed_url,
-                            $headers,
-                            [
-                                'timeout' => $this->timeout/10,
-                                'redirects' => 5,
-                                'useragent' => $this->useragent,
-                                'force_fsockopen' => $this->force_fsockopen,
-                                'curl_options' => $this->curl_options,
-                            ]
-                        );
-                        $file = $response->to_file();
-                        $this->status_code = $file->status_code;
-
-                        if ($file->success) {
-                            if ($file->status_code === 304) {
-                                // Set raw_data to false here too, to signify that the cache
-                                // is still valid.
-                                $this->raw_data = false;
-                                $cache->touch();
-                                return true;
-                            }
-                        } else {
+                        try {
+                            $response = $http_client->request(
+                                $http_client::METHOD_GET,
+                                $this->feed_url,
+                                $headers,
+                                [
+                                    'timeout' => $this->timeout/10,
+                                    'redirects' => 5,
+                                    'useragent' => $this->useragent,
+                                    'force_fsockopen' => $this->force_fsockopen,
+                                    'curl_options' => $this->curl_options,
+                                ]
+                            );
+                        } catch (HttpException $th) {
                             $this->check_modified = false;
                             if ($this->force_cache_fallback) {
                                 $cache->touch();
                                 return true;
                             }
+                        }
 
-                            unset($file);
+                        $file = $response->to_file();
+                        $this->status_code = $response->get_status_code();
+
+                        if ($response->get_status_code() === 304) {
+                            // Set raw_data to false here too, to signify that the cache
+                            // is still valid.
+                            $this->raw_data = false;
+                            $cache->touch();
+                            return true;
                         }
                     }
                 }
@@ -1626,25 +1626,32 @@ class SimplePie
                 $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                 ];
-                $response = $http_client->request(
-                    $http_client::METHOD_GET,
-                    $this->feed_url,
-                    $headers,
-                    [
-                        'timeout' => $this->timeout,
-                        'redirects' => 5,
-                        'useragent' => $this->useragent,
-                        'force_fsockopen' => $this->force_fsockopen,
-                        'curl_options' => $this->curl_options,
-                    ]
-                );
+                try {
+                    $response = $http_client->request(
+                        $http_client::METHOD_GET,
+                        $this->feed_url,
+                        $headers,
+                        [
+                            'timeout' => $this->timeout,
+                            'redirects' => 5,
+                            'useragent' => $this->useragent,
+                            'force_fsockopen' => $this->force_fsockopen,
+                            'curl_options' => $this->curl_options,
+                        ]
+                    );
+                } catch (HttpException $th) {
+                    // If the file connection has an error, set SimplePie::error to that and quit
+                    $this->error = $th->getMessage();
+                    return !empty($this->data);
+                }
+
                 $file = $response->to_file();
             }
         }
-        $this->status_code = $file->status_code;
+        $this->status_code = $response->get_status_code();
 
-        // If the file connection has an error, set SimplePie::error to that and quit
-        if (!$file->success && !($file->method & self::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
+        // If the server returns an error, set SimplePie::error to that and quit
+        if (!($file->method & self::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300))) {
             $this->error = $file->error;
             return !empty($this->data);
         }
@@ -1654,7 +1661,7 @@ class SimplePie
             $locate = $this->registry->create('Locator', [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
 
             if (!$locate->is_feed($file)) {
-                $copyStatusCode = $file->status_code;
+                $copyStatusCode = $response->get_status_code();
                 $copyContentType = $file->headers['content-type'];
                 try {
                     $microformats = false;
