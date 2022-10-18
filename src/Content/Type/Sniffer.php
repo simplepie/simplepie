@@ -70,13 +70,27 @@ class Sniffer
     private $response;
 
     /**
-     * Create an instance of the class with the input file
+     * Create an instance of the class from a response
      *
-     * @param File $file Input file
+     * @param Response $file Response
      */
     public function __construct($file)
     {
-        $this->response = new FileResponse($file);
+        if (is_object($file) && $file instanceof File) {
+            // @trigger_error(sprintf('Providing $file as "\SimplePie\File" in %s() is deprecated since SimplePie 1.8.0, please provide "\SimplePie\HTTP\Response" implementation instead.', __METHOD__), \E_USER_DEPRECATED);
+
+            $file = new FileResponse($file);
+        }
+
+        if (! is_object($file) || ! $file instanceof Response) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($file) must be of type %s.',
+                __METHOD__,
+                Response::class
+            ), 1);
+        }
+
+        $this->response = $file;
     }
 
     /**

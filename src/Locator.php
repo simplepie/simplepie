@@ -45,6 +45,7 @@ namespace SimplePie;
 
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Response;
 
 /**
  * Used for feed auto-discovery
@@ -165,6 +166,26 @@ class Locator
         }
     }
 
+    private function contains_feed(Response $response, $check_html = false)
+    {
+        $sniffer = $this->registry->create('Content_Type_Sniffer', [$response]);
+        $sniffed = $sniffer->get_type();
+        $mime_types = [
+            'application/rss+xml',
+            'application/rdf+xml',
+            'text/rdf',
+            'application/atom+xml',
+            'text/xml',
+            'application/xml',
+            'application/x-rss+xml'
+        ];
+        if ($check_html) {
+            $mime_types[] = 'text/html';
+        }
+
+        return in_array($sniffed, $mime_types);
+    }
+
     public function get_base()
     {
         if ($this->dom === null) {
@@ -254,7 +275,7 @@ class Locator
 
                     $feed = $response->to_file();
 
-                    if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($feed, true)) {
+                    if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->contains_feed($response, true)) {
                         $feeds[$href] = $feed;
                     }
                 }
@@ -388,7 +409,7 @@ class Locator
 
                 $feed = $response->to_file();
 
-                if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($feed)) {
+                if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->contains_feed($response)) {
                     return [$feed];
                 } else {
                     unset($array[$key]);
@@ -430,7 +451,7 @@ class Locator
 
                 $feed = $response->to_file();
 
-                if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($feed)) {
+                if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->contains_feed($response)) {
                     return [$feed];
                 } else {
                     unset($array[$key]);
