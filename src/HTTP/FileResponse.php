@@ -85,9 +85,14 @@ final class FileResponse implements Response
     }
 
     /**
-     * @deprecated TODO Must be removed again
+     * Returns the Response as a SimplePie\File instance for BC reasons
+     *
+     * @deprecated Will be removed again
+     * @internal
+     *
+     * @return File
      */
-    public function getFile()
+    public function to_file()
     {
         return $this->file;
     }

@@ -1584,7 +1584,7 @@ class SimplePie
                                 'curl_options' => $this->curl_options,
                             ]
                         );
-                        $file = $response->getFile();
+                        $file = $response->to_file();
                         $this->status_code = $file->status_code;
 
                         if ($file->success) {
@@ -1638,7 +1638,7 @@ class SimplePie
                         'curl_options' => $this->curl_options,
                     ]
                 );
-                $file = $response->getFile();
+                $file = $response->to_file();
             }
         }
         $this->status_code = $file->status_code;

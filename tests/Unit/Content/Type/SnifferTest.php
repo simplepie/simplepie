@@ -43,17 +43,49 @@
 
 namespace SimplePie\Tests\Unit\Content\Type;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use SimplePie\Content\Type\Sniffer;
+use SimplePie\File;
+use SimplePie\Tests\Fixtures\FileMock;
+use SimplePie_Content_Type_Sniffer;
 
 class SnifferTest extends TestCase
 {
     public function testNamespacedClassExists()
     {
-        $this->assertTrue(class_exists('SimplePie\Content\Type\Sniffer'));
+        $this->assertTrue(class_exists(Sniffer::class));
     }
 
     public function testClassExists()
     {
-        $this->assertTrue(class_exists('SimplePie_Content_Type_Sniffer'));
+        $this->assertTrue(class_exists(SimplePie_Content_Type_Sniffer::class));
+    }
+
+    public function testBcGettingFilePropertyTriggersDeprecationError()
+    {
+        $sniffer = new Sniffer(new FileMock(''));
+        $this->expectError();
+        $this->expectErrorMessage('SimplePie\Content\Type\Sniffer::$file property will be removed in SimplePie 2. Do not use it.');
+
+        $file = $sniffer->file;
+    }
+
+    public function testBcSettingFilePropertyTriggersDeprecationError()
+    {
+        $sniffer = new Sniffer(new FileMock(''));
+        $this->expectError();
+        $this->expectErrorMessage('SimplePie\Content\Type\Sniffer::$file property will be removed in SimplePie 2. Do not use it.');
+
+        $sniffer->file = new FileMock('');
+    }
+
+    public function testBcSettingFilePropertyWithoutFileObjectThrowsInvalidArgumentException()
+    {
+        $sniffer = new Sniffer(new FileMock(''));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value for SimplePie\Content\Type\Sniffer::$file must be of type SimplePie\File.');
+
+        $sniffer->file = 'string';
     }
 }

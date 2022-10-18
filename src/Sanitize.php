@@ -400,7 +400,7 @@ class Sanitize
                                         'curl_options' => $this->curl_options,
                                     ]
                                 );
-                                $file = $response->getFile();
+                                $file = $response->to_file();
 
                                 if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
                                     if ($cache->save(['headers' => $file->headers, 'body' => $file->body])) {

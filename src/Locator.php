@@ -242,7 +242,7 @@ class Locator
                             'curl_options' => $this->curl_options,
                         ]
                     );
-                    $feed = $response->getFile();
+                    $feed = $response->to_file();
                     if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true)) {
                         $feeds[$href] = $feed;
                     }
@@ -367,7 +367,7 @@ class Locator
                         'curl_options' => $this->curl_options,
                     ]
                 );
-                $feed = $response->getFile();
+                $feed = $response->to_file();
 
                 if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
                     return [$feed];
@@ -401,7 +401,7 @@ class Locator
                         'curl_options' => $this->curl_options,
                     ]
                 );
-                $feed = $response->getFile();
+                $feed = $response->to_file();
 
                 if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
                     return [$feed];

@@ -51,6 +51,16 @@ namespace SimplePie\HTTP;
  */
 interface Response
 {
+     /**
+     * Returns the Response as a SimplePie\File instance for BC reasons
+     *
+     * @deprecated Will be removed again
+     * @internal
+     *
+     * @return File
+     */
+    public function to_file();
+
     /**
      * Return the string representation as a URI reference.
      *

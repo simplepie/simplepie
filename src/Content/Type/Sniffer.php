@@ -65,13 +65,6 @@ use SimplePie\HTTP\Response;
 class Sniffer
 {
     /**
-     * File object
-     *
-     * @var \SimplePie\File
-     */
-    public $file;
-
-    /**
      * @var Response
      */
     private $response;
@@ -83,7 +76,6 @@ class Sniffer
      */
     public function __construct($file)
     {
-        $this->file = $file;
         $this->response = new FileResponse($file);
     }
 
@@ -96,12 +88,11 @@ class Sniffer
     {
         if ($name === 'file') {
             trigger_error(sprintf(
-                '%s:%s will be removed in SimplePie 2. Do not read it directly.',
-                get_class($this),
-                $name
+                '%s::$file property will be removed in SimplePie 2. Do not use it.',
+                get_class($this)
             ), \E_USER_DEPRECATED);
 
-            return $this->file;
+            return $this->response->to_file();
         }
 
         return $this->$name;
@@ -115,21 +106,19 @@ class Sniffer
     public function __set($name, $value)
     {
         if ($name === 'file') {
-            trigger_error(sprintf(
-                '%s:%s will be removed in SimplePie 2. Do not set it directly.',
-                get_class($this),
-                $name
-            ), \E_USER_DEPRECATED);
-
             if (! $value instanceof File) {
                 throw new InvalidArgumentException(sprintf(
-                    'Value for %s:file must be of type %s.',
+                    'Value for %s::$file must be of type %s.',
                     get_class($this),
                     File::class
                 ), 1);
             }
 
-            $this->file = $value;
+            trigger_error(sprintf(
+                '%s::$file property will be removed in SimplePie 2. Do not use it.',
+                get_class($this)
+            ), \E_USER_DEPRECATED);
+
             $this->response = new FileResponse($value);
 
             return;
