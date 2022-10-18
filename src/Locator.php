@@ -206,6 +206,8 @@ class Locator
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
 
+        $http_client = new FileClient($this->registry);
+
         $links = $this->dom->getElementsByTagName($name);
         foreach ($links as $link) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
@@ -229,21 +231,29 @@ class Locator
                     $headers = [
                         'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                     ];
-                    $http_client = new FileClient($this->registry);
-                    $response = $http_client->request(
-                        $http_client::METHOD_GET,
-                        $href,
-                        $headers,
-                        [
-                            'timeout' => $this->timeout,
-                            'redirects' => 5,
-                            'useragent' => $this->useragent,
-                            'force_fsockopen' => $this->force_fsockopen,
-                            'curl_options' => $this->curl_options,
-                        ]
-                    );
+
+                    try {
+                        $response = $http_client->request(
+                            $http_client::METHOD_GET,
+                            $href,
+                            $headers,
+                            [
+                                'timeout' => $this->timeout,
+                                'redirects' => 5,
+                                'useragent' => $this->useragent,
+                                'force_fsockopen' => $this->force_fsockopen,
+                                'curl_options' => $this->curl_options,
+                            ]
+                        );
+                    } catch (\Throwable $th) {
+                        $done[] = $href;
+
+                        continue;
+                    }
+
                     $feed = $response->to_file();
-                    if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true)) {
+
+                    if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($feed, true)) {
                         $feeds[$href] = $feed;
                     }
                 }
@@ -343,6 +353,8 @@ class Locator
 
     public function extension(&$array)
     {
+        $http_client = new FileClient($this->registry);
+
         foreach ($array as $key => $value) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
                 break;
@@ -354,22 +366,28 @@ class Locator
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                 ];
 
-                $http_client = new FileClient($this->registry);
-                $response = $http_client->request(
-                    $http_client::METHOD_GET,
-                    $value,
-                    $headers,
-                    [
-                        'timeout' => $this->timeout,
-                        'redirects' => 5,
-                        'useragent' => $this->useragent,
-                        'force_fsockopen' => $this->force_fsockopen,
-                        'curl_options' => $this->curl_options,
-                    ]
-                );
+                try {
+                    $response = $http_client->request(
+                        $http_client::METHOD_GET,
+                        $value,
+                        $headers,
+                        [
+                            'timeout' => $this->timeout,
+                            'redirects' => 5,
+                            'useragent' => $this->useragent,
+                            'force_fsockopen' => $this->force_fsockopen,
+                            'curl_options' => $this->curl_options,
+                        ]
+                    );
+                } catch (\Throwable $th) {
+                    unset($array[$key]);
+
+                    continue;
+                }
+
                 $feed = $response->to_file();
 
-                if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
+                if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($feed)) {
                     return [$feed];
                 } else {
                     unset($array[$key]);
@@ -381,6 +399,8 @@ class Locator
 
     public function body(&$array)
     {
+        $http_client = new FileClient($this->registry);
+
         foreach ($array as $key => $value) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
                 break;
@@ -388,22 +408,28 @@ class Locator
             if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
                 $this->checked_feeds++;
 
-                $http_client = new FileClient($this->registry);
-                $response = $http_client->request(
-                    $http_client::METHOD_GET,
-                    $value,
-                    [],
-                    [
-                        'timeout' => $this->timeout,
-                        'redirects' => 5,
-                        'useragent' => $this->useragent,
-                        'force_fsockopen' => $this->force_fsockopen,
-                        'curl_options' => $this->curl_options,
-                    ]
-                );
+                try {
+                    $response = $http_client->request(
+                        $http_client::METHOD_GET,
+                        $value,
+                        [],
+                        [
+                            'timeout' => $this->timeout,
+                            'redirects' => 5,
+                            'useragent' => $this->useragent,
+                            'force_fsockopen' => $this->force_fsockopen,
+                            'curl_options' => $this->curl_options,
+                        ]
+                    );
+                } catch (\Throwable $th) {
+                    unset($array[$key]);
+
+                    continue;
+                }
+
                 $feed = $response->to_file();
 
-                if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
+                if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($feed)) {
                     return [$feed];
                 } else {
                     unset($array[$key]);
