@@ -41,29 +41,15 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-namespace SimplePie\HTTP;
+namespace SimplePie\Exception;
+
+use SimplePie\Exception;
 
 /**
- * HTTP Client interface
+ * HTTP exception class
  *
  * @package SimplePie
- * @subpackage HTTP
  */
-interface Client
+class HttpException extends Exception
 {
-    public const METHOD_GET = 'GET';
-
-    /**
-     * send a request and return the response
-     *
-     * @param string $method
-     * @param string $url
-     * @param array $headers
-     * @param array $options
-     *
-     * @return Response
-     *
-     * @throws HttpException if anything goes wrong requesting the data
-     */
-    public function request($method, $url, array $headers = [], array $options = []);
 }

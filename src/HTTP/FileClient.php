@@ -43,6 +43,7 @@
 
 namespace SimplePie\HTTP;
 
+use SimplePie\Exception\HttpException;
 use SimplePie\Registry;
 
 /**
@@ -69,6 +70,8 @@ final class FileClient implements Client
      * @param array $options
      *
      * @return Response
+     *
+     * @throws HttpException if anything goes wrong requesting the data
      */
     public function request($method, $url, array $headers = [], array $options = [])
     {
@@ -81,6 +84,10 @@ final class FileClient implements Client
             $options['force_fsockopen'] ?? false,
             $options['curl_options'] ?? []
         ]);
+
+        if (! $file->success) {
+            throw new HttpException($file->error);
+        }
 
         return new FileResponse($file);
     }

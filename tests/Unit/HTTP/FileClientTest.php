@@ -44,11 +44,11 @@
 namespace SimplePie\Tests\Unit\HTTP;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Exception\HttpException;
 use SimplePie\File;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Response;
 use SimplePie\Registry;
-use SimplePie\Tests\Fixtures\FileMock;
 
 class FileClientTest extends TestCase
 {
@@ -113,6 +113,28 @@ class FileClientTest extends TestCase
                 'force_fsockopen' => true,
                 'curl_options' => [\CURLOPT_FAILONERROR => 1],
             ]
+        );
+    }
+
+    public function testRequestWithoutSuccessThrowsHttpException()
+    {
+        $file = $this->createMock(File::class);
+        $file->success = false;
+        $file->error = 'Error message';
+
+        $registry = $this->createMock(Registry::class);
+        $registry->method('create')->willReturn($file);
+
+        $http_client = new FileClient($registry);
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Error message');
+
+        $http_client->request(
+            FileClient::METHOD_GET,
+            'https://example.com',
+            [],
+            ['useragent' => 'SimplePie',]
         );
     }
 }
