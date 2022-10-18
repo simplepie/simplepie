@@ -43,6 +43,7 @@
 
 namespace SimplePie\Tests\Unit\HTTP;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use SimplePie\Exception\HttpException;
 use SimplePie\File;
@@ -59,6 +60,39 @@ class FileClientTest extends TestCase
         $http_client = new FileClient($registry);
 
         $this->assertInstanceOf(Response::class, $http_client->request(FileClient::METHOD_GET, ''));
+    }
+
+    public function testRequestWithInvalidMethodThrowsInvalidArgumentException()
+    {
+        $registry = $this->createMock(Registry::class);
+        $http_client = new FileClient($registry);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('SimplePie\HTTP\FileClient::request(): Argument #1 ($method) only supports "GET".');
+
+        $http_client->request('HEAD', '');
+    }
+
+    public function testRequestWithoutStringAsMethodThrowsInvalidArgumentException()
+    {
+        $registry = $this->createMock(Registry::class);
+        $http_client = new FileClient($registry);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('SimplePie\HTTP\FileClient::request(): Argument #1 ($method) must be of type string.');
+
+        $http_client->request([], '');
+    }
+
+    public function testRequestWithoutStringAsUrlThrowsInvalidArgumentException()
+    {
+        $registry = $this->createMock(Registry::class);
+        $http_client = new FileClient($registry);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('SimplePie\HTTP\FileClient::request(): Argument #2 ($url) must be of type string.');
+
+        $http_client->request(FileClient::METHOD_GET, []);
     }
 
     public function testRequestCallsRegistryWithValidDefaultArguments()

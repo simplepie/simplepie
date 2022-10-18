@@ -43,6 +43,7 @@
 
 namespace SimplePie\HTTP;
 
+use InvalidArgumentException;
 use SimplePie\Exception\HttpException;
 use SimplePie\Registry;
 
@@ -75,6 +76,28 @@ final class FileClient implements Client
      */
     public function request($method, $url, array $headers = [], array $options = [])
     {
+        if (! is_string($method)) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($method) must be of type string.',
+                __METHOD__
+            ), 1);
+        }
+
+        if (! is_string($url)) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #2 ($url) must be of type string.',
+                __METHOD__
+            ), 1);
+        }
+
+        if ($method !== self::METHOD_GET) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($method) only supports "%s".',
+                __METHOD__,
+                self::METHOD_GET
+            ), 1);
+        }
+
         $file = $this->registry->create('File', [
             $url,
             $options['timeout'] ?? 10,
