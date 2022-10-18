@@ -74,12 +74,12 @@ final class FileClient implements Client
     {
         $file = $this->registry->create('File', [
             $url,
-            $options['timeout'],
-            $options['redirects'],
+            $options['timeout'] ?? 10,
+            $options['redirects'] ?? 5,
             $headers,
-            $options['useragent'],
-            $options['force_fsockopen'],
-            $options['curl_options']
+            $options['useragent'] ?? $this->registry->call('Misc', 'get_default_useragent'),
+            $options['force_fsockopen'] ?? false,
+            $options['curl_options'] ?? []
         ]);
 
         return new FileResponse($file);
