@@ -1594,6 +1594,15 @@ class SimplePie
                             }
                         }
 
+                        // handle server errors
+                        if ($response->get_status_code() >= 400) {
+                            $this->check_modified = false;
+                            if ($this->force_cache_fallback) {
+                                $cache->touch();
+                                return true;
+                            }
+                        }
+
                         $file = $response->to_file();
                         $this->status_code = $response->get_status_code();
 
@@ -1642,6 +1651,13 @@ class SimplePie
                 } catch (HttpException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
+                    return !empty($this->data);
+                }
+
+                // handle server errors
+                if ($response->get_status_code() >= 400) {
+                    // If the responses with an error, set SimplePie::error to that and quit
+                    $this->error = 'Server responses with status code ' . $response->get_status_code();
                     return !empty($this->data);
                 }
 
