@@ -43,6 +43,7 @@
 
 namespace SimplePie;
 
+use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
 
 /**
@@ -245,7 +246,7 @@ class Locator
                                 'curl_options' => $this->curl_options,
                             ]
                         );
-                    } catch (\Throwable $th) {
+                    } catch (HttpException $th) {
                         $done[] = $href;
 
                         continue;
@@ -379,7 +380,7 @@ class Locator
                             'curl_options' => $this->curl_options,
                         ]
                     );
-                } catch (\Throwable $th) {
+                } catch (HttpException $th) {
                     unset($array[$key]);
 
                     continue;
@@ -421,7 +422,7 @@ class Locator
                             'curl_options' => $this->curl_options,
                         ]
                     );
-                } catch (\Throwable $th) {
+                } catch (HttpException $th) {
                     unset($array[$key]);
 
                     continue;

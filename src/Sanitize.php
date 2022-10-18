@@ -43,6 +43,7 @@
 
 namespace SimplePie;
 
+use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
 
 /**
@@ -401,7 +402,7 @@ class Sanitize
                                             'curl_options' => $this->curl_options,
                                         ]
                                     );
-                                } catch (\Throwable $th) {
+                                } catch (HttpException $th) {
                                     continue;
                                 }
                                 $file = $response->to_file();
