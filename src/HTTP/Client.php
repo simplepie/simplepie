@@ -51,7 +51,7 @@ namespace SimplePie\HTTP;
  */
 interface Client
 {
-    public const METHOD_GET = 'GET';
+    const METHOD_GET = 'GET';
 
     /**
      * send a request and return the response
