@@ -386,23 +386,27 @@ class Sanitize
                             if ($cache->load()) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
-                                $response = $http_client->request(
-                                    $http_client::METHOD_GET,
-                                    $img->getAttribute('src'),
-                                    [
-                                        'X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR'],
-                                    ],
-                                    [
-                                        'timeout' => $this->timeout,
-                                        'redirects' => 5,
-                                        'useragent' => $this->useragent,
-                                        'force_fsockopen' => $this->force_fsockopen,
-                                        'curl_options' => $this->curl_options,
-                                    ]
-                                );
+                                try {
+                                    $response = $http_client->request(
+                                        $http_client::METHOD_GET,
+                                        $img->getAttribute('src'),
+                                        [
+                                            'X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR'],
+                                        ],
+                                        [
+                                            'timeout' => $this->timeout,
+                                            'redirects' => 5,
+                                            'useragent' => $this->useragent,
+                                            'force_fsockopen' => $this->force_fsockopen,
+                                            'curl_options' => $this->curl_options,
+                                        ]
+                                    );
+                                } catch (\Throwable $th) {
+                                    continue;
+                                }
                                 $file = $response->to_file();
 
-                                if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
+                                if ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) {
                                     if ($cache->save(['headers' => $file->headers, 'body' => $file->body])) {
                                         $img->setAttribute('src', $this->image_handler . $image_url);
                                     } else {
