@@ -80,13 +80,16 @@ be aware of our [coding standards](http://simplepie.org/wiki/misc/coding_standar
 The main development for the next minor release happens in `master` branch.
 Please create your pull requests primarily against this branch.
 
-The branch `one-dot-seven` may receive backport of features, bug fixes and security fixes (if possible).
-It will become end of life if [WordPress drops support for PHP 5.6](https://wordpress.org/about/requirements/).
+We do not actively provide bug fixes or security fixes for older versions. Nevertheless,
+you are welcome to create backport PRs if you still need support for older PHP versions.
+Please open your PR agains the appropriate branch.
 
 | branch                                                                     | requires    |
 |----------------------------------------------------------------------------|-------------|
 | [master](https://github.com/simplepie/simplepie/tree/master)               | PHP 7.2.0+  |
 | [one-dot-seven](https://github.com/simplepie/simplepie/tree/one-dot-seven) | PHP 5.6.0+  |
+| [one-dot-three](https://github.com/simplepie/simplepie/tree/one-dot-three) | PHP 5.2.0+  |
+
 
 Authors and contributors
 ------------------------
