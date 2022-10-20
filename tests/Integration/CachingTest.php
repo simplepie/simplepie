@@ -53,7 +53,7 @@ use SimplePie\Tests\Fixtures\Cache\BaseCacheWithCallbacksMock;
 use SimplePie\Tests\Fixtures\FileMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
-class SimplePieTest extends TestCase
+class CachingTest extends TestCase
 {
     use ExpectPHPException;
 
