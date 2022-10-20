@@ -45,6 +45,8 @@ namespace SimplePie;
 
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\FileResponse;
+use SimplePie\HTTP\Response;
 
 /**
  * SimplePie
@@ -457,6 +459,11 @@ class SimplePie
     public $file;
 
     /**
+     * @var Response
+     */
+    private $response = null;
+
+    /**
      * Replacement for \SimplePie\File::$method
      *
      * @var int \SimplePie\SimplePie::FILE_SOURCE_*
@@ -787,6 +794,7 @@ class SimplePie
     public function set_file(&$file)
     {
         if ($file instanceof \SimplePie\File) {
+            $this->response = new FileResponse($file);
             $this->feed_url = $file->url;
             $this->permanent_url = $this->feed_url;
             $this->file =& $file;
@@ -1611,7 +1619,6 @@ class SimplePie
                             }
                         }
 
-                        $file = $response->to_file();
                         $this->status_code = $response->get_status_code();
 
                         if ($response->get_status_code() === 304) {
@@ -1635,10 +1642,11 @@ class SimplePie
                 $this->data = [];
             }
         }
-        // If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
-        if (!isset($file)) {
-            if ($this->file instanceof \SimplePie\File && $this->file->url === $this->feed_url) {
-                $file =& $this->file;
+
+        // If we don't already have a response (it'll only exist if we've opened it to check if the cache has been modified), open it.
+        if (!isset($response)) {
+            if ($this->response !== null && $this->response->get_requested_uri() === $this->feed_url) {
+                $response = $this->response;
             } else {
                 $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
@@ -1668,8 +1676,6 @@ class SimplePie
                     $this->error = 'Server responses with status code ' . $response->get_status_code();
                     return !empty($this->data);
                 }
-
-                $file = $response->to_file();
             }
         }
 
@@ -1686,6 +1692,7 @@ class SimplePie
         } else {
             $this->file_source = self::FILE_SOURCE_LOCAL | self::FILE_SOURCE_FILE_GET_CONTENTS;
         }
+        $file = $response->to_file();
 
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
