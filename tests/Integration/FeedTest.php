@@ -58,7 +58,7 @@ class FeedTest extends TestCase
         $this->assertSame(1, $simplepie->get_item_quantity());
     }
 
-    public function testSimplePieReadsARemoteFeed()
+    public function _testSimplePieReadsARemoteFeed()
     {
         $simplepie = new SimplePie();
         $simplepie->enable_cache(false);

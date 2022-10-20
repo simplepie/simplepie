@@ -457,6 +457,14 @@ class SimplePie
     public $file;
 
     /**
+     * Replacement for \SimplePie\File::$method
+     *
+     * @var int \SimplePie\SimplePie::FILE_SOURCE_*
+     * @see \SimplePie\File::$method
+     */
+    private $file_source = self::FILE_SOURCE_NONE;
+
+    /**
      * @var string Raw feed data
      * @see SimplePie::set_raw_data()
      * @access private
@@ -1664,12 +1672,19 @@ class SimplePie
                 $file = $response->to_file();
             }
         }
+
         $this->status_code = $response->get_status_code();
 
-        // If the server returns an error, set SimplePie::error to that and quit
-        if (!($file->method & self::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300))) {
-            $this->error = $file->error;
-            return !empty($this->data);
+        // Set $this->file_source as a replacement for $file->method
+        // see \SimplePie\File::__construct()
+        if (preg_match('/^http(s)?:\/\//i', $this->feed_url)) {
+            if (! $this->force_fsockopen && function_exists('curl_exec')) {
+                $this->file_source = self::FILE_SOURCE_REMOTE | self::FILE_SOURCE_CURL;
+            } else {
+                $this->file_source = self::FILE_SOURCE_REMOTE | self::FILE_SOURCE_FSOCKOPEN;
+            }
+        } else {
+            $this->file_source = self::FILE_SOURCE_LOCAL | self::FILE_SOURCE_FILE_GET_CONTENTS;
         }
 
         if (!$this->force_feed) {

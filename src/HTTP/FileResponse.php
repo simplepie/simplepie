@@ -61,7 +61,7 @@ final class FileResponse implements Response
     /**
      * @var string[][]
      */
-    private $headers;
+    private $headers = [];
 
     public function __construct(File $file)
     {
