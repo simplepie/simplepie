@@ -89,7 +89,7 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function getData($key, $default = null)
+    public function get_data($key, $default = null)
     {
         try {
             $data = $this->cache->get($key, $default);
@@ -123,7 +123,7 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function setData($key, array $value, $ttl = null)
+    public function set_data($key, array $value, $ttl = null)
     {
         try {
             return $this->cache->set($key, $value, $ttl);
@@ -147,7 +147,7 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function deleteData($key)
+    public function delete_data($key)
     {
         try {
             return $this->cache->delete($key);

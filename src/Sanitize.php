@@ -398,14 +398,14 @@ class Sanitize
                             $image_url = call_user_func($this->cache_name_function, $img->getAttribute('src'));
                             $cache = $this->get_cache($image_url);
 
-                            if ($cache->getData($image_url, false)) {
+                            if ($cache->get_data($image_url, false)) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
                                 $file = $this->registry->create('File', [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen]);
                                 $headers = $file->headers;
 
                                 if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
-                                    if ($cache->setData($image_url, ['headers' => $file->headers, 'body' => $file->body], $this->cache_duration)) {
+                                    if ($cache->set_data($image_url, ['headers' => $file->headers, 'body' => $file->body], $this->cache_duration)) {
                                         $img->setAttribute('src', $this->image_handler . $image_url);
                                     } else {
                                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);

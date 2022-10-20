@@ -1509,7 +1509,7 @@ class SimplePie
 
                     // Cache the file if caching is enabled
                     $this->data['cache_expiration_time'] = $this->cache_duration + time();
-                    if ($cache && ! $cache->setData($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
+                    if ($cache && ! $cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
                     return true;
@@ -1572,12 +1572,12 @@ class SimplePie
         // If it's enabled, use the cache
         if ($cache) {
             // Load the Cache
-            $this->data = $cache->getData($cacheKey, []);
+            $this->data = $cache->get_data($cacheKey, []);
 
             if (!empty($this->data)) {
                 // If the cache is for an outdated build of SimplePie
                 if (!isset($this->data['build']) || $this->data['build'] !== \SimplePie\Misc::get_build()) {
-                    $cache->deleteData($cacheKey);
+                    $cache->delete_data($cacheKey);
                     $this->data = [];
                 }
                 // If we've hit a collision just rerun it with caching disabled
@@ -1592,12 +1592,12 @@ class SimplePie
                         $this->set_feed_url($this->data['feed_url']);
                         $this->data['url'] = $this->data['feed_url'];
 
-                        $cache->setData($this->get_cache_filename($this->feed_url), $this->data, $this->autodiscovery_cache_duration);
+                        $cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->autodiscovery_cache_duration);
 
                         return $this->init();
                     }
 
-                    $cache->deleteData($this->get_cache_filename($this->feed_url));
+                    $cache->delete_data($this->get_cache_filename($this->feed_url));
                     $this->data = [];
                 }
                 // Check if the cache has been updated
@@ -1625,13 +1625,13 @@ class SimplePie
                                 // Set raw_data to false here too, to signify that the cache
                                 // is still valid.
                                 $this->raw_data = false;
-                                $cache->setData($cacheKey, $this->data, $this->cache_duration + time());
+                                $cache->set_data($cacheKey, $this->data, $this->cache_duration + time());
                                 return true;
                             }
                         } else {
                             $this->check_modified = false;
                             if ($this->force_cache_fallback) {
-                                $cache->setData($cacheKey, $this->data, $this->cache_duration + time());
+                                $cache->set_data($cacheKey, $this->data, $this->cache_duration + time());
                                 return true;
                             }
 
@@ -1735,7 +1735,7 @@ class SimplePie
                         'cache_expiration_time' => $this->cache_duration + time(),
                     ];
 
-                    if (!$cache->setData($cacheKey, $this->data, $this->cache_duration)) {
+                    if (!$cache->set_data($cacheKey, $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
                 }

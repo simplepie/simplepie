@@ -61,7 +61,7 @@ class BaseDataCacheTest extends TestCase
 
         $cache = new BaseDataCache($baseCache);
 
-        $this->assertTrue($cache->setData($key, $value, $ttl));
+        $this->assertTrue($cache->set_data($key, $value, $ttl));
     }
 
     public function testSetDataReturnsFalseIfDataCouldNotBeWritten()
@@ -75,7 +75,7 @@ class BaseDataCacheTest extends TestCase
 
         $cache = new BaseDataCache($baseCache);
 
-        $this->assertFalse($cache->setData($key, $value, $ttl));
+        $this->assertFalse($cache->set_data($key, $value, $ttl));
     }
 
     public function testGetDataReturnsCorrectData()
@@ -89,7 +89,7 @@ class BaseDataCacheTest extends TestCase
 
         $cache = new BaseDataCache($baseCache);
 
-        $this->assertSame($value, $cache->getData($key));
+        $this->assertSame($value, $cache->get_data($key));
     }
 
     public function testGetDataWithCacheMissReturnsDefault()
@@ -102,7 +102,7 @@ class BaseDataCacheTest extends TestCase
 
         $cache = new BaseDataCache($baseCache);
 
-        $this->assertSame($default, $cache->getData($key, $default));
+        $this->assertSame($default, $cache->get_data($key, $default));
     }
 
     public function testGetDataWithCacheExpiredReturnsDefault()
@@ -116,7 +116,7 @@ class BaseDataCacheTest extends TestCase
 
         $cache = new BaseDataCache($baseCache);
 
-        $this->assertSame($default, $cache->getData($key, $default));
+        $this->assertSame($default, $cache->get_data($key, $default));
     }
 
     public function testGetDataWithCacheCorruptionReturnsDefault()
@@ -129,7 +129,7 @@ class BaseDataCacheTest extends TestCase
 
         $cache = new BaseDataCache($baseCache);
 
-        $this->assertSame($default, $cache->getData($key, $default));
+        $this->assertSame($default, $cache->get_data($key, $default));
     }
 
     public function testDeleteDataReturnsTrueIfDataCouldBeDeleted()
@@ -141,7 +141,7 @@ class BaseDataCacheTest extends TestCase
 
         $cache = new BaseDataCache($baseCache);
 
-        $this->assertTrue($cache->deleteData($key));
+        $this->assertTrue($cache->delete_data($key));
     }
 
     public function testDeleteDataReturnsFalseIfDataCouldNotBeDeleted()
@@ -153,6 +153,6 @@ class BaseDataCacheTest extends TestCase
 
         $cache = new BaseDataCache($baseCache);
 
-        $this->assertFalse($cache->deleteData($key));
+        $this->assertFalse($cache->delete_data($key));
     }
 }
