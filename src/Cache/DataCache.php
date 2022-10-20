@@ -53,6 +53,7 @@ use InvalidArgumentException;
  *
  * @package SimplePie
  * @subpackage Caching
+ * @internal
  */
 interface DataCache
 {
