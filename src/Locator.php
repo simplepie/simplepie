@@ -43,8 +43,10 @@
 
 namespace SimplePie;
 
+use InvalidArgumentException;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\FileResponse;
 use SimplePie\HTTP\Response;
 
 /**
@@ -59,7 +61,6 @@ class Locator
 {
     public $useragent;
     public $timeout;
-    public $file;
     public $local = [];
     public $elsewhere = [];
     public $cached_entities = [];
@@ -73,21 +74,26 @@ class Locator
     public $dom;
     protected $registry;
 
+    /**
+     * @var Response
+     */
+    private $response = null;
+
     public function __construct(\SimplePie\File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [])
     {
-        $this->file = $file;
+        $this->response = new FileResponse($file);
         $this->useragent = $useragent;
         $this->timeout = $timeout;
         $this->max_checked_feeds = $max_checked_feeds;
         $this->force_fsockopen = $force_fsockopen;
         $this->curl_options = $curl_options;
 
-        if (class_exists('DOMDocument') && $this->file->body != '') {
+        if (class_exists('DOMDocument') && $this->response->get_body_content() !== '') {
             $this->dom = new \DOMDocument();
 
             set_error_handler(['SimplePie\Misc', 'silence_errors']);
             try {
-                $this->dom->loadHTML($this->file->body);
+                $this->dom->loadHTML($this->response->get_body_content());
             } catch (\Throwable $ex) {
                 $this->dom = null;
             }
@@ -95,6 +101,54 @@ class Locator
         } else {
             $this->dom = null;
         }
+    }
+
+    /**
+     * Prevent $file from being read
+     *
+     * @param string $name
+     */
+    public function __get($name)
+    {
+        if ($name === 'file') {
+            trigger_error(sprintf(
+                '%s::$file property will be removed in SimplePie 2. Do not use it.',
+                get_class($this)
+            ), \E_USER_DEPRECATED);
+
+            return $this->response->to_file();
+        }
+
+        return $this->$name;
+    }
+
+    /**
+     * Prevent $file from being written
+     *
+     * @param string $name
+     */
+    public function __set($name, $value)
+    {
+        if ($name === 'file') {
+            if (! $value instanceof File) {
+                throw new InvalidArgumentException(sprintf(
+                    'Value for %s::$file must be of type %s.',
+                    get_class($this),
+                    File::class
+                ), 1);
+            }
+
+            trigger_error(sprintf(
+                '%s::$file property will be removed in SimplePie 2. Do not use it.',
+                get_class($this)
+            ), \E_USER_DEPRECATED);
+
+            $this->response = new FileResponse($value);
+
+            return;
+        }
+
+        $this->$name = $value;
     }
 
     public function set_registry(\SimplePie\Registry $registry)
@@ -107,12 +161,12 @@ class Locator
      */
     public function find($type = \SimplePie\SimplePie::LOCATOR_ALL, &$working = null)
     {
-        if ($this->is_feed($this->file)) {
-            return $this->file;
+        if ($this->contains_feed($this->response)) {
+            return $this->response->to_file();
         }
 
-        if ($this->file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
-            $sniffer = $this->registry->create('Content_Type_Sniffer', [$this->file]);
+        if ($this->response->to_file()->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
+            $sniffer = $this->registry->create('Content_Type_Sniffer', [$this->response->to_file()]);
             if ($sniffer->get_type() !== 'text/html') {
                 return null;
             }
@@ -191,7 +245,7 @@ class Locator
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
-        $this->http_base = $this->file->url;
+        $this->http_base = $this->response->get_requested_uri();
         $this->base = $this->http_base;
         $elements = $this->dom->getElementsByTagName('base');
         foreach ($elements as $element) {
@@ -307,7 +361,7 @@ class Locator
                         continue;
                     }
 
-                    $current = $this->registry->call('Misc', 'parse_url', [$this->file->url]);
+                    $current = $this->registry->call('Misc', 'parse_url', [$this->response->get_requested_uri()]);
 
                     if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
                         $this->local[] = $href;

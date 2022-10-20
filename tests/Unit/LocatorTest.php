@@ -45,6 +45,7 @@ namespace SimplePie\Tests\Unit;
 
 use DOMDocument;
 use DOMXPath;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use SimplePie\File;
 use SimplePie\Locator;
@@ -65,6 +66,33 @@ class LocatorTest extends TestCase
     public function testClassExists()
     {
         $this->assertTrue(class_exists('SimplePie_Locator'));
+    }
+
+    public function testBcGettingFilePropertyTriggersDeprecationError()
+    {
+        $sniffer = new Locator(new FileMock(''));
+        $this->expectError();
+        $this->expectErrorMessage('SimplePie\Locator::$file property will be removed in SimplePie 2. Do not use it.');
+
+        $file = $sniffer->file;
+    }
+
+    public function testBcSettingFilePropertyTriggersDeprecationError()
+    {
+        $sniffer = new Locator(new FileMock(''));
+        $this->expectError();
+        $this->expectErrorMessage('SimplePie\Locator::$file property will be removed in SimplePie 2. Do not use it.');
+
+        $sniffer->file = new FileMock('');
+    }
+
+    public function testBcSettingFilePropertyWithoutFileObjectThrowsInvalidArgumentException()
+    {
+        $sniffer = new Locator(new FileMock(''));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value for SimplePie\Locator::$file must be of type SimplePie\File.');
+
+        $sniffer->file = 'string';
     }
 
     public function feedmimetypes()
@@ -156,6 +184,7 @@ class LocatorTest extends TestCase
             $row[0]->headers = ['content-type' => 'text/html'];
             $row[0]->method = SimplePie::FILE_SOURCE_REMOTE;
             $row[0]->url = 'http://example.com/';
+            $row[0]->permanent_url = 'http://example.com/';
         }
 
         return $data;

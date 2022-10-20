@@ -113,7 +113,7 @@ class Sniffer
     }
 
     /**
-     * Prevent $file from being read
+     * Prevent $file from being written
      *
      * @param string $name
      */

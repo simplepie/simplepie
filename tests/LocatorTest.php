@@ -138,6 +138,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
             $row[0]->headers = ['content-type' => 'text/html'];
             $row[0]->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
             $row[0]->url = 'http://example.com/';
+            $row[0]->permanent_url = 'http://example.com/';
         }
 
         return $data;
