@@ -43,6 +43,7 @@
 
 namespace SimplePie;
 
+use SimplePie\Content\Detector;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\FileResponse;
@@ -1765,8 +1766,8 @@ class SimplePie
         $this->raw_data = $file->body;
         $this->permanent_url = $file->permanent_url;
         $headers = $file->headers;
-        $sniffer = $this->registry->create('Content_Type_Sniffer', [&$file]);
-        $sniffed = $sniffer->get_type();
+        $detector = new Detector();
+        $sniffed = $detector->detect_type($response);
 
         return [$headers, $sniffed];
     }

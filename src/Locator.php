@@ -44,6 +44,7 @@
 namespace SimplePie;
 
 use InvalidArgumentException;
+use SimplePie\Content\Detector;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\FileResponse;
@@ -166,8 +167,9 @@ class Locator
         }
 
         if ($this->response->to_file()->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
-            $sniffer = $this->registry->create('Content_Type_Sniffer', [$this->response->to_file()]);
-            if ($sniffer->get_type() !== 'text/html') {
+            $detector = new Detector();
+
+            if ($detector->detect_type($this->response) !== 'text/html') {
                 return null;
             }
         }
@@ -203,8 +205,10 @@ class Locator
     public function is_feed($file, $check_html = false)
     {
         if ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
-            $sniffer = $this->registry->create('Content_Type_Sniffer', [$file]);
-            $sniffed = $sniffer->get_type();
+            $detector = new Detector();
+
+            $sniffed = $detector->detect_type(new FileResponse($file));
+
             $mime_types = ['application/rss+xml', 'application/rdf+xml',
                                 'text/rdf', 'application/atom+xml', 'text/xml',
                                 'application/xml', 'application/x-rss+xml'];
@@ -222,8 +226,8 @@ class Locator
 
     private function contains_feed(Response $response, $check_html = false)
     {
-        $sniffer = $this->registry->create('Content_Type_Sniffer', [$response]);
-        $sniffed = $sniffer->get_type();
+        $detector = new Detector();
+        $sniffed = $detector->detect_type($response);
         $mime_types = [
             'application/rss+xml',
             'application/rdf+xml',

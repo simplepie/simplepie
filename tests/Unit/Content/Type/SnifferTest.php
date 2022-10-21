@@ -60,31 +60,4 @@ class SnifferTest extends TestCase
     {
         $this->assertTrue(class_exists(SimplePie_Content_Type_Sniffer::class));
     }
-
-    public function testBcGettingFilePropertyTriggersDeprecationError()
-    {
-        $sniffer = new Sniffer(new FileMock(''));
-        $this->expectError();
-        $this->expectErrorMessage('SimplePie\Content\Type\Sniffer::$file property will be removed in SimplePie 2. Do not use it.');
-
-        $file = $sniffer->file;
-    }
-
-    public function testBcSettingFilePropertyTriggersDeprecationError()
-    {
-        $sniffer = new Sniffer(new FileMock(''));
-        $this->expectError();
-        $this->expectErrorMessage('SimplePie\Content\Type\Sniffer::$file property will be removed in SimplePie 2. Do not use it.');
-
-        $sniffer->file = new FileMock('');
-    }
-
-    public function testBcSettingFilePropertyWithoutFileObjectThrowsInvalidArgumentException()
-    {
-        $sniffer = new Sniffer(new FileMock(''));
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Value for SimplePie\Content\Type\Sniffer::$file must be of type SimplePie\File.');
-
-        $sniffer->file = 'string';
-    }
 }

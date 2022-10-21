@@ -43,10 +43,8 @@
 
 namespace SimplePie\Content\Type;
 
-use InvalidArgumentException;
-use SimplePie\File;
+use SimplePie\Content\Detector;
 use SimplePie\HTTP\FileResponse;
-use SimplePie\HTTP\Response;
 
 /**
  * Content-type sniffing
@@ -65,80 +63,20 @@ use SimplePie\HTTP\Response;
 class Sniffer
 {
     /**
-     * @var Response
+     * File object
+     *
+     * @var \SimplePie\File
      */
-    private $response;
+    public $file;
 
     /**
-     * Create an instance of the class from a response
+     * Create an instance of the class with the input file
      *
-     * @param Response $file Response
+     * @param Sniffer $file Input file
      */
     public function __construct($file)
     {
-        if (is_object($file) && $file instanceof File) {
-            // @trigger_error(sprintf('Providing $file as "\SimplePie\File" in %s() is deprecated since SimplePie 1.8.0, please provide "\SimplePie\HTTP\Response" implementation instead.', __METHOD__), \E_USER_DEPRECATED);
-
-            $file = new FileResponse($file);
-        }
-
-        if (! is_object($file) || ! $file instanceof Response) {
-            throw new InvalidArgumentException(sprintf(
-                '%s(): Argument #1 ($file) must be of type %s.',
-                __METHOD__,
-                Response::class
-            ), 1);
-        }
-
-        $this->response = $file;
-    }
-
-    /**
-     * Prevent $file from being read
-     *
-     * @param string $name
-     */
-    public function __get($name)
-    {
-        if ($name === 'file') {
-            trigger_error(sprintf(
-                '%s::$file property will be removed in SimplePie 2. Do not use it.',
-                get_class($this)
-            ), \E_USER_DEPRECATED);
-
-            return $this->response->to_file();
-        }
-
-        return $this->$name;
-    }
-
-    /**
-     * Prevent $file from being written
-     *
-     * @param string $name
-     */
-    public function __set($name, $value)
-    {
-        if ($name === 'file') {
-            if (! $value instanceof File) {
-                throw new InvalidArgumentException(sprintf(
-                    'Value for %s::$file must be of type %s.',
-                    get_class($this),
-                    File::class
-                ), 1);
-            }
-
-            trigger_error(sprintf(
-                '%s::$file property will be removed in SimplePie 2. Do not use it.',
-                get_class($this)
-            ), \E_USER_DEPRECATED);
-
-            $this->response = new FileResponse($value);
-
-            return;
-        }
-
-        $this->$name = $value;
+        $this->file = $file;
     }
 
     /**
@@ -148,45 +86,9 @@ class Sniffer
      */
     public function get_type()
     {
-        if (! $this->response->has_header('content-type')) {
-            return $this->unknown();
-        }
+        $detector = new Detector();
 
-        $content_type = $this->response->get_header_line('content-type');
-
-        if (! $this->response->has_header('content-encoding')
-            && ($content_type === 'text/plain'
-                || $content_type === 'text/plain; charset=ISO-8859-1'
-                || $content_type === 'text/plain; charset=iso-8859-1'
-                || $content_type === 'text/plain; charset=UTF-8')) {
-            return $this->text_or_binary();
-        }
-
-        if (($pos = strpos($content_type, ';')) !== false) {
-            $official = substr($content_type, 0, $pos);
-        } else {
-            $official = $content_type;
-        }
-        $official = trim(strtolower($official));
-
-        if ($official === 'unknown/unknown'
-            || $official === 'application/unknown') {
-            return $this->unknown();
-        } elseif (substr($official, -4) === '+xml'
-            || $official === 'text/xml'
-            || $official === 'application/xml') {
-            return $official;
-        } elseif (substr($official, 0, 6) === 'image/') {
-            if ($return = $this->image()) {
-                return $return;
-            }
-
-            return $official;
-        } elseif ($official === 'text/html') {
-            return $this->feed_or_html();
-        }
-
-        return $official;
+        return $detector->detect_type(new FileResponse($this->file));
     }
 
     /**
@@ -196,14 +98,12 @@ class Sniffer
      */
     public function text_or_binary()
     {
-        $body = $this->response->get_body_content();
-
-        if (substr($body, 0, 2) === "\xFE\xFF"
-            || substr($body, 0, 2) === "\xFF\xFE"
-            || substr($body, 0, 4) === "\x00\x00\xFE\xFF"
-            || substr($body, 0, 3) === "\xEF\xBB\xBF") {
+        if (substr($this->file->body, 0, 2) === "\xFE\xFF"
+            || substr($this->file->body, 0, 2) === "\xFF\xFE"
+            || substr($this->file->body, 0, 4) === "\x00\x00\xFE\xFF"
+            || substr($this->file->body, 0, 3) === "\xEF\xBB\xBF") {
             return 'text/plain';
-        } elseif (preg_match('/[\x00-\x08\x0E-\x1A\x1C-\x1F]/', $body)) {
+        } elseif (preg_match('/[\x00-\x08\x0E-\x1A\x1C-\x1F]/', $this->file->body)) {
             return 'application/octet-stream';
         }
 
@@ -217,27 +117,25 @@ class Sniffer
      */
     public function unknown()
     {
-        $body = $this->response->get_body_content();
-
-        $ws = strspn($body, "\x09\x0A\x0B\x0C\x0D\x20");
-        if (strtolower(substr($body, $ws, 14)) === '<!doctype html'
-            || strtolower(substr($body, $ws, 5)) === '<html'
-            || strtolower(substr($body, $ws, 7)) === '<script') {
+        $ws = strspn($this->file->body, "\x09\x0A\x0B\x0C\x0D\x20");
+        if (strtolower(substr($this->file->body, $ws, 14)) === '<!doctype html'
+            || strtolower(substr($this->file->body, $ws, 5)) === '<html'
+            || strtolower(substr($this->file->body, $ws, 7)) === '<script') {
             return 'text/html';
-        } elseif (substr($body, 0, 5) === '%PDF-') {
+        } elseif (substr($this->file->body, 0, 5) === '%PDF-') {
             return 'application/pdf';
-        } elseif (substr($body, 0, 11) === '%!PS-Adobe-') {
+        } elseif (substr($this->file->body, 0, 11) === '%!PS-Adobe-') {
             return 'application/postscript';
-        } elseif (substr($body, 0, 6) === 'GIF87a'
-            || substr($body, 0, 6) === 'GIF89a') {
+        } elseif (substr($this->file->body, 0, 6) === 'GIF87a'
+            || substr($this->file->body, 0, 6) === 'GIF89a') {
             return 'image/gif';
-        } elseif (substr($body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
+        } elseif (substr($this->file->body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
             return 'image/png';
-        } elseif (substr($body, 0, 3) === "\xFF\xD8\xFF") {
+        } elseif (substr($this->file->body, 0, 3) === "\xFF\xD8\xFF") {
             return 'image/jpeg';
-        } elseif (substr($body, 0, 2) === "\x42\x4D") {
+        } elseif (substr($this->file->body, 0, 2) === "\x42\x4D") {
             return 'image/bmp';
-        } elseif (substr($body, 0, 4) === "\x00\x00\x01\x00") {
+        } elseif (substr($this->file->body, 0, 4) === "\x00\x00\x01\x00") {
             return 'image/vnd.microsoft.icon';
         }
 
@@ -251,18 +149,16 @@ class Sniffer
      */
     public function image()
     {
-        $body = $this->response->get_body_content();
-
-        if (substr($body, 0, 6) === 'GIF87a'
-            || substr($body, 0, 6) === 'GIF89a') {
+        if (substr($this->file->body, 0, 6) === 'GIF87a'
+            || substr($this->file->body, 0, 6) === 'GIF89a') {
             return 'image/gif';
-        } elseif (substr($body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
+        } elseif (substr($this->file->body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
             return 'image/png';
-        } elseif (substr($body, 0, 3) === "\xFF\xD8\xFF") {
+        } elseif (substr($this->file->body, 0, 3) === "\xFF\xD8\xFF") {
             return 'image/jpeg';
-        } elseif (substr($body, 0, 2) === "\x42\x4D") {
+        } elseif (substr($this->file->body, 0, 2) === "\x42\x4D") {
             return 'image/bmp';
-        } elseif (substr($body, 0, 4) === "\x00\x00\x01\x00") {
+        } elseif (substr($this->file->body, 0, 4) === "\x00\x00\x01\x00") {
             return 'image/vnd.microsoft.icon';
         }
 
@@ -276,17 +172,16 @@ class Sniffer
      */
     public function feed_or_html()
     {
-        $body = $this->response->get_body_content();
-        $len = strlen($body);
-        $pos = strspn($body, "\x09\x0A\x0D\x20\xEF\xBB\xBF");
+        $len = strlen($this->file->body);
+        $pos = strspn($this->file->body, "\x09\x0A\x0D\x20\xEF\xBB\xBF");
 
         while ($pos < $len) {
-            switch ($body[$pos]) {
+            switch ($this->file->body[$pos]) {
                 case "\x09":
                 case "\x0A":
                 case "\x0D":
                 case "\x20":
-                    $pos += strspn($body, "\x09\x0A\x0D\x20", $pos);
+                    $pos += strspn($this->file->body, "\x09\x0A\x0D\x20", $pos);
                     continue 2;
 
                 case '<':
@@ -297,29 +192,29 @@ class Sniffer
                     return 'text/html';
             }
 
-            if (substr($body, $pos, 3) === '!--') {
+            if (substr($this->file->body, $pos, 3) === '!--') {
                 $pos += 3;
-                if ($pos < $len && ($pos = strpos($body, '-->', $pos)) !== false) {
+                if ($pos < $len && ($pos = strpos($this->file->body, '-->', $pos)) !== false) {
                     $pos += 3;
                 } else {
                     return 'text/html';
                 }
-            } elseif (substr($body, $pos, 1) === '!') {
-                if ($pos < $len && ($pos = strpos($body, '>', $pos)) !== false) {
+            } elseif (substr($this->file->body, $pos, 1) === '!') {
+                if ($pos < $len && ($pos = strpos($this->file->body, '>', $pos)) !== false) {
                     $pos++;
                 } else {
                     return 'text/html';
                 }
-            } elseif (substr($body, $pos, 1) === '?') {
-                if ($pos < $len && ($pos = strpos($body, '?>', $pos)) !== false) {
+            } elseif (substr($this->file->body, $pos, 1) === '?') {
+                if ($pos < $len && ($pos = strpos($this->file->body, '?>', $pos)) !== false) {
                     $pos += 2;
                 } else {
                     return 'text/html';
                 }
-            } elseif (substr($body, $pos, 3) === 'rss'
-                || substr($body, $pos, 7) === 'rdf:RDF') {
+            } elseif (substr($this->file->body, $pos, 3) === 'rss'
+                || substr($this->file->body, $pos, 7) === 'rdf:RDF') {
                 return 'application/rss+xml';
-            } elseif (substr($body, $pos, 4) === 'feed') {
+            } elseif (substr($this->file->body, $pos, 4) === 'feed') {
                 return 'application/atom+xml';
             } else {
                 return 'text/html';
