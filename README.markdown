@@ -82,7 +82,7 @@ Please create your pull requests primarily against this branch.
 
 We do not actively provide bug fixes or security fixes for older versions. Nevertheless,
 you are welcome to create backport PRs if you still need support for older PHP versions.
-Please open your PR agains the appropriate branch.
+Please open your PR against the appropriate branch.
 
 | branch                                                                     | requires    |
 |----------------------------------------------------------------------------|-------------|
