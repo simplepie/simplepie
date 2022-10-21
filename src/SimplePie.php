@@ -1695,18 +1695,19 @@ class SimplePie
         }
         $file = $response->to_file();
 
+        $detector = new Detector();
+
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
-            $locate = $this->registry->create('Locator', [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
-
-            if (!$locate->is_feed($file)) {
+            if ($this->file_source & \SimplePie\SimplePie::FILE_SOURCE_REMOTE && ! $detector->contains_feed($response)) {
                 $copyStatusCode = $response->get_status_code();
-                $copyContentType = $file->headers['content-type'];
+                $copyContentType = $response->get_header_line('content-type');
+
                 try {
                     $microformats = false;
                     if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
                         $doc = new \DOMDocument();
-                        @$doc->loadHTML($file->body);
+                        @$doc->loadHTML($response->get_body_content());
                         $xpath = new \DOMXpath($doc);
                         // Check for both h-feed and h-entry, as both a feed with no entries
                         // and a list of entries without an h-feed wrapper are both valid.
@@ -1717,6 +1718,7 @@ class SimplePie
                     }
                     // Now also do feed discovery, but if microformats were found don't
                     // overwrite the current value of file.
+                    $locate = $this->registry->create('Locator', [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
                     $discovered = $locate->find(
                         $this->autodiscovery,
                         $this->all_discovered_feeds
@@ -1751,6 +1753,7 @@ class SimplePie
                     $this->registry->call('Misc', 'error', [$this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()]);
                     return false;
                 }
+
                 if ($cache) {
                     $this->data = ['url' => $this->feed_url, 'feed_url' => $file->url, 'build' => \SimplePie\Misc::get_build()];
                     if (!$cache->save($this)) {
@@ -1760,13 +1763,11 @@ class SimplePie
                 }
             }
             $this->feed_url = $file->url;
-            $locate = null;
         }
 
         $this->raw_data = $file->body;
         $this->permanent_url = $file->permanent_url;
         $headers = $file->headers;
-        $detector = new Detector();
         $sniffed = $detector->detect_type($response);
 
         return [$headers, $sniffed];

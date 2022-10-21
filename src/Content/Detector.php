@@ -59,6 +59,29 @@ use SimplePie\HTTP\Response;
 final class Detector
 {
     /**
+     * Check if the response contains a feed
+     *
+     * @param Response $response
+     *
+     * @return bool
+     */
+    public function contains_feed(Response $response)
+    {
+        return in_array(
+            $this->detect_type($response),
+            [
+                'application/rss+xml',
+                'application/rdf+xml',
+                'text/rdf',
+                'application/atom+xml',
+                'text/xml',
+                'application/xml',
+                'application/x-rss+xml'
+            ]
+        );
+    }
+
+    /**
      * Get the Content-Type of the provided response
      */
     public function detect_type(Response $response)
