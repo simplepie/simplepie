@@ -49,10 +49,87 @@ use SimplePie\HTTP\Response;
 
 class DetectorTest extends TestCase
 {
-    public function testGetTypeDetectsCorrectType()
+    /**
+     * @dataProvider detectData
+     */
+    public function testGetTypeDetectsCorrectType($body, $headers, $expected)
     {
         $response = $this->createMock(Response::class);
+        $response->method('get_body_content')->willReturn($body);
 
-        $this->assertSame('', Detector::detect_type($response));
+        foreach ($headers as $name => $value) {
+            $response->method('has_header')->with($name)->willReturn(true);
+            $response->method('get_header_line')->with($name)->willReturn($value);
+        }
+
+        $detector = new Detector();
+
+        $this->assertSame($expected, $detector->detect_type($response));
+    }
+
+    public function detectData()
+    {
+        return [
+            [
+                '',
+                [],
+                'text/plain',
+            ],
+            [
+                '<!doctype html',
+                [],
+                'text/html',
+            ],
+            [
+                '<html',
+                [],
+                'text/html',
+            ],
+            [
+                '<script',
+                [],
+                'text/html',
+            ],
+            [
+                '%PDF-',
+                [],
+                'application/pdf',
+            ],
+            [
+                '%!PS-Adobe-',
+                [],
+                'application/postscript',
+            ],
+            [
+                'GIF87a',
+                [],
+                'image/gif',
+            ],
+            [
+                'GIF89a',
+                [],
+                'image/gif',
+            ],
+            [
+                "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A",
+                [],
+                'image/png',
+            ],
+            [
+                "\xFF\xD8\xFF",
+                [],
+                'image/jpeg',
+            ],
+            [
+                "\x42\x4D",
+                [],
+                'image/bmp',
+            ],
+            [
+                "\x00\x00\x01\x00",
+                [],
+                'image/vnd.microsoft.icon',
+            ],
+        ];
     }
 }
