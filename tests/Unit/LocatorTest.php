@@ -68,33 +68,6 @@ class LocatorTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Locator'));
     }
 
-    public function testBcGettingFilePropertyTriggersDeprecationError()
-    {
-        $sniffer = new Locator(new FileMock(''));
-        $this->expectError();
-        $this->expectErrorMessage('SimplePie\Locator::$file property will be removed in SimplePie 2. Do not use it.');
-
-        $file = $sniffer->file;
-    }
-
-    public function testBcSettingFilePropertyTriggersDeprecationError()
-    {
-        $sniffer = new Locator(new FileMock(''));
-        $this->expectError();
-        $this->expectErrorMessage('SimplePie\Locator::$file property will be removed in SimplePie 2. Do not use it.');
-
-        $sniffer->file = new FileMock('');
-    }
-
-    public function testBcSettingFilePropertyWithoutFileObjectThrowsInvalidArgumentException()
-    {
-        $sniffer = new Locator(new FileMock(''));
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Value for SimplePie\Locator::$file must be of type SimplePie\File.');
-
-        $sniffer->file = 'string';
-    }
-
     public function feedmimetypes()
     {
         return [

@@ -43,13 +43,6 @@
 
 namespace SimplePie;
 
-use InvalidArgumentException;
-use SimplePie\Content\Detector;
-use SimplePie\Exception\HttpException;
-use SimplePie\HTTP\FileClient;
-use SimplePie\HTTP\FileResponse;
-use SimplePie\HTTP\Response;
-
 /**
  * Used for feed auto-discovery
  *
@@ -62,6 +55,7 @@ class Locator
 {
     public $useragent;
     public $timeout;
+    public $file;
     public $local = [];
     public $elsewhere = [];
     public $cached_entities = [];
@@ -75,26 +69,21 @@ class Locator
     public $dom;
     protected $registry;
 
-    /**
-     * @var Response
-     */
-    private $response = null;
-
     public function __construct(\SimplePie\File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [])
     {
-        $this->response = new FileResponse($file);
+        $this->file = $file;
         $this->useragent = $useragent;
         $this->timeout = $timeout;
         $this->max_checked_feeds = $max_checked_feeds;
         $this->force_fsockopen = $force_fsockopen;
         $this->curl_options = $curl_options;
 
-        if (class_exists('DOMDocument') && $this->response->get_body_content() !== '') {
+        if (class_exists('DOMDocument') && $this->file->body != '') {
             $this->dom = new \DOMDocument();
 
             set_error_handler(['SimplePie\Misc', 'silence_errors']);
             try {
-                $this->dom->loadHTML($this->response->get_body_content());
+                $this->dom->loadHTML($this->file->body);
             } catch (\Throwable $ex) {
                 $this->dom = null;
             }
@@ -104,72 +93,20 @@ class Locator
         }
     }
 
-    /**
-     * Prevent $file from being read
-     *
-     * @param string $name
-     */
-    public function __get($name)
-    {
-        if ($name === 'file') {
-            trigger_error(sprintf(
-                '%s::$file property will be removed in SimplePie 2. Do not use it.',
-                get_class($this)
-            ), \E_USER_DEPRECATED);
-
-            return $this->response->to_file();
-        }
-
-        return $this->$name;
-    }
-
-    /**
-     * Prevent $file from being written
-     *
-     * @param string $name
-     */
-    public function __set($name, $value)
-    {
-        if ($name === 'file') {
-            if (! $value instanceof File) {
-                throw new InvalidArgumentException(sprintf(
-                    'Value for %s::$file must be of type %s.',
-                    get_class($this),
-                    File::class
-                ), 1);
-            }
-
-            trigger_error(sprintf(
-                '%s::$file property will be removed in SimplePie 2. Do not use it.',
-                get_class($this)
-            ), \E_USER_DEPRECATED);
-
-            $this->response = new FileResponse($value);
-
-            return;
-        }
-
-        $this->$name = $value;
-    }
-
     public function set_registry(\SimplePie\Registry $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * @return File|null|bool
-     */
     public function find($type = \SimplePie\SimplePie::LOCATOR_ALL, &$working = null)
     {
-        if ($this->contains_feed($this->response)) {
-            return $this->response->to_file();
+        if ($this->is_feed($this->file)) {
+            return $this->file;
         }
 
-        if ($this->response->to_file()->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
-            $detector = new Detector();
-
-            if ($detector->detect_type($this->response) !== 'text/html') {
+        if ($this->file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
+            $sniffer = $this->registry->create('Content_Type_Sniffer', [$this->file]);
+            if ($sniffer->get_type() !== 'text/html') {
                 return null;
             }
         }
@@ -205,10 +142,8 @@ class Locator
     public function is_feed($file, $check_html = false)
     {
         if ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
-            $detector = new Detector();
-
-            $sniffed = $detector->detect_type(new FileResponse($file));
-
+            $sniffer = $this->registry->create('Content_Type_Sniffer', [$file]);
+            $sniffed = $sniffer->get_type();
             $mime_types = ['application/rss+xml', 'application/rdf+xml',
                                 'text/rdf', 'application/atom+xml', 'text/xml',
                                 'application/xml', 'application/x-rss+xml'];
@@ -224,32 +159,12 @@ class Locator
         }
     }
 
-    private function contains_feed(Response $response, $check_html = false)
-    {
-        $detector = new Detector();
-        $sniffed = $detector->detect_type($response);
-        $mime_types = [
-            'application/rss+xml',
-            'application/rdf+xml',
-            'text/rdf',
-            'application/atom+xml',
-            'text/xml',
-            'application/xml',
-            'application/x-rss+xml'
-        ];
-        if ($check_html) {
-            $mime_types[] = 'text/html';
-        }
-
-        return in_array($sniffed, $mime_types);
-    }
-
     public function get_base()
     {
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
-        $this->http_base = $this->response->get_requested_uri();
+        $this->http_base = $this->file->url;
         $this->base = $this->http_base;
         $elements = $this->dom->getElementsByTagName('base');
         foreach ($elements as $element) {
@@ -286,8 +201,6 @@ class Locator
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
 
-        $http_client = new FileClient($this->registry);
-
         $links = $this->dom->getElementsByTagName($name);
         foreach ($links as $link) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
@@ -311,29 +224,8 @@ class Locator
                     $headers = [
                         'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                     ];
-
-                    try {
-                        $response = $http_client->request(
-                            $http_client::METHOD_GET,
-                            $href,
-                            $headers,
-                            [
-                                'timeout' => $this->timeout,
-                                'redirects' => 5,
-                                'useragent' => $this->useragent,
-                                'force_fsockopen' => $this->force_fsockopen,
-                                'curl_options' => $this->curl_options,
-                            ]
-                        );
-                    } catch (HttpException $th) {
-                        $done[] = $href;
-
-                        continue;
-                    }
-
-                    $feed = $response->to_file();
-
-                    if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->contains_feed($response, true)) {
+                    $feed = $this->registry->create('File', [$href, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                    if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true)) {
                         $feeds[$href] = $feed;
                     }
                 }
@@ -365,7 +257,7 @@ class Locator
                         continue;
                     }
 
-                    $current = $this->registry->call('Misc', 'parse_url', [$this->response->get_requested_uri()]);
+                    $current = $this->registry->call('Misc', 'parse_url', [$this->file->url]);
 
                     if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
                         $this->local[] = $href;
@@ -433,8 +325,6 @@ class Locator
 
     public function extension(&$array)
     {
-        $http_client = new FileClient($this->registry);
-
         foreach ($array as $key => $value) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
                 break;
@@ -445,29 +335,8 @@ class Locator
                 $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                 ];
-
-                try {
-                    $response = $http_client->request(
-                        $http_client::METHOD_GET,
-                        $value,
-                        $headers,
-                        [
-                            'timeout' => $this->timeout,
-                            'redirects' => 5,
-                            'useragent' => $this->useragent,
-                            'force_fsockopen' => $this->force_fsockopen,
-                            'curl_options' => $this->curl_options,
-                        ]
-                    );
-                } catch (HttpException $th) {
-                    unset($array[$key]);
-
-                    continue;
-                }
-
-                $feed = $response->to_file();
-
-                if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->contains_feed($response)) {
+                $feed = $this->registry->create('File', [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
                     return [$feed];
                 } else {
                     unset($array[$key]);
@@ -479,37 +348,17 @@ class Locator
 
     public function body(&$array)
     {
-        $http_client = new FileClient($this->registry);
-
         foreach ($array as $key => $value) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
                 break;
             }
             if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
                 $this->checked_feeds++;
-
-                try {
-                    $response = $http_client->request(
-                        $http_client::METHOD_GET,
-                        $value,
-                        [],
-                        [
-                            'timeout' => $this->timeout,
-                            'redirects' => 5,
-                            'useragent' => $this->useragent,
-                            'force_fsockopen' => $this->force_fsockopen,
-                            'curl_options' => $this->curl_options,
-                        ]
-                    );
-                } catch (HttpException $th) {
-                    unset($array[$key]);
-
-                    continue;
-                }
-
-                $feed = $response->to_file();
-
-                if (($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->contains_feed($response)) {
+                $headers = [
+                    'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+                ];
+                $feed = $this->registry->create('File', [$value, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
                     return [$feed];
                 } else {
                     unset($array[$key]);
