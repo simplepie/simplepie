@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+{% set section_title = config.title ~ ':' %}
+{% if current_path == '/' %}
+{% set body_id = 'bodyoverview' %}
+{% elif current_path is starting_with('/blog/') %}
+{% set section_title = 'SimplePie Weblog »' %}
+{% set body_id = 'bodyblog' %}
+{% elif current_path is starting_with('/demo/') %}
+{% set body_id = 'bodydemo' %}
+{% elif current_path is starting_with('/development/') %}
+{% set body_id = 'bodycommunity' %}
+{% elif current_path is starting_with('/downloads/') %}
+{% set body_id = 'bodydownloads' %}
+{% elif current_path is starting_with('/support/') %}
+{% set body_id = 'bodysupport' %}
+{% elif current_path is starting_with('/wiki/') %}
+{% set body_id = 'bodydocs' %}
+{% set section_title = 'SimplePie Documentation:' %}
+{% endif %}
+<html lang="en-US">
+<head>
+<title>{{ section_title }} {% if current_path == '/' %}Super-fast, easy-to-use, RSS and Atom feed parsing in PHP.{% else %}{% block title %}{% endblock title %}{% endif %}</title>
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="https://feeds.feedburner.com/simplepie">
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="content-language" content="en-us">
+<meta http-equiv="imagetoolbar" content="false">
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true">
+<meta name="ROBOTS" content="ALL">
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon">
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP.">
+<meta name="author" content="SimplePie.org">
+<meta name="rating" content="General">
+<meta name="revisit-after" content="2 Days">
+<meta name="doc-class" content="Living Document">
+<meta name="y_key" content="8a13570546b4e5cd">
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico">
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector">
+{% if current_path is starting_with('/wiki/') %}
+<link rel="stylesheet" href="/css/wikistyles.css" media="screen, projector">
+{% endif %}
+
+{% if current_path == '/' %}
+<style type="text/css">
+div#site {
+	margin-top:20px;
+}
+
+div#features {
+	padding-bottom:20px;
+}
+</style>
+{% endif %}
+
+</head>
+
+<body id="{{ body_id }}">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="{{ get_url(path='@/_index.md') }}"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0"></a></div>
+				<div id="feed"><form action="//www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text"><input type="hidden" name="as_sitesearch" value="simplepie.org">&nbsp;<input type="submit" value="Search" class="button"></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+			<ul>
+				<li id="overview"><a href="{{ get_url(path='@/_index.md') }}">Overview</a></li>
+				<li id="demo"><a href="{{ get_url(path='@/demo/_index.md') }}">Demo</a></li>
+				<li id="blog"><a href="{{ get_url(path='@/blog/_index.md') }}">Blog</a></li>
+				<li id="downloads"><a href="{{ get_url(path='@/downloads/_index.md') }}">Download</a></li>
+				<li id="docs"><a href="{{ get_url(path='@/wiki/_index.md') }}">Documentation</a></li>
+				<li id="api"><a href="/api/">API Docs</a></li>
+				<li id="support"><a href="{{ get_url(path='@/support/_index.md') }}">Support</a></li>
+				<li id="bugs"><a href="https://github.com/simplepie/simplepie/issues">Issue Tracker</a></li>
+				<li id="faq"><a href="{{ get_url(path='@/wiki/faq/_index.md') }}">FAQ</a></li>
+			</ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+{% if current_path == '/' %}
+<div align="center" class="topchunk">
+	<div id="focus">
+		<a href="{{ get_url(path='@/downloads/_index.md') }}" class="nohover"><img src="/images/headers/simple.png" border="0" alt="" id="focus_image"></a>
+	</div>
+</div>
+
+<div style="padding:10px;text-align:center;background-color:#efe;width:550px;border:1px solid #ccc;border-width:1px 0;margin:20px auto 0 auto;">
+	<p><strong>We need developer help!</strong> Fork it, fix it, we'll pull it — on <a href="https://github.com/simplepie/simplepie/">GitHub</a>.</p>
+</div>
+{% endif %}
+
+<div id="site">
+
+	<div id="content">
+		{% if current_path is starting_with('/blog/') %}
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_weblog.gif" alt="SimplePie Developer Weblog.  Not that we really have anything to say, but if you'll listen, why not?" title="SimplePie Developer Weblog.  Not that we really have anything to say, but if you'll listen, why not?"></h2>
+		</div>
+		{% elif current_path is starting_with('/wiki/') %}
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school."></h2>
+		</div>
+
+		<!-- TODO: add edit link -->
+		<!-- TODO: add breadcrumbs -->
+		{% endif %}
+
+		{% if not page.extra.chunky %}<div class="chunk">{% endif %}
+		{% if current_path is starting_with('/wiki/') %}
+		<h1>{% block title %}{% endblock title %}</h1>
+		{% endif %}
+		{% if page.extra.cover_image %}<div class="blogimage"><img src="{{ page.extra.cover_image }}" alt="{{ page.extra.cover_image_alt }}"></div>{% endif %}
+		{% block content %}
+		{% endblock content %}
+		{% if not page.extra.chunky %}</div>{% endif %}
+
+		<div id="footer">
+			<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="https://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="https://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="https://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+			<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="https://ryanparman.com">Ryan Parman</a>, <a href="https://gsnedders.com/">Geoffrey Sneddon</a>, <a href="https://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="https://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="https://ma.tt/">Matt Mullenweg</a>, powered by <a href="https://wordpress.org">WordPress</a> and <a href="https://php.net">PHP 5.6.40</a>, and managed with <a href="https://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="{{ get_url(path='@/_index.md') }}" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="https://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+			<div class="spacer"></div>
+		</div>
+	</div>
+</div>
+
+{% if current_path == '/' %}
+<!-- TODO: reimplement rotator from /images/headers/rotate-xspf.xml -->
+{% endif %}
+<script type="text/javascript" src="//www.google-analytics.com/urchin.js"></script>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+</body>
+</html>

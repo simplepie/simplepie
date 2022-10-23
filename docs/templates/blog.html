@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ section.title }}{% endblock title %}
+
+{% block content %}
+{% for post in section.pages %}
+	<h1><a href="{{ post.permalink }}">{{ post.title }}</a></h1>
+	{% if post.summary %}
+	{{ post.summary | safe }}
+	{% else %}
+	{{ post.content | safe }}
+	{% endif %}
+	<p class="footnote">Posted by {{ post.extra.author }} on {{ post.date | date(format="%B %e, %Y at %H:%M") }}.</p>
+{% endfor %}
+{% endblock content %}
