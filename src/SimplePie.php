@@ -682,8 +682,7 @@ class SimplePie
         $this->registry = new \SimplePie\Registry();
 
         if (func_num_args() > 0) {
-            $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-            trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_duration() directly.', $level);
+            trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_duration() directly.', \E_USER_DEPRECATED);
 
             $args = func_get_args();
             switch (count($args)) {
@@ -2865,8 +2864,7 @@ class SimplePie
      */
     public function set_favicon_handler($page = false, $qs = 'i')
     {
-        $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-        trigger_error('Favicon handling has been removed, please use your own handling', $level);
+        trigger_error('Favicon handling has been removed, please use your own handling', \E_USER_DEPRECATED);
         return false;
     }
 
@@ -2877,8 +2875,7 @@ class SimplePie
      */
     public function get_favicon()
     {
-        $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-        trigger_error('Favicon handling has been removed, please use your own handling', $level);
+        trigger_error('Favicon handling has been removed, please use your own handling', \E_USER_DEPRECATED);
 
         if (($url = $this->get_link()) !== null) {
             return 'https://www.google.com/s2/favicons?domain=' . urlencode($url);
@@ -2897,13 +2894,11 @@ class SimplePie
     public function __call($method, $args)
     {
         if (strpos($method, 'subscribe_') === 0) {
-            $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-            trigger_error('subscribe_*() has been deprecated, implement the callback yourself', $level);
+            trigger_error('subscribe_*() has been deprecated, implement the callback yourself', \E_USER_DEPRECATED);
             return '';
         }
         if ($method === 'enable_xml_dump') {
-            $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-            trigger_error('enable_xml_dump() has been deprecated, use get_raw_data() instead', $level);
+            trigger_error('enable_xml_dump() has been deprecated, use get_raw_data() instead', \E_USER_DEPRECATED);
             return false;
         }
 
