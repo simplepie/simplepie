@@ -43,6 +43,8 @@
 
 namespace SimplePie;
 
+use SimplePie\Cache\Base;
+
 /**
  * Used for data cleanup and post-processing
  *
@@ -377,7 +379,7 @@ class Sanitize
                     foreach ($images as $img) {
                         if ($img->hasAttribute('src')) {
                             $image_url = call_user_func($this->cache_name_function, $img->getAttribute('src'));
-                            $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $image_url, 'spi']);
+                            $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $image_url, Base::TYPE_IMAGE]);
 
                             if ($cache->load()) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);

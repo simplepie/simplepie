@@ -83,7 +83,7 @@ class MySQL extends DB
      *
      * @param string $location Location string (from SimplePie::$cache_location)
      * @param string $name Unique ID for the cache
-     * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
+     * @param Base::TYPE_FEED|Base::TYPE_IMAGE $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
      */
     public function __construct($location, $name, $type)
     {
@@ -99,7 +99,7 @@ class MySQL extends DB
             ],
         ];
 
-        $this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
+        $this->options = array_replace_recursive($this->options, \SimplePie\Cache::parse_URL($location));
 
         // Path is prefixed with a "/"
         $this->options['dbname'] = substr($this->options['path'], 1);

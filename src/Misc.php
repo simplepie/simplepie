@@ -142,7 +142,7 @@ class Misc
 
     public static function error($message, $level, $file, $line)
     {
-        if ((ini_get('error_reporting') & $level) > 0) {
+        if ((error_reporting() & $level) > 0) {
             switch ($level) {
                 case E_USER_ERROR:
                     $note = 'PHP Error';
@@ -199,6 +199,9 @@ class Misc
         return $url;
     }
 
+    /**
+     * @deprecated since SimplePie 1.7.1, use PHP native array_replace_recursive() instead.
+     */
     public static function array_merge_recursive($array1, $array2)
     {
         foreach ($array2 as $key => $value) {

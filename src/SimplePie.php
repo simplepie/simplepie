@@ -43,6 +43,10 @@
 
 namespace SimplePie;
 
+use Psr\SimpleCache\CacheInterface;
+use SimplePie\Cache\Base;
+use SimplePie\Cache\Psr16;
+
 /**
  * SimplePie
  *
@@ -678,8 +682,7 @@ class SimplePie
         $this->registry = new \SimplePie\Registry();
 
         if (func_num_args() > 0) {
-            $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-            trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_duration() directly.', $level);
+            trigger_error('Passing parameters to the constructor is no longer supported. Please use set_feed_url(), set_cache_location(), and set_cache_duration() directly.', \E_USER_DEPRECATED);
 
             $args = func_get_args();
             switch (count($args)) {
@@ -852,6 +855,18 @@ class SimplePie
     public function enable_cache($enable = true)
     {
         $this->cache = (bool) $enable;
+    }
+
+    /**
+     * Set a PSR-16 implementation as cache
+     *
+     * @param CacheInterface $psr16cache The PSR-16 cache implementation
+     */
+    public function set_cache(CacheInterface $cache)
+    {
+        Psr16::store_cache($cache);
+        $this->registry->call('Cache', 'register', ['psr16', Psr16::class]);
+        $this->cache_location = 'psr16';
     }
 
     /**
@@ -1396,7 +1411,7 @@ class SimplePie
             // Decide whether to enable caching
             if ($this->cache && $parsed_feed_url['scheme'] !== '') {
                 $filename = $this->get_cache_filename($this->feed_url);
-                $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $filename, 'spc']);
+                $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $filename, Base::TYPE_FEED]);
             }
 
             // Fetch the data via \SimplePie\File into $this->raw_data
@@ -1682,7 +1697,7 @@ class SimplePie
                     if (!$cache->save($this)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
-                    $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc']);
+                    $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, call_user_func($this->cache_name_function, $file->url), Base::TYPE_FEED]);
                 }
             }
             $this->feed_url = $file->url;
@@ -2849,8 +2864,7 @@ class SimplePie
      */
     public function set_favicon_handler($page = false, $qs = 'i')
     {
-        $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-        trigger_error('Favicon handling has been removed, please use your own handling', $level);
+        trigger_error('Favicon handling has been removed, please use your own handling', \E_USER_DEPRECATED);
         return false;
     }
 
@@ -2861,8 +2875,7 @@ class SimplePie
      */
     public function get_favicon()
     {
-        $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-        trigger_error('Favicon handling has been removed, please use your own handling', $level);
+        trigger_error('Favicon handling has been removed, please use your own handling', \E_USER_DEPRECATED);
 
         if (($url = $this->get_link()) !== null) {
             return 'https://www.google.com/s2/favicons?domain=' . urlencode($url);
@@ -2881,13 +2894,11 @@ class SimplePie
     public function __call($method, $args)
     {
         if (strpos($method, 'subscribe_') === 0) {
-            $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-            trigger_error('subscribe_*() has been deprecated, implement the callback yourself', $level);
+            trigger_error('subscribe_*() has been deprecated, implement the callback yourself', \E_USER_DEPRECATED);
             return '';
         }
         if ($method === 'enable_xml_dump') {
-            $level = defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : E_USER_WARNING;
-            trigger_error('enable_xml_dump() has been deprecated, use get_raw_data() instead', $level);
+            trigger_error('enable_xml_dump() has been deprecated, use get_raw_data() instead', \E_USER_DEPRECATED);
             return false;
         }
 
