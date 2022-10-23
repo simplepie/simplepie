@@ -43,6 +43,10 @@
 
 namespace SimplePie;
 
+use Psr\SimpleCache\CacheInterface;
+use SimplePie\Cache\Base;
+use SimplePie\Cache\Psr16;
+
 /**
  * SimplePie
  *
@@ -855,6 +859,18 @@ class SimplePie
     }
 
     /**
+     * Set a PSR-16 implementation as cache
+     *
+     * @param CacheInterface $psr16cache The PSR-16 cache implementation
+     */
+    public function set_cache(CacheInterface $cache)
+    {
+        Psr16::store_cache($cache);
+        $this->registry->call('Cache', 'register', ['psr16', Psr16::class]);
+        $this->cache_location = 'psr16';
+    }
+
+    /**
      * SimplePie to continue to fall back to expired cache, if enabled, when
      * feed is unavailable.
      *
@@ -1396,7 +1412,7 @@ class SimplePie
             // Decide whether to enable caching
             if ($this->cache && $parsed_feed_url['scheme'] !== '') {
                 $filename = $this->get_cache_filename($this->feed_url);
-                $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $filename, 'spc']);
+                $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, $filename, Base::TYPE_FEED]);
             }
 
             // Fetch the data via \SimplePie\File into $this->raw_data
@@ -1682,7 +1698,7 @@ class SimplePie
                     if (!$cache->save($this)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
-                    $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, call_user_func($this->cache_name_function, $file->url), 'spc']);
+                    $cache = $this->registry->call('Cache', 'get_handler', [$this->cache_location, call_user_func($this->cache_name_function, $file->url), Base::TYPE_FEED]);
                 }
             }
             $this->feed_url = $file->url;
