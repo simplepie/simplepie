@@ -98,7 +98,7 @@ class Memcache implements Base
                 'prefix' => 'simplepie_',
             ],
         ];
-        $this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
+        $this->options = array_replace_recursive($this->options, \SimplePie\Cache::parse_URL($location));
 
         $this->name = $this->options['extras']['prefix'] . md5("$name:$type");
 

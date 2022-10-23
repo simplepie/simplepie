@@ -99,7 +99,7 @@ class MySQL extends DB
             ],
         ];
 
-        $this->options = \SimplePie\Misc::array_merge_recursive($this->options, \SimplePie\Cache::parse_URL($location));
+        $this->options = array_replace_recursive($this->options, \SimplePie\Cache::parse_URL($location));
 
         // Path is prefixed with a "/"
         $this->options['dbname'] = substr($this->options['path'], 1);

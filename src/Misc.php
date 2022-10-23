@@ -199,6 +199,9 @@ class Misc
         return $url;
     }
 
+    /**
+     * @deprecated since SimplePie 1.7.1, use PHP native array_replace_recursive() instead.
+     */
     public static function array_merge_recursive($array1, $array2)
     {
         foreach ($array2 as $key => $value) {
