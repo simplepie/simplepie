@@ -109,8 +109,12 @@ class Psr16Test extends TestCase
 
     public function testSaveCatchesCacheExceptionAndReturnsFalse()
     {
-        // BC for PHP <=7.4, use $this->createMock(CacheException::class) in PHP 8.0+
-        $e = new class() extends Exception implements CacheException{};
+        // BC for PHP <=7.4: $e must implement \Throwable
+        if (version_compare(phpversion(), '7.4.0', '<=')) {
+            $e = new class () extends Exception implements CacheException {};
+        } else {
+            $e = $this->createMock(CacheException::class);
+        }
 
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
@@ -173,8 +177,12 @@ class Psr16Test extends TestCase
 
     public function testMtimeReturnsZeroOnCacheException()
     {
-        // BC for PHP <=7.4, use $this->createMock(CacheException::class) in PHP 8.0+
-        $e = new class() extends Exception implements CacheException{};
+        // BC for PHP <=7.4: $e must implement \Throwable
+        if (version_compare(phpversion(), '7.4.0', '<=')) {
+            $e = new class () extends Exception implements CacheException {};
+        } else {
+            $e = $this->createMock(CacheException::class);
+        }
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
@@ -210,8 +218,12 @@ class Psr16Test extends TestCase
 
     public function testTouchReturnsFalseOnCacheException()
     {
-        // BC for PHP <=7.4, use $this->createMock(CacheException::class) in PHP 8.0+
-        $e = new class() extends Exception implements CacheException{};
+        // BC for PHP <=7.4: $e must implement \Throwable
+        if (version_compare(phpversion(), '7.4.0', '<=')) {
+            $e = new class () extends Exception implements CacheException {};
+        } else {
+            $e = $this->createMock(CacheException::class);
+        }
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
@@ -246,8 +258,12 @@ class Psr16Test extends TestCase
 
     public function testUnlinkReturnsFalseOnCacheException()
     {
-        // BC for PHP <=7.4, use $this->createMock(CacheException::class) in PHP 8.0+
-        $e = new class() extends Exception implements CacheException{};
+        // BC for PHP <=7.4: $e must implement \Throwable
+        if (version_compare(phpversion(), '7.4.0', '<=')) {
+            $e = new class () extends Exception implements CacheException {};
+        } else {
+            $e = $this->createMock(CacheException::class);
+        }
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('delete')->willThrowException($e);
