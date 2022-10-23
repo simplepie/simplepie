@@ -46,9 +46,9 @@ namespace SimplePie\Tests\Unit\Cache;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Psr16;
-use SimplePie\Tests\Fixtures\Exception\Psr16CacheException;
 
 class Psr16Test extends TestCase
 {
@@ -109,7 +109,7 @@ class Psr16Test extends TestCase
 
     public function testSaveCatchesCacheExceptionAndReturnsFalse()
     {
-        $e = new Psr16CacheException();
+        $e = $this->createMock(CacheException::class);
 
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
@@ -172,8 +172,7 @@ class Psr16Test extends TestCase
 
     public function testMtimeReturnsZeroOnCacheException()
     {
-        $e = new Psr16CacheException();
-
+        $e = $this->createMock(CacheException::class);
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
 
@@ -208,7 +207,7 @@ class Psr16Test extends TestCase
 
     public function testTouchReturnsFalseOnCacheException()
     {
-        $e = new Psr16CacheException();
+        $e = $this->createMock(CacheException::class);
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
@@ -243,7 +242,7 @@ class Psr16Test extends TestCase
 
     public function testUnlinkReturnsFalseOnCacheException()
     {
-        $e = new Psr16CacheException();
+        $e = $this->createMock(CacheException::class);
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('delete')->willThrowException($e);
