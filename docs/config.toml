@@ -1,0 +1,7 @@
+title = "SimplePie"
+base_url = "https://simplepie.org"
+
+[slugify]
+# Keep old and API-generated links working.
+paths = "off"
+anchors = "off"
