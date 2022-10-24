@@ -43,18 +43,16 @@
 
 namespace SimplePie\Cache;
 
-use InvalidArgumentException;
-use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
- * Caches data to the PSR-16 cache implementation
+ * Caches data into a PSR-16 cache implementation
  *
  * @package SimplePie
  * @subpackage Caching
  * @internal
  */
-
 final class Psr16 implements DataCache
 {
     /**
@@ -92,11 +90,7 @@ final class Psr16 implements DataCache
      */
     public function get_data($key, $default = null)
     {
-        try {
-            $data = $this->cache->get($key, $default);
-        } catch (CacheException $th) {
-            return $default;
-        }
+        $data = $this->cache->get($key, $default);
 
         if (! is_array($data) || $data === $default) {
             return $default;
@@ -126,11 +120,7 @@ final class Psr16 implements DataCache
      */
     public function set_data($key, array $value, $ttl = null)
     {
-        try {
-            return $this->cache->set($key, $value, $ttl);
-        } catch (CacheException $th) {
-            return false;
-        }
+        return $this->cache->set($key, $value, $ttl);
     }
 
     /**
@@ -150,10 +140,6 @@ final class Psr16 implements DataCache
      */
     public function delete_data($key)
     {
-        try {
-            return $this->cache->delete($key);
-        } catch (CacheException $th) {
-            return false;
-        }
+        return $this->cache->delete($key);
     }
 }
