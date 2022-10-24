@@ -921,6 +921,7 @@ class SimplePie
      */
     public function set_cache_location($location = './cache')
     {
+        // @trigger_error(sprintf('SimplePie\SimplePie::set_cache_location() is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);
         $this->cache_location = (string) $location;
     }
 
@@ -1023,6 +1024,7 @@ class SimplePie
      */
     public function set_cache_class($class = 'SimplePie\Cache')
     {
+        // @trigger_error(sprintf('SimplePie\SimplePie::set_cache_class() is deprecated since SimplePie 1.3.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);
         return $this->registry->register('Cache', $class, true);
     }
 
