@@ -50,7 +50,7 @@ class AllTests
 {
     public static function suite()
     {
-        $suite = new PHPUnit_Framework_TestSuite();
+        $suite = new PHPUnit\Framework\TestSuite();
         $suite->setName('SimplePie');
 
         $suite->addTestSuite('CacheTest');

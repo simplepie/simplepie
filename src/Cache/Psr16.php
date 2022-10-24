@@ -58,13 +58,6 @@ use Psr\SimpleCache\CacheInterface;
 final class Psr16 implements DataCache
 {
     /**
-     * stored PSR-16 cache implementation
-     *
-     * @var CacheInterface
-     */
-    private static $psr16storage = null;
-
-    /**
      * PSR-16 cache implementation
      *
      * @var CacheInterface

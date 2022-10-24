@@ -61,350 +61,350 @@ class SimplePie
     /**
      * SimplePie Name
      */
-    const NAME = 'SimplePie';
+    public const NAME = 'SimplePie';
 
     /**
      * SimplePie Version
      */
-    const VERSION = '1.7.0';
+    public const VERSION = '1.7.0';
 
     /**
      * SimplePie Website URL
      */
-    const URL = 'http://simplepie.org';
+    public const URL = 'http://simplepie.org';
 
     /**
      * SimplePie Linkback
      */
-    const LINKBACK = '<a href="' . self::URL . '" title="' . self::NAME . ' ' . self::VERSION . '">' . self::NAME . '</a>';
+    public const LINKBACK = '<a href="' . self::URL . '" title="' . self::NAME . ' ' . self::VERSION . '">' . self::NAME . '</a>';
 
     /**
      * No Autodiscovery
      * @see SimplePie::set_autodiscovery_level()
      */
-    const LOCATOR_NONE = 0;
+    public const LOCATOR_NONE = 0;
 
     /**
      * Feed Link Element Autodiscovery
      * @see SimplePie::set_autodiscovery_level()
      */
-    const LOCATOR_AUTODISCOVERY = 1;
+    public const LOCATOR_AUTODISCOVERY = 1;
 
     /**
      * Local Feed Extension Autodiscovery
      * @see SimplePie::set_autodiscovery_level()
      */
-    const LOCATOR_LOCAL_EXTENSION = 2;
+    public const LOCATOR_LOCAL_EXTENSION = 2;
 
     /**
      * Local Feed Body Autodiscovery
      * @see SimplePie::set_autodiscovery_level()
      */
-    const LOCATOR_LOCAL_BODY = 4;
+    public const LOCATOR_LOCAL_BODY = 4;
 
     /**
      * Remote Feed Extension Autodiscovery
      * @see SimplePie::set_autodiscovery_level()
      */
-    const LOCATOR_REMOTE_EXTENSION = 8;
+    public const LOCATOR_REMOTE_EXTENSION = 8;
 
     /**
      * Remote Feed Body Autodiscovery
      * @see SimplePie::set_autodiscovery_level()
      */
-    const LOCATOR_REMOTE_BODY = 16;
+    public const LOCATOR_REMOTE_BODY = 16;
 
     /**
      * All Feed Autodiscovery
      * @see SimplePie::set_autodiscovery_level()
      */
-    const LOCATOR_ALL = 31;
+    public const LOCATOR_ALL = 31;
 
     /**
      * No known feed type
      */
-    const TYPE_NONE = 0;
+    public const TYPE_NONE = 0;
 
     /**
      * RSS 0.90
      */
-    const TYPE_RSS_090 = 1;
+    public const TYPE_RSS_090 = 1;
 
     /**
      * RSS 0.91 (Netscape)
      */
-    const TYPE_RSS_091_NETSCAPE = 2;
+    public const TYPE_RSS_091_NETSCAPE = 2;
 
     /**
      * RSS 0.91 (Userland)
      */
-    const TYPE_RSS_091_USERLAND = 4;
+    public const TYPE_RSS_091_USERLAND = 4;
 
     /**
      * RSS 0.91 (both Netscape and Userland)
      */
-    const TYPE_RSS_091 = 6;
+    public const TYPE_RSS_091 = 6;
 
     /**
      * RSS 0.92
      */
-    const TYPE_RSS_092 = 8;
+    public const TYPE_RSS_092 = 8;
 
     /**
      * RSS 0.93
      */
-    const TYPE_RSS_093 = 16;
+    public const TYPE_RSS_093 = 16;
 
     /**
      * RSS 0.94
      */
-    const TYPE_RSS_094 = 32;
+    public const TYPE_RSS_094 = 32;
 
     /**
      * RSS 1.0
      */
-    const TYPE_RSS_10 = 64;
+    public const TYPE_RSS_10 = 64;
 
     /**
      * RSS 2.0
      */
-    const TYPE_RSS_20 = 128;
+    public const TYPE_RSS_20 = 128;
 
     /**
      * RDF-based RSS
      */
-    const TYPE_RSS_RDF = 65;
+    public const TYPE_RSS_RDF = 65;
 
     /**
      * Non-RDF-based RSS (truly intended as syndication format)
      */
-    const TYPE_RSS_SYNDICATION = 190;
+    public const TYPE_RSS_SYNDICATION = 190;
 
     /**
      * All RSS
      */
-    const TYPE_RSS_ALL = 255;
+    public const TYPE_RSS_ALL = 255;
 
     /**
      * Atom 0.3
      */
-    const TYPE_ATOM_03 = 256;
+    public const TYPE_ATOM_03 = 256;
 
     /**
      * Atom 1.0
      */
-    const TYPE_ATOM_10 = 512;
+    public const TYPE_ATOM_10 = 512;
 
     /**
      * All Atom
      */
-    const TYPE_ATOM_ALL = 768;
+    public const TYPE_ATOM_ALL = 768;
 
     /**
      * All feed types
      */
-    const TYPE_ALL = 1023;
+    public const TYPE_ALL = 1023;
 
     /**
      * No construct
      */
-    const CONSTRUCT_NONE = 0;
+    public const CONSTRUCT_NONE = 0;
 
     /**
      * Text construct
      */
-    const CONSTRUCT_TEXT = 1;
+    public const CONSTRUCT_TEXT = 1;
 
     /**
      * HTML construct
      */
-    const CONSTRUCT_HTML = 2;
+    public const CONSTRUCT_HTML = 2;
 
     /**
      * XHTML construct
      */
-    const CONSTRUCT_XHTML = 4;
+    public const CONSTRUCT_XHTML = 4;
 
     /**
      * base64-encoded construct
      */
-    const CONSTRUCT_BASE64 = 8;
+    public const CONSTRUCT_BASE64 = 8;
 
     /**
      * IRI construct
      */
-    const CONSTRUCT_IRI = 16;
+    public const CONSTRUCT_IRI = 16;
 
     /**
      * A construct that might be HTML
      */
-    const CONSTRUCT_MAYBE_HTML = 32;
+    public const CONSTRUCT_MAYBE_HTML = 32;
 
     /**
      * All constructs
      */
-    const CONSTRUCT_ALL = 63;
+    public const CONSTRUCT_ALL = 63;
 
     /**
      * Don't change case
      */
-    const SAME_CASE = 1;
+    public const SAME_CASE = 1;
 
     /**
      * Change to lowercase
      */
-    const LOWERCASE = 2;
+    public const LOWERCASE = 2;
 
     /**
      * Change to uppercase
      */
-    const UPPERCASE = 4;
+    public const UPPERCASE = 4;
 
     /**
      * PCRE for HTML attributes
      */
-    const PCRE_HTML_ATTRIBUTE = '((?:[\x09\x0A\x0B\x0C\x0D\x20]+[^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3D\x3E]*(?:[\x09\x0A\x0B\x0C\x0D\x20]*=[\x09\x0A\x0B\x0C\x0D\x20]*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[^\x09\x0A\x0B\x0C\x0D\x20\x22\x27\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x3E]*)?))?)*)[\x09\x0A\x0B\x0C\x0D\x20]*';
+    public const PCRE_HTML_ATTRIBUTE = '((?:[\x09\x0A\x0B\x0C\x0D\x20]+[^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3D\x3E]*(?:[\x09\x0A\x0B\x0C\x0D\x20]*=[\x09\x0A\x0B\x0C\x0D\x20]*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[^\x09\x0A\x0B\x0C\x0D\x20\x22\x27\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x3E]*)?))?)*)[\x09\x0A\x0B\x0C\x0D\x20]*';
 
     /**
      * PCRE for XML attributes
      */
-    const PCRE_XML_ATTRIBUTE = '((?:\s+(?:(?:[^\s:]+:)?[^\s:]+)\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'))*)\s*';
+    public const PCRE_XML_ATTRIBUTE = '((?:\s+(?:(?:[^\s:]+:)?[^\s:]+)\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'))*)\s*';
 
     /**
      * XML Namespace
      */
-    const NAMESPACE_XML = 'http://www.w3.org/XML/1998/namespace';
+    public const NAMESPACE_XML = 'http://www.w3.org/XML/1998/namespace';
 
     /**
      * Atom 1.0 Namespace
      */
-    const NAMESPACE_ATOM_10 = 'http://www.w3.org/2005/Atom';
+    public const NAMESPACE_ATOM_10 = 'http://www.w3.org/2005/Atom';
 
     /**
      * Atom 0.3 Namespace
      */
-    const NAMESPACE_ATOM_03 = 'http://purl.org/atom/ns#';
+    public const NAMESPACE_ATOM_03 = 'http://purl.org/atom/ns#';
 
     /**
      * RDF Namespace
      */
-    const NAMESPACE_RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
+    public const NAMESPACE_RDF = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
 
     /**
      * RSS 0.90 Namespace
      */
-    const NAMESPACE_RSS_090 = 'http://my.netscape.com/rdf/simple/0.9/';
+    public const NAMESPACE_RSS_090 = 'http://my.netscape.com/rdf/simple/0.9/';
 
     /**
      * RSS 1.0 Namespace
      */
-    const NAMESPACE_RSS_10 = 'http://purl.org/rss/1.0/';
+    public const NAMESPACE_RSS_10 = 'http://purl.org/rss/1.0/';
 
     /**
      * RSS 1.0 Content Module Namespace
      */
-    const NAMESPACE_RSS_10_MODULES_CONTENT = 'http://purl.org/rss/1.0/modules/content/';
+    public const NAMESPACE_RSS_10_MODULES_CONTENT = 'http://purl.org/rss/1.0/modules/content/';
 
     /**
      * RSS 2.0 Namespace
      * (Stupid, I know, but I'm certain it will confuse people less with support.)
      */
-    const NAMESPACE_RSS_20 = '';
+    public const NAMESPACE_RSS_20 = '';
 
     /**
      * DC 1.0 Namespace
      */
-    const NAMESPACE_DC_10 = 'http://purl.org/dc/elements/1.0/';
+    public const NAMESPACE_DC_10 = 'http://purl.org/dc/elements/1.0/';
 
     /**
      * DC 1.1 Namespace
      */
-    const NAMESPACE_DC_11 = 'http://purl.org/dc/elements/1.1/';
+    public const NAMESPACE_DC_11 = 'http://purl.org/dc/elements/1.1/';
 
     /**
      * W3C Basic Geo (WGS84 lat/long) Vocabulary Namespace
      */
-    const NAMESPACE_W3C_BASIC_GEO = 'http://www.w3.org/2003/01/geo/wgs84_pos#';
+    public const NAMESPACE_W3C_BASIC_GEO = 'http://www.w3.org/2003/01/geo/wgs84_pos#';
 
     /**
      * GeoRSS Namespace
      */
-    const NAMESPACE_GEORSS = 'http://www.georss.org/georss';
+    public const NAMESPACE_GEORSS = 'http://www.georss.org/georss';
 
     /**
      * Media RSS Namespace
      */
-    const NAMESPACE_MEDIARSS = 'http://search.yahoo.com/mrss/';
+    public const NAMESPACE_MEDIARSS = 'http://search.yahoo.com/mrss/';
 
     /**
      * Wrong Media RSS Namespace. Caused by a long-standing typo in the spec.
      */
-    const NAMESPACE_MEDIARSS_WRONG = 'http://search.yahoo.com/mrss';
+    public const NAMESPACE_MEDIARSS_WRONG = 'http://search.yahoo.com/mrss';
 
     /**
      * Wrong Media RSS Namespace #2. New namespace introduced in Media RSS 1.5.
      */
-    const NAMESPACE_MEDIARSS_WRONG2 = 'http://video.search.yahoo.com/mrss';
+    public const NAMESPACE_MEDIARSS_WRONG2 = 'http://video.search.yahoo.com/mrss';
 
     /**
      * Wrong Media RSS Namespace #3. A possible typo of the Media RSS 1.5 namespace.
      */
-    const NAMESPACE_MEDIARSS_WRONG3 = 'http://video.search.yahoo.com/mrss/';
+    public const NAMESPACE_MEDIARSS_WRONG3 = 'http://video.search.yahoo.com/mrss/';
 
     /**
      * Wrong Media RSS Namespace #4. New spec location after the RSS Advisory Board takes it over, but not a valid namespace.
      */
-    const NAMESPACE_MEDIARSS_WRONG4 = 'http://www.rssboard.org/media-rss';
+    public const NAMESPACE_MEDIARSS_WRONG4 = 'http://www.rssboard.org/media-rss';
 
     /**
      * Wrong Media RSS Namespace #5. A possible typo of the RSS Advisory Board URL.
      */
-    const NAMESPACE_MEDIARSS_WRONG5 = 'http://www.rssboard.org/media-rss/';
+    public const NAMESPACE_MEDIARSS_WRONG5 = 'http://www.rssboard.org/media-rss/';
 
     /**
      * iTunes RSS Namespace
      */
-    const NAMESPACE_ITUNES = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
+    public const NAMESPACE_ITUNES = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
 
     /**
      * XHTML Namespace
      */
-    const NAMESPACE_XHTML = 'http://www.w3.org/1999/xhtml';
+    public const NAMESPACE_XHTML = 'http://www.w3.org/1999/xhtml';
 
     /**
      * IANA Link Relations Registry
      */
-    const IANA_LINK_RELATIONS_REGISTRY = 'http://www.iana.org/assignments/relation/';
+    public const IANA_LINK_RELATIONS_REGISTRY = 'http://www.iana.org/assignments/relation/';
 
     /**
      * No file source
      */
-    const FILE_SOURCE_NONE = 0;
+    public const FILE_SOURCE_NONE = 0;
 
     /**
      * Remote file source
      */
-    const FILE_SOURCE_REMOTE = 1;
+    public const FILE_SOURCE_REMOTE = 1;
 
     /**
      * Local file source
      */
-    const FILE_SOURCE_LOCAL = 2;
+    public const FILE_SOURCE_LOCAL = 2;
 
     /**
      * fsockopen() file source
      */
-    const FILE_SOURCE_FSOCKOPEN = 4;
+    public const FILE_SOURCE_FSOCKOPEN = 4;
 
     /**
      * cURL file source
      */
-    const FILE_SOURCE_CURL = 8;
+    public const FILE_SOURCE_CURL = 8;
 
     /**
      * file_get_contents() file source
      */
-    const FILE_SOURCE_FILE_GET_CONTENTS = 16;
+    public const FILE_SOURCE_FILE_GET_CONTENTS = 16;
 
     /**
      * @var array Raw data
@@ -678,8 +678,8 @@ class SimplePie
      */
     public function __construct()
     {
-        if (version_compare(PHP_VERSION, '5.6', '<')) {
-            trigger_error('Please upgrade to PHP 5.6 or newer.');
+        if (version_compare(PHP_VERSION, '7.2', '<')) {
+            trigger_error('Please upgrade to PHP 7.2 or newer.');
             die();
         }
 
@@ -1436,7 +1436,7 @@ class SimplePie
                 return false;
             }
 
-            list($headers, $sniffed) = $fetched;
+            [$headers, $sniffed] = $fetched;
         }
 
         // Empty response check
