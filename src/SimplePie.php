@@ -884,12 +884,15 @@ class SimplePie
      * This tells SimplePie to ignore any file errors and fall back to cache
      * instead. This only works if caching is enabled and cached content
      * still exists.
-
+     *
+     * @deprecated since SimplePie 1.8.0, expired cache will not be used anymore.
+     *
      * @param bool $enable Force use of cache on fail.
      */
     public function force_cache_fallback($enable = false)
     {
-        $this->force_cache_fallback= (bool) $enable;
+        // @trigger_error(sprintf('SimplePie\SimplePie::force_cache_fallback() is deprecated since SimplePie 1.8.0, expired cache will not be used anymore.'), \E_USER_DEPRECATED);
+        $this->force_cache_fallback = (bool) $enable;
     }
 
     /**
@@ -916,6 +919,8 @@ class SimplePie
 
     /**
      * Set the file system location where the cached files should be stored
+     *
+     * @deprecated since SimplePie 1.8.0, use \SimplePie\SimplePie::set_cache() instead.
      *
      * @param string $location The file system location.
      */
