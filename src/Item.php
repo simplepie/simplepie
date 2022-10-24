@@ -662,7 +662,7 @@ class Item
 
             if (!empty($this->data['date']['raw'])) {
                 $parser = $this->registry->call('Parse_Date', 'get');
-                $this->data['date']['parsed'] = $parser->parse($this->data['date']['raw']);
+                $this->data['date']['parsed'] = $parser->parse($this->data['date']['raw']) ?: null;
             } else {
                 $this->data['date'] = null;
             }
@@ -704,7 +704,7 @@ class Item
 
             if (!empty($this->data['updated']['raw'])) {
                 $parser = $this->registry->call('Parse_Date', 'get');
-                $this->data['updated']['parsed'] = $parser->parse($this->data['updated']['raw']);
+                $this->data['updated']['parsed'] = $parser->parse($this->data['updated']['raw']) ?: null;
             } else {
                 $this->data['updated'] = null;
             }

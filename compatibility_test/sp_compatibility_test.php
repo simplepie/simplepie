@@ -14,13 +14,13 @@ else if (isset($_GET['background']))
 	exit;
 }
 
-$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '5.6.0', '>='));
+$php_ok = (function_exists('version_compare') && version_compare(phpversion(), '7.2.0', '>='));
 $pcre_ok = extension_loaded('pcre');
 $curl_ok = function_exists('curl_exec');
 $zlib_ok = extension_loaded('zlib');
 $mbstring_ok = extension_loaded('mbstring');
 $iconv_ok = extension_loaded('iconv');
-$intl_ok = version_compare(phpversion(), '5.5.0', '>=') && extension_loaded('intl');
+$intl_ok = extension_loaded('intl');
 if (extension_loaded('xmlreader'))
 {
 	$xml_ok = true;
@@ -59,7 +59,7 @@ EOF;
 echo $testHeader;
 
 
-echo sprintf($testRow,str_pad(($php_ok ? 'Passed' : 'Failed'), 7),str_pad('PHP',20),str_pad('5.6.0 or higher', 20),str_pad(phpversion(), 20));
+echo sprintf($testRow,str_pad(($php_ok ? 'Passed' : 'Failed'), 7),str_pad('PHP',20),str_pad('7.2.0 or higher', 20),str_pad(phpversion(), 20));
 
 
 
@@ -145,7 +145,7 @@ else:
         else:
             echo "XML: Your PHP installation doesn't support XML parsing. SimplePie is a no-go at the moment.\n";
         endif;
-	
+
 	else:
 		echo "PHP: You are running an unsupported version of PHP.  SimplePie is a no-go at the moment.\n";
     endif;
@@ -177,7 +177,7 @@ echo <<<EOF
 
 Bottom Line: Yes, you can!
 For most feeds, it'll run with no problems. There are http://simplepie.org/wiki/faq/supported_character_encodings that you might have a hard time with though.
-	
+
 {$bottomLineFooter}
 EOF;
 
@@ -186,7 +186,7 @@ else:
 echo <<<EOF
 
 Bottom Line: We're sorry ...
-Your webhost does not support the minimum requirements for SimplePie. 
+Your webhost does not support the minimum requirements for SimplePie.
 It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the xmlreader, xml, mbstring, iconv, curl, and zlib extensions.
 
 EOF;
@@ -307,7 +307,7 @@ table#chart tr.enabled td {
 	/* Leave this alone */
 }
 
-table#chart tr.disabled td, 
+table#chart tr.disabled td,
 table#chart tr.disabled td a {
 	color:#999;
 	font-style:italic;
@@ -382,7 +382,7 @@ function fnLoadPngs() {
 				<tbody>
 					<tr class="<?php echo ($php_ok) ? 'enabled' : 'disabled'; ?>">
 						<td>PHP</td>
-						<td>5.6.0 or higher</td>
+						<td>7.2.0 or higher</td>
 						<td><?php echo phpversion(); ?></td>
 					</tr>
 					<tr class="<?php echo ($xml_ok) ? 'enabled, and sane' : 'disabled, or broken'; ?>">
@@ -436,13 +436,13 @@ function fnLoadPngs() {
 								<?php else: ?>
 									<li><strong>cURL:</strong> The <code>cURL</code> extension is not available.  SimplePie will use <code>fsockopen()</code> instead.</li>
 								<?php endif; ?>
-	
+
 								<?php if ($zlib_ok): ?>
 									<li><strong>Zlib:</strong> You have <code>Zlib</code> enabled.  This allows SimplePie to support GZIP-encoded feeds.  <em>No problems here.</em></li>
 								<?php else: ?>
 									<li><strong>Zlib:</strong> The <code>Zlib</code> extension is not available.  SimplePie will ignore any GZIP-encoding, and instead handle feeds as uncompressed text.</li>
 								<?php endif; ?>
-	
+
 								<?php if ($mbstring_ok && $iconv_ok): ?>
 									<li><strong>mbstring and iconv:</strong> You have both <code>mbstring</code> and <code>iconv</code> installed!  This will allow SimplePie to handle the greatest number of languages.  Check the <a href="http://simplepie.org/wiki/faq/supported_character_encodings">Supported Character Encodings</a> chart to see what's supported on your webhost.</li>
 								<?php elseif ($mbstring_ok): ?>

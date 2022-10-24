@@ -44,6 +44,7 @@
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\CacheInterface;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
@@ -238,9 +239,23 @@ class SimplePieTest extends TestCase
         $this->assertSame($content, $item->get_content());
     }
 
+    public function testSetPsr16Cache()
+    {
+        $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('get')->willReturn([]);
+        $psr16->expects($this->exactly(2))->method('set')->willReturn(true);
+
+        $feed = new SimplePie();
+        $feed->set_cache($psr16);
+        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $feed->set_feed_url('http://example.com/feed/');
+
+        $feed->init();
+    }
+
     public function testLegacyCallOfSetCacheClass()
     {
-        if (PHP_VERSION_ID < 80000) {
+        if (version_compare(PHP_VERSION, '8.0', '<')) {
             $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
         } else {
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.

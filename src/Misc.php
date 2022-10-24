@@ -142,7 +142,7 @@ class Misc
 
     public static function error($message, $level, $file, $line)
     {
-        if ((ini_get('error_reporting') & $level) > 0) {
+        if ((error_reporting() & $level) > 0) {
             switch ($level) {
                 case E_USER_ERROR:
                     $note = 'PHP Error';
@@ -199,6 +199,9 @@ class Misc
         return $url;
     }
 
+    /**
+     * @deprecated since SimplePie 1.7.1, use PHP native array_replace_recursive() instead.
+     */
     public static function array_merge_recursive($array1, $array2)
     {
         foreach ($array2 as $key => $value) {
@@ -1933,7 +1936,7 @@ class Misc
 
         foreach ($str as $section) {
             if (strpos($section, '=') !== false) {
-                list($name, $value) = explode('=', $section, 2);
+                [$name, $value] = explode('=', $section, 2);
                 $return[urldecode($name)][] = urldecode($value);
             } else {
                 $return[urldecode($section)][] = null;
@@ -2076,7 +2079,7 @@ END;
             return static::$SIMPLEPIE_BUILD;
         }
 
-        $root = dirname(dirname(__FILE__));
+        $root = dirname(__FILE__, 2);
         if (file_exists($root . '/.git/index')) {
             static::$SIMPLEPIE_BUILD = filemtime($root . '/.git/index');
 

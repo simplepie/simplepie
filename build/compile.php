@@ -1,7 +1,7 @@
 <?php
 
 // Set up our constants
-define('SP_PATH', dirname(dirname(__FILE__)));
+define('SP_PATH', dirname(__FILE__, 2));
 define('COMPILED', SP_PATH . DIRECTORY_SEPARATOR . 'SimplePie.compiled.php');
 
 if (! function_exists('str_starts_with')) {

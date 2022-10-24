@@ -43,6 +43,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
+use SimplePie\Tests\Fixtures\FileMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class LocatorTest extends PHPUnit\Framework\TestCase
@@ -65,13 +66,13 @@ class LocatorTest extends PHPUnit\Framework\TestCase
      */
     public function testAutodiscoverOnFeed($mime)
     {
-        $data = new MockSimplePie_File('http://example.com/feed.xml');
+        $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
 
         $locator = new SimplePie_Locator($data, 0, null, false);
 
         $registry = new SimplePie_Registry();
-        $registry->register('File', 'MockSimplePie_File');
+        $registry->register('File', FileMock::class);
         $locator->set_registry($registry);
 
         $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
@@ -80,13 +81,13 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 
     public function testInvalidMIMEType()
     {
-        $data = new MockSimplePie_File('http://example.com/feed.xml');
+        $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
 
         $locator = new SimplePie_Locator($data, 0, null, false);
 
         $registry = new SimplePie_Registry();
-        $registry->register('File', 'MockSimplePie_File');
+        $registry->register('File', FileMock::class);
         $locator->set_registry($registry);
 
         $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
@@ -95,7 +96,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 
     public function testDirectNoDOM()
     {
-        $data = new MockSimplePie_File('http://example.com/feed.xml');
+        $data = new FileMock('http://example.com/feed.xml');
 
         $registry = new SimplePie_Registry();
         $locator = new SimplePie_Locator($data, 0, null, false);
@@ -110,7 +111,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
     {
         $this->expectException('SimplePie_Exception');
 
-        $data = new MockSimplePie_File('http://example.com/feed.xml');
+        $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'text/html';
         $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
@@ -152,7 +153,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $locator = new SimplePie_Locator($data, 0, null, false);
 
         $registry = new SimplePie_Registry();
-        $registry->register('File', 'MockSimplePie_File');
+        $registry->register('File', FileMock::class);
         $locator->set_registry($registry);
 
         $expected = [];
@@ -166,7 +167,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 
         $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
         $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
-        $this->assertInstanceOf('MockSimplePie_File', $feed);
+        $this->assertInstanceOf(FileMock::class, $feed);
         $success = array_filter($expected, [get_class(), 'filter_success']);
 
         $found = array_map([get_class(), 'map_url_file'], $all);
