@@ -43,12 +43,9 @@
 
 namespace SimplePie\Tests\Unit\Cache;
 
-use Exception;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Psr16;
-use SimplePie\Tests\Fixtures\Exception\Psr16CacheException;
 use stdClass;
 
 class Psr16Test extends TestCase

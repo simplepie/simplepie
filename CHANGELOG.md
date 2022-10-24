@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
-- The class `SimplePie\Cache` is deprecated, use implementation of `SimplePie\SimplePie::set_cache()` instead
+- The class `SimplePie\Cache` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
 - The class `SimplePie\Cache\DB` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
 - The class `SimplePie\Cache\File` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
 - The class `SimplePie\Cache\Memcache` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
