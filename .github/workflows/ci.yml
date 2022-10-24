@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
 
     name: "PHP: ${{ matrix.php }}"
     continue-on-error: ${{ matrix.php == '8.2' }}
@@ -23,17 +23,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install PHP <= 7.1 with composer 2.2.x LTS
-        if: ${{ matrix.php <= '7.1' }}
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          ini-values: error_reporting=-1, display_errors=On, log_errors_max_len=0
-          coverage: none
-          tools: composer:2.2.*
-
       - name: Install PHP with latest composer
-        if: ${{ matrix.php >= '7.2' }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}

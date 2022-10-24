@@ -183,7 +183,6 @@ class Parser
         $xml->xml($data);
         while (@$xml->read()) {
             switch ($xml->nodeType) {
-
                 case constant('XMLReader::END_ELEMENT'):
                     if ($xml->namespaceURI !== '') {
                         $tagName = $xml->namespaceURI . $this->separator . $xml->localName;
@@ -263,11 +262,11 @@ class Parser
 
     public function tag_open($parser, $tag, $attributes)
     {
-        list($this->namespace[], $this->element[]) = $this->split_ns($tag);
+        [$this->namespace[], $this->element[]] = $this->split_ns($tag);
 
         $attribs = [];
         foreach ($attributes as $name => $value) {
-            list($attrib_namespace, $attribute) = $this->split_ns($name);
+            [$attrib_namespace, $attribute] = $this->split_ns($name);
             $attribs[$attrib_namespace][$attribute] = $value;
         }
 
@@ -394,7 +393,7 @@ class Parser
                 return '<a class="h-card" href="'.$link.'">'.$person_tag.$name.'</a>';
             }
         }
-        return isset($data['value']) ? $data['value'] : '';
+        return $data['value'] ?? '';
     }
 
     private function parse_microformats(&$data, $url)
@@ -477,8 +476,7 @@ class Parser
                     // author is a special case, it can be plain text or an h-card array.
                     // If it's plain text it can also be a url that should be followed to
                     // get the actual h-card.
-                    $author = isset($entry['properties']['author'][0]) ?
-                        $entry['properties']['author'][0] : $feed_author;
+                    $author = $entry['properties']['author'][0] ?? $feed_author;
                     if (!is_string($author)) {
                         $author = $this->parse_hcard($author);
                     } elseif (strpos($author, 'http') === 0) {

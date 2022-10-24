@@ -59,14 +59,14 @@ interface Base
      *
      * @var string
      */
-    const TYPE_FEED = 'spc';
+    public const TYPE_FEED = 'spc';
 
     /**
      * Image cache type
      *
      * @var string
      */
-    const TYPE_IMAGE = 'spi';
+    public const TYPE_IMAGE = 'spi';
 
     /**
      * Create a new cache object

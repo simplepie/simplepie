@@ -46,9 +46,10 @@ namespace SimplePie\Tests\Unit\Cache;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Psr16;
-use SimplePie\Tests\Fixtures\Exception\Psr16CacheException;
+use Throwable;
 
 class Psr16Test extends TestCase
 {
@@ -109,7 +110,12 @@ class Psr16Test extends TestCase
 
     public function testSaveCatchesCacheExceptionAndReturnsFalse()
     {
-        $e = new Psr16CacheException();
+        $e = $this->createMock(CacheException::class);
+
+        // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
+        if (! $e instanceof Throwable) {
+            $e = new class () extends Exception implements CacheException {};
+        }
 
         $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
@@ -172,7 +178,12 @@ class Psr16Test extends TestCase
 
     public function testMtimeReturnsZeroOnCacheException()
     {
-        $e = new Psr16CacheException();
+        $e = $this->createMock(CacheException::class);
+
+        // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
+        if (! $e instanceof Throwable) {
+            $e = new class () extends Exception implements CacheException {};
+        }
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
@@ -208,7 +219,12 @@ class Psr16Test extends TestCase
 
     public function testTouchReturnsFalseOnCacheException()
     {
-        $e = new Psr16CacheException();
+        $e = $this->createMock(CacheException::class);
+
+        // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
+        if (! $e instanceof Throwable) {
+            $e = new class () extends Exception implements CacheException {};
+        }
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
@@ -243,7 +259,12 @@ class Psr16Test extends TestCase
 
     public function testUnlinkReturnsFalseOnCacheException()
     {
-        $e = new Psr16CacheException();
+        $e = $this->createMock(CacheException::class);
+
+        // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
+        if (! $e instanceof Throwable) {
+            $e = new class () extends Exception implements CacheException {};
+        }
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('delete')->willThrowException($e);
