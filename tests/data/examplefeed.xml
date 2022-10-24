@@ -34,7 +34,7 @@
 					<description><![CDATA[Here comes the description.]]></description>
 										<content:encoded><![CDATA[
 <p>This is the full content.</p>
-<p>​<a href="https://example.com">I contains a link.</a></p>
+<p>​<a href="https://example.com">It contains a link.</a></p>
 ]]></content:encoded>
 
 					<wfw:commentRss>https://example.com/posts/123/</wfw:commentRss>

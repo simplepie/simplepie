@@ -45,13 +45,13 @@ namespace SimplePie\Tests\Unit;
 
 use DOMDocument;
 use DOMXPath;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use SimplePie\File;
 use SimplePie\Locator;
 use SimplePie\Registry;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\FileMock;
+use SimplePie_Locator;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class LocatorTest extends TestCase
@@ -60,12 +60,12 @@ class LocatorTest extends TestCase
 
     public function testNamespacedClassExists()
     {
-        $this->assertTrue(class_exists('SimplePie\Locator'));
+        $this->assertTrue(class_exists(Locator::class));
     }
 
     public function testClassExists()
     {
-        $this->assertTrue(class_exists('SimplePie_Locator'));
+        $this->assertTrue(class_exists(SimplePie_Locator::class));
     }
 
     public function feedmimetypes()

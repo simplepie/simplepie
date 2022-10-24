@@ -43,6 +43,7 @@
 
 namespace SimplePie;
 
+use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\Psr16;
 use SimplePie\Content\Detector;
@@ -50,7 +51,6 @@ use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\FileResponse;
 use SimplePie\HTTP\Response;
-use Psr\SimpleCache\CacheInterface;
 
 /**
  * SimplePie

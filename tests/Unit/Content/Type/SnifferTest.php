@@ -43,11 +43,9 @@
 
 namespace SimplePie\Tests\Unit\Content\Type;
 
-use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use SimplePie\Content\Type\Sniffer;
-use SimplePie\Tests\Fixtures\FileMock;
 use SimplePie_Content_Type_Sniffer;
-use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class SnifferTest extends TestCase
 {
