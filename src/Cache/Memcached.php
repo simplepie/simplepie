@@ -115,7 +115,7 @@ class Memcached implements Base
             $data = $data->data;
         }
 
-        return $this->set_data(serialize($data));
+        return $this->setData(serialize($data));
     }
 
     /**
@@ -149,7 +149,7 @@ class Memcached implements Base
     public function touch()
     {
         $data = $this->cache->get($this->name);
-        return $this->set_data($data);
+        return $this->setData($data);
     }
 
     /**
