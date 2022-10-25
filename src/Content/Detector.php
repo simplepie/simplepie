@@ -43,7 +43,13 @@
 
 namespace SimplePie\Content;
 
+use DOMDocument;
+use DOMElement;
+use SimplePie\Exception;
 use SimplePie\HTTP\Response;
+use SimplePie\Registry;
+use SimplePie\SimplePie;
+use Throwable;
 
 /**
  * Helper for feed auto-discovery and type sniffing
@@ -58,6 +64,111 @@ use SimplePie\HTTP\Response;
  */
 final class Detector
 {
+    /**
+     * @var Registry
+     */
+    private $registry;
+
+    /**
+     * @var array
+     */
+    private $local = [];
+
+    /**
+     * @var array
+     */
+    private $elsewhere = [];
+
+    /**
+     * @var array
+     */
+    private $cached_entities = [];
+
+    /**
+     * @var string
+     */
+    private $http_base;
+
+    /**
+     * @var string
+     */
+    private $base;
+
+    /**
+     * @var int
+     */
+    private $base_location = 0;
+
+    /**
+     * @var DOMDocument|null
+     */
+    private $dom = null;
+
+    public function __construct(Registry $registry)
+    {
+        $this->registry = $registry;
+    }
+
+    /**
+     * Discover possible feed urls from HTML response
+     *
+     * @return array
+     */
+    public function discover_possible_feed_urls(Response $response, int $type = SimplePie::LOCATOR_ALL): array
+    {
+        $this->reset();
+
+        // If Locator is disabled
+        if ($type === SimplePie::LOCATOR_NONE) {
+            return [];
+        }
+
+        // If response contains no HTML
+        if ($this->detect_type($response) !== 'text/html') {
+            return [];
+        }
+
+        try {
+            $dom = new DOMDocument();
+            $html_loaded = $dom->loadHTML($response->get_body_content());
+        } catch (Throwable $th) {
+            throw new Exception($th->getMessage(), $th->getCode(), $th);
+        }
+
+        if ($html_loaded === false) {
+            throw new Exception('DOMDocument was unable to load the HTML.');
+        }
+
+        $this->dom = $dom;
+
+        $this->get_base($response);
+        $discovered = [];
+
+        if ($type & SimplePie::LOCATOR_AUTODISCOVERY) {
+            $discovered = $this->autodiscovery($discovered);
+        }
+
+        if ($type & (SimplePie::LOCATOR_LOCAL_EXTENSION | SimplePie::LOCATOR_LOCAL_BODY | SimplePie::LOCATOR_REMOTE_EXTENSION | SimplePie::LOCATOR_REMOTE_BODY) && $this->get_links()) {
+            if ($type & SimplePie::LOCATOR_LOCAL_EXTENSION && $discovered = $this->extension($this->local)) {
+                return $discovered[0];
+            }
+
+            if ($type & SimplePie::LOCATOR_LOCAL_BODY && $discovered = $this->body($this->local)) {
+                return $discovered[0];
+            }
+
+            if ($type & SimplePie::LOCATOR_REMOTE_EXTENSION && $discovered = $this->extension($this->elsewhere)) {
+                return $discovered[0];
+            }
+
+            if ($type & SimplePie::LOCATOR_REMOTE_BODY && $discovered = $this->body($this->elsewhere)) {
+                return $discovered[0];
+            }
+        }
+
+        return $discovered;
+    }
+
     /**
      * Check if the response contains a feed
      *
@@ -263,5 +374,194 @@ final class Detector
         }
 
         return 'text/html';
+    }
+
+    private function get_base(Response $response): void
+    {
+        $this->http_base = $response->get_requested_uri();
+        $this->base = $this->http_base;
+
+        foreach ($this->dom->getElementsByTagName('base') as $element) {
+            if (! $element instanceof DOMElement) {
+                continue;
+            }
+
+            if ($element->hasAttribute('href')) {
+
+                $base = $this->registry->call('Misc', 'absolutize_url', [
+                    trim($element->getAttribute('href')),
+                    $this->http_base
+                ]);
+
+
+                if ($base === false) {
+                    continue;
+                }
+
+                $this->base = $base;
+                $this->base_location = method_exists($element, 'getLineNo') ? $element->getLineNo() : 0;
+
+                break;
+            }
+        }
+    }
+
+    private function autodiscovery(array $feeds): array
+    {
+        $feeds = $this->search_elements_by_tag('link', $feeds);
+        $feeds = $this->search_elements_by_tag('a', $feeds);
+        $feeds = $this->search_elements_by_tag('area', $feeds);
+
+        return $feeds;
+    }
+
+    private function search_elements_by_tag(string $name, array $feeds): array
+    {
+        $links = $this->dom->getElementsByTagName($name);
+        foreach ($links as $link) {
+            if (! $link instanceof DOMElement) {
+                continue;
+            }
+
+            if (! $link->hasAttribute('href') || ! $link->hasAttribute('rel')) {
+                continue;
+            }
+
+            $rel = array_unique($this->registry->call(
+                'Misc',
+                'space_separated_tokens',
+                [strtolower($link->getAttribute('rel'))]
+            ));
+            $line = $link->getLineNo();
+
+            if ($this->base_location < $line) {
+                $href = $this->registry->call(
+                    'Misc',
+                    'absolutize_url',
+                    [trim($link->getAttribute('href')), $this->base]
+                );
+            } else {
+                $href = $this->registry->call(
+                    'Misc',
+                    'absolutize_url',
+                    [trim($link->getAttribute('href')), $this->http_base]
+                );
+            }
+
+            if ($href === false) {
+                continue;
+            }
+
+            if (in_array($href, $feeds)) {
+                continue;
+            }
+
+            if (
+                in_array('feed', $rel)
+                || (
+                    in_array('alternate', $rel)
+                    && !in_array('stylesheet', $rel)
+                    && $link->hasAttribute('type')
+                    && in_array(strtolower($this->registry->call('Misc', 'parse_mime', [$link->getAttribute('type')])), [
+                        'text/html',
+                        'application/rss+xml',
+                        'application/atom+xml',
+                    ])
+                )
+            ) {
+                $feeds[] = $href;
+            }
+        }
+
+        return $feeds;
+    }
+
+    private function get_links()
+    {
+        $links = $this->dom->getElementsByTagName('a');
+        foreach ($links as $link) {
+            if ($link->hasAttribute('href')) {
+                $href = trim($link->getAttribute('href'));
+                $parsed = $this->registry->call('Misc', 'parse_url', [$href]);
+                if ($parsed['scheme'] === '' || preg_match('/^(https?|feed)?$/i', $parsed['scheme'])) {
+                    if (method_exists($link, 'getLineNo') && $this->base_location < $link->getLineNo()) {
+                        $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
+                    } else {
+                        $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
+                    }
+                    if ($href === false) {
+                        continue;
+                    }
+
+                    $current = $this->registry->call('Misc', 'parse_url', [$this->file->url]);
+
+                    if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
+                        $this->local[] = $href;
+                    } else {
+                        $this->elsewhere[] = $href;
+                    }
+                }
+            }
+        }
+        $this->local = array_unique($this->local);
+        $this->elsewhere = array_unique($this->elsewhere);
+        if (!empty($this->local) || !empty($this->elsewhere)) {
+            return true;
+        }
+        return null;
+    }
+
+    private function extension(&$array)
+    {
+        foreach ($array as $key => $value) {
+            if (in_array(strtolower(strrchr($value, '.')), ['.rss', '.rdf', '.atom', '.xml'])) {
+                throw new Exception('Abort trying to request url: ' . $value, 1);
+
+                // $headers = [
+                //     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+                // ];
+                // $feed = $this->registry->create('File', [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                // if ($feed->success && ($feed->method & SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
+                //     return [$feed];
+                // } else {
+                //     unset($array[$key]);
+                // }
+            }
+        }
+        return null;
+    }
+
+    private function body(array $array): array
+    {
+        $feeds = [];
+
+        foreach ($array as $key => $value) {
+            if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
+                throw new Exception('Abort trying to request url: ' . $value, 1);
+
+                // $headers = [
+                //     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+                // ];
+                // $feed = $this->registry->create('File', [$value, $this->timeout, 5, null, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                // if ($feed->success && ($feed->method & SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
+                //     return [$feed];
+                // } else {
+                //     unset($array[$key]);
+                // }
+            }
+        }
+
+        return $feeds;
+    }
+
+    private function reset(): void
+    {
+        $this->local = [];
+        $this->elsewhere = [];
+        $this->cached_entities = [];
+        $this->http_base;
+        $this->base;
+        $this->base_location = 0;
+        $this->dom = null;
     }
 }

@@ -46,9 +46,68 @@
 use PHPUnit\Framework\TestCase;
 use SimplePie\Content\Detector;
 use SimplePie\HTTP\Response;
+use SimplePie\Registry;
+use SimplePie\SimplePie;
 
 class DetectorTest extends TestCase
 {
+    /**
+     * @dataProvider possibleFeedsData
+     */
+    public function testDiscoverPossibleFeedUrlsReturnsCorrectData(string $body, $headers, $type, $expected)
+    {
+        $response = $this->createMock(Response::class);
+        $response->method('get_requested_uri')->willReturn('http://example.com/');
+        $response->method('get_body_content')->willReturn($body);
+
+        foreach ($headers as $name => $value) {
+            $response->method('has_header')->with($name)->willReturn(true);
+            $response->method('get_header_line')->with($name)->willReturn($value);
+        }
+
+        $detector = new Detector(new Registry());
+
+        $this->assertSame($expected, $detector->discover_possible_feed_urls($response, $type));
+    }
+
+    public function possibleFeedsData()
+    {
+        yield [
+            '',
+            [],
+            SimplePie::LOCATOR_ALL,
+            [],
+        ];
+
+        yield [
+            file_get_contents(dirname(__DIR__, 2) . '/data/fftests.html'),
+            [],
+            SimplePie::LOCATOR_ALL,
+            [
+                'http://example.com/1.atom',
+                'http://example.com/2.rss',
+                'http://example.com/3.xml',
+                'http://example.com/4.atom',
+                'http://example.com/5.atom',
+                'http://example.com/6.atom',
+                'http://example.com/7.atom',
+                'http://example.com/8.atom',
+                'http://example.com/9.atom',
+                'http://example.com/10.atom',
+                'http://example.com/11.atom',
+                'http://example.com/12.atom',
+                'http://example.com/13.atom',
+            ],
+        ];
+
+        yield [
+            '',
+            [],
+            SimplePie::LOCATOR_NONE,
+            [],
+        ];
+    }
+
     /**
      * @dataProvider detectData
      */
@@ -62,7 +121,7 @@ class DetectorTest extends TestCase
             $response->method('get_header_line')->with($name)->willReturn($value);
         }
 
-        $detector = new Detector();
+        $detector = new Detector(new Registry());
 
         $this->assertSame($expected, $detector->detect_type($response));
     }

@@ -43,9 +43,6 @@
 
 namespace SimplePie\Content\Type;
 
-use SimplePie\Content\Detector;
-use SimplePie\HTTP\FileResponse;
-
 /**
  * Content-type sniffing
  *
@@ -86,9 +83,43 @@ class Sniffer
      */
     public function get_type()
     {
-        $detector = new Detector();
+        if (isset($this->file->headers['content-type'])) {
+            if (!isset($this->file->headers['content-encoding'])
+                && ($this->file->headers['content-type'] === 'text/plain'
+                    || $this->file->headers['content-type'] === 'text/plain; charset=ISO-8859-1'
+                    || $this->file->headers['content-type'] === 'text/plain; charset=iso-8859-1'
+                    || $this->file->headers['content-type'] === 'text/plain; charset=UTF-8')) {
+                return $this->text_or_binary();
+            }
 
-        return $detector->detect_type(new FileResponse($this->file));
+            if (($pos = strpos($this->file->headers['content-type'], ';')) !== false) {
+                $official = substr($this->file->headers['content-type'], 0, $pos);
+            } else {
+                $official = $this->file->headers['content-type'];
+            }
+            $official = trim(strtolower($official));
+
+            if ($official === 'unknown/unknown'
+                || $official === 'application/unknown') {
+                return $this->unknown();
+            } elseif (substr($official, -4) === '+xml'
+                || $official === 'text/xml'
+                || $official === 'application/xml') {
+                return $official;
+            } elseif (substr($official, 0, 6) === 'image/') {
+                if ($return = $this->image()) {
+                    return $return;
+                }
+
+                return $official;
+            } elseif ($official === 'text/html') {
+                return $this->feed_or_html();
+            }
+
+            return $official;
+        }
+
+        return $this->unknown();
     }
 
     /**

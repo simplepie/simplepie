@@ -1709,7 +1709,7 @@ class SimplePie
         }
         $file = $response->to_file();
 
-        $detector = new Detector();
+        $detector = new Detector($this->registry);
 
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
