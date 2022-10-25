@@ -186,7 +186,7 @@ final class Detector
      *
      * @return string|false Actual Content-Type or false
      */
-    private function sniff_for_image_content(string $body): string|bool
+    private function sniff_for_image_content(string $body)
     {
         if (substr($body, 0, 6) === 'GIF87a'
             || substr($body, 0, 6) === 'GIF89a') {
