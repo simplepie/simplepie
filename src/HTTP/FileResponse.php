@@ -92,7 +92,7 @@ final class FileResponse implements Response
      *
      * @return File
      */
-    public function to_file()
+    public function to_file(): File
     {
         return $this->file;
     }
@@ -120,7 +120,7 @@ final class FileResponse implements Response
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
      * @return string
      */
-    public function get_requested_uri()
+    public function get_requested_uri(): string
     {
         return (string) $this->file->permanent_url;
     }
@@ -133,7 +133,7 @@ final class FileResponse implements Response
      *
      * @return int Status code.
      */
-    public function get_status_code()
+    public function get_status_code(): int
     {
         return (int) $this->file->status_code;
     }
@@ -163,7 +163,7 @@ final class FileResponse implements Response
      *     Each key MUST be a header name, and each value MUST be an array of
      *     strings for that header.
      */
-    public function get_headers()
+    public function get_headers(): array
     {
         return $this->headers;
     }
@@ -176,7 +176,7 @@ final class FileResponse implements Response
      *     name using a case-insensitive string comparison. Returns false if
      *     no matching header name is found in the message.
      */
-    public function has_header($name)
+    public function has_header(string $name): bool
     {
         return array_key_exists(strtolower($name), $this->headers);
     }
@@ -195,7 +195,7 @@ final class FileResponse implements Response
      *    header. If the header does not appear in the message, this method MUST
      *    return an empty array.
      */
-    public function get_header($name)
+    public function get_header(string $name): array
     {
         if (array_key_exists(strtolower($name), $this->headers)) {
             return $this->headers[strtolower($name)];
@@ -223,7 +223,7 @@ final class FileResponse implements Response
      *    concatenated together using a comma. If the header does not appear in
      *    the message, this method MUST return an empty string.
      */
-    public function get_header_line($name)
+    public function get_header_line(string $name): string
     {
         if (array_key_exists(strtolower($name), $this->headers)) {
             return implode(', ', $this->headers[strtolower($name)]);
@@ -237,7 +237,7 @@ final class FileResponse implements Response
      *
      * @return string
      */
-    public function get_body_content()
+    public function get_body_content(): string
     {
         return (string) $this->file->body;
     }

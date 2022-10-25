@@ -65,7 +65,7 @@ final class Detector
      *
      * @return bool
      */
-    public function contains_feed(Response $response)
+    public function contains_feed(Response $response): bool
     {
         return in_array(
             $this->detect_type($response),
@@ -83,8 +83,12 @@ final class Detector
 
     /**
      * Get the Content-Type of the provided response
+     *
+     * @param Response $response
+     *
+     * @return string Actual Content-Type
      */
-    public function detect_type(Response $response)
+    public function detect_type(Response $response): string
     {
         if (! $response->has_header('content-type')) {
             return $this->sniff_for_unknown_content($response->get_body_content());
@@ -134,7 +138,7 @@ final class Detector
      *
      * @return string Actual Content-Type
      */
-    private function sniff_for_text_or_binary_content($body)
+    private function sniff_for_text_or_binary_content(string $body): string
     {
         if (substr($body, 0, 2) === "\xFE\xFF"
             || substr($body, 0, 2) === "\xFF\xFE"
@@ -155,7 +159,7 @@ final class Detector
      *
      * @return string Actual Content-Type
      */
-    private function sniff_for_unknown_content($body)
+    private function sniff_for_unknown_content(string $body): string
     {
         $ws = strspn($body, "\x09\x0A\x0B\x0C\x0D\x20");
         if (strtolower(substr($body, $ws, 14)) === '<!doctype html'
@@ -182,7 +186,7 @@ final class Detector
      *
      * @return string|false Actual Content-Type or false
      */
-    private function sniff_for_image_content($body)
+    private function sniff_for_image_content(string $body): string|bool
     {
         if (substr($body, 0, 6) === 'GIF87a'
             || substr($body, 0, 6) === 'GIF89a') {
@@ -207,7 +211,7 @@ final class Detector
      *
      * @return string Actual Content-Type
      */
-    private function sniff_for_feed_or_html_content($body)
+    private function sniff_for_feed_or_html_content(string $body): string
     {
         $len = strlen($body);
         $pos = strspn($body, "\x09\x0A\x0D\x20\xEF\xBB\xBF");

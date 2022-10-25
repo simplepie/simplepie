@@ -58,12 +58,12 @@ interface Client
      *
      * @param string $method
      * @param string $url
-     * @param array $headers
+     * @param array $headers in the form string[]
      * @param array $options
      *
      * @return Response
      *
      * @throws HttpException if anything goes wrong requesting the data
      */
-    public function request($method, $url, array $headers = [], array $options = []);
+    public function request(string $method, string $url, array $headers = [], array $options = []): Response;
 }

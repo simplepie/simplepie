@@ -43,6 +43,8 @@
 
 namespace SimplePie\HTTP;
 
+use SimplePie\File;
+
 /**
  * HTTP Response interface
  *
@@ -59,7 +61,7 @@ interface Response
      *
      * @return File
      */
-    public function to_file();
+    public function to_file(): File;
 
     /**
      * Return the string representation as a URI reference.
@@ -84,7 +86,7 @@ interface Response
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
      * @return string
      */
-    public function get_requested_uri();
+    public function get_requested_uri(): string;
 
     /**
      * Gets the response status code.
@@ -94,7 +96,7 @@ interface Response
      *
      * @return int Status code.
      */
-    public function get_status_code();
+    public function get_status_code(): int;
 
     /**
      * Retrieves all message header values.
@@ -121,7 +123,7 @@ interface Response
      *     Each key MUST be a header name, and each value MUST be an array of
      *     strings for that header.
      */
-    public function get_headers();
+    public function get_headers(): array;
 
     /**
      * Checks if a header exists by the given case-insensitive name.
@@ -131,7 +133,7 @@ interface Response
      *     name using a case-insensitive string comparison. Returns false if
      *     no matching header name is found in the message.
      */
-    public function has_header($name);
+    public function has_header(string $name): bool;
 
     /**
      * Retrieves a message header value by the given case-insensitive name.
@@ -147,7 +149,7 @@ interface Response
      *    header. If the header does not appear in the message, this method MUST
      *    return an empty array.
      */
-    public function get_header($name);
+    public function get_header(string $name): array;
 
     /**
      * Retrieves a comma-separated string of the values for a single header.
@@ -168,12 +170,12 @@ interface Response
      *    concatenated together using a comma. If the header does not appear in
      *    the message, this method MUST return an empty string.
      */
-    public function get_header_line($name);
+    public function get_header_line(string $name): string;
 
     /**
      * get the body as string
      *
      * @return string
      */
-    public function get_body_content();
+    public function get_body_content(): string;
 }

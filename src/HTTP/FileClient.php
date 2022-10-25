@@ -74,22 +74,8 @@ final class FileClient implements Client
      *
      * @throws HttpException if anything goes wrong requesting the data
      */
-    public function request($method, $url, array $headers = [], array $options = [])
+    public function request(string $method, string $url, array $headers = [], array $options = []): Response
     {
-        if (! is_string($method)) {
-            throw new InvalidArgumentException(sprintf(
-                '%s(): Argument #1 ($method) must be of type string.',
-                __METHOD__
-            ), 1);
-        }
-
-        if (! is_string($url)) {
-            throw new InvalidArgumentException(sprintf(
-                '%s(): Argument #2 ($url) must be of type string.',
-                __METHOD__
-            ), 1);
-        }
-
         if ($method !== self::METHOD_GET) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #1 ($method) only supports "%s".',
