@@ -43,6 +43,8 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
+namespace SimplePie\Tests\Unit\Content;
+
 use PHPUnit\Framework\TestCase;
 use SimplePie\Content\Detector;
 use SimplePie\HTTP\Response;

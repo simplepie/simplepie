@@ -80,11 +80,6 @@ final class Detector
     private $elsewhere = [];
 
     /**
-     * @var array
-     */
-    private $cached_entities = [];
-
-    /**
      * @var string
      */
     private $http_base;
@@ -558,7 +553,6 @@ final class Detector
     {
         $this->local = [];
         $this->elsewhere = [];
-        $this->cached_entities = [];
         $this->http_base;
         $this->base;
         $this->base_location = 0;
