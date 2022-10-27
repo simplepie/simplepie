@@ -1,0 +1,29 @@
++++
+title = "Example of how NOT to take care of your customers"
+date = 2006-06-25T20:30:00Z
+
+[extra]
+author = "Ryan Parman"
++++
+
+I’m going to take a break from the usual SimplePie-oriented blog posts, and take a few minutes to talk about customer service. Watch this video, and come back when you’re done
+
+[Cancelling your AOL account →](http://youtube.com/watch?v=xIVZ9b0RgmY)
+
+How unbelievable was that? Interestingly enough, most of the time we have the opposite problem. The company, organization, group, developer, salesperson, etc., usually couldn’t care less about the customer. We usually deal with people who aren’t attentive enough, whereas this AOL person was a bit too attentive in the wrong way.
+
+My very first job was in a Burger King drive-thru. It didn’t take too long for me to see the HUGE miscommunication that occurred between the customers and the drive-thru folk: Customers think the drive-thru guy is an idiot (because he usually is), and drive-thru people are sick and tired of dealing with people who think they’re idiots. Personally, I decided to disprove the rule by being the best drive-thru guy in the world. It was probably because I was naive and saw the world in an idealistic light.
+
+Over the next couple of years that idealism took a dive. I dealt with so many idiot customers on a day-to-day basis that I ended up giving up on the retail world. When I was working as a pizza delivery guy (and later on, a manager), I encountered customers that would write bad checks, make prank orders, have idiots that didn’t seem to know where they lived, and all sorts of other negative things. I realized that these customers weren’t ideal, but I was going to _make_ them be ideal. If they didn’t give me the correct cross-street for a delivery (even though I knew what the cross-street was because I knew the town), I’d take my time and drive around the block a few times just to make it late. When they’d ask me why I was late, I’d tell them that it was because they didn’t give me the right directions, so they’d better get it right next time. I had even changed the “The customer is always right” maxim to “The customer must always be appeased.”
+
+There was a short time a few years ago when I lived in Daly City, CA, which is immediately south of San Francisco. Go to any restaurant in that entire town and you will encounter the worst customer service you’ve probably ever gotten. Most of the time I was treated like I didn’t even exist. One night after a particularly bad incident at the local Wendy’s fast-food restaurant, I went home, sat down, and while I was fuming, I thought back to those idealistic days at Burger King and wrote the “Fast Food Manifesto”. It was 12 pages long, printed, and it went over the fundamental basics of treating people right, <s>dealing with</s> _helping_ customers, and little things that help make the drive-thru experience infinitely better for the customer. It was a very “Jerry MacGuire” moment. The next day, I went down and had 50 copies printed. I went to every restaurant I could ever remember going to in that town, spoke to the manager, and handed them a copy of the Manifesto.
+
+They probably just threw it away as soon as I’d left, but if that Manifesto was able to help even one person get better at customer service, I had done my job. From that moment on, I decided to take another look at customers and customer service, learn whatever I could, and do the best job I possibly could.
+
+It was then that I learned something. Customers didn’t care whether they got a McDonald’s Big Mac or a Burger King Whopper — it’s fast food for Pete’s sake. What brought people back time and time again was the _service_ that they received. I also read a study that said that a customer who had a problem that was made right was more likely to become a loyal customer than one who had never had any problems at all. “Bad customers”, as it turns out, aren’t really bad customers, but rather customers who had a problem that was not resolved to their satisfaction. The catch-22 with that, is that out of every 10 customers who have a problem, only 1-2 ever take the time to bring it to your attention. The remaining 8-9 just get pissed, and leave, and never come back.
+
+This is why I ended up going into usability (in terms of user interaction), and it’s also why we SimplePie developers try to be so customer-minded. We know that if there’s one person who has a problem with SimplePie, there are 9 others who had the same problem and just didn’t say anything. If we have 5 people coming to the forums saying they can’t figure something out, chances are that there are 50 people — at a minimum – having the same problem. If there’s something you don’t understand about the documentation, it’s not a problem with you, it’s a problem with the documentation. This is why we ask for bug reports, and feature requests, and feedback. This is why there is a small handful of people I typically run documentation by before it goes out (or just after it goes out). This is why we try to be so responsive at the forums and in IRC, because if people are having a problem, they’re not going to wait around for long before going somewhere else. This is why we make it a point to _listen to our customers_.
+
+I’ve worked with developers who don’t care about end-users. The end users should “just know how it works”, and “should be smart enough to figure this out”. What they don’t realize is that not everybody is a developer. Not everybody “just knows”, not matter how smart they may be. Of course for those of us who care enough to try to help, we can’t do anything if we don’t know there’s a problem.
+
+So, if you’re a customer, be vocal about problems you have. We can’t improve if we don’t know about it. If you’re a developer, take the time to listen to your customers. You’re nothing without them.
