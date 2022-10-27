@@ -1,0 +1,53 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  website:
+    runs-on: ubuntu-latest
+
+    name: "Build website"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install PHP with latest composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+
+      - name: Build API docs
+        run: |
+          pushd docs/apigen
+          composer install
+          composer exec -- apigen
+          popd
+
+      - name: Build website
+        run: |
+          cd docs
+          wget -q -O - "https://github.com/getzola/zola/releases/download/v0.16.1/zola-v0.16.1-x86_64-unknown-linux-gnu.tar.gz" | tar xzf -
+          ./zola build
+
+      - name: Copy demo & SimplePie
+        run: |
+          cp -r autoloader.php idn/ src/ library/ demo/ docs/public/
+          grep --perl-regexp --only-matching --null-data "(?s)(.+)(?=<!DOCTYPE html>)" demo/index.php > docs/public/demo/index.php
+          grep --perl-regexp --only-matching --null-data "(?s)(.+)(?=<!-- BODY START -->)" docs/public/demo/index.html >> docs/public/demo/index.php
+          grep --perl-regexp --only-matching --null-data "(?s)(?<=<!-- BODY START -->)(.+)(?=<!-- BODY END -->)" demo/index.php >> docs/public/demo/index.php
+          grep --perl-regexp --only-matching --null-data "(?s)(?<=<!-- BODY END -->)(.+)" docs/public/demo/index.html >> docs/public/demo/index.php
+          rm docs/public/demo/index.html
+
+      - name: Upload to web server
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          local-dir: docs/public/
+          server: ${{ vars.SFTP_SERVER }}
+          port: ${{ vars.SFTP_SERVER }}
+          protocol: ftps
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
