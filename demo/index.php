@@ -100,7 +100,7 @@ $feed->handle_content_type();
 <div id="site">
 
 	<div id="content">
-
+        <!-- BODY START -->
 		<div class="chunk">
 			<form action="" method="get" name="sp_form" id="sp_form">
 				<div id="sp_input">
@@ -234,6 +234,7 @@ $feed->handle_content_type();
 			<?php endif; ?>
 
 		</div>
+        <!-- BODY END -->
 
 		<div>
 			<!-- Display how fast the page was rendered. -->
