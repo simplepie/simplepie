@@ -1,0 +1,541 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: Customization</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/customization"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/customization"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/customization"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/customization"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="82131617f0f8b1649452f4b9fc846238" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/plugins/start"  title="plugins:start">SimplePie Plugins and Integration</a> &raquo; <a href="/wiki/plugins/wordpress/start"  title="plugins:wordpress:start">WordPress</a> &raquo; <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/start"  title="plugins:wordpress:simplepie_plugin_for_wordpress:start">SimplePie Plugin for WordPress</a> &raquo; <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/customization"  title="plugins:wordpress:simplepie_plugin_for_wordpress:customization">Customization</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#customization" class="toc">Customization</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#navigation" class="toc">Navigation</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#per-feed_settings" class="toc">Per-Feed Settings</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#template_tags" class="toc">Template Tags</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#plugin_tags" class="toc">Plugin Tags</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#error_tags" class="toc">Error Tags</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#feedanywhere-level_tags" class="toc">Feed/Anywhere-Level Tags</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#item_looping_tags" class="toc">Item Looping Tags</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#item-level_tags" class="toc">Item-Level Tags</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#newbie_notemissing_data_with_multifeeds" class="toc">Newbie Note: Missing Data with Multifeeds</a></span></div></li></ul>
+</li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="customization" id="customization">Customization</a></h1>
+<div class="level1">
+
+<p>
+Nearly every aspect of SimplePie Plugin for WordPress is customizable. You can create multiple templates, customize those templates, choose the settings that work best for you, and even edit and alter the feed data after it&#039;s read from the feed but before it&#039;s displayed on the page! These are the customization options available as of the latest version of the plugin.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="navigation" id="navigation">Navigation</a></h2>
+<div class="level2">
+<div class="table sectionedit3"><table class="inline">
+	<tr class="row0">
+		<th class="col0"> → </th><td class="col1"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/start" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:start">Overview</a> </td><td class="col2"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/installation" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:installation">Installation</a> </td><td class="col3"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/usage" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:usage">Getting Started</a> </td><td class="col4"> <span class="curid"><a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/customization" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:customization">Customization</a></span> </td><td class="col5"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/processing" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:processing">Post-Processing</a> </td><td class="col6"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/troubleshooting" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:troubleshooting">Troubleshooting</a> </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h2 class="sectionedit4"><a name="per-feed_settings" id="per-feed_settings">Per-Feed Settings</a></h2>
+<div class="level2">
+
+<p>
+If you want to override the default settings on a per-feed basis, these are the options that you can set (as discussed in <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/usage#overriding_settings_basic" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:usage">Getting Started: Overriding Settings (Basic)</a>). You would only use these if you want to <em>override</em> the settings from the options panel.
+
+</p>
+<div class="table sectionedit5"><table class="inline">
+	<tr class="row0">
+		<th class="col0 rightalign">  OPTION/ATTRIBUTE </th><th class="col1 rightalign">  DATATYPE </th><th class="col2 centeralign">  DESCRIPTION  </th>
+	</tr>
+	<tr class="row1">
+		<th class="col0 rightalign">  date_format </th><td class="col1 centeralign">  string  </td><td class="col2 leftalign"> The date format to use for English dates. Supports anything that <acronym title="Hypertext Preprocessor">PHP</acronym>&#039;s <a href="http://php.net/date" class="urlextern" title="http://php.net/date"  rel="nofollow">date()</a> function.  </td>
+	</tr>
+	<tr class="row2">
+		<th class="col0 rightalign">  enable_cache </th><td class="col1 centeralign">  boolean  </td><td class="col2 leftalign"> Whether the given feed should be cached or not.  </td>
+	</tr>
+	<tr class="row3">
+		<th class="col0 rightalign">  enable_order_by_date </th><td class="col1 centeralign">  boolean  </td><td class="col2 leftalign"> Whether to force-reorder items into chronological order. Only works when items have dates associated with them.  </td>
+	</tr>
+	<tr class="row4">
+		<th class="col0 rightalign">  items </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> The number of feed items to display. Will display this value, or all of the items in the feed – whichever is less.  </td>
+	</tr>
+	<tr class="row5">
+		<th class="col0 rightalign">  items_per_feed </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> The number of feed items to display per-feed (e.g. setting this to <code>3</code> will only merge 3 items from each feed). Only works when merging multiple feeds and obeys the <code>items</code> setting.  </td>
+	</tr>
+	<tr class="row6">
+		<th class="col0 rightalign">  locale </th><td class="col1 centeralign">  string  </td><td class="col2 leftalign"> The locale value to use for displaying localized datestamps.  </td>
+	</tr>
+	<tr class="row7">
+		<th class="col0 rightalign">  local_date_format </th><td class="col1 centeralign">  string  </td><td class="col2 leftalign"> The format to use for localized dates.  </td>
+	</tr>
+	<tr class="row8">
+		<th class="col0 rightalign">  processing </th><td class="col1 centeralign">  string  </td><td class="col2 leftalign"> The file to use for post-processing the feed. Can use the name of any process listed in the options panel, preferably lowercased with spaces replaced by underscores.  </td>
+	</tr>
+	<tr class="row9">
+		<th class="col0 rightalign">  set_cache_duration </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> The number of seconds to consider the cache file fresh.  </td>
+	</tr>
+	<tr class="row10">
+		<th class="col0 rightalign">  set_max_checked_feeds </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> When using auto-discovery, this is the number of links to check for the existence of a feed.  </td>
+	</tr>
+	<tr class="row11">
+		<th class="col0 rightalign">  set_timeout </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> The number of seconds to wait for a remote website while fetching a feed.  </td>
+	</tr>
+	<tr class="row12">
+		<th class="col0 rightalign">  strip_attributes </th><td class="col1 centeralign">  string  </td><td class="col2 leftalign"> A space-delimited list of <acronym title="HyperText Markup Language">HTML</acronym> attributes to remove from the feed&#039;s content.  </td>
+	</tr>
+	<tr class="row13">
+		<th class="col0 rightalign">  strip_htmltags </th><td class="col1 centeralign">  string  </td><td class="col2 leftalign"> A space-delimited list of <acronym title="HyperText Markup Language">HTML</acronym> tags to remove from the feed&#039;s content.  </td>
+	</tr>
+	<tr class="row14">
+		<th class="col0 rightalign">  template </th><td class="col1 centeralign">  string  </td><td class="col2 leftalign"> The template to use for displaying the feed. Can use the name of any template listed in the options panel, preferably lowercased with spaces replaced by underscores.  </td>
+	</tr>
+	<tr class="row15">
+		<th class="col0 rightalign">  truncate_feed_description </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> The number of characters to shorten the feed&#039;s description to. Only used with <code>{TRUNCATE_FEED_DESCRIPTION}</code> and <code>{TRUNCATE_ITEM_PARENT_DESCRIPTION}</code>.  </td>
+	</tr>
+	<tr class="row16">
+		<th class="col0 rightalign">  truncate_feed_title </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> The number of characters to shorten the feed&#039;s title to. Only used with <code>{TRUNCATE_FEED_TITLE}</code> and <code>{TRUNCATE_ITEM_PARENT_TITLE}</code>.  </td>
+	</tr>
+	<tr class="row17">
+		<th class="col0 rightalign">  truncate_item_description </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> The number of characters to shorten the item&#039;s description to. Only used with <code>{TRUNCATE_ITEM_DESCRIPTION}</code>.  </td>
+	</tr>
+	<tr class="row18">
+		<th class="col0 rightalign">  truncate_item_title </th><td class="col1 centeralign">  integer  </td><td class="col2 leftalign"> The number of characters to shorten the item&#039;s title to. Only used with <code>{TRUNCATE_ITEM_TITLE}</code>.  </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h2 class="sectionedit6"><a name="template_tags" id="template_tags">Template Tags</a></h2>
+<div class="level2">
+
+<p>
+Another major feature is that instead of being locked into a single, simple layout, you can create your own layouts in the form of templates. The following is a list of template tags you can use. Feel free to take a look at the ones that were supplied in the <code>templates</code> folder.
+</p>
+
+</div>
+
+<h3 class="sectionedit7"><a name="plugin_tags" id="plugin_tags">Plugin Tags</a></h3>
+<div class="level3">
+
+<p>
+These are tags that are related to the plugin, but not necessarily anything with the SimplePie <acronym title="Application Programming Interface">API</acronym>.
+</p>
+<div class="table sectionedit8"><table class="inline">
+	<tr class="row0">
+		<th class="col0 rightalign">  {PLUGIN_DIR} </th><td class="col1 leftalign"> Returns the web <acronym title="Uniform Resource Locator">URL</acronym> of the SimplePie plugin directory. This is useful for linking to images or other files that are stored inside the SimplePie plugin directory.  </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h3 class="sectionedit9"><a name="error_tags" id="error_tags">Error Tags</a></h3>
+<div class="level3">
+
+<p>
+These tags are used for displaying error messages.
+</p>
+<div class="table sectionedit10"><table class="inline">
+	<tr class="row0">
+		<th class="col0 rightalign">  {IF_ERROR_BEGIN} </th><td class="col1 leftalign"> Marks the beginning of where the error message would display if there was one.  </td>
+	</tr>
+	<tr class="row1">
+		<th class="col0 rightalign">  {IF_ERROR_END} </th><td class="col1 leftalign"> Marks the end of where the error message would display.  </td>
+	</tr>
+	<tr class="row2">
+		<th class="col0 rightalign">  {ERROR_MESSAGE} </th><td class="col1 leftalign"> The error message that SimplePie throws.  </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h3 class="sectionedit11"><a name="feedanywhere-level_tags" id="feedanywhere-level_tags">Feed/Anywhere-Level Tags</a></h3>
+<div class="level3">
+
+<p>
+These tags can be used anywhere in the template.
+</p>
+<div class="table sectionedit12"><table class="inline">
+	<tr class="row0">
+		<th class="col0 rightalign">  {FEED_AUTHOR_EMAIL} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_email" class="wikilink1" title="reference:simplepie_author:get_email">$feed-&gt;get_author(0)-&gt;get_email()</a>.  </td>
+	</tr>
+	<tr class="row1">
+		<th class="col0 rightalign">  {FEED_AUTHOR_LINK} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_link" class="wikilink1" title="reference:simplepie_author:get_link">$feed-&gt;get_author(0)-&gt;get_link()</a>.  </td>
+	</tr>
+	<tr class="row2">
+		<th class="col0 rightalign">  {FEED_AUTHOR_NAME} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_name" class="wikilink1" title="reference:simplepie_author:get_name">$feed-&gt;get_author(0)-&gt;get_name()</a>.  </td>
+	</tr>
+	<tr class="row3">
+		<th class="col0 rightalign">  {FEED_CONTRIBUTOR_EMAIL} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_email" class="wikilink1" title="reference:simplepie_author:get_email">$feed-&gt;get_contributor(0)-&gt;get_email()</a>.  </td>
+	</tr>
+	<tr class="row4">
+		<th class="col0 rightalign">  {FEED_CONTRIBUTOR_LINK} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_link" class="wikilink1" title="reference:simplepie_author:get_link">$feed-&gt;get_contributor(0)-&gt;get_link()</a>.  </td>
+	</tr>
+	<tr class="row5">
+		<th class="col0 rightalign">  {FEED_CONTRIBUTOR_NAME} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_name" class="wikilink1" title="reference:simplepie_author:get_name">$feed-&gt;get_contributor(0)-&gt;get_name()</a>.  </td>
+	</tr>
+	<tr class="row6">
+		<th class="col0 rightalign">  {FEED_COPYRIGHT} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_copyright" class="wikilink1" title="reference:simplepie:get_copyright">$feed-&gt;get_copyright()</a>.  </td>
+	</tr>
+	<tr class="row7">
+		<th class="col0 rightalign">  {FEED_DESCRIPTION} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_description" class="wikilink1" title="reference:simplepie:get_description">$feed-&gt;get_description()</a>.  </td>
+	</tr>
+	<tr class="row8">
+		<th class="col0 rightalign">  {FEED_ENCODING} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_encoding" class="wikilink1" title="reference:simplepie:get_encoding">$feed-&gt;get_encoding()</a>.  </td>
+	</tr>
+	<tr class="row9">
+		<th class="col0 rightalign">  {FEED_FAVICON} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_favicon" class="wikilink1" title="reference:simplepie:get_favicon">$feed-&gt;get_favicon()</a>.  </td>
+	</tr>
+	<tr class="row10">
+		<th class="col0 rightalign">  {FEED_IMAGE_HEIGHT} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_image_height" class="wikilink1" title="reference:simplepie:get_image_height">$feed-&gt;get_image_height()</a>.  </td>
+	</tr>
+	<tr class="row11">
+		<th class="col0 rightalign">  {FEED_IMAGE_LINK} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_image_link" class="wikilink1" title="reference:simplepie:get_image_link">$feed-&gt;get_image_link()</a>.  </td>
+	</tr>
+	<tr class="row12">
+		<th class="col0 rightalign">  {FEED_IMAGE_TITLE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_image_title" class="wikilink1" title="reference:simplepie:get_image_title">$feed-&gt;get_image_title()</a>.  </td>
+	</tr>
+	<tr class="row13">
+		<th class="col0 rightalign">  {FEED_IMAGE_<acronym title="Uniform Resource Locator">URL</acronym>} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_image_url" class="wikilink1" title="reference:simplepie:get_image_url">$feed-&gt;get_image_url()</a>.  </td>
+	</tr>
+	<tr class="row14">
+		<th class="col0 rightalign">  {FEED_IMAGE_WIDTH} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_image_width" class="wikilink1" title="reference:simplepie:get_image_width">$feed-&gt;get_image_width()</a>.  </td>
+	</tr>
+	<tr class="row15">
+		<th class="col0 rightalign">  {FEED_LANGUAGE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_language" class="wikilink1" title="reference:simplepie:get_language">$feed-&gt;get_language()</a>.  </td>
+	</tr>
+	<tr class="row16">
+		<th class="col0 rightalign">  {FEED_LATITUDE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_latitude" class="wikilink1" title="reference:simplepie:get_latitude">$feed-&gt;get_latitude()</a>.  </td>
+	</tr>
+	<tr class="row17">
+		<th class="col0 rightalign">  {FEED_LONGITUDE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_longitude" class="wikilink1" title="reference:simplepie:get_longitude">$feed-&gt;get_longitude()</a>.  </td>
+	</tr>
+	<tr class="row18">
+		<th class="col0 rightalign">  {FEED_PERMALINK} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_permalink" class="wikilink1" title="reference:simplepie:get_permalink">$feed-&gt;get_permalink()</a>.  </td>
+	</tr>
+	<tr class="row19">
+		<th class="col0 rightalign">  {FEED_TITLE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_title" class="wikilink1" title="reference:simplepie:get_title">$feed-&gt;get_title()</a>.  </td>
+	</tr>
+	<tr class="row20">
+		<th class="col0 rightalign">  {SUBSCRIBE_<acronym title="Uniform Resource Locator">URL</acronym>} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/subscribe_url" class="wikilink1" title="reference:simplepie:subscribe_url">$feed-&gt;subscribe_url()</a>.  </td>
+	</tr>
+	<tr class="row21">
+		<th class="col0 rightalign">  {TRUNCATE_FEED_DESCRIPTION} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_description" class="wikilink1" title="reference:simplepie:get_description">$feed-&gt;get_description()</a> except that it obeys the appropriate “truncate text” setting.  </td>
+	</tr>
+	<tr class="row22">
+		<th class="col0 rightalign">  {TRUNCATE_FEED_TITLE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie/get_title" class="wikilink1" title="reference:simplepie:get_title">$feed-&gt;get_title()</a> except that it obeys the appropriate “truncate text” setting.  </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h3 class="sectionedit13"><a name="item_looping_tags" id="item_looping_tags">Item Looping Tags</a></h3>
+<div class="level3">
+
+<p>
+These tags mark the beginning and end of items.
+</p>
+<div class="table sectionedit14"><table class="inline">
+	<tr class="row0">
+		<th class="col0 rightalign">  {ITEM_LOOP_BEGIN} </th><td class="col1 leftalign"> Marks the beginning of where we should begin looping through items.  </td>
+	</tr>
+	<tr class="row1">
+		<th class="col0 rightalign">  {ITEM_LOOP_END} </th><td class="col1 leftalign"> Marks the end of where we should stop looping through items.  </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h3 class="sectionedit15"><a name="item-level_tags" id="item-level_tags">Item-Level Tags</a></h3>
+<div class="level3">
+
+<p>
+These are tags that can be used inside the item loop. These will NOT work outside of the item loop and there will be a <acronym title="Hypertext Preprocessor">PHP</acronym> error if you try.
+</p>
+<div class="table sectionedit16"><table class="inline">
+	<tr class="row0">
+		<th class="col0 rightalign">  {ITEM_AUTHOR_EMAIL} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_email" class="wikilink1" title="reference:simplepie_author:get_email">$item-&gt;get_author(0)-&gt;get_email()</a>.  </td>
+	</tr>
+	<tr class="row1">
+		<th class="col0 rightalign">  {ITEM_AUTHOR_LINK} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_link" class="wikilink1" title="reference:simplepie_author:get_link">$item-&gt;get_author(0)-&gt;get_link()</a>.  </td>
+	</tr>
+	<tr class="row2">
+		<th class="col0 rightalign">  {ITEM_AUTHOR_NAME} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_name" class="wikilink1" title="reference:simplepie_author:get_name">$item-&gt;get_author(0)-&gt;get_name()</a>.  </td>
+	</tr>
+	<tr class="row3">
+		<th class="col0 rightalign">  {ITEM_CATEGORY} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_category/get_label" class="wikilink1" title="reference:simplepie_category:get_label">$item-&gt;get_category(0)-&gt;get_label()</a>.  </td>
+	</tr>
+	<tr class="row4">
+		<th class="col0 rightalign">  {ITEM_CONTENT} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_content" class="wikilink1" title="reference:simplepie_item:get_content">$item-&gt;get_content()</a>.  </td>
+	</tr>
+	<tr class="row5">
+		<th class="col0 rightalign">  {ITEM_CONTRIBUTOR_EMAIL} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_email" class="wikilink1" title="reference:simplepie_author:get_email">$item-&gt;get_contributor(0)-&gt;get_email()</a>.  </td>
+	</tr>
+	<tr class="row6">
+		<th class="col0 rightalign">  {ITEM_CONTRIBUTOR_LINK} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_link" class="wikilink1" title="reference:simplepie_author:get_link">$item-&gt;get_contributor(0)-&gt;get_link()</a>.  </td>
+	</tr>
+	<tr class="row7">
+		<th class="col0 rightalign">  {ITEM_CONTRIBUTOR_NAME} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_author/get_name" class="wikilink1" title="reference:simplepie_author:get_name">$item-&gt;get_contributor(0)-&gt;get_name()</a>.  </td>
+	</tr>
+	<tr class="row8">
+		<th class="col0 rightalign">  {ITEM_COPYRIGHT} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_copyright" class="wikilink1" title="reference:simplepie_item:get_copyright">$item-&gt;get_copyright()</a>.  </td>
+	</tr>
+	<tr class="row9">
+		<th class="col0 rightalign">  {ITEM_DATE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_date" class="wikilink1" title="reference:simplepie_item:get_date">$item-&gt;get_date()</a>.  </td>
+	</tr>
+	<tr class="row10">
+		<th class="col0 rightalign">  {ITEM_DATE_UTC} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_date" class="wikilink1" title="reference:simplepie_item:get_date">$item-&gt;get_date()</a> except that a GMT/UTC timestamp is displayed.  </td>
+	</tr>
+	<tr class="row11">
+		<th class="col0 rightalign">  {ITEM_DESCRIPTION} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_description" class="wikilink1" title="reference:simplepie_item:get_description">$item-&gt;get_description()</a>.  </td>
+	</tr>
+	<tr class="row12">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_BITRATE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_bitrate" class="wikilink1" title="reference:simplepie_enclosure:get_bitrate">$item-&gt;get_enclosure(0)-&gt;get_bitrate()</a>.  </td>
+	</tr>
+	<tr class="row13">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_CHANNELS} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_channels" class="wikilink1" title="reference:simplepie_enclosure:get_channels">$item-&gt;get_enclosure(0)-&gt;get_channels()</a>.  </td>
+	</tr>
+	<tr class="row14">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_DESCRIPTION} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_description" class="wikilink1" title="reference:simplepie_enclosure:get_description">$item-&gt;get_enclosure(0)-&gt;get_description()</a>.  </td>
+	</tr>
+	<tr class="row15">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_DURATION} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_duration" class="wikilink1" title="reference:simplepie_enclosure:get_duration">$item-&gt;get_enclosure(0)-&gt;get_duration()</a>.  </td>
+	</tr>
+	<tr class="row16">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_EMBED} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/embed" class="wikilink1" title="reference:simplepie_enclosure:embed">$item-&gt;get_enclosure(0)-&gt;native_embed()</a>.  </td>
+	</tr>
+	<tr class="row17">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_EXPRESSION} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_expression" class="wikilink1" title="reference:simplepie_enclosure:get_expression">$item-&gt;get_enclosure(0)-&gt;get_expression()</a>.  </td>
+	</tr>
+	<tr class="row18">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_EXTENSION} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_extension" class="wikilink1" title="reference:simplepie_enclosure:get_extension">$item-&gt;get_enclosure(0)-&gt;get_extension()</a>.  </td>
+	</tr>
+	<tr class="row19">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_FRAMERATE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_framerate" class="wikilink1" title="reference:simplepie_enclosure:get_framerate">$item-&gt;get_enclosure(0)-&gt;get_framerate()</a>.  </td>
+	</tr>
+	<tr class="row20">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_HANDLER} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_handler" class="wikilink1" title="reference:simplepie_enclosure:get_handler">$item-&gt;get_enclosure(0)-&gt;get_handler()</a>.  </td>
+	</tr>
+	<tr class="row21">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_HASH} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_hash" class="wikilink1" title="reference:simplepie_enclosure:get_hash">$item-&gt;get_enclosure(0)-&gt;get_hash()</a>.  </td>
+	</tr>
+	<tr class="row22">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_HEIGHT} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_height" class="wikilink1" title="reference:simplepie_enclosure:get_height">$item-&gt;get_enclosure(0)-&gt;get_height()</a>.  </td>
+	</tr>
+	<tr class="row23">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_LANGUAGE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_language" class="wikilink1" title="reference:simplepie_enclosure:get_language">$item-&gt;get_enclosure(0)-&gt;get_language()</a>.  </td>
+	</tr>
+	<tr class="row24">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_LENGTH} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_length" class="wikilink1" title="reference:simplepie_enclosure:get_length">$item-&gt;get_enclosure(0)-&gt;get_length()</a>.  </td>
+	</tr>
+	<tr class="row25">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_LINK} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_link" class="wikilink1" title="reference:simplepie_enclosure:get_link">$item-&gt;get_enclosure(0)-&gt;get_link()</a>.  </td>
+	</tr>
+	<tr class="row26">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_MEDIUM} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_medium" class="wikilink1" title="reference:simplepie_enclosure:get_medium">$item-&gt;get_enclosure(0)-&gt;get_medium()</a>.  </td>
+	</tr>
+	<tr class="row27">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_PLAYER} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_player" class="wikilink1" title="reference:simplepie_enclosure:get_player">$item-&gt;get_enclosure(0)-&gt;get_player()</a>.  </td>
+	</tr>
+	<tr class="row28">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_REAL_TYPE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_real_type" class="wikilink1" title="reference:simplepie_enclosure:get_real_type">$item-&gt;get_enclosure(0)-&gt;get_real_type()</a>.  </td>
+	</tr>
+	<tr class="row29">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_SAMPLINGRATE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_sampling_rate" class="wikilink1" title="reference:simplepie_enclosure:get_sampling_rate">$item-&gt;get_enclosure(0)-&gt;get_sampling_rate()</a>.  </td>
+	</tr>
+	<tr class="row30">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_SIZE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_size" class="wikilink1" title="reference:simplepie_enclosure:get_size">$item-&gt;get_enclosure(0)-&gt;get_size()</a>.  </td>
+	</tr>
+	<tr class="row31">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_THUMBNAIL} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_thumbnail" class="wikilink1" title="reference:simplepie_enclosure:get_thumbnail">$item-&gt;get_enclosure(0)-&gt;get_thumbnail()</a>.  </td>
+	</tr>
+	<tr class="row32">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_TITLE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_title" class="wikilink1" title="reference:simplepie_enclosure:get_title">$item-&gt;get_enclosure(0)-&gt;get_title()</a>.  </td>
+	</tr>
+	<tr class="row33">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_TYPE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_type" class="wikilink1" title="reference:simplepie_enclosure:get_type">$item-&gt;get_enclosure(0)-&gt;get_type()</a>.  </td>
+	</tr>
+	<tr class="row34">
+		<th class="col0 rightalign">  {ITEM_ENCLOSURE_WIDTH} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_enclosure/get_width" class="wikilink1" title="reference:simplepie_enclosure:get_width">$item-&gt;get_enclosure(0)-&gt;get_width()</a>.  </td>
+	</tr>
+	<tr class="row35">
+		<th class="col0 rightalign">  {ITEM_ID} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_id" class="wikilink1" title="reference:simplepie_item:get_id">$item-&gt;get_id()</a>.  </td>
+	</tr>
+	<tr class="row36">
+		<th class="col0 rightalign">  {ITEM_LATITUDE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_latitude" class="wikilink1" title="reference:simplepie_item:get_latitude">$item-&gt;get_latitude()</a>.  </td>
+	</tr>
+	<tr class="row37">
+		<th class="col0 rightalign">  {ITEM_LOCAL_DATE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_local_date" class="wikilink1" title="reference:simplepie_item:get_local_date">$item-&gt;get_local_date()</a>.  </td>
+	</tr>
+	<tr class="row38">
+		<th class="col0 rightalign">  {ITEM_LOCAL_DATE_UTC} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_local_date" class="wikilink1" title="reference:simplepie_item:get_local_date">$item-&gt;get_local_date()</a> except that a GMT/UTC timestamp is displayed.  </td>
+	</tr>
+	<tr class="row39">
+		<th class="col0 rightalign">  {ITEM_LONGITUDE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_longitude" class="wikilink1" title="reference:simplepie_item:get_longitude">$item-&gt;get_longitude()</a>.  </td>
+	</tr>
+	<tr class="row40">
+		<th class="col0 rightalign">  {ITEM_PERMALINK} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_permalink" class="wikilink1" title="reference:simplepie_item:get_permalink">$item-&gt;get_permalink()</a>.  </td>
+	</tr>
+	<tr class="row41">
+		<th class="col0 rightalign">  {ITEM_TITLE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_title" class="wikilink1" title="reference:simplepie_item:get_title">$item-&gt;get_title()</a>.  </td>
+	</tr>
+	<tr class="row42">
+		<th class="col0 rightalign">  {TRUNCATE_ITEM_DESCRIPTION} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_description" class="wikilink1" title="reference:simplepie_item:get_description">$item-&gt;get_description()</a> except that it obeys the appropriate “truncate text” setting.  </td>
+	</tr>
+	<tr class="row43">
+		<th class="col0 rightalign">  {TRUNCATE_ITEM_TITLE} </th><td class="col1 leftalign"> Same as <a href="/wiki/reference/simplepie_item/get_title" class="wikilink1" title="reference:simplepie_item:get_title">$item-&gt;get_title()</a> except that it obeys the appropriate “truncate text” setting.  </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h3 class="sectionedit17"><a name="newbie_notemissing_data_with_multifeeds" id="newbie_notemissing_data_with_multifeeds">Newbie Note: Missing Data with Multifeeds</a></h3>
+<div class="level3">
+
+<p>
+You&#039;re merging multiple feeds together and you try to access data from <code>{FEED_TITLE}</code> or <code>{FEED_DESCRIPTION}</code> but there doesn&#039;t seem to be anything. Let&#039;s say that you&#039;re merging together 3 feeds, each with their own titles, descriptions, etc. We&#039;ll use Digg, Slashdot, and Apple as examples. Digg has its own title, so does Slashdot, and so does Apple. If there are 3 competing pieces of data, what should <code>{FEED_TITLE}</code> return?
+</p>
+
+<p>
+Well, put simply, SimplePie has no idea which data to show, so it doesn&#039;t display anything.
+</p>
+
+<p>
+So what do we do? If you merge together a feed from Digg and a feed from Slashdot, some items will be from Digg while others are from Slashdot – obviously.  As you narrow down a specific item, you can get the feed-level information for that specific item using <code>{ITEM_PARENT_*}</code> tags like <code>{ITEM_PARENT_TITLE}</code> for example.
+</p>
+
+<p>
+To use these tags, simply replace the <code>FEED</code> part of each of the feed-level tags above with <code>ITEM_PARENT</code>.  <code>{FEED_TITLE}</code> becomes <code>{ITEM_PARENT_TITLE}</code>, <code>{FEED_DESCRIPTION}</code> becomes <code>{ITEM_PARENT_DESCRIPTION}</code> and so on.  These tags only work properly between the <code>{ITEM_LOOP_BEGIN}</code> and <code>{ITEM_LOOP_END}</code> tags.
+</p>
+
+<p>
+This is used in a few of the sample templates that came bundled with the plugin, so feel free to check them out to get a better feel for how they&#039;re used.
+</p>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> plugins/wordpress/simplepie_plugin_for_wordpress/customization.txt &middot; Last modified: 2011/03/06 03:56 (external edit)</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=plugins%3Awordpress%3Asimplepie_plugin_for_wordpress%3Acustomization&amp;1666873959" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

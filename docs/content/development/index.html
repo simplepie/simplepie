@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<title>SimplePie: Development</title>
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<style type="text/css">
+a.see_complete {
+	font-style:italic;
+}
+
+div.commits {
+	margin:0;
+	padding:5px;
+	text-align:center;
+	background-color:#ffc;
+}
+
+div.commits p a {
+	padding:10px 0 10px 20px;
+	background-repeat:no-repeat;
+	background-position:0 50%;
+	color:#000;
+	text-decoration:none;
+}
+
+div.commits p a:hover {
+	color:#000 !important;
+	background-color:transparent;
+	text-decoration:underline;
+}
+</style>
+
+</head>
+
+<body id="bodycommunity">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_developers_developers_developers.gif" alt="Developers, developers, developers!  Check out the latest development code.  See what's on our to-do lists." title="Developers, developers, developers!  Check out the latest development code.  See what's on our to-do lists." /></h2>
+		</div>
+
+		<div class="chunk commits">
+			<!-- Need to redo the CSS so that it's much cleaner -->
+			<p>Git: <a href="feed://github.com/simplepie/simplepie/commits/master.atom" style="background-image:url(/images/mini/feed.png);">Atom</a> | <a href="http://twitter.com/simplepie" style="background-image:url(/images/twitter.png);">Twitter</a> | <a href="http://github.com/simplepie/simplepie/commits/master" style="background-image:url(/images/mini/time.png);">Commits</a> | <a href="http://github.com/simplepie/simplepie/network" style="background-image:url(/images/mini/chart_organisation.png);">Network</a></p>
+		</div>
+
+		<div class="chunk">
+			<h4>SimplePie Git Repository</h4>
+			<div class="blogimage"><img src="/images/128/metapackage.png" alt="Package"></div>
+			<p>Want to take a look at our in-development code?  You can view the files on the web, or download them with a <a href="http://git-scm.com/">Git</a> client like <a href="http://code.google.com/p/msysgit/">msysgit</a> or <a href="http://gitx.frim.nl/">GitX</a>.  A couple of notes:</p>
+			<ol>
+				<li><em>The master version is always changing.</em>  We try to maintain a relatively stable trunk at all times, but sometimes stuff is just broken.</li>
+				<li>We only support the <em>current "official" release and the <u>very latest</u> master build</em>.  If a bug exists in a master build, make sure you're running the very latest build before reporting it.</li>
+				<li>You have <em>read-only access to the repository</em>.  You do not have the ability to commit changes, although patches and suggestions are ALWAYS welcome at our <a href="http://github.com/simplepie/simplepie/issues">bug tracker</a>.</li>
+				<li><em>New features may not be documented.</em>  <a href="http://php5.simplepie.org/phpDoc/">Function documentation for the trunk build is available</a>, however if you have a question about how something should work, ask in support mailing list.</li>
+				<li><em>Get the latest development code.</em> Grab it from <a href="http://github.com/simplepie/simplepie/">Git</a> or download <a href="http://github.com/simplepie/simplepie/tarball/master">as a tarball</a>.</li>
+			</ol>
+		</div>
+
+		<div class="chunk">
+			<h4>Get Involved!</h4>
+			<p>SimplePie is an open-source project, and we encourage anyone who is interested to get more involved. Here are some links for getting more involved.</p>
+			<ul>
+				<li><a href="http://simplepie.org/wiki/"><strong>Documentation Wiki</strong></a> &mdash; The wiki is loaded with documentation, tutorials, code samples and other bits of information contributed by the SimplePie community.</li>
+				<li><a href="http://tech.groups.yahoo.com/group/simplepie-support/"><strong>SimplePie Support List</strong></a> &mdash; Whether you actually need support or not, there's a TON you can learn about using SimplePie simply by subscribing to the mailing list and reading what comes through.</li>
+				<li><a href="http://tech.groups.yahoo.com/group/simplepie-dev/"><strong>SimplePie Development List</strong></a> &mdash; This is the development-related mailing list. This is NOT for support issues, but rather for discussions about SimplePie as a development project.</li>
+				<li><a href="http://github.com/simplepie/simplepie/issues"><strong>Bug Tracker</strong></a> &mdash; This is where we keep track of bugs and feature requests for all SimplePie-related projects.</li>
+				<li><a href="irc://irc.freenode.net/simplepie/"><strong>IRC Chat</strong></a> &mdash; Sometimes questions or issues need a more immediate response, and for that we have our <a href="irc://irc.freenode.net/simplepie/">IRC Channel</a>. Looking for an IRC client? We recommend <a href="http://colloquy.info/">Colloquy</a> for Mac OS X and <a href="http://www.mirc.com/">mIRC</a> for Windows.</li>
+			</ul>
+		</div>
+
+		<div class="chunk">
+			<h4>Socially Attuned</h4>
+			<p>Add SimplePie as a friend on these popular online services!</p>
+			<ul>
+				<li><strong><a href="http://myspace.com/simplepieorg">MySpace</a></strong> &mdash; Add us as a friend on this hugely popular social network.</li>
+				<li><strong><a href="http://www.facebook.com/group.php?gid=4219219878">Facebook</a></strong> &mdash; Join the SimplePie group on Facebook.</li>
+				<li><strong><a href="http://viddler.com/simplepie">Viddler</a></strong> &mdash; Videos we've been uploading, including screencasts and such.</li>
+				<li><strong><a href="http://youtube.com/simplepieorg">YouTube</a></strong> &mdash; SimplePie on the world's most popular video sharing service.</li>
+				<li><strong><a href="http://twitter.com/simplepie">Twitter</a></strong> &mdash; Keep track of new development by following us.</li>
+			</ul>
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+</body>
+</html>

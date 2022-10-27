@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: Caching and You!</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/1.3/caching"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/1.3/caching"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/1.3/caching"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/1.3/caching"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="82131617f0f8b1649452f4b9fc846238" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/1.3/start"  title="1.3:start">SimplePie 1.3 &quot;Boysenberry&quot;</a> &raquo; <a href="/wiki/1.3/caching"  title="1.3:caching">Caching and You!</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#caching_and_you" class="toc">Caching and You!</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#built-in_backends" class="toc">Built-in backends</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#file-based" class="toc">File-based</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#mysql" class="toc">MySQL</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#memcache" class="toc">Memcache</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#custom_backend" class="toc">Custom backend</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#implement_the_caching_interface" class="toc">Implement the caching interface</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#pick_a_prefix" class="toc">Pick a prefix</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#register_your_handler" class="toc">Register your handler</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#use_it" class="toc">Use it</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#see_also" class="toc">See Also</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="caching_and_you" id="caching_and_you">Caching and You!</a></h1>
+<div class="level1">
+
+<p>
+To maximise performance, SimplePie includes a caching system which can be used with a file-based cache, database cache or a Memcache-backed cache system.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="built-in_backends" id="built-in_backends">Built-in backends</a></h2>
+<div class="level2">
+
+</div>
+
+<h3 class="sectionedit3"><a name="file-based" id="file-based">File-based</a></h3>
+<div class="level3">
+
+<p>
+File-based caching is the easiest way to set up caching for SimplePie. All you need is a server-writable directory (we usually call it <code>cache/</code>)!
+</p>
+
+<p>
+For example, let&#039;s say your script is at <code>/var/www/script.php</code>. To use file-based caching, you first need to make a new directory at <code>/var/www/cache</code>. Make sure this directory can be written to by <acronym title="Hypertext Preprocessor">PHP</acronym>. If you&#039;re using <code>cache/</code>, there&#039;s nothing else to set up, as SimplePie defaults to this directory.
+</p>
+
+<p>
+If you want to store your cache somewhere else, say <code>/var/www/somewhereelse</code>, you&#039;ll need to tell SimplePie to do that. Don&#039;t worry, it&#039;s super easy!
+</p>
+<pre class="code php"><span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">set_cache_location</span><span class="br0">&#40;</span><span class="st_h">'/var/www/somewhereelse'</span><span class="br0">&#41;</span><span class="sy0">;</span></pre>
+
+<p>
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> If you use relative paths (i.e. they don&#039;t start with <code>/</code>, be aware that these are relative to where <strong>your script</strong> is, <a href="/wiki/faq/i_m_getting_cache_error_messages" class="wikilink1" title="faq:i_m_getting_cache_error_messages">not where SimplePie is</a>.
+</p>
+
+</div>
+
+<h3 class="sectionedit4"><a name="mysql" id="mysql">MySQL</a></h3>
+<div class="level3">
+
+<p>
+SimplePie also supports using MySQL as a database store for the cache.
+</p>
+
+<p>
+Before you get started, you&#039;ll need to create the correct schema for SimplePie. In your copy of SimplePie, find the file called <code>db.sql</code> and run the commands under the MySQL section on your database.
+</p>
+
+<p>
+Once you&#039;ve done that, setting up SimplePie is easy as pie!
+
+</p>
+<pre class="code php"><span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">set_cache_location</span><span class="br0">&#40;</span><span class="st_h">'mysql://username:password@hostname:port/database'</span><span class="br0">&#41;</span><span class="sy0">;</span></pre>
+
+<p>
+Replace those placeholders with your actual values, and you&#039;re good to go!
+</p>
+
+<p>
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> By default, the database tables are not prefixed. To set the prefix, add <code>?prefix=sp_</code> to your cache location (where <code>sp_</code> is your desired prefix).
+</p>
+
+</div>
+
+<h3 class="sectionedit5"><a name="memcache" id="memcache">Memcache</a></h3>
+<div class="level3">
+
+<p>
+As of SimplePie 1.3, Memcache databases are supported right out of the box.
+</p>
+
+<p>
+To use Memcache for SimplePie&#039;s cache, simply set your cache location with a <code>memcache:</code> prefix:
+
+</p>
+<pre class="code php"><span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">set_cache_location</span><span class="br0">&#40;</span><span class="st_h">'memcache://hostname:port/?timeout=3600&amp;prefix=sp_'</span><span class="br0">&#41;</span><span class="sy0">;</span></pre>
+
+<p>
+Replace the above placeholders as needed. The <code>timeout</code> value is how long you want the Memcache values to last for. We recommend setting this to the same as your value for <code>$feed→set_cache_duration()</code>, which defaults to 3600.
+</p>
+
+</div>
+
+<h2 class="sectionedit6"><a name="custom_backend" id="custom_backend">Custom backend</a></h2>
+<div class="level2">
+
+<p>
+SimplePie also makes it absurdly easy to write your own cache handler. To start, take a look at the Memcache handler (<a href="http://simplepie.org/api/SimplePie_Cache_Memcache" class="interwiki iw_api" title="http://simplepie.org/api/SimplePie_Cache_Memcache">&#039;&#039;SimplePie_Cache_Memcache&#039;&#039;</a>) as it&#039;s one of the easiest to understand.
+</p>
+
+<p>
+In a nutshell, here&#039;s what you need to do:
+</p>
+
+</div>
+
+<h3 class="sectionedit7"><a name="implement_the_caching_interface" id="implement_the_caching_interface">Implement the caching interface</a></h3>
+<div class="level3">
+
+<p>
+<a href="http://simplepie.org/api/SimplePie_Cache_Base" class="interwiki iw_api" title="http://simplepie.org/api/SimplePie_Cache_Base">This interface</a> is your gateway to writing your own caching system. Follow the hints in the PHPDoc comments to ensure that you implement these methods correctly.
+</p>
+
+</div>
+
+<h3 class="sectionedit8"><a name="pick_a_prefix" id="pick_a_prefix">Pick a prefix</a></h3>
+<div class="level3">
+
+<p>
+Every caching system has options given by a <acronym title="Uniform Resource Locator">URL</acronym>-style location. Your cache handler needs to have a distinctive and unique (for your system) prefix, which looks like a <acronym title="Uniform Resource Locator">URL</acronym> scheme. For example, the Memcache handler uses <code>memcache</code>, which means Memcache locations always start with <code>memcache://</code>.
+</p>
+
+</div>
+
+<h3 class="sectionedit9"><a name="register_your_handler" id="register_your_handler">Register your handler</a></h3>
+<div class="level3">
+
+<p>
+Next, you need to let SimplePie know about your handler. Simply call <code>SimplePie_Cache::register()</code> (pretending that we picked <code>example</code> as a prefix, and our handler class is <code>ExampleCacheHandler</code>)
+
+</p>
+<pre class="code php">SimplePie_Cache<span class="sy0">::</span><span class="me2">register</span><span class="br0">&#40;</span><span class="st_h">'example'</span><span class="sy0">,</span> <span class="st_h">'ExampleCacheHandler'</span><span class="br0">&#41;</span><span class="sy0">;</span></pre>
+
+</div>
+
+<h3 class="sectionedit10"><a name="use_it" id="use_it">Use it</a></h3>
+<div class="level3">
+
+<p>
+Finally, tell SimplePie to use your cache handler. This is as easy as setting the cache location when you&#039;re using SimplePie.
+
+</p>
+<pre class="code php"><span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">set_cache_location</span><span class="br0">&#40;</span><span class="st_h">'example://myhost/example'</span><span class="br0">&#41;</span><span class="sy0">;</span></pre>
+
+</div>
+
+<h2 class="sectionedit11"><a name="see_also" id="see_also">See Also</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/faq/how_does_simplepie_s_caching_http_conditional_get_system_work" class="wikilink1" title="faq:how_does_simplepie_s_caching_http_conditional_get_system_work">How does SimplePie&#039;s caching system work?</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/faq/i_m_getting_cache_error_messages" class="wikilink1" title="faq:i_m_getting_cache_error_messages">I&#039;m getting cache error messages</a></div>
+</li>
+</ul>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> 1.3/caching.txt &middot; Last modified: 2012/07/07 13:12 by rmccue</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=1.3%3Acaching&amp;1666873914" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

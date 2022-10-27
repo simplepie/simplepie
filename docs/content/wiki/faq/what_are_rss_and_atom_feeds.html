@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: What are RSS and Atom feeds?</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/faq/what_are_rss_and_atom_feeds"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/faq/what_are_rss_and_atom_feeds"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/faq/what_are_rss_and_atom_feeds"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/faq/what_are_rss_and_atom_feeds"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="843d28224ea925a01f1468f4eb5db37c" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/faq/start"  title="faq:start">Frequently Asked Questions</a> &raquo; <a href="/wiki/faq/what_are_rss_and_atom_feeds"  title="faq:what_are_rss_and_atom_feeds">What are RSS and Atom feeds?</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#what_are_rss_and_atom_feeds" class="toc">What are RSS and Atom feeds?</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#about_feeds" class="toc">About Feeds</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#getting_started" class="toc">Getting Started</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#who_publishes_feeds" class="toc">Who Publishes Feeds?</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#what_do_i_need" class="toc">What Do I Need?</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#what_feed_reader_should_i_use" class="toc">What Feed Reader Should I Use?</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#subscribing_to_feeds" class="toc">Subscribing to Feeds</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#publishing_a_feed" class="toc">Publishing a Feed</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="what_are_rss_and_atom_feeds" id="what_are_rss_and_atom_feeds">What are RSS and Atom feeds?</a></h1>
+<div class="level1">
+
+<p>
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> The following text is a series of excerpts taken from <a href="http://www.sixapart.com/about/feeds" class="urlextern" title="http://www.sixapart.com/about/feeds"  rel="nofollow">http://www.sixapart.com/about/feeds</a>.  We have archived it here just in case something happens to the source article.  We have not used the images from the source article, and we&#039;re not promoting SixApart, so the contents of this page have been modified to describe the former images and remove “salesy” talk to focus on the description and use of feeds.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="about_feeds" id="about_feeds">About Feeds</a></h2>
+<div class="level2">
+
+<p>
+Many websites have links labeled “<acronym title="Extensible Markup Language">XML</acronym>” or “<acronym title="Rich Site Summary">RSS</acronym>” or “Atom”. All of these are ways of saying that you can find out about updates to that site without having to visit the site in your web browser.
+</p>
+
+<p>
+This feature is referred to as “syndication” or “aggregation”. Sometimes it&#039;s just called “subscribing”. And these days, instead of one of these words, lots of sites will use a little orange button. The standard one looks like what you see in the right-hand side of your address bar in <a href="http://getfirefox.com" class="urlextern" title="http://getfirefox.com"  rel="nofollow">Firefox</a>, <a href="http://opera.com" class="urlextern" title="http://opera.com"  rel="nofollow">Opera</a>, or <a href="http://microsoft.com/ie" class="urlextern" title="http://microsoft.com/ie"  rel="nofollow">Internet Explorer 7</a> (an orange square with what looks like radio signals).  If you have the <a href="http://www.apple.com/safari/" class="urlextern" title="http://www.apple.com/safari/"  rel="nofollow">Safari</a> web browser, you&#039;ll see a blue “<acronym title="Rich Site Summary">RSS</acronym>”.  It&#039;s also common to see buttons that say “<acronym title="Rich Site Summary">RSS</acronym>” or “<acronym title="Extensible Markup Language">XML</acronym>”.
+</p>
+
+<p>
+All these links and buttons mean the same thing: The site you&#039;re viewing has a feed available.
+</p>
+
+<p>
+We&#039;ve provided a little bit of information here on how you can get easily get started reading feeds for free. We&#039;ll also tell you how you can publish a feed of your own, if you&#039;d like.
+</p>
+
+</div>
+
+<h2 class="sectionedit3"><a name="getting_started" id="getting_started">Getting Started</a></h2>
+<div class="level2">
+
+</div>
+
+<h3 class="sectionedit4"><a name="who_publishes_feeds" id="who_publishes_feeds">Who Publishes Feeds?</a></h3>
+<div class="level3">
+
+<p>
+Anyone that publishes on the web can publish a feed. Blogs (or weblogs) were one of the first types of sites to offer feeds. But most major newspapers and news websites, hobbyist sites, and even stores like Amazon.com all offer feeds, too.
+</p>
+
+</div>
+
+<h3 class="sectionedit5"><a name="what_do_i_need" id="what_do_i_need">What Do I Need?</a></h3>
+<div class="level3">
+
+<p>
+Just like when you want to watch a video clip or listen to music on the web, you need a “player” of some kind to subscribe to feeds. Good news: Most of these tools are free, and there are many to choose from, so you can find the one that best suits you.
+</p>
+
+<p>
+The “player” for a feed is called a feed reader. This tool lets you subscribe to any feeds you want, checks automatically to see when they&#039;re updated, and then displays the updates for you as they arrive.
+</p>
+
+<p>
+Feed readers can run on your computer or you can sign up to use a feed-reader that runs on the web. If you use one of the web-based readers, you can access your feeds from anywhere you go, just by signing into the website that manages your feeds. If you use a feed reading program that installs on your computer, your feeds can be stored for you even if you&#039;re not connected to the Internet.
+</p>
+
+</div>
+
+<h3 class="sectionedit6"><a name="what_feed_reader_should_i_use" id="what_feed_reader_should_i_use">What Feed Reader Should I Use?</a></h3>
+<div class="level3">
+
+<p>
+Here&#039;s a list some of the most popular tools our customers have told us they like.
+</p>
+
+<p>
+On the web: If you don&#039;t want to have to install a program, many people choose <a href="http://my.yahoo.com" class="urlextern" title="http://my.yahoo.com"  rel="nofollow">My Yahoo!</a>, <a href="http://igoogle.com" class="urlextern" title="http://igoogle.com"  rel="nofollow">iGoogle</a>, or <a href="http://my.msn.com" class="urlextern" title="http://my.msn.com"  rel="nofollow">My MSN</a> to read feeds right within the home page that their browser starts in. Other providers of web-based feed readers include <a href="http://rojo.com" class="urlextern" title="http://rojo.com"  rel="nofollow">Rojo</a>, <a href="http://bloglines.com" class="urlextern" title="http://bloglines.com"  rel="nofollow">Bloglines</a>, <a href="http://attensa.com" class="urlextern" title="http://attensa.com"  rel="nofollow">Attensa Online</a>, or <a href="http://newsgator.com" class="urlextern" title="http://newsgator.com"  rel="nofollow">NewsGator Online</a>. All of the web-based services are free.
+</p>
+
+<p>
+On your computer: If you want a feed reading program that runs on your own computer, there are a few options. Anyone using the Firefox web browser has support for feeds built-in, and Microsoft Windows users have support for feeds in Internet Explorer 7. Apple Macintosh users can also use the built-in support for feeds in the Safari web browser.
+</p>
+
+<p>
+If you want a separate program to read feeds, you can use <a href="http://www.newsgator.com/Individuals/FeedDemon/Default.aspx" class="urlextern" title="http://www.newsgator.com/Individuals/FeedDemon/Default.aspx"  rel="nofollow">FeedDemon</a> or NewsGator for Microsoft Outlook or Attensa for Outlook if you&#039;re on Microsoft Windows. Both tools let you switch between these programs and the web-based reader at any time. If you&#039;re on a Macintosh running <acronym title="Operating System">OS</acronym> X, the most popular feed reader is <a href="http://www.newsgator.com/Individuals/NewsGatorOnline/Default.aspx" class="urlextern" title="http://www.newsgator.com/Individuals/NewsGatorOnline/Default.aspx"  rel="nofollow">NetNewsWire</a>, which can also connect to the web-based services.
+</p>
+
+</div>
+
+<h2 class="sectionedit7"><a name="subscribing_to_feeds" id="subscribing_to_feeds">Subscribing to Feeds</a></h2>
+<div class="level2">
+
+<p>
+Once you&#039;ve got a tool to read feeds, you&#039;ll want to find some feeds worth reading. Many of the tools listed above provide some built-in feeds to get you started. Then, as you visit other sites on the web, you can keep your eyes open for links that say <acronym title="Extensible Markup Language">XML</acronym> or <acronym title="Rich Site Summary">RSS</acronym> or Syndication, or for that orange button up above, and add the feeds you find interesting.
+</p>
+
+</div>
+
+<h2 class="sectionedit8"><a name="publishing_a_feed" id="publishing_a_feed">Publishing a Feed</a></h2>
+<div class="level2">
+
+<p>
+If you&#039;re taken by the convenience and power of being able to deliver information regularly right to the screens of anyone who&#039;s interested, you might want to publish your own feed. The good news is, it&#039;s surprisingly easy.
+
+</p>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> faq/what_are_rss_and_atom_feeds.txt &middot; Last modified: 2011/03/06 03:56 (external edit)</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=faq%3Awhat_are_rss_and_atom_feeds&amp;1666873863" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

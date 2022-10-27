@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: Setting up a cron job for SimplePie and SimplePie Plugin for Wordpress</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/tutorial/setting_up_a_cron_job_with_simplepie"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/tutorial/setting_up_a_cron_job_with_simplepie"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/tutorial/setting_up_a_cron_job_with_simplepie"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/tutorial/setting_up_a_cron_job_with_simplepie"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="843d28224ea925a01f1468f4eb5db37c" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/tutorial/start"  title="tutorial:start">Tips, Tricks, Tutorials, and Screencasts</a> &raquo; <a href="/wiki/tutorial/setting_up_a_cron_job_with_simplepie"  title="tutorial:setting_up_a_cron_job_with_simplepie">Setting up a cron job for SimplePie and SimplePie Plugin for Wordpress</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#setting_up_a_cron_job_for_simplepie_and_simplepie_plugin_for_wordpress" class="toc">Setting up a cron job for SimplePie and SimplePie Plugin for Wordpress</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#compatibility" class="toc">Compatibility</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#instructions" class="toc">Instructions</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_classic" class="toc">SimplePie Classic</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_plugin_for_wordpress" class="toc">SimplePie Plugin for Wordpress</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#create_the_cron_job" class="toc">Create the cron job</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#the_first_way_to_create_the_cron_job" class="toc">The first way to create the cron job</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#the_second_way_to_create_the_cron_job" class="toc">The second way to create the cron job</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#or" class="toc">Or</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#set_your_cache_duration" class="toc">Set your cache duration</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="setting_up_a_cron_job_for_simplepie_and_simplepie_plugin_for_wordpress" id="setting_up_a_cron_job_for_simplepie_and_simplepie_plugin_for_wordpress">Setting up a cron job for SimplePie and SimplePie Plugin for Wordpress</a></h1>
+<div class="level1">
+
+<p>
+This procedure to set up a cron job to update the SimplePie cache in the background once an hour is similar for both SimplePie and SimplePie Plugin for Wordpress so I&#039;ve combined them in one tutorial.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="compatibility" id="compatibility">Compatibility</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> Supported in SimplePie 1.0 or newer.</div>
+</li>
+<li class="level1"><div class="li"> Requires a Linux based host that allows cron jobs.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit3"><a name="instructions" id="instructions">Instructions</a></h2>
+<div class="level2">
+
+<p>
+The sequence of events for both SimplePie classic and SimplePie Plugin for Wordpress is:
+
+</p>
+<ol>
+<li class="level1"><div class="li"> Create and upload a web page that updates the SimplePie cache.</div>
+</li>
+<li class="level1"><div class="li"> Run a cron job to load that page once an hour.</div>
+</li>
+<li class="level1"><div class="li"> Change the cache duration of your normal SimplePie runs to 999999999, and timeout to -1.</div>
+</li>
+</ol>
+
+</div>
+
+<h2 class="sectionedit4"><a name="simplepie_classic" id="simplepie_classic">SimplePie Classic</a></h2>
+<div class="level2">
+
+<p>
+
+Create a file called <strong>update_simplepie_cache.php</strong>
+</p>
+
+<p>
+Enter the text below.
+</p>
+<pre class="code">&lt;?php
+        require &#039;simplepie.inc&#039;; 
+        $urls = array([enter all your feed urls here]);
+        $cache_location = &#039;./cache&#039;;  //  change to your cache location 
+        $feed = new SimplePie();
+        $feed-&gt;set_feed_url($urls);
+        $feed-&gt;set_cache_location($cache_location);
+        $feed-&gt;set_cache_duration(0);   // force cache to update immediatlely 
+        $feed-&gt;set_timeout(5);   // optional, if you have a lot of feeds a low timeout may be necessary 
+        $feed-&gt;init();
+?&gt;</pre>
+
+<p>
+Upload that file to a web accessible directory on your website so you can access it via <acronym title="Hyper Text Transfer Protocol">HTTP</acronym>. For instance:
+</p>
+
+<p>
+<a href="http://yoursite.com/update_simiplepie_cache.php" class="urlextern" title="http://yoursite.com/update_simiplepie_cache.php"  rel="nofollow">http://yoursite.com/update_simiplepie_cache.php</a>
+</p>
+
+</div>
+
+<h2 class="sectionedit5"><a name="simplepie_plugin_for_wordpress" id="simplepie_plugin_for_wordpress">SimplePie Plugin for Wordpress</a></h2>
+<div class="level2">
+
+<p>
+
+Create a file named <strong>update_simplepie_cache.php</strong> and enter this text:
+</p>
+<pre class="code">&lt;?php
+/*
+Template Name: update_simplepie_cache
+*/
+        SimplePieWP(array([your feed urls here]), 
+        array(&#039;set_cache_duration&#039; =&gt; 0,&#039;set_timeout&#039; =&gt; 5));
+?&gt;</pre>
+
+<p>
+Upload <strong>update_simplepie_cache.php</strong> to your current Wordpress theme directory.
+</p>
+
+<p>
+Create a “Page” in Wordpress using the template: “<strong>update_simplepie_cache</strong>”.
+</p>
+
+<p>
+If you have permalinks turned on in Wordpress, change the permalink for the page to <strong>update_simplepie_cache</strong>. If not, write down the pageid number for use later.
+</p>
+
+</div>
+
+<h2 class="sectionedit6"><a name="create_the_cron_job" id="create_the_cron_job">Create the cron job</a></h2>
+<div class="level2">
+
+<p>
+
+There are two ways to create the cron job. If you have <acronym title="Secure Shell">SSH</acronym> and root access to your server, you create a BASH script and upload it directly to your <strong>/etc/cron.hourly</strong> directory, or the monthly directory if you only want to update your cache once a month. There is no yearly or age-of-aquarius directory.
+</p>
+
+</div>
+
+<h2 class="sectionedit7"><a name="the_first_way_to_create_the_cron_job" id="the_first_way_to_create_the_cron_job">The first way to create the cron job</a></h2>
+<div class="level2">
+
+<p>
+
+<strong>SimplePie Classic</strong>
+</p>
+
+<p>
+Create a file named <strong>update_simplepie_cache.sh</strong> and enter this text into it:
+</p>
+<pre class="code">#!/bin/bash
+wget -O /dev/null http://yoursite.com/update_simplepie_cache.php</pre>
+
+<p>
+<strong>SimplePie Plugin for Wordpress</strong>
+</p>
+
+<p>
+Create a file named <strong>update_simplepie_cache.sh</strong> and enter this text into it:
+</p>
+
+<p>
+With permalinks on:
+</p>
+<pre class="code">#!/bin/bash
+wget -O /dev/null http://yoursite.com/update_simplepie_cache/</pre>
+
+<p>
+With permalinks off:
+</p>
+<pre class="code">#!/bin/bash
+wget -O /dev/null http://yoursite.com/?pageid=[page number]</pre>
+
+<p>
+Enter the pageid number of Page you created in Wordpress. 
+</p>
+
+<p>
+When your ready to start the cron job, upload <strong>update_simplepie_cache.sh</strong> to your /etc/cron.hourly directory. It will run automatically once an hour, usually at minute 56.
+
+</p>
+
+</div>
+
+<h2 class="sectionedit8"><a name="the_second_way_to_create_the_cron_job" id="the_second_way_to_create_the_cron_job">The second way to create the cron job</a></h2>
+<div class="level2">
+
+<p>
+
+Use your server control panel. Here&#039;s a screenshot of the CPANEL CRON job manager:
+</p>
+
+<p>
+<a href="/wiki/_detail/tutorial/update_simplepie_cache.jpg?id=tutorial%3Asetting_up_a_cron_job_with_simplepie" class="media" title="tutorial:update_simplepie_cache.jpg"><img src="/wiki/_media/tutorial/update_simplepie_cache.jpg?w=561&amp;h=362" class="media" title="cpanel" alt="cpanel" width="561" height="362" /></a>
+</p>
+
+<p>
+Enter the “wget” line into the CPANEL CRON manager&#039;s “command to run” text box. Select minute 0, or whichever you want, Every Hour, Every Day, Every Month, Every Weekday.
+</p>
+
+</div>
+
+<h2 class="sectionedit9"><a name="or" id="or">Or</a></h2>
+<div class="level2">
+
+<p>
+
+php -f /sitedirectory/update_simplepie_cache.php
+</p>
+
+</div>
+
+<h2 class="sectionedit10"><a name="set_your_cache_duration" id="set_your_cache_duration">Set your cache duration</a></h2>
+<div class="level2">
+
+<p>
+
+Once your cron job is running, go back to your original SimplePie code and set the cache duration to a number greater than the cron job time period which is usually 1 hour. I use 999999999 just to be sure but if you like living on the edge you could just set it to 3601, 1 second more than an hour. Why are you doing this you say? Doing this effectively tells SimplePie to never update its cache during a normal operations since it&#039;s already being updated by the cron job. Also, just in case, set the timeout to -1 to prevent SimplePie from retrying previous failed feeds if there were any. You might also want to check your server temp periodically because SimplePie will now be running at the speed of wheat and could break the pie barrier.
+</p>
+
+<p>
+<strong> Set cache duration and timeout in SimplePie Plugin for Wordpress </strong>
+</p>
+
+<p>
+You can do this in the configuration webpage, or in the call to SimplePieWP, like this:
+</p>
+<pre class="code">&lt;?php echo SimplePieWP(array(&#039;feed1.com&#039;,feed2.com&#039;),
+                       array(&#039;set_cache_duration&#039;=&gt;999999999,&#039;set_timeout&#039;=&gt;-1));</pre>
+
+<p>
+<strong> Set cache duration and timeout in SimplePie Classic </strong>
+</p>
+<pre class="code">$feed-&gt;set_cache_duration(999999999); 
+$feed-&gt;set_timeout(-1);</pre>
+
+<p>
+That&#039;s it!
+
+</p>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> tutorial/setting_up_a_cron_job_with_simplepie.txt &middot; Last modified: 2011/03/06 03:56 (external edit)</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=tutorial%3Asetting_up_a_cron_job_with_simplepie&amp;1666873866" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

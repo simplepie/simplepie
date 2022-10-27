@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: Tips, Tricks, Tutorials, and Screencasts</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/tutorial/start"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/tutorial/start"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/tutorial/start"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/tutorial/start"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="e7fcc13c70059efc187fea77af978b48" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/tutorial/start"  title="tutorial:start">Tips, Tricks, Tutorials, and Screencasts</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#tips_tricks_tutorials_and_screencasts" class="toc">Tips, Tricks, Tutorials, and Screencasts</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#screencasts" class="toc">Screencasts</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#code_and_demos" class="toc">Code and Demos</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#time_and_date" class="toc">Time and Date</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#multiple_feeds" class="toc">Multiple Feeds</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#getting_specific_data" class="toc">Getting Specific Data</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#miscellaneous" class="toc">Miscellaneous</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#integration" class="toc">Integration</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#requested_tutorials" class="toc">Requested Tutorials</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="tips_tricks_tutorials_and_screencasts" id="tips_tricks_tutorials_and_screencasts">Tips, Tricks, Tutorials, and Screencasts</a></h1>
+<div class="level1">
+
+<p>
+There are all sorts of cool things you can do with SimplePie and feeds.  These are some of the most popular code snippets and samples we&#039;ve come across.  Feel free to add your own, but if there&#039;s a similar one to what you&#039;re wanting to post, please see if you can merge your notes into the one that already exists.
+</p>
+
+<p>
+These are tutorials about <em>how</em> to do things. For questions or issues that are frequently asked <em>about</em> SimplePie, check the <a href="/wiki/faq/start" class="wikilink1" title="faq:start">Frequently Asked Questions</a> page. If you&#039;re looking for some cool sites and tools to inspire you, check out the <a href="/wiki/ideas/start" class="wikilink1" title="ideas:start">Sites that have integrated SimplePie</a> page.
+</p>
+
+<p>
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> If you would like to see a tutorial for something here, add the title (in the same format as the other tutorial links) to the <span class="curid"><a href="/wiki/tutorial/start#requested_tutorials" class="wikilink1" title="tutorial:start">requested_tutorials</a></span> section.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="screencasts" id="screencasts">Screencasts</a></h2>
+<div class="level2">
+
+<p>
+Screencasts are either QuickTime 7 files (compressed as H.264/AAC) or are Flash Video (.flv), and may be wider than a 1024&times;768 screen resolution.  Assumes that you have gotten through the <a href="http://us2.php.net/tutorial" class="urlextern" title="http://us2.php.net/tutorial"  rel="nofollow">Introduction to PHP</a> tutorial (as noted in the <a href="/wiki/setup/requirements" class="wikilink1" title="setup:requirements">minimum requirements</a>), and understand that a <strong>feed</strong> has information associated with it, and a feed contains one or more <strong>items</strong> which also have information associated with them.
+
+</p>
+<ul>
+<li class="level1"><div class="li"> <strong><a href="http://simplepie.org/tutorials/introduction_to_simplepie.mov" class="urlextern" title="http://simplepie.org/tutorials/introduction_to_simplepie.mov"  rel="nofollow">Introduction to SimplePie</a> (10:56)</strong><br/>
+This screencast by Ryan Parman discusses the creation of a simple page, feed auto-discovery, mashing and sorting multiple feeds by time and date, favicons, and PHP5 method chaining.</div>
+</li>
+<li class="level1"><div class="li"> <strong><a href="http://simplepie.org/tutorials/simplepie_digg_addon.mov" class="urlextern" title="http://simplepie.org/tutorials/simplepie_digg_addon.mov"  rel="nofollow">Creating the Digg SimplePie Add-on</a> (22:13)</strong><br/>
+This screencast by Ryan Parman discusses the creation of SimplePie Add-ons including extending and overriding the built-in SimplePie classes.  Uses Digg&#039;s custom <acronym title="Rich Site Summary">RSS</acronym> tags as the application of this Add-on.</div>
+</li>
+<li class="level1"><div class="li"> <strong><a href="http://www.viddler.com/explore/elliothaughin/videos/10/" class="urlextern" title="http://www.viddler.com/explore/elliothaughin/videos/10/"  rel="nofollow">Integrate SimplePie and CodeIgniter</a> (23:40)</strong><br/>
+This screencast by Elliot Haughin discusses how to integrate SimplePie into your CodeIgniter projects.</div>
+</li>
+<li class="level1"><div class="li"> <strong><a href="http://simplepie.org/tutorials/simplepie_firefox.mov" class="urlextern" title="http://simplepie.org/tutorials/simplepie_firefox.mov"  rel="nofollow">Add SimplePie to Firefox 2</a> (0:30)</strong><br/>
+This 30-second “screen spot” by Ryan Parman shows how easy it is to add SimplePie as the default feed handler in Firefox 2.</div>
+</li>
+<li class="level1"><div class="li"> <strong><a href="http://www.nikibrown.com/designoblog/2009/02/10/quick-tip-16-super-simple-pie/" class="urlextern" title="http://www.nikibrown.com/designoblog/2009/02/10/quick-tip-16-super-simple-pie/"  rel="nofollow">Quick Tip #16 Super SimplePie!</a> (3:49)</strong><br/>
+This short video by Niki Brown shows how easy it can be to drop SimplePie directly into your existing pages.</div>
+</li>
+<li class="level1"><div class="li"> <strong><a href="http://css-tricks.com/video-screencasts/55-adding-rss-content-with-simplepie/" class="urlextern" title="http://css-tricks.com/video-screencasts/55-adding-rss-content-with-simplepie/"  rel="nofollow">CSS-Tricks: Adding RSS content with SimplePie</a> (33:03)</strong><br/>
+In this screencast by Chris Coyier, we build a really simple site that grabs content from multiple <acronym title="Rich Site Summary">RSS</acronym> feeds, smushes them together, and displays them using our own custom markup.</div>
+</li>
+<li class="level1"><div class="li"> <strong><a href="http://net.tutsplus.com/videos/screencasts/extending-simplepie-to-parse-unique-rss-feeds/" class="urlextern" title="http://net.tutsplus.com/videos/screencasts/extending-simplepie-to-parse-unique-rss-feeds/"  rel="nofollow">NETTUTS: Extending SimplePie to Parse Unique RSS Feeds</a> (40:10)</strong><br/>
+Jeffrey Way takes the time to show us how to extend SimplePie&#039;s abilities, build a page of thumbnails and videos, and wrap it up in a slick jQuery-based UI.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://net.tutsplus.com/videos/screencasts/how-to-build-a-super-duper-news-scroller/" class="urlextern" title="http://net.tutsplus.com/videos/screencasts/how-to-build-a-super-duper-news-scroller/"  rel="nofollow">How to Build a Super Duper News Scroller</a></div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit3"><a name="code_and_demos" id="code_and_demos">Code and Demos</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="http://www.michaelpshipley.com/simplepie/simplepie-leaderboard-18/" class="urlextern" title="http://www.michaelpshipley.com/simplepie/simplepie-leaderboard-18/"  rel="nofollow">Leaderboard</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.michaelpshipley.com/simplepie/filter-4/" class="urlextern" title="http://www.michaelpshipley.com/simplepie/filter-4/"  rel="nofollow">Filter posts by keywords</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_to_display_a_single_feed_item" class="wikilink1" title="tutorial:how_to_display_a_single_feed_item">How to display a single item in a feed</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_to_display_previous_feed_items_like_google_reader" class="wikilink1" title="tutorial:how_to_display_previous_feed_items_like_google_reader">This demo shows how to use SimplePie and a flat file database to display previous feed items like Google Reader</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.michaelpshipley.com/simplepie/update-and-display-rss-or-atom-feeds-without-re-loading-the-web-page-using-javascript-ajax-and-simplepie-42/" class="urlextern" title="http://www.michaelpshipley.com/simplepie/update-and-display-rss-or-atom-feeds-without-re-loading-the-web-page-using-javascript-ajax-and-simplepie-42/"  rel="nofollow">How to Update and Display RSS Feeds or ATOM Feeds Without Re-Loading the Web Page Using AJAX and SimplePie</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.michaelpshipley.com/simplepie/simplepie-accelerator-34/" class="urlextern" title="http://www.michaelpshipley.com/simplepie/simplepie-accelerator-34/"  rel="nofollow">How to speed up SimplePie: SimplePie Accelerator</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://net.tutsplus.com/tutorials/php/create-a-slick-flickr-gallery-with-simplepie/" class="urlextern" title="http://net.tutsplus.com/tutorials/php/create-a-slick-flickr-gallery-with-simplepie/"  rel="nofollow">Create a Slick Flickr Gallery with SimplePie</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.pvmgarage.com/en/2009/07/how-to-realize-a-news-aggregator-using-simple-in-an-adaptive-layout/" class="urlextern" title="http://www.pvmgarage.com/en/2009/07/how-to-realize-a-news-aggregator-using-simple-in-an-adaptive-layout/"  rel="nofollow">How To Realize A News Aggregator Using Simple Pie In An Adaptive Layout</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://line25.com/tutorials/how-to-create-a-lifestream-of-your-online-activities" class="urlextern" title="http://line25.com/tutorials/how-to-create-a-lifestream-of-your-online-activities"  rel="nofollow">How to Create a Lifestream of Your Online Activities</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.corvidworks.com/articles/easy-feed-reading-with-simplepie" class="urlextern" title="http://www.corvidworks.com/articles/easy-feed-reading-with-simplepie"  rel="nofollow">Easy feed reading with SimplePie</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://dentedreality.com.au/2009/07/simple-activity-streaming-with-simplepie/" class="urlextern" title="http://dentedreality.com.au/2009/07/simple-activity-streaming-with-simplepie/"  rel="nofollow">Simple Activity Streaming with SimplePie</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.devirtuoso.com/2009/07/a-collection-of-beginner-simplepie-tutorials/" class="urlextern" title="http://www.devirtuoso.com/2009/07/a-collection-of-beginner-simplepie-tutorials/"  rel="nofollow"> A collection of beginner SimplePie tutorials</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://joshhighland.com/blog/2008/04/19/lifestreaming-is-simple-as-pie/" class="urlextern" title="http://joshhighland.com/blog/2008/04/19/lifestreaming-is-simple-as-pie/"  rel="nofollow">LifeStreaming Is Simple As Pie</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://net.tutsplus.com/javascript-ajax/building-a-better-blogroll-dynamic-fun-with-simplepie-and-jquery/" class="urlextern" title="http://net.tutsplus.com/javascript-ajax/building-a-better-blogroll-dynamic-fun-with-simplepie-and-jquery/"  rel="nofollow">Building a Better Blogroll: Dynamic Fun with SimplePie and jQuery</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://ad1987.blogspot.com/2009/03/how-to-building-simple-online-feed.html" class="urlextern" title="http://ad1987.blogspot.com/2009/03/how-to-building-simple-online-feed.html"  rel="nofollow">Build A Simple Online Feed-reader With SimplePie, jQuery and PHP</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.csskarma.com/blog/selectable-rss/" class="urlextern" title="http://www.csskarma.com/blog/selectable-rss/"  rel="nofollow">Selectable RSS with SimplePie and jQuery</a></div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit4"><a name="time_and_date" id="time_and_date">Time and Date</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/only_display_items_from_the_last_24_hours" class="wikilink1" title="tutorial:only_display_items_from_the_last_24_hours">Only display items from the last 24 hours</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/changing_timezones_in_a_timestamp" class="wikilink1" title="tutorial:changing_timezones_in_a_timestamp">Changing timezones in a timestamp</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/translate_timestamps_into_another_language" class="wikilink1" title="tutorial:translate_timestamps_into_another_language">Translate timestamps into another language</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/use_relative_dates" class="wikilink1" title="tutorial:use_relative_dates">Use Relative Dates</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_to_group_multiple_posts_by_day" class="wikilink1" title="tutorial:how_to_group_multiple_posts_by_day">How to group multiple posts by day</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://jivebay.com/2007/08/01/css-class-based-on-date/" class="urlextern" title="http://jivebay.com/2007/08/01/css-class-based-on-date/"  rel="nofollow">Date-based CSS class</a></div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit5"><a name="multiple_feeds" id="multiple_feeds">Multiple Feeds</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/sort_multiple_feeds_by_time_and_date" class="wikilink1" title="tutorial:sort_multiple_feeds_by_time_and_date">Sort multiple feeds by time and date</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_to_replicate_popurls" class="wikilink1" title="tutorial:how_to_replicate_popurls">NewsBlocks Demo 2.0</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php" class="wikilink1" title="tutorial:how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php">Limit the number of items per feed to be used with Multifeeds</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.webmaster-source.com/2007/08/06/merging-rss-feeds-with-simplepie/" class="urlextern" title="http://www.webmaster-source.com/2007/08/06/merging-rss-feeds-with-simplepie/"  rel="nofollow">Generate a new feed using SimplePie&#039;s multifeed support</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.delic.com/blog/2008/04/11/building-your-own-alltop-or-popurls/" class="urlextern" title="http://www.delic.com/blog/2008/04/11/building-your-own-alltop-or-popurls/"  rel="nofollow">Building your own Alltop or PopURLs</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://ericulous.com/2007/06/11/popurls-clone-using-wordpress/" class="urlextern" title="http://ericulous.com/2007/06/11/popurls-clone-using-wordpress/"  rel="nofollow">Build your own popurls-like news aggregator using wordpress theme</a></div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit6"><a name="getting_specific_data" id="getting_specific_data">Getting Specific Data</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/grab_custom_tags_or_attributes" class="wikilink1" title="tutorial:grab_custom_tags_or_attributes">Grab custom tags or attributes</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_do_i_get_a_thumbnail_from_a_youtube_feed" class="wikilink1" title="tutorial:how_do_i_get_a_thumbnail_from_a_youtube_feed">How do I get a thumbnail from a YouTube feed?</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/only_display_images_from_a_feed" class="wikilink1" title="tutorial:only_display_images_from_a_feed">Only display images from a feed</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/flickr_lightbox" class="wikilink1" title="tutorial:flickr_lightbox">Flickr Lightbox</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://james.cridland.net/code/google-calendar.html" class="urlextern" title="http://james.cridland.net/code/google-calendar.html"  rel="nofollow">Google Calendar on your website</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.pixelgraphix.de/log/2007-07/flickr-photo-feeds-mit-simplepie-ueberwachen.php" class="urlextern" title="http://www.pixelgraphix.de/log/2007-07/flickr-photo-feeds-mit-simplepie-ueberwachen.php"  rel="nofollow">Flickr Photo Feeds mit SimplePie überwachen</a> (German)</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit7"><a name="miscellaneous" id="miscellaneous">Miscellaneous</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_to_do_item_paging" class="wikilink1" title="tutorial:how_to_do_item_paging">How to do item paging</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/shorten_titles_and_descriptions" class="wikilink1" title="tutorial:shorten_titles_and_descriptions">Shorten titles and descriptions</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_to_edit_part_of_the_feed_before_parsing_it" class="wikilink1" title="tutorial:how_to_edit_part_of_the_feed_before_parsing_it">How to edit part of the feed before parsing it</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/how_to_make_description_links_open_in_a_new_window" class="wikilink1" title="tutorial:how_to_make_description_links_open_in_a_new_window">How to make description links open in a new window</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/sorting_by_custom_criteria_instead_of_date" class="wikilink1" title="tutorial:sorting_by_custom_criteria_instead_of_date">Sorting by custom criteria instead of date</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/tutorial/setting_up_a_cron_job_with_simplepie" class="wikilink1" title="tutorial:setting_up_a_cron_job_with_simplepie">Setting up a cron job for SimplePie and SimplePie Plugin for Wordpress</a></div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit8"><a name="integration" id="integration">Integration</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="http://ericlbarnes.com/68classifieds/tips/integrate-simplepie-with-68-classifieds/" class="urlextern" title="http://ericlbarnes.com/68classifieds/tips/integrate-simplepie-with-68-classifieds/"  rel="nofollow">Integrate SimplePie with 68 Classifieds</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://nextbigleap.com/blog/development/simplepie-rss-class-and-codeigniter" class="urlextern" title="http://nextbigleap.com/blog/development/simplepie-rss-class-and-codeigniter"  rel="nofollow">Integrate SimplePie and CodeIgniter</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://68kb.com/2007/10/31/codeigniter-and-simplepie/" class="urlextern" title="http://68kb.com/2007/10/31/codeigniter-and-simplepie/"  rel="nofollow">CodeIgniter + SimplePie: Like peas and carrots</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.michaelpshipley.com/simplepie/smartypie-feeding-the-smarty-php-template-engine-with-simplepie-21/" class="urlextern" title="http://www.michaelpshipley.com/simplepie/smartypie-feeding-the-smarty-php-template-engine-with-simplepie-21/"  rel="nofollow">SmartyPie: Feeding the Smarty PHP Template Engine with SimplePie</a></div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit9"><a name="requested_tutorials" id="requested_tutorials">Requested Tutorials</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> Read my GMail / Check new mail</div>
+</li>
+<li class="level1"><div class="li"> feel free to add more!</div>
+</li>
+</ul>
+
+<p>
+
+How do you this feed horizontal using the rss images for wordpress?? 
+how to add mysql database caching ?
+
+</p>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> tutorial/start.txt &middot; Last modified: 2013/06/26 11:48 by emilhem</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=tutorial%3Astart&amp;1666873857" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

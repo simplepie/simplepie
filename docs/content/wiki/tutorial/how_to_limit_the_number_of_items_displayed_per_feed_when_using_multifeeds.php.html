@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: Limit the number of items per feed to be used with Multifeeds</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/tutorial/how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/tutorial/how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/tutorial/how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/tutorial/how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="843d28224ea925a01f1468f4eb5db37c" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/tutorial/start"  title="tutorial:start">Tips, Tricks, Tutorials, and Screencasts</a> &raquo; <a href="/wiki/tutorial/how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php"  title="tutorial:how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php">Limit the number of items per feed to be used with Multifeeds</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#limit_the_number_of_items_per_feed_to_be_used_with_multifeeds" class="toc">Limit the number of items per feed to be used with Multifeeds</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#compatibility" class="toc">Compatibility</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#example" class="toc">Example</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<p>
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> <strong>This tutorial is obsolete. Use the <code><a href="/wiki/reference/simplepie/set_item_limit" class="wikilink1" title="reference:simplepie:set_item_limit">set_item_limit()</a></code> method instead.</strong>
+</p>
+
+<h1 class="sectionedit1"><a name="limit_the_number_of_items_per_feed_to_be_used_with_multifeeds" id="limit_the_number_of_items_per_feed_to_be_used_with_multifeeds">Limit the number of items per feed to be used with Multifeeds</a></h1>
+<div class="level1">
+
+<p>
+In SimplePie 1.0, we simplified the process of merging together multiple feeds, sorting them by date, and displaying them.  This method allows you to do all of the normal SimplePie stuff without requiring you to do any array hacking or anything.  This tutorial will show you how to merge only the first 5 items per feed, and sort those by date and time.
+</p>
+
+<p>
+There are a few things to keep in mind about merging multiple feeds:
+</p>
+<ul>
+<li class="level1"><div class="li"> When you mash multiple feeds together, how do you know which feed title or favicon to use?  You don&#039;t.  So, the object that gets created when mashing feeds does not have any feed-level data.</div>
+</li>
+<li class="level1"><div class="li"> You can still get at an individual item&#039;s parent feed data using the <code><a href="/wiki/reference/simplepie_item/get_feed" class="wikilink1" title="reference:simplepie_item:get_feed">get_feed()</a></code> method.</div>
+</li>
+<li class="level1"><div class="li"> All feed items MUST have dates or else <acronym title="Hypertext Preprocessor">PHP</acronym> will sort them to the top.</div>
+</li>
+</ul>
+
+<p>
+
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> <strong>If you&#039;re merging multiple feeds together, they need to all have dates for the items or else <acronym title="Hypertext Preprocessor">PHP</acronym> will sort them to the top.</strong> This tutorial assumes that you&#039;re already familiar with using SimplePie, including looping through items.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="compatibility" id="compatibility">Compatibility</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> Supported in SimplePie 1.0</div>
+</li>
+<li class="level1"><div class="li"> Code in this tutorial should be compatible with <acronym title="Hypertext Preprocessor">PHP</acronym> 4.3 or newer, and should not use <acronym title="Hypertext Preprocessor">PHP</acronym> short tags, in order to support the largest number of <acronym title="Hypertext Preprocessor">PHP</acronym> installations.</div>
+</li>
+<li class="level1"><div class="li"> Code in this tutorial is taken from the multifeeds.php demo page that is included with the SimplePie download in the <code>/demo/</code> folder, and has been modified for the purposes of this tutorial.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit3"><a name="example" id="example">Example</a></h2>
+<div class="level2">
+<pre class="code php"><span class="kw2">&lt;?php</span>
+<span class="co1">// Include the SimplePie library</span>
+<span class="kw1">require_once</span><span class="br0">&#40;</span><span class="st_h">'../simplepie.inc'</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&nbsp;
+<span class="co1">// Because we're using multiple feeds, let's just set the headers here.</span>
+<a href="http://www.php.net/header"><span class="kw3">header</span></a><span class="br0">&#40;</span><span class="st_h">'Content-type:text/html; charset=utf-8'</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&nbsp;
+<span class="co1">// These are the feeds we want to use</span>
+<span class="re0">$feeds</span> <span class="sy0">=</span> <a href="http://www.php.net/array"><span class="kw3">array</span></a><span class="br0">&#40;</span>
+	<span class="st_h">'http://rss.news.yahoo.com/rss/topstories'</span><span class="sy0">,</span>
+	<span class="st_h">'http://news.google.com/?output=atom'</span><span class="sy0">,</span>
+	<span class="st_h">'http://rss.cnn.com/rss/cnn_topstories.rss'</span>
+<span class="br0">&#41;</span><span class="sy0">;</span>
+&nbsp;
+<span class="co1">// This array will hold the items we'll be grabbing.</span>
+<span class="re0">$first_items</span> <span class="sy0">=</span> <a href="http://www.php.net/array"><span class="kw3">array</span></a><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&nbsp;
+<span class="co1">// Let's go through the array, feed by feed, and store the items we want.</span>
+<span class="kw1">foreach</span> <span class="br0">&#40;</span><span class="re0">$feeds</span> <span class="kw1">as</span> <span class="re0">$url</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+    <span class="co1">// Use the long syntax</span>
+    <span class="re0">$feed</span> <span class="sy0">=</span> <span class="kw2">new</span> SimplePie<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">set_feed_url</span><span class="br0">&#40;</span><span class="re0">$url</span><span class="br0">&#41;</span><span class="sy0">;</span>
+    <span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">init</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&nbsp;
+	<span class="co1">// How many items per feed should we try to grab?</span>
+	<span class="re0">$items_per_feed</span> <span class="sy0">=</span> <span class="nu0">5</span><span class="sy0">;</span>
+&nbsp;
+	<span class="co1">// As long as we're not trying to grab more items than the feed has, go through them one by one and add them to the array.</span>
+	<span class="kw1">for</span> <span class="br0">&#40;</span><span class="re0">$x</span> <span class="sy0">=</span> <span class="nu0">0</span><span class="sy0">;</span> <span class="re0">$x</span> <span class="sy0">&lt;</span> <span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">get_item_quantity</span><span class="br0">&#40;</span><span class="re0">$items_per_feed</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="re0">$x</span><span class="sy0">++</span><span class="br0">&#41;</span>
+	<span class="br0">&#123;</span>
+		<span class="re0">$first_items</span><span class="br0">&#91;</span><span class="br0">&#93;</span> <span class="sy0">=</span> <span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">get_item</span><span class="br0">&#40;</span><span class="re0">$x</span><span class="br0">&#41;</span><span class="sy0">;</span>
+	<span class="br0">&#125;</span>
+&nbsp;
+    <span class="co1">// We're done with this feed, so let's release some memory.</span>
+    <a href="http://www.php.net/unset"><span class="kw3">unset</span></a><span class="br0">&#40;</span><span class="re0">$feed</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span>
+&nbsp;
+<span class="co1">// We need to sort the items by date with a user-defined sorting function.  Since usort() won't accept &quot;SimplePie::sort_items&quot;, we need to wrap it in a new function.</span>
+<span class="kw2">function</span> sort_items<span class="br0">&#40;</span><span class="re0">$a</span><span class="sy0">,</span> <span class="re0">$b</span><span class="br0">&#41;</span>
+<span class="br0">&#123;</span>
+	<span class="kw1">return</span> SimplePie<span class="sy0">::</span><span class="me2">sort_items</span><span class="br0">&#40;</span><span class="re0">$a</span><span class="sy0">,</span> <span class="re0">$b</span><span class="br0">&#41;</span><span class="sy0">;</span>
+<span class="br0">&#125;</span>
+&nbsp;
+<span class="co1">// Now we can sort $first_items with our custom sorting function.</span>
+<a href="http://www.php.net/usort"><span class="kw3">usort</span></a><span class="br0">&#40;</span><span class="re0">$first_items</span><span class="sy0">,</span> <span class="st0">&quot;sort_items&quot;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+&nbsp;
+&nbsp;
+<span class="co1">// Begin the (X)HTML page.</span>
+<span class="sy1">?&gt;</span>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;
+        &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot;&gt;	
+&lt;head&gt;
+	&lt;title&gt;Multifeeds Test page&lt;/title&gt;
+	&lt;link rel=&quot;stylesheet&quot; href=&quot;../demo/for_the_demo/simplepie.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot; title=&quot;SimplePie Styles&quot; charset=&quot;utf-8&quot; /&gt;
+	&lt;style type=&quot;text/css&quot;&gt;
+	div#site {
+		width:600px;
+	}
+	span.footnote {
+		white-space:nowrap;
+	}
+	h1 {
+		line-height:1.4em;
+	}
+	.clearBoth {
+		clear:both;
+	}
+	&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;site&quot;&gt;
+&nbsp;
+	&lt;div class=&quot;chunk&quot;&gt;
+		&lt;h1&gt;Quick-n-Dirty Multifeeds Demo&lt;/a&gt;&lt;/h1&gt;
+	&lt;/div&gt;
+&nbsp;
+	<span class="kw2">&lt;?php</span>
+	<span class="kw1">foreach</span><span class="br0">&#40;</span><span class="re0">$first_items</span> <span class="kw1">as</span> <span class="re0">$item</span><span class="br0">&#41;</span><span class="sy0">:</span>
+		<span class="re0">$feed</span> <span class="sy0">=</span> <span class="re0">$item</span><span class="sy0">-&gt;</span><span class="me1">get_feed</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span>
+		<span class="sy1">?&gt;</span>
+&nbsp;
+		&lt;div class=&quot;chunk&quot;&gt;
+			&lt;h4&gt;&lt;a href=&quot;<span class="kw2">&lt;?php</span> <span class="kw1">echo</span> <span class="re0">$item</span><span class="sy0">-&gt;</span><span class="me1">get_permalink</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>&quot;&gt;<span class="kw2">&lt;?php</span> <span class="kw1">echo</span> <a href="http://www.php.net/html_entity_decode"><span class="kw3">html_entity_decode</span></a><span class="br0">&#40;</span><span class="re0">$item</span><span class="sy0">-&gt;</span><span class="me1">get_title</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">,</span> <span class="kw4">ENT_QUOTES</span><span class="sy0">,</span> <span class="st_h">'UTF-8'</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>&lt;/a&gt;&lt;/h4&gt;
+&nbsp;
+			<span class="kw2">&lt;?php</span> <span class="kw1">echo</span> <span class="re0">$item</span><span class="sy0">-&gt;</span><span class="me1">get_content</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>
+&nbsp;
+			<span class="kw2">&lt;?php</span> <span class="kw1">if</span> <span class="br0">&#40;</span><span class="re0">$enclosure</span> <span class="sy0">=</span> <span class="re0">$item</span><span class="sy0">-&gt;</span><span class="me1">get_enclosure</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">:</span> <span class="sy1">?&gt;</span>
+				&lt;div&gt;
+				<span class="kw2">&lt;?php</span> <span class="kw1">echo</span> <span class="re0">$enclosure</span><span class="sy0">-&gt;</span><span class="me1">native_embed</span><span class="br0">&#40;</span><a href="http://www.php.net/array"><span class="kw3">array</span></a><span class="br0">&#40;</span>
+					<span class="co1">// New 'mediaplayer' attribute shows off Flash-based MP3 and FLV playback.</span>
+					<span class="st_h">'mediaplayer'</span> <span class="sy0">=&gt;</span> <span class="st_h">'../demo/for_the_demo/mediaplayer.swf'</span>
+				<span class="br0">&#41;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>
+				&lt;/div&gt;
+			<span class="kw2">&lt;?php</span> <span class="kw1">endif</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>
+&nbsp;
+			&lt;p class=&quot;footnote&quot;&gt;Source: &lt;a href=&quot;<span class="kw2">&lt;?php</span> <span class="kw1">echo</span> <span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">get_permalink</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>&quot;&gt;<span class="kw2">&lt;?php</span> <span class="kw1">echo</span> <span class="re0">$feed</span><span class="sy0">-&gt;</span><span class="me1">get_title</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>&lt;/a&gt; | <span class="kw2">&lt;?php</span> <span class="kw1">echo</span> <span class="re0">$item</span><span class="sy0">-&gt;</span><span class="me1">get_date</span><span class="br0">&#40;</span><span class="st_h">'j M Y | g:i a'</span><span class="br0">&#41;</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>&lt;/p&gt;
+		&lt;/div&gt;
+&nbsp;
+	<span class="kw2">&lt;?php</span> <span class="kw1">endforeach</span><span class="sy0">;</span> <span class="sy1">?&gt;</span>
+&nbsp;
+	&lt;p class=&quot;footnote&quot;&gt;This is a test of the emergency broadcast system.  This is only a test&amp;hellip; beeeeeeeeeeeeeeeeeeeeeeeeeep!&lt;/p&gt;
+&nbsp;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> tutorial/how_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php.txt &middot; Last modified: 2011/03/06 03:56 (external edit)</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=tutorial%3Ahow_to_limit_the_number_of_items_displayed_per_feed_when_using_multifeeds.php&amp;1666873866" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

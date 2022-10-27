@@ -1,0 +1,1137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: API Reference</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/reference/start"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/reference/start"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/reference/start"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/reference/start"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="843d28224ea925a01f1468f4eb5db37c" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/reference/start"  title="reference:start">API Reference</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#api_reference" class="toc">API Reference</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie" class="toc">SimplePie</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#constructor" class="toc">Constructor</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#constants" class="toc">Constants</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#methods" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_item" class="toc">SimplePie_Item</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods1" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_author" class="toc">SimplePie_Author</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods2" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_category" class="toc">SimplePie_Category</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods3" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_enclosure" class="toc">SimplePie_Enclosure</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods4" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_caption" class="toc">SimplePie_Caption</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods5" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_copyright" class="toc">SimplePie_Copyright</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods6" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_credit" class="toc">SimplePie_Credit</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods7" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_rating" class="toc">SimplePie_Rating</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods8" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_restriction" class="toc">SimplePie_Restriction</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods9" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_source" class="toc">SimplePie_Source</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#methods10" class="toc">Methods</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_cache_non-public" class="toc">SimplePie_Cache (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_cache_file_non-public" class="toc">SimplePie_Cache_File (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_content_type_sniffer_non-public" class="toc">SimplePie_Content_Type_Sniffer (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_decode_html_entities_non-public" class="toc">SimplePie_Decode_HTML_Entities (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_file_non-public" class="toc">SimplePie_File (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_locator_non-public" class="toc">SimplePie_Locator (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_http_parser_non-public" class="toc">SimplePie_HTTP_Parser (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_misc_non-public" class="toc">SimplePie_Misc (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_parser_non-public" class="toc">SimplePie_Parser (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_parse_date_non-public" class="toc">SimplePie_Parse_Date (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_sanitize_non-public" class="toc">SimplePie_Sanitize (Non-Public)</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_xml_declaration_parser_non-public" class="toc">SimplePie_XML_Declaration_Parser (Non-Public)</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="api_reference" id="api_reference">API Reference</a></h1>
+<div class="level1">
+
+<p>
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> <strong>This documentation is for 1.2 only. 1.3 documentation can be found in the <a href="http://simplepie.org/api/" class="urlextern" title="http://simplepie.org/api/"  rel="nofollow">API Docs</a> section of the site.</strong>
+</p>
+
+<p>
+These are all of the public functions for SimplePie.  Our goal is to not break any of these constructors and methods for all 1.x releases.  If there are methods or constructors not mentioned here, or are marked “Non-Public”, then they are not considered public and may change tomorrow and the “no-breaking” rule does not apply to them.  The next <acronym title="Application Programming Interface">API</acronym> breakage will be in SimplePie 2.0, but that&#039;s still quite a while off. :)
+</p>
+
+<p>
+Documentation for the latest in-development build can be found in our automatically generated <a href="http://dev.simplepie.org/api/" class="urlextern" title="http://dev.simplepie.org/api/"  rel="nofollow">API documentation</a>.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="simplepie" id="simplepie">SimplePie</a></h2>
+<div class="level2">
+
+</div>
+
+<h3 class="sectionedit3"><a name="constructor" id="constructor">Constructor</a></h3>
+<div class="level3">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/start" class="wikilink1" title="reference:simplepie:start">SimplePie</a> — construct a new SimplePie object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit4"><a name="constants" id="constants">Constants</a></h3>
+<div class="level3">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/simplepie_build" class="wikilink1" title="reference:simplepie:simplepie_build">SIMPLEPIE_BUILD</a> — Defines SimplePie&#039;s build ID.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/simplepie_linkback" class="wikilink1" title="reference:simplepie:simplepie_linkback">SIMPLEPIE_LINKBACK</a> — Defines the <acronym title="Uniform Resource Locator">URL</acronym> for linking back to SimplePie&#039;s website.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/simplepie_name" class="wikilink1" title="reference:simplepie:simplepie_name">SIMPLEPIE_NAME</a> — Defines SimplePie&#039;s name.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/simplepie_url" class="wikilink1" title="reference:simplepie:simplepie_url">SIMPLEPIE_URL</a> — Defines SimplePie&#039;s home page <acronym title="Uniform Resource Locator">URL</acronym>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/simplepie_useragent" class="wikilink1" title="reference:simplepie:simplepie_useragent">SIMPLEPIE_USERAGENT</a> — Defines SimplePie&#039;s default user agent string.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/simplepie_version" class="wikilink1" title="reference:simplepie:simplepie_version">SIMPLEPIE_VERSION</a> — Defines SimplePie&#039;s version.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit5"><a name="methods" id="methods">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="configuration_required" id="configuration_required">Configuration (Required)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_feed_url" class="wikilink1" title="reference:simplepie:set_feed_url">set_feed_url()</a> — <acronym title="Uniform Resource Locator">URL</acronym> of the feed you want to parse.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="configuration_basic" id="configuration_basic">Configuration (Basic)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/enable_cache" class="wikilink1" title="reference:simplepie:enable_cache">enable_cache()</a> — Enable/disable caching in SimplePie.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/enable_order_by_date" class="wikilink1" title="reference:simplepie:enable_order_by_date">enable_order_by_date()</a> — Enable/disable the reordering of items into reverse chronological order.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_cache_duration" class="wikilink1" title="reference:simplepie:set_cache_duration">set_cache_duration()</a> — Set the minimum time for which a feed will be cached.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_cache_location" class="wikilink1" title="reference:simplepie:set_cache_location">set_cache_location()</a> — Set the folder where the cache files should be written.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_favicon_handler" class="wikilink1" title="reference:simplepie:set_favicon_handler">set_favicon_handler()</a> — Set the handler to enable the display of cached favicons.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_image_handler" class="wikilink1" title="reference:simplepie:set_image_handler">set_image_handler()</a> — Set the handler to enable the display of cached images.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_item_limit" class="wikilink1" title="reference:simplepie:set_item_limit">set_item_limit()</a> — Set a limit on how many items are returned per feed with Multifeeds.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_javascript" class="wikilink1" title="reference:simplepie:set_javascript">set_javascript()</a> — Set the query string used for the JavaScript for <a href="/wiki/reference/simplepie_enclosure/embed" class="wikilink1" title="reference:simplepie_enclosure:embed">embed()</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/strip_attributes" class="wikilink1" title="reference:simplepie:strip_attributes">strip_attributes()</a> — <acronym title="HyperText Markup Language">HTML</acronym> attributes to strip.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/strip_comments" class="wikilink1" title="reference:simplepie:strip_comments">strip_comments()</a> — Strip <acronym title="HyperText Markup Language">HTML</acronym> comments.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/strip_htmltags" class="wikilink1" title="reference:simplepie:strip_htmltags">strip_htmltags()</a> — <acronym title="HyperText Markup Language">HTML</acronym> tags to strip.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="configuration_advanced" id="configuration_advanced">Configuration (Advanced)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/enable_xml_dump" class="wikilink1" title="reference:simplepie:enable_xml_dump">enable_xml_dump()</a> — Output the raw <acronym title="Extensible Markup Language">XML</acronym> feed, after it has gone through SimplePie&#039;s filters.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/encode_instead_of_strip" class="wikilink1" title="reference:simplepie:encode_instead_of_strip">encode_instead_of_strip()</a> — Encode the <acronym title="HyperText Markup Language">HTML</acronym> tags instead of stripping them.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/force_feed" class="wikilink1" title="reference:simplepie:force_feed">force_feed()</a> — Force SimplePie to parse the content, even if it doesn&#039;t believe it&#039;s a feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/force_fsockopen" class="wikilink1" title="reference:simplepie:force_fsockopen">force_fsockopen()</a> — Use  instead of the preferred extension for fetching remote files.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/remove_div" class="wikilink1" title="reference:simplepie:remove_div">remove_div()</a> — Remove the surrounding &lt;div&gt; from <acronym title="Extensible HyperText Markup Language">XHTML</acronym> content in Atom feeds.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_autodiscovery_cache_duration" class="wikilink1" title="reference:simplepie:set_autodiscovery_cache_duration">set_autodiscovery_cache_duration()</a> — Set the maximum time for which an autodiscovered feed <acronym title="Uniform Resource Locator">URL</acronym> will be cached.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_autodiscovery_level" class="wikilink1" title="reference:simplepie:set_autodiscovery_level">set_autodiscovery_level()</a> — Set what types of autodiscovery to use.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_cache_name_function" class="wikilink1" title="reference:simplepie:set_cache_name_function">set_cache_name_function()</a> — Set the callback function used to create cache filenames.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_file" class="wikilink1" title="reference:simplepie:set_file">set_file()</a> — Set an instance of <a href="/wiki/reference/simplepie_file/start" class="wikilink1" title="reference:simplepie_file:start">SimplePie_File</a> to use as a feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_input_encoding" class="wikilink1" title="reference:simplepie:set_input_encoding">set_input_encoding()</a> — Override the character set within the feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_max_checked_feeds" class="wikilink1" title="reference:simplepie:set_max_checked_feeds">set_max_checked_feeds()</a> — Maximum number of URLs to check whether they are feeds before giving up.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_output_encoding" class="wikilink1" title="reference:simplepie:set_output_encoding">set_output_encoding()</a> — Set the output character set.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_raw_data" class="wikilink1" title="reference:simplepie:set_raw_data">set_raw_data()</a> — String of Atom/<acronym title="Rich Site Summary">RSS</acronym> data to use as a feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_stupidly_fast" class="wikilink1" title="reference:simplepie:set_stupidly_fast">set_stupidly_fast()</a> — Set the configurations to make SimplePie as fast as possible (if you don&#039;t do your own data sanitisation this can be a security hole).</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_timeout" class="wikilink1" title="reference:simplepie:set_timeout">set_timeout()</a> — Timeout for fetching remote files.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_url_replacements" class="wikilink1" title="reference:simplepie:set_url_replacements">set_url_replacements()</a> — Set <acronym title="HyperText Markup Language">HTML</acronym> attributes containing URLs that need to be resolved relative to the feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_useragent" class="wikilink1" title="reference:simplepie:set_useragent">set_useragent()</a> — Set the useragent SimplePie should use for fetching remote files.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="extending_classes_advanced" id="extending_classes_advanced">Extending Classes (Advanced)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/extending_the_simplepie_class" class="wikilink1" title="reference:simplepie:extending_the_simplepie_class">Extending the SimplePie class</a> – Notes on how to extend the <a href="/wiki/reference/simplepie/start" class="wikilink1" title="reference:simplepie:start">SimplePie</a> class like the others below.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_author_class" class="wikilink1" title="reference:simplepie:set_author_class">set_author_class()</a> – Set the class to use for authors.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_cache_class" class="wikilink1" title="reference:simplepie:set_cache_class">set_cache_class()</a> – Set the class to use for caching.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_caption_class" class="wikilink1" title="reference:simplepie:set_caption_class">set_caption_class()</a> – Set the class to use for Media <acronym title="Rich Site Summary">RSS</acronym> caption data.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_category_class" class="wikilink1" title="reference:simplepie:set_category_class">set_category_class()</a> – Set the class to use for categories.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_content_type_sniffer_class" class="wikilink1" title="reference:simplepie:set_content_type_sniffer_class">set_content_type_sniffer_class()</a> – Set the class to use for content-type sniffing.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_copyright_class" class="wikilink1" title="reference:simplepie:set_copyright_class">set_copyright_class()</a> – Set the class to use for Media <acronym title="Rich Site Summary">RSS</acronym> copyright data.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_credit_class" class="wikilink1" title="reference:simplepie:set_credit_class">set_credit_class()</a> – Set the class to use for Media <acronym title="Rich Site Summary">RSS</acronym> credit data.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_enclosure_class" class="wikilink1" title="reference:simplepie:set_enclosure_class">set_enclosure_class()</a> – Set the class to use for enclosures.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_file_class" class="wikilink1" title="reference:simplepie:set_file_class">set_file_class()</a> – Set the class to use for reading files (both local and remote).</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_item_class" class="wikilink1" title="reference:simplepie:set_item_class">set_item_class()</a> – Set the class to use for items.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_locator_class" class="wikilink1" title="reference:simplepie:set_locator_class">set_locator_class()</a> – Set the class to use for auto-discovery.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_parser_class" class="wikilink1" title="reference:simplepie:set_parser_class">set_parser_class()</a> – Set the class to use for <acronym title="Extensible Markup Language">XML</acronym> parsing.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_rating_class" class="wikilink1" title="reference:simplepie:set_rating_class">set_rating_class()</a> – Set the class to use for Media <acronym title="Rich Site Summary">RSS</acronym> rating data.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_restriction_class" class="wikilink1" title="reference:simplepie:set_restriction_class">set_restriction_class()</a> – Set the class to use for Media <acronym title="Rich Site Summary">RSS</acronym> restriction data.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_sanitize_class" class="wikilink1" title="reference:simplepie:set_sanitize_class">set_sanitize_class()</a> – Set the class to use for data sanitization.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/set_source_class" class="wikilink1" title="reference:simplepie:set_source_class">set_source_class()</a> – Set the class to use for handling <code>atom:source</code>.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="processing" id="processing">Processing</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/destruct" class="wikilink1" title="reference:simplepie:destruct">__destruct()</a> – Used for avoiding memory leaks when processing lots of feeds.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/error" class="wikilink1" title="reference:simplepie:error">error()</a> — Return the error message for the occured error.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/handle_content_type" class="wikilink1" title="reference:simplepie:handle_content_type">handle_content_type()</a> — Sets the proper <acronym title="Hyper Text Transfer Protocol">HTTP</acronym> headers for the page, setting the character set to match the output encoding.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/init" class="wikilink1" title="reference:simplepie:init">init()</a> — Initialise the feed, parsing it, etc.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="feed-level_data_basic" id="feed-level_data_basic">Feed-Level Data (Basic)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_author" class="wikilink1" title="reference:simplepie:get_author">get_author()</a> — Get a single author for the feed.  Returns a reference to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_authors" class="wikilink1" title="reference:simplepie:get_authors">get_authors()</a> — Get all authors for the feed.  Returns references to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_contributor" class="wikilink1" title="reference:simplepie:get_contributor">get_contributor()</a> — Get a single contributor for the feed.  Returns a reference to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_contributors" class="wikilink1" title="reference:simplepie:get_contributors">get_contributors()</a> — Get all contributors for the feed.  Returns references to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_copyright" class="wikilink1" title="reference:simplepie:get_copyright">get_copyright()</a> — Get the feed copyright information.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_description" class="wikilink1" title="reference:simplepie:get_description">get_description()</a> — Get the feed description.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_encoding" class="wikilink1" title="reference:simplepie:get_encoding">get_encoding()</a> — Get the character set for the returned values.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_favicon" class="wikilink1" title="reference:simplepie:get_favicon">get_favicon()</a> — Get the <acronym title="Uniform Resource Locator">URL</acronym> for the favicon of the feed&#039;s website.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_item" class="wikilink1" title="reference:simplepie:get_item">get_item()</a> — Get a single item.  Returns a reference to <a href="/wiki/reference/simplepie_item/start" class="wikilink1" title="reference:simplepie_item:start">SimplePie_Item</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_items" class="wikilink1" title="reference:simplepie:get_items">get_items()</a> — Get all the items.  Returns references to <a href="/wiki/reference/simplepie_item/start" class="wikilink1" title="reference:simplepie_item:start">SimplePie_Item</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_item_quantity" class="wikilink1" title="reference:simplepie:get_item_quantity">get_item_quantity()</a> — Get the number of items in the feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_language" class="wikilink1" title="reference:simplepie:get_language">get_language()</a> — Get the feed language.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_link" class="wikilink1" title="reference:simplepie:get_link">get_link()</a> — Get a single link.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_links" class="wikilink1" title="reference:simplepie:get_links">get_links()</a> — Get all the links of a specific relation.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_permalink" class="wikilink1" title="reference:simplepie:get_permalink">get_permalink()</a> — Get the first feed link (i.e. the permalink).</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_title" class="wikilink1" title="reference:simplepie:get_title">get_title()</a> — Get the feed title.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_type" class="wikilink1" title="reference:simplepie:get_type">get_type()</a> — Get the type of feed.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="feed-level_geodata" id="feed-level_geodata">Feed-Level GeoData</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_latitude" class="wikilink1" title="reference:simplepie:get_latitude">get_latitude()</a> — Get the feed latitude.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_longitude" class="wikilink1" title="reference:simplepie:get_longitude">get_longitude()</a> — Get the feed longitude.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="feed_logo" id="feed_logo">Feed Logo</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_image_height" class="wikilink1" title="reference:simplepie:get_image_height">get_image_height()</a> — Get the logo/image height.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_image_link" class="wikilink1" title="reference:simplepie:get_image_link">get_image_link()</a> — Get the logo/image linkback <acronym title="Uniform Resource Locator">URL</acronym>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_image_title" class="wikilink1" title="reference:simplepie:get_image_title">get_image_title()</a> — Get the logo/image title.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_image_url" class="wikilink1" title="reference:simplepie:get_image_url">get_image_url()</a> — Get the logo/image <acronym title="Uniform Resource Locator">URL</acronym>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_image_width" class="wikilink1" title="reference:simplepie:get_image_width">get_image_width()</a> — Get the logo/image width.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="feed-level_data_hacking_advanced" id="feed-level_data_hacking_advanced">Feed-Level Data Hacking (Advanced)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_all_discovered_feeds" class="wikilink1" title="reference:simplepie:get_all_discovered_feeds">get_all_discovered_feeds()</a> — Get all feeds discovered during the autodiscovery process.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_base" class="wikilink1" title="reference:simplepie:get_base">get_base()</a> – Get the <code>xml:base</code> value of a given element.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_channel_tags" class="wikilink1" title="reference:simplepie:get_channel_tags">get_channel_tags()</a> — Get the value of ANY tag in the “channel” section of the feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_feed_tags" class="wikilink1" title="reference:simplepie:get_feed_tags">get_feed_tags()</a> — Get the value of ANY tag in the “feed” section of the feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_image_tags" class="wikilink1" title="reference:simplepie:get_image_tags">get_image_tags()</a> — Get the value of ANY tag in the “image” section of the feed.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/merge_items" class="wikilink1" title="reference:simplepie:merge_items">merge_items()</a> — Merge the items of multiple feeds together.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/sanitize" class="wikilink1" title="reference:simplepie:sanitize">sanitize()</a> – Sanitizes data based on the type of data it is expected to be.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/sort_items" class="wikilink1" title="reference:simplepie:sort_items">sort_items()</a> – An over-ridable method that handles the sorting of items by some criteria.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="one-click_subscriptions" id="one-click_subscriptions">One-Click Subscriptions</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_aol" class="wikilink1" title="reference:simplepie:subscribe_aol">subscribe_aol()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in My <acronym title="America Online">AOL</acronym>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_bloglines" class="wikilink1" title="reference:simplepie:subscribe_bloglines">subscribe_bloglines()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Bloglines.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_eskobo" class="wikilink1" title="reference:simplepie:subscribe_eskobo">subscribe_eskobo()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Eskobo.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_feed" class="wikilink1" title="reference:simplepie:subscribe_feed">subscribe_feed()</a> — The actual feed <acronym title="Uniform Resource Locator">URL</acronym>, with a <code>feed:<em><code> protocol for subscribing in a desktop aggregator.
+  * <a href="/wiki/reference/simplepie/subscribe_feedfeeds" class="wikilink1" title="reference:simplepie:subscribe_feedfeeds">subscribe_feedfeeds()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in FeedFeeds.
+  * <a href="/wiki/reference/simplepie/subscribe_feedster" class="wikilink1" title="reference:simplepie:subscribe_feedster">subscribe_feedster()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Feedster.
+  * <a href="/wiki/reference/simplepie/subscribe_google" class="wikilink1" title="reference:simplepie:subscribe_google">subscribe_google()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Google Reader.
+  * <a href="/wiki/reference/simplepie/subscribe_gritwire" class="wikilink1" title="reference:simplepie:subscribe_gritwire">subscribe_gritwire()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Gritwire.
+  * <a href="/wiki/reference/simplepie/subscribe_itunes" class="wikilink1" title="reference:simplepie:subscribe_itunes">subscribe_itunes()</a> — The actual feed <acronym title="Uniform Resource Locator">URL</acronym>, with an </code>itpc:</em></code> protocol for subscribing in iTunes.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_msn" class="wikilink1" title="reference:simplepie:subscribe_msn">subscribe_msn()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in My MSN.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_netvibes" class="wikilink1" title="reference:simplepie:subscribe_netvibes">subscribe_netvibes()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Netvibes.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_newsburst" class="wikilink1" title="reference:simplepie:subscribe_newsburst">subscribe_newsburst()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Newsburst.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_newsgator" class="wikilink1" title="reference:simplepie:subscribe_newsgator">subscribe_newsgator()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Newsgator.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_odeo" class="wikilink1" title="reference:simplepie:subscribe_odeo">subscribe_odeo()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Odeo.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_outlook" class="wikilink1" title="reference:simplepie:subscribe_outlook">subscribe_outlook()</a> — The actual feed <acronym title="Uniform Resource Locator">URL</acronym>, with an <code>outlook:<em><code> protocol for subscribing in Microsoft Outlook 2007.
+  * <a href="/wiki/reference/simplepie/subscribe_podcast" class="wikilink1" title="reference:simplepie:subscribe_podcast">subscribe_podcast()</a> — The actual feed <acronym title="Uniform Resource Locator">URL</acronym>, with a </code>podcast:</em></code> protocol for subscribing in a desktop podcast player.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_podnova" class="wikilink1" title="reference:simplepie:subscribe_podnova">subscribe_podnova()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Podnova.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_rojo" class="wikilink1" title="reference:simplepie:subscribe_rojo">subscribe_rojo()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in Rojo.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_url" class="wikilink1" title="reference:simplepie:subscribe_url">subscribe_url()</a> — The actual feed <acronym title="Uniform Resource Locator">URL</acronym>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/subscribe_yahoo" class="wikilink1" title="reference:simplepie:subscribe_yahoo">subscribe_yahoo()</a> — <acronym title="Uniform Resource Locator">URL</acronym> for subscribing in My Yahoo!</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit6"><a name="simplepie_item" id="simplepie_item">SimplePie_Item</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/start" class="wikilink1" title="reference:simplepie_item:start">SimplePie_Item</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit7"><a name="methods1" id="methods1">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="item-level_data_basic" id="item-level_data_basic">Item-Level Data (Basic)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_author" class="wikilink1" title="reference:simplepie_item:get_author">get_author()</a> — Get a single author for the post.  Returns a reference to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_authors" class="wikilink1" title="reference:simplepie_item:get_authors">get_authors()</a> — Get all authors for the post.  Returns references to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_categories" class="wikilink1" title="reference:simplepie_item:get_categories">get_categories()</a> — Get all categories for the post.  Returns a reference to <a href="/wiki/reference/simplepie_category/start" class="wikilink1" title="reference:simplepie_category:start">SimplePie_Category</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_category" class="wikilink1" title="reference:simplepie_item:get_category">get_category()</a> — Get a single category for the post.  Returns references to <a href="/wiki/reference/simplepie_category/start" class="wikilink1" title="reference:simplepie_category:start">SimplePie_Category</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_content" class="wikilink1" title="reference:simplepie_item:get_content">get_content()</a> — Get the content of the post (prefers full-content)</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_contributor" class="wikilink1" title="reference:simplepie_item:get_contributor">get_contributor()</a> — Get a single contributor for the post.  Returns a reference to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_contributors" class="wikilink1" title="reference:simplepie_item:get_contributors">get_contributors()</a> — Get all contributors for the post.  Returns references to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_copyright" class="wikilink1" title="reference:simplepie_item:get_copyright">get_copyright()</a> — Get the copyright information for the post.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_date" class="wikilink1" title="reference:simplepie_item:get_date">get_date()</a> — Get the date for the post.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_description" class="wikilink1" title="reference:simplepie_item:get_description">get_description()</a> — Get the content of the post (prefers summaries)</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_enclosure" class="wikilink1" title="reference:simplepie_item:get_enclosure">get_enclosure()</a> — Get a single enclosure for the post.  Returns a reference to <a href="/wiki/reference/simplepie_enclosure/start" class="wikilink1" title="reference:simplepie_enclosure:start">SimplePie_Enclosure</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_enclosures" class="wikilink1" title="reference:simplepie_item:get_enclosures">get_enclosures()</a> — Get all enclosures for the post.  Returns references to <a href="/wiki/reference/simplepie_enclosure/start" class="wikilink1" title="reference:simplepie_enclosure:start">SimplePie_Enclosure</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_feed" class="wikilink1" title="reference:simplepie_item:get_feed">get_feed()</a> — Get a reference to the parent feed object.  Returns a reference to <a href="/wiki/reference/simplepie/start" class="wikilink1" title="reference:simplepie:start">SimplePie</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_id" class="wikilink1" title="reference:simplepie_item:get_id">get_id()</a> — Get the unique identifier for the post.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_link" class="wikilink1" title="reference:simplepie_item:get_link">get_link()</a> — Get a single link for the post.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_links" class="wikilink1" title="reference:simplepie_item:get_links">get_links()</a> — Get all links for the post of a specific relation.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_local_date" class="wikilink1" title="reference:simplepie_item:get_local_date">get_local_date()</a> — Get the localized date for the post.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_permalink" class="wikilink1" title="reference:simplepie_item:get_permalink">get_permalink()</a> — Get the first link for the post (i.e. the permalink).</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_source" class="wikilink1" title="reference:simplepie_item:get_source">get_source()</a> — Get a reference to the feed referenced in <code>atom:source</code>.  Returns a reference to <a href="/wiki/reference/simplepie_source/start" class="wikilink1" title="reference:simplepie_source:start">SimplePie_Source</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_title" class="wikilink1" title="reference:simplepie_item:get_title">get_title()</a> — Get the title for the post.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="item-level_geodata" id="item-level_geodata">Item-Level GeoData</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_latitude" class="wikilink1" title="reference:simplepie_item:get_latitude">get_latitude()</a> — Get the post latitude.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_longitude" class="wikilink1" title="reference:simplepie_item:get_longitude">get_longitude()</a> — Get the post longitude.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="item-level_data_hacking_advanced" id="item-level_data_hacking_advanced">Item-Level Data Hacking (Advanced)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_base" class="wikilink1" title="reference:simplepie:get_base">get_base()</a> – Get the <code>xml:base</code> value of a given element.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_item_tags" class="wikilink1" title="reference:simplepie_item:get_item_tags">get_item_tags()</a> — Get the value of ANY tag in the item.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/sanitize" class="wikilink1" title="reference:simplepie:sanitize">sanitize()</a> – Sanitizes data based on the type of data it is expected to be.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="bookmarking" id="bookmarking">Bookmarking</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_service" class="wikilink1" title="reference:simplepie_item:add_to_service">add_to_service()</a> — Generic method for adding more “add to” services.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_blinklist" class="wikilink1" title="reference:simplepie_item:add_to_blinklist">add_to_blinklist()</a> — Add the post to Blinklist.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_blogmarks" class="wikilink1" title="reference:simplepie_item:add_to_blogmarks">add_to_blogmarks()</a> — Add the post to Blogmarks.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_delicious" class="wikilink1" title="reference:simplepie_item:add_to_delicious">add_to_delicious()</a> — Add the post to Del.icio.us.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_digg" class="wikilink1" title="reference:simplepie_item:add_to_digg">add_to_digg()</a> — Add the post to Digg.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_furl" class="wikilink1" title="reference:simplepie_item:add_to_furl">add_to_furl()</a> — Add the post to Furl.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_magnolia" class="wikilink1" title="reference:simplepie_item:add_to_magnolia">add_to_magnolia()</a> — Add the post to Ma.gnolia.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_myweb20" class="wikilink1" title="reference:simplepie_item:add_to_myweb20">add_to_myweb20()</a> — Add the post to My Web 2.0.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_newsvine" class="wikilink1" title="reference:simplepie_item:add_to_newsvine">add_to_newsvine()</a> — Add the post to Newsvine.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_reddit" class="wikilink1" title="reference:simplepie_item:add_to_reddit">add_to_reddit()</a> — Add the post to Reddit.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_segnalo" class="wikilink1" title="reference:simplepie_item:add_to_segnalo">add_to_segnalo()</a> — Add the post to Segnalo.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_simpy" class="wikilink1" title="reference:simplepie_item:add_to_simpy">add_to_simpy()</a> — Add the post to Simpy.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_spurl" class="wikilink1" title="reference:simplepie_item:add_to_spurl">add_to_spurl()</a> — Add the post to Spurl.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/add_to_wists" class="wikilink1" title="reference:simplepie_item:add_to_wists">add_to_wists()</a> — Add the post to Wists.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/search_technorati" class="wikilink1" title="reference:simplepie_item:search_technorati">search_technorati()</a> — Search for discussions about the post.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit8"><a name="simplepie_author" id="simplepie_author">SimplePie_Author</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit9"><a name="methods2" id="methods2">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="author-level_data" id="author-level_data">Author-Level Data</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_author/get_email" class="wikilink1" title="reference:simplepie_author:get_email">get_email()</a> — Get the author&#039;s email address.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_author/get_link" class="wikilink1" title="reference:simplepie_author:get_link">get_link()</a> — Get the author&#039;s link.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_author/get_name" class="wikilink1" title="reference:simplepie_author:get_name">get_name()</a> — Get the author&#039;s name.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit10"><a name="simplepie_category" id="simplepie_category">SimplePie_Category</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_category/start" class="wikilink1" title="reference:simplepie_category:start">SimplePie_Category</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit11"><a name="methods3" id="methods3">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="category-level_data" id="category-level_data">Category-Level Data</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_category/get_term" class="wikilink1" title="reference:simplepie_category:get_term">get_term()</a> — Get the category&#039;s identifier.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_category/get_scheme" class="wikilink1" title="reference:simplepie_category:get_scheme">get_scheme()</a> — Get the category&#039;s categorization scheme identifier.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_category/get_label" class="wikilink1" title="reference:simplepie_category:get_label">get_label()</a> — Get the category&#039;s human-readable label.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit12"><a name="simplepie_enclosure" id="simplepie_enclosure">SimplePie_Enclosure</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/start" class="wikilink1" title="reference:simplepie_enclosure:start">SimplePie_Enclosure</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit13"><a name="methods4" id="methods4">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="enclosure-level_data" id="enclosure-level_data">Enclosure-Level Data</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_extension" class="wikilink1" title="reference:simplepie_enclosure:get_extension">get_extension()</a> – Get the file extension of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_handler" class="wikilink1" title="reference:simplepie_enclosure:get_handler">get_handler()</a> – Get the preferred plugin handler for this content.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_length" class="wikilink1" title="reference:simplepie_enclosure:get_length">get_length()</a> – Get the file size (in bytes) of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_link" class="wikilink1" title="reference:simplepie_enclosure:get_link">get_link()</a> – Get the <acronym title="Uniform Resource Locator">URL</acronym> of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_real_type" class="wikilink1" title="reference:simplepie_enclosure:get_real_type">get_real_type()</a> – Get the mime type that the enclosure likely is (despite the <a href="/wiki/reference/simplepie_enclosure/get_type" class="wikilink1" title="reference:simplepie_enclosure:get_type">get_type()</a> setting)</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_size" class="wikilink1" title="reference:simplepie_enclosure:get_size">get_size()</a> – Get the file size (in Mebibytes) of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_type" class="wikilink1" title="reference:simplepie_enclosure:get_type">get_type()</a> – Get the mime type of the enclosure.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="extended_enclosure-level_data_media_rss_itunes_rss" id="extended_enclosure-level_data_media_rss_itunes_rss">Extended Enclosure-Level Data (Media RSS, iTunes RSS)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_bitrate" class="wikilink1" title="reference:simplepie_enclosure:get_bitrate">get_bitrate()</a> – Get the bitrate of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_caption" class="wikilink1" title="reference:simplepie_enclosure:get_caption">get_caption()</a> – Get a single caption for the enclosure.  Returns a reference to <a href="/wiki/reference/simplepie_caption/start" class="wikilink1" title="reference:simplepie_caption:start">SimplePie_Caption</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_captions" class="wikilink1" title="reference:simplepie_enclosure:get_captions">get_captions()</a> – Get all captions for the enclosure.  Returns references to <a href="/wiki/reference/simplepie_caption/start" class="wikilink1" title="reference:simplepie_caption:start">SimplePie_Caption</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_category" class="wikilink1" title="reference:simplepie_enclosure:get_category">get_category()</a> – Get a single category for the enclosure.  Returns a reference to <a href="/wiki/reference/simplepie_category/start" class="wikilink1" title="reference:simplepie_category:start">SimplePie_Category</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_categories" class="wikilink1" title="reference:simplepie_enclosure:get_categories">get_categories()</a> – Get all categories for the enclosure.  Returns references to <a href="/wiki/reference/simplepie_category/start" class="wikilink1" title="reference:simplepie_category:start">SimplePie_Category</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_channels" class="wikilink1" title="reference:simplepie_enclosure:get_channels">get_channels()</a> – Get the number of audio channels for the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_copyright" class="wikilink1" title="reference:simplepie_enclosure:get_copyright">get_copyright()</a> – Get the copyright info for the enclosure.  Returns a reference to <a href="/wiki/reference/simplepie_copyright/start" class="wikilink1" title="reference:simplepie_copyright:start">SimplePie_Copyright</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_credit" class="wikilink1" title="reference:simplepie_enclosure:get_credit">get_credit()</a> – Get a single credit for the enclosure.  Returns a reference to <a href="/wiki/reference/simplepie_credit/start" class="wikilink1" title="reference:simplepie_credit:start">SimplePie_Credit</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_credits" class="wikilink1" title="reference:simplepie_enclosure:get_credits">get_credits()</a> – Get all credits for the enclosure.  Returns references to <a href="/wiki/reference/simplepie_credit/start" class="wikilink1" title="reference:simplepie_credit:start">SimplePie_Credit</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_description" class="wikilink1" title="reference:simplepie_enclosure:get_description">get_description()</a> – Get the description of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_duration" class="wikilink1" title="reference:simplepie_enclosure:get_duration">get_duration()</a> – Get the duration (in seconds) of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_expression" class="wikilink1" title="reference:simplepie_enclosure:get_expression">get_expression()</a> – Get the expression of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_framerate" class="wikilink1" title="reference:simplepie_enclosure:get_framerate">get_framerate()</a> – Get the framerate of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_hash" class="wikilink1" title="reference:simplepie_enclosure:get_hash">get_hash()</a> – Get a single hash for the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_hashes" class="wikilink1" title="reference:simplepie_enclosure:get_hashes">get_hashes()</a> – Get all hashes for the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_height" class="wikilink1" title="reference:simplepie_enclosure:get_height">get_height()</a> – Get the height of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_keyword" class="wikilink1" title="reference:simplepie_enclosure:get_keyword">get_keyword()</a> – Get a single keyword for the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_keywords" class="wikilink1" title="reference:simplepie_enclosure:get_keywords">get_keywords()</a> – Get all keywords for the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_language" class="wikilink1" title="reference:simplepie_enclosure:get_language">get_language()</a> – Get the language of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_medium" class="wikilink1" title="reference:simplepie_enclosure:get_medium">get_medium()</a> – Get the medium of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_player" class="wikilink1" title="reference:simplepie_enclosure:get_player">get_player()</a> – Get the player page for the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_rating" class="wikilink1" title="reference:simplepie_enclosure:get_rating">get_rating()</a> – Get a single rating for the enclosure.  Returns a reference to <a href="/wiki/reference/simplepie_rating/start" class="wikilink1" title="reference:simplepie_rating:start">SimplePie_Rating</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_ratings" class="wikilink1" title="reference:simplepie_enclosure:get_ratings">get_ratings()</a> – Get all ratings for the enclosure.  Returns references to <a href="/wiki/reference/simplepie_rating/start" class="wikilink1" title="reference:simplepie_rating:start">SimplePie_Rating</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_restriction" class="wikilink1" title="reference:simplepie_enclosure:get_restriction">get_restriction()</a> – Get a single restriction for the enclosure.  Returns a reference to <a href="/wiki/reference/simplepie_restriction/start" class="wikilink1" title="reference:simplepie_restriction:start">SimplePie_Restriction</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_restrictions" class="wikilink1" title="reference:simplepie_enclosure:get_restrictions">get_restrictions()</a> – Get all restrictions for the enclosure.  Returns references to <a href="/wiki/reference/simplepie_restriction/start" class="wikilink1" title="reference:simplepie_restriction:start">SimplePie_Restriction</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_sampling_rate" class="wikilink1" title="reference:simplepie_enclosure:get_sampling_rate">get_sampling_rate()</a> – Get the sampling rate of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_thumbnail" class="wikilink1" title="reference:simplepie_enclosure:get_thumbnail">get_thumbnail()</a> – Get a single thumbnail for the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_thumbnails" class="wikilink1" title="reference:simplepie_enclosure:get_thumbnails">get_thumbnails()</a> – Get all thumbnails for the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_title" class="wikilink1" title="reference:simplepie_enclosure:get_title">get_title()</a> – Get the title of the enclosure.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/get_width" class="wikilink1" title="reference:simplepie_enclosure:get_width">get_width()</a> – Get the width of the enclosure.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="embedding" id="embedding">Embedding</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/embed" class="wikilink1" title="reference:simplepie_enclosure:embed">embed()</a> — Automatically embed the enclosure in the page using JavaScript.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_enclosure/native_embed" class="wikilink1" title="reference:simplepie_enclosure:native_embed">native_embed()</a> — Automatically embed the enclosure in the page using the &lt;embed&gt; tag.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit14"><a name="simplepie_caption" id="simplepie_caption">SimplePie_Caption</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_caption/start" class="wikilink1" title="reference:simplepie_caption:start">SimplePie_Caption</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit15"><a name="methods5" id="methods5">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="caption-level_data" id="caption-level_data">Caption-Level Data</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_caption/get_endtime" class="wikilink1" title="reference:simplepie_caption:get_endtime">get_endtime()</a> — Get the time that a caption should end.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_caption/get_language" class="wikilink1" title="reference:simplepie_caption:get_language">get_language()</a> — Get the language of the caption.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_caption/get_starttime" class="wikilink1" title="reference:simplepie_caption:get_starttime">get_starttime()</a> — Get the time that a caption should start.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_caption/get_text" class="wikilink1" title="reference:simplepie_caption:get_text">get_text()</a> — Get the text to display.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_caption/get_type" class="wikilink1" title="reference:simplepie_caption:get_type">get_type()</a> — Get the type of the caption (<code>text</code> or <code>html</code>).</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit16"><a name="simplepie_copyright" id="simplepie_copyright">SimplePie_Copyright</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_copyright/start" class="wikilink1" title="reference:simplepie_copyright:start">SimplePie_Copyright</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit17"><a name="methods6" id="methods6">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="copyright-level_data" id="copyright-level_data">Copyright-Level Data</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_copyright/get_attribution" class="wikilink1" title="reference:simplepie_copyright:get_attribution">get_attribution()</a> — Get the copyright attribution.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_copyright/get_url" class="wikilink1" title="reference:simplepie_copyright:get_url">get_url()</a> — Get the <acronym title="Uniform Resource Locator">URL</acronym> containing more information.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit18"><a name="simplepie_credit" id="simplepie_credit">SimplePie_Credit</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_credit/start" class="wikilink1" title="reference:simplepie_credit:start">SimplePie_Credit</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit19"><a name="methods7" id="methods7">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="credit-level_data" id="credit-level_data">Credit-Level Data</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_credit/get_name" class="wikilink1" title="reference:simplepie_credit:get_name">get_name()</a> — Get the credited person/entity&#039;s name.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_credit/get_role" class="wikilink1" title="reference:simplepie_credit:get_role">get_role()</a> — Get the credited role.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_credit/get_scheme" class="wikilink1" title="reference:simplepie_credit:get_scheme">get_scheme()</a> — Get the organizational scheme for the credit.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit20"><a name="simplepie_rating" id="simplepie_rating">SimplePie_Rating</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_rating/start" class="wikilink1" title="reference:simplepie_rating:start">SimplePie_Rating</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit21"><a name="methods8" id="methods8">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="rating-level_data" id="rating-level_data">Rating-Level Data</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_rating/get_scheme" class="wikilink1" title="reference:simplepie_rating:get_scheme">get_scheme()</a> — Get the organizational scheme for the rating.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_rating/get_value" class="wikilink1" title="reference:simplepie_rating:get_value">get_value()</a> — Get the rating itself.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit22"><a name="simplepie_restriction" id="simplepie_restriction">SimplePie_Restriction</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_restriction/start" class="wikilink1" title="reference:simplepie_restriction:start">SimplePie_Restriction</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit23"><a name="methods9" id="methods9">Methods</a></h3>
+<div class="level3">
+
+</div>
+
+<h4><a name="restriction-level_data" id="restriction-level_data">Restriction-Level Data</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_restriction/get_relationship" class="wikilink1" title="reference:simplepie_restriction:get_relationship">get_relationship()</a> — Get whether it&#039;s <code>allow</code> or <code>deny</code>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_restriction/get_type" class="wikilink1" title="reference:simplepie_restriction:get_type">get_type()</a> — Get the type of restriction.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_restriction/get_value" class="wikilink1" title="reference:simplepie_restriction:get_value">get_value()</a> — Get the list of things that are restricted.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit24"><a name="simplepie_source" id="simplepie_source">SimplePie_Source</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_source/start" class="wikilink1" title="reference:simplepie_source:start">SimplePie_Source</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit25"><a name="methods10" id="methods10">Methods</a></h3>
+<div class="level3">
+
+<p>
+Most of these methods are identical to those of <a href="/wiki/reference/simplepie/start" class="wikilink1" title="reference:simplepie:start">SimplePie</a> and <a href="/wiki/reference/simplepie_item/start" class="wikilink1" title="reference:simplepie_item:start">SimplePie_Item</a> methods, so we&#039;re linking back to those docs.
+</p>
+
+</div>
+
+<h4><a name="source-level_data_basic" id="source-level_data_basic">Source-Level Data (Basic)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_author" class="wikilink1" title="reference:simplepie_item:get_author">get_author()</a> – Get a single author for the source.  Returns a reference to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_authors" class="wikilink1" title="reference:simplepie_item:get_authors">get_authors()</a> – Get all authors for the source.  Returns references to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_categories" class="wikilink1" title="reference:simplepie_item:get_categories">get_categories()</a> – Get all categories for the source.  Returns a reference to <a href="/wiki/reference/simplepie_category/start" class="wikilink1" title="reference:simplepie_category:start">SimplePie_Category</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_category" class="wikilink1" title="reference:simplepie_item:get_category">get_category()</a> – Get a single category for the source.  Returns references to <a href="/wiki/reference/simplepie_category/start" class="wikilink1" title="reference:simplepie_category:start">SimplePie_Category</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_contributor" class="wikilink1" title="reference:simplepie_item:get_contributor">get_contributor()</a> – Get a single contributor for the source.  Returns a reference to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_contributors" class="wikilink1" title="reference:simplepie_item:get_contributors">get_contributors()</a> – Get all contributors for the source.  Returns references to <a href="/wiki/reference/simplepie_author/start" class="wikilink1" title="reference:simplepie_author:start">SimplePie_Author</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_copyright" class="wikilink1" title="reference:simplepie_item:get_copyright">get_copyright()</a> – Get the copyright information for the source.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_description" class="wikilink1" title="reference:simplepie_item:get_description">get_description()</a> – Get the content of the source.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_image_url" class="wikilink1" title="reference:simplepie:get_image_url">get_image_url()</a> – Get the logo/image <acronym title="Uniform Resource Locator">URL</acronym>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_source/get_item" class="wikilink1" title="reference:simplepie_source:get_item">get_item()</a> – Get a reference to the parent item object. Returns a reference to <a href="/wiki/reference/simplepie_item/start" class="wikilink1" title="reference:simplepie_item:start">SimplePie_Item</a>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_language" class="wikilink1" title="reference:simplepie:get_language">get_language()</a> – Get the source language.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_link" class="wikilink1" title="reference:simplepie_item:get_link">get_link()</a> – Get a single link for the source.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_links" class="wikilink1" title="reference:simplepie_item:get_links">get_links()</a> – Get all links for the source of a specific relation.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_permalink" class="wikilink1" title="reference:simplepie_item:get_permalink">get_permalink()</a> – Get the first link for the source (i.e. the permalink).</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_title" class="wikilink1" title="reference:simplepie_item:get_title">get_title()</a> – Get the title for the source.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="source-level_geodata" id="source-level_geodata">Source-Level GeoData</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_latitude" class="wikilink1" title="reference:simplepie_item:get_latitude">get_latitude()</a> – Get the source latitude.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_item/get_longitude" class="wikilink1" title="reference:simplepie_item:get_longitude">get_longitude()</a> – Get the source longitude.</div>
+</li>
+</ul>
+
+</div>
+
+<h4><a name="source-level_data_hacking_advanced" id="source-level_data_hacking_advanced">Source-Level Data Hacking (Advanced)</a></h4>
+<div class="level4">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/get_base" class="wikilink1" title="reference:simplepie:get_base">get_base()</a> – Get the <code>xml:base</code> value of a given element.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_source/get_source_tags" class="wikilink1" title="reference:simplepie_source:get_source_tags">get_source_tags()</a> – Get the value of ANY tag in the source.</div>
+</li>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie/sanitize" class="wikilink1" title="reference:simplepie:sanitize">sanitize()</a> – Sanitizes data based on the type of data it is expected to be.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit26"><a name="simplepie_cache_non-public" id="simplepie_cache_non-public">SimplePie_Cache (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_cache/start" class="wikilink1" title="reference:simplepie_cache:start">SimplePie_Cache</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit27"><a name="simplepie_cache_file_non-public" id="simplepie_cache_file_non-public">SimplePie_Cache_File (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_cache_file/start" class="wikilink1" title="reference:simplepie_cache_file:start">SimplePie_Cache_File</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit28"><a name="simplepie_content_type_sniffer_non-public" id="simplepie_content_type_sniffer_non-public">SimplePie_Content_Type_Sniffer (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_content_type_sniffer/start" class="wikilink1" title="reference:simplepie_content_type_sniffer:start">SimplePie_Content_Type_Sniffer</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit29"><a name="simplepie_decode_html_entities_non-public" id="simplepie_decode_html_entities_non-public">SimplePie_Decode_HTML_Entities (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_decode_html_entities/start" class="wikilink1" title="reference:simplepie_decode_html_entities:start">SimplePie_Decode_HTML_Entities</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit30"><a name="simplepie_file_non-public" id="simplepie_file_non-public">SimplePie_File (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_file/start" class="wikilink1" title="reference:simplepie_file:start">SimplePie_File</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit31"><a name="simplepie_locator_non-public" id="simplepie_locator_non-public">SimplePie_Locator (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_locator/start" class="wikilink1" title="reference:simplepie_locator:start">SimplePie_Locator</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit32"><a name="simplepie_http_parser_non-public" id="simplepie_http_parser_non-public">SimplePie_HTTP_Parser (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_http_parser/start" class="wikilink1" title="reference:simplepie_http_parser:start">SimplePie_HTTP_Parser</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit33"><a name="simplepie_misc_non-public" id="simplepie_misc_non-public">SimplePie_Misc (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_misc/start" class="wikilink1" title="reference:simplepie_misc:start">SimplePie_Misc</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit34"><a name="simplepie_parser_non-public" id="simplepie_parser_non-public">SimplePie_Parser (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_parser/start" class="wikilink1" title="reference:simplepie_parser:start">SimplePie_Parser</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit35"><a name="simplepie_parse_date_non-public" id="simplepie_parse_date_non-public">SimplePie_Parse_Date (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_parse_date/start" class="wikilink1" title="reference:simplepie_parse_date:start">SimplePie_Parse_Date</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit36"><a name="simplepie_sanitize_non-public" id="simplepie_sanitize_non-public">SimplePie_Sanitize (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_sanitize/start" class="wikilink1" title="reference:simplepie_sanitize:start">SimplePie_Sanitize</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit37"><a name="simplepie_xml_declaration_parser_non-public" id="simplepie_xml_declaration_parser_non-public">SimplePie_XML_Declaration_Parser (Non-Public)</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="/wiki/reference/simplepie_xml_declaration_parser/start" class="wikilink1" title="reference:simplepie_xml_declaration_parser:start">SimplePie_XML_Declaration_Parser</a> — Learn more about this object.</div>
+</li>
+</ul>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> reference/start.txt &middot; Last modified: 2013/08/11 04:57 (external edit)</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=reference%3Astart&amp;1666873862" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

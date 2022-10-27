@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<playlist version="1" xmlns="http://xspf.org/ns/0/">
+	<trackList>
+		<track><location>/images/headers/oneclick_greader.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/plugins_wordpress.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/applications_timeline.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/plugins_mediawiki.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/mashups.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/oneclick_odeo.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/applications_moonmoon.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/languages_chinese.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/podcasting_odeo.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/languages_arabic.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/applications_facebook.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/personal_movies.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/podcasting_mp3.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/oneclick_delicious.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/international.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/plugins_drupal.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/oneclick_magnolia.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/photorrific.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/safety.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/languages_russian.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/autodiscovery.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/podcasting_quicktime.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/applications_theweblist.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/plugins_joomla.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/simple.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/personal_music.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/plugins_textpattern.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/rss_or_atom.png</location><info>/downloads/</info></track>
+		<track><location>/images/headers/plugins_dokuwiki.png</location><info>/downloads/</info></track>
+	</trackList>
+</playlist>

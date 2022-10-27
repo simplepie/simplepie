@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: SimplePie Plugin for WordPress</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/start"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/start"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/start"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/start"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="82131617f0f8b1649452f4b9fc846238" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/plugins/start"  title="plugins:start">SimplePie Plugins and Integration</a> &raquo; <a href="/wiki/plugins/wordpress/start"  title="plugins:wordpress:start">WordPress</a> &raquo; <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/start"  title="plugins:wordpress:simplepie_plugin_for_wordpress:start">SimplePie Plugin for WordPress</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#simplepie_plugin_for_wordpress" class="toc">SimplePie Plugin for WordPress</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#the_basics" class="toc">The Basics</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#navigation" class="toc">Navigation</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#about_the_plugin" class="toc">About the Plugin</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#brief_version_history" class="toc">Brief Version History</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#what_do_i_need_to_know" class="toc">What Do I Need To Know?</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="simplepie_plugin_for_wordpress" id="simplepie_plugin_for_wordpress">SimplePie Plugin for WordPress</a></h1>
+<div class="level1">
+
+</div>
+
+<h2 class="sectionedit2"><a name="the_basics" id="the_basics">The Basics</a></h2>
+<div class="level2">
+<div class="table sectionedit3"><table class="inline">
+	<tr class="row0">
+		<th class="col0 rightalign">  Main page </th><td class="col1"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress">SimplePie Plugin for WordPress</a> </td>
+	</tr>
+	<tr class="row1">
+		<th class="col0 rightalign">  Author </th><td class="col1"> <a href="http://simplepie.org" class="urlextern" title="http://simplepie.org"  rel="nofollow">Ryan Parman</a> </td>
+	</tr>
+	<tr class="row2">
+		<th class="col0 rightalign">  Plugin Version </th><td class="col1"> 2.2.1 </td>
+	</tr>
+	<tr class="row3">
+		<th class="col0 rightalign">  Compatible WordPress version </th><td class="col1"> 2.x (2.5 recommended) </td>
+	</tr>
+	<tr class="row4">
+		<th class="col0 rightalign">  Download </th><td class="col1"> <a href="http://wordpress.org/extend/plugins/simplepie-plugin-for-wordpress/" class="urlextern" title="http://wordpress.org/extend/plugins/simplepie-plugin-for-wordpress/"  rel="nofollow">Download</a> </td>
+	</tr>
+	<tr class="row5">
+		<th class="col0 rightalign">  Required SimplePie version </th><td class="col1"> 1.1.1 </td>
+	</tr>
+	<tr class="row6">
+		<th class="col0 rightalign">  Leverages <a href="/wiki/plugins/wordpress/simplepie_core" class="wikilink1" title="plugins:wordpress:simplepie_core">SimplePie Core</a> </th><td class="col1"> Yes </td>
+	</tr>
+	<tr class="row7">
+		<th class="col0 rightalign">  Optional Helpers </th><td class="col1"> <a href="http://wordpress.org/extend/plugins/exec-php/" class="urlextern" title="http://wordpress.org/extend/plugins/exec-php/"  rel="nofollow">Exec-PHP</a>, <a href="http://wordpress.org/extend/plugins/php-code-widget/" class="urlextern" title="http://wordpress.org/extend/plugins/php-code-widget/"  rel="nofollow">PHP Code Widget</a> </td>
+	</tr>
+	<tr class="row8">
+		<th class="col0 rightalign">  Plugin Support </th><td class="col1"> <a href="http://tech.groups.yahoo.com/group/simplepie-support/" class="urlextern" title="http://tech.groups.yahoo.com/group/simplepie-support/"  rel="nofollow">http://tech.groups.yahoo.com/group/simplepie-support/</a> </td>
+	</tr>
+	<tr class="row9">
+		<th class="col0 rightalign">  Bugs and Feature Requests </th><td class="col1"> <a href="http://github.com/simplepie/wordpress/issues" class="urlextern" title="http://github.com/simplepie/wordpress/issues"  rel="nofollow">http://github.com/simplepie/wordpress/issues</a> </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h2 class="sectionedit4"><a name="navigation" id="navigation">Navigation</a></h2>
+<div class="level2">
+<div class="table sectionedit5"><table class="inline">
+	<tr class="row0">
+		<th class="col0"> → </th><td class="col1"> <span class="curid"><a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/start" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:start">Overview</a></span> </td><td class="col2"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/installation" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:installation">Installation</a> </td><td class="col3"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/usage" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:usage">Getting Started</a> </td><td class="col4"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/customization" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:customization">Customization</a> </td><td class="col5"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/processing" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:processing">Post-Processing</a> </td><td class="col6"> <a href="/wiki/plugins/wordpress/simplepie_plugin_for_wordpress/troubleshooting" class="wikilink1" title="plugins:wordpress:simplepie_plugin_for_wordpress:troubleshooting">Troubleshooting</a> </td>
+	</tr>
+</table></div>
+
+</div>
+
+<h2 class="sectionedit6"><a name="about_the_plugin" id="about_the_plugin">About the Plugin</a></h2>
+<div class="level2">
+
+<p>
+This plugin has just about everything you&#039;d need for working with feeds in WordPress, and has a TON of features including:
+</p>
+<ul>
+<li class="level1"><div class="li"> A configuration pane under the Options tab in the WordPress software.</div>
+</li>
+<li class="level1"><div class="li"> “Multifeeds” support.</div>
+</li>
+<li class="level1"><div class="li"> MUCH better control over the plugin&#039;s output. Supports a simple templating system that allows:</div>
+<ul>
+<li class="level2"><div class="li"> Simple, easy-to-use tags for nearly every piece of data that SimplePie can output.</div>
+</li>
+<li class="level2"><div class="li"> Support for multiple templates.</div>
+</li>
+<li class="level2"><div class="li"> Global configuration of default values for several configuration options.</div>
+</li>
+<li class="level2"><div class="li"> Ability to override the defaults for any given feed – including giving a feed it&#039;s own output template.</div>
+</li>
+<li class="level2"><div class="li"> Ability to post-process feed data (e.g. stripping out all content except for images).</div>
+</li>
+</ul>
+</li>
+<li class="level1"><div class="li"> No need to manually set up cache folders.</div>
+</li>
+<li class="level1"><div class="li"> Support for internationalized domain names.</div>
+</li>
+<li class="level1"><div class="li"> Support for short descriptions is configurable.</div>
+</li>
+<li class="level1"><div class="li"> And more!</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit7"><a name="brief_version_history" id="brief_version_history">Brief Version History</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> 2.2: Added support for setting your preferred cache location, improvements to error handling, support for more Media <acronym title="Rich Site Summary">RSS</acronym> data, support for new SimplePie 1.1 methods, and stopped bundling the SimplePie <acronym title="Application Programming Interface">API</acronym> in favor of relying on the <a href="http://wordpress.org/extend/plugins/simplepie-core/" class="urlextern" title="http://wordpress.org/extend/plugins/simplepie-core/"  rel="nofollow">SimplePie Core</a> extension.</div>
+</li>
+<li class="level1"><div class="li"> 2.1: Added support for feed post-processing, better error handling, and fixed issues with installing in the wrong location.</div>
+</li>
+<li class="level1"><div class="li"> 2.0: Complete re-write from scratch. Now a full-fledged WordPress plugin complete with control panel.</div>
+</li>
+<li class="level1"><div class="li"> 1.2: Added support for the &#039;showtitle&#039; and &#039;alttitle&#039; keywords.</div>
+</li>
+<li class="level1"><div class="li"> 1.1: Better error handling, and support for the &#039;error&#039; keyword.</div>
+</li>
+<li class="level1"><div class="li"> 1.0: First release.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit8"><a name="what_do_i_need_to_know" id="what_do_i_need_to_know">What Do I Need To Know?</a></h2>
+<div class="level2">
+
+<p>
+These instructions assume that you have a basic familiarity with <acronym title="Hypertext Preprocessor">PHP</acronym> and know how to add a line of <acronym title="Hypertext Preprocessor">PHP</acronym> code to your own WordPress templates.  If you don&#039;t, and you&#039;re just getting started, we would suggest you take a look at the following documentation and tutorials:
+
+</p>
+<ul>
+<li class="level1"><div class="li"> <a href="http://devzone.zend.com/node/view/id/627" class="urlextern" title="http://devzone.zend.com/node/view/id/627"  rel="nofollow">PHP 101: PHP For the Absolute Beginner</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://www.php.net/manual/en/tutorial.php" class="urlextern" title="http://www.php.net/manual/en/tutorial.php"  rel="nofollow">Introduction to PHP tutorial</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://codex.wordpress.org/Blog_Design_and_Layout" class="urlextern" title="http://codex.wordpress.org/Blog_Design_and_Layout"  rel="nofollow">WordPress: Blog Design and Layout</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://codex.wordpress.org/Theme_Development" class="urlextern" title="http://codex.wordpress.org/Theme_Development"  rel="nofollow">WordPress: Theme Development</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://codex.wordpress.org/Customizing_Your_Sidebar" class="urlextern" title="http://codex.wordpress.org/Customizing_Your_Sidebar"  rel="nofollow">WordPress: Customizing your Sidebar</a></div>
+</li>
+</ul>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> plugins/wordpress/simplepie_plugin_for_wordpress/start.txt &middot; Last modified: 2011/03/06 03:56 (external edit)</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=plugins%3Awordpress%3Asimplepie_plugin_for_wordpress%3Astart&amp;1666873926" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

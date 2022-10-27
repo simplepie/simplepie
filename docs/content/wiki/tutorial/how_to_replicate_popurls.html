@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: NewsBlocks Demo 2.0</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/tutorial/how_to_replicate_popurls"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/tutorial/how_to_replicate_popurls"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/tutorial/how_to_replicate_popurls"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/tutorial/how_to_replicate_popurls"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="843d28224ea925a01f1468f4eb5db37c" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/tutorial/start"  title="tutorial:start">Tips, Tricks, Tutorials, and Screencasts</a> &raquo; <a href="/wiki/tutorial/how_to_replicate_popurls"  title="tutorial:how_to_replicate_popurls">NewsBlocks Demo 2.0</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#newsblocks_demo_20" class="toc">NewsBlocks Demo 2.0</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#compatibility" class="toc">Compatibility</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#the_code" class="toc">The Code</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#expectations" class="toc">Expectations</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#what_are_all_these_files" class="toc">What are all these files?</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#troubleshooting_bugs_and_feature_requests" class="toc">Troubleshooting, Bugs, and Feature Requests</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#render_options" class="toc">Render Options</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="newsblocks_demo_20" id="newsblocks_demo_20">NewsBlocks Demo 2.0</a></h1>
+<div class="level1">
+
+<p>
+Recently, websites like <a href="http://www.infonary.com/" class="urlextern" title="http://www.infonary.com/"  rel="nofollow">infonary</a>, <a href="http://popurls.com/" class="urlextern" title="http://popurls.com/"  rel="nofollow">PopURLs</a>, <a href="http://www.1-tm.com/" class="urlextern" title="http://www.1-tm.com/"  rel="nofollow">1-TM</a>, <a href="http://theweblist.net/" class="urlextern" title="http://theweblist.net/"  rel="nofollow">TheWebList</a>, <a href="http://www.miniboxs.com/" class="urlextern" title="http://www.miniboxs.com/"  rel="nofollow">Miniboxs</a>, and <a href="http://buzz.originalsignal.com/" class="urlextern" title="http://buzz.originalsignal.com/"  rel="nofollow">Original Signal</a> have become all the rage.  Generally, these sites consist of multiple feeds – each it it&#039;s own block on the page.  These sites typically consist of a relatively wide range of topics from news to media to technology to whatever else.
+</p>
+
+<p>
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> This tutorial assumes that you&#039;re already familiar with using SimplePie, including looping through items.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="compatibility" id="compatibility">Compatibility</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> Supported in SimplePie 1.1.</div>
+</li>
+<li class="level1"><div class="li"> Code in this tutorial should be compatible with <acronym title="Hypertext Preprocessor">PHP</acronym> 5.0 or newer, and should not use <acronym title="Hypertext Preprocessor">PHP</acronym> short tags, in order to support the largest number of <acronym title="Hypertext Preprocessor">PHP</acronym> installations.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit3"><a name="the_code" id="the_code">The Code</a></h2>
+<div class="level2">
+
+<p>
+We&#039;re going to create a simplified clone of these kinds of sites that we&#039;re calling “NewsBlocks”.  This demo leverages the entire front-end development stack (<acronym title="Extensible HyperText Markup Language">XHTML</acronym>, <acronym title="Cascading Style Sheets">CSS</acronym>, JavaScript, <acronym title="Hypertext Preprocessor">PHP</acronym>) and utilizes the <a href="http://mootools.net" class="urlextern" title="http://mootools.net"  rel="nofollow">MooTools</a> JavaScript library.  You&#039;ll need to make sure the enclosed <code>cache</code> directory is writable, and you should copy the latest version of simplepie.inc into the enclosed <code>php</code> directory.
+</p>
+
+<p>
+We&#039;ve created this demo properly by separating types of code from each other, and we&#039;ve included an <code>.htaccess</code> file along with a small <acronym title="Hypertext Preprocessor">PHP</acronym> document that will gzip-compress the JavaScript libraries before serving them to the browser.  This demo includes the latest versions of the aforementioned library.
+</p>
+
+<p>
+Besides being relatively simple, the organization, code, and methods used in the demo below should be production-ready.
+
+</p>
+<ul>
+<li class="level1"><div class="li"> <a href="http://simplepie.org/demo/newsblocks/" class="urlextern" title="http://simplepie.org/demo/newsblocks/"  rel="nofollow">Live Newsblocks Demo</a></div>
+</li>
+<li class="level1"><div class="li"> <a href="http://simplepie.org/downloads/newsblocks_demo_2.0.zip" class="urlextern" title="http://simplepie.org/downloads/newsblocks_demo_2.0.zip"  rel="nofollow">newsblocks_demo_2.0.zip</a></div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit4"><a name="expectations" id="expectations">Expectations</a></h2>
+<div class="level2">
+
+<p>
+This is not, and will not ever be a perfect replacement for the services that it imitates unless YOU do the work to get it there. This is a DEMO that gives you a head-start, but it&#039;s up to you to figure out and write the custom code for connecting to databases and enabling cron jobs and the like. Those things will likely never be included because they&#039;re complicated and we don&#039;t want to get stuck supporting them.
+</p>
+
+</div>
+
+<h2 class="sectionedit5"><a name="what_are_all_these_files" id="what_are_all_these_files">What are all these files?</a></h2>
+<div class="level2">
+
+<p>
+In the end, the NewsBlocks Demo only loads <code>newsblocks.css</code> and <code>newsblocks.js</code>… that&#039;s it. These files have been compressed by <a href="http://developer.yahoo.com/yui/compressor/" class="urlextern" title="http://developer.yahoo.com/yui/compressor/"  rel="nofollow">YUI Compressor</a> to make them as small and fast as possible. The other files that are in the <code>/css/</code> and <code>/scripts/</code> directories are generally editable versions of these files. There is also a <code>build_prep.sh</code> file which is a shell script I use to copy the editable files, merge them, and compress them into a single, smaller file.
+</p>
+
+<p>
+For best performance on the front-end, you should make sure that your edited files are compressed in the same way. If you&#039;re not comfortable with doing this, you can always edit the <acronym title="HyperText Markup Language">HTML</acronym> to load the uncompressed versions of the files instead.
+</p>
+
+</div>
+
+<h2 class="sectionedit6"><a name="troubleshooting_bugs_and_feature_requests" id="troubleshooting_bugs_and_feature_requests">Troubleshooting, Bugs, and Feature Requests</a></h2>
+<div class="level2">
+<ol>
+<li class="level1"><div class="li"> <strong>Missing styles, broken scripts, and 500 errors</strong> - If you&#039;re seeing these things, it&#039;s likely that your server doesn&#039;t like the gzip settings we&#039;re using. The simplest solution would be to remove the <code>.htaccess</code> files in the <code>/css/</code> and <code>/scripts/</code> directories. Also make sure that you&#039;re not using a web hosting provider that sucks. :)</div>
+</li>
+<li class="level1"><div class="li"> <strong>Bugs and Feature Requests</strong> - If there&#039;s something broken, or if you&#039;d like to see a new feature, let us know about it by filing an issue over at our <a href="http://bugs.simplepie.org" class="urlextern" title="http://bugs.simplepie.org"  rel="nofollow">bug tracker</a>.</div>
+</li>
+</ol>
+
+</div>
+
+<h2 class="sectionedit7"><a name="render_options" id="render_options">Render Options</a></h2>
+<div class="level2">
+<div class="table sectionedit8"><table class="inline">
+	<tr class="row0">
+		<th class="col0 rightalign">  OPTION</th><th class="col1 rightalign">  DATATYPE </th><th class="col2 centeralign">  DESCRIPTION  </th>
+	</tr>
+	<tr class="row1">
+		<th class="col0 rightalign">  classname </th><td class="col1 centeralign">  string  </td><td class="col2"> The classname that the <code>&lt;div&gt;</code> surrounding the feed should have. Defaults to <code>nb-list</code> for <code>newsblocks::listing()</code> and <code>nb-wide</code> for <code>newsblocks::wide()</code>. </td>
+	</tr>
+	<tr class="row2">
+		<th class="col0 rightalign">  copyright </th><td class="col1 centeralign">  string  </td><td class="col2"> The copyright string to use for a feed. Not part of the standard output, but it&#039;s available if you want to use it. Defaults to NULL with multifeeds; Use <code>$item→get_feed()→get_copyright()</code> instead. </td>
+	</tr>
+	<tr class="row3">
+		<th class="col0 rightalign">  date_format </th><td class="col1 centeralign">  string  </td><td class="col2"> The format to use when displaying dates on items. Uses values from <a href="http://php.net/strftime" class="urlextern" title="http://php.net/strftime"  rel="nofollow">strftime()</a>, NOT <a href="http://php.net/date" class="urlextern" title="http://php.net/date"  rel="nofollow">date()</a>. </td>
+	</tr>
+	<tr class="row4">
+		<th class="col0 rightalign">  description </th><td class="col1 centeralign">  string  </td><td class="col2"> The description for the feed (not the item). Not part of the standard output, but it&#039;s available if you want to use it. Defaults to <code>NULL</code> with multifeeds; Use <code>$item→get_feed()→get_description()</code> instead. </td>
+	</tr>
+	<tr class="row5">
+		<th class="col0 rightalign">  direction </th><td class="col1 centeralign">  string  </td><td class="col2"> The direction of the text. Valid values are “ltr” and “rtl”. Defaults to “ltr”. </td>
+	</tr>
+	<tr class="row6">
+		<th class="col0 rightalign">  favicon </th><td class="col1 centeralign">  string  </td><td class="col2"> The favicon <acronym title="Uniform Resource Locator">URL</acronym> to use for the feed. Since favicon URLs aren&#039;t actually located in feeds, SimplePie guesses. Sometimes that guess is wrong. Give it the correct favicon with this option. Defaults to <code>NULL</code> with multifeeds; Use <code>$item→get_feed()→get_favicon()</code> instead. </td>
+	</tr>
+	<tr class="row7">
+		<th class="col0 rightalign">  id </th><td class="col1 centeralign">  string  </td><td class="col2"> The ID attribute that the <code>&lt;div&gt;</code> surrounding the feed should have. This value should be unique per feed. Defaults to a SHA1 hash value based on the <acronym title="Uniform Resource Locator">URL</acronym>(s). </td>
+	</tr>
+	<tr class="row8">
+		<th class="col0 rightalign">  item_classname </th><td class="col1 centeralign">  string  </td><td class="col2"> The classname for the items. Useful for styling with <acronym title="Cascading Style Sheets">CSS</acronym>. Also useful for JavaScript in creating custom tooltips for a feed. Defaults to “tips”. </td>
+	</tr>
+	<tr class="row9">
+		<th class="col0 rightalign">  items </th><td class="col1 centeralign">  integer  </td><td class="col2"> The number of items to show (the rest are hidden until “More” is clicked). Defaults to 10. </td>
+	</tr>
+	<tr class="row10">
+		<th class="col0 rightalign">  language </th><td class="col1 centeralign">  string  </td><td class="col2"> The language of the feed. Not part of the standard output, but it&#039;s available if you want to use it. Defaults to <code>NULL</code> with multifeeds; Use <code>$item→get_feed()→get_language()</code> instead. </td>
+	</tr>
+	<tr class="row11">
+		<th class="col0 rightalign">  length </th><td class="col1 centeralign">  integer  </td><td class="col2"> The maximum character length of the item description in the tooltip. Defaults to 200. </td>
+	</tr>
+	<tr class="row12">
+		<th class="col0 rightalign">  more </th><td class="col1 centeralign">  string  </td><td class="col2"> The text to use for the “More” link. Defaults to “More &amp;raquo;” </td>
+	</tr>
+	<tr class="row13">
+		<th class="col0 rightalign">  more_move </th><td class="col1 centeralign">  boolean  </td><td class="col2"> Whether the “More” link should move when it&#039;s clicked. Defaults to <code>FALSE</code> (i.e. stays in the same place). </td>
+	</tr>
+	<tr class="row14">
+		<th class="col0 rightalign">  more_fx </th><td class="col1 centeralign">  boolean  </td><td class="col2"> Whether the secondary list should slide or simply appear/disappear when the “More” link is clicked. Defaults to <code>TRUE</code> (i.e. slides). </td>
+	</tr>
+	<tr class="row15">
+		<th class="col0 rightalign">  permalink </th><td class="col1 centeralign">  string  </td><td class="col2"> The permalink for the feed (not the item). Defaults to <code>NULL</code> with multifeeds; Use <code>$item→get_feed()→get_permalink()</code> instead. </td>
+	</tr>
+	<tr class="row16">
+		<th class="col0 rightalign">  show_title </th><td class="col1 centeralign">  boolean  </td><td class="col2"> Whether to show the title of the feed. Defaults to <code>TRUE</code>. </td>
+	</tr>
+	<tr class="row17">
+		<th class="col0 rightalign">  since </th><td class="col1 centeralign">  integer  </td><td class="col2"> A Unix timestamp. Anything posted more recently than this timestamp will get the “New” image applied to it. Defaults to 24 hours ago. </td>
+	</tr>
+	<tr class="row18">
+		<th class="col0 rightalign">  title </th><td class="col1 centeralign">  string  </td><td class="col2"> The title for the feed (not the item). Defaults to multiple titles with multifeeds, so you should manually set it in that case. </td>
+	</tr>
+</table></div>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> tutorial/how_to_replicate_popurls.txt &middot; Last modified: 2011/03/06 03:56 (external edit)</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=tutorial%3Ahow_to_replicate_popurls&amp;1666873866" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

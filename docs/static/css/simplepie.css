@@ -1,0 +1,651 @@
+/*
+Theme Name: SimplePie
+Theme URI: http://simplepie.org
+Description: A simple, yet beautiful theme inspired by several cleanly designed websites.
+Version: 1.4.3
+Author: Ryan Parman
+Author URI: http://skyzyx.com
+Updated: 2 January 2008
+*/
+
+
+/*********************************************
+HYPERLINK STYLES
+*********************************************/
+a {
+	color:#369;
+	text-decoration:underline;
+	padding:0 1px;
+}
+
+a:hover {
+	color:#fff !important;
+	background-color:#333;
+	text-decoration:none;
+	padding:0 1px;
+}
+
+a.nohover {
+	text-decoration:none;
+	border:none;
+}
+
+a.nohover:hover {
+	background-color:transparent;
+	border:none;
+}
+
+a.namelink {
+	padding:0;
+	margin:0;
+	overflow:hidden;
+	height:1px;
+}
+
+h4 a,
+.highlight a:link {
+	color:#000;
+}
+
+
+/*********************************************
+GENERAL STYLES
+*********************************************/
+body {
+	/*font:12px/18px Verdana, sans-serif;*/
+	font:14px/1.5em "Lucida Grande", Tahoma, sans-serif;
+	letter-spacing:0px;
+	color:#333;
+	background-color:#fff;
+	margin:0;
+	padding:0;
+}
+
+div#site {
+	width:550px;
+	margin:50px auto 0 auto;
+}
+
+div#punwrap a:hover {
+	color:#fff !important;
+	background-color:#333 !important;
+	text-decoration:none !important;
+}
+
+html body div#punwrap .scrollbox {
+	overflow:auto;
+}
+
+html body div#announce h2 {
+	background-color: #f00;
+	color: #fff;
+	font-weight: bold;
+}
+
+html body div#announce div.box {
+	background-color: #c00;
+	color:#fff;
+	border:2px solid #f00;
+}
+
+html body div#announce div.box em {
+	background-color: transparent;
+}
+
+html body div#announce div.box h1 {
+	text-transform: uppercase;
+}
+
+html body div#announce div.box a,
+html body div#announce div.box a:hover {
+	color: #ffc;
+}
+
+h1#logo {
+	margin:0;
+	padding:0;
+	text-align:center;
+}
+
+h1#logo a, 
+h1#logo a:hover {
+	background-color:transparent;
+	text-decoration:none;
+	padding:0;
+}
+
+h2.image {
+	margin:0;
+	padding:0;
+	text-align:center;
+}
+
+h3 {
+	margin:20px 0 0 0;
+	padding:0;
+	font-size:1.5em;
+}
+
+h4 {
+	margin:20px 0 0 0;
+	padding:0;
+	font-size:1.2em;
+	letter-spacing:-1px;
+}
+
+h4.title {
+	padding-left:20px;
+	background-color:transparent;
+	background-repeat:no-repeat;
+	background-position:0 1px;
+}
+
+h5 {
+	margin:10px 0 0 0;
+	padding:0;
+	font-size:1em;
+	font-weight:bold;
+}
+
+em {
+	font-style:normal;
+	background-color:#ffc;
+}
+
+p {
+	margin:0;
+	padding:5px 0;
+}
+
+ul, ol {
+	margin:10px 0 10px 20px;
+	padding:0 0 0 15px;
+}
+
+ul li, ol li {
+	margin:0 0 7px 0;
+	padding:0 0 0 3px;
+}
+
+form {
+	margin:0;
+	padding:0;
+}
+
+code {
+	font-size:1em;
+	background-color:#f3f3ff;
+	color:#000;
+}
+
+pre {
+	font-size:12px !important;
+	font-family:monospace !important;
+}
+
+div#site pre {
+	background-color:#f3f3ff;
+	color:#000080;
+	border:1px dotted #000080;
+	overflow:auto;
+	padding:3px 5px;
+}
+
+blockquote {
+	font-size:1em;
+	color:#666;
+	border-left:4px solid #666;
+	margin:10px 0 10px 30px;
+	padding:0 5px 0 10px;
+	background:#f3f3f3 url(/images/background_blockquote.png) repeat top left;
+}
+
+input, select, textarea {
+	font-size:12px;
+	line-height:1.2em;
+	padding:2px;
+}
+
+input[type=text], select, textarea {
+	background-color:#e9f5ff;
+	border:1px solid #333;
+}
+
+input[type=text]:focus, select:focus, textarea:focus {
+	background-color:#ffe;
+}
+
+table#chart {
+	border-collapse:collapse;
+}
+
+table#chart th {
+	background-color:#eee;
+	padding:2px 3px;
+	border:1px solid #fff;
+}
+
+table#chart td {
+	text-align:center;
+	padding:2px 3px;
+	border:1px solid #eee;
+}
+
+table#chart td.left {
+	text-align:left;
+}
+
+.clearLeft {clear:left;}
+.clearRight {clear:right;}
+.clearBoth {clear:both;}
+.hide {display:none;}
+
+.announcement {
+	font-weight:bold;
+	padding:7px;
+	color:#fff;
+	background-color:#f60;
+	border-bottom:3px solid #f30;
+	text-align:center;
+	text-shadow:#444 1px 1px 1px;
+}
+
+.announcement a {
+	color:#fff;
+}
+
+
+/*********************************************
+NAVIGATION STYLES
+*********************************************/
+div#header {
+	background:#fff url(/images/top_gradient.gif) repeat-x top left;
+	margin:0;
+	padding:0;
+}
+
+div#header form {
+	margin:0;
+	padding:0;
+}
+
+div#header div#headerInner {
+	margin:0;
+	padding:0;
+}
+
+div#header div#headerInner div#logoContainer {}
+
+div#header div#headerInner div#logoContainerInner {
+	width:550px;
+	margin:0 auto;
+	padding:20px;
+}
+
+div#header div#headerInner div#logoContainer div#logo {
+	float:left;
+	width:200px;
+}
+
+div#header div#headerInner div#logoContainer div#logo a,
+div#header div#headerInner div#logoContainer div#logo a:hover {
+	border:none;
+	background:none;
+}
+
+div#header div#headerInner div#logoContainer div#feed {
+	float:right;
+	width:300px;
+	text-align:right;
+	padding:10px 0 0 0;
+}
+
+div#header div#headerInner div#logoContainer div#feed input.text {
+	width:60%;
+}
+
+div#header div#headerInner div#menu {
+	background:#eee url(/images/background_menuitem_shadow.gif) repeat-x top left;
+	border-top:2px solid #ccc;
+	border-bottom:1px solid #ddd;
+	text-align:center;
+}
+
+div#header div#headerInner div#menu table {
+	width:auto;
+	margin:0 auto;
+}
+
+div#header div#headerInner div#menu ul {
+	display:block;
+	width:100%;
+	margin:0 auto;
+	padding:0;
+	font-size:12px;
+}
+
+div#header div#headerInner div#menu ul li {
+	display:block;
+	float:left;
+}
+
+div#header div#headerInner div#menu ul li a {
+	display:block;
+	margin:-2px 0 0 0;
+	padding:5px 7px 8px 7px;
+	text-decoration:none;
+	color:#666 !important;
+	background-color:transparent;
+}
+
+div#header div#headerInner div#menu ul li a:hover {
+	display:block;
+	margin:-2px 0 0 0;
+	padding:5px 7px 8px 7px;
+	text-decoration:none;
+	color:#666;
+	background:#fff url(/images/background_menuitem_off.gif) no-repeat bottom right;
+}
+
+body#bodyoverview div#header div#headerInner div#menu ul li#overview a, 
+body#bodybuzz div#header div#headerInner div#menu ul li#buzz a, 
+body#bodydemo div#header div#headerInner div#menu ul li#demo a, 
+body#bodydownloads div#header div#headerInner div#menu ul li#downloads a, 
+body#bodydocs div#header div#headerInner div#menu ul li#docs a, 
+body#bodyblog div#header div#headerInner div#menu ul li#blog a, 
+body#bodycommunity div#header div#headerInner div#menu ul li#community a, 
+body#bodysupport div#header div#headerInner div#menu ul li#support a,
+body#bodyfaq div#header div#headerInner div#menu ul li#faq a, 
+body#bodymore div#header div#headerInner div#menu ul li#more a {
+	display:block;
+	margin:-2px 0 0 0;
+	padding:5px 7px 8px 7px;
+	text-decoration:none;
+	color:#333;
+	font-weight:bold;
+	background:#fff url(/images/background_menuitem.gif) no-repeat bottom right;
+}
+
+
+/*********************************************
+CONTENT STYLES
+*********************************************/
+div.chunk {
+	margin:20px 0 0 0;
+	padding:0 0 10px 0;
+	border-bottom:1px solid #ccc;
+}
+
+div.topchunk {
+	margin:0 !important;
+}
+
+div#secondary {
+	width:100%;
+	padding-top:10px;
+}
+
+div#secondary a,
+div#secondary a:hover {
+	border:none;
+	background:none;
+	margin:0 10px;
+	display:inline;
+	zoom:1;
+}
+
+.footnote,
+.footnote a {
+	font-size:12px;
+	line-height:1.3em;
+	color:#aaa;
+}
+
+.footnote em {
+	background-color:transparent;
+	font-style:italic;
+}
+
+.footnote code {
+	background-color:transparent;
+	font:11px/14px monospace;
+	color:#aaa;
+}
+
+a.download, 
+a.download:hover {
+	border:none;
+	background-color:transparent;
+}
+
+p.download {
+	text-align:center;
+}
+
+p.download a,
+p.download a:hover {
+	display:block;
+	padding:45px 0 0 0;
+	margin:0 auto;
+	width:203px;
+	heig\ht:45px;
+	height:0;
+	overflow:hidden;
+	background:transparent url(/images/button_download.png) no-repeat 0 0;
+}
+
+p.download a {
+	background:transparent url(/images/button_download.png) no-repeat 0 0;
+}
+
+p.download a:hover {
+	background:transparent url(/images/button_download.png) no-repeat 0 -45px;
+}
+
+p.subscribe {
+	background-color:#f3f3f3;
+	font-size:12px;
+	text-align:center;
+}
+
+p.highlight {
+	background-color:#ffc;
+	font-size:12px;
+	text-align:center;
+}
+
+p.plugin {
+	background-color:#f3f3f3;
+	font-size:12px;
+	text-align:center;
+	border:1px solid #ccc;
+	border-width:1px 0;
+}
+
+p.plugin img {line-height:0;}
+p.plugin a {line-height:1.4em;}
+
+p.sample_feeds {
+	font-size:12px;
+	line-height:1.2em;
+}
+
+div.sp_errors {
+	background-color:#eee;
+	padding:5px;
+	text-align:center;
+	font-size:12px;
+}
+
+.noborder {
+	border:none !important;
+}
+
+p.nextstep {
+	font-size:1.1em;
+	padding:3px;
+	font-weight:bold;
+	text-align:right;
+	margin-top:10px;
+}
+
+div#footer p.footnote,
+div#footer p.footnote a {
+	font-size:11px;
+	line-height:1.4em;
+}
+
+div#footer div.spacer {
+	height:15px;
+}
+
+div#features div {
+	margin:10px;
+}
+
+div#features div h4 {
+	padding-top:10px;
+}
+
+div#features img.thumb {
+	float:left;
+	display:block;
+	margin:10px;
+	width:100px;
+	height:100px;
+}
+
+
+/*********************************************
+DEMO STYLES
+*********************************************/
+div#sp_input {
+	background-color:#ffc;
+	border:2px solid #f90;
+	padding:5px;
+	text-align:center;
+}
+
+div#sp_input input.text {
+	border:1px solid #999;
+	background:#e9f5ff url(/images/mini/feed.png) no-repeat 4px 50%;
+	width:75%;
+	padding:2px 2px 2px 28px;
+	font:18px/22px "Lucida Grande", Verdana, sans-serif;
+	font-weight:bold;
+	letter-spacing:-1px;
+}
+
+form#sp_form {
+	margin:15px 0;
+}
+
+div.focus {
+	margin:0;
+	padding:10px 20px;
+	background-color:#efe;
+}
+
+p.sample_feeds {
+	text-align:justify;
+}
+
+img.favicon {
+	margin:0 4px -2px 0;
+	width:16px;
+	height:16px;
+}
+
+p.favicons a,
+p.favicons a:hover {
+	border:none;
+	background-color:transparent;
+}
+
+p.favicons img {
+	border:none;
+}
+
+
+/*********************************************
+BLOG STYLES
+*********************************************/
+div.prevNext {
+	border-bottom:1px solid #ccc;
+	background-color:#efe;
+}
+
+div.prevNext,
+table td {
+	font-size:12px;
+}
+
+div.blogimage {
+	float:right;
+	text-align:center;
+	margin:0 0 10px 10px;
+}
+
+.avatar {
+	float:right;
+	background-color: #fff;
+	padding:0 0 10px 10px;
+}
+
+
+/*********************************************
+BUZZ STYLES
+*********************************************/
+body#bodybuzz p.favicon {
+	padding-left:20px;
+	background-color:transparent;
+	background-repeat:no-repeat;
+	background-position:0 50%;
+}
+
+
+/*********************************************
+WIKI STYLES
+*********************************************/
+table.diff {
+	width:100%;
+}
+
+table.diff,
+table.diff td {
+	background-color:#fcfcfc;
+}
+
+table.diff td {
+	padding:2px 5px;
+	font-family:monospace;
+	color:#999;
+	white-space:pre;
+	overflow:hidden;
+}
+
+table.diff td.diff-blockheader {
+	background-color:#333;
+	color:#fff;
+	padding:4px 10px;
+}
+
+table.diff td.diff-deletedline {
+	background-color:#fcc;
+	color:#c00;
+}
+
+table.diff td.diff-addedline {
+	background-color:#cfc;
+	color:#093;
+}
+
+
+/*********************************************
+SIFR STYLES
+*********************************************/
+.sIFR-active h3.header {
+	visibility:hidden;
+	line-height:1em;
+}
+

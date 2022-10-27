@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: What is SimplePie?</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/faq/what_is_simplepie"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/faq/what_is_simplepie"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/faq/what_is_simplepie"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/faq/what_is_simplepie"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="7aebb6c5f92c4ab3974ca15871600602" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/faq/start"  title="faq:start">Frequently Asked Questions</a> &raquo; <a href="/wiki/faq/what_is_simplepie"  title="faq:what_is_simplepie">What is SimplePie?</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#what_is_simplepie" class="toc">What is SimplePie?</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#setting_your_expectations_properly" class="toc">Setting your expectations properly</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#simplepie_is" class="toc">SimplePie IS:</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#simplepie_is_not" class="toc">SimplePie is NOT:</a></span></div></li>
+</ul>
+</li>
+<li class="level2"><div class="li"><span class="li"><a href="#simplepie_s_goals" class="toc">SimplePie&#039;s Goals</a></span></div>
+<ul class="toc">
+<li class="level3"><div class="li"><span class="li"><a href="#be_as_fast_as_possible" class="toc">Be as fast as possible</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#be_as_easy_to_use_as_possible" class="toc">Be as easy to use as possible</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#be_as_compatible_as_possible" class="toc">Be as compatible as possible</a></span></div></li>
+<li class="level3"><div class="li"><span class="li"><a href="#be_as_standards_compliant_as_possible" class="toc">Be as standards compliant as possible</a></span></div></li></ul>
+</li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="what_is_simplepie" id="what_is_simplepie">What is SimplePie?</a></h1>
+<div class="level1">
+
+<p>
+<img src="/wiki/lib/images/smileys/icon_exclaim.gif" class="middle" alt=":!:" /> <strong>This page talks about the core SimplePie library, not necessarily our other SimplePie-based products and services.</strong>
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="setting_your_expectations_properly" id="setting_your_expectations_properly">Setting your expectations properly</a></h2>
+<div class="level2">
+
+</div>
+
+<h3 class="sectionedit3"><a name="simplepie_is" id="simplepie_is">SimplePie IS:</a></h3>
+<div class="level3">
+<ul>
+<li class="level1"><div class="li"> A code library, written in <acronym title="Hypertext Preprocessor">PHP</acronym>, intended to make it ridiculously easy for people to manage.</div>
+</li>
+<li class="level1"><div class="li"> An easy to use <acronym title="Application Programming Interface">API</acronym> that handles all of the dirty work when it comes to fetching, caching, parsing, normalizing data structures between formats, handling character encoding translation, and sanitizing the resulting data. </div>
+</li>
+<li class="level1"><div class="li"> Free (i.e. no cost) open-source software, with a license more liberal than the <acronym title="GNU General Public License">GPL</acronym>, that was built and improved over the course of years by people who have a passion for good software that makes people&#039;s lives easier </div>
+</li>
+<li class="level1"><div class="li"> Well documented with a complete <acronym title="Application Programming Interface">API</acronym> reference, tutorials and screencasts for popularly requested uses, and details about the inner workings of the library.</div>
+</li>
+<li class="level1"><div class="li"> Always looking for more people to contribute to the project in terms of code, patches, support, and evangelism. </div>
+</li>
+<li class="level1"><div class="li"> A solution where we&#039;ve worked very hard to keep the bar as low as possible for people who want to use it, but at the same time you MUST have a fundamental grasp of the <acronym title="Hypertext Preprocessor">PHP</acronym> language. If you don&#039;t know <acronym title="Hypertext Preprocessor">PHP</acronym>, and are interested in getting a handle on the basics, we recommend <acronym title="Hypertext Preprocessor">PHP</acronym> For the Absolute Beginner (begin with parts 1-3, then move onto parts 4-7 making sure you actually *understand* them).</div>
+</li>
+</ul>
+
+</div>
+
+<h3 class="sectionedit4"><a name="simplepie_is_not" id="simplepie_is_not">SimplePie is NOT:</a></h3>
+<div class="level3">
+<ul>
+<li class="level1"><div class="li"> A magical solution that will just “do it for you.”</div>
+</li>
+<li class="level1"><div class="li"> A copy-paste, “no code required” solution.</div>
+</li>
+<li class="level1"><div class="li"> A full-blown feed aggregator like Google Reader, NewsGator Online, Bloglines, and the like.</div>
+</li>
+</ul>
+
+<p>
+
+If you don&#039;t know <acronym title="Hypertext Preprocessor">PHP</acronym>, or are not willing to learn <acronym title="Hypertext Preprocessor">PHP</acronym>, SimplePie (the core <acronym title="Application Programming Interface">API</acronym> library) is NOT the right solution for you.
+</p>
+
+<p>
+However, SimplePie integrates well with a variety of blogging systems, wikis, forums, and code frameworks. Many of these third-party software packages are more end-user focused, and require less (if any) actual programming. Check out our <a href="/wiki/plugins/start" class="wikilink1" title="plugins:start">SimplePie Plugins and Integration</a> page to see if SimplePie integrates with software you already use, in a way that doesn&#039;t require much programming (if at all).
+</p>
+
+</div>
+
+<h2 class="sectionedit5"><a name="simplepie_s_goals" id="simplepie_s_goals">SimplePie&#039;s Goals</a></h2>
+<div class="level2">
+
+</div>
+
+<h3 class="sectionedit6"><a name="be_as_fast_as_possible" id="be_as_fast_as_possible">Be as fast as possible</a></h3>
+<div class="level3">
+
+<p>
+Speed is a big focus for us.  The longer something takes, the less likely people are to use it – whether it&#039;s the developers using the library, or the end-users using the developer&#039;s product.  The faster it all runs, the better it is for everybody.
+</p>
+
+<p>
+We don&#039;t claim to be <em>the fastest</em> (although we certainly strive to be), but rather as fast as possible while balancing the needs of the other three goals.
+</p>
+
+</div>
+
+<h3 class="sectionedit7"><a name="be_as_easy_to_use_as_possible" id="be_as_easy_to_use_as_possible">Be as easy to use as possible</a></h3>
+<div class="level3">
+
+<p>
+Just like with speed, the harder something is to use, the less likely people are to use it.  For us this extends not only to the programming <acronym title="Application Programming Interface">API</acronym>, but also to our website, our documentation, our code samples, our support forums, and every other aspect of this project.  We strive to be as user-friendly as possible in <em>every</em> aspect of working with us.
+</p>
+
+<p>
+Specifically in terms of the programming <acronym title="Application Programming Interface">API</acronym>, we&#039;ve spent a lot of time thinking about the most <em>useful</em> ways to handle blogs, news sites, and podcasts.  We&#039;ve chosen our function and method names very carefully, the order of the parameters very carefully, and made it a point to choose the most intelligent and/or useful defaults so that SimplePie will be “just right” out-of-the-box for 80% of our developers.  For the other 20%, we have numerous configuration options available designed to allow you to fine-tune and hack away to your heart&#039;s content.
+</p>
+
+</div>
+
+<h3 class="sectionedit8"><a name="be_as_compatible_as_possible" id="be_as_compatible_as_possible">Be as compatible as possible</a></h3>
+<div class="level3">
+
+<p>
+Just like <acronym title="HyperText Markup Language">HTML</acronym>, the world of <acronym title="Rich Site Summary">RSS</acronym> and Atom is an imperfect one.  If we only handled perfect feeds, we would be completely worthless because we wouldn&#039;t be able to handle most of the world&#039;s feeds.  At the same time, we saw how bad the <acronym title="HyperText Markup Language">HTML</acronym> world got when Microsoft Internet Explorer began accepting anything that even remotely resembled <acronym title="HyperText Markup Language">HTML</acronym> – no matter how horrible or incorrect it was.  We don&#039;t want to repeat Microsoft&#039;s mistake, but at the same time, we can&#039;t expect perfection from feeds.
+</p>
+
+<p>
+There&#039;s also a common misunderstanding among those who build tools for <acronym title="Rich Site Summary">RSS</acronym>: If a feed is imperfect and we throw an error without even <em>trying</em>, we&#039;re not punishing the feed publisher (like we want to)… we&#039;re punishing the person who just wants to read their favorite blog posts or news items. Why do we insist on punishing these people?
+</p>
+
+<p>
+So what do we do?  SimplePie makes a <em>reasonable</em> effort to correct imperfections in the feed while processing it.  If it&#039;s too broken, we have no choice but to fail it.  But if we can put forth reasonable effort and have it work, The only time when this is an issue is when it&#039;s a matter of compatibility vs. standards compliance.
+</p>
+
+</div>
+
+<h3 class="sectionedit9"><a name="be_as_standards_compliant_as_possible" id="be_as_standards_compliant_as_possible">Be as standards compliant as possible</a></h3>
+<div class="level3">
+
+<p>
+Much time has been spent on reading specification documents and writing unit tests to ensure that we live up to the goals that the standards bodies have set for us.  Whether it&#039;s any of the 8 or so versions of <acronym title="Rich Site Summary">RSS</acronym>, or the two major versions of Atom, RFC 822, <acronym title="International Organization for Standardization">ISO</acronym> 8601, RFC 3023 (and more), and we&#039;re focused on delivering the most standards-compliant feed-related software available. 
+</p>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> faq/what_is_simplepie.txt &middot; Last modified: 2013/08/11 04:47 (external edit)</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=faq%3Awhat_is_simplepie&amp;1666873856" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>

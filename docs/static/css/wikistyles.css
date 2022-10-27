@@ -1,0 +1,260 @@
+/*********************************************
+HYPERLINK STYLES
+*********************************************/
+body#bodydocs a.urlextern {
+	padding-left:18px;
+	background-image:url(/images/mini/world.png);
+	background-position:0 50%;
+	background-repeat:no-repeat;
+}
+
+body#bodydocs a.urlextern:hover,
+body#bodydocs a.interwiki:hover {
+	padding-left:18px !important;
+}
+
+body#bodydocs a.wikilink2 {
+	color:#c00;
+	background-color:#fee;
+}
+
+body#bodydocs h1 a,
+body#bodydocs h2 a,
+body#bodydocs h3 a {
+	color:#000;
+}
+
+
+/*********************************************
+GENERAL STYLES
+*********************************************/
+body#bodydocs div#site {
+	width:90% !important;
+	margin:50px auto 0 auto;
+}
+
+body#bodydocs em {
+	background-color:transparent !important;
+	font-style:italic !important;
+}
+
+body#bodydocs code,
+body#bodydocs code a {
+	font-size:0.9em;
+}
+
+
+/*********************************************
+TABLE OF CONTENTS
+*********************************************/
+body#bodydocs div.toc {
+	float:right;
+	font-size:11px;
+	background-color:#eee;
+	border:1px solid #ccc;
+	padding:5px;
+	margin:0 0 20px 20px;
+}
+
+body#bodydocs div#toc__header {
+	font-weight:bold;
+}
+
+body#bodydocs div.toc ul,
+body#bodydocs div.toc ol {
+	margin:0 0 0 10px;
+	padding:0 0 0 10px;
+}
+
+body#bodydocs div.toc li {
+	margin:0 0 1px 0 !important;
+	padding:0 0 0 3px !important;
+}
+
+
+/*********************************************
+CONTENT
+*********************************************/
+body#bodydocs div#content div.secedit {
+	float:right;
+}
+
+body#bodydocs div#content div.secedit input.button {
+	font-size:10px;
+}
+
+body#bodydocs div#content h1 {
+	margin:30px 0 10px 0;
+	padding:0;
+	font-size:1.8em;
+}
+
+body#bodydocs div#content h1 a,
+body#bodydocs div#content h1 a:hover,
+body#bodydocs div#content h2 a,
+body#bodydocs div#content h2 a:hover,
+body#bodydocs div#content h3 a,
+body#bodydocs div#content h3 a:hover,
+body#bodydocs div#content h4 a,
+body#bodydocs div#content h4 a:hover {
+	color:#333 !important;
+	text-decoration:none;
+	background-color:transparent;
+}
+
+body#bodydocs div#content h2 {
+	margin:30px 0 10px 0;
+	padding:0;
+	font-size:1.6em;
+	letter-spacing:-1px;
+	border-bottom:1px solid #000;
+}
+
+body#bodydocs div#content h2.image {
+	border:none;
+}
+
+body#bodydocs div#content h3 {
+	margin:30px 0 10px 50px;
+	padding:0;
+	font-size:1.4em;
+	font-weight:bold;
+	text-decoration:underline;
+}
+
+body#bodydocs div#content h4 {
+	margin:20px 0 10px 100px;
+	text-decoration:underline;
+}
+
+body#bodydocs div.level3 {
+	margin-left:50px;
+}
+
+body#bodydocs div.level4 {
+	margin-left:100px;
+}
+
+
+/*********************************************
+SEARCH
+*********************************************/
+body#bodydocs ul.search_quickhits {
+	margin:0 0 50px 50px;
+}
+
+body#bodydocs span.search_hit {
+	background-color:#ffc;
+}
+
+body#bodydocs div.search_result {
+	margin:0 0 15px 50px;
+	padding:10px 15px;
+	border:1px solid #ccc;
+}
+
+body#bodydocs div.search_result a {
+	font-weight:bold;
+	padding-left:20px;
+	background-image:url(/images/mini/star.png);
+	background-repeat:no-repeat;
+	background-position:0 50%;
+}
+
+body#bodydocs span.search_cnt {
+	font-size:12px;
+	line-height:1.3em;
+	color:#aaa;
+}
+
+body#bodydocs div.search_snippet {
+	font-size:0.9em;
+}
+
+
+/*********************************************
+CONTROLS
+For some reason, Opera 9 is stacking the buttons 
+on top of each other.  Why, oh why?
+*********************************************/
+body#bodydocs div#controls {}
+
+body#bodydocs div#controls div.buttons {
+	/*float:left;*/
+}
+
+body#bodydocs div#controls div.buttons form {
+	display:block;
+	float:left;
+}
+
+body#bodydocs div#controls div.buttons form div {
+	display:inline;
+}
+
+body#bodydocs div#controls div.buttons input.button {
+	margin-right:10px;
+}
+
+body#bodydocs div#controls div.search {
+	float:right;
+}
+
+body#bodydocs div#controls div.search input.edit {
+	margin-right:10px;
+}
+
+
+/*********************************************
+LOGIN PAGE
+*********************************************/
+body#bodydocs div.centeralign {}
+
+body#bodydocs form label {
+	display:block;
+}
+
+body#bodydocs fieldset {
+	margin:10px auto;
+	padding:5px 0 10px 0;
+	width:550px;
+}
+
+body#bodydocs fieldset legend {
+	font-weight:bold;
+	padding:0 10px;
+	margin-left:20px;
+}
+
+body#bodydocs textarea#wiki__text {
+	margin:20px 0;
+	width:100%;
+	height:300px;
+}
+
+
+/*********************************************
+TABLES
+*********************************************/
+body#bodydocs table.inline {
+	border-collapse:collapse;
+	font-size:14px;
+}
+
+body#bodydocs table.inline th {
+	background-color:#eee;
+	padding:4px 10px;
+	border:1px solid #fff;
+}
+
+body#bodydocs table.inline td {
+	text-align:left;
+	padding:4px 10px;
+	border:1px solid #eee;
+	font-size:14px;
+}
+
+body#bodydocs table.inline td.left {
+	text-align:left;
+}
+

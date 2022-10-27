@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>SimplePie Documentation: SimplePie 1.2 &quot;Pecan&quot;</title>
+
+<meta name="generator" content="DokuWiki Release 2006-11-06" />
+<meta name="date" content="2007-06-18T00:42:23-0700" />
+<meta name="keywords" content="reference,start" />
+
+<link rel="start" href="/wiki/" />
+<link rel="contents" href="/wiki/reference/start?do=index" title="Index" />
+<link rel="alternate" type="application/rss+xml" title="Recent Changes" href="/wiki/feed.php" />
+<link rel="alternate" type="application/rss+xml" title="Current Namespace" href="/wiki/feed.php?mode=list&amp;ns=reference" />
+<link rel="alternate" type="text/html" title="Plain HTML" href="/wiki/_export/xhtml/reference/start" />
+<link rel="alternate" type="text/plain" title="Wiki Markup" href="/wiki/_export/raw/reference/start" />
+
+<link rel="stylesheet" href="/wiki/lib/tpl/simplepie/wikistyles.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-screen.css" type="text/css" media="screen">
+<link rel="stylesheet" href="/css/sIFR-print.css" type="text/css" media="print">
+<link rel="stylesheet" media="screen" type="text/css" href="/wiki/lib/exe/css.php" />
+<link rel="stylesheet" media="print" type="text/css" href="/wiki/lib/exe/css.php?print=1" />
+
+<!-- FEED HTTP-EQUIV -->
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://feeds.feedburner.com/simplepie" />
+
+<!-- META HTTP-EQUIV -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-language" content="en-us" />
+<meta http-equiv="imagetoolbar" content="false" />
+
+<!-- META NAME -->
+<meta name="MSSmartTagsPreventParsing" content="true" />
+<meta name="ROBOTS" content="ALL" />
+<meta name="copyright" content="2004-2022 Ryan Parman, Geoffrey Sneddon" />
+<meta name="description" content="A super-fast, easy-to-use, RSS and Atom parser written in PHP." />
+<meta name="author" content="SimplePie.org" />
+<meta name="rating" content="General" />
+<meta name="revisit-after" content="2 Days" />
+<meta name="doc-class" content="Living Document" />
+<meta name="y_key" content="8a13570546b4e5cd" />
+
+<!-- FAVICON -->
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+
+<!-- STYLES -->
+<link rel="stylesheet" href="/css/simplepie.css" media="screen, projector" />
+
+<!-- SCRIPTS -->
+<script type="text/javascript" src="/mint/?js"></script>
+<script type="text/javascript" src="/scripts/sleight.js"></script>
+<script type="text/javascript" src="http://www.google-analytics.com/urchin.js"></script>
+
+
+<script type="text/javascript" src="/scripts/sifr.js"></script>
+<script type="text/javascript" src="/scripts/sifr-config.js"></script>
+
+</head>
+
+<body id="bodydocs">
+
+<div class="announcement"><a href="https://github.com/simplepie/simplepie/releases/tag/1.5">SimplePie 1.5 is now available!</a></div>
+<div id="header">
+	<div id="headerInner">
+		<div id="logoContainer">
+			<div id="logoContainerInner">
+				<div id="logo"><a href="/"><img src="/images/logo_simplepie_horizontal.png" alt="SimplePie: PHP-based RSS and Atom feed handling" title="SimplePie: PHP-based RSS and Atom feed handling" border="0" /></a></div>
+				<div id="feed"><form action="http://www.google.com/search" method="get"><input type="text" name="q" id="q" value="" class="text" /><input type="hidden" name="as_sitesearch" value="simplepie.org" />&nbsp;<input type="submit" value="Search" class="button" /></form></div>
+				<div class="clearLeft"></div>
+			</div>
+		</div>
+		<div id="menu">
+		<table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
+<ul><li id="overview"><a href="/">Overview</a></li><li id="demo"><a href="/demo/">Demo</a></li><li id="blog"><a href="/blog/">Blog</a></li><li id="downloads"><a href="/downloads/">Download</a></li><li id="docs"><a href="/wiki/">Documentation</a></li><li id="api"><a href="/api/">API Docs</a></li><li id="support"><a href="/support/">Support</a></li><li id="bugs"><a href="http://github.com/simplepie/simplepie/issues">Issue Tracker</a></li><li id="faq"><a href="/wiki/faq/start">FAQ</a></li></ul>
+			<div class="clearLeft"></div>
+		</td></tr></tbody></table>
+		</div>
+	</div>
+</div>
+
+<div id="site">
+
+	<div id="content">
+
+		<div class="chunk">
+			<h2 class="image"><img src="/images/copy_simplepie_documentation.gif" alt="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." title="SimplePie Documentation.  Learn how to use this thing.  It's way better than going to school." /></h2>
+		</div>
+
+		<div class="chunk focus" id="controls">
+			<div class="buttons">
+				<form class="button btn_source" method="post" action="/wiki/misc/release_notes/simplepie_1.2"><div class="no"><input type="hidden" name="do" value="edit" /><input type="hidden" name="rev" value="" /><input type="submit" value="Show pagesource" class="button" accesskey="v" title="Show pagesource [V]" /></div></form>				<form class="button btn_revs" method="get" action="/wiki/misc/release_notes/simplepie_1.2"><div class="no"><input type="hidden" name="do" value="revisions" /><input type="submit" value="Old revisions" class="button" accesskey="o" title="Old revisions [O]" /></div></form>				<form class="button btn_recent" method="get" action="/wiki/misc/release_notes/simplepie_1.2"><div class="no"><input type="hidden" name="do" value="recent" /><input type="submit" value="Recent changes" class="button" accesskey="r" title="Recent changes [R]" /></div></form>																<form class="button btn_login" method="get" action="/wiki/misc/release_notes/simplepie_1.2"><div class="no"><input type="hidden" name="do" value="login" /><input type="hidden" name="sectok" value="843d28224ea925a01f1468f4eb5db37c" /><input type="submit" value="Login" class="button" title="Login" /></div></form>			</div>
+			<div class="search">
+				<form action="/wiki/" accept-charset="utf-8" class="search" id="dw__search" method="get"><div class="no"><input type="hidden" name="do" value="search" /><input type="text" id="qsearch__in" accesskey="f" name="id" class="edit" title="[F]" /><input type="submit" value="Search" class="button" title="Search" /><div id="qsearch__out" class="ajax_qsearch JSpopup"></div></div></form>			</div>
+			<div class="clearRight"></div>
+		</div>
+
+		<p class="footnote"><span class="bchead">You are here: </span><a href="/wiki/start"  title="start">Documentation</a> &raquo; <a href="/wiki/misc/start"  title="misc:start">Miscellaneous Documentation</a> &raquo; <a href="/wiki/misc/release_notes/start"  title="misc:release_notes:start">Release Notes</a> &raquo; <a href="/wiki/misc/release_notes/simplepie_1.2"  title="misc:release_notes:simplepie_1.2">SimplePie 1.2 &quot;Pecan&quot;</a></p>
+
+		<div class="chunk">
+
+	    	<!-- TOC START -->
+<div class="toc">
+<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+<div id="toc__inside">
+
+<ul class="toc">
+<li class="level1"><div class="li"><span class="li"><a href="#simplepie_12_pecan" class="toc">SimplePie 1.2 &quot;Pecan&quot;</a></span></div>
+<ul class="toc">
+<li class="level2"><div class="li"><span class="li"><a href="#new_features" class="toc">New Features</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#changes_in_this_release" class="toc">Changes in this Release</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#fixes_in_this_release" class="toc">Fixes in this Release</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#fixes_in_simplepie_121" class="toc">Fixes in SimplePie 1.2.1</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#known_issues" class="toc">Known Issues</a></span></div></li>
+<li class="level2"><div class="li"><span class="li"><a href="#announcement" class="toc">Announcement</a></span></div></li></ul>
+</li></ul>
+</div>
+</div>
+<!-- TOC END -->
+
+<h1 class="sectionedit1"><a name="simplepie_12_pecan" id="simplepie_12_pecan">SimplePie 1.2 &quot;Pecan&quot;</a></h1>
+<div class="level1">
+<ul>
+<li class="level1"><div class="li"> 1.2 released on 11 July 2009</div>
+</li>
+<li class="level1"><div class="li"> 1.2.1 released on 15 October 2011</div>
+</li>
+</ul>
+
+<p>
+
+This version was originally intended to finish 1.x development, adding in the remaining features that were intended after 1.0 (1.1 having mainly been taken up with bug fixes and other comparatively small features which could be done fairly quickly after 1.0). As it turned out, 1.1 was good enough for most, and 1.2 development stagnated, leaving it with a lot less new features than originally intended. Eventually it was decided the best course of action was simply to ship 1.2, as what code there was was well-tested, and move almost all development to SimplePie 2.
+</p>
+
+</div>
+
+<h2 class="sectionedit2"><a name="new_features" id="new_features">New Features</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/7" class="urlextern" title="http://bugs.simplepie.org/issues/show/7"  rel="nofollow">Bug #7</a>: SimplePie_Locator should be able to return all available feeds.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/18" class="urlextern" title="http://bugs.simplepie.org/issues/show/18"  rel="nofollow">Bug #18</a>: MySQL caching.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/125" class="urlextern" title="http://bugs.simplepie.org/issues/show/125"  rel="nofollow">Bug #125</a>: Parse <acronym title="Rich Site Summary">RSS</acronym> 2.0 category &#039;domain&#039; attribute.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit3"><a name="changes_in_this_release" id="changes_in_this_release">Changes in this Release</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/25" class="urlextern" title="http://bugs.simplepie.org/issues/show/25"  rel="nofollow">Bug #25</a>: <acronym title="Hyper Text Transfer Protocol">HTTP</acronym> status code is now checked, and we fail on <acronym title="Hyper Text Transfer Protocol">HTTP</acronym> errors.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/43" class="urlextern" title="http://bugs.simplepie.org/issues/show/43"  rel="nofollow">Bug #43</a>: Pay attention to error_reporting settings in SimplePie_Misc::error().</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/83" class="urlextern" title="http://bugs.simplepie.org/issues/show/83"  rel="nofollow">Bug #83</a>: Test suite now runs on <acronym title="Hypertext Preprocessor">PHP</acronym> 5.3.0.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/88" class="urlextern" title="http://bugs.simplepie.org/issues/show/88"  rel="nofollow">Bug #88</a>: Always treat &lt;description&gt; in <acronym title="Rich Site Summary">RSS</acronym> 2.0 as <acronym title="HyperText Markup Language">HTML</acronym>.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/120" class="urlextern" title="http://bugs.simplepie.org/issues/show/120"  rel="nofollow">Bug #120</a>: Remove previous libxml2/<acronym title="Hypertext Preprocessor">PHP</acronym> bug workaround, as it broke test cases, and use XMLReader instead.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/135" class="urlextern" title="http://bugs.simplepie.org/issues/show/135"  rel="nofollow">Bug #135</a>: Allow SimplePie to work with zend.ze1_compatibility_mode=On.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit4"><a name="fixes_in_this_release" id="fixes_in_this_release">Fixes in this Release</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/22" class="urlextern" title="http://bugs.simplepie.org/issues/show/22"  rel="nofollow">Bug #22</a>: Numeric entity causes issues when at end of string.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/24" class="urlextern" title="http://bugs.simplepie.org/issues/show/24"  rel="nofollow">Bug #24</a>: Subscribe methods break on non-US-<acronym title="American Standard Code for Information Interchange">ASCII</acronym> supersets.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/100" class="urlextern" title="http://bugs.simplepie.org/issues/show/100"  rel="nofollow">Bug #100</a>: Passwords lowercased when normalizing URLs.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/115" class="urlextern" title="http://bugs.simplepie.org/issues/show/115"  rel="nofollow">Bug #115</a>: Fatal error caused by call to a member function get_error_string() on a non-object.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/116" class="urlextern" title="http://bugs.simplepie.org/issues/show/116"  rel="nofollow">Bug #116</a>: Incorrect encoding used on certain feeds.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/122" class="urlextern" title="http://bugs.simplepie.org/issues/show/122"  rel="nofollow">Bug #122</a>: gzinflate() error on valid Content-Encoding: gzip response.</div>
+</li>
+<li class="level1"><div class="li"> <a href="http://bugs.simplepie.org/issues/show/124" class="urlextern" title="http://bugs.simplepie.org/issues/show/124"  rel="nofollow">Bug #124</a>: SimplePie_Misc::normalize_url() causes <acronym title="Hypertext Preprocessor">PHP</acronym> to crash on preg_replace_callback().</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit5"><a name="fixes_in_simplepie_121" id="fixes_in_simplepie_121">Fixes in SimplePie 1.2.1</a></h2>
+<div class="level2">
+
+<p>
+See <a href="https://github.com/simplepie/simplepie/compare/1.2...1.2.1" class="urlextern" title="https://github.com/simplepie/simplepie/compare/1.2...1.2.1"  rel="nofollow">commit log</a> and <a href="https://github.com/simplepie/simplepie/issues?milestone=4&amp;state=closed" class="urlextern" title="https://github.com/simplepie/simplepie/issues?milestone=4&amp;state=closed"  rel="nofollow">issues closed</a>.
+
+</p>
+<ul>
+<li class="level1"><div class="li"> <a href="https://github.com/simplepie/simplepie/issues/112" class="urlextern" title="https://github.com/simplepie/simplepie/issues/112"  rel="nofollow">Issue #112</a>: SimplePie_IRI::set_query() improperly decodes URLs passed in query string values. (See also <a href="https://github.com/simplepie/simplepie/issues/108" class="urlextern" title="https://github.com/simplepie/simplepie/issues/108"  rel="nofollow">issue #108</a> and <a href="https://github.com/simplepie/simplepie/issues/58" class="urlextern" title="https://github.com/simplepie/simplepie/issues/58"  rel="nofollow">issue #58</a>)</div>
+</li>
+<li class="level1"><div class="li"> <a href="https://github.com/simplepie/simplepie/issues/51" class="urlextern" title="https://github.com/simplepie/simplepie/issues/51"  rel="nofollow">Issue #51</a>: change_encoding function has wrong case in string comparison</div>
+</li>
+<li class="level1"><div class="li"> <a href="https://github.com/simplepie/simplepie/issues/23" class="urlextern" title="https://github.com/simplepie/simplepie/issues/23"  rel="nofollow">Issue #23</a>: SimplePie does not find description tags in <acronym title="Rich Site Summary">RSS</acronym> 0.90 feeds</div>
+</li>
+<li class="level1"><div class="li"> <a href="https://github.com/simplepie/simplepie/issues/28" class="urlextern" title="https://github.com/simplepie/simplepie/issues/28"  rel="nofollow">Issue #28</a>: get_date() can returns false on failure, get_local_date() doesn&#039;t cope with this</div>
+</li>
+<li class="level1"><div class="li"> <a href="https://github.com/simplepie/simplepie/issues/38" class="urlextern" title="https://github.com/simplepie/simplepie/issues/38"  rel="nofollow">Issue #38</a>: Wrong encoding returned for EUC-JP.</div>
+</li>
+<li class="level1"><div class="li"> <a href="https://github.com/simplepie/simplepie/issues/117" class="urlextern" title="https://github.com/simplepie/simplepie/issues/117"  rel="nofollow">Issue #117</a>: Don&#039;t leak fsockopen&#039;s special HTTPS host in request headers.</div>
+</li>
+<li class="level1"><div class="li"> <a href="https://github.com/simplepie/simplepie/issues/149" class="urlextern" title="https://github.com/simplepie/simplepie/issues/149"  rel="nofollow">Issue #149</a>: SimplePie_gzdecode Code Typo</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit6"><a name="known_issues" id="known_issues">Known Issues</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> All known issues are tracked in our <a href="http://bugs.simplepie.org/projects/sp1/issues?query_id=2" class="urlextern" title="http://bugs.simplepie.org/projects/sp1/issues?query_id=2"  rel="nofollow">Bug Tracker</a>.</div>
+</li>
+</ul>
+
+</div>
+
+<h2 class="sectionedit7"><a name="announcement" id="announcement">Announcement</a></h2>
+<div class="level2">
+<ul>
+<li class="level1"><div class="li"> <a href="http://simplepie.org/blog/2009/07/11/simplepie-1-2-now-available/" class="urlextern" title="http://simplepie.org/blog/2009/07/11/simplepie-1-2-now-available/"  rel="nofollow">http://simplepie.org/blog/2009/07/11/simplepie-1-2-now-available/</a></div>
+</li>
+</ul>
+
+</div>
+
+
+			<div class="clearRight"></div>
+			<div align="right"><br /><span class="footnote"> misc/release_notes/simplepie_1.2.txt &middot; Last modified: 2011/10/15 04:35 by rmccue</span></div>
+
+		</div>
+
+		<div id="footer">
+<p class="highlight" style="background-color:#ffc; border-bottom:1px solid #ccc;"><strong>Show some love!</strong> Wishlists for <a href="http://www.amazon.co.uk/gp/registry/wishlist/2ASV4RHBSM16H/026-9090951-0551667">Geoffrey</a>, <a href="http://www.amazon.com/gp/registry/wishlist/KAFYR57E8R81/">Ryan P.</a>, and <a href="http://www.amazon.com/gp/registry/wishlist/2P9RS76SG0UHL/">Ryan M.</a></p>
+<p class="footnote">SimplePie is &copy; 2004&ndash;2022 <a href="http://ryanparman.com">Ryan Parman</a>, <a href="http://gsnedders.com/">Geoffrey Sneddon</a>, <a href="http://ryanmccue.info/">Ryan McCue</a> and contributors.  Licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.  Hosted thanks to <a href="http://ma.tt/">Matt Mullenweg</a>, powered by <a href="http://wordpress.org">WordPress</a> and <a href="http://php.net">PHP 5.6.40</a>, and managed with <a href="http://basecamphq.com/?referrer=skyzyx">Basecamp</a>.  Syndication handled by <a href="http://simplepie.org" title="SimplePie 1.5">SimplePie</a>.  Variation on the Feed Icon by <a href="http://www.bartelme.at/journal/archive/feed_icon_template">Wolfgang Bartelme</a>.</p>
+<div class="spacer"></div>
+</div>
+<script type="text/javascript">_uacct = "UA-1004552-1";urchinTracker();</script>
+
+	</div>
+
+</div>
+
+<div class="no"><img src="/wiki/lib/exe/indexer.php?id=misc%3Arelease_notes%3Asimplepie_1.2&amp;1666873864" width="1" height="1" alt=""  /></div>
+
+</body>
+</html>
