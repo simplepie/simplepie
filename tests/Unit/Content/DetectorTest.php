@@ -102,6 +102,38 @@ class DetectorTest extends TestCase
             ],
         ];
 
+        // TODO Add tests
+        yield [
+            file_get_contents(dirname(__DIR__, 2) . '/data/fftests.html'),
+            [],
+            SimplePie::LOCATOR_LOCAL_EXTENSION,
+            [],
+        ];
+
+        // TODO Add tests
+        yield [
+            file_get_contents(dirname(__DIR__, 2) . '/data/fftests.html'),
+            [],
+            SimplePie::LOCATOR_LOCAL_BODY,
+            [],
+        ];
+
+        // TODO Add tests
+        yield [
+            file_get_contents(dirname(__DIR__, 2) . '/data/fftests.html'),
+            [],
+            SimplePie::LOCATOR_REMOTE_EXTENSION,
+            [],
+        ];
+
+        // TODO Add tests
+        yield [
+            file_get_contents(dirname(__DIR__, 2) . '/data/fftests.html'),
+            [],
+            SimplePie::LOCATOR_REMOTE_BODY,
+            [],
+        ];
+
         yield [
             '',
             [],

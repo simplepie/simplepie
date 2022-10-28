@@ -107,6 +107,11 @@ final class Detector
     /**
      * Discover possible feed urls from HTML response
      *
+     * @see https://simplepie.org/wiki/reference/simplepie/set_autodiscovery_level
+     *
+     * Inspired by the Ultra-liberal RSS locator from Mark Pilgrim
+     * @link http://web.archive.org/web/20110607232437/http://diveintomark.org/archives/2002/08/15/ultraliberal_rss_locator
+     *
      * @return array
      */
     public function discover_possible_feed_urls(Response $response, int $type = SimplePie::LOCATOR_ALL): array
@@ -139,25 +144,30 @@ final class Detector
         $this->get_base($response);
         $discovered = [];
 
+        // All Feed Autodiscovery (points 1-6)
         if ($type & SimplePie::LOCATOR_AUTODISCOVERY) {
             $discovered = $this->autodiscovery($discovered);
         }
 
-        if ($type & (SimplePie::LOCATOR_LOCAL_EXTENSION | SimplePie::LOCATOR_LOCAL_BODY | SimplePie::LOCATOR_REMOTE_EXTENSION | SimplePie::LOCATOR_REMOTE_BODY) && $this->get_links()) {
-            if ($type & SimplePie::LOCATOR_LOCAL_EXTENSION && $discovered = $this->extension($this->local)) {
-                return $discovered[0];
+        if ($type & (SimplePie::LOCATOR_LOCAL_EXTENSION | SimplePie::LOCATOR_LOCAL_BODY | SimplePie::LOCATOR_REMOTE_EXTENSION | SimplePie::LOCATOR_REMOTE_BODY)) {
+            if (! $this->discover_links()) {
+                return $discovered;
             }
 
-            if ($type & SimplePie::LOCATOR_LOCAL_BODY && $discovered = $this->body($this->local)) {
-                return $discovered[0];
+            if ($type & SimplePie::LOCATOR_LOCAL_EXTENSION) {
+                return $this->extension($this->local);
             }
 
-            if ($type & SimplePie::LOCATOR_REMOTE_EXTENSION && $discovered = $this->extension($this->elsewhere)) {
-                return $discovered[0];
+            if ($type & SimplePie::LOCATOR_LOCAL_BODY) {
+                return $this->body($this->local);
             }
 
-            if ($type & SimplePie::LOCATOR_REMOTE_BODY && $discovered = $this->body($this->elsewhere)) {
-                return $discovered[0];
+            if ($type & SimplePie::LOCATOR_REMOTE_EXTENSION) {
+                return $this->extension($this->elsewhere);
+            }
+
+            if ($type & SimplePie::LOCATOR_REMOTE_BODY) {
+                return $this->body($this->elsewhere);
             }
         }
 
@@ -471,46 +481,50 @@ final class Detector
         return $feeds;
     }
 
-    private function get_links()
+    private function discover_links(): bool
     {
         $links = $this->dom->getElementsByTagName('a');
+
         foreach ($links as $link) {
-            if ($link->hasAttribute('href')) {
-                $href = trim($link->getAttribute('href'));
-                $parsed = $this->registry->call('Misc', 'parse_url', [$href]);
-                if ($parsed['scheme'] === '' || preg_match('/^(https?|feed)?$/i', $parsed['scheme'])) {
-                    if (method_exists($link, 'getLineNo') && $this->base_location < $link->getLineNo()) {
-                        $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
-                    } else {
-                        $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
-                    }
-                    if ($href === false) {
-                        continue;
-                    }
+            if (! $link->hasAttribute('href')) {
+                continue;
+            }
 
-                    $current = $this->registry->call('Misc', 'parse_url', [$this->file->url]);
+            $href = trim($link->getAttribute('href'));
+            $parsed = $this->registry->call('Misc', 'parse_url', [$href]);
 
-                    if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
-                        $this->local[] = $href;
-                    } else {
-                        $this->elsewhere[] = $href;
-                    }
+            if ($parsed['scheme'] === '' || preg_match('/^(https?|feed)?$/i', $parsed['scheme'])) {
+                if (method_exists($link, 'getLineNo') && $this->base_location < $link->getLineNo()) {
+                    $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
+                } else {
+                    $href = $this->registry->call('Misc', 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
+                }
+                if ($href === false) {
+                    continue;
+                }
+
+                $current = $this->registry->call('Misc', 'parse_url', [$this->file->url]);
+
+                if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
+                    $this->local[] = $href;
+                } else {
+                    $this->elsewhere[] = $href;
                 }
             }
         }
         $this->local = array_unique($this->local);
         $this->elsewhere = array_unique($this->elsewhere);
-        if (!empty($this->local) || !empty($this->elsewhere)) {
-            return true;
-        }
-        return null;
+
+        return (! empty($this->local) || ! empty($this->elsewhere));
     }
 
-    private function extension(&$array)
+    private function extension(array $array): array
     {
-        foreach ($array as $key => $value) {
+        $feeds = [];
+
+        foreach ($array as $value) {
             if (in_array(strtolower(strrchr($value, '.')), ['.rss', '.rdf', '.atom', '.xml'])) {
-                throw new Exception('Abort trying to request url: ' . $value, 1);
+                $feeds[] = $value;
 
                 // $headers = [
                 //     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
@@ -523,7 +537,7 @@ final class Detector
                 // }
             }
         }
-        return null;
+        return $feeds;
     }
 
     private function body(array $array): array
@@ -532,7 +546,7 @@ final class Detector
 
         foreach ($array as $key => $value) {
             if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
-                throw new Exception('Abort trying to request url: ' . $value, 1);
+                $feeds[] = $value;
 
                 // $headers = [
                 //     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
