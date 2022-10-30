@@ -125,7 +125,7 @@ final class BaseDataCache implements DataCache
      */
     public function set_data(string $key, array $value, ?int $ttl = null): bool
     {
-        if (! is_int($ttl)) {
+        if ($ttl === null) {
             $ttl = 3600;
         }
 
