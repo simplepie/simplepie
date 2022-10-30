@@ -2,6 +2,9 @@
 {% set section_title = config.title ~ ':' %}
 {% if current_path == '/' %}
 {% set body_id = 'bodyoverview' %}
+{% elif current_path is starting_with('/api/') %}
+{% set section_title = '' %}
+{% set body_id = 'apidocs' %}
 {% elif current_path is starting_with('/blog/') %}
 {% set section_title = 'SimplePie Weblog »' %}
 {% set body_id = 'bodyblog' %}
@@ -32,6 +35,10 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 
 <link rel="stylesheet" href="/css/simplepie.css" media="screen, projector">
+{% if current_path is starting_with('/api/') %}
+<link rel="stylesheet" href="/api/assets/main.css">
+<script src="/api/assets/main.js" defer></script>
+{% endif %}
 
 {% if current_path == '/' %}
 <style type="text/css">

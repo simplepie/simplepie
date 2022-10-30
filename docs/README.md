@@ -2,4 +2,6 @@ This directory contains the source for the SimplePie website hosted at <https://
 
 After [installing Zola](https://www.getzola.org/documentation/getting-started/installation/), you can run `zola serve` in this directory to start a server that will allow you to preview the built site, automatically rebuilding on changes.
 
+To build API docs run `composer exec -- apigen` in the `apigen/` directory.
+
 You can also run `zola build`, which will generate the site inside the `public/` subdirectory.

@@ -619,3 +619,11 @@ body#apidocs pre {
 	border: 0;
 	padding: 0;
 }
+
+body#apidocs .layout-aside {
+	position: static;
+}
+
+body#apidocs .layout-main {
+	margin-left: 0;
+}
