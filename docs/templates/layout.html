@@ -2,6 +2,9 @@
 {% set section_title = config.title ~ ':' %}
 {% if current_path == '/' %}
 {% set body_id = 'bodyoverview' %}
+{% elif current_path is starting_with('/api/') %}
+{% set section_title = '' %}
+{% set body_id = 'apidocs' %}
 {% elif current_path is starting_with('/blog/') %}
 {% set section_title = 'SimplePie Weblog »' %}
 {% set body_id = 'bodyblog' %}
@@ -45,7 +48,10 @@
 
 <!-- STYLES -->
 <link rel="stylesheet" href="/css/simplepie.css" media="screen, projector">
-{% if current_path is starting_with('/wiki/') %}
+{% if current_path is starting_with('/api/') %}
+<link rel="stylesheet" href="/api/assets/main.css">
+<script src="/api/assets/main.js" defer></script>
+{% elif current_path is starting_with('/wiki/') %}
 <link rel="stylesheet" href="/css/wikistyles.css" media="screen, projector">
 {% endif %}
 

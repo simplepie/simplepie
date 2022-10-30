@@ -347,7 +347,8 @@ div#header div#headerInner div#menu ul li a:hover {
 	background:#fff url(/images/background_menuitem_off.gif) no-repeat bottom right;
 }
 
-body#bodyoverview div#header div#headerInner div#menu ul li#overview a, 
+body#apidocs div#header div#headerInner div#menu ul li#api a,
+body#bodyoverview div#header div#headerInner div#menu ul li#overview a,
 body#bodybuzz div#header div#headerInner div#menu ul li#buzz a, 
 body#bodydemo div#header div#headerInner div#menu ul li#demo a, 
 body#bodydownloads div#header div#headerInner div#menu ul li#downloads a, 
@@ -649,3 +650,268 @@ SIFR STYLES
 	line-height:1em;
 }
 
+    /*********************************************
+HYPERLINK STYLES
+*********************************************/
+body#apidocs a.urlextern {
+	padding-left:18px;
+	background-image:url(/images/mini/world.png);
+	background-position:0 50%;
+	background-repeat:no-repeat;
+}
+
+body#apidocs a.urlextern:hover,
+body#apidocs a.interwiki:hover {
+	padding-left:18px !important;
+}
+
+body#apidocs a.wikilink2 {
+	color:#c00;
+	background-color:#fee;
+}
+
+body#apidocs h1 a,
+body#apidocs h2 a,
+body#apidocs h3 a {
+	color:#000;
+}
+
+
+/*********************************************
+GENERAL STYLES
+*********************************************/
+body#apidocs div#site {
+	width:90% !important;
+	margin:50px auto 0 auto;
+}
+
+body#apidocs em {
+	background-color:transparent !important;
+	font-style:italic !important;
+}
+
+body#apidocs code {
+	background: transparent;
+	color: #333;
+}
+
+body#apidocs pre {
+	font-size: 13px !important;
+	width: 100%;
+	border: 0;
+	padding: 0;
+}
+
+
+/*********************************************
+TABLE OF CONTENTS
+*********************************************/
+body#apidocs div.toc {
+	float:right;
+	font-size:11px;
+	background-color:#eee;
+	border:1px solid #ccc;
+	padding:5px;
+	margin:0 0 20px 20px;
+}
+
+body#apidocs div#toc__header {
+	font-weight:bold;
+}
+
+body#apidocs div.toc ul,
+body#apidocs div.toc ol {
+	margin:0 0 0 10px;
+	padding:0 0 0 10px;
+}
+
+body#apidocs div.toc li {
+	margin:0 0 1px 0 !important;
+	padding:0 0 0 3px !important;
+}
+
+
+/*********************************************
+CONTENT
+*********************************************/
+body#apidocs div#content div.secedit {
+	float:right;
+}
+
+body#apidocs div#content div.secedit input.button {
+	font-size:10px;
+}
+
+body#apidocs div#content h1 {
+	margin:30px 0 10px 0;
+	padding:0;
+	font-size:1.8em;
+}
+
+body#apidocs div#content h1 a,
+body#apidocs div#content h1 a:hover,
+body#apidocs div#content h2 a,
+body#apidocs div#content h2 a:hover,
+body#apidocs div#content h3 a,
+body#apidocs div#content h3 a:hover,
+body#apidocs div#content h4 a,
+body#apidocs div#content h4 a:hover {
+	color:#333 !important;
+	text-decoration:none;
+	background-color:transparent;
+}
+
+body#apidocs div#content h2 {
+	margin:30px 0 10px 0;
+	padding:0;
+	font-size:1.6em;
+	letter-spacing:-1px;
+	border-bottom:1px solid #000;
+}
+
+body#apidocs div#content h2.image {
+	border:none;
+}
+
+body#apidocs div#content h4 {
+	letter-spacing: normal;
+}
+
+body#apidocs div.level3 {
+	margin-left:50px;
+}
+
+body#apidocs div.level4 {
+	margin-left:100px;
+}
+
+
+/*********************************************
+SEARCH
+*********************************************/
+body#apidocs ul.search_quickhits {
+	margin:0 0 50px 50px;
+}
+
+body#apidocs span.search_hit {
+	background-color:#ffc;
+}
+
+body#apidocs div.search_result {
+	margin:0 0 15px 50px;
+	padding:10px 15px;
+	border:1px solid #ccc;
+}
+
+body#apidocs div.search_result a {
+	font-weight:bold;
+	padding-left:20px;
+	background-image:url(/images/mini/star.png);
+	background-repeat:no-repeat;
+	background-position:0 50%;
+}
+
+body#apidocs span.search_cnt {
+	font-size:12px;
+	line-height:1.3em;
+	color:#aaa;
+}
+
+body#apidocs div.search_snippet {
+	font-size:0.9em;
+}
+
+
+/*********************************************
+CONTROLS
+For some reason, Opera 9 is stacking the buttons
+on top of each other.  Why, oh why?
+*********************************************/
+body#apidocs div#controls {}
+
+body#apidocs div#controls div.buttons {
+	/*float:left;*/
+}
+
+body#apidocs div#controls div.buttons form {
+	display:block;
+	float:left;
+}
+
+body#apidocs div#controls div.buttons form div {
+	display:inline;
+}
+
+body#apidocs div#controls div.buttons input.button {
+	margin-right:10px;
+}
+
+body#apidocs div#controls div.search {
+	float:right;
+}
+
+body#apidocs div#controls div.search input.edit {
+	margin-right:10px;
+}
+
+
+/*********************************************
+LOGIN PAGE
+*********************************************/
+body#apidocs div.centeralign {}
+
+body#apidocs form label {
+	display:block;
+}
+
+body#apidocs fieldset {
+	margin:10px auto;
+	padding:5px 0 10px 0;
+	width:550px;
+}
+
+body#apidocs fieldset legend {
+	font-weight:bold;
+	padding:0 10px;
+	margin-left:20px;
+}
+
+body#apidocs textarea#wiki__text {
+	margin:20px 0;
+	width:100%;
+	height:300px;
+}
+
+
+/*********************************************
+TABLES
+*********************************************/
+body#apidocs table.inline {
+	border-collapse:collapse;
+	font-size:14px;
+}
+
+body#apidocs table.inline th {
+	background-color:#eee;
+	padding:4px 10px;
+	border:1px solid #fff;
+}
+
+body#apidocs table.inline td {
+	text-align:left;
+	padding:4px 10px;
+	border:1px solid #eee;
+	font-size:14px;
+}
+
+body#apidocs table.inline td.left {
+	text-align:left;
+}
+
+body#apidocs .layout-aside {
+	position: static;
+}
+
+body#apidocs .layout-main {
+	margin-left: 0;
+}
