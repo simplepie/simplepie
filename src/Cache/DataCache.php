@@ -43,35 +43,20 @@
 
 namespace SimplePie\Cache;
 
-use Psr\SimpleCache\CacheInterface;
-use Psr\SimpleCache\InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
- * Caches data into a PSR-16 cache implementation
+ * Simplified PSR-16 Cache client for caching data arrays
+ *
+ * The methods names must be different, but should be compatible to the
+ * methods of \Psr\SimpleCache\CacheInterface.
  *
  * @package SimplePie
  * @subpackage Caching
  * @internal
  */
-final class Psr16 implements DataCache
+interface DataCache
 {
-    /**
-     * PSR-16 cache implementation
-     *
-     * @var CacheInterface
-     */
-    private $cache;
-
-    /**
-     * PSR-16 cache implementation
-     *
-     * @param CacheInterface $cache
-     */
-    public function __construct(CacheInterface $cache)
-    {
-        $this->cache = $cache;
-    }
-
     /**
      * Fetches a value from the cache.
      *
@@ -80,24 +65,15 @@ final class Psr16 implements DataCache
      * public function get(string $key, mixed $default = null): mixed;
      * </code>
      *
-     * @param string $key     The unique key of this item in the cache.
-     * @param mixed  $default Default value to return if the key does not exist.
+     * @param string   $key     The unique key of this item in the cache.
+     * @param mixed    $default Default value to return if the key does not exist.
      *
      * @return array|mixed The value of the item from the cache, or $default in case of cache miss.
      *
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get_data($key, $default = null)
-    {
-        $data = $this->cache->get($key, $default);
-
-        if (! is_array($data) || $data === $default) {
-            return $default;
-        }
-
-        return $data;
-    }
+    public function get_data($key, $default = null);
 
     /**
      * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
@@ -118,10 +94,7 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function set_data($key, array $value, $ttl = null)
-    {
-        return $this->cache->set($key, $value, $ttl);
-    }
+    public function set_data($key, array $value, $ttl = null);
 
     /**
      * Delete an item from the cache by its unique key.
@@ -138,8 +111,5 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function delete_data($key)
-    {
-        return $this->cache->delete($key);
-    }
+    public function delete_data($key);
 }

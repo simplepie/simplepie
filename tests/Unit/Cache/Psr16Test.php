@@ -44,234 +44,168 @@
 namespace SimplePie\Tests\Unit\Cache;
 
 use Exception;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Psr\SimpleCache\CacheException;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use SimplePie\Cache\Psr16;
+use stdClass;
 use Throwable;
 
 class Psr16Test extends TestCase
 {
-    public function testImplementationIsGloballyStored()
+    public function testSetDataReturnsTrueIfDataCouldBeWritten()
     {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('You must set an implementation of `Psr\SimpleCache\CacheInterface` via `SimplePie\SimplePie::set_cache()` first.');
+        $key = 'name';
+        $value = [];
+        $ttl = 3600;
 
-        new Psr16('location', 'name', 'type');
-    }
-
-    public function testSaveWithWrongDataTypeThrowsInvalidArgumentException()
-    {
-        $data = 'string';
         $psr16 = $this->createMock(CacheInterface::class);
+        $psr16->expects($this->once())->method('set')->with($key, $value, $ttl)->willReturn(true);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('SimplePie\Cache\Psr16::save(): Argument #1 ($data) must be of type array|SimplePie\SimplePie');
-
-        $this->assertFalse($cache->save($data));
+        $this->assertTrue($cache->set_data($key, $value, $ttl));
     }
 
-    public function testSaveReturnsTrueIfDataAndMtimeCouldBeWritten()
+    public function testSetDataReturnsFalseIfDataCouldNotBeWritten()
     {
-        $data = [];
+        $key = 'name';
+        $value = [];
+        $ttl = 3600;
+
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->exactly(2))->method('set')->withConsecutive(
-            [
-                '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7',
-                $data,
-                3600,
-            ],
-            [
-                '18bb0a0a94b49eda35e8944672d60a1474ff2895524f0e56c3752c1e0f7853e7_mtime'
-            ]
-        )->willReturn(true);
+        $psr16->expects($this->once())->method('set')->willReturn(false);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertTrue($cache->save($data));
+        $this->assertFalse($cache->set_data($key, $value, $ttl));
     }
 
-    public function testSaveReturnsFalseIfDataOrMtimeCouldNotBeWritten()
+    public function testSetDataWithInvalidKeyThrowsInvalidArgumentException()
     {
-        $data = [];
-        $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->exactly(2))->method('set')->willReturn(false);
+        $key = 'invalid key';
+        $value = [];
+        $ttl = 3600;
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
-
-        $this->assertFalse($cache->save($data));
-    }
-
-    public function testSaveCatchesCacheExceptionAndReturnsFalse()
-    {
-        $e = $this->createMock(CacheException::class);
+        $e = $this->createMock(InvalidArgumentException::class);
 
         // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
         if (! $e instanceof Throwable) {
-            $e = new class () extends Exception implements CacheException {};
+            $e = new class () extends Exception implements InvalidArgumentException {};
         }
 
-        $data = [];
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('set')->willThrowException($e);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertFalse($cache->save($data));
+        $this->expectException(InvalidArgumentException::class);
+
+        $cache->set_data($key, $value, $ttl);
     }
 
-    public function testLoadReturnsCorrectData()
+    public function testGetDataReturnsCorrectData()
     {
-        $data = [];
+        $key = 'name';
+        $value = [];
+
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willReturn($data);
+        $psr16->expects($this->once())->method('get')->willReturn($value);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertSame($data, $cache->load());
+        $this->assertSame($value, $cache->get_data($key));
     }
 
-    public function testLoadReturnsFalseOnCacheMiss()
+    public function testGetDataWithCacheMissReturnsDefault()
     {
+        $key = 'name';
+        $default = new stdClass();
+
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willReturnCallback(function ($key, $default) {
-            return $default;
-        });
+        $psr16->expects($this->once())->method('get')->willReturn($default);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertSame(false, $cache->load());
+        $this->assertSame($default, $cache->get_data($key, $default));
     }
 
-    public function testMtimeReturnsCorrectInt()
+    public function testGetDataWithCacheCorruptionReturnsDefault()
     {
-        $mtime = 1234568790;
+        $key = 'name';
+        $default = new stdClass();
+
         $psr16 = $this->createMock(CacheInterface::class);
-        // Modification time is stored as a separate cache key
-        $psr16->expects($this->once())->method('get')->willReturn($mtime);
+        $psr16->expects($this->once())->method('get')->willReturn('this is not an array');
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertSame($mtime, $cache->mtime());
+        $this->assertSame($default, $cache->get_data($key, $default));
     }
 
-    public function testMtimeReturnsZeroOnNonInteger()
+    public function testGetDataWithInvalidKeyThrowsInvalidArgumentException()
     {
-        $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willReturn(false);
+        $key = 'invalid key';
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
-
-        $this->assertSame(0, $cache->mtime());
-    }
-
-    public function testMtimeReturnsZeroOnCacheException()
-    {
-        $e = $this->createMock(CacheException::class);
+        $e = $this->createMock(InvalidArgumentException::class);
 
         // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
         if (! $e instanceof Throwable) {
-            $e = new class () extends Exception implements CacheException {};
+            $e = new class () extends Exception implements InvalidArgumentException {};
         }
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willThrowException($e);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertSame(0, $cache->mtime());
+        $this->expectException(InvalidArgumentException::class);
+
+        $cache->get_data($key);
     }
 
-    public function testTouchReturnsTrueIfDataAndMtimeCouldBeWritten()
+    public function testDeleteDataReturnsTrueIfDataCouldBeDeleted()
     {
+        $key = 'name';
+
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willReturn(true);
-        $psr16->expects($this->exactly(2))->method('set')->willReturn(true);
+        $psr16->expects($this->once())->method('delete')->willReturn(true);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertSame(true, $cache->touch());
+        $this->assertTrue($cache->delete_data($key));
     }
 
-    public function testTouchReturnsFalseOnNonInteger()
+    public function testDeleteDataReturnsFalseIfDataCouldNotBeDeleted()
     {
+        $key = 'name';
+
         $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willReturn(false);
+        $psr16->expects($this->once())->method('delete')->willReturn(false);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertSame(false, $cache->touch());
+        $this->assertFalse($cache->delete_data($key));
     }
 
-    public function testTouchReturnsFalseOnCacheException()
+    public function testDeleteDataWithInvalidKeyThrowsInvalidArgumentException()
     {
-        $e = $this->createMock(CacheException::class);
+        $key = 'invalid key';
+
+        $e = $this->createMock(InvalidArgumentException::class);
 
         // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
         if (! $e instanceof Throwable) {
-            $e = new class () extends Exception implements CacheException {};
-        }
-
-        $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->once())->method('get')->willThrowException($e);
-
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
-
-        $this->assertSame(false, $cache->touch());
-    }
-
-    public function testUnlinkReturnsTrueIfDataAndMtimeCouldBeDeleted()
-    {
-        $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->exactly(2))->method('delete')->willReturn(true);
-
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
-
-        $this->assertSame(true, $cache->unlink());
-    }
-
-    public function testUnlinkReturnsFalseIfDataOrMtimeCouldNotBeDeleted()
-    {
-        $psr16 = $this->createMock(CacheInterface::class);
-        $psr16->expects($this->exactly(2))->method('delete')->willReturn(false);
-
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
-
-        $this->assertSame(false, $cache->unlink());
-    }
-
-    public function testUnlinkReturnsFalseOnCacheException()
-    {
-        $e = $this->createMock(CacheException::class);
-
-        // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
-        if (! $e instanceof Throwable) {
-            $e = new class () extends Exception implements CacheException {};
+            $e = new class () extends Exception implements InvalidArgumentException {};
         }
 
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('delete')->willThrowException($e);
 
-        Psr16::store_cache($psr16);
-        $cache = new Psr16('location', 'name', 'type');
+        $cache = new Psr16($psr16);
 
-        $this->assertSame(false, $cache->unlink());
+        $this->expectException(InvalidArgumentException::class);
+
+        $cache->delete_data($key);
     }
 }

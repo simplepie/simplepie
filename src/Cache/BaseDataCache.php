@@ -43,31 +43,23 @@
 
 namespace SimplePie\Cache;
 
-use Psr\SimpleCache\CacheInterface;
-use Psr\SimpleCache\InvalidArgumentException;
+use InvalidArgumentException;
 
 /**
- * Caches data into a PSR-16 cache implementation
+ * Adapter for deprecated \SimplePie\Cache\Base implementations
  *
  * @package SimplePie
  * @subpackage Caching
  * @internal
  */
-final class Psr16 implements DataCache
+final class BaseDataCache implements DataCache
 {
     /**
-     * PSR-16 cache implementation
-     *
-     * @var CacheInterface
+     * @var Base
      */
     private $cache;
 
-    /**
-     * PSR-16 cache implementation
-     *
-     * @param CacheInterface $cache
-     */
-    public function __construct(CacheInterface $cache)
+    public function __construct(Base $cache)
     {
         $this->cache = $cache;
     }
@@ -90,11 +82,24 @@ final class Psr16 implements DataCache
      */
     public function get_data($key, $default = null)
     {
-        $data = $this->cache->get($key, $default);
+        $data = $this->cache->load();
 
-        if (! is_array($data) || $data === $default) {
+        if (! is_array($data)) {
             return $default;
         }
+
+        // ingore data if internal cache expiration time is not set
+        if (! array_key_exists('__cache_expiration_time', $data)) {
+            return $default;
+        }
+
+        // ingore data if internal cache expiration time is expired
+        if ($data['__cache_expiration_time'] < time()) {
+            return $default;
+        }
+
+        // remove internal cache expiration time
+        unset($data['__cache_expiration_time']);
 
         return $data;
     }
@@ -120,7 +125,14 @@ final class Psr16 implements DataCache
      */
     public function set_data($key, array $value, $ttl = null)
     {
-        return $this->cache->set($key, $value, $ttl);
+        if (! is_int($ttl)) {
+            $ttl = 3600;
+        }
+
+        // place internal cache expiration time
+        $value['__cache_expiration_time'] = time() + $ttl;
+
+        return $this->cache->save($value);
     }
 
     /**
@@ -140,6 +152,6 @@ final class Psr16 implements DataCache
      */
     public function delete_data($key)
     {
-        return $this->cache->delete($key);
+        return $this->cache->unlink();
     }
 }

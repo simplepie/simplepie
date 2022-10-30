@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
+ * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
  * @author Ryan McCue
@@ -41,53 +41,77 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-namespace SimplePie\Cache;
+namespace SimplePie\Tests\Fixtures\Cache;
 
-use Redis as NativeRedis;
+use Closure;
+use SimplePie\Cache\Base;
+use SimplePie\SimplePie;
 
 /**
- * Caches data to redis
- *
- * Registered for URLs with the "redis" protocol
- *
- * For example, `redis://localhost:6379/?timeout=3600&prefix=sp_&dbIndex=0` will
- * connect to redis on `localhost` on port 6379. All tables will be
- * prefixed with `simple_primary-` and data will expire after 3600 seconds
- *
- * @package SimplePie
- * @subpackage Caching
- * @uses Redis
- * @deprecated since SimplePie 1.8, use implementation of "Psr\SimpleCache\CacheInterface" instead
+ * Mock for Base cache objects
  */
-class Redis implements Base
+class BaseCacheWithCallbacksMock implements Base
 {
-    /**
-     * Redis instance
-     *
-     * @var NativeRedis
-     */
-    protected $cache;
+    /** @var Closure|null */
+    private static $constructCallback = null;
+
+    /** @var Closure|null */
+    private static $saveCallback = null;
+
+    /** @var Closure|null */
+    private static $loadCallback = null;
+
+    /** @var Closure|null */
+    private static $mtimeCallback = null;
+
+    /** @var Closure|null */
+    private static $touchCallback = null;
+
+    /** @var Closure|null */
+    private static $unlinkCallback = null;
+
+    public static function setConstructCallback(Closure $cb)
+    {
+        static::$constructCallback = $cb;
+    }
+
+    public static function setSaveCallback(Closure $cb)
+    {
+        static::$saveCallback = $cb;
+    }
+
+    public static function setLoadCallback(Closure $cb)
+    {
+        static::$loadCallback = $cb;
+    }
+
+    public static function setMtimeCallback(Closure $cb)
+    {
+        static::$mtimeCallback = $cb;
+    }
+
+    public static function setTouchCallback(Closure $cb)
+    {
+        static::$touchCallback = $cb;
+    }
+
+    public static function setUnlinkCallback(Closure $cb)
+    {
+        static::$unlinkCallback = $cb;
+    }
 
     /**
-     * Options
-     *
-     * @var array
+     * Call this after tests to reset all callbacks
      */
-    protected $options;
-
-    /**
-     * Cache name
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * Cache Data
-     *
-     * @var type
-     */
-    protected $data;
+    public static function resetAllCallbacks()
+    {
+        static::$constructCallback = null;
+        static::$saveCallback = null;
+        static::$loadCallback = null;
+        static::$mtimeCallback = null;
+        static::$touchCallback = null;
+        static::$unlinkCallback = null;
+    }
 
     /**
      * Create a new cache object
@@ -96,38 +120,12 @@ class Redis implements Base
      * @param string $name Unique ID for the cache
      * @param Base::TYPE_FEED|Base::TYPE_IMAGE $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
      */
-    public function __construct($location, $name, $options = null)
+    public function __construct($location, $name, $type)
     {
-        //$this->cache = \flow\simple\cache\Redis::getRedisClientInstance();
-        $parsed = \SimplePie\Cache::parse_URL($location);
-        $redis = new NativeRedis();
-        $redis->connect($parsed['host'], $parsed['port']);
-        if (isset($parsed['pass'])) {
-            $redis->auth($parsed['pass']);
+        if (static::$constructCallback !== null) {
+            $callback = static::$constructCallback;
+            $callback($location, $name, $type);
         }
-        if (isset($parsed['path'])) {
-            $redis->select((int)substr($parsed['path'], 1));
-        }
-        $this->cache = $redis;
-
-        if (!is_null($options) && is_array($options)) {
-            $this->options = $options;
-        } else {
-            $this->options = [
-                'prefix' => 'rss:simple_primary:',
-                'expire' => 0,
-            ];
-        }
-
-        $this->name = $this->options['prefix'] . $name;
-    }
-
-    /**
-     * @param NativeRedis $cache
-     */
-    public function setRedisClient(NativeRedis $cache)
-    {
-        $this->cache = $cache;
     }
 
     /**
@@ -138,15 +136,14 @@ class Redis implements Base
      */
     public function save($data)
     {
-        if ($data instanceof \SimplePie\SimplePie) {
-            $data = $data->data;
-        }
-        $response = $this->cache->set($this->name, serialize($data));
-        if ($this->options['expire']) {
-            $this->cache->expire($this->name, $this->options['expire']);
+        $return = true;
+
+        if (static::$saveCallback instanceof Closure) {
+            $callback = static::$saveCallback;
+            $return = $callback($data);
         }
 
-        return $response;
+        return $return;
     }
 
     /**
@@ -156,12 +153,14 @@ class Redis implements Base
      */
     public function load()
     {
-        $data = $this->cache->get($this->name);
+        $return = [];
 
-        if ($data !== false) {
-            return unserialize($data);
+        if (static::$loadCallback instanceof Closure) {
+            $callback = static::$loadCallback;
+            $return = $callback();
         }
-        return false;
+
+        return $return;
     }
 
     /**
@@ -171,13 +170,14 @@ class Redis implements Base
      */
     public function mtime()
     {
-        $data = $this->cache->get($this->name);
+        $return = 0;
 
-        if ($data !== false) {
-            return time();
+        if (static::$mtimeCallback instanceof Closure) {
+            $callback = static::$mtimeCallback;
+            $return = $callback();
         }
 
-        return false;
+        return $return;
     }
 
     /**
@@ -187,17 +187,14 @@ class Redis implements Base
      */
     public function touch()
     {
-        $data = $this->cache->get($this->name);
+        $return = true;
 
-        if ($data !== false) {
-            $return = $this->cache->set($this->name, $data);
-            if ($this->options['expire']) {
-                return $this->cache->expire($this->name, $this->options['expire']);
-            }
-            return $return;
+        if (static::$touchCallback instanceof Closure) {
+            $callback = static::$touchCallback;
+            $return = $callback();
         }
 
-        return false;
+        return $return;
     }
 
     /**
@@ -207,8 +204,13 @@ class Redis implements Base
      */
     public function unlink()
     {
-        return $this->cache->set($this->name, null);
+        $return = true;
+
+        if (static::$unlinkCallback instanceof Closure) {
+            $callback = static::$unlinkCallback;
+            $return = $callback();
+        }
+
+        return $return;
     }
 }
-
-class_alias('SimplePie\Cache\Redis', 'SimplePie_Cache_Redis');
