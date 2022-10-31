@@ -1,0 +1,12 @@
+{% macro toc(headers) %}
+<ul class="toc">
+{% for header in headers %}
+	<li>
+		<a href="{{ header.permalink }}" class="toc">{{ header.title }}</a>
+		{% if header.children %}
+		{{ self::toc(headers=header.children) }}
+		{% endif %}
+	</li>
+{% endfor %}
+</ul>
+{% endmacro toc %}

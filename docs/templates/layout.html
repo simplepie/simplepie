@@ -1,3 +1,4 @@
+{% import 'macros.html' as macros %}
 <!DOCTYPE html>
 {% set section_title = config.title ~ ':' %}
 {% if current_path == '/' %}
@@ -144,6 +145,12 @@ div#features {
 
 		{% if not page.extra.chunky %}<div class="chunk">{% endif %}
 		{% if current_path is starting_with('/wiki/') %}
+		<div class="toc">
+		<div class="tocheader toctoggle" id="toc__header">Table of Contents</div>
+		<div id="toc__inside">
+		{{ macros::toc(headers=section_or_page.toc) }}
+		</div>
+		</div>
 		<h1>{% block title %}{% endblock title %}</h1>
 		{% endif %}
 		{% if page.extra.cover_image %}<div class="blogimage"><img src="{{ page.extra.cover_image }}" alt="{{ page.extra.cover_image_alt }}"></div>{% endif %}
