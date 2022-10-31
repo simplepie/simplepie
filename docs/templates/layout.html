@@ -20,6 +20,11 @@
 {% set body_id = 'bodydocs' %}
 {% set section_title = 'SimplePie Documentation:' %}
 {% endif %}
+{% if section %}
+{% set section_or_page = section %}
+{% else %}
+{% set section_or_page = page %}
+{% endif %}
 <html lang="en-US">
 <head>
 <title>{{ section_title }} {% if current_path == '/' %}Super-fast, easy-to-use, RSS and Atom feed parsing in PHP.{% else %}{% block title %}{% endblock title %}{% endif %}</title>
@@ -125,7 +130,16 @@ div#features {
 		</div>
 
 		<!-- TODO: add edit link -->
-		<!-- TODO: add breadcrumbs -->
+		<p class="footnote">
+			<span class="bchead">You are here: </span>
+			{% for section_path in section_or_page.ancestors | slice(start=1) %}
+				{% set parent_section = get_section(path=section_path) %}
+				{% if not loop.first %}»{% endif %}
+				<a href="{{ parent_section.permalink }}">{{ parent_section.title }}</a>
+			{% endfor %}
+			{% if section_or_page.path != '/wiki/' %}»{% endif %}
+			<a href="{{ section_or_page.permalink }}">{{ section_or_page.title }}</a>
+		</p>
 		{% endif %}
 
 		{% if not page.extra.chunky %}<div class="chunk">{% endif %}
