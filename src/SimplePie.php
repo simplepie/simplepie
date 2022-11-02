@@ -49,6 +49,7 @@ use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\Psr16;
+use SimplePie\Content\Detector;
 
 /**
  * SimplePie
@@ -1677,10 +1678,12 @@ class SimplePie
         }
 
         if (!$this->force_feed) {
-            // Check if the supplied URL is a feed, if it isn't, look for it.
+            /** @var Detector */
+            $detector = $this->registry->create(Detector::class);
             $locate = $this->registry->create('Locator', [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
 
-            if (!$locate->is_feed($file)) {
+            // Check if the supplied URL is a feed, if it isn't, look for it.
+            if (! $detector->contains_feed($file->body, $file->headers)) {
                 $copyStatusCode = $file->status_code;
                 $copyContentType = $file->headers['content-type'];
                 try {

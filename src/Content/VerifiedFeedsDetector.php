@@ -61,6 +61,9 @@ use SimplePie\SimplePie;
  */
 class VerifiedFeedsDetector implements Detector
 {
+    /**
+     * @var Registry $registry
+     */
     private $registry;
 
     public function set_registry(Registry $registry)
@@ -92,7 +95,13 @@ class VerifiedFeedsDetector implements Detector
         $file->headers = $headers;
         $file->body = $body;
         $file->permanent_url = $requested_uri;
-        $file->method = SimplePie::FILE_SOURCE_REMOTE;
+
+        /** @see \SimplePie\File::__construct() */
+        if (preg_match('/^http(s)?:\/\//i', $requested_uri)) {
+            $file->method = SimplePie::FILE_SOURCE_REMOTE;
+        } else {
+            $file->method = SimplePie::FILE_SOURCE_LOCAL;
+        }
 
         /** @var Locator */
         $locator = $this->registry->create(

@@ -43,6 +43,9 @@
 
 namespace SimplePie;
 
+use SimplePie\Content\Detector;
+use SimplePie\Content\VerifiedFeedsDetector;
+
 /**
  * Handles creating objects and calling methods
  *
@@ -74,6 +77,7 @@ class Registry
         'Credit' => Credit::class,
         'Rating' => Rating::class,
         'Restriction' => Restriction::class,
+        Detector::class => VerifiedFeedsDetector::class,
         'Content_Type_Sniffer' => Content\Type\Sniffer::class,
         'Source' => Source::class,
         'Misc' => Misc::class,
