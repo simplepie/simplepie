@@ -664,6 +664,13 @@ class SimplePie
     private $cache = null;
 
     /**
+     * @var string[]
+     */
+    private $default_request_headers = [
+        'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+    ];
+
+    /**
      * The SimplePie class contains feed level data and options
      *
      * To use SimplePie, create the SimplePie object with no parameters. You can
@@ -1614,16 +1621,17 @@ class SimplePie
                     // support this, but we don't always send the headers either.)
                     $this->check_modified = true;
                     if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag'])) {
-                        $headers = [
-                            'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-                        ];
+                        $headers = $this->default_request_headers;
+
                         if (isset($this->data['headers']['last-modified'])) {
                             $headers['if-modified-since'] = $this->data['headers']['last-modified'];
                         }
+
                         if (isset($this->data['headers']['etag'])) {
                             $headers['if-none-match'] = $this->data['headers']['etag'];
                         }
 
+                        /** @var File */
                         $file = $this->registry->create('File', [$this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                         $this->status_code = $file->status_code;
 
@@ -1663,10 +1671,16 @@ class SimplePie
             if ($this->file instanceof \SimplePie\File && $this->file->url === $this->feed_url) {
                 $file =& $this->file;
             } else {
-                $headers = [
-                    'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-                ];
-                $file = $this->registry->create('File', [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                /** @var File */
+                $file = $this->registry->create('File', [
+                    $this->feed_url,
+                    $this->timeout,
+                    5,
+                    $this->default_request_headers,
+                    $this->useragent,
+                    $this->force_fsockopen,
+                    $this->curl_options
+                ]);
             }
         }
         $this->status_code = $file->status_code;
@@ -1701,10 +1715,50 @@ class SimplePie
                     }
                     // Now also do feed discovery, but if microformats were found don't
                     // overwrite the current value of file.
-                    $discovered = $locate->find(
-                        $this->autodiscovery,
-                        $this->all_discovered_feeds
+                    $possible_feed_urls = $detector->discover_possible_feed_urls(
+                        $file->body,
+                        $file->headers,
+                        $file->permanent_url,
+                        $this->autodiscovery
                     );
+
+                    $discovered = null;
+                    $checked_feeds = 0;
+
+                    foreach ($possible_feed_urls as $href) {
+                        $checked_feeds++;
+
+                        /** @var File */
+                        $possible_feed = $this->registry->create('File', [
+                            $href,
+                            $this->timeout,
+                            5,
+                            $this->default_request_headers,
+                            $this->useragent,
+                            $this->force_fsockopen,
+                            $this->curl_options
+                        ]);
+
+                        if (
+                            $possible_feed->success
+                            && (
+                                $possible_feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0
+                                || (
+                                    $possible_feed->status_code === 200
+                                    || $possible_feed->status_code > 206
+                                    && $possible_feed->status_code < 300
+                                )
+                            )
+                            && $detector->contains_feed($possible_feed->body, $possible_feed->headers)
+                        ) {
+                            $this->all_discovered_feeds[$href] = $possible_feed;
+                        }
+                    }
+
+                    if (! empty($this->all_discovered_feeds)) {
+                        $discovered = $this->all_discovered_feeds[0];
+                    }
+
                     if ($microformats) {
                         if ($hub = $locate->get_rel_link('hub')) {
                             $self = $locate->get_rel_link('self');
