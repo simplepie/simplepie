@@ -89,14 +89,14 @@ class Misc
     /**
      * Get a HTML/XML element from a HTML string
      *
-     * @deprecated Use DOMDocument instead (parsing HTML with regex is bad!)
+     * @deprecated since SimplePie 1.3, use DOMDocument instead (parsing HTML with regex is bad!)
      * @param string $realname Element name (including namespace prefix if applicable)
      * @param string $string HTML document
      * @return array
      */
     public static function get_element($realname, $string)
     {
-        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7.0, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
         $return = [];
         $name = preg_quote($realname, '/');
@@ -1727,13 +1727,13 @@ class Misc
     /**
      * Decode HTML entities
      *
-     * @deprecated Use DOMDocument instead
+     * @deprecated since SimplePie 1.3, use DOMDocument instead
      * @param string $data Input data
      * @return string Output data
      */
     public static function entities_decode($data)
     {
-        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7.0, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
         $decoder = new \SimplePie_Decode_HTML_Entities($data);
         return $decoder->parse();
