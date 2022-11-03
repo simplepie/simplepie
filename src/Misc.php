@@ -96,7 +96,7 @@ class Misc
      */
     public static function get_element($realname, $string)
     {
-        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7.0, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
         $return = [];
         $name = preg_quote($realname, '/');
@@ -200,7 +200,7 @@ class Misc
     }
 
     /**
-     * @deprecated since SimplePie 1.7.1, use PHP native array_replace_recursive() instead.
+     * @deprecated since SimplePie 1.8.0, use PHP native array_replace_recursive() instead.
      */
     public static function array_merge_recursive($array1, $array2)
     {
@@ -1733,7 +1733,7 @@ class Misc
      */
     public static function entities_decode($data)
     {
-        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7.0, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
         $decoder = new \SimplePie_Decode_HTML_Entities($data);
         return $decoder->parse();

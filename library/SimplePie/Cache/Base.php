@@ -45,10 +45,10 @@ use SimplePie\Cache\Base;
 
 interface_exists('SimplePie\Cache\Base');
 
-// @trigger_error(sprintf('Using the "SimplePie_Cache_Base" class is deprecated since SimplePie 1.7, use "SimplePie\Cache\Base" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Cache_Base" class is deprecated since SimplePie 1.7.0, use "SimplePie\Cache\Base" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Cache\Base" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Cache\Base" instead */
     interface SimplePie_Cache_Base extends Base
     {
     }

@@ -45,10 +45,10 @@ use SimplePie\Item;
 
 class_exists('SimplePie\Item');
 
-// @trigger_error(sprintf('Using the "SimplePie_Item" class is deprecated since SimplePie 1.7, use "SimplePie\Item" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Item" class is deprecated since SimplePie 1.7.0, use "SimplePie\Item" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Item" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Item" instead */
     class SimplePie_Item extends Item
     {
     }

@@ -45,10 +45,10 @@ use SimplePie\File;
 
 class_exists('SimplePie\File');
 
-// @trigger_error(sprintf('Using the "SimplePie_File" class is deprecated since SimplePie 1.7, use "SimplePie\File" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_File" class is deprecated since SimplePie 1.7.0, use "SimplePie\File" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\File" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\File" instead */
     class SimplePie_File extends File
     {
     }
