@@ -43,6 +43,10 @@
 
 namespace SimplePie;
 
+use SimplePie\Content\Type\Sniffer;
+use SimplePie\Parse\Date;
+use SimplePie\XML\Declaration\Parser as DeclarationParser;
+
 /**
  * Handles creating objects and calling methods
  *
@@ -53,41 +57,33 @@ namespace SimplePie;
 class Registry
 {
     /**
-     * Mapping of names that could be used to refer to a class instance
-     * when talking to Registry instead of full class-string.
-     * @var array<class-string, string>
+     * Default class mapping
+     *
+     * Overriding classes *must* subclass these.
+     *
+     * @var array<class-string, class-string>
      */
-    private $legacyClassNames = [
-        Cache::class => 'Cache',
-        Locator::class => 'Locator',
-        Parser::class => 'Parser',
-        File::class => 'File',
-        Sanitize::class => 'Sanitize',
-        Item::class => 'Item',
-        Author::class => 'Author',
-        Category::class => 'Category',
-        Enclosure::class => 'Enclosure',
-        Caption::class => 'Caption',
-        Copyright::class => 'Copyright',
-        Credit::class => 'Credit',
-        Rating::class => 'Rating',
-        Restriction::class => 'Restriction',
-        Content\Type\Sniffer::class => 'Content_Type_Sniffer',
-        Source::class => 'Source',
-        Misc::class => 'Misc',
-        XML\Declaration\Parser::class => 'XML_Declaration_Parser',
-        Parse\Date::class => 'Parse_Date',
+    protected $default = [
+        Cache::class => Cache::class,
+        Locator::class => Locator::class,
+        Parser::class => Parser::class,
+        File::class => File::class,
+        Sanitize::class => Sanitize::class,
+        Item::class => Item::class,
+        Author::class => Author::class,
+        Category::class => Category::class,
+        Enclosure::class => Enclosure::class,
+        Caption::class => Caption::class,
+        Copyright::class => Copyright::class,
+        Credit::class => Credit::class,
+        Rating::class => Rating::class,
+        Restriction::class => Restriction::class,
+        Sniffer::class => Sniffer::class,
+        Source::class => Source::class,
+        Misc::class => Misc::class,
+        DeclarationParser::class => DeclarationParser::class,
+        Date::class => Date::class,
     ];
-
-    /**
-     * Legacy mapping of names that can be used to refer to classes.
-     *
-     * (Inverted $this->legacyClassNames)
-     *
-     *
-     * @var array<string, class-string>
-     */
-    protected $default = [];
 
     /**
      * Class mapping
@@ -101,9 +97,29 @@ class Registry
      * Legacy classes
      *
      * @see register()
-     * @var array
+     * @var array<string, class-string>
      */
-    protected $legacy = [];
+    protected $legacy = [
+        'Cache' => Cache::class,
+        'Locator' => Locator::class,
+        'Parser' => Parser::class,
+        'File' => File::class,
+        'Sanitize' => Sanitize::class,
+        'Item' => Item::class,
+        'Author' => Author::class,
+        'Category' => Category::class,
+        'Enclosure' => Enclosure::class,
+        'Caption' => Caption::class,
+        'Copyright' => Copyright::class,
+        'Credit' => Credit::class,
+        'Rating' => Rating::class,
+        'Restriction' => Restriction::class,
+        'Content_Type_Sniffer' => Sniffer::class,
+        'Source' => Source::class,
+        'Misc' => Misc::class,
+        'XML_Declaration_Parser' => DeclarationParser::class,
+        'Parse_Date' => Date::class,
+    ];
 
     /**
      * Constructor
@@ -112,24 +128,30 @@ class Registry
      */
     public function __construct()
     {
-        $this->default = array_flip($this->legacyClassNames);
     }
 
     /**
      * Register a class
      *
-     * @param string $type See {@see $legacyClassNames} for names
-     * @param string $class Class name, must subclass the corresponding default
+     * @param string $type See {@see $default} for names
+     * @param class-string $class Class name, must subclass the corresponding default
      * @param bool $legacy Whether to enable legacy support for this class
      * @return bool Successfulness
      */
     public function register($type, $class, $legacy = false)
     {
+        if (! array_key_exists($type, $this->default) && ! array_key_exists($type, $this->legacy)) {
+            return false;
+        }
+
         if (!class_exists($class)) {
             return false;
         }
 
-        if (!((isset($this->legacyClassNames[$type]) && is_subclass_of($class, $type)) || (isset($this->default[$type]) && is_subclass_of($class, $this->default[$type])))) {
+        /** @var string */
+        $base_class = $this->default[$type] ?? $this->legacy[$type];
+
+        if (!@is_subclass_of($class, $base_class)) {
             return false;
         }
 
@@ -156,21 +178,13 @@ class Registry
         if (!empty($this->classes[$type])) {
             return $this->classes[$type];
         }
+
         if (!empty($this->default[$type])) {
             return $this->default[$type];
         }
 
-        if (!isset($this->legacyClassNames[$type])) {
-            return null;
-        }
-
-        // Try again with the legacy type resolved.
-        $type = $this->legacyClassNames[$type];
-        if (!empty($this->classes[$type])) {
-            return $this->classes[$type];
-        }
-        if (!empty($this->default[$type])) {
-            return $this->default[$type];
+        if (!empty($this->legacy[$type])) {
+            return $this->default[$this->legacy[$type]];
         }
 
         return null;

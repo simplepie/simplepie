@@ -44,16 +44,72 @@
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Registry;
 
 class RegistryTest extends TestCase
 {
     public function testNamespacedClassExists()
     {
-        $this->assertTrue(class_exists('SimplePie\Registry'));
+        $this->assertTrue(class_exists(Registry::class));
     }
 
     public function testClassExists()
     {
         $this->assertTrue(class_exists('SimplePie_Registry'));
+    }
+
+    /**
+     * @dataProvider getClassDataProvider
+     */
+    public function testGetClassReturnsCorrectClassname(string $type, string $expected)
+    {
+        $registry = new Registry();
+
+        $this->assertSame($expected, $registry->get_class($type));
+    }
+
+    public function getClassDataProvider(): array
+    {
+        return [
+            ['SimplePie\Cache', 'SimplePie\Cache'],
+            ['SimplePie\Locator', 'SimplePie\Locator'],
+            ['SimplePie\Parser', 'SimplePie\Parser'],
+            ['SimplePie\File', 'SimplePie\File'],
+            ['SimplePie\Sanitize', 'SimplePie\Sanitize'],
+            ['SimplePie\Item', 'SimplePie\Item'],
+            ['SimplePie\Author', 'SimplePie\Author'],
+            ['SimplePie\Category', 'SimplePie\Category'],
+            ['SimplePie\Enclosure', 'SimplePie\Enclosure'],
+            ['SimplePie\Caption', 'SimplePie\Caption'],
+            ['SimplePie\Copyright', 'SimplePie\Copyright'],
+            ['SimplePie\Credit', 'SimplePie\Credit'],
+            ['SimplePie\Rating', 'SimplePie\Rating'],
+            ['SimplePie\Restriction', 'SimplePie\Restriction'],
+            ['SimplePie\Content\Type\Sniffer', 'SimplePie\Content\Type\Sniffer'],
+            ['SimplePie\Source', 'SimplePie\Source'],
+            ['SimplePie\Misc', 'SimplePie\Misc'],
+            ['SimplePie\XML\Declaration\Parser', 'SimplePie\XML\Declaration\Parser'],
+            ['SimplePie\Parse\Date', 'SimplePie\Parse\Date'],
+            // Legacy type names
+            ['Cache', 'SimplePie\Cache'],
+            ['Locator', 'SimplePie\Locator'],
+            ['Parser', 'SimplePie\Parser'],
+            ['File', 'SimplePie\File'],
+            ['Sanitize', 'SimplePie\Sanitize'],
+            ['Item', 'SimplePie\Item'],
+            ['Author', 'SimplePie\Author'],
+            ['Category', 'SimplePie\Category'],
+            ['Enclosure', 'SimplePie\Enclosure'],
+            ['Caption', 'SimplePie\Caption'],
+            ['Copyright', 'SimplePie\Copyright'],
+            ['Credit', 'SimplePie\Credit'],
+            ['Rating', 'SimplePie\Rating'],
+            ['Restriction', 'SimplePie\Restriction'],
+            ['Content_Type_Sniffer', 'SimplePie\Content\Type\Sniffer'],
+            ['Source', 'SimplePie\Source'],
+            ['Misc', 'SimplePie\Misc'],
+            ['XML_Declaration_Parser', 'SimplePie\XML\Declaration\Parser'],
+            ['Parse_Date', 'SimplePie\Parse\Date'],
+        ];
     }
 }
