@@ -7,14 +7,14 @@ define('SP_PATH', dirname(__FILE__, 2));
 define('COMPILED', SP_PATH . DIRECTORY_SEPARATOR . 'SimplePie.compiled.php');
 
 if (! function_exists('str_starts_with')) {
-    function str_starts_with(string $haystack, string $needle)
+    function str_starts_with(string $haystack, string $needle): bool
     {
         return strncmp($haystack, $needle, strlen($needle)) === 0;
     }
 }
 
 if (! function_exists('str_ends_with')) {
-    function str_ends_with(string $haystack, string $needle)
+    function str_ends_with(string $haystack, string $needle): bool
     {
         return $needle === '' || $needle === substr($haystack, - strlen($needle));
     }
@@ -26,8 +26,18 @@ function remove_header($contents)
     $stripped_source = '';
     $stripped_doc = false;
     $stripped_open = false;
+    $stripped_declare = false;
+    $in_declare_strip = false;
+
     foreach ($tokens as $value) {
         if (is_string($value)) {
+            if ($in_declare_strip) {
+                if ($value === ';') {
+                    $in_declare_strip = false;
+                    $stripped_declare = true;
+                }
+                continue;
+            }
             $stripped_source .= "{$value}";
             continue;
         }
@@ -35,6 +45,22 @@ function remove_header($contents)
             case T_DOC_COMMENT:
                 if (!$stripped_doc) {
                     $stripped_doc = true;
+                    continue 2;
+                }
+                break;
+            case T_STRING:
+                if ($in_declare_strip) {
+                    continue 2;
+                }
+                break;
+            case T_LNUMBER:
+                if ($in_declare_strip) {
+                    continue 2;
+                }
+                break;
+            case T_DECLARE:
+                if (! $stripped_declare && ! $in_declare_strip) {
+                    $in_declare_strip = true;
                     continue 2;
                 }
                 break;
