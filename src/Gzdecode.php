@@ -204,6 +204,8 @@ class Gzdecode
     public function parse()
     {
         if ($this->compressed_size >= $this->min_compressed_size) {
+            $len = 0;
+
             // Check ID1, ID2, and CM
             if (substr($this->compressed_data, 0, 3) !== "\x1F\x8B\x08") {
                 return false;

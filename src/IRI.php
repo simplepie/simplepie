@@ -422,6 +422,7 @@ class IRI
         $strlen = strlen($string);
         while (($position += strspn($string, $extra_chars, $position)) < $strlen) {
             $value = ord($string[$position]);
+            $character = 0;
 
             // Start position
             $start = $position;
@@ -539,18 +540,21 @@ class IRI
         // at the first byte!).
         $string = '';
         $remaining = 0;
+        $start = 0;
+        $character = 0;
+        $length = 0;
 
         // Loop over each and every byte, and set $value to its value
         for ($i = 1, $len = count($bytes); $i < $len; $i++) {
             $value = hexdec($bytes[$i]);
 
+            // By default we are valid
+            $valid = true;
+
             // If we're the first byte of sequence:
             if (!$remaining) {
                 // Start position
                 $start = $i;
-
-                // By default we are valid
-                $valid = true;
 
                 // One byte sequence:
                 if ($value <= 0x7F) {
