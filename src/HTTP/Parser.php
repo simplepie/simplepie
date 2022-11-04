@@ -468,8 +468,11 @@ class Parser
             }
 
             $chunk_length = strlen($matches[0]);
-            $decoded .= $part = substr($encoded, $chunk_length, $length);
+            $decoded .= substr($encoded, $chunk_length, $length);
             $encoded = substr($encoded, $chunk_length + $length + 2);
+
+            // BC for PHP < 8.0: substr() can return bool instead of string
+            $encoded = strval($encoded);
 
             if (trim($encoded) === '0' || empty($encoded)) {
                 $this->state = self::STATE_EMIT;
