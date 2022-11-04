@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -2755,7 +2757,7 @@ class SimplePie
     public function get_image_width()
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'width')) {
-            return round($return[0]['data']);
+            return round(intval($return[0]['data']));
         } elseif ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
             return 88.0;
         }
@@ -2776,7 +2778,7 @@ class SimplePie
     public function get_image_height()
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'height')) {
-            return round($return[0]['data']);
+            return round(intval($return[0]['data']));
         } elseif ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
             return 31.0;
         }
