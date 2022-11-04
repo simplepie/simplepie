@@ -43,7 +43,6 @@
 
 namespace SimplePie;
 
-use Closure;
 use InvalidArgumentException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Base;
@@ -944,6 +943,7 @@ class SimplePie
 
     /**
      * Return the filename (i.e. hash, without path and without extension) of the file to cache a given URL.
+     *
      * @param string $url The URL of the feed to be cached.
      * @return string A filename (i.e. hash, without path and without extension).
      */
