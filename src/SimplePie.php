@@ -49,6 +49,7 @@ use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\Psr16;
+use SimplePie\Content\Type\Sniffer;
 
 /**
  * SimplePie
@@ -1007,152 +1008,269 @@ class SimplePie
      *
      * Use this to override SimplePie's default classes
      * @see \SimplePie\Registry
-     * @return \SimplePie\Registry
+     *
+     * @return Registry
      */
     public function &get_registry()
     {
         return $this->registry;
     }
 
-    /**#@+
-     * Useful when you are overloading or extending SimplePie's default classes.
-     *
-     * @deprecated Use {@see get_registry()} instead
-     * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
-     * @param string $class Name of custom class
-     * @return boolean True on success, false otherwise
-     */
     /**
      * Set which class SimplePie uses for caching
      *
-     * @deprecated Use {@see set_cache()} instead
+     * @deprecated since SimplePie 1.3, use {@see set_cache()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_cache_class($class = 'SimplePie\Cache')
+    public function set_cache_class($class = Cache::class)
     {
-        // @trigger_error(sprintf('SimplePie\SimplePie::set_cache_class() is deprecated since SimplePie 1.3.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Cache::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for auto-discovery
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_locator_class($class = 'SimplePie\Locator')
+    public function set_locator_class($class = Locator::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Locator::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for XML parsing
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_parser_class($class = 'SimplePie\Parser')
+    public function set_parser_class($class = Parser::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Parser::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for remote file fetching
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_file_class($class = 'SimplePie\File')
+    public function set_file_class($class = File::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(File::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for data sanitization
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_sanitize_class($class = 'SimplePie\Sanitize')
+    public function set_sanitize_class($class = Sanitize::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Sanitize::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for handling feed items
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_item_class($class = 'SimplePie\Item')
+    public function set_item_class($class = Item::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Item::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for handling author data
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_author_class($class = 'SimplePie\Author')
+    public function set_author_class($class = Author::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Author::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for handling category data
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_category_class($class = 'SimplePie\Category')
+    public function set_category_class($class = Category::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Category::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for feed enclosures
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_enclosure_class($class = 'SimplePie\Enclosure')
+    public function set_enclosure_class($class = Enclosure::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Enclosure::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:text>` captions
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_caption_class($class = 'SimplePie\Caption')
+    public function set_caption_class($class = Caption::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Caption::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:copyright>`
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_copyright_class($class = 'SimplePie\Copyright')
+    public function set_copyright_class($class = Copyright::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Copyright::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:credit>`
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_credit_class($class = 'SimplePie\Credit')
+    public function set_credit_class($class = Credit::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Credit::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:rating>`
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_rating_class($class = 'SimplePie\Rating')
+    public function set_rating_class($class = Rating::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Rating::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:restriction>`
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_restriction_class($class = 'SimplePie\Restriction')
+    public function set_restriction_class($class = Restriction::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Restriction::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for content-type sniffing
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_content_type_sniffer_class($class = 'SimplePie\Content\Type\Sniffer')
+    public function set_content_type_sniffer_class($class = Sniffer::class)
     {
-        return $this->registry->register(Content\Type\Sniffer::class, $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Sniffer::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses item sources
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_source_class($class = 'SimplePie\Source')
+    public function set_source_class($class = Source::class)
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         return $this->registry->register(Source::class, $class, true);
     }
-    /**#@-*/
 
     /**
      * Set the user agent string
@@ -1753,7 +1871,7 @@ class SimplePie
         $this->raw_data = $file->body;
         $this->permanent_url = $file->permanent_url;
         $headers = $file->headers;
-        $sniffer = $this->registry->create(Content\Type\Sniffer::class, [&$file]);
+        $sniffer = $this->registry->create(Sniffer::class, [&$file]);
         $sniffed = $sniffer->get_type();
 
         return [$headers, $sniffed];
