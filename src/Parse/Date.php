@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -726,7 +728,7 @@ class Date
             // Convert the number of seconds to an integer, taking decimals into account
             $second = round((int)$match[6] + (int)$match[7] / (10 ** strlen($match[7])));
 
-            return gmmktime($match[4], $match[5], $second, $match[2], $match[3], $match[1]) - $timezone;
+            return gmmktime(intval($match[4]), intval($match[5]), intval($second), intval($match[2]), intval($match[3]), intval($match[1])) - $timezone;
         }
 
         return false;
@@ -855,7 +857,7 @@ class Date
                 $second = 0;
             }
 
-            return gmmktime($match[5], $match[6], $second, $month, $match[2], $match[4]) - $timezone;
+            return gmmktime(intval($match[5]), intval($match[6]), intval($second), intval($month), intval($match[2]), intval($match[4])) - $timezone;
         }
 
         return false;

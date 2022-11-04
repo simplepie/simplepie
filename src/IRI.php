@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -373,7 +375,7 @@ class IRI
             // C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise,
             elseif (strpos($input, '/../') === 0) {
                 $input = substr($input, 3);
-                $output = substr_replace($output, '', strrpos($output, '/'));
+                $output = substr_replace($output, '', intval(strrpos($output, '/')));
             } elseif ($input === '/..') {
                 $input = '/';
                 $output = substr_replace($output, '', strrpos($output, '/'));
@@ -817,7 +819,7 @@ class IRI
         } else {
             $iuserinfo = null;
         }
-        if (($port_start = strpos($remaining, ':', strpos($remaining, ']'))) !== false) {
+        if (($port_start = strpos($remaining, ':', intval(strpos($remaining, ']')))) !== false) {
             if (($port = substr($remaining, $port_start + 1)) === false) {
                 $port = null;
             }
