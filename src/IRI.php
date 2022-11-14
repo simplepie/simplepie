@@ -378,7 +378,7 @@ class IRI
                 $output = substr_replace($output, '', intval(strrpos($output, '/')));
             } elseif ($input === '/..') {
                 $input = '/';
-                $output = substr_replace($output, '', strrpos($output, '/'));
+                $output = substr_replace($output, '', intval(strrpos($output, '/')));
             }
             // D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
             elseif ($input === '.' || $input === '..') {

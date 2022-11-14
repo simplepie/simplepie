@@ -1102,7 +1102,7 @@ EOT
 </rss>
 EOT
                 ,
-                100.0,
+                100,
             ],
             'Test RSS 0.91-Netscape URL Default' => [
 <<<EOT
@@ -1116,7 +1116,7 @@ EOT
 </rss>
 EOT
                 ,
-                31.0,
+                31,
             ],
             'Test RSS 0.91-Userland Atom 1.0 Icon Default' => [
 <<<EOT
@@ -1151,7 +1151,7 @@ EOT
 </rss>
 EOT
                 ,
-                100.0,
+                100,
             ],
             'Test RSS 0.91-Userland URL Default' => [
 <<<EOT
@@ -1164,7 +1164,7 @@ EOT
 </rss>
 EOT
                 ,
-                31.0,
+                31,
             ],
             'Test RSS 0.92 Atom 1.0 Icon Default' => [
 <<<EOT
@@ -1199,7 +1199,7 @@ EOT
 </rss>
 EOT
                 ,
-                100.0,
+                100,
             ],
             'Test RSS 0.92 URL Default' => [
 <<<EOT
@@ -1212,7 +1212,7 @@ EOT
 </rss>
 EOT
                 ,
-                31.0,
+                31,
             ],
             'Test RSS 1.0 Atom 1.0 Icon Default' => [
 <<<EOT
@@ -1280,7 +1280,7 @@ EOT
 </rss>
 EOT
                 ,
-                100.0,
+                100,
             ],
             'Test RSS 2.0 URL Default' => [
 <<<EOT
@@ -1293,7 +1293,7 @@ EOT
 </rss>
 EOT
                 ,
-                31.0,
+                31,
             ],
         ];
     }
@@ -1985,7 +1985,7 @@ EOT
 </rss>
 EOT
                 ,
-                88.0,
+                88,
             ],
             'Test RSS 0.91-Netscape Width' => [
 <<<EOT
@@ -1999,7 +1999,7 @@ EOT
 </rss>
 EOT
                 ,
-                100.0,
+                100,
             ],
             'Test RSS 0.91-Userland Atom 1.0 Icon' => [
 <<<EOT
@@ -2034,7 +2034,7 @@ EOT
 </rss>
 EOT
                 ,
-                88.0,
+                88,
             ],
             'Test RSS 0.91-Userland Width' => [
 <<<EOT
@@ -2047,7 +2047,7 @@ EOT
 </rss>
 EOT
                 ,
-                100.0,
+                100,
             ],
             'Test RSS 0.92 Atom 1.0 Icon' => [
 <<<EOT
@@ -2082,7 +2082,7 @@ EOT
 </rss>
 EOT
                 ,
-                88.0,
+                88,
             ],
             'Test RSS 0.92 Width' => [
 <<<EOT
@@ -2095,7 +2095,7 @@ EOT
 </rss>
 EOT
                 ,
-                100.0,
+                100,
             ],
             'Test RSS 1.0 Atom 1.0 Icon' => [
 <<<EOT
@@ -2163,7 +2163,7 @@ EOT
 </rss>
 EOT
                 ,
-                88.0,
+                88,
             ],
             'Test RSS 2.0 Width' => [
 <<<EOT
@@ -2176,7 +2176,7 @@ EOT
 </rss>
 EOT
                 ,
-                100.0,
+                100,
             ],
         ];
     }
