@@ -545,7 +545,7 @@ class IRI
         $start = 0;
         $character = 0;
         $length = 0;
-        $valid = true; // By default we are valid
+        $valid = true;
 
         // Loop over each and every byte, and set $value to its value
         for ($i = 1, $len = count($bytes); $i < $len; $i++) {
@@ -555,6 +555,9 @@ class IRI
             if (!$remaining) {
                 // Start position
                 $start = $i;
+
+                // By default we are valid
+                $valid = true;
 
                 // One byte sequence:
                 if ($value <= 0x7F) {
