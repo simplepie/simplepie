@@ -540,16 +540,16 @@ class IRI
         // at the first byte!).
         $string = '';
         $remaining = 0;
+
+        // these variables will be initialized in the loop but PHPStan is not able to detect it currently
         $start = 0;
         $character = 0;
         $length = 0;
+        $valid = true; // By default we are valid
 
         // Loop over each and every byte, and set $value to its value
         for ($i = 1, $len = count($bytes); $i < $len; $i++) {
             $value = hexdec($bytes[$i]);
-
-            // By default we are valid
-            $valid = true;
 
             // If we're the first byte of sequence:
             if (!$remaining) {
