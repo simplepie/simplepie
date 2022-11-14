@@ -472,7 +472,7 @@ class Parser
             $encoded = substr($encoded, $chunk_length + $length + 2);
 
             // BC for PHP < 8.0: substr() can return bool instead of string
-            $encoded === false ? '' : $encoded;
+            $encoded = ($encoded === false) ? '' : $encoded;
 
             if (trim($encoded) === '0' || empty($encoded)) {
                 $this->state = self::STATE_EMIT;
