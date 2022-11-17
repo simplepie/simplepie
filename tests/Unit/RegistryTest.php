@@ -44,8 +44,10 @@
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Cache;
 use SimplePie\File;
 use SimplePie\Registry;
+use SimplePie\Tests\Fixtures\Cache\NewCacheMock;
 use SimplePie\Tests\Fixtures\FileMock;
 
 class RegistryTest extends TestCase
@@ -116,6 +118,8 @@ class RegistryTest extends TestCase
     }
 
     /**
+     * Test register() and get_class() with old and new type names
+     *
      * @dataProvider getOverridingClassDataProvider
      */
     public function testRegisterAllowsOverridingTheDefaultClassname(string $registeredType, string $requestedType, string $classname)
@@ -130,10 +134,14 @@ class RegistryTest extends TestCase
     public function getOverridingClassDataProvider(): array
     {
         return [
-            ['File',      'File',      FileMock::class],
-            [File::class, 'File',      FileMock::class],
-            ['File',      File::class, FileMock::class],
-            [File::class, File::class, FileMock::class],
+            ['File',       'File',       FileMock::class],
+            [File::class,  'File',       FileMock::class],
+            ['File',       File::class,  FileMock::class],
+            [File::class,  File::class,  FileMock::class],
+            ['Cache',      'Cache',      NewCacheMock::class],
+            [Cache::class, 'Cache',      NewCacheMock::class],
+            ['Cache',      Cache::class, NewCacheMock::class],
+            [Cache::class, Cache::class, NewCacheMock::class],
         ];
     }
 }

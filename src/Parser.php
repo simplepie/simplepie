@@ -43,6 +43,8 @@
 
 namespace SimplePie;
 
+use SimplePie\XML\Declaration\Parser as DeclarationParser;
+
 /**
  * Parses XML into something sane
  *
@@ -122,7 +124,7 @@ class Parser
         }
 
         if (substr($data, 0, 5) === '<?xml' && strspn(substr($data, 5, 1), "\x09\x0A\x0D\x20") && ($pos = strpos($data, '?>')) !== false) {
-            $declaration = $this->registry->create(XML\Declaration\Parser::class, [substr($data, 5, $pos - 5)]);
+            $declaration = $this->registry->create(DeclarationParser::class, [substr($data, 5, $pos - 5)]);
             if ($declaration->parse()) {
                 $data = substr($data, $pos + 2);
                 $data = '<?xml version="' . $declaration->version . '" encoding="' . $encoding . '" standalone="' . (($declaration->standalone) ? 'yes' : 'no') . '"?>' ."\n". $this->declare_html_entities() . $data;

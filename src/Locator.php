@@ -295,21 +295,17 @@ class Locator
                 preg_match('/^https?$/i', $parsed['scheme'])) {
                 if (method_exists($link, 'getLineNo') &&
                     $this->base_location < $link->getLineNo()) {
-                    $href =
-                        $this->registry->call(
-                            'Misc',
-                            'absolutize_url',
-                            [trim($link->getAttribute('href')),
-                                                    $this->base]
-                        );
+                    $href = $this->registry->call(
+                        Misc::class,
+                        'absolutize_url',
+                        [trim($link->getAttribute('href')), $this->base]
+                    );
                 } else {
-                    $href =
-                        $this->registry->call(
-                            'Misc',
-                            'absolutize_url',
-                            [trim($link->getAttribute('href')),
-                                                    $this->http_base]
-                        );
+                    $href = $this->registry->call(
+                        Misc::class,
+                        'absolutize_url',
+                        [trim($link->getAttribute('href')), $this->http_base]
+                    );
                 }
                 if ($href === false) {
                     return null;

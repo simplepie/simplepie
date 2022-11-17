@@ -41,6 +41,8 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
+use SimplePie\Cache;
+use SimplePie\File;
 use SimplePie\Tests\Fixtures\FileMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
@@ -92,7 +94,7 @@ class CacheTest extends PHPUnit\Framework\TestCase
 
         $feed = new SimplePie();
         $feed->set_cache_class('Mock_CacheLegacy');
-        $feed->get_registry()->register('File', FileMock::class);
+        $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 
         $feed->init();
@@ -103,8 +105,8 @@ class CacheTest extends PHPUnit\Framework\TestCase
         $this->expectException('Exception_Success');
 
         $feed = new SimplePie();
-        $feed->get_registry()->register('Cache', 'Mock_CacheNew');
-        $feed->get_registry()->register('File', FileMock::class);
+        $feed->get_registry()->register(Cache::class, 'Mock_CacheNew');
+        $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 
         $feed->init();

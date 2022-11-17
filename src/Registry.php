@@ -97,7 +97,7 @@ class Registry
      * Legacy classes
      *
      * @see register()
-     * @var array<string, class-string>
+     * @var array<class-string>
      */
     protected $legacy = [];
 

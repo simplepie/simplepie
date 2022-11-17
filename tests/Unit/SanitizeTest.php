@@ -44,6 +44,7 @@
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Misc;
 use SimplePie\Registry;
 use SimplePie\Sanitize;
 
@@ -130,7 +131,7 @@ EOT
         $sanitize = new Sanitize();
 
         $registry = new Registry();
-        $registry->register('Misc', 'SimplePie\Misc');
+        $registry->register(Misc::class, 'SimplePie\Misc');
         $sanitize->set_registry($registry);
 
         $base = 'http://example.com/';

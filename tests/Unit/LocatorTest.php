@@ -89,7 +89,7 @@ class LocatorTest extends TestCase
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
@@ -104,7 +104,7 @@ class LocatorTest extends TestCase
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
@@ -169,7 +169,7 @@ class LocatorTest extends TestCase
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
         $locator->set_registry($registry);
 
         $expected = [];

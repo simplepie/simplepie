@@ -43,6 +43,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
+use SimplePie\File;
 use SimplePie\Tests\Fixtures\FileMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
@@ -72,7 +73,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $locator = new SimplePie_Locator($data, 0, null, false);
 
         $registry = new SimplePie_Registry();
-        $registry->register('File', FileMock::class);
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
@@ -87,7 +88,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $locator = new SimplePie_Locator($data, 0, null, false);
 
         $registry = new SimplePie_Registry();
-        $registry->register('File', FileMock::class);
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
@@ -152,7 +153,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $locator = new SimplePie_Locator($data, 0, null, false);
 
         $registry = new SimplePie_Registry();
-        $registry->register('File', FileMock::class);
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $expected = [];
