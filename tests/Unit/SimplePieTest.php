@@ -255,6 +255,11 @@ class SimplePieTest extends TestCase
 
     public function testLegacyCallOfSetCacheClass()
     {
+        $feed = new SimplePie();
+        $feed->set_cache_class('SimplePie\Tests\Fixtures\Cache\LegacyCacheMock');
+        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $feed->set_feed_url('http://example.com/feed/');
+
         if (version_compare(PHP_VERSION, '8.0', '<')) {
             $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
         } else {
@@ -263,11 +268,6 @@ class SimplePieTest extends TestCase
             // for the old non-static cache methods.
             $this->expectError();
         }
-
-        $feed = new SimplePie();
-        $feed->set_cache_class('SimplePie\Tests\Fixtures\Cache\LegacyCacheMock');
-        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
-        $feed->set_feed_url('http://example.com/feed/');
 
         $feed->init();
     }

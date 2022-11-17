@@ -99,7 +99,15 @@ class Registry
      * @see register()
      * @var array<string, class-string>
      */
-    protected $legacy = [
+    protected $legacy = [];
+
+    /**
+     * Legacy types
+     *
+     * @see register()
+     * @var array<string, class-string>
+     */
+    private $legacyTypes = [
         'Cache' => Cache::class,
         'Locator' => Locator::class,
         'Parser' => Parser::class,
@@ -140,7 +148,11 @@ class Registry
      */
     public function register($type, $class, $legacy = false)
     {
-        if (! array_key_exists($type, $this->default) && ! array_key_exists($type, $this->legacy)) {
+        if (array_key_exists($type, $this->legacyTypes)) {
+            $type = $this->legacyTypes[$type];
+        }
+
+        if (! array_key_exists($type, $this->default)) {
             return false;
         }
 
@@ -149,7 +161,7 @@ class Registry
         }
 
         /** @var string */
-        $base_class = $this->default[$type] ?? $this->legacy[$type];
+        $base_class = $this->default[$type];
 
         if (!@is_subclass_of($class, $base_class)) {
             return false;
@@ -175,19 +187,21 @@ class Registry
      */
     public function get_class($type)
     {
-        if (!empty($this->classes[$type])) {
-            return $this->classes[$type];
+        if (array_key_exists($type, $this->legacyTypes)) {
+            $type = $this->legacyTypes[$type];
         }
 
-        if (!empty($this->default[$type])) {
-            return $this->default[$type];
+        if (! array_key_exists($type, $this->default)) {
+            return null;
         }
 
-        if (!empty($this->legacy[$type])) {
-            return $this->default[$this->legacy[$type]];
+        $class = $this->default[$type];
+
+        if (array_key_exists($type, $this->classes)) {
+            $class = $this->classes[$type];
         }
 
-        return null;
+        return $class;
     }
 
     /**
@@ -240,7 +254,7 @@ class Registry
 
         if (in_array($class, $this->legacy)) {
             switch ($type) {
-                case 'Cache':
+                case Cache::class:
                     // For backwards compatibility with old non-static
                     // Cache::create() methods in PHP < 8.0.
                     // No longer supported as of PHP 8.0.

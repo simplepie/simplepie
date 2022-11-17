@@ -44,7 +44,9 @@
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\File;
 use SimplePie\Registry;
+use SimplePie\Tests\Fixtures\FileMock;
 
 class RegistryTest extends TestCase
 {
@@ -59,7 +61,7 @@ class RegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider getClassDataProvider
+     * @dataProvider getDefaultClassDataProvider
      */
     public function testGetClassReturnsCorrectClassname(string $type, string $expected)
     {
@@ -68,7 +70,7 @@ class RegistryTest extends TestCase
         $this->assertSame($expected, $registry->get_class($type));
     }
 
-    public function getClassDataProvider(): array
+    public function getDefaultClassDataProvider(): array
     {
         return [
             ['SimplePie\Cache', 'SimplePie\Cache'],
@@ -110,6 +112,28 @@ class RegistryTest extends TestCase
             ['Misc', 'SimplePie\Misc'],
             ['XML_Declaration_Parser', 'SimplePie\XML\Declaration\Parser'],
             ['Parse_Date', 'SimplePie\Parse\Date'],
+        ];
+    }
+
+    /**
+     * @dataProvider getOverridingClassDataProvider
+     */
+    public function testRegisterAllowsOverridingTheDefaultClassname(string $registeredType, string $requestedType, string $classname)
+    {
+        $registry = new Registry();
+
+        $registry->register($registeredType, $classname);
+
+        $this->assertSame($classname, $registry->get_class($requestedType));
+    }
+
+    public function getOverridingClassDataProvider(): array
+    {
+        return [
+            ['File',      'File',      FileMock::class],
+            [File::class, 'File',      FileMock::class],
+            ['File',      File::class, FileMock::class],
+            [File::class, File::class, FileMock::class],
         ];
     }
 }
