@@ -59,7 +59,7 @@ use SimplePie\Cache\NameFilter;
  * @package SimplePie
  * @todo Move to using an actual HTML parser (this will allow tags to be properly stripped, and to switch between HTML and XHTML), this will also make it easier to shorten a string while preserving HTML tags
  */
-class Sanitize
+class Sanitize implements RegistryAware
 {
     // Private vars
     public $base;
@@ -126,7 +126,7 @@ class Sanitize
         }
     }
 
-    public function set_registry(\SimplePie\Registry $registry)
+    public function set_registry(\SimplePie\Registry $registry)/* : void */
     {
         $this->registry = $registry;
     }

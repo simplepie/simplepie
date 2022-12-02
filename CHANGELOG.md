@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New method `SimplePie\SimplePie::set_cache()` for providing a PSR-16 cache implementation
 - New method `SimplePie\SimplePie::set_cache_namefilter()` for customize the cache key
 - New class `SimplePie\Cache\CallableNameFilter` to provide a `callable` to customize the cache key
+- New interface `SimplePie\RegistryAware` to inject the `Registry` instance into classes created by `Registry`.
 
 ### Deprecated
 
