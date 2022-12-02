@@ -12,13 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New method `SimplePie\SimplePie::set_cache()` for providing a PSR-16 cache implementation by @Art4 in [#742](https://github.com/simplepie/simplepie/pull/742)
-- New interface `SimplePie\RegistryAware` to inject the `Registry` instance into classes created by `Registry`.
+- New interface `SimplePie\RegistryAware` to inject the `Registry` instance into classes created by `Registry` by @Art4 in [#760](https://github.com/simplepie/simplepie/pull/760)
 
 ### Changed
 
 - Clarify branching strategy by @Art4 in [#751](https://github.com/simplepie/simplepie/pull/751)
 - Use native array_replace_recursive() by @Alkarex in [#749](https://github.com/simplepie/simplepie/pull/749)
 - PHP 7.2 or newer is now required by @Art4 in [#743](https://github.com/simplepie/simplepie/pull/743)
+- Parse\Date: Clean up regex structure by @jtojnar in [#765](https://github.com/simplepie/simplepie/pull/765)
 
 ### Fixed
 
@@ -43,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ROADMAP.md removed by @Art4 in [#748](https://github.com/simplepie/simplepie/pull/748)
 - remove check for E_USER_DEPRECATED definition by @Art4 in [#750](https://github.com/simplepie/simplepie/pull/750)
+- remove broken BC code in Registry by @Art4 in [#764](https://github.com/simplepie/simplepie/pull/764)
 
 ## [1.7.0](https://github.com/simplepie/simplepie/compare/1.6.0...1.7.0) - 2022-09-30
 
