@@ -160,17 +160,6 @@ class Registry
     {
         $class = $this->get_class($type);
 
-        if (in_array($class, $this->legacy)) {
-            switch ($type) {
-                case 'locator':
-                    // Legacy: file, timeout, useragent, file_class, max_checked_feeds, content_type_sniffer_class
-                    // Specified: file, timeout, useragent, max_checked_feeds
-                    $replacement = [$this->get_class('file'), $parameters[3], $this->get_class('content_type_sniffer')];
-                    array_splice($parameters, 3, 1, $replacement);
-                    break;
-            }
-        }
-
         if (!method_exists($class, '__construct')) {
             $instance = new $class();
         } else {
