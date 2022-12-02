@@ -53,7 +53,7 @@ namespace SimplePie;
  * @package \SimplePie\SimplePie
  * @subpackage API
  */
-class Item
+class Item implements RegistryAware
 {
     /**
      * Parent feed
@@ -102,7 +102,7 @@ class Item
      * @since 1.3
      * @param \SimplePie\Registry $registry
      */
-    public function set_registry(\SimplePie\Registry $registry)
+    public function set_registry(\SimplePie\Registry $registry)/* : void */
     {
         $this->registry = $registry;
     }
