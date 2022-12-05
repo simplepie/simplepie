@@ -1633,13 +1633,13 @@ class SimplePie
                                 // Set raw_data to false here too, to signify that the cache
                                 // is still valid.
                                 $this->raw_data = false;
-                                $cache->set_data($cacheKey, $this->data, $this->cache_duration + time());
+                                $cache->set_data($cacheKey, $this->data, $this->cache_duration);
                                 return true;
                             }
                         } else {
                             $this->check_modified = false;
                             if ($this->force_cache_fallback) {
-                                $cache->set_data($cacheKey, $this->data, $this->cache_duration + time());
+                                $cache->set_data($cacheKey, $this->data, $this->cache_duration);
                                 return true;
                             }
 

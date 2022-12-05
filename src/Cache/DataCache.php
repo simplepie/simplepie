@@ -75,7 +75,7 @@ interface DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get_data($key, $default = null);
+    public function get_data(string $key, $default = null);
 
     /**
      * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
@@ -96,7 +96,7 @@ interface DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function set_data($key, array $value, $ttl = null);
+    public function set_data(string $key, array $value, ?int $ttl = null): bool;
 
     /**
      * Delete an item from the cache by its unique key.
@@ -113,5 +113,5 @@ interface DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function delete_data($key);
+    public function delete_data(string $key): bool;
 }

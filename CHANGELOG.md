@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New method `SimplePie\SimplePie::set_cache()` for providing a PSR-16 cache implementation
+- New interface `SimplePie\RegistryAware` to inject the `Registry` instance into classes created by `Registry`.
 
 ### Deprecated
 

@@ -98,6 +98,8 @@ class CachingTest extends TestCase
                     return true;
                 });
 
+                $psr16->method('delete')->willReturn(true);
+
                 $feed->set_cache($psr16);
                 break;
 

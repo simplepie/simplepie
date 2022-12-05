@@ -55,7 +55,7 @@ namespace SimplePie;
  * @package SimplePie
  * @subpackage API
  */
-class Source
+class Source implements RegistryAware
 {
     public $item;
     public $data = [];
@@ -67,7 +67,7 @@ class Source
         $this->data = $data;
     }
 
-    public function set_registry(\SimplePie\Registry $registry)
+    public function set_registry(\SimplePie\Registry $registry)/* : void */
     {
         $this->registry = $registry;
     }
