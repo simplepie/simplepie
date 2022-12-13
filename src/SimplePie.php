@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -2778,17 +2780,17 @@ class SimplePie
      *
      * RSS 2.0 feeds are allowed to have a "feed logo" width.
      *
-     * Uses `<image><width>` or defaults to 88.0 if no width is specified and
+     * Uses `<image><width>` or defaults to 88 if no width is specified and
      * the feed is an RSS 2.0 feed.
      *
-     * @return int|float|null
+     * @return int|null
      */
     public function get_image_width()
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'width')) {
-            return round($return[0]['data']);
+            return intval($return[0]['data']);
         } elseif ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
-            return 88.0;
+            return 88;
         }
 
         return null;
@@ -2799,17 +2801,17 @@ class SimplePie
      *
      * RSS 2.0 feeds are allowed to have a "feed logo" height.
      *
-     * Uses `<image><height>` or defaults to 31.0 if no height is specified and
+     * Uses `<image><height>` or defaults to 31 if no height is specified and
      * the feed is an RSS 2.0 feed.
      *
-     * @return int|float|null
+     * @return int|null
      */
     public function get_image_height()
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'height')) {
-            return round($return[0]['data']);
+            return intval($return[0]['data']);
         } elseif ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
-            return 31.0;
+            return 31;
         }
 
         return null;

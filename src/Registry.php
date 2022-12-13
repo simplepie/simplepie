@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -169,7 +171,7 @@ class Registry
 
         if ($instance instanceof RegistryAware) {
             $instance->set_registry($this);
-        } else if (method_exists($instance, 'set_registry')) {
+        } elseif (method_exists($instance, 'set_registry')) {
             trigger_error(sprintf('Using the method "set_registry()" without implementing "%s" is deprecated since SimplePie 1.8, implement "%s" in "%s".', RegistryAware::class, RegistryAware::class, $class), \E_USER_DEPRECATED);
             $instance->set_registry($this);
         }

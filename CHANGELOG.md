@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The class `SimplePie\Cache\Redis` is deprecated, use implementation of `Psr\SimpleCache\CacheInterface` instead
 - The interface `SimplePie\Cache\Base` is deprecated, use interface `Psr\SimpleCache\CacheInterface` instead
 
+### Fixed
+
+- The method `SimplePie\SimplePie::get_image_height()` returns the pixel number as `int` instead of `float`
+- The method `SimplePie\SimplePie::get_image_width()` returns the pixel number as `int` instead of `float`
+
 ## [1.7.0](https://github.com/simplepie/simplepie/compare/1.6.0...1.7.0) - 2022-09-30
 
 ### Added

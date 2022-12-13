@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -1799,7 +1801,7 @@ class Misc
 
     public static function atom_03_construct_type($attribs)
     {
-        if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode']) === 'base64')) {
+        if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode'])) === 'base64') {
             $mode = \SimplePie\SimplePie::CONSTRUCT_BASE64;
         } else {
             $mode = \SimplePie\SimplePie::CONSTRUCT_NONE;

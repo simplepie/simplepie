@@ -12,7 +12,6 @@ return (new PhpCsFixer\Config())
         '@PSR12' => true,
         '@PHP71Migration' => true,
         '@PHP71Migration:risky' => true,
-        'declare_strict_types' => false,
         'void_return' => false,
         '@PHPUnit84Migration:risky' => true,
     ])
