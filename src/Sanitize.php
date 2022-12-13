@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -43,9 +45,12 @@
 
 namespace SimplePie;
 
+use InvalidArgumentException;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
+use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
+use SimplePie\Cache\NameFilter;
 
 /**
  * Used for data cleanup and post-processing
@@ -74,6 +79,11 @@ class Sanitize implements RegistryAware
     public $enable_cache = true;
     public $cache_location = './cache';
     public $cache_name_function = 'md5';
+
+    /**
+     * @var NameFilter
+     */
+    private $cache_namefilter;
     public $timeout = 10;
     public $useragent = '';
     public $force_fsockopen = false;
@@ -133,9 +143,23 @@ class Sanitize implements RegistryAware
             $this->cache_location = (string) $cache_location;
         }
 
-        if ($cache_name_function) {
-            $this->cache_name_function = (string) $cache_name_function;
+        if (! is_string($cache_name_function) && ! is_object($cache_name_function) && ! $cache_name_function instanceof NameFilter) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #3 ($cache_name_function) must be of type %s',
+                __METHOD__,
+                NameFilter::class
+            ), 1);
         }
+
+        // BC: $cache_name_function could be a callable as string
+        if (is_string($cache_name_function)) {
+            // trigger_error(sprintf('Providing $cache_name_function as string in "%s()" is deprecated since SimplePie 1.8.0, provide as "%s" instead.', __METHOD__, NameFilter::class), \E_USER_DEPRECATED);
+            $this->cache_name_function = (string) $cache_name_function;
+
+            $cache_name_function = new CallableNameFilter($cache_name_function);
+        }
+
+        $this->cache_namefilter = $cache_name_function;
 
         if ($cache !== null) {
             $this->cache = $cache;
@@ -395,7 +419,7 @@ class Sanitize implements RegistryAware
 
                     foreach ($images as $img) {
                         if ($img->hasAttribute('src')) {
-                            $image_url = call_user_func($this->cache_name_function, $img->getAttribute('src'));
+                            $image_url = $this->cache_namefilter->filter($img->getAttribute('src'));
                             $cache = $this->get_cache($image_url);
 
                             if ($cache->get_data($image_url, false)) {

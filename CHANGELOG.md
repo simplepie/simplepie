@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New method `SimplePie\SimplePie::set_cache()` for providing a PSR-16 cache implementation by @Art4 in [#742](https://github.com/simplepie/simplepie/pull/742)
+- New method `SimplePie\SimplePie::set_cache_namefilter()` for customize the cache key
+- New class `SimplePie\Cache\CallableNameFilter` to provide a `callable` to customize the cache key
 - New interface `SimplePie\RegistryAware` to inject the `Registry` instance into classes created by `Registry` by @Art4 in [#760](https://github.com/simplepie/simplepie/pull/760)
 
 ### Changed
@@ -25,10 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Item::get_date(): fix return type on unparsable date by @jtojnar in [#753](https://github.com/simplepie/simplepie/pull/753)
 - Fix error handling for PHP 8.1 by @cedric-anne in [#747](https://github.com/simplepie/simplepie/pull/747)
+- The method `SimplePie\SimplePie::get_image_height()` returns the pixel number as `int` instead of `float`
+- The method `SimplePie\SimplePie::get_image_width()` returns the pixel number as `int` instead of `float`
 
 ### Deprecated
 
 - The method `SimplePie\Misc::array_merge_recursive()` is deprecated, use native `array_replace_recursive()` instead
+- The method `SimplePie\SimplePie::set_cache_name_function()` is deprecated, use `SimplePie\SimplePie::set_cache_namefilter()` instead
 - The method `SimplePie\SimplePie::set_cache_location()` is deprecated, use `SimplePie\SimplePie::set_cache()` instead
 - The method `SimplePie\SimplePie::force_cache_fallback()` is deprecated, expired cache will not be used anymore
 - The class `SimplePie\Cache` is deprecated, use implementation of `SimplePie\SimplePie::set_cache()` instead

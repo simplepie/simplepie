@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -867,7 +869,7 @@ PCRE;
                 $second = 0;
             }
 
-            return gmmktime($match[5], $match[6], $second, $month, $match[2], $match[4]) - $timezone;
+            return gmmktime(intval($match[5]), intval($match[6]), intval($second), intval($month), intval($match[2]), intval($match[4])) - $timezone;
         }
 
         return false;
@@ -961,7 +963,7 @@ PCRE;
             */
 
             $month = $this->month[strtolower($match[2])];
-            return gmmktime($match[4], $match[5], $match[6], $month, $match[3], $match[7]);
+            return gmmktime((int) $match[4], (int) $match[5], (int) $match[6], $month, (int) $match[3], (int) $match[7]);
         }
 
         return false;

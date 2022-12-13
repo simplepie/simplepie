@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -47,7 +49,9 @@ use InvalidArgumentException;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
+use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
+use SimplePie\Cache\NameFilter;
 use SimplePie\Cache\Psr16;
 
 /**
@@ -505,6 +509,18 @@ class SimplePie
     private $enable_cache = true;
 
     /**
+     * @var DataCache|null
+     * @see SimplePie::set_cache()
+     */
+    private $cache = null;
+
+    /**
+     * @var NameFilter
+     * @see SimplePie::set_cache_namefilter()
+     */
+    private $cache_namefilter;
+
+    /**
      * @var bool Force SimplePie to fallback to expired cache, if enabled,
      * when feed is unavailable.
      * @see SimplePie::force_cache_fallback()
@@ -658,11 +674,6 @@ class SimplePie
     public $enable_exceptions = false;
 
     /**
-     * @var DataCache|null
-     */
-    private $cache = null;
-
-    /**
      * The SimplePie class contains feed level data and options
      *
      * To use SimplePie, create the SimplePie object with no parameters. You can
@@ -684,6 +695,8 @@ class SimplePie
         }
 
         $this->set_useragent();
+
+        $this->set_cache_namefilter(new CallableNameFilter($this->cache_name_function));
 
         // Other objects, instances created here so we can set options on them
         $this->sanitize = new \SimplePie\Sanitize();
@@ -926,12 +939,13 @@ class SimplePie
      */
     public function set_cache_location($location = './cache')
     {
-        // @trigger_error(sprintf('SimplePie\SimplePie::set_cache_location() is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);
+        // @trigger_error(sprintf('SimplePie\SimplePie::set_cache_location() is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()" instead.'), \E_USER_DEPRECATED);
         $this->cache_location = (string) $location;
     }
 
     /**
      * Return the filename (i.e. hash, without path and without extension) of the file to cache a given URL.
+     *
      * @param string $url The URL of the feed to be cached.
      * @return string A filename (i.e. hash, without path and without extension).
      */
@@ -955,7 +969,8 @@ class SimplePie
             ksort($options);
             $url .= '#' . urlencode(var_export($options, true));
         }
-        return call_user_func($this->cache_name_function, $url);
+
+        return $this->cache_namefilter->filter($url);
     }
 
     /**
@@ -1169,14 +1184,32 @@ class SimplePie
     }
 
     /**
+     * Set a namefilter to modify the cache filename with
+     *
+     * @param NameFilter $filter
+     *
+     * @return void
+     */
+    public function set_cache_namefilter(NameFilter $filter): void
+    {
+        $this->cache_namefilter = $filter;
+    }
+
+    /**
      * Set callback function to create cache filename with
+     *
+     * @deprecated since SimplePie 1.8.0, use {@see set_cache_namefilter()} instead
      *
      * @param mixed $function Callback function
      */
     public function set_cache_name_function($function = 'md5')
     {
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache_namefilter()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
         if (is_callable($function)) {
             $this->cache_name_function = $function;
+
+            $this->set_cache_namefilter(new CallableNameFilter($this->cache_name_function));
         }
     }
 
@@ -1396,7 +1429,7 @@ class SimplePie
         $this->sanitize->pass_cache_data(
             $this->enable_cache,
             $this->cache_location,
-            $this->cache_name_function,
+            $this->cache_namefilter,
             $this->registry->get_class('Cache'),
             $this->cache
         );
@@ -2747,17 +2780,17 @@ class SimplePie
      *
      * RSS 2.0 feeds are allowed to have a "feed logo" width.
      *
-     * Uses `<image><width>` or defaults to 88.0 if no width is specified and
+     * Uses `<image><width>` or defaults to 88 if no width is specified and
      * the feed is an RSS 2.0 feed.
      *
-     * @return int|float|null
+     * @return int|null
      */
     public function get_image_width()
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'width')) {
-            return round($return[0]['data']);
+            return intval($return[0]['data']);
         } elseif ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
-            return 88.0;
+            return 88;
         }
 
         return null;
@@ -2768,17 +2801,17 @@ class SimplePie
      *
      * RSS 2.0 feeds are allowed to have a "feed logo" height.
      *
-     * Uses `<image><height>` or defaults to 31.0 if no height is specified and
+     * Uses `<image><height>` or defaults to 31 if no height is specified and
      * the feed is an RSS 2.0 feed.
      *
-     * @return int|float|null
+     * @return int|null
      */
     public function get_image_height()
     {
         if ($return = $this->get_image_tags(self::NAMESPACE_RSS_20, 'height')) {
-            return round($return[0]['data']);
+            return intval($return[0]['data']);
         } elseif ($this->get_type() & self::TYPE_RSS_SYNDICATION && $this->get_image_tags(self::NAMESPACE_RSS_20, 'url')) {
-            return 31.0;
+            return 31;
         }
 
         return null;

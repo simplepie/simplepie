@@ -14,10 +14,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
 
     name: "PHP: ${{ matrix.php }}"
-    continue-on-error: ${{ matrix.php == '8.2' }}
+    continue-on-error: ${{ matrix.php == '8.3' }}
 
     steps:
       - name: Checkout code
@@ -33,12 +33,12 @@ jobs:
 
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
-      - name: "Install Composer dependencies (PHP < 8.2)"
-        if: ${{ matrix.php < '8.2' }}
+      - name: "Install Composer dependencies (PHP < 8.3)"
+        if: ${{ matrix.php < '8.3' }}
         uses: "ramsey/composer-install@v2"
 
-      - name: "Install Composer dependencies (PHP 8.2)"
-        if: ${{ matrix.php >= '8.2' }}
+      - name: "Install Composer dependencies (PHP 8.3)"
+        if: ${{ matrix.php >= '8.3' }}
         uses: "ramsey/composer-install@v2"
         with:
           composer-options: --ignore-platform-reqs
