@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -54,7 +56,7 @@ use SimplePie\XML\Declaration\Parser as DeclarationParser;
  * @package SimplePie
  * @subpackage Parsing
  */
-class Parser
+class Parser implements RegistryAware
 {
     public $error_code;
     public $error_string;
@@ -73,7 +75,7 @@ class Parser
     public $encoding;
     protected $registry;
 
-    public function set_registry(\SimplePie\Registry $registry)
+    public function set_registry(\SimplePie\Registry $registry)/* : void */
     {
         $this->registry = $registry;
     }

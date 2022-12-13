@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -220,17 +222,6 @@ class Registry
     {
         $class = $this->get_class($type);
 
-        if (in_array($class, $this->legacy)) {
-            switch ($type) {
-                case 'locator':
-                    // Legacy: file, timeout, useragent, file_class, max_checked_feeds, content_type_sniffer_class
-                    // Specified: file, timeout, useragent, max_checked_feeds
-                    $replacement = [$this->get_class('file'), $parameters[3], $this->get_class('content_type_sniffer')];
-                    array_splice($parameters, 3, 1, $replacement);
-                    break;
-            }
-        }
-
         if (!method_exists($class, '__construct')) {
             $instance = new $class();
         } else {
@@ -238,7 +229,10 @@ class Registry
             $instance = $reflector->newInstanceArgs($parameters);
         }
 
-        if (method_exists($instance, 'set_registry')) {
+        if ($instance instanceof RegistryAware) {
+            $instance->set_registry($this);
+        } elseif (method_exists($instance, 'set_registry')) {
+            trigger_error(sprintf('Using the method "set_registry()" without implementing "%s" is deprecated since SimplePie 1.8, implement "%s" in "%s".', RegistryAware::class, RegistryAware::class, $class), \E_USER_DEPRECATED);
             $instance->set_registry($this);
         }
         return $instance;

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -51,7 +53,7 @@ namespace SimplePie;
  *
  * @package SimplePie
  */
-class Locator
+class Locator implements RegistryAware
 {
     public $useragent;
     public $timeout;
@@ -93,7 +95,7 @@ class Locator
         }
     }
 
-    public function set_registry(\SimplePie\Registry $registry)
+    public function set_registry(\SimplePie\Registry $registry)/* : void */
     {
         $this->registry = $registry;
     }

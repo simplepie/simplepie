@@ -35,7 +35,7 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
+ * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
  * @author Ryan McCue
@@ -43,15 +43,23 @@ declare(strict_types=1);
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-use SimplePie\File;
+namespace SimplePie;
 
-class_exists('SimplePie\File');
-
-// @trigger_error(sprintf('Using the "SimplePie_File" class is deprecated since SimplePie 1.7, use "SimplePie\File" instead.'), \E_USER_DEPRECATED);
-
-if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\File" instead */
-    class SimplePie_File extends File
-    {
-    }
+/**
+ * Handles the injection of Registry into other class
+ *
+ * {@see \SimplePie\SimplePie::get_registry()}
+ *
+ * @package SimplePie
+ */
+interface RegistryAware
+{
+    /**
+     * Set the Registry into the class
+     *
+     * @param Registry $registry
+     *
+     * @return void
+     */
+    public function set_registry(Registry $registry)/* : void */;
 }

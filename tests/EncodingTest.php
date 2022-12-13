@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Encoding tests for SimplePie_Misc::change_encoding() and SimplePie_Misc::encoding()
  *

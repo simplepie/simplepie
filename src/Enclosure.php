@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -875,6 +877,7 @@ class Enclosure
         $widescreen = false;
         $handler = $this->get_handler();
         $type = $this->get_real_type();
+        $placeholder = '';
 
         // Process options and reassign values as necessary
         if (is_array($options)) {
