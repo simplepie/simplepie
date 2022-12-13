@@ -12,9 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New method `SimplePie\SimplePie::set_cache()` for providing a PSR-16 cache implementation by @Art4 in [#742](https://github.com/simplepie/simplepie/pull/742)
-- New method `SimplePie\SimplePie::set_cache_namefilter()` for customize the cache key
-- New class `SimplePie\Cache\CallableNameFilter` to provide a `callable` to customize the cache key
+- New method `SimplePie\SimplePie::set_cache_namefilter()` for customize the cache key in [#762](https://github.com/simplepie/simplepie/pull/762)
+- New class `SimplePie\Cache\CallableNameFilter` to provide a `callable` to customize the cache key in [#762](https://github.com/simplepie/simplepie/pull/762)
 - New interface `SimplePie\RegistryAware` to inject the `Registry` instance into classes created by `Registry` by @Art4 in [#760](https://github.com/simplepie/simplepie/pull/760)
+- update PHP versions in GH Actions workflows by by @jrfnl in [#767](https://github.com/simplepie/simplepie/pull/767)
 
 ### Changed
 
@@ -22,13 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use native array_replace_recursive() by @Alkarex in [#749](https://github.com/simplepie/simplepie/pull/749)
 - PHP 7.2 or newer is now required by @Art4 in [#743](https://github.com/simplepie/simplepie/pull/743)
 - Parse\Date: Clean up regex structure by @jtojnar in [#765](https://github.com/simplepie/simplepie/pull/765)
+-  Declare strict_types=1 in every file by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763)
 
 ### Fixed
 
 - Item::get_date(): fix return type on unparsable date by @jtojnar in [#753](https://github.com/simplepie/simplepie/pull/753)
 - Fix error handling for PHP 8.1 by @cedric-anne in [#747](https://github.com/simplepie/simplepie/pull/747)
-- The method `SimplePie\SimplePie::get_image_height()` returns the pixel number as `int` instead of `float`
-- The method `SimplePie\SimplePie::get_image_width()` returns the pixel number as `int` instead of `float`
+- The method `SimplePie\SimplePie::get_image_height()` returns the pixel number as `int` instead of `float` by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763)
+- The method `SimplePie\SimplePie::get_image_width()` returns the pixel number as `int` instead of `float` by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763)
 
 ### Deprecated
 
