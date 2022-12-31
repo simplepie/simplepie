@@ -164,7 +164,8 @@ EOT
         </item>
     </channel>
 </rss>
-EOT,
+EOT
+                ,
                 2,
             ],
             'Test multiple enclosures RSS2' => [
@@ -184,7 +185,8 @@ EOT,
         </item>
     </channel>
 </rss>
-EOT,
+EOT
+                ,
                 2,
             ],
         ];
