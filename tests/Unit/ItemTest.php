@@ -4828,4 +4828,45 @@ EOT
 
         $this->assertSame($expected, $item->get_title());
     }
+
+    /**
+     * @dataProvider getThumbnailProvider
+     */
+    public function test_get_thumbnail($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        $thumbnail = $item->get_thumbnail();
+        $this->assertSame($expected, $thumbnail['url']);
+    }
+
+    public function getThumbnailProvider()
+    {
+        return [
+            'Test thumbnail link sanitized' => [
+<<<EOT
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title>Test thumbnail link 1</title>
+        <description>Test thumbnail link 1</description>
+        <link>http://example.org/tests/</link>
+        <item>
+            <title>Test thumbnail link 1.1</title>
+            <description>Test thumbnail link 1.1</description>
+            <guid>http://example.net/tests/#1.1</guid>
+            <link>http://example.net/tests/#1.1</link>
+            <media:thumbnail url="/link?a=&quot;b&quot;&amp;c=&lt;d&gt;" />
+        </item>
+    </channel>
+</rss>
+EOT
+            ,
+                'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
+            ],
+        ];
+    }
 }
