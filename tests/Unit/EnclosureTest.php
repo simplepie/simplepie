@@ -83,7 +83,7 @@ class EnclosureTest extends TestCase
         return [
             'Test enclosure get_link urlencoded' => [
 <<<EOT
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
 	<channel>
 		<title>Test enclosure link 1</title>
 		<description>Test enclosure link 1</description>
@@ -103,7 +103,7 @@ EOT,
             ],
             'Test enclosure get_link urldecoded' => [
 <<<EOT
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
     <channel>
         <title>Test enclosure link 2</title>
         <description>Test enclosure link 2</description>
