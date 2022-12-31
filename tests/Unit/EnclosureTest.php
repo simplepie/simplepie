@@ -98,7 +98,8 @@ class EnclosureTest extends TestCase
         </item>
     </channel>
 </rss>
-EOT,
+EOT
+            ,
                 'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
             ],
             'Test enclosure get_link urldecoded' => [
@@ -118,7 +119,8 @@ EOT,
         </item>
     </channel>
 </rss>
-EOT,
+EOT
+            ,
                 'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
             ],
         ];
