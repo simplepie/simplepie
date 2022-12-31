@@ -84,21 +84,22 @@ class EnclosureTest extends TestCase
             'Test enclosure get_link urlencoded' => [
 <<<EOT
 <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
-	<channel>
-		<title>Test enclosure link 1</title>
-		<description>Test enclosure link 1</description>
-		<link>http://example.net/tests/</link>
-		<item>
-			<title>Test enclosure link 1.1</title>
-			<description>Test enclosure link 1.1</description>
-			<guid>http://example.net/tests/#1.1</guid>
-			<link>http://example.net/tests/#1.1</link>
-			<media:content url="http://example.net/link?a=%22b%22&amp;c=%3Cd%3E" medium="image">
-			</media:content>
-		</item>
-	</channel>
+    <channel>
+        <title>Test enclosure link 1</title>
+        <description>Test enclosure link 1</description>
+        <link>http://example.net/tests/</link>
+        <item>
+            <title>Test enclosure link 1.1</title>
+            <description>Test enclosure link 1.1</description>
+            <guid>http://example.net/tests/#1.1</guid>
+            <link>http://example.net/tests/#1.1</link>
+            <media:content url="http://example.net/link?a=%22b%22&amp;c=%3Cd%3E" medium="image">
+            </media:content>
+        </item>
+    </channel>
 </rss>
-EOT,
+EOT
+            ,
                 'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
             ],
             'Test enclosure get_link urldecoded' => [
@@ -118,7 +119,8 @@ EOT,
         </item>
     </channel>
 </rss>
-EOT,
+EOT
+            ,
                 'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
             ],
         ];
