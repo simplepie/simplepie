@@ -137,9 +137,7 @@ EOT
         $feed->init();
 
         $item = $feed->get_item(0);
-        $enclosures = $item->get_enclosures();
-
-        $this->assertSame($expected, count($enclosures));
+        $this->assertCount($expected, $item->get_enclosures());
     }
 
     public function getEnclosuresProvider()
