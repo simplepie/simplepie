@@ -4846,27 +4846,25 @@ EOT
 
     public function getThumbnailProvider()
     {
-        return [
-            'Test thumbnail link sanitized' => [
-<<<EOT
-<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
-    <channel>
-        <title>Test thumbnail link 1</title>
-        <description>Test thumbnail link 1</description>
-        <link>http://example.org/tests/</link>
-        <item>
-            <title>Test thumbnail link 1.1</title>
-            <description>Test thumbnail link 1.1</description>
-            <guid>http://example.net/tests/#1.1</guid>
-            <link>http://example.net/tests/#1.1</link>
-            <media:thumbnail url="/link?a=&quot;b&quot;&amp;c=&lt;d&gt;" />
-        </item>
-    </channel>
-</rss>
-EOT
+        yield 'Test thumbnail link sanitized' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test thumbnail link 1</title>
+                    <description>Test thumbnail link 1</description>
+                    <link>http://example.org/tests/</link>
+                    <item>
+                        <title>Test thumbnail link 1.1</title>
+                        <description>Test thumbnail link 1.1</description>
+                        <guid>http://example.net/tests/#1.1</guid>
+                        <link>http://example.net/tests/#1.1</link>
+                        <media:thumbnail url="/link?a=&quot;b&quot;&amp;c=&lt;d&gt;" />
+                    </item>
+                </channel>
+            </rss>
+XML
             ,
-                'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
-            ],
+            'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
         ];
     }
 }
