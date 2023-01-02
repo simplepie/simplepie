@@ -2241,7 +2241,7 @@ class Item implements RegistryAware
                 }
             }
 
-            foreach ((array) $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'enclosure') as $enclosure) {
+            foreach ($this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'enclosure') ?? [] as $enclosure) {
                 if (isset($enclosure['attribs']['']['url'])) {
                     // Attributes
                     $bitrate = null;
