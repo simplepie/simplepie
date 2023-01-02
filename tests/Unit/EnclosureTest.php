@@ -80,49 +80,48 @@ class EnclosureTest extends TestCase
 
     public function getLinkProvider()
     {
-        return [
-            'Test enclosure get_link urlencoded' => [
-<<<EOT
-<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
-    <channel>
-        <title>Test enclosure link 1</title>
-        <description>Test enclosure link 1</description>
-        <link>http://example.net/tests/</link>
-        <item>
-            <title>Test enclosure link 1.1</title>
-            <description>Test enclosure link 1.1</description>
-            <guid>http://example.net/tests/#1.1</guid>
-            <link>http://example.net/tests/#1.1</link>
-            <media:content url="http://example.net/link?a=%22b%22&amp;c=%3Cd%3E" medium="image">
-            </media:content>
-        </item>
-    </channel>
-</rss>
-EOT
+        yield 'Test enclosure get_link urlencoded' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test enclosure link 1</title>
+                    <description>Test enclosure link 1</description>
+                    <link>http://example.net/tests/</link>
+                    <item>
+                        <title>Test enclosure link 1.1</title>
+                        <description>Test enclosure link 1.1</description>
+                        <guid>http://example.net/tests/#1.1</guid>
+                        <link>http://example.net/tests/#1.1</link>
+                        <media:content url="http://example.net/link?a=%22b%22&amp;c=%3Cd%3E" medium="image">
+                        </media:content>
+                    </item>
+                </channel>
+            </rss>
+XML
             ,
-                'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
-            ],
-            'Test enclosure get_link urldecoded' => [
-<<<EOT
-<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
-    <channel>
-        <title>Test enclosure link 2</title>
-        <description>Test enclosure link 2</description>
-        <link>http://example.net/tests/</link>
-        <item>
-            <title>Test enclosure link 2.1</title>
-            <description>Test enclosure link 2.1</description>
-            <guid>http://example.net/tests/#2.1</guid>
-            <link>http://example.net/tests/#2.1</link>
-            <media:content url="http://example.net/link?a=&quot;b&quot;&amp;c=&lt;d&gt;" medium="image">
-            </media:content>
-        </item>
-    </channel>
-</rss>
-EOT
+            'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
+        ];
+
+        yield 'Test enclosure get_link urldecoded' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test enclosure link 2</title>
+                    <description>Test enclosure link 2</description>
+                    <link>http://example.net/tests/</link>
+                    <item>
+                        <title>Test enclosure link 2.1</title>
+                        <description>Test enclosure link 2.1</description>
+                        <guid>http://example.net/tests/#2.1</guid>
+                        <link>http://example.net/tests/#2.1</link>
+                        <media:content url="http://example.net/link?a=&quot;b&quot;&amp;c=&lt;d&gt;" medium="image">
+                        </media:content>
+                    </item>
+                </channel>
+            </rss>
+XML
             ,
-                'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
-            ],
+            'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
         ];
     }
 }
