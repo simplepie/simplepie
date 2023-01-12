@@ -370,7 +370,13 @@ class Item implements RegistryAware
     {
         if (!isset($this->data['thumbnail'])) {
             if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_MEDIARSS, 'thumbnail')) {
-                $this->data['thumbnail'] = $return[0]['attribs'][''];
+                $thumbnail = $return[0]['attribs'][''];
+                if (empty($thumbnail['url'])) {
+                    $this->data['thumbnail'] = null;
+                } else {
+                    $thumbnail['url'] = $this->sanitize($thumbnail['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($return[0]));
+                    $this->data['thumbnail'] = $thumbnail;
+                }
             } else {
                 $this->data['thumbnail'] = null;
             }
