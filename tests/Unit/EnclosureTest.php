@@ -46,6 +46,8 @@ declare(strict_types=1);
 namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Enclosure;
+use SimplePie\SimplePie;
 
 class EnclosureTest extends TestCase
 {
@@ -57,5 +59,69 @@ class EnclosureTest extends TestCase
     public function testClassExists()
     {
         $this->assertTrue(class_exists('SimplePie_Enclosure'));
+    }
+
+    /**
+     * @dataProvider getLinkProvider
+     */
+    public function test_get_link($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        $enclosure = $item->get_enclosure(0);
+
+        $this->assertInstanceOf(Enclosure::class, $enclosure);
+        $this->assertSame($expected, $enclosure->get_link());
+    }
+
+    public function getLinkProvider()
+    {
+        yield 'Test enclosure get_link urlencoded' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test enclosure link 1</title>
+                    <description>Test enclosure link 1</description>
+                    <link>http://example.net/tests/</link>
+                    <item>
+                        <title>Test enclosure link 1.1</title>
+                        <description>Test enclosure link 1.1</description>
+                        <guid>http://example.net/tests/#1.1</guid>
+                        <link>http://example.net/tests/#1.1</link>
+                        <media:content url="http://example.net/link?a=%22b%22&amp;c=%3Cd%3E" medium="image">
+                        </media:content>
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
+        ];
+
+        yield 'Test enclosure get_link urldecoded' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test enclosure link 2</title>
+                    <description>Test enclosure link 2</description>
+                    <link>http://example.net/tests/</link>
+                    <item>
+                        <title>Test enclosure link 2.1</title>
+                        <description>Test enclosure link 2.1</description>
+                        <guid>http://example.net/tests/#2.1</guid>
+                        <link>http://example.net/tests/#2.1</link>
+                        <media:content url="http://example.net/link?a=&quot;b&quot;&amp;c=&lt;d&gt;" medium="image">
+                        </media:content>
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
+        ];
     }
 }

@@ -606,7 +606,7 @@ class Enclosure
     public function get_link()
     {
         if ($this->link !== null) {
-            return urldecode($this->link);
+            return $this->link;
         }
 
         return null;
