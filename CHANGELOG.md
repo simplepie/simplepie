@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix error handling for PHP 8.1 by @cedric-anne in [#747](https://github.com/simplepie/simplepie/pull/747)
 - The method `SimplePie\SimplePie::get_image_height()` returns the pixel number as `int` instead of `float` by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763)
 - The method `SimplePie\SimplePie::get_image_width()` returns the pixel number as `int` instead of `float` by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763)
+- No URL Decode for enclosure links by @Alkarex in [#768](https://github.com/simplepie/simplepie/pull/768)
+- Sanitize thumbnail URL by @Alkarex in [#770](https://github.com/simplepie/simplepie/pull/770)
 
 ### Deprecated
 
