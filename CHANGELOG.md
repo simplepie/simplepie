@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/simplepie/simplepie/compare/1.8.0...master)
 
-## [1.8.0](https://github.com/simplepie/simplepie/compare/1.7.0...1.8.0) - 2022-??-??
+## [1.8.0](https://github.com/simplepie/simplepie/compare/1.7.0...1.8.0) - 2023-01-20
 
 ### Added
 
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use native array_replace_recursive() by @Alkarex in [#749](https://github.com/simplepie/simplepie/pull/749)
 - PHP 7.2 or newer is now required by @Art4 in [#743](https://github.com/simplepie/simplepie/pull/743)
 - Parse\Date: Clean up regex structure by @jtojnar in [#765](https://github.com/simplepie/simplepie/pull/765)
--  Declare strict_types=1 in every file by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763)
+- Declare strict_types=1 in every file by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763)
 
 ### Fixed
 
