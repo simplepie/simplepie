@@ -660,7 +660,7 @@ class Date
      *
      * @final
      * @access public
-     * @param callback $callback
+     * @param callable $callback
      */
     public function add_callback($callback)
     {
