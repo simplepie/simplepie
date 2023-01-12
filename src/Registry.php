@@ -167,7 +167,7 @@ class Registry
         /** @var string */
         $base_class = $this->default[$type];
 
-        if (!@is_subclass_of($class, $base_class)) {
+        if (!is_subclass_of($class, $base_class)) {
             return false;
         }
 
