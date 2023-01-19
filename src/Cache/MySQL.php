@@ -63,7 +63,7 @@ class MySQL extends DB
     /**
      * PDO instance
      *
-     * @var PDO
+     * @var \PDO
      */
     protected $mysql;
 
@@ -148,7 +148,7 @@ class MySQL extends DB
     /**
      * Save data to the cache
      *
-     * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+     * @param array|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
     public function save($data)
