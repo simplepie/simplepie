@@ -124,4 +124,67 @@ XML
             'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
         ];
     }
+
+    /**
+     * @dataProvider getEnclosuresProvider
+     */
+    public function test_get_enclosures($data, $expected)
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        $this->assertCount($expected, $item->get_enclosures());
+    }
+
+    public function getEnclosuresProvider()
+    {
+        yield 'Test multiple enclosures MRSS' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test multiple enclosures MRSS</title>
+                    <description>Test multiple enclosures MRSS</description>
+                    <link>http://example.net/tests/</link>
+                    <item>
+                        <title>Test multiple enclosures MRSS 1</title>
+                        <description>Test multiple enclosures MRSS 1</description>
+                        <guid>http://example.net/tests/#1.1</guid>
+                        <link>http://example.net/tests/#1.1</link>
+                        <media:content url="http://example.net/a.jpg" medium="image">
+                        </media:content>
+                        <media:content url="http://example.net/b.jpg" medium="image">
+                        </media:content>
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            2,
+        ];
+
+        yield 'Test multiple enclosures RSS2' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test multiple enclosures RSS2</title>
+                    <description>Test multiple enclosures RSS2</description>
+                    <link>http://example.net/tests/</link>
+                    <item>
+                        <title>Test multiple enclosures RSS2 1</title>
+                        <description>Test multiple enclosures RSS2 1</description>
+                        <guid>http://example.net/tests/#2.1</guid>
+                        <link>http://example.net/tests/#2.1</link>
+                        <enclosure url="http://example.net/a.jpg" type="image/jpeg"/>
+                        <enclosure url="http://example.net/b.jpg" type="image/jpeg"/>
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            2,
+        ];
+    }
 }

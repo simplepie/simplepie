@@ -2247,8 +2247,8 @@ class Item implements RegistryAware
                 }
             }
 
-            if ($enclosure = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'enclosure')) {
-                if (isset($enclosure[0]['attribs']['']['url'])) {
+            foreach ($this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'enclosure') ?? [] as $enclosure) {
+                if (isset($enclosure['attribs']['']['url'])) {
                     // Attributes
                     $bitrate = null;
                     $channels = null;
@@ -2265,13 +2265,13 @@ class Item implements RegistryAware
                     $url = null;
                     $width = null;
 
-                    $url = $this->sanitize($enclosure[0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($enclosure[0]));
+                    $url = $this->sanitize($enclosure['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($enclosure));
                     $url = $this->feed->sanitize->https_url($url);
-                    if (isset($enclosure[0]['attribs']['']['type'])) {
-                        $type = $this->sanitize($enclosure[0]['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                    if (isset($enclosure['attribs']['']['type'])) {
+                        $type = $this->sanitize($enclosure['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
                     }
-                    if (isset($enclosure[0]['attribs']['']['length'])) {
-                        $length = intval($enclosure[0]['attribs']['']['length']);
+                    if (isset($enclosure['attribs']['']['length'])) {
+                        $length = intval($enclosure['attribs']['']['length']);
                     }
 
                     // Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
