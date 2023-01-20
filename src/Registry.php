@@ -151,7 +151,7 @@ class Registry
     public function register($type, $class, $legacy = false)
     {
         if (array_key_exists($type, $this->legacyTypes)) {
-            // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
+            // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8.0, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
 
             $type = $this->legacyTypes[$type];
         }
@@ -192,7 +192,7 @@ class Registry
     public function get_class($type)
     {
         if (array_key_exists($type, $this->legacyTypes)) {
-            // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
+            // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8.0, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
 
             $type = $this->legacyTypes[$type];
         }
