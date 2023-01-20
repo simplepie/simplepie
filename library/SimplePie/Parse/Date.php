@@ -47,10 +47,10 @@ use SimplePie\Parse\Date;
 
 class_exists('SimplePie\Parse\Date');
 
-// @trigger_error(sprintf('Using the "SimplePie_Parse_Date" class is deprecated since SimplePie 1.7, use "SimplePie\Parse\Date" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Parse_Date" class is deprecated since SimplePie 1.7.0, use "SimplePie\Parse\Date" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Parse\Date" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Parse\Date" instead */
     class SimplePie_Parse_Date extends Date
     {
     }

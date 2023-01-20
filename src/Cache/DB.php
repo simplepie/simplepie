@@ -50,7 +50,7 @@ namespace SimplePie\Cache;
  *
  * @package SimplePie
  * @subpackage Caching
- * @deprecated since SimplePie 1.8, use implementation of "Psr\SimpleCache\CacheInterface" instead
+ * @deprecated since SimplePie 1.8.0, use implementation of "Psr\SimpleCache\CacheInterface" instead
  */
 abstract class DB implements Base
 {

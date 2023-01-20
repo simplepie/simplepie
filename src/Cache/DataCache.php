@@ -48,7 +48,10 @@ namespace SimplePie\Cache;
 use InvalidArgumentException;
 
 /**
- * Simplified PSR-16 Cache client for caching data arrays
+ * Subset of PSR-16 Cache client for caching data arrays
+ *
+ * Only get(), set() and delete() methods are used,
+ * but not has(), getMultiple(), setMultiple() or deleteMultiple().
  *
  * The methods names must be different, but should be compatible to the
  * methods of \Psr\SimpleCache\CacheInterface.

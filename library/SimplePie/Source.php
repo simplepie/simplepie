@@ -47,10 +47,10 @@ use SimplePie\Source;
 
 class_exists('SimplePie\Source');
 
-// @trigger_error(sprintf('Using the "SimplePie_Source" class is deprecated since SimplePie 1.7, use "SimplePie\Source" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Source" class is deprecated since SimplePie 1.7.0, use "SimplePie\Source" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Source" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Source" instead */
     class SimplePie_Source extends Source
     {
     }

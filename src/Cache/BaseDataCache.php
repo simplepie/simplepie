@@ -90,12 +90,12 @@ final class BaseDataCache implements DataCache
             return $default;
         }
 
-        // ingore data if internal cache expiration time is not set
+        // ignore data if internal cache expiration time is not set
         if (! array_key_exists('__cache_expiration_time', $data)) {
             return $default;
         }
 
-        // ingore data if internal cache expiration time is expired
+        // ignore data if internal cache expiration time is expired
         if ($data['__cache_expiration_time'] < time()) {
             return $default;
         }

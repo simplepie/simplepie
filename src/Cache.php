@@ -56,7 +56,7 @@ use SimplePie\Cache\Base;
  *
  * @package SimplePie
  * @subpackage Caching
- * @deprecated since SimplePie 1.8, use "SimplePie\SimplePie::set_cache()" instead
+ * @deprecated since SimplePie 1.8.0, use "SimplePie\SimplePie::set_cache()" instead
  */
 class Cache
 {
