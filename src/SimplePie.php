@@ -53,6 +53,7 @@ use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\NameFilter;
 use SimplePie\Cache\Psr16;
+use SimplePie\Content\Type\Sniffer;
 
 /**
  * SimplePie
@@ -783,10 +784,10 @@ class SimplePie
         $this->multifeed_url = [];
         if (is_array($url)) {
             foreach ($url as $value) {
-                $this->multifeed_url[] = $this->registry->call('Misc', 'fix_protocol', [$value, 1]);
+                $this->multifeed_url[] = $this->registry->call(Misc::class, 'fix_protocol', [$value, 1]);
             }
         } else {
-            $this->feed_url = $this->registry->call('Misc', 'fix_protocol', [$url, 1]);
+            $this->feed_url = $this->registry->call(Misc::class, 'fix_protocol', [$url, 1]);
             $this->permanent_url = $this->feed_url;
         }
     }
@@ -1022,152 +1023,269 @@ class SimplePie
      *
      * Use this to override SimplePie's default classes
      * @see \SimplePie\Registry
-     * @return \SimplePie\Registry
+     *
+     * @return Registry
      */
     public function &get_registry()
     {
         return $this->registry;
     }
 
-    /**#@+
-     * Useful when you are overloading or extending SimplePie's default classes.
-     *
-     * @deprecated Use {@see get_registry()} instead
-     * @link http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.extends PHP5 extends documentation
-     * @param string $class Name of custom class
-     * @return boolean True on success, false otherwise
-     */
     /**
      * Set which class SimplePie uses for caching
      *
-     * @deprecated Use {@see set_cache()} instead
+     * @deprecated since SimplePie 1.3, use {@see set_cache()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_cache_class($class = 'SimplePie\Cache')
+    public function set_cache_class($class = Cache::class)
     {
-        // @trigger_error(sprintf('SimplePie\SimplePie::set_cache_class() is deprecated since SimplePie 1.3.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);
-        return $this->registry->register('Cache', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Cache::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for auto-discovery
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_locator_class($class = 'SimplePie\Locator')
+    public function set_locator_class($class = Locator::class)
     {
-        return $this->registry->register('Locator', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Locator::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for XML parsing
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_parser_class($class = 'SimplePie\Parser')
+    public function set_parser_class($class = Parser::class)
     {
-        return $this->registry->register('Parser', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Parser::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for remote file fetching
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_file_class($class = 'SimplePie\File')
+    public function set_file_class($class = File::class)
     {
-        return $this->registry->register('File', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(File::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for data sanitization
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_sanitize_class($class = 'SimplePie\Sanitize')
+    public function set_sanitize_class($class = Sanitize::class)
     {
-        return $this->registry->register('Sanitize', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Sanitize::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for handling feed items
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_item_class($class = 'SimplePie\Item')
+    public function set_item_class($class = Item::class)
     {
-        return $this->registry->register('Item', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Item::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for handling author data
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_author_class($class = 'SimplePie\Author')
+    public function set_author_class($class = Author::class)
     {
-        return $this->registry->register('Author', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Author::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for handling category data
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_category_class($class = 'SimplePie\Category')
+    public function set_category_class($class = Category::class)
     {
-        return $this->registry->register('Category', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Category::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for feed enclosures
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_enclosure_class($class = 'SimplePie\Enclosure')
+    public function set_enclosure_class($class = Enclosure::class)
     {
-        return $this->registry->register('Enclosure', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Enclosure::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:text>` captions
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_caption_class($class = 'SimplePie\Caption')
+    public function set_caption_class($class = Caption::class)
     {
-        return $this->registry->register('Caption', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Caption::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:copyright>`
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_copyright_class($class = 'SimplePie\Copyright')
+    public function set_copyright_class($class = Copyright::class)
     {
-        return $this->registry->register('Copyright', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Copyright::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:credit>`
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_credit_class($class = 'SimplePie\Credit')
+    public function set_credit_class($class = Credit::class)
     {
-        return $this->registry->register('Credit', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Credit::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:rating>`
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_rating_class($class = 'SimplePie\Rating')
+    public function set_rating_class($class = Rating::class)
     {
-        return $this->registry->register('Rating', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Rating::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for `<media:restriction>`
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_restriction_class($class = 'SimplePie\Restriction')
+    public function set_restriction_class($class = Restriction::class)
     {
-        return $this->registry->register('Restriction', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Restriction::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses for content-type sniffing
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_content_type_sniffer_class($class = 'SimplePie\Content\Type\Sniffer')
+    public function set_content_type_sniffer_class($class = Sniffer::class)
     {
-        return $this->registry->register('Content_Type_Sniffer', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Sniffer::class, $class, true);
     }
 
     /**
      * Set which class SimplePie uses item sources
+     *
+     * @deprecated since SimplePie 1.3, use {@see get_registry()} instead
+     *
+     * @param string $class Name of custom class
+     *
+     * @return boolean True on success, false otherwise
      */
-    public function set_source_class($class = 'SimplePie\Source')
+    public function set_source_class($class = Source::class)
     {
-        return $this->registry->register('Source', $class, true);
+        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+
+        return $this->registry->register(Source::class, $class, true);
     }
-    /**#@-*/
 
     /**
      * Set the user agent string
@@ -1417,8 +1535,8 @@ class SimplePie
 
         // The default sanitize class gets set in the constructor, check if it has
         // changed.
-        if ($this->registry->get_class('Sanitize') !== 'SimplePie\Sanitize') {
-            $this->sanitize = $this->registry->create('Sanitize');
+        if ($this->registry->get_class(Sanitize::class) !== 'SimplePie\Sanitize') {
+            $this->sanitize = $this->registry->create(Sanitize::class);
         }
         if (method_exists($this->sanitize, 'set_registry')) {
             $this->sanitize->set_registry($this->registry);
@@ -1430,10 +1548,10 @@ class SimplePie
             $this->enable_cache,
             $this->cache_location,
             $this->cache_namefilter,
-            $this->registry->get_class('Cache'),
+            $this->registry->get_class(Cache::class),
             $this->cache
         );
-        $this->sanitize->pass_file_data($this->registry->get_class('File'), $this->timeout, $this->useragent, $this->force_fsockopen, $this->curl_options);
+        $this->sanitize->pass_file_data($this->registry->get_class(File::class), $this->timeout, $this->useragent, $this->force_fsockopen, $this->curl_options);
 
         if (!empty($this->multifeed_url)) {
             $i = 0;
@@ -1462,7 +1580,7 @@ class SimplePie
         $cache = false;
 
         if ($this->feed_url !== null) {
-            $parsed_feed_url = $this->registry->call('Misc', 'parse_url', [$this->feed_url]);
+            $parsed_feed_url = $this->registry->call(Misc::class, 'parse_url', [$this->feed_url]);
 
             // Decide whether to enable caching
             if ($this->enable_cache && $parsed_feed_url['scheme'] !== '') {
@@ -1482,7 +1600,7 @@ class SimplePie
         // Empty response check
         if (empty($this->raw_data)) {
             $this->error = "A feed could not be found at `$this->feed_url`. Empty body.";
-            $this->registry->call('Misc', 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
+            $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
             return false;
         }
 
@@ -1503,7 +1621,7 @@ class SimplePie
                 if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset)) {
                     $encodings[] = strtoupper($charset[1]);
                 }
-                $encodings = array_merge($encodings, $this->registry->call('Misc', 'xml_encoding', [$this->raw_data, &$this->registry]));
+                $encodings = array_merge($encodings, $this->registry->call(Misc::class, 'xml_encoding', [$this->raw_data, &$this->registry]));
                 $encodings[] = 'UTF-8';
             } elseif (in_array($sniffed, $text_types) || substr($sniffed, 0, 5) === 'text/' && substr($sniffed, -4) === '+xml') {
                 if (isset($headers['content-type']) && preg_match('/;\x20?charset=([^;]*)/i', $headers['content-type'], $charset)) {
@@ -1518,7 +1636,7 @@ class SimplePie
         }
 
         // Fallback to XML 1.0 Appendix F.1/UTF-8/ISO-8859-1
-        $encodings = array_merge($encodings, $this->registry->call('Misc', 'xml_encoding', [$this->raw_data, &$this->registry]));
+        $encodings = array_merge($encodings, $this->registry->call(Misc::class, 'xml_encoding', [$this->raw_data, &$this->registry]));
         $encodings[] = 'UTF-8';
         $encodings[] = 'ISO-8859-1';
 
@@ -1528,16 +1646,16 @@ class SimplePie
         // Loop through each possible encoding, till we return something, or run out of possibilities
         foreach ($encodings as $encoding) {
             // Change the encoding to UTF-8 (as we always use UTF-8 internally)
-            if ($utf8_data = $this->registry->call('Misc', 'change_encoding', [$this->raw_data, $encoding, 'UTF-8'])) {
+            if ($utf8_data = $this->registry->call(Misc::class, 'change_encoding', [$this->raw_data, $encoding, 'UTF-8'])) {
                 // Create new parser
-                $parser = $this->registry->create('Parser');
+                $parser = $this->registry->create(Parser::class);
 
                 // If it's parsed fine
                 if ($parser->parse($utf8_data, 'UTF-8', $this->permanent_url)) {
                     $this->data = $parser->get_data();
                     if (!($this->get_type() & ~self::TYPE_NONE)) {
                         $this->error = "A feed could not be found at `$this->feed_url`. This does not appear to be a valid RSS or Atom feed.";
-                        $this->registry->call('Misc', 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
+                        $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
                         return false;
                     }
 
@@ -1579,7 +1697,7 @@ class SimplePie
             }
         }
 
-        $this->registry->call('Misc', 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
+        $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
 
         return false;
     }
@@ -1656,7 +1774,7 @@ class SimplePie
                             $headers['if-none-match'] = $this->data['headers']['etag'];
                         }
 
-                        $file = $this->registry->create('File', [$this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                        $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                         $this->status_code = $file->status_code;
 
                         if ($file->success) {
@@ -1698,7 +1816,7 @@ class SimplePie
                 $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                 ];
-                $file = $this->registry->create('File', [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
             }
         }
         $this->status_code = $file->status_code;
@@ -1711,7 +1829,7 @@ class SimplePie
 
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
-            $locate = $this->registry->create('Locator', [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
+            $locate = $this->registry->create(Locator::class, [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
 
             if (!$locate->is_feed($file)) {
                 $copyStatusCode = $file->status_code;
@@ -1753,7 +1871,7 @@ class SimplePie
                             // been called that object is untouched
                             unset($file);
                             $this->error = "A feed could not be found at `$this->feed_url`; the status code is `$copyStatusCode` and content-type is `$copyContentType`";
-                            $this->registry->call('Misc', 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
+                            $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
                             return false;
                         }
                     }
@@ -1762,7 +1880,7 @@ class SimplePie
                     unset($file);
                     // This is usually because DOMDocument doesn't exist
                     $this->error = $e->getMessage();
-                    $this->registry->call('Misc', 'error', [$this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()]);
+                    $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()]);
                     return false;
                 }
 
@@ -1786,7 +1904,7 @@ class SimplePie
         $this->raw_data = $file->body;
         $this->permanent_url = $file->permanent_url;
         $headers = $file->headers;
-        $sniffer = $this->registry->create('Content_Type_Sniffer', [&$file]);
+        $sniffer = $this->registry->create(Sniffer::class, [&$file]);
         $sniffed = $sniffer->get_type();
 
         return [$headers, $sniffed];
@@ -2190,7 +2308,7 @@ class SimplePie
         } catch (\SimplePie\Exception $e) {
             if (!$this->enable_exceptions) {
                 $this->error = $e->getMessage();
-                $this->registry->call('Misc', 'error', [$this->error, E_USER_WARNING, $e->getFile(), $e->getLine()]);
+                $this->registry->call(Misc::class, 'error', [$this->error, E_USER_WARNING, $e->getFile(), $e->getLine()]);
                 return '';
             }
 
@@ -2209,9 +2327,9 @@ class SimplePie
     public function get_title()
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'title')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'title')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_10, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_090, 'title')) {
@@ -2269,7 +2387,7 @@ class SimplePie
             if (isset($category['attribs']['']['label'])) {
                 $label = $this->sanitize($category['attribs']['']['label'], self::CONSTRUCT_TEXT);
             }
-            $categories[] = $this->registry->create('Category', [$term, $scheme, $label]);
+            $categories[] = $this->registry->create(Category::class, [$term, $scheme, $label]);
         }
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_RSS_20, 'category') as $category) {
             // This is really the label, but keep this as the term also for BC.
@@ -2280,13 +2398,13 @@ class SimplePie
             } else {
                 $scheme = null;
             }
-            $categories[] = $this->registry->create('Category', [$term, $scheme, null]);
+            $categories[] = $this->registry->create(Category::class, [$term, $scheme, null]);
         }
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_DC_11, 'subject') as $category) {
-            $categories[] = $this->registry->create('Category', [$this->sanitize($category['data'], self::CONSTRUCT_TEXT), null, null]);
+            $categories[] = $this->registry->create(Category::class, [$this->sanitize($category['data'], self::CONSTRUCT_TEXT), null, null]);
         }
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_DC_10, 'subject') as $category) {
-            $categories[] = $this->registry->create('Category', [$this->sanitize($category['data'], self::CONSTRUCT_TEXT), null, null]);
+            $categories[] = $this->registry->create(Category::class, [$this->sanitize($category['data'], self::CONSTRUCT_TEXT), null, null]);
         }
 
         if (!empty($categories)) {
@@ -2338,7 +2456,7 @@ class SimplePie
                 $email = $this->sanitize($author['child'][self::NAMESPACE_ATOM_10]['email'][0]['data'], self::CONSTRUCT_TEXT);
             }
             if ($name !== null || $email !== null || $uri !== null) {
-                $authors[] = $this->registry->create('Author', [$name, $uri, $email]);
+                $authors[] = $this->registry->create(Author::class, [$name, $uri, $email]);
             }
         }
         if ($author = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'author')) {
@@ -2355,17 +2473,17 @@ class SimplePie
                 $email = $this->sanitize($author[0]['child'][self::NAMESPACE_ATOM_03]['email'][0]['data'], self::CONSTRUCT_TEXT);
             }
             if ($name !== null || $email !== null || $url !== null) {
-                $authors[] = $this->registry->create('Author', [$name, $url, $email]);
+                $authors[] = $this->registry->create(Author::class, [$name, $url, $email]);
             }
         }
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_DC_11, 'creator') as $author) {
-            $authors[] = $this->registry->create('Author', [$this->sanitize($author['data'], self::CONSTRUCT_TEXT), null, null]);
+            $authors[] = $this->registry->create(Author::class, [$this->sanitize($author['data'], self::CONSTRUCT_TEXT), null, null]);
         }
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_DC_10, 'creator') as $author) {
-            $authors[] = $this->registry->create('Author', [$this->sanitize($author['data'], self::CONSTRUCT_TEXT), null, null]);
+            $authors[] = $this->registry->create(Author::class, [$this->sanitize($author['data'], self::CONSTRUCT_TEXT), null, null]);
         }
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_ITUNES, 'author') as $author) {
-            $authors[] = $this->registry->create('Author', [$this->sanitize($author['data'], self::CONSTRUCT_TEXT), null, null]);
+            $authors[] = $this->registry->create(Author::class, [$this->sanitize($author['data'], self::CONSTRUCT_TEXT), null, null]);
         }
 
         if (!empty($authors)) {
@@ -2417,7 +2535,7 @@ class SimplePie
                 $email = $this->sanitize($contributor['child'][self::NAMESPACE_ATOM_10]['email'][0]['data'], self::CONSTRUCT_TEXT);
             }
             if ($name !== null || $email !== null || $uri !== null) {
-                $contributors[] = $this->registry->create('Author', [$name, $uri, $email]);
+                $contributors[] = $this->registry->create(Author::class, [$name, $uri, $email]);
             }
         }
         foreach ((array) $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'contributor') as $contributor) {
@@ -2434,7 +2552,7 @@ class SimplePie
                 $email = $this->sanitize($contributor['child'][self::NAMESPACE_ATOM_03]['email'][0]['data'], self::CONSTRUCT_TEXT);
             }
             if ($name !== null || $email !== null || $url !== null) {
-                $contributors[] = $this->registry->create('Author', [$name, $url, $email]);
+                $contributors[] = $this->registry->create(Author::class, [$name, $url, $email]);
             }
         }
 
@@ -2520,7 +2638,7 @@ class SimplePie
 
             $keys = array_keys($this->data['links']);
             foreach ($keys as $key) {
-                if ($this->registry->call('Misc', 'is_isegment_nz_nc', [$key])) {
+                if ($this->registry->call(Misc::class, 'is_isegment_nz_nc', [$key])) {
                     if (isset($this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key])) {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key]);
                         $this->data['links'][$key] =& $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key];
@@ -2570,9 +2688,9 @@ class SimplePie
     public function get_description()
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'subtitle')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'tagline')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_10, 'description')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_090, 'description')) {
@@ -2603,9 +2721,9 @@ class SimplePie
     public function get_copyright()
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'rights')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'copyright')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'copyright')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'rights')) {
@@ -2886,31 +3004,31 @@ class SimplePie
             if ($items = $this->get_feed_tags(self::NAMESPACE_ATOM_10, 'entry')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create('Item', [$this, $items[$key]]);
+                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
                 }
             }
             if ($items = $this->get_feed_tags(self::NAMESPACE_ATOM_03, 'entry')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create('Item', [$this, $items[$key]]);
+                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
                 }
             }
             if ($items = $this->get_feed_tags(self::NAMESPACE_RSS_10, 'item')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create('Item', [$this, $items[$key]]);
+                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
                 }
             }
             if ($items = $this->get_feed_tags(self::NAMESPACE_RSS_090, 'item')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create('Item', [$this, $items[$key]]);
+                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
                 }
             }
             if ($items = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'item')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create('Item', [$this, $items[$key]]);
+                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
                 }
             }
         }
@@ -3094,7 +3212,7 @@ class SimplePie
     {
         if ($this->cache === null) {
             // @trigger_error(sprintf('Not providing as PSR-16 cache implementation is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);
-            $cache = $this->registry->call('Cache', 'get_handler', [
+            $cache = $this->registry->call(Cache::class, 'get_handler', [
                 $this->cache_location,
                 $this->get_cache_filename($feed_url),
                 Base::TYPE_FEED

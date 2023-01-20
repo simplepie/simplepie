@@ -47,7 +47,12 @@ namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
+use SimplePie\Cache;
+use SimplePie\File;
 use SimplePie\SimplePie;
+use SimplePie\Tests\Fixtures\Cache\LegacyCacheMock;
+use SimplePie\Tests\Fixtures\Cache\NewCacheMock;
+use SimplePie\Tests\Fixtures\FileMock;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
@@ -62,7 +67,7 @@ class SimplePieTest extends TestCase
 
     public function testClassExists()
     {
-        $this->assertTrue(class_exists('SimplePie'));
+        $this->assertTrue(class_exists(SimplePie::class));
     }
 
     /**
@@ -249,7 +254,7 @@ class SimplePieTest extends TestCase
 
         $feed = new SimplePie();
         $feed->set_cache($psr16);
-        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 
         $feed->init();
@@ -257,6 +262,11 @@ class SimplePieTest extends TestCase
 
     public function testLegacyCallOfSetCacheClass()
     {
+        $feed = new SimplePie();
+        $feed->set_cache_class(LegacyCacheMock::class);
+        $feed->get_registry()->register(File::class, FileMock::class);
+        $feed->set_feed_url('http://example.com/feed/');
+
         if (version_compare(PHP_VERSION, '8.0', '<')) {
             $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
         } else {
@@ -266,11 +276,6 @@ class SimplePieTest extends TestCase
             $this->expectError();
         }
 
-        $feed = new SimplePie();
-        $feed->set_cache_class('SimplePie\Tests\Fixtures\Cache\LegacyCacheMock');
-        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
-        $feed->set_feed_url('http://example.com/feed/');
-
         $feed->init();
     }
 
@@ -279,8 +284,8 @@ class SimplePieTest extends TestCase
         $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
 
         $feed = new SimplePie();
-        $feed->get_registry()->register('Cache', 'SimplePie\Tests\Fixtures\Cache\NewCacheMock');
-        $feed->get_registry()->register('File', 'SimplePie\Tests\Fixtures\FileMock');
+        $feed->get_registry()->register(Cache::class, NewCacheMock::class);
+        $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 
         $feed->init();
@@ -289,7 +294,7 @@ class SimplePieTest extends TestCase
     public function testDirectOverrideLegacy()
     {
         $feed = new SimplePie();
-        $feed->get_registry()->register('File', FileWithRedirectMock::class);
+        $feed->get_registry()->register(File::class, FileWithRedirectMock::class);
         $feed->enable_cache(false);
         $feed->set_feed_url('http://example.com/feed/');
 

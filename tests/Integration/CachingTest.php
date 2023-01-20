@@ -48,7 +48,9 @@ namespace SimplePie\Tests\Integration;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
+use SimplePie\Cache;
 use SimplePie\Cache\Base;
+use SimplePie\File;
 use SimplePie\Misc;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\Cache\BaseCacheWithCallbacksMock;
@@ -71,7 +73,7 @@ class CachingTest extends TestCase
         $writtenData = [];
 
         $feed = new SimplePie();
-        $feed->get_registry()->register('File', FileMock::class);
+        $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 
         switch ($testedCacheClass) {
@@ -130,7 +132,7 @@ class CachingTest extends TestCase
                     return true;
                 });
 
-                $feed->get_registry()->call('Cache', 'register', ['mock', BaseCacheWithCallbacksMock::class]);
+                $feed->get_registry()->call(Cache::class, 'register', ['mock', BaseCacheWithCallbacksMock::class]);
                 $feed->set_cache_location('mock');
                 break;
 

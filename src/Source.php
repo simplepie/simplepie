@@ -104,9 +104,9 @@ class Source implements RegistryAware
     public function get_title()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'title')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'title')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'title')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'title')) {
@@ -149,7 +149,7 @@ class Source implements RegistryAware
             if (isset($category['attribs']['']['label'])) {
                 $label = $this->sanitize($category['attribs']['']['label'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             }
-            $categories[] = $this->registry->create('Category', [$term, $scheme, $label]);
+            $categories[] = $this->registry->create(Category::class, [$term, $scheme, $label]);
         }
         foreach ((array) $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'category') as $category) {
             // This is really the label, but keep this as the term also for BC.
@@ -160,13 +160,13 @@ class Source implements RegistryAware
             } else {
                 $scheme = null;
             }
-            $categories[] = $this->registry->create('Category', [$term, $scheme, null]);
+            $categories[] = $this->registry->create(Category::class, [$term, $scheme, null]);
         }
         foreach ((array) $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'subject') as $category) {
-            $categories[] = $this->registry->create('Category', [$this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
+            $categories[] = $this->registry->create(Category::class, [$this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
         }
         foreach ((array) $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'subject') as $category) {
-            $categories[] = $this->registry->create('Category', [$this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
+            $categories[] = $this->registry->create(Category::class, [$this->sanitize($category['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
         }
 
         if (!empty($categories)) {
@@ -203,7 +203,7 @@ class Source implements RegistryAware
                 $email = $this->sanitize($author['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['email'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             }
             if ($name !== null || $email !== null || $uri !== null) {
-                $authors[] = $this->registry->create('Author', [$name, $uri, $email]);
+                $authors[] = $this->registry->create(Author::class, [$name, $uri, $email]);
             }
         }
         if ($author = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'author')) {
@@ -220,17 +220,17 @@ class Source implements RegistryAware
                 $email = $this->sanitize($author[0]['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['email'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             }
             if ($name !== null || $email !== null || $url !== null) {
-                $authors[] = $this->registry->create('Author', [$name, $url, $email]);
+                $authors[] = $this->registry->create(Author::class, [$name, $url, $email]);
             }
         }
         foreach ((array) $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'creator') as $author) {
-            $authors[] = $this->registry->create('Author', [$this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
+            $authors[] = $this->registry->create(Author::class, [$this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
         }
         foreach ((array) $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'creator') as $author) {
-            $authors[] = $this->registry->create('Author', [$this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
+            $authors[] = $this->registry->create(Author::class, [$this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
         }
         foreach ((array) $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'author') as $author) {
-            $authors[] = $this->registry->create('Author', [$this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
+            $authors[] = $this->registry->create(Author::class, [$this->sanitize($author['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT), null, null]);
         }
 
         if (!empty($authors)) {
@@ -267,7 +267,7 @@ class Source implements RegistryAware
                 $email = $this->sanitize($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['email'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             }
             if ($name !== null || $email !== null || $uri !== null) {
-                $contributors[] = $this->registry->create('Author', [$name, $uri, $email]);
+                $contributors[] = $this->registry->create(Author::class, [$name, $uri, $email]);
             }
         }
         foreach ((array) $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'contributor') as $contributor) {
@@ -284,7 +284,7 @@ class Source implements RegistryAware
                 $email = $this->sanitize($contributor['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['email'][0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             }
             if ($name !== null || $email !== null || $url !== null) {
-                $contributors[] = $this->registry->create('Author', [$name, $url, $email]);
+                $contributors[] = $this->registry->create(Author::class, [$name, $url, $email]);
             }
         }
 
@@ -345,7 +345,7 @@ class Source implements RegistryAware
 
             $keys = array_keys($this->data['links']);
             foreach ($keys as $key) {
-                if ($this->registry->call('Misc', 'is_isegment_nz_nc', [$key])) {
+                if ($this->registry->call(Misc::class, 'is_isegment_nz_nc', [$key])) {
                     if (isset($this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key])) {
                         $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key]);
                         $this->data['links'][$key] =& $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key];
@@ -369,9 +369,9 @@ class Source implements RegistryAware
     public function get_description()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'subtitle')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'tagline')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'description')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'description')) {
@@ -394,9 +394,9 @@ class Source implements RegistryAware
     public function get_copyright()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'rights')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'copyright')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'copyright')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'rights')) {
