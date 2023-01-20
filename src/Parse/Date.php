@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -658,7 +660,7 @@ class Date
      *
      * @final
      * @access public
-     * @param callback $callback
+     * @param callable $callback
      */
     public function add_callback($callback)
     {
@@ -679,54 +681,66 @@ class Date
      */
     public function date_w3cdtf($date)
     {
-        static $pcre;
-        if (!$pcre) {
-            $year = '([0-9]{4})';
-            $month = $day = $hour = $minute = $second = '([0-9]{2})';
-            $decimal = '([0-9]*)';
-            $zone = '(?:(Z)|([+\-])([0-9]{1,2}):?([0-9]{1,2}))';
-            $pcre = '/^' . $year . '(?:-?' . $month . '(?:-?' . $day . '(?:[Tt\x09\x20]+' . $hour . '(?::?' . $minute . '(?::?' . $second . '(?:.' . $decimal . ')?)?)?' . $zone . ')?)?)?$/';
-        }
+        $pcre = <<<'PCRE'
+            /
+            ^
+            (?P<year>[0-9]{4})
+            (?:
+                -?
+                (?P<month>[0-9]{2})
+                (?:
+                    -?
+                    (?P<day>[0-9]{2})
+                    (?:
+                        [Tt\x09\x20]+
+                        (?P<hour>[0-9]{2})
+                        (?:
+                            :?
+                            (?P<minute>[0-9]{2})
+                            (?:
+                                :?
+                                (?P<second>[0-9]{2})
+                                (?:
+                                    .
+                                    (?P<second_fraction>[0-9]*)
+                                )?
+                            )?
+                        )?
+                        (?:
+                            (?P<zulu>Z)
+                            |   (?P<tz_sign>[+\-])
+                                (?P<tz_hour>[0-9]{1,2})
+                                :?
+                                (?P<tz_minute>[0-9]{1,2})
+                        )
+                    )?
+                )?
+            )?
+            $
+            /x
+PCRE;
         if (preg_match($pcre, $date, $match)) {
-            /*
-            Capturing subpatterns:
-            1: Year
-            2: Month
-            3: Day
-            4: Hour
-            5: Minute
-            6: Second
-            7: Decimal fraction of a second
-            8: Zulu
-            9: Timezone ±
-            10: Timezone hours
-            11: Timezone minutes
-            */
-
-            // Fill in empty matches
-            for ($i = count($match); $i <= 3; $i++) {
-                $match[$i] = '1';
-            }
-
-            for ($i = count($match); $i <= 7; $i++) {
-                $match[$i] = '0';
-            }
+            // Fill in empty matches and convert to proper types.
+            $year = (int) $match['year'];
+            $month = isset($match['month']) ? (int) $match['month'] : 1;
+            $day = isset($match['day']) ? (int) $match['day'] : 1;
+            $hour = isset($match['hour']) ? (int) $match['hour'] : 0;
+            $minute = isset($match['minute']) ? (int) $match['minute'] : 0;
+            $second = isset($match['second']) ? (int) $match['second'] : 0;
+            $second_fraction = isset($match['second_fraction']) ? ((int) $match['second_fraction']) / (10 ** strlen($match['second_fraction'])) : 0;
+            $tz_sign = ($match['tz_sign'] ?? '') === '-' ? -1 : 1;
+            $tz_hour = isset($match['tz_hour']) ? (int) $match['tz_hour'] : 0;
+            $tz_minute = isset($match['tz_minute']) ? (int) $match['tz_minute'] : 0;
 
             // Numeric timezone
-            if (isset($match[9]) && $match[9] !== '') {
-                $timezone = $match[10] * 3600;
-                $timezone += $match[11] * 60;
-                if ($match[9] === '-') {
-                    $timezone = 0 - $timezone;
-                }
-            } else {
-                $timezone = 0;
-            }
+            $timezone = $tz_hour * 3600;
+            $timezone += $tz_minute * 60;
+            $timezone *= $tz_sign;
 
             // Convert the number of seconds to an integer, taking decimals into account
-            $second = round((int)$match[6] + (int)$match[7] / (10 ** strlen($match[7])));
+            $second = (int) round($second + $second_fraction);
 
-            return gmmktime($match[4], $match[5], $second, $match[2], $match[3], $match[1]) - $timezone;
+            return gmmktime($hour, $minute, $second, $month, $day, $year) - $timezone;
         }
 
         return false;
@@ -855,7 +869,7 @@ class Date
                 $second = 0;
             }
 
-            return gmmktime($match[5], $match[6], $second, $month, $match[2], $match[4]) - $timezone;
+            return gmmktime(intval($match[5]), intval($match[6]), intval($second), intval($month), intval($match[2]), intval($match[4])) - $timezone;
         }
 
         return false;
@@ -949,7 +963,7 @@ class Date
             */
 
             $month = $this->month[strtolower($match[2])];
-            return gmmktime($match[4], $match[5], $match[6], $month, $match[3], $match[7]);
+            return gmmktime((int) $match[4], (int) $match[5], (int) $match[6], $month, (int) $match[3], (int) $match[7]);
         }
 
         return false;

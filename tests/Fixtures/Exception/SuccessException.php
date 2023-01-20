@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SimplePie\Tests\Fixtures\Exception;
 
 use Exception;

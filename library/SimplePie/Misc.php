@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -45,10 +47,10 @@ use SimplePie\Misc;
 
 class_exists('SimplePie\Misc');
 
-// @trigger_error(sprintf('Using the "SimplePie_Misc" class is deprecated since SimplePie 1.7, use "SimplePie\Misc" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Misc" class is deprecated since SimplePie 1.7.0, use "SimplePie\Misc" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Misc" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Misc" instead */
     class SimplePie_Misc extends Misc
     {
     }

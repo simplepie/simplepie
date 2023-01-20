@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -51,7 +53,7 @@ namespace SimplePie\Cache;
  *
  * @package SimplePie
  * @subpackage Caching
- * @deprecated since SimplePie 1.8, use "Psr\SimpleCache\CacheInterface" instead
+ * @deprecated since SimplePie 1.8.0, use "Psr\SimpleCache\CacheInterface" instead
  */
 interface Base
 {
@@ -81,7 +83,7 @@ interface Base
     /**
      * Save data to the cache
      *
-     * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+     * @param array|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
     public function save($data);

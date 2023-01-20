@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -35,7 +33,7 @@ declare(strict_types=1);
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
+ * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
  * @author Ryan McCue
@@ -43,15 +41,36 @@ declare(strict_types=1);
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-use SimplePie\Content\Type\Sniffer;
+namespace SimplePie\Cache;
 
-class_exists('SimplePie\Content\Type\Sniffer');
-
-// @trigger_error(sprintf('Using the "SimplePie_Content_Type_Sniffer" class is deprecated since SimplePie 1.7.0, use "SimplePie\Content\Type\Sniffer" instead.'), \E_USER_DEPRECATED);
-
-if (\false) {
-    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Content\Type\Sniffer" instead */
-    class SimplePie_Content_Type_Sniffer extends Sniffer
-    {
-    }
+/**
+ * Interface for creating a cache filename
+ *
+ * @package SimplePie
+ * @subpackage Caching
+ */
+interface NameFilter
+{
+    /**
+     * Method to create cache filename with.
+     *
+     * The returning name MUST follow the rules for keys in PSR-16.
+     *
+     * @link https://www.php-fig.org/psr/psr-16/
+     *
+     * The returning name MUST be a string of at least one character
+     * that uniquely identifies a cached item, MUST only contain the
+     * characters A-Z, a-z, 0-9, _, and . in any order in UTF-8 encoding
+     * and MUST not longer then 64 characters. The following characters
+     * are reserved for future extensions and MUST NOT be used: {}()/\@:
+     *
+     * A provided implementing library MAY support additional characters
+     * and encodings or longer lengths, but MUST support at least that
+     * minimum.
+     *
+     * @param string $name The name for the cache will be most likly an url with query string
+     *
+     * @return string the new cache name
+     */
+    public function filter(string $name): string;
 }

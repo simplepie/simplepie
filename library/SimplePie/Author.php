@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -45,10 +47,10 @@ use SimplePie\Author;
 
 class_exists('SimplePie\Author');
 
-// @trigger_error(sprintf('Using the "SimplePie_Author" class is deprecated since SimplePie 1.7, use "SimplePie\Author" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Author" class is deprecated since SimplePie 1.7.0, use "SimplePie\Author" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Author" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Author" instead */
     class SimplePie_Author extends Author
     {
     }

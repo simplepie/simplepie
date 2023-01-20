@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -42,6 +44,8 @@
  */
 
 namespace SimplePie;
+
+use SimplePie\XML\Declaration\Parser;
 
 /**
  * Miscellaneous utilities
@@ -89,14 +93,14 @@ class Misc
     /**
      * Get a HTML/XML element from a HTML string
      *
-     * @deprecated Use DOMDocument instead (parsing HTML with regex is bad!)
+     * @deprecated since SimplePie 1.3, use DOMDocument instead (parsing HTML with regex is bad!)
      * @param string $realname Element name (including namespace prefix if applicable)
      * @param string $string HTML document
      * @return array
      */
     public static function get_element($realname, $string)
     {
-        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
         $return = [];
         $name = preg_quote($realname, '/');
@@ -200,7 +204,7 @@ class Misc
     }
 
     /**
-     * @deprecated since SimplePie 1.7.1, use PHP native array_replace_recursive() instead.
+     * @deprecated since SimplePie 1.8.0, use PHP native array_replace_recursive() instead.
      */
     public static function array_merge_recursive($array1, $array2)
     {
@@ -1727,13 +1731,13 @@ class Misc
     /**
      * Decode HTML entities
      *
-     * @deprecated Use DOMDocument instead
+     * @deprecated since SimplePie 1.3, use DOMDocument instead
      * @param string $data Input data
      * @return string Output data
      */
     public static function entities_decode($data)
     {
-        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.7, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
         $decoder = new \SimplePie_Decode_HTML_Entities($data);
         return $decoder->parse();
@@ -1799,7 +1803,7 @@ class Misc
 
     public static function atom_03_construct_type($attribs)
     {
-        if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode']) === 'base64')) {
+        if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode'])) === 'base64') {
             $mode = \SimplePie\SimplePie::CONSTRUCT_BASE64;
         } else {
             $mode = \SimplePie\SimplePie::CONSTRUCT_NONE;
@@ -1979,7 +1983,7 @@ class Misc
         // UTF-32 Big Endian Without BOM
         elseif (substr($data, 0, 20) === "\x00\x00\x00\x3C\x00\x00\x00\x3F\x00\x00\x00\x78\x00\x00\x00\x6D\x00\x00\x00\x6C") {
             if ($pos = strpos($data, "\x00\x00\x00\x3F\x00\x00\x00\x3E")) {
-                $parser = $registry->create('XML_Declaration_Parser', [Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8')]);
+                $parser = $registry->create(Parser::class, [Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8')]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }
@@ -1989,7 +1993,7 @@ class Misc
         // UTF-32 Little Endian Without BOM
         elseif (substr($data, 0, 20) === "\x3C\x00\x00\x00\x3F\x00\x00\x00\x78\x00\x00\x00\x6D\x00\x00\x00\x6C\x00\x00\x00") {
             if ($pos = strpos($data, "\x3F\x00\x00\x00\x3E\x00\x00\x00")) {
-                $parser = $registry->create('XML_Declaration_Parser', [Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8')]);
+                $parser = $registry->create(Parser::class, [Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8')]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }
@@ -1999,7 +2003,7 @@ class Misc
         // UTF-16 Big Endian Without BOM
         elseif (substr($data, 0, 10) === "\x00\x3C\x00\x3F\x00\x78\x00\x6D\x00\x6C") {
             if ($pos = strpos($data, "\x00\x3F\x00\x3E")) {
-                $parser = $registry->create('XML_Declaration_Parser', [Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8')]);
+                $parser = $registry->create(Parser::class, [Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8')]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }
@@ -2009,7 +2013,7 @@ class Misc
         // UTF-16 Little Endian Without BOM
         elseif (substr($data, 0, 10) === "\x3C\x00\x3F\x00\x78\x00\x6D\x00\x6C\x00") {
             if ($pos = strpos($data, "\x3F\x00\x3E\x00")) {
-                $parser = $registry->create('XML_Declaration_Parser', [Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8')]);
+                $parser = $registry->create(Parser::class, [Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8')]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }
@@ -2019,7 +2023,7 @@ class Misc
         // US-ASCII (or superset)
         elseif (substr($data, 0, 5) === "\x3C\x3F\x78\x6D\x6C") {
             if ($pos = strpos($data, "\x3F\x3E")) {
-                $parser = $registry->create('XML_Declaration_Parser', [substr($data, 5, $pos - 5)]);
+                $parser = $registry->create(Parser::class, [substr($data, 5, $pos - 5)]);
                 if ($parser->parse()) {
                     $encoding[] = $parser->encoding;
                 }

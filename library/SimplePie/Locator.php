@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -45,10 +47,10 @@ use SimplePie\Locator;
 
 class_exists('SimplePie\Locator');
 
-// @trigger_error(sprintf('Using the "SimplePie_Locator" class is deprecated since SimplePie 1.7, use "SimplePie\Locator" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Locator" class is deprecated since SimplePie 1.7.0, use "SimplePie\Locator" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Locator" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Locator" instead */
     class SimplePie_Locator extends Locator
     {
     }

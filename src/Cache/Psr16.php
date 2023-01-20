@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -88,7 +90,7 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get_data($key, $default = null)
+    public function get_data(string $key, $default = null)
     {
         $data = $this->cache->get($key, $default);
 
@@ -118,7 +120,7 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function set_data($key, array $value, $ttl = null)
+    public function set_data(string $key, array $value, ?int $ttl = null): bool
     {
         return $this->cache->set($key, $value, $ttl);
     }
@@ -138,7 +140,7 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function delete_data($key)
+    public function delete_data(string $key): bool
     {
         return $this->cache->delete($key);
     }

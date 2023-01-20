@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -45,10 +47,10 @@ use SimplePie\Credit;
 
 class_exists('SimplePie\Credit');
 
-// @trigger_error(sprintf('Using the "SimplePie_Credit" class is deprecated since SimplePie 1.7, use "SimplePie\Credit" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Credit" class is deprecated since SimplePie 1.7.0, use "SimplePie\Credit" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Credit" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Credit" instead */
     class SimplePie_Credit extends Credit
     {
     }

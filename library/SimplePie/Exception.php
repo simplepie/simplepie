@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -45,10 +47,10 @@ use SimplePie\Exception as SimplePieException;
 
 class_exists('SimplePie\Exception');
 
-// @trigger_error(sprintf('Using the "SimplePie_Exception" class is deprecated since SimplePie 1.7, use "SimplePie\Exception" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Exception" class is deprecated since SimplePie 1.7.0, use "SimplePie\Exception" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Exception" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Exception" instead */
     class SimplePie_Exception extends SimplePieException
     {
     }

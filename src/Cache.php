@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -54,7 +56,7 @@ use SimplePie\Cache\Base;
  *
  * @package SimplePie
  * @subpackage Caching
- * @deprecated since SimplePie 1.8, use "SimplePie\SimplePie::set_cache()" instead
+ * @deprecated since SimplePie 1.8.0, use "SimplePie\SimplePie::set_cache()" instead
  */
 class Cache
 {
@@ -102,11 +104,12 @@ class Cache
     /**
      * Create a new SimplePie\Cache object
      *
-     * @deprecated Use {@see get_handler} instead
+     * @deprecated since SimplePie 1.3.1, use {@see get_handler()} instead
      */
     public function create($location, $filename, $extension)
     {
-        trigger_error('Cache::create() has been replaced with Cache::get_handler(). Switch to the registry system to use this.', \E_USER_DEPRECATED);
+        trigger_error('Cache::create() has been replaced with Cache::get_handler() since SimplePie 1.3.1, use the registry system instead.', \E_USER_DEPRECATED);
+
         return self::get_handler($location, $filename, $extension);
     }
 

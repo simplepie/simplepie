@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -46,7 +48,10 @@ namespace SimplePie\Cache;
 use InvalidArgumentException;
 
 /**
- * Simplified PSR-16 Cache client for caching data arrays
+ * Subset of PSR-16 Cache client for caching data arrays
+ *
+ * Only get(), set() and delete() methods are used,
+ * but not has(), getMultiple(), setMultiple() or deleteMultiple().
  *
  * The methods names must be different, but should be compatible to the
  * methods of \Psr\SimpleCache\CacheInterface.
@@ -73,7 +78,7 @@ interface DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get_data($key, $default = null);
+    public function get_data(string $key, $default = null);
 
     /**
      * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
@@ -94,7 +99,7 @@ interface DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function set_data($key, array $value, $ttl = null);
+    public function set_data(string $key, array $value, ?int $ttl = null): bool;
 
     /**
      * Delete an item from the cache by its unique key.
@@ -111,5 +116,5 @@ interface DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function delete_data($key);
+    public function delete_data(string $key): bool;
 }

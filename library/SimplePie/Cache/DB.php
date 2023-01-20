@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -45,10 +47,10 @@ use SimplePie\Cache\DB;
 
 class_exists('SimplePie\Cache\DB');
 
-// @trigger_error(sprintf('Using the "SimplePie_Cache_DB" class is deprecated since SimplePie 1.7, use "SimplePie\Cache\DB" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Cache_DB" class is deprecated since SimplePie 1.7.0, use "SimplePie\Cache\DB" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Cache\DB" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Cache\DB" instead */
     abstract class SimplePie_Cache_DB extends DB
     {
     }

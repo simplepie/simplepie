@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -45,10 +47,10 @@ use SimplePie\Copyright;
 
 class_exists('SimplePie\Copyright');
 
-// @trigger_error(sprintf('Using the "SimplePie_Copyright" class is deprecated since SimplePie 1.7, use "SimplePie\Copyright" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Copyright" class is deprecated since SimplePie 1.7.0, use "SimplePie\Copyright" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Copyright" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Copyright" instead */
     class SimplePie_Copyright extends Copyright
     {
     }

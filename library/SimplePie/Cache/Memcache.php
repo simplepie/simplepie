@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -45,10 +47,10 @@ use SimplePie\Cache\Memcache;
 
 class_exists('SimplePie\Cache\Memcache');
 
-// @trigger_error(sprintf('Using the "SimplePie_Cache_Memcache" class is deprecated since SimplePie 1.7, use "SimplePie\Cache\Memcache" instead.'), \E_USER_DEPRECATED);
+// @trigger_error(sprintf('Using the "SimplePie_Cache_Memcache" class is deprecated since SimplePie 1.7.0, use "SimplePie\Cache\Memcache" instead.'), \E_USER_DEPRECATED);
 
 if (\false) {
-    /** @deprecated since SimplePie 1.7, use "SimplePie\Cache\Memcache" instead */
+    /** @deprecated since SimplePie 1.7.0, use "SimplePie\Cache\Memcache" instead */
     class SimplePie_Cache_Memcache extends Memcache
     {
     }
