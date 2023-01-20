@@ -59,7 +59,7 @@ abstract class DB implements Base
      *
      * Converts a given {@see SimplePie} object into data to be stored
      *
-     * @param SimplePie $data
+     * @param \SimplePie\SimplePie $data
      * @return array First item is the serialized data for storage, second item is the unique ID for this item
      */
     protected static function prepare_simplepie_object_for_cache($data)
