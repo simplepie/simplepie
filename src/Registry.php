@@ -45,6 +45,10 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use SimplePie\Content\Type\Sniffer;
+use SimplePie\Parse\Date;
+use SimplePie\XML\Declaration\Parser as DeclarationParser;
+
 /**
  * Handles creating objects and calling methods
  *
@@ -59,28 +63,28 @@ class Registry
      *
      * Overriding classes *must* subclass these.
      *
-     * @var array
+     * @var array<class-string, class-string>
      */
     protected $default = [
-        'Cache' => Cache::class,
-        'Locator' => Locator::class,
-        'Parser' => Parser::class,
-        'File' => File::class,
-        'Sanitize' => Sanitize::class,
-        'Item' => Item::class,
-        'Author' => Author::class,
-        'Category' => Category::class,
-        'Enclosure' => Enclosure::class,
-        'Caption' => Caption::class,
-        'Copyright' => Copyright::class,
-        'Credit' => Credit::class,
-        'Rating' => Rating::class,
-        'Restriction' => Restriction::class,
-        'Content_Type_Sniffer' => Content\Type\Sniffer::class,
-        'Source' => Source::class,
-        'Misc' => Misc::class,
-        'XML_Declaration_Parser' => XML\Declaration\Parser::class,
-        'Parse_Date' => Parse\Date::class,
+        Cache::class => Cache::class,
+        Locator::class => Locator::class,
+        Parser::class => Parser::class,
+        File::class => File::class,
+        Sanitize::class => Sanitize::class,
+        Item::class => Item::class,
+        Author::class => Author::class,
+        Category::class => Category::class,
+        Enclosure::class => Enclosure::class,
+        Caption::class => Caption::class,
+        Copyright::class => Copyright::class,
+        Credit::class => Credit::class,
+        Rating::class => Rating::class,
+        Restriction::class => Restriction::class,
+        Sniffer::class => Sniffer::class,
+        Source::class => Source::class,
+        Misc::class => Misc::class,
+        DeclarationParser::class => DeclarationParser::class,
+        Date::class => Date::class,
     ];
 
     /**
@@ -95,9 +99,37 @@ class Registry
      * Legacy classes
      *
      * @see register()
-     * @var array
+     * @var array<class-string>
      */
     protected $legacy = [];
+
+    /**
+     * Legacy types
+     *
+     * @see register()
+     * @var array<string, class-string>
+     */
+    private $legacyTypes = [
+        'Cache' => Cache::class,
+        'Locator' => Locator::class,
+        'Parser' => Parser::class,
+        'File' => File::class,
+        'Sanitize' => Sanitize::class,
+        'Item' => Item::class,
+        'Author' => Author::class,
+        'Category' => Category::class,
+        'Enclosure' => Enclosure::class,
+        'Caption' => Caption::class,
+        'Copyright' => Copyright::class,
+        'Credit' => Credit::class,
+        'Rating' => Rating::class,
+        'Restriction' => Restriction::class,
+        'Content_Type_Sniffer' => Sniffer::class,
+        'Source' => Source::class,
+        'Misc' => Misc::class,
+        'XML_Declaration_Parser' => DeclarationParser::class,
+        'Parse_Date' => Date::class,
+    ];
 
     /**
      * Constructor
@@ -112,13 +144,30 @@ class Registry
      * Register a class
      *
      * @param string $type See {@see $default} for names
-     * @param string $class Class name, must subclass the corresponding default
+     * @param class-string $class Class name, must subclass the corresponding default
      * @param bool $legacy Whether to enable legacy support for this class
      * @return bool Successfulness
      */
     public function register($type, $class, $legacy = false)
     {
-        if (!@is_subclass_of($class, $this->default[$type])) {
+        if (array_key_exists($type, $this->legacyTypes)) {
+            // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8.0, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
+
+            $type = $this->legacyTypes[$type];
+        }
+
+        if (! array_key_exists($type, $this->default)) {
+            return false;
+        }
+
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        /** @var string */
+        $base_class = $this->default[$type];
+
+        if (!is_subclass_of($class, $base_class)) {
             return false;
         }
 
@@ -136,27 +185,38 @@ class Registry
      *
      * Where possible, use {@see create()} or {@see call()} instead
      *
-     * @param string $type
-     * @return string|null
+     * @template T
+     * @param class-string<T> $type
+     * @return class-string<T>|null
      */
     public function get_class($type)
     {
-        if (!empty($this->classes[$type])) {
-            return $this->classes[$type];
-        }
-        if (!empty($this->default[$type])) {
-            return $this->default[$type];
+        if (array_key_exists($type, $this->legacyTypes)) {
+            // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8.0, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
+
+            $type = $this->legacyTypes[$type];
         }
 
-        return null;
+        if (! array_key_exists($type, $this->default)) {
+            return null;
+        }
+
+        $class = $this->default[$type];
+
+        if (array_key_exists($type, $this->classes)) {
+            $class = $this->classes[$type];
+        }
+
+        return $class;
     }
 
     /**
      * Create a new instance of a given type
      *
-     * @param string $type
+     * @template T class-string $type
+     * @param class-string<T> $type
      * @param array $parameters Parameters to pass to the constructor
-     * @return object Instance of class
+     * @return T Instance of class
      */
     public function &create($type, $parameters = [])
     {
@@ -181,7 +241,7 @@ class Registry
     /**
      * Call a static method for a type
      *
-     * @param string $type
+     * @param class-string $type
      * @param string $method
      * @param array $parameters
      * @return mixed
@@ -192,7 +252,7 @@ class Registry
 
         if (in_array($class, $this->legacy)) {
             switch ($type) {
-                case 'Cache':
+                case Cache::class:
                     // For backwards compatibility with old non-static
                     // Cache::create() methods in PHP < 8.0.
                     // No longer supported as of PHP 8.0.
