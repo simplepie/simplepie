@@ -47,6 +47,7 @@ use SimplePie\Content\Type\Sniffer;
 use SimplePie\File;
 use SimplePie\Locator;
 use SimplePie\Registry;
+use SimplePie\RegistryAware;
 use SimplePie\SimplePie;
 
 /**
@@ -59,7 +60,7 @@ use SimplePie\SimplePie;
  *
  * @package SimplePie
  */
-class VerifiedFeedsDetector implements Detector
+class VerifiedFeedsDetector implements Detector, RegistryAware
 {
     /**
      * @var Registry $registry
