@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New method `SimplePie\SimplePie::set_cache_namefilter()` for customize the cache key in [#762](https://github.com/simplepie/simplepie/pull/762)
 - New class `SimplePie\Cache\CallableNameFilter` to provide a `callable` to customize the cache key in [#762](https://github.com/simplepie/simplepie/pull/762)
 - New interface `SimplePie\RegistryAware` to inject the `Registry` instance into classes created by `Registry` by @Art4 in [#760](https://github.com/simplepie/simplepie/pull/760)
-- update PHP versions in GH Actions workflows by by @jrfnl in [#767](https://github.com/simplepie/simplepie/pull/767)
+- update PHP versions in GH Actions workflows by @jrfnl in [#767](https://github.com/simplepie/simplepie/pull/767)
+- Registry: Allow using class-strings instead of magic strings by @jtojnar and @Art4 in [#766](https://github.com/simplepie/simplepie/pull/766)
 
 ### Changed
 
