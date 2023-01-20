@@ -33,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The method `SimplePie\SimplePie::get_image_width()` returns the pixel number as `int` instead of `float` by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763)
 - No URL Decode for enclosure links by @Alkarex in [#768](https://github.com/simplepie/simplepie/pull/768)
 - Sanitize thumbnail URL by @Alkarex in [#770](https://github.com/simplepie/simplepie/pull/770)
+- Fix case of multiple RSS2.0 enclosures by @Alkarex in [#769](https://github.com/simplepie/simplepie/pull/769)
+- Fix broken phpdoc references by @jtojnar in [#771](https://github.com/simplepie/simplepie/pull/771)
 
 ### Deprecated
 
