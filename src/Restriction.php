@@ -60,7 +60,7 @@ class Restriction
     /**
      * Relationship ('allow'/'deny')
      *
-     * @var string
+     * @var string|null
      * @see get_relationship()
      */
     public $relationship;
@@ -68,7 +68,7 @@ class Restriction
     /**
      * Type of restriction
      *
-     * @var string
+     * @var string|null
      * @see get_type()
      */
     public $type;
@@ -76,7 +76,7 @@ class Restriction
     /**
      * Restricted values
      *
-     * @var string
+     * @var string|null
      * @see get_value()
      */
     public $value;
@@ -87,7 +87,7 @@ class Restriction
      * For documentation on all the parameters, see the corresponding
      * properties and their accessors
      */
-    public function __construct($relationship = null, $type = null, $value = null)
+    public function __construct(?string $relationship = null, ?string $type = null, ?string $value = null)
     {
         $this->relationship = $relationship;
         $this->type = $type;
