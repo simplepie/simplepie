@@ -13,6 +13,9 @@ use SimplePie\Cache\BaseDataCache;
 use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\NameFilter;
+use SimplePie\Exception\HttpException;
+use SimplePie\HTTP\Client;
+use SimplePie\HTTP\FileClient;
 
 /**
  * Used for data cleanup and post-processing
@@ -74,6 +77,11 @@ class Sanitize implements RegistryAware
      * array('biz' => true, 'com' => array('example' => true), 'net' => array('example' => array('www' => true)))
      */
     public $https_domains = [];
+
+    /**
+     * @var Client|null
+     */
+    private $http_client = null;
 
     public function __construct()
     {
@@ -148,6 +156,8 @@ class Sanitize implements RegistryAware
         }
 
         $this->curl_options = $curl_options;
+        // Invalidate the registered client.
+        $this->http_client = null;
     }
 
     public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
@@ -394,9 +404,17 @@ class Sanitize implements RegistryAware
                             if ($cache->get_data($image_url, false)) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
-                                $file = $this->registry->create(File::class, [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                                try {
+                                    $file = $this->get_http_client()->request(
+                                        Client::METHOD_GET,
+                                        $img->getAttribute('src'),
+                                        ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']]
+                                    );
+                                } catch (HttpException $th) {
+                                    continue;
+                                }
 
-                                if ($file->success && (!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
+                                if ((!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
                                     if ($cache->set_data($image_url, ['headers' => $file->get_headers(), 'body' => $file->get_body_content()], $this->cache_duration)) {
                                         $img->setAttribute('src', $this->image_handler . $image_url);
                                     } else {
@@ -619,6 +637,37 @@ class Sanitize implements RegistryAware
         }
 
         return $this->cache;
+    }
+
+    /**
+     * Get a HTTP client
+     */
+    private function get_http_client(): Client
+    {
+        if ($this->http_client === null) {
+            $this->http_client = new FileClient(
+                $this->registry,
+                [
+                    'timeout' => $this->timeout,
+                    'redirects' => 5,
+                    'useragent' => $this->useragent,
+                    'force_fsockopen' => $this->force_fsockopen,
+                    'curl_options' => $this->curl_options,
+                ]
+            );
+        }
+
+        return $this->http_client;
+    }
+
+    /**
+     * Allows SimplePie to inject HTTP client.
+     *
+     * @internal
+     */
+    final public function set_http_client(Client $http_client): void
+    {
+        $this->http_client = $http_client;
     }
 }
 
