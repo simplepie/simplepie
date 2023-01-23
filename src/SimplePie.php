@@ -1554,7 +1554,7 @@ class SimplePie
             $this->registry->get_class(Cache::class),
             $this->cache
         );
-        $this->sanitize->pass_file_data($this->registry->get_class(File::class), $this->timeout, $this->useragent, $this->force_fsockopen, $this->curl_options);
+        $this->sanitize->set_http_client($this->get_http_client());
 
         if (!empty($this->multifeed_url)) {
             $i = 0;
