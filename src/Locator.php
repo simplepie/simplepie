@@ -7,6 +7,10 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use SimplePie\Exception\HttpException;
+use SimplePie\HTTP\Client;
+use SimplePie\HTTP\FileClient;
+
 /**
  * Used for feed auto-discovery
  *
@@ -31,6 +35,11 @@ class Locator implements RegistryAware
     /** @var ?\DomDocument */
     public $dom;
     protected $registry;
+
+    /**
+     * @var Client|null
+     */
+    private $http_client = null;
 
     public function __construct(\SimplePie\File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [])
     {
@@ -189,9 +198,15 @@ class Locator implements RegistryAware
                     $headers = [
                         'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                     ];
-                    $feed = $this->registry->create(File::class, [$href, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                    if ($feed->success && (!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed, true)) {
-                        $feeds[$href] = $feed;
+
+                    try {
+                        $feed = $this->get_http_client()->request(Client::METHOD_GET, $href, $headers);
+
+                        if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed, true)) {
+                            $feeds[$href] = $feed;
+                        }
+                    } catch (HttpException $th) {
+                        // Just mark it as done and continue.
                     }
                 }
                 $done[] = $href;
@@ -298,12 +313,18 @@ class Locator implements RegistryAware
                 $headers = [
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
-                $feed = $this->registry->create(File::class, [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                if ($feed->success && (!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300)) && $this->is_feed($file)) {
-                    return [$feed];
-                } else {
-                    unset($array[$key]);
+
+                try {
+                    $feed = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
+
+                    if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed)) {
+                        return [$feed];
+                    }
+                } catch (HttpException $th) {
+                    // Just unset and continue.
                 }
+
+                unset($array[$key]);
             }
         }
         return null;
@@ -320,15 +341,52 @@ class Locator implements RegistryAware
                 $headers = [
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
-                $feed = $this->registry->create(File::class, [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                if ($feed->success && (!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300)) && $this->is_feed($file)) {
-                    return [$feed];
-                } else {
-                    unset($array[$key]);
+
+                try {
+                    $feed = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
+
+                    if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed)) {
+                        return [$feed];
+                    }
+                } catch (HttpException $th) {
+                    // Just unset and continue.
                 }
+
+                unset($array[$key]);
             }
         }
         return null;
+    }
+
+    /**
+     * Get a HTTP client
+     */
+    private function get_http_client(): Client
+    {
+        if ($this->http_client === null) {
+            return new FileClient(
+                $this->registry,
+                [
+                    'timeout' => $this->timeout,
+                    'redirects' => 5,
+                    'useragent' => $this->useragent,
+                    'force_fsockopen' => $this->force_fsockopen,
+                    'curl_options' => $this->curl_options,
+                ]
+            );
+        }
+
+        return $this->http_client;
+    }
+
+    /**
+     * Allows SimplePie to inject HTTP client.
+     *
+     * @internal
+     */
+    final public function set_http_client(Client $http_client): void
+    {
+        $this->http_client = $http_client;
     }
 }
 
