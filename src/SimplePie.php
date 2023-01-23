@@ -57,6 +57,7 @@ use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Response;
 
 /**
  * SimplePie
@@ -804,7 +805,7 @@ class SimplePie
     public function set_file(&$file)
     {
         if ($file instanceof \SimplePie\File) {
-            $this->feed_url = $file->url;
+            $this->feed_url = $file->get_requested_uri();
             $this->permanent_url = $this->feed_url;
             $this->file =& $file;
             return true;
@@ -1792,9 +1793,9 @@ class SimplePie
                         } finally {
                             $this->timeout = $orig_timeout;
                         }
-                        $this->status_code = $file->status_code;
+                        $this->status_code = $file->get_status_code();
 
-                        if ($file->status_code === 304) {
+                        if ($file->get_status_code() === 304) {
                             // Set raw_data to false here too, to signify that the cache
                             // is still valid.
                             $this->raw_data = false;
@@ -1817,7 +1818,7 @@ class SimplePie
 
         // If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
         if (!isset($file)) {
-            if ($this->file instanceof \SimplePie\File && $this->file->url === $this->feed_url) {
+            if ($this->file instanceof \SimplePie\File && $this->file->get_requested_uri() === $this->feed_url) {
                 $file =& $this->file;
             } else {
                 $headers = [
@@ -1833,26 +1834,35 @@ class SimplePie
                 }
             }
         }
-        $this->status_code = $file->status_code;
+        $this->status_code = $file->get_status_code();
 
         // If the file connection has an error, set SimplePie::error to that and quit
-        if (!($file->method & self::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
-            $this->error = $file->error;
+        if (!(! preg_match('/^http(s)?:\/\//i', $file->get_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
+            $this->error = 'Retrieved unsupported status code "' . $file->get_status_code() . '"';
+
             return !empty($this->data);
         }
 
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
-            $locate = $this->registry->create(Locator::class, [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options, $this->get_http_client()]);
+            $locate = $this->registry->create(Locator::class, [
+                &$file,
+                $this->timeout,
+                $this->useragent,
+                $this->max_checked_feeds,
+                $this->force_fsockopen,
+                $this->curl_options,
+                $this->get_http_client()
+            ]);
 
             if (!$locate->is_feed($file)) {
-                $copyStatusCode = $file->status_code;
-                $copyContentType = $file->headers['content-type'];
+                $copyStatusCode = $file->get_status_code();
+                $copyContentType = $file->get_header_line('content-type');
                 try {
                     $microformats = false;
                     if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
                         $doc = new \DOMDocument();
-                        @$doc->loadHTML($file->body);
+                        @$doc->loadHTML($file->get_body_content());
                         $xpath = new \DOMXpath($doc);
                         // Check for both h-feed and h-entry, as both a feed with no entries
                         // and a list of entries without an h-feed wrapper are both valid.
@@ -1886,6 +1896,7 @@ class SimplePie
                             unset($file);
                             $this->error = "A feed could not be found at `$this->feed_url`; the status code is `$copyStatusCode` and content-type is `$copyContentType`";
                             $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
+
                             return false;
                         }
                     }
@@ -1895,13 +1906,16 @@ class SimplePie
                     // This is usually because DOMDocument doesn't exist
                     $this->error = $e->getMessage();
                     $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()]);
+
                     return false;
                 }
+
+                /** @var File $file */
 
                 if ($cache) {
                     $this->data = [
                         'url' => $this->feed_url,
-                        'feed_url' => $file->url,
+                        'feed_url' => $file->get_requested_uri(),
                         'build' => \SimplePie\Misc::get_build(),
                         'cache_expiration_time' => $this->cache_duration + time(),
                     ];
@@ -1911,13 +1925,18 @@ class SimplePie
                     }
                 }
             }
-            $this->feed_url = $file->url;
+            $this->feed_url = $file->get_requested_uri();
             $locate = null;
         }
 
-        $this->raw_data = $file->body;
+        $this->raw_data = $file->get_body_content();
         $this->permanent_url = $file->permanent_url;
-        $headers = $file->headers;
+
+        $headers = [];
+        foreach ($file->get_headers() as $key => $values) {
+            $headers[$key] = implode(', ', $values);
+        }
+
         $sniffer = $this->registry->create(Sniffer::class, [&$file]);
         $sniffed = $sniffer->get_type();
 

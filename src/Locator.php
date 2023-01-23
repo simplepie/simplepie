@@ -238,13 +238,13 @@ class Locator implements RegistryAware
                     ];
 
                     try {
-                        $file = $this->get_http_client()->request(Client::METHOD_GET, $href, $headers);
+                        $response = $this->get_http_client()->request(Client::METHOD_GET, $href, $headers);
                     } catch (HttpException $th) {
                         continue;
                     }
 
-                    if (($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)) && $this->is_feed($file, true)) {
-                        $feeds[$href] = $file;
+                    if ((! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($response, true)) {
+                        $feeds[$href] = $response;
                     }
                 }
                 $done[] = $href;
@@ -351,13 +351,13 @@ class Locator implements RegistryAware
                 ];
 
                 try {
-                    $file = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
+                    $response = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
                 } catch (HttpException $th) {
                     continue;
                 }
 
-                if (($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)) && $this->is_feed($file)) {
-                    return [$file];
+                if ((! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($response)) {
+                    return [$response];
                 } else {
                     unset($array[$key]);
                 }
@@ -379,13 +379,13 @@ class Locator implements RegistryAware
                 ];
 
                 try {
-                    $file = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
+                    $response = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
                 } catch (HttpException $th) {
                     continue;
                 }
 
-                if (($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)) && $this->is_feed($file)) {
-                    return [$file];
+                if ((! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($response)) {
+                    return [$response];
                 } else {
                     unset($array[$key]);
                 }

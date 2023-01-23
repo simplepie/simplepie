@@ -439,7 +439,7 @@ class Sanitize implements RegistryAware
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
                                 try {
-                                    $file = $this->get_http_client()->request(
+                                    $response = $this->get_http_client()->request(
                                         Client::METHOD_GET,
                                         $img->getAttribute('src'),
                                         ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']]
@@ -448,10 +448,8 @@ class Sanitize implements RegistryAware
                                     continue;
                                 }
 
-                                $headers = $file->headers;
-
-                                if ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)) {
-                                    if ($cache->set_data($image_url, ['headers' => $file->headers, 'body' => $file->body], $this->cache_duration)) {
+                                if (! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) {
+                                    if ($cache->set_data($image_url, ['headers' => $response->get_headers(), 'body' => $response->get_body_content()], $this->cache_duration)) {
                                         $img->setAttribute('src', $this->image_handler . $image_url);
                                     } else {
                                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);

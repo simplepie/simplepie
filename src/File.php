@@ -60,6 +60,7 @@ use SimplePie\HTTP\Response;
  */
 class File implements Response
 {
+    /** @var string Holds the final url after following possible redirects */
     public $url;
     public $useragent;
     public $success = true;
@@ -70,6 +71,7 @@ class File implements Response
     public $redirects = 0;
     public $error;
     public $method = \SimplePie\SimplePie::FILE_SOURCE_NONE;
+    /** @var string Holds the original requested URL */
     public $permanent_url;
 
     public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
@@ -297,7 +299,7 @@ class File implements Response
      */
     public function get_requested_uri(): string
     {
-        return (string) $this->permanent_url;
+        return (string) $this->url;
     }
 
     /**
