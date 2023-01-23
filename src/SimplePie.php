@@ -765,7 +765,7 @@ class SimplePie
      */
     public function set_file(File &$file)
     {
-        $this->feed_url = $file->url;
+        $this->feed_url = $file->get_final_requested_uri();
         $this->permanent_url = $this->feed_url;
         $this->file =& $file;
 
@@ -1741,7 +1741,7 @@ class SimplePie
 
                         $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
 
-                        $this->status_code = $file->status_code;
+                        $this->status_code = $file->get_status_code();
 
                         if ($file->success) {
                             if ($this->status_code === 304) {
@@ -1780,7 +1780,7 @@ class SimplePie
 
         // If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
         if (!isset($file)) {
-            if ($this->file instanceof File && $this->file->url === $this->feed_url) {
+            if ($this->file instanceof File && $this->file->get_final_requested_uri() === $this->feed_url) {
                 $file =& $this->file;
             } elseif (isset($failedFile)) {
                 // Do not try to fetch again if we already failed once.
@@ -1792,10 +1792,10 @@ class SimplePie
                 $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
             }
         }
-        $this->status_code = $file->status_code;
+        $this->status_code = $file->get_status_code();
 
         // If the file connection has an error, set SimplePie::error to that and quit
-        if (!$file->success && !($file->method & self::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
+        if (!$file->success && !(!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
             $this->error = $file->error;
             return !empty($this->data);
         }
@@ -1805,13 +1805,13 @@ class SimplePie
             $locate = $this->registry->create(Locator::class, [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
 
             if (!$locate->is_feed($file)) {
-                $copyStatusCode = $file->status_code;
-                $copyContentType = $file->headers['content-type'];
+                $copyStatusCode = $file->get_status_code();
+                $copyContentType = $file->get_header_line('content-type');
                 try {
                     $microformats = false;
                     if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
                         $doc = new \DOMDocument();
-                        @$doc->loadHTML($file->body);
+                        @$doc->loadHTML($file->get_body_content());
                         $xpath = new \DOMXpath($doc);
                         // Check for both h-feed and h-entry, as both a feed with no entries
                         // and a list of entries without an h-feed wrapper are both valid.
@@ -1860,7 +1860,7 @@ class SimplePie
                 if ($cache) {
                     $this->data = [
                         'url' => $this->feed_url,
-                        'feed_url' => $file->url,
+                        'feed_url' => $file->get_final_requested_uri(),
                         'build' => Misc::get_build(),
                         'cache_expiration_time' => $this->cache_duration + time(),
                     ];
@@ -1870,13 +1870,18 @@ class SimplePie
                     }
                 }
             }
-            $this->feed_url = $file->url;
+            $this->feed_url = $file->get_final_requested_uri();
             $locate = null;
         }
 
-        $this->raw_data = $file->body;
-        $this->permanent_url = $file->permanent_url;
-        $headers = $file->headers;
+        $this->raw_data = $file->get_body_content();
+        $this->permanent_url = $file->get_permanent_uri();
+
+        $headers = [];
+        foreach ($file->get_headers() as $key => $values) {
+            $headers[$key] = implode(', ', $values);
+        }
+
         $sniffer = $this->registry->create(Sniffer::class, [&$file]);
         $sniffed = $sniffer->get_type();
 

@@ -41,7 +41,7 @@ class Locator implements RegistryAware
         $this->force_fsockopen = $force_fsockopen;
         $this->curl_options = $curl_options;
 
-        $body = $this->file->body;
+        $body = $this->file->get_body_content();
 
         if (class_exists('DOMDocument') && $body != '') {
             $this->dom = new \DOMDocument();
@@ -69,7 +69,7 @@ class Locator implements RegistryAware
             return $this->file;
         }
 
-        if ($this->file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
+        if (Misc::is_remote_uri($this->file->get_final_requested_uri())) {
             $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$this->file]);
             if ($sniffer->get_type() !== 'text/html') {
                 return null;
@@ -106,7 +106,7 @@ class Locator implements RegistryAware
 
     public function is_feed($file, $check_html = false)
     {
-        if ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
+        if (Misc::is_remote_uri($file->get_final_requested_uri())) {
             $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$file]);
             $sniffed = $sniffer->get_type();
             $mime_types = ['application/rss+xml', 'application/rdf+xml',
@@ -117,7 +117,7 @@ class Locator implements RegistryAware
             }
 
             return in_array($sniffed, $mime_types);
-        } elseif ($file->method & \SimplePie\SimplePie::FILE_SOURCE_LOCAL) {
+        } elseif (is_file($file->get_final_requested_uri())) {
             return true;
         } else {
             return false;
@@ -129,7 +129,7 @@ class Locator implements RegistryAware
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
-        $this->http_base = $this->file->url;
+        $this->http_base = $this->file->get_final_requested_uri();
         $this->base = $this->http_base;
         $elements = $this->dom->getElementsByTagName('base');
         foreach ($elements as $element) {
@@ -190,7 +190,7 @@ class Locator implements RegistryAware
                         'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                     ];
                     $feed = $this->registry->create(File::class, [$href, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                    if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true)) {
+                    if ($feed->success && (!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed, true)) {
                         $feeds[$href] = $feed;
                     }
                 }
@@ -222,7 +222,7 @@ class Locator implements RegistryAware
                         continue;
                     }
 
-                    $current = $this->registry->call(Misc::class, 'parse_url', [$this->file->url]);
+                    $current = $this->registry->call(Misc::class, 'parse_url', [$this->file->get_final_requested_uri()]);
 
                     if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
                         $this->local[] = $href;
@@ -299,7 +299,7 @@ class Locator implements RegistryAware
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
                 $feed = $this->registry->create(File::class, [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
+                if ($feed->success && (!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300)) && $this->is_feed($file)) {
                     return [$feed];
                 } else {
                     unset($array[$key]);
@@ -321,7 +321,7 @@ class Locator implements RegistryAware
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
                 $feed = $this->registry->create(File::class, [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
+                if ($feed->success && (!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300)) && $this->is_feed($file)) {
                     return [$feed];
                 } else {
                     unset($array[$key]);

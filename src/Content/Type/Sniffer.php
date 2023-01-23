@@ -46,8 +46,8 @@ class Sniffer
      */
     public function get_type()
     {
-        $content_type = $this->file->headers['content-type'] ?? null;
-        $content_encoding = $this->file->headers['content-encoding'] ?? null;
+        $content_type = $this->file->has_header('content-type') ? $this->file->get_header_line('content-type') : null;
+        $content_encoding = $this->file->has_header('content-encoding') ? $this->file->get_header_line('content-encoding') : null;
         if ($content_type !== null) {
             if ($content_encoding === null
                 && ($content_type === 'text/plain'
@@ -94,7 +94,7 @@ class Sniffer
      */
     public function text_or_binary()
     {
-        $body = $this->file->body;
+        $body = $this->file->get_body_content();
 
         if (substr($body, 0, 2) === "\xFE\xFF"
             || substr($body, 0, 2) === "\xFF\xFE"
@@ -115,7 +115,7 @@ class Sniffer
      */
     public function unknown()
     {
-        $body = $this->file->body;
+        $body = $this->file->get_body_content();
 
         $ws = strspn($body, "\x09\x0A\x0B\x0C\x0D\x20");
         if (strtolower(substr($body, $ws, 14)) === '<!doctype html'
@@ -149,7 +149,7 @@ class Sniffer
      */
     public function image()
     {
-        $body = $this->file->body;
+        $body = $this->file->get_body_content();
 
         if (substr($body, 0, 6) === 'GIF87a'
             || substr($body, 0, 6) === 'GIF89a') {
@@ -174,7 +174,7 @@ class Sniffer
      */
     public function feed_or_html()
     {
-        $body = $this->file->body;
+        $body = $this->file->get_body_content();
 
         $len = strlen($body);
         $pos = strspn($body, "\x09\x0A\x0D\x20\xEF\xBB\xBF");
