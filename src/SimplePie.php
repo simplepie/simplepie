@@ -1930,7 +1930,7 @@ class SimplePie
         }
 
         $this->raw_data = $file->get_body_content();
-        $this->permanent_url = $file->permanent_url;
+        $this->permanent_url = $file->get_permanent_uri();
 
         $headers = [];
         foreach ($file->get_headers() as $key => $values) {
