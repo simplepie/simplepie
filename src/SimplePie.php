@@ -54,6 +54,9 @@ use SimplePie\Cache\DataCache;
 use SimplePie\Cache\NameFilter;
 use SimplePie\Cache\Psr16;
 use SimplePie\Content\Type\Sniffer;
+use SimplePie\Exception\HttpException;
+use SimplePie\HTTP\Client;
+use SimplePie\HTTP\FileClient;
 
 /**
  * SimplePie
@@ -1774,18 +1777,11 @@ class SimplePie
                             $headers['if-none-match'] = $this->data['headers']['etag'];
                         }
 
-                        $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                        $this->status_code = $file->status_code;
-
-                        if ($file->success) {
-                            if ($file->status_code === 304) {
-                                // Set raw_data to false here too, to signify that the cache
-                                // is still valid.
-                                $this->raw_data = false;
-                                $cache->set_data($cacheKey, $this->data, $this->cache_duration);
-                                return true;
-                            }
-                        } else {
+                        try {
+                            $orig_timeout = $this->timeout;
+                            $this->timeout = 1;
+                            $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
+                        } catch (HttpException $th) {
                             $this->check_modified = false;
                             if ($this->force_cache_fallback) {
                                 $cache->set_data($cacheKey, $this->data, $this->cache_duration);
@@ -1793,6 +1789,17 @@ class SimplePie
                             }
 
                             unset($file);
+                        } finally {
+                            $this->timeout = $orig_timeout;
+                        }
+                        $this->status_code = $file->status_code;
+
+                        if ($file->status_code === 304) {
+                            // Set raw_data to false here too, to signify that the cache
+                            // is still valid.
+                            $this->raw_data = false;
+                            $cache->set_data($cacheKey, $this->data, $this->cache_duration);
+                            return true;
                         }
                     }
                 }
@@ -1816,13 +1823,20 @@ class SimplePie
                 $headers = [
                     'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
                 ];
-                $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                try {
+                    $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
+                } catch (HttpException $th) {
+                    // If the file connection has an error, set SimplePie::error to that and quit
+                    $this->error = $th->getMessage();
+
+                    return !empty($this->data);
+                }
             }
         }
         $this->status_code = $file->status_code;
 
         // If the file connection has an error, set SimplePie::error to that and quit
-        if (!$file->success && !($file->method & self::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
+        if (!($file->method & self::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
             $this->error = $file->error;
             return !empty($this->data);
         }
@@ -3222,6 +3236,23 @@ class SimplePie
         }
 
         return $this->cache;
+    }
+
+    /**
+     * Get a HTTP client
+     */
+    private function get_http_client(): Client
+    {
+        return new FileClient(
+            $this->get_registry(),
+            [
+                'timeout' => $this->timeout,
+                'redirects' => 5,
+                'useragent' => $this->useragent,
+                'force_fsockopen' => $this->force_fsockopen,
+                'curl_options' => $this->curl_options,
+            ]
+        );
     }
 }
 
