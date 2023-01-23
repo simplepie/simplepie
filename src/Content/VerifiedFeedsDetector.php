@@ -106,7 +106,7 @@ class VerifiedFeedsDetector implements Detector, RegistryAware
 
         /** @var Locator */
         $locator = $this->registry->create(
-            'Locator',
+            Locator::class,
             [$file, 10, null, 10, false, []]
         );
 
@@ -140,7 +140,7 @@ class VerifiedFeedsDetector implements Detector, RegistryAware
 
         /** @var Locator */
         $locator = $this->registry->create(
-            'Locator',
+            Locator::class,
             [$file, 10, null, 10, false, []]
         );
 
@@ -168,7 +168,7 @@ class VerifiedFeedsDetector implements Detector, RegistryAware
 
         /** @var Sniffer */
         $sniffer = $this->registry->create(
-            'Content_Type_Sniffer',
+            Sniffer::class,
             [$file]
         );
 

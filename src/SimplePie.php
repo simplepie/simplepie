@@ -1895,7 +1895,7 @@ class SimplePie
                         $checked_feeds++;
 
                         /** @var File */
-                        $possible_feed = $this->registry->create('File', [
+                        $possible_feed = $this->registry->create(File::class, [
                             $href,
                             $this->timeout,
                             5,
