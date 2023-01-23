@@ -87,11 +87,12 @@ class LocatorTest extends TestCase
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
+        $data->parsed_headers['content-type'] = [$mime];
 
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
@@ -102,11 +103,12 @@ class LocatorTest extends TestCase
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
+        $data->parsed_headers['content-type'] = ['application/pdf'];
 
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
@@ -132,6 +134,7 @@ class LocatorTest extends TestCase
 
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'text/html';
+        $data->parsed_headers['content-type'] = ['text/html'];
         $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
         $registry = new Registry();
@@ -171,7 +174,7 @@ class LocatorTest extends TestCase
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $expected = [];
@@ -185,7 +188,7 @@ class LocatorTest extends TestCase
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
         $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
-        $this->assertInstanceOf('SimplePie\Tests\Fixtures\FileMock', $feed);
+        $this->assertInstanceOf(FileMock::class, $feed);
         $success = array_filter($expected, [get_class(), 'filter_success']);
 
         $found = array_map([get_class(), 'map_url_file'], $all);

@@ -86,6 +86,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
+        $data->parsed_headers['content-type'] = ['application/pdf'];
 
         $locator = new SimplePie_Locator($data, 0, null, false);
 
@@ -116,6 +117,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'text/html';
+        $data->parsed_headers['content-type'] = ['text/html'];
         $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
         $registry = new SimplePie_Registry();

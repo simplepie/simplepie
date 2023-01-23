@@ -1818,7 +1818,7 @@ class SimplePie
 
         // If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
         if (!isset($file)) {
-            if ($this->file instanceof \SimplePie\File && $this->file->get_requested_uri() === $this->feed_url) {
+            if ($this->file instanceof File && $this->file->get_requested_uri() === $this->feed_url) {
                 $file =& $this->file;
             } else {
                 $headers = [

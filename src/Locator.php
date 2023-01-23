@@ -90,12 +90,12 @@ class Locator implements RegistryAware
         $this->curl_options = $curl_options;
         $this->http_client = $http_client;
 
-        if (class_exists('DOMDocument') && $this->file->body != '') {
+        if (class_exists('DOMDocument') && $this->file->get_body_content() != '') {
             $this->dom = new \DOMDocument();
 
             set_error_handler(['SimplePie\Misc', 'silence_errors']);
             try {
-                $this->dom->loadHTML($this->file->body);
+                $this->dom->loadHTML($this->file->get_body_content());
             } catch (\Throwable $ex) {
                 $this->dom = null;
             }
@@ -116,7 +116,7 @@ class Locator implements RegistryAware
             return $this->file;
         }
 
-        if ($this->file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
+        if (preg_match('/^http(s)?:\/\//i', $this->file->get_requested_uri())) {
             $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$this->file]);
             if ($sniffer->get_type() !== 'text/html') {
                 return null;
@@ -153,7 +153,7 @@ class Locator implements RegistryAware
 
     public function is_feed($file, $check_html = false)
     {
-        if ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
+        if (preg_match('/^http(s)?:\/\//i', $file->get_requested_uri())) {
             $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$file]);
             $sniffed = $sniffer->get_type();
             $mime_types = ['application/rss+xml', 'application/rdf+xml',
@@ -164,8 +164,6 @@ class Locator implements RegistryAware
             }
 
             return in_array($sniffed, $mime_types);
-        } elseif ($file->method & \SimplePie\SimplePie::FILE_SOURCE_LOCAL) {
-            return true;
         } else {
             return false;
         }
@@ -176,7 +174,7 @@ class Locator implements RegistryAware
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
-        $this->http_base = $this->file->url;
+        $this->http_base = $this->file->get_requested_uri();
         $this->base = $this->http_base;
         $elements = $this->dom->getElementsByTagName('base');
         foreach ($elements as $element) {
@@ -275,7 +273,7 @@ class Locator implements RegistryAware
                         continue;
                     }
 
-                    $current = $this->registry->call(Misc::class, 'parse_url', [$this->file->url]);
+                    $current = $this->registry->call(Misc::class, 'parse_url', [$this->file->get_requested_uri()]);
 
                     if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
                         $this->local[] = $href;
