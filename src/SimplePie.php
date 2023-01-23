@@ -1843,7 +1843,7 @@ class SimplePie
 
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
-            $locate = $this->registry->create(Locator::class, [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
+            $locate = $this->registry->create(Locator::class, [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options, $this->get_http_client()]);
 
             if (!$locate->is_feed($file)) {
                 $copyStatusCode = $file->status_code;
