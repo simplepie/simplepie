@@ -17,6 +17,9 @@ use SimplePie\Cache\NameFilter;
 use SimplePie\Cache\Psr16;
 use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception as SimplePieException;
+use SimplePie\Exception\HttpException;
+use SimplePie\HTTP\Client;
+use SimplePie\HTTP\FileClient;
 
 /**
  * SimplePie
@@ -640,6 +643,14 @@ class SimplePie
     public $enable_exceptions = false;
 
     /**
+     * @var Client|null
+     */
+    private $http_client = null;
+
+    /** @var bool Whether HTTP client has been injected */
+    private $http_client_injected = false;
+
+    /**
      * The SimplePie class contains feed level data and options
      *
      * To use SimplePie, create the SimplePie object with no parameters. You can
@@ -801,6 +812,14 @@ class SimplePie
      */
     public function set_timeout(int $timeout = 10)
     {
+        if ($this->http_client_injected) {
+            throw new SimplePieException(sprintf(
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure timeout in your HTTP client instead.',
+                __METHOD__,
+                self::class
+            ));
+        }
+
         $this->timeout = (int) $timeout;
     }
 
@@ -814,6 +833,14 @@ class SimplePie
      */
     public function set_curl_options(array $curl_options = [])
     {
+        if ($this->http_client_injected) {
+            throw new SimplePieException(sprintf(
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure custom curl options in your HTTP client instead.',
+                __METHOD__,
+                self::class
+            ));
+        }
+
         $this->curl_options = $curl_options;
     }
 
@@ -825,6 +852,14 @@ class SimplePie
      */
     public function force_fsockopen(bool $enable = false)
     {
+        if ($this->http_client_injected) {
+            throw new SimplePieException(sprintf(
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure fsockopen in your HTTP client instead.',
+                __METHOD__,
+                self::class
+            ));
+        }
+
         $this->force_fsockopen = $enable;
     }
 
@@ -1256,6 +1291,14 @@ class SimplePie
      */
     public function set_useragent(?string $ua = null)
     {
+        if ($this->http_client_injected) {
+            throw new SimplePieException(sprintf(
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure user agent string in your HTTP client instead.',
+                __METHOD__,
+                self::class
+            ));
+        }
+
         if ($ua === null) {
             $ua = Misc::get_default_useragent();
         }
@@ -1739,21 +1782,12 @@ class SimplePie
                             $headers['if-none-match'] = $this->data['headers']['etag'];
                         }
 
-                        $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
-
-                        $this->status_code = $file->get_status_code();
-
-                        if ($file->success) {
-                            if ($this->status_code === 304) {
-                                // Set raw_data to false here too, to signify that the cache
-                                // is still valid.
-                                $this->raw_data = false;
-                                $cache->set_data($cacheKey, $this->data, $this->cache_duration);
-
-                                return true;
-                            }
-                        } else {
+                        try {
+                            $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
+                            $this->status_code = $file->get_status_code();
+                        } catch (HttpException $th) {
                             $this->check_modified = false;
+                            $this->status_code = 0;
 
                             if ($this->force_cache_fallback) {
                                 $cache->set_data($cacheKey, $this->data, $this->cache_duration);
@@ -1761,8 +1795,16 @@ class SimplePie
                                 return true;
                             }
 
-                            $failedFile = $file;
-                            unset($file);
+                            $failedFileReason = $th->getMessage();
+                        }
+
+                        if ($this->status_code === 304) {
+                            // Set raw_data to false here too, to signify that the cache
+                            // is still valid.
+                            $this->raw_data = false;
+                            $cache->set_data($cacheKey, $this->data, $this->cache_duration);
+
+                            return true;
                         }
                     }
                 }
@@ -1782,21 +1824,31 @@ class SimplePie
         if (!isset($file)) {
             if ($this->file instanceof File && $this->file->get_final_requested_uri() === $this->feed_url) {
                 $file =& $this->file;
-            } elseif (isset($failedFile)) {
+            } elseif (isset($failedFileReason)) {
                 // Do not try to fetch again if we already failed once.
-                $file = $failedFile;
+                // If the file connection had an error, set SimplePie::error to that and quit
+                $this->error = $failedFileReason;
+
+                return !empty($this->data);
             } else {
                 $headers = [
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
-                $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                try {
+                    $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
+                } catch (HttpException $th) {
+                    // If the file connection has an error, set SimplePie::error to that and quit
+                    $this->error = $th->getMessage();
+
+                    return !empty($this->data);
+                }
             }
         }
         $this->status_code = $file->get_status_code();
 
         // If the file connection has an error, set SimplePie::error to that and quit
-        if (!$file->success && !(!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
-            $this->error = $file->error;
+        if (!(!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
+            $this->error = 'Retrieved unsupported status code "' . $this->status_code . '"';
             return !empty($this->data);
         }
 
@@ -1829,7 +1881,9 @@ class SimplePie
                     if ($microformats) {
                         if ($hub = $locate->get_rel_link('hub')) {
                             $self = $locate->get_rel_link('self');
-                            $this->store_links($file, $hub, $self);
+                            if ($file instanceof File) {
+                                $this->store_links($file, $hub, $self);
+                            }
                         }
                         // Push the current file onto all_discovered feeds so the user can
                         // be shown this as one of the options.
@@ -3209,6 +3263,28 @@ class SimplePie
         }
 
         return $this->cache;
+    }
+
+    /**
+     * Get a HTTP client
+     */
+    private function get_http_client(): Client
+    {
+        if ($this->http_client === null) {
+            $this->http_client = new FileClient(
+                $this->get_registry(),
+                [
+                    'timeout' => $this->timeout,
+                    'redirects' => 5,
+                    'useragent' => $this->useragent,
+                    'force_fsockopen' => $this->force_fsockopen,
+                    'curl_options' => $this->curl_options,
+                ]
+            );
+            $this->http_client_injected = true;
+        }
+
+        return $this->http_client;
     }
 }
 
