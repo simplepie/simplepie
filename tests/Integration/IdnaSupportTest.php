@@ -65,8 +65,9 @@ class IdnaSupportTest extends TestCase
             // Support for algo26-matthias/idna-convert:^2
             $idnaConvert = new IdnaConvert();
 
-            $this->assertSame($expected, $idnaConvert->encode($encoded));
+            $this->assertSame($expected, $idnaConvert->decode($encoded));
         } else {
+            // No idna-convert library is available
             $this->assertSame($encoded, $encoded);
         }
     }

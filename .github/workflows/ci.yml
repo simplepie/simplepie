@@ -58,7 +58,7 @@ jobs:
           - php: '7.2'
             with: 'idna-convert-v2'
 
-    name: "PHP: ${{ matrix.php }}"
+    name: "PHP: ${{ matrix.php }} with ${{ matrix.with }}"
 
     steps:
       - name: Checkout code
