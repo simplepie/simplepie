@@ -1749,7 +1749,7 @@ class Misc
      * @param string $string Data to strip comments from
      * @return string Comment stripped string
      */
-    public static function uncomment_rfc822($string)
+    public static function uncomment_rfc822(string $string)
     {
         $string = (string) $string;
         $position = 0;
@@ -1906,7 +1906,6 @@ class Misc
      */
     public static function codepoint_to_utf8(int $codepoint)
     {
-        $codepoint = (int) $codepoint;
         if ($codepoint < 0) {
             return false;
         } elseif ($codepoint <= 0x7f) {

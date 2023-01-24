@@ -1368,7 +1368,10 @@ class SimplePie
         $this->sanitize->remove_div($enable);
     }
 
-    public function strip_htmltags(string $tags = '', $encode = null)
+    /**
+     * @param string|false $tags Set a list of tags to strip, or set emtpy string to use default tags or false, to strip nothing.
+     */
+    public function strip_htmltags($tags = '', $encode = null)
     {
         if ($tags === '') {
             $tags = $this->strip_htmltags;

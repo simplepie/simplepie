@@ -1115,9 +1115,9 @@ class Enclosure
                     $type = 'audio/x-ms-wma';
                     break;
 
-                    // Video mime-types
                 case '3gp':
                 case '3gpp':
+                    // Video mime-types
                     $type = 'video/3gpp';
                     break;
 
@@ -1178,8 +1178,8 @@ class Enclosure
                     $type = 'video/x-ms-wvx';
                     break;
 
-                    // Flash mime-types
                 case 'spl':
+                    // Flash mime-types
                     $type = 'application/futuresplash';
                     break;
 

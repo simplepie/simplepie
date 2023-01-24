@@ -905,7 +905,7 @@ class Item implements RegistryAware
      * @param int $key The enclosure that you want to return.  Remember that arrays begin with 0, not 1
      * @return \SimplePie\Enclosure|null
      */
-    public function get_enclosure(int $key = 0, $prefer = null)
+    public function get_enclosure(int $key = 0)
     {
         $enclosures = $this->get_enclosures();
         if (isset($enclosures[$key])) {
