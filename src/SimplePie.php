@@ -57,7 +57,6 @@ use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
-use SimplePie\HTTP\Response;
 
 /**
  * SimplePie
@@ -1784,15 +1783,16 @@ class SimplePie
                             $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
                         } catch (HttpException $th) {
                             $this->check_modified = false;
+
                             if ($this->force_cache_fallback) {
                                 $cache->set_data($cacheKey, $this->data, $this->cache_duration);
+
                                 return true;
                             }
-
-                            unset($file);
                         } finally {
                             $this->timeout = $orig_timeout;
                         }
+
                         $this->status_code = $file->get_status_code();
 
                         if ($file->get_status_code() === 304) {

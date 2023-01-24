@@ -73,6 +73,10 @@ final class FileClient implements Client
     /**
      * send a request and return the response
      *
+     * @param Client::METHOD_GET $method
+     * @param string $url
+     * @param string[] $headers
+     *
      * @throws HttpException if anything goes wrong requesting the data
      */
     public function request(string $method, string $url, array $headers = []): Response

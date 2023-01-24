@@ -45,6 +45,8 @@ declare(strict_types=1);
 
 namespace SimplePie\HTTP;
 
+use SimplePie\Exception\HttpException;
+
 /**
  * HTTP Client interface
  *
@@ -59,11 +61,9 @@ interface Client
     /**
      * send a request and return the response
      *
-     * @param string $method
+     * @param Client::METHOD_GET $method
      * @param string $url
-     * @param array $headers in the form string[]
-     *
-     * @return Response
+     * @param string[] $headers
      *
      * @throws HttpException if anything goes wrong requesting the data
      */
