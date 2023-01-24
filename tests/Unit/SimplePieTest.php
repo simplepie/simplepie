@@ -75,7 +75,7 @@ class SimplePieTest extends TestCase
      *
      * @param string $template
      */
-    private function createFeedWithTemplate($template, $data)
+    private function createFeedWithTemplate(string $template, $data)
     {
         if (!is_array($data)) {
             $data = [$data];

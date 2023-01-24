@@ -163,7 +163,7 @@ class Parser
      *
      * @param string $data Input data
      */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->data = $data;
         $this->data_length = strlen($this->data);
@@ -490,7 +490,7 @@ class Parser
      *
      * @return string
      */
-    public static function prepareHeaders($headers, $count = 1)
+    public static function prepareHeaders(string $headers, int $count = 1)
     {
         $data = explode("\r\n\r\n", $headers, $count);
         $data = array_pop($data);

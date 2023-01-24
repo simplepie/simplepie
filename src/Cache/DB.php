@@ -62,7 +62,7 @@ abstract class DB implements Base
      * @param \SimplePie\SimplePie $data
      * @return array First item is the serialized data for storage, second item is the unique ID for this item
      */
-    protected static function prepare_simplepie_object_for_cache($data)
+    protected static function prepare_simplepie_object_for_cache(\SimplePie\SimplePie $data)
     {
         $items = $data->get_items();
         $items_by_id = [];

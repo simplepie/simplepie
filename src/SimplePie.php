@@ -798,7 +798,7 @@ class SimplePie
      * @param \SimplePie\File &$file
      * @return bool True on success, false on failure
      */
-    public function set_file(&$file)
+    public function set_file(\SimplePie\File &$file)
     {
         if ($file instanceof \SimplePie\File) {
             $this->feed_url = $file->url;
@@ -882,7 +882,7 @@ class SimplePie
     /**
      * Set a PSR-16 implementation as cache
      *
-     * @param CacheInterface $psr16cache The PSR-16 cache implementation
+     * @param CacheInterface $cache The PSR-16 cache implementation
      *
      * @return void
      */
@@ -1459,7 +1459,7 @@ class SimplePie
     /**
      * Set the list of domains for which to force HTTPS.
      * @see \SimplePie\Sanitize::set_https_domains()
-     * @param array List of HTTPS domains. Example array('biz', 'example.com', 'example.org', 'www.example.net').
+     * @param array $domains List of HTTPS domains. Example array('biz', 'example.com', 'example.org', 'www.example.net').
      */
     public function set_https_domains(array $domains = [])
     {
@@ -1474,7 +1474,7 @@ class SimplePie
      * @param string|false $page Web-accessible path to the handler_image.php file.
      * @param string $qs The query string that the value should be passed to.
      */
-    public function set_image_handler($page = false, $qs = 'i')
+    public function set_image_handler($page = false, string $qs = 'i')
     {
         if ($page !== false) {
             $this->sanitize->set_image_handler($page . '?' . $qs . '=');
@@ -3087,7 +3087,7 @@ class SimplePie
      * @param array $args Arguments to the method
      * @return mixed
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args)
     {
         if (strpos($method, 'subscribe_') === 0) {
             trigger_error('subscribe_*() has been deprecated since SimplePie 1.3, implement the callback yourself', \E_USER_DEPRECATED);
@@ -3207,7 +3207,7 @@ class SimplePie
      *
      * @return DataCache
      */
-    private function get_cache($feed_url = ''): DataCache
+    private function get_cache(string $feed_url = ''): DataCache
     {
         if ($this->cache === null) {
             // @trigger_error(sprintf('Not providing as PSR-16 cache implementation is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);

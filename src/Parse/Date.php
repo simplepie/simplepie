@@ -638,7 +638,7 @@ class Date
      * @param string $date Date to parse
      * @return int Timestamp corresponding to date string, or false on failure
      */
-    public function parse($date)
+    public function parse(string $date)
     {
         foreach ($this->user as $method) {
             if (($returned = call_user_func($method, $date)) !== false) {
@@ -662,7 +662,7 @@ class Date
      * @access public
      * @param callable $callback
      */
-    public function add_callback($callback)
+    public function add_callback(callable $callback)
     {
         if (is_callable($callback)) {
             $this->user[] = $callback;

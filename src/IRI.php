@@ -149,7 +149,7 @@ class IRI
      * @param string $name Property name
      * @param mixed $value Property value
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         if (method_exists($this, 'set_' . $name)) {
             call_user_func([$this, 'set_' . $name], $value);
@@ -171,7 +171,7 @@ class IRI
      * @param string $name Property name
      * @return mixed
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         // isset() returns false for null, we don't want to do that
         // Also why we use array_key_exists below instead of isset()
@@ -214,7 +214,7 @@ class IRI
      * @param string $name Property name
      * @return bool
      */
-    public function __isset($name)
+    public function __isset(string $name)
     {
         return method_exists($this, 'get_' . $name) || isset($this->$name);
     }
@@ -224,7 +224,7 @@ class IRI
      *
      * @param string $name Property name
      */
-    public function __unset($name)
+    public function __unset(string $name)
     {
         if (method_exists($this, 'set_' . $name)) {
             call_user_func([$this, 'set_' . $name], '');
@@ -236,7 +236,7 @@ class IRI
      *
      * @param string $iri
      */
-    public function __construct($iri = null)
+    public function __construct(string $iri = null)
     {
         $this->set_iri($iri);
     }
@@ -324,7 +324,7 @@ class IRI
      * @param string $iri
      * @return array
      */
-    protected function parse_iri($iri)
+    protected function parse_iri(string $iri)
     {
         $iri = trim($iri, "\x20\x09\x0A\x0C\x0D");
         if (preg_match('/^((?P<scheme>[^:\/?#]+):)?(\/\/(?P<authority>[^\/?#]*))?(?P<path>[^?#]*)(\?(?P<query>[^#]*))?(#(?P<fragment>.*))?$/', $iri, $match)) {
@@ -356,7 +356,7 @@ class IRI
      * @param string $input
      * @return string
      */
-    protected function remove_dot_segments($input)
+    protected function remove_dot_segments(string $input)
     {
         $output = '';
         while (strpos($input, './') !== false || strpos($input, '/.') !== false || $input === '.' || $input === '..') {
@@ -405,7 +405,7 @@ class IRI
      * @param bool $iprivate Allow iprivate
      * @return string
      */
-    protected function replace_invalid_with_pct_encoding($string, $extra_chars, $iprivate = false)
+    protected function replace_invalid_with_pct_encoding(string $string, string $extra_chars, bool $iprivate = false)
     {
         // Normalize as many pct-encoded sections as possible
         $string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', [$this, 'remove_iunreserved_percent_encoded'], $string);
@@ -529,7 +529,7 @@ class IRI
      * @param array $match PCRE match
      * @return string Replacement
      */
-    protected function remove_iunreserved_percent_encoded($match)
+    protected function remove_iunreserved_percent_encoded(array $match)
     {
         // As we just have valid percent encoded sequences we can just explode
         // and ignore the first member of the returned array (an empty string).
@@ -709,10 +709,10 @@ class IRI
      * Set the entire IRI. Returns true on success, false on failure (if there
      * are any invalid characters).
      *
-     * @param string $iri
+     * @param string|null $iri
      * @return bool
      */
-    public function set_iri($iri, $clear_cache = false)
+    public function set_iri(?string $iri, $clear_cache = false)
     {
         static $cache;
         if ($clear_cache) {
@@ -769,10 +769,10 @@ class IRI
      * Set the scheme. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string $scheme
+     * @param string|null $scheme
      * @return bool
      */
-    public function set_scheme($scheme)
+    public function set_scheme(?string $scheme)
     {
         if ($scheme === null) {
             $this->scheme = null;
@@ -789,10 +789,10 @@ class IRI
      * Set the authority. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string $authority
+     * @param string|null $authority
      * @return bool
      */
-    public function set_authority($authority, $clear_cache = false)
+    public function set_authority(?string $authority, $clear_cache = false)
     {
         static $cache;
         if ($clear_cache) {
@@ -852,10 +852,10 @@ class IRI
     /**
      * Set the iuserinfo.
      *
-     * @param string $iuserinfo
+     * @param string|null $iuserinfo
      * @return bool
      */
-    public function set_userinfo($iuserinfo)
+    public function set_userinfo(?string $iuserinfo)
     {
         if ($iuserinfo === null) {
             $this->iuserinfo = null;
@@ -871,10 +871,10 @@ class IRI
      * Set the ihost. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string $ihost
+     * @param string|null $ihost
      * @return bool
      */
-    public function set_host($ihost)
+    public function set_host(?string $ihost)
     {
         if ($ihost === null) {
             $this->ihost = null;
@@ -915,7 +915,7 @@ class IRI
      * Set the port. Returns true on success, false on failure (if there are
      * any invalid characters).
      *
-     * @param string $port
+     * @param string|int|null $port
      * @return bool
      */
     public function set_port($port)
@@ -936,10 +936,10 @@ class IRI
     /**
      * Set the ipath.
      *
-     * @param string $ipath
+     * @param string|null $ipath
      * @return bool
      */
-    public function set_path($ipath, $clear_cache = false)
+    public function set_path(?string $ipath, $clear_cache = false)
     {
         static $cache;
         if ($clear_cache) {
@@ -969,10 +969,10 @@ class IRI
     /**
      * Set the iquery.
      *
-     * @param string $iquery
+     * @param string|null $iquery
      * @return bool
      */
-    public function set_query($iquery)
+    public function set_query(?string $iquery)
     {
         if ($iquery === null) {
             $this->iquery = null;
@@ -986,10 +986,10 @@ class IRI
     /**
      * Set the ifragment.
      *
-     * @param string $ifragment
+     * @param string|null $ifragment
      * @return bool
      */
-    public function set_fragment($ifragment)
+    public function set_fragment(?string $ifragment)
     {
         if ($ifragment === null) {
             $this->ifragment = null;

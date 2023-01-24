@@ -180,7 +180,7 @@ class Gzdecode
      * @param string $name
      * @param mixed $value
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         trigger_error("Cannot write property $name", E_USER_ERROR);
     }
@@ -190,7 +190,7 @@ class Gzdecode
      *
      * @param string $data
      */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->compressed_data = $data;
         $this->compressed_size = strlen($data);

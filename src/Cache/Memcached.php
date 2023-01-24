@@ -88,7 +88,7 @@ class Memcached implements Base
      * @param string $name Unique ID for the cache
      * @param Base::TYPE_FEED|Base::TYPE_IMAGE $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
      */
-    public function __construct($location, $name, $type)
+    public function __construct(string $location, string $name, $type)
     {
         $this->options = [
             'host'   => '127.0.0.1',

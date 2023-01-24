@@ -139,7 +139,7 @@ class Parser
      * @access public
      * @param string $data Input data
      */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->data = $data;
         $this->data_length = strlen($this->data);

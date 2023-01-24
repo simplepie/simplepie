@@ -88,7 +88,7 @@ class Author
      * @param string $link
      * @param string $email
      */
-    public function __construct($name = null, $link = null, $email = null)
+    public function __construct(string $name = null, string $link = null, string $email = null)
     {
         $this->name = $name;
         $this->link = $link;
