@@ -637,7 +637,7 @@ class Sanitize implements RegistryAware
      *
      * @return DataCache
      */
-    private function get_cache(string $image_url = '')
+    private function get_cache(string $image_url = ''): DataCache
     {
         if ($this->cache === null) {
             // @trigger_error(sprintf('Not providing as PSR-16 cache implementation is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);

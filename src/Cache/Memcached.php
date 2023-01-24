@@ -167,7 +167,7 @@ class Memcached implements Base
      * Set the last modified time and data to NativeMemcached
      * @return bool Success status
      */
-    private function setData($data)
+    private function setData($data): bool
     {
         if ($data !== false) {
             $this->cache->set($this->name . '_mtime', time(), (int)$this->options['extras']['timeout']);

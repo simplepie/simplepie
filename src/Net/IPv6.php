@@ -176,7 +176,7 @@ class IPv6
      * @param string $ip An IPv6 address
      * @return array [0] contains the IPv6 represented part, and [1] the IPv4 represented part
      */
-    private static function split_v6_v4(string $ip)
+    private static function split_v6_v4(string $ip): array
     {
         if (strpos($ip, '.') !== false) {
             $pos = strrpos($ip, ':');
