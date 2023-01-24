@@ -133,12 +133,14 @@ class Sniffer
      */
     public function text_or_binary()
     {
-        if (substr($this->file->get_body_content(), 0, 2) === "\xFE\xFF"
-            || substr($this->file->get_body_content(), 0, 2) === "\xFF\xFE"
-            || substr($this->file->get_body_content(), 0, 4) === "\x00\x00\xFE\xFF"
-            || substr($this->file->get_body_content(), 0, 3) === "\xEF\xBB\xBF") {
+        $body = $this->file->get_body_content();
+
+        if (substr($body, 0, 2) === "\xFE\xFF"
+            || substr($body, 0, 2) === "\xFF\xFE"
+            || substr($body, 0, 4) === "\x00\x00\xFE\xFF"
+            || substr($body, 0, 3) === "\xEF\xBB\xBF") {
             return 'text/plain';
-        } elseif (preg_match('/[\x00-\x08\x0E-\x1A\x1C-\x1F]/', $this->file->get_body_content())) {
+        } elseif (preg_match('/[\x00-\x08\x0E-\x1A\x1C-\x1F]/', $body)) {
             return 'application/octet-stream';
         }
 
@@ -152,25 +154,27 @@ class Sniffer
      */
     public function unknown()
     {
-        $ws = strspn($this->file->get_body_content(), "\x09\x0A\x0B\x0C\x0D\x20");
-        if (strtolower(substr($this->file->get_body_content(), $ws, 14)) === '<!doctype html'
-            || strtolower(substr($this->file->get_body_content(), $ws, 5)) === '<html'
-            || strtolower(substr($this->file->get_body_content(), $ws, 7)) === '<script') {
+        $body = $this->file->get_body_content();
+        $ws = strspn($body, "\x09\x0A\x0B\x0C\x0D\x20");
+
+        if (strtolower(substr($body, $ws, 14)) === '<!doctype html'
+            || strtolower(substr($body, $ws, 5)) === '<html'
+            || strtolower(substr($body, $ws, 7)) === '<script') {
             return 'text/html';
-        } elseif (substr($this->file->get_body_content(), 0, 5) === '%PDF-') {
+        } elseif (substr($body, 0, 5) === '%PDF-') {
             return 'application/pdf';
-        } elseif (substr($this->file->get_body_content(), 0, 11) === '%!PS-Adobe-') {
+        } elseif (substr($body, 0, 11) === '%!PS-Adobe-') {
             return 'application/postscript';
-        } elseif (substr($this->file->get_body_content(), 0, 6) === 'GIF87a'
-            || substr($this->file->get_body_content(), 0, 6) === 'GIF89a') {
+        } elseif (substr($body, 0, 6) === 'GIF87a'
+            || substr($body, 0, 6) === 'GIF89a') {
             return 'image/gif';
-        } elseif (substr($this->file->get_body_content(), 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
+        } elseif (substr($body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
             return 'image/png';
-        } elseif (substr($this->file->get_body_content(), 0, 3) === "\xFF\xD8\xFF") {
+        } elseif (substr($body, 0, 3) === "\xFF\xD8\xFF") {
             return 'image/jpeg';
-        } elseif (substr($this->file->get_body_content(), 0, 2) === "\x42\x4D") {
+        } elseif (substr($body, 0, 2) === "\x42\x4D") {
             return 'image/bmp';
-        } elseif (substr($this->file->get_body_content(), 0, 4) === "\x00\x00\x01\x00") {
+        } elseif (substr($body, 0, 4) === "\x00\x00\x01\x00") {
             return 'image/vnd.microsoft.icon';
         }
 
@@ -184,16 +188,18 @@ class Sniffer
      */
     public function image()
     {
-        if (substr($this->file->get_body_content(), 0, 6) === 'GIF87a'
-            || substr($this->file->get_body_content(), 0, 6) === 'GIF89a') {
+        $body = $this->file->get_body_content();
+
+        if (substr($body, 0, 6) === 'GIF87a'
+            || substr($body, 0, 6) === 'GIF89a') {
             return 'image/gif';
-        } elseif (substr($this->file->get_body_content(), 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
+        } elseif (substr($body, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
             return 'image/png';
-        } elseif (substr($this->file->get_body_content(), 0, 3) === "\xFF\xD8\xFF") {
+        } elseif (substr($body, 0, 3) === "\xFF\xD8\xFF") {
             return 'image/jpeg';
-        } elseif (substr($this->file->get_body_content(), 0, 2) === "\x42\x4D") {
+        } elseif (substr($body, 0, 2) === "\x42\x4D") {
             return 'image/bmp';
-        } elseif (substr($this->file->get_body_content(), 0, 4) === "\x00\x00\x01\x00") {
+        } elseif (substr($body, 0, 4) === "\x00\x00\x01\x00") {
             return 'image/vnd.microsoft.icon';
         }
 
@@ -207,16 +213,17 @@ class Sniffer
      */
     public function feed_or_html()
     {
-        $len = strlen($this->file->get_body_content());
-        $pos = strspn($this->file->get_body_content(), "\x09\x0A\x0D\x20\xEF\xBB\xBF");
+        $body = $this->file->get_body_content();
+        $len = strlen($body);
+        $pos = strspn($body, "\x09\x0A\x0D\x20\xEF\xBB\xBF");
 
         while ($pos < $len) {
-            switch ($this->file->get_body_content()[$pos]) {
+            switch ($body[$pos]) {
                 case "\x09":
                 case "\x0A":
                 case "\x0D":
                 case "\x20":
-                    $pos += strspn($this->file->get_body_content(), "\x09\x0A\x0D\x20", $pos);
+                    $pos += strspn($body, "\x09\x0A\x0D\x20", $pos);
                     continue 2;
 
                 case '<':
@@ -227,29 +234,29 @@ class Sniffer
                     return 'text/html';
             }
 
-            if (substr($this->file->get_body_content(), $pos, 3) === '!--') {
+            if (substr($body, $pos, 3) === '!--') {
                 $pos += 3;
-                if ($pos < $len && ($pos = strpos($this->file->get_body_content(), '-->', $pos)) !== false) {
+                if ($pos < $len && ($pos = strpos($body, '-->', $pos)) !== false) {
                     $pos += 3;
                 } else {
                     return 'text/html';
                 }
-            } elseif (substr($this->file->get_body_content(), $pos, 1) === '!') {
-                if ($pos < $len && ($pos = strpos($this->file->get_body_content(), '>', $pos)) !== false) {
+            } elseif (substr($body, $pos, 1) === '!') {
+                if ($pos < $len && ($pos = strpos($body, '>', $pos)) !== false) {
                     $pos++;
                 } else {
                     return 'text/html';
                 }
-            } elseif (substr($this->file->get_body_content(), $pos, 1) === '?') {
-                if ($pos < $len && ($pos = strpos($this->file->get_body_content(), '?>', $pos)) !== false) {
+            } elseif (substr($body, $pos, 1) === '?') {
+                if ($pos < $len && ($pos = strpos($body, '?>', $pos)) !== false) {
                     $pos += 2;
                 } else {
                     return 'text/html';
                 }
-            } elseif (substr($this->file->get_body_content(), $pos, 3) === 'rss'
-                || substr($this->file->get_body_content(), $pos, 7) === 'rdf:RDF') {
+            } elseif (substr($body, $pos, 3) === 'rss'
+                || substr($body, $pos, 7) === 'rdf:RDF') {
                 return 'application/rss+xml';
-            } elseif (substr($this->file->get_body_content(), $pos, 4) === 'feed') {
+            } elseif (substr($body, $pos, 4) === 'feed') {
                 return 'application/atom+xml';
             } else {
                 return 'text/html';
