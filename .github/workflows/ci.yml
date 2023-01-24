@@ -73,11 +73,11 @@ jobs:
           tools: none
 
       - name: "Install idna-convert v3"
-        if: ${{ matrix.with = 'idna-convert-v3' }}
+        if: ${{ matrix.with == 'idna-convert-v3' }}
         run: "composer require --dev algo26-matthias/idna-convert:^3"
 
       - name: "Install idna-convert v2"
-        if: ${{ matrix.with = 'idna-convert-v2' }}
+        if: ${{ matrix.with == 'idna-convert-v2' }}
         run: "composer require --dev algo26-matthias/idna-convert:^2"
 
       # Install dependencies and handle caching in one go.
