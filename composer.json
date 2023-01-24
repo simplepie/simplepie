@@ -39,6 +39,7 @@
         "ext-iconv": "",
         "ext-intl": "",
         "ext-mbstring": "",
+        "algo26-matthias/idna-convert": "IdnaConvert allows you to convert internationalized domain names",
         "mf2/mf2": "Microformat module that allows for parsing HTML for microformats"
     },
     "autoload": {
