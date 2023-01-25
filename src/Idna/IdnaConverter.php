@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -43,43 +41,44 @@ declare(strict_types=1);
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-namespace SimplePie\Tests\Integration;
+namespace SimplePie\Idna;
 
 use Algo26\IdnaConvert\IdnaConvert;
 use Algo26\IdnaConvert\ToUnicode;
-use PHPUnit\Framework\TestCase;
 
-class IdnaSupportTest extends TestCase
+/**
+ * Convert internationalized domain names using idna-convert
+ *
+ * @package SimplePie
+ * @subpackage Idna
+ * @internal
+ */
+final class IdnaConverter implements IdnaDomainFilter
 {
     /**
-     * @dataProvider getIdnaData
+     * Convert an internationalized domain name.
+     *
+     * e.g. from `xn--mller-kva` to `müller`
+     *
+     * @param string $encoded The encoded domain name
+     *
+     * @return string the decoded domain name
      */
-    public function test_idna_support(string $encoded, string $expected): void
+    public function filter(string $encoded): string
     {
         if (class_exists(ToUnicode::class)) {
             // Support for algo26-matthias/idna-convert:^3
             $idnaConvert = new ToUnicode();
 
-            $this->assertSame($expected, $idnaConvert->convert($encoded));
+            return $idnaConvert->convert($encoded);
         } else if (class_exists(IdnaConvert::class)) {
             // Support for algo26-matthias/idna-convert:^2
             $idnaConvert = new IdnaConvert();
 
-            $this->assertSame($expected, $idnaConvert->decode($encoded));
+            return $idnaConvert->decode($encoded);
         } else {
             // No idna-convert library is available
-            $this->assertSame($encoded, $encoded);
+            return $encoded;
         }
-    }
-
-    public function getIdnaData(): array
-    {
-        return [
-            ['', ''],
-            ['xn--mller-kva', 'müller'],
-            ['xn--weienbach-i1a', 'weißenbach'],
-            ['xn----9mcj9fole', 'يوم-جيد'],
-            ['xn----2hckbod3a', 'יום-טוב'],
-        ];
     }
 }
