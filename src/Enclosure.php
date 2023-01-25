@@ -45,8 +45,6 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
-use SimplePie\Idna\IdnaDomainFilter;
-
 /**
  * Handles everything related to enclosures (including Media RSS and iTunes RSS)
  *
@@ -54,10 +52,13 @@ use SimplePie\Idna\IdnaDomainFilter;
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_enclosure_class()}
  *
+ * @uses idna_convert If available, this will convert an IDN
+ * @see https://github.com/algo26-matthias/idna-convert
+ *
  * @package SimplePie
  * @subpackage API
  */
-class Enclosure implements RegistryAware
+class Enclosure
 {
     /**
      * @var string
@@ -226,9 +227,6 @@ class Enclosure implements RegistryAware
      *
      * For documentation on all the parameters, see the corresponding
      * properties and their accessors
-     *
-     * @uses idna_convert If available, this will convert an IDN
-     * @see https://github.com/algo26-matthias/idna-convert
      */
     public function __construct($link = null, $type = null, $length = null, $javascript = null, $bitrate = null, $captions = null, $categories = null, $channels = null, $copyright = null, $credits = null, $description = null, $duration = null, $expression = null, $framerate = null, $hashes = null, $height = null, $keywords = null, $lang = null, $medium = null, $player = null, $ratings = null, $restrictions = null, $samplingrate = null, $thumbnails = null, $title = null, $width = null)
     {
@@ -260,30 +258,6 @@ class Enclosure implements RegistryAware
 
         // Needs to load last
         $this->handler = $this->get_handler();
-    }
-
-    /**
-     * Set the Registry into the class
-     *
-     * @param Registry $registry
-     *
-     * @return void
-     */
-    public function set_registry(Registry $registry): void
-    {
-        $idnaConverter = $registry->create(IdnaDomainFilter::class);
-        $parsed = $registry->call(Misc::class, 'parse_url', [$this->link]);
-        $authority = $idnaConverter->filter($parsed['authority']);
-
-        if ($authority !== $parsed['authority']) {
-            $this->link = $registry->call(Misc::class, 'compress_parse_url', [
-                $parsed['scheme'],
-                $authority,
-                $parsed['path'],
-                $parsed['query'],
-                $parsed['fragment'],
-            ]);
-        }
     }
 
     /**

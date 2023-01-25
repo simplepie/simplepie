@@ -45,6 +45,8 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use SimplePie\Idna\IdnaDomainFilter;
+
 /**
  * Manages all item-related data
  *
@@ -1867,7 +1869,7 @@ class Item implements RegistryAware
                                 $title = $title_parent;
                             }
 
-                            $this->data['enclosures'][] = $this->registry->create(Enclosure::class, [$url, $type, $length, null, $bitrate, $captions, $categories, $channels, $copyrights, $credits, $description, $duration, $expression, $framerate, $hashes, $height, $keywords, $lang, $medium, $player, $ratings, $restrictions, $samplingrate, $thumbnails, $title, $width]);
+                            $this->data['enclosures'][] = $this->create_enclosure($url, $type, $length, $bitrate, $captions, $categories, $channels, $copyrights, $credits, $description, $duration, $expression, $framerate, $hashes, $height, $keywords, $lang, $medium, $player, $ratings, $restrictions, $samplingrate, $thumbnails, $title, $width);
                         }
                     }
                 }
@@ -2175,7 +2177,7 @@ class Item implements RegistryAware
                             $title = $title_parent;
                         }
 
-                        $this->data['enclosures'][] = $this->registry->create(Enclosure::class, [$url, $type, $length, null, $bitrate, $captions, $categories, $channels, $copyrights, $credits, $description, $duration, $expression, $framerate, $hashes, $height, $keywords, $lang, $medium, $player, $ratings, $restrictions, $samplingrate, $thumbnails, $title, $width]);
+                        $this->data['enclosures'][] = $this->create_enclosure($url, $type, $length, $bitrate, $captions, $categories, $channels, $copyrights, $credits, $description, $duration, $expression, $framerate, $hashes, $height, $keywords, $lang, $medium, $player, $ratings, $restrictions, $samplingrate, $thumbnails, $title, $width);
                     }
                 }
             }
@@ -2212,7 +2214,7 @@ class Item implements RegistryAware
                     }
 
                     // Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-                    $this->data['enclosures'][] = $this->registry->create(Enclosure::class, [$url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title, $width]);
+                    $this->data['enclosures'][] = $this->create_enclosure($url, $type, $length, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title, $width);
                 }
             }
 
@@ -2243,7 +2245,7 @@ class Item implements RegistryAware
                     }
 
                     // Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-                    $this->data['enclosures'][] = $this->registry->create(Enclosure::class, [$url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width]);
+                    $this->data['enclosures'][] = $this->create_enclosure($url, $type, $length, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
                 }
             }
 
@@ -2275,13 +2277,13 @@ class Item implements RegistryAware
                     }
 
                     // Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-                    $this->data['enclosures'][] = $this->registry->create(Enclosure::class, [$url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width]);
+                    $this->data['enclosures'][] = $this->create_enclosure($url, $type, $length, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
                 }
             }
 
             if (sizeof($this->data['enclosures']) === 0 && ($url || $type || $length || $bitrate || $captions_parent || $categories_parent || $channels || $copyrights_parent || $credits_parent || $description_parent || $duration_parent || $expression || $framerate || $hashes_parent || $height || $keywords_parent || $lang || $medium || $player_parent || $ratings_parent || $restrictions_parent || $samplingrate || $thumbnails_parent || $title_parent || $width)) {
                 // Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
-                $this->data['enclosures'][] = $this->registry->create(Enclosure::class, [$url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width]);
+                $this->data['enclosures'][] = $this->create_enclosure($url, $type, $length, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width);
             }
 
             $this->data['enclosures'] = array_values(array_unique($this->data['enclosures']));
@@ -2354,6 +2356,77 @@ class Item implements RegistryAware
         }
 
         return null;
+    }
+
+    private function create_enclosure(
+        $url,
+        $type,
+        $length,
+        $bitrate,
+        $captions_parent,
+        $categories_parent,
+        $channels,
+        $copyrights_parent,
+        $credits_parent,
+        $description_parent,
+        $duration_parent,
+        $expression,
+        $framerate,
+        $hashes_parent,
+        $height,
+        $keywords_parent,
+        $lang,
+        $medium,
+        $player_parent,
+        $ratings_parent,
+        $restrictions_parent,
+        $samplingrate,
+        $thumbnails_parent,
+        $title_parent,
+        $width
+    ): Enclosure {
+        $idnaConverter = $this->registry->create(IdnaDomainFilter::class);
+        $parsed = $this->registry->call(Misc::class, 'parse_url', [$url]);
+        $authority = $idnaConverter->filter($parsed['authority']);
+
+        if ($authority !== $parsed['authority']) {
+            $url = $this->registry->call(Misc::class, 'compress_parse_url', [
+                $parsed['scheme'],
+                $authority,
+                $parsed['path'],
+                $parsed['query'],
+                $parsed['fragment'],
+            ]);
+        }
+
+        return $this->registry->create(Enclosure::class, [
+            $url,
+            $type,
+            $length,
+            null,
+            $bitrate,
+            $captions_parent,
+            $categories_parent,
+            $channels,
+            $copyrights_parent,
+            $credits_parent,
+            $description_parent,
+            $duration_parent,
+            $expression,
+            $framerate,
+            $hashes_parent,
+            $height,
+            $keywords_parent,
+            $lang,
+            $medium,
+            $player_parent,
+            $ratings_parent,
+            $restrictions_parent,
+            $samplingrate,
+            $thumbnails_parent,
+            $title_parent,
+            $width,
+        ]);
     }
 }
 
