@@ -46,6 +46,8 @@ declare(strict_types=1);
 namespace SimplePie;
 
 use SimplePie\Content\Type\Sniffer;
+use SimplePie\Idna\IdnaConverter;
+use SimplePie\Idna\IdnaDomainFilter;
 use SimplePie\Parse\Date;
 use SimplePie\XML\Declaration\Parser as DeclarationParser;
 
@@ -85,6 +87,7 @@ class Registry
         Misc::class => Misc::class,
         DeclarationParser::class => DeclarationParser::class,
         Date::class => Date::class,
+        IdnaDomainFilter::class => IdnaConverter::class,
     ];
 
     /**

@@ -45,6 +45,8 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use SimplePie\Idna\IdnaDomainFilter;
+
 /**
  * Handles everything related to enclosures (including Media RSS and iTunes RSS)
  *
@@ -55,7 +57,7 @@ namespace SimplePie;
  * @package SimplePie
  * @subpackage API
  */
-class Enclosure
+class Enclosure implements RegistryAware
 {
     /**
      * @var string
@@ -226,6 +228,7 @@ class Enclosure
      * properties and their accessors
      *
      * @uses idna_convert If available, this will convert an IDN
+     * @see https://github.com/algo26-matthias/idna-convert
      */
     public function __construct($link = null, $type = null, $length = null, $javascript = null, $bitrate = null, $captions = null, $categories = null, $channels = null, $copyright = null, $credits = null, $description = null, $duration = null, $expression = null, $framerate = null, $hashes = null, $height = null, $keywords = null, $lang = null, $medium = null, $player = null, $ratings = null, $restrictions = null, $samplingrate = null, $thumbnails = null, $title = null, $width = null)
     {
@@ -255,12 +258,32 @@ class Enclosure
         $this->type = $type;
         $this->width = $width;
 
-        if (class_exists('idna_convert')) {
-            $idn = new \idna_convert();
-            $parsed = \SimplePie\Misc::parse_url($link);
-            $this->link = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
+        // Needs to load last
+        $this->handler = $this->get_handler();
+    }
+
+    /**
+     * Set the Registry into the class
+     *
+     * @param Registry $registry
+     *
+     * @return void
+     */
+    public function set_registry(Registry $registry): void
+    {
+        $idnaConverter = $registry->create(IdnaDomainFilter::class);
+        $parsed = $registry->call(Misc::class, 'parse_url', [$this->link]);
+        $authority = $idnaConverter->filter($parsed['authority']);
+
+        if ($authority !== $parsed['authority']) {
+            $this->link = $registry->call(Misc::class, 'compress_parse_url', [
+                $parsed['scheme'],
+                $authority,
+                $parsed['path'],
+                $parsed['query'],
+                $parsed['fragment'],
+            ]);
         }
-        $this->handler = $this->get_handler(); // Needs to load last
     }
 
     /**

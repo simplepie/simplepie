@@ -72,6 +72,11 @@ jobs:
           coverage: none
           tools: none
 
+      # Install dependencies and handle caching in one go.
+      # @link https://github.com/marketplace/actions/install-php-dependencies-with-composer
+      - name: "Install Composer dependencies"
+        uses: "ramsey/composer-install@v2"
+
       - name: "Install idna-convert v3"
         if: ${{ matrix.with == 'idna-convert-v3' }}
         run: "composer require --dev algo26-matthias/idna-convert:^3"
@@ -79,11 +84,6 @@ jobs:
       - name: "Install idna-convert v2"
         if: ${{ matrix.with == 'idna-convert-v2' }}
         run: "composer require --dev algo26-matthias/idna-convert:^2"
-
-      # Install dependencies and handle caching in one go.
-      # @link https://github.com/marketplace/actions/install-php-dependencies-with-composer
-      - name: "Install Composer dependencies"
-        uses: "ramsey/composer-install@v2"
 
       - name: Run unit tests
         run: composer test
