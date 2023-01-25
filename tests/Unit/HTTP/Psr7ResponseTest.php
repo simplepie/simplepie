@@ -20,7 +20,7 @@ class Psr7ResponseTest extends TestCase
         $this->assertInstanceOf(Response::class, new Psr7Response($this->createMock(ResponseInterface::class), '', ''));
     }
 
-    public function createPsr7Response(): Psr7Response
+    public function getResponseData(): iterable
     {
         $stream = $this->createMock(StreamInterface::class);
         $stream->method('__toString')->willReturn('<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" />');
@@ -42,111 +42,122 @@ class Psr7ResponseTest extends TestCase
             ['X-Custom-Header', ''],
         ]);
 
-        return new Psr7Response(
+        yield [new Psr7Response(
             $response,
             'https://example.com',
             'https://example.com/feed.xml'
-        );
+        )];
     }
 
-    public function testGetPermanentUriReturnsString(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetPermanentUriReturnsString(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             'https://example.com',
             $response->get_permanent_uri()
         );
     }
 
-    public function testGetFinalRequestedUriReturnsString(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetRequestedUriReturnsString(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             'https://example.com/feed.xml',
             $response->get_final_requested_uri()
         );
     }
 
-    public function testGetStatusCodeReturnsInt(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetStatusCodeReturnsInt(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             200,
             $response->get_status_code()
         );
     }
 
-    public function testGetHeadersReturnsArray(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetHeadersReturnsArray(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             ['content-type' => ['application/atom+xml']],
             $response->get_headers()
         );
     }
 
-    public function testHasHeadersReturnsTrue(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testHasHeadersReturnsTrue(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertTrue($response->has_header('Content-Type'));
     }
 
-    public function testHasHeadersReturnsFalse(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testHasHeadersReturnsFalse(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertFalse($response->has_header('X-Custom-Header'));
     }
 
-    public function testGetHeaderReturnsArray(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetHeaderReturnsArray(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             ['application/atom+xml'],
             $response->get_header('CONTENT-TYPE')
         );
     }
 
-    public function testGetHeaderReturnsEmptyArray(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetHeaderReturnsEmptyArray(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             [],
             $response->get_header('X-Custom-Header')
         );
     }
 
-    public function testGetHeaderLineReturnsString(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetHeaderLineReturnsString(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             'application/atom+xml',
             $response->get_header_line('content-Type')
         );
     }
 
-    public function testGetHeaderLineReturnsEmptyString(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetHeaderLineReturnsEmptyString(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             '',
             $response->get_header_line('X-Custom-Header')
         );
     }
 
-    public function testGetBodyContentReturnsString(): void
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testGetBodyContentReturnsString(Psr7Response $response): void
     {
-        $response = $this->createPsr7Response();
-
         $this->assertSame(
             '<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" />',
             $response->get_body_content()
