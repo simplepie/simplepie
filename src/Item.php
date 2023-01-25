@@ -2358,6 +2358,10 @@ class Item implements RegistryAware
         return null;
     }
 
+    /**
+     * @uses idna_convert If available, this will convert an IDN in $url
+     * @see https://github.com/algo26-matthias/idna-convert
+     */
     private function create_enclosure(
         $url,
         $type,

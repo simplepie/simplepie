@@ -96,6 +96,7 @@ class RegistryTest extends TestCase
             ['SimplePie\Misc', 'SimplePie\Misc'],
             ['SimplePie\XML\Declaration\Parser', 'SimplePie\XML\Declaration\Parser'],
             ['SimplePie\Parse\Date', 'SimplePie\Parse\Date'],
+            ['SimplePie\Idna\IdnaDomainFilter', 'SimplePie\Idna\IdnaConverter'],
             // Legacy type names
             ['Cache', 'SimplePie\Cache'],
             ['Locator', 'SimplePie\Locator'],

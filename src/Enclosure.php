@@ -52,9 +52,6 @@ namespace SimplePie;
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_enclosure_class()}
  *
- * @uses idna_convert If available, this will convert an IDN
- * @see https://github.com/algo26-matthias/idna-convert
- *
  * @package SimplePie
  * @subpackage API
  */
