@@ -271,6 +271,7 @@ class File implements Response
                 $this->success = false;
             } else {
                 $this->body = trim($filebody);
+                $this->status_code = 200;
             }
         }
     }
