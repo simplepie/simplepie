@@ -45,11 +45,13 @@ declare(strict_types=1);
 
 namespace SimplePie\HTTP;
 
+use InvalidArgumentException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\Exception\HttpException;
+use Throwable;
 
 /**
  * HTTP Client based on PSR-18 and PSR-17 implementations
@@ -85,6 +87,23 @@ final class Psr18Client implements Client
      * @throws HttpException if anything goes wrong requesting the data
      */
     public function request(string $method, string $url, array $headers = []): Response
+    {
+        if ($method !== self::METHOD_GET) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($method) only supports method "%s".',
+                __METHOD__,
+                self::METHOD_GET
+            ), 1);
+        }
+
+        if (preg_match('/^http(s)?:\/\//i', $url)) {
+            return $this->requestUrl($method, $url, $headers);
+        }
+
+        return $this->requestLocalFile($url);
+    }
+
+    private function requestUrl(string $method, string $url, array $headers): Response
     {
         $permanentUrl = $url;
         $requestedUrl = $url;
@@ -131,5 +150,20 @@ final class Psr18Client implements Client
         } while ($followRedirect);
 
         return new Psr7Response($response, $permanentUrl, $requestedUrl);
+    }
+
+    private function requestLocalFile(string $path): Response
+    {
+        try {
+            $raw = file_get_contents($path);
+        } catch (Throwable $th) {
+            throw new HttpException($th->getMessage(), $th->getCode(), $th);
+        }
+
+        if ($raw === false) {
+            throw new HttpException('file_get_contents() could not read the file', 1);
+        }
+
+        return new RawTextResponse($raw, $path);
     }
 }
