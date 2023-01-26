@@ -17,31 +17,24 @@ namespace SimplePie\HTTP;
  */
 final class RawTextResponse implements Response
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $raw_text;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $permanent_url;
 
-    /**
-     * @var string
-     */
-    private $requested_url;
+    /** @var string */
+    private $final_requested_url;
 
     public function __construct(string $raw_text, string $filepath)
     {
         $this->raw_text = $raw_text;
         $this->permanent_url = $filepath;
-        $this->requested_url = $filepath;
+        $this->final_requested_url = $filepath;
     }
 
     /**
-     * Return the string representation of the permanent URI of the requested resource
-     * (the first location after a prefix of (only) permanent redirects).
+     * Return the string representation as a URI reference.
      *
      * Depending on which components of the URI are present, the resulting
      * string is either a full URI or relative reference according to RFC 3986,
@@ -61,6 +54,7 @@ final class RawTextResponse implements Response
      * - If a fragment is present, it MUST be prefixed by "#".
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     * @return string the original (first requested) URL before following redirects (expect 301)
      */
     public function get_permanent_uri(): string
     {
@@ -68,7 +62,7 @@ final class RawTextResponse implements Response
     }
 
     /**
-     * Return the string representation of the final requested URL after following all redirects.
+     * Return the string representation as a URI reference.
      *
      * Depending on which components of the URI are present, the resulting
      * string is either a full URI or relative reference according to RFC 3986,
@@ -88,10 +82,11 @@ final class RawTextResponse implements Response
      * - If a fragment is present, it MUST be prefixed by "#".
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     * @return string the final requested url after following redirects
      */
     public function get_final_requested_uri(): string
     {
-        return $this->requested_url;
+        return $this->final_requested_url;
     }
 
     /**
@@ -124,6 +119,9 @@ final class RawTextResponse implements Response
      *             header(sprintf('%s: %s', $name, $value), false);
      *         }
      *     }
+     *
+     * While header names are not case-sensitive, get_headers() will preserve the
+     * exact case in which headers were originally specified.
      *
      * @return string[][] Returns an associative array of the message's headers.
      *     Each key MUST be a header name, and each value MUST be an array of

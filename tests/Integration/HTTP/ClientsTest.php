@@ -8,9 +8,13 @@ declare(strict_types=1);
 namespace SimplePie\Tests\Integration\HTTP;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
 use SimplePie\Registry;
 
@@ -20,6 +24,17 @@ class ClientsTest extends TestCase
     {
         $this->runTestsWithClientGetContentOfLocalFile(
             new FileClient(new Registry())
+        );
+    }
+
+    public function testPrs18ClientGetContentOfLocalFile(): void
+    {
+        $this->runTestsWithClientGetContentOfLocalFile(
+            new Psr18Client(
+                $this->createMock(ClientInterface::class),
+                $this->createMock(RequestFactoryInterface::class),
+                $this->createMock(UriFactoryInterface::class)
+            )
         );
     }
 
@@ -41,6 +56,17 @@ class ClientsTest extends TestCase
     {
         $this->runTestWithClientThrowsHttpException(
             new FileClient(new Registry())
+        );
+    }
+
+    public function testPsr18ClientThrowsHttpException(): void
+    {
+        $this->runTestWithClientThrowsHttpException(
+            new Psr18Client(
+                $this->createMock(ClientInterface::class),
+                $this->createMock(RequestFactoryInterface::class),
+                $this->createMock(UriFactoryInterface::class)
+            )
         );
     }
 
