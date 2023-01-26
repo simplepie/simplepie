@@ -87,7 +87,6 @@ class LocatorTest extends TestCase
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
-        $data->parsed_headers['content-type'] = [$mime];
 
         $locator = new Locator($data, 0, null, false);
 
@@ -103,7 +102,6 @@ class LocatorTest extends TestCase
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
-        $data->parsed_headers['content-type'] = ['application/pdf'];
 
         $locator = new Locator($data, 0, null, false);
 
@@ -134,7 +132,6 @@ class LocatorTest extends TestCase
 
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'text/html';
-        $data->parsed_headers['content-type'] = ['text/html'];
         $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
         $registry = new Registry();
@@ -152,18 +149,14 @@ class LocatorTest extends TestCase
      * Tests are used under the LGPL license, see file for license
      * information
      */
-    public function firefoxTestDataProvider()
+    public function firefoxTestDataProvider(): iterable
     {
-        $data = [
-            [new File(dirname(__DIR__) . '/data/fftests.html')]
-        ];
-        foreach ($data as &$row) {
-            $row[0]->headers = ['content-type' => 'text/html'];
-            $row[0]->method = SimplePie::FILE_SOURCE_REMOTE;
-            $row[0]->url = 'http://example.com/';
-        }
+        $data = new File(dirname(__DIR__) . '/data/fftests.html');
+        $data->headers = ['content-type' => 'text/html'];
+        $data->method = SimplePie::FILE_SOURCE_REMOTE;
+        $data->url = 'http://example.com/';
 
-        return $data;
+        yield [$data];
     }
 
     /**
