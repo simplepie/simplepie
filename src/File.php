@@ -256,22 +256,6 @@ class File implements Response
                 $this->success = false;
             }
         }
-
-        foreach ($this->headers as $name => $header) {
-            if (! is_array($header)) {
-                if (strpos($header, ',') === false) {
-                    $header = [$header];
-                } else {
-                    $header_lines = explode(',', $header);
-                    $header = [];
-                    foreach ($header_lines as $header_line) {
-                        $header[] = trim($header_line);
-                    }
-                }
-            }
-
-            $this->parsed_headers[strtolower($name)] = $header;
-        }
     }
 
     /**
@@ -370,7 +354,13 @@ class File implements Response
      */
     public function get_headers(): array
     {
-        return $this->parsed_headers;
+        $headers = [];
+
+        foreach (array_keys($this->headers) as $name) {
+            $headers[$name] = $this->get_from_headers($name);
+        }
+
+        return $headers;
     }
 
     /**
@@ -383,7 +373,7 @@ class File implements Response
      */
     public function has_header(string $name): bool
     {
-        return array_key_exists(strtolower($name), $this->parsed_headers);
+        return $this->get_from_headers($name) !== [];
     }
 
     /**
@@ -402,11 +392,7 @@ class File implements Response
      */
     public function get_header(string $name): array
     {
-        if (array_key_exists(strtolower($name), $this->parsed_headers)) {
-            return $this->parsed_headers[strtolower($name)];
-        }
-
-        return [];
+        return $this->get_from_headers($name);
     }
 
     /**
@@ -430,11 +416,7 @@ class File implements Response
      */
     public function get_header_line(string $name): string
     {
-        if (array_key_exists(strtolower($name), $this->parsed_headers)) {
-            return implode(', ', $this->parsed_headers[strtolower($name)]);
-        }
-
-        return '';
+        return implode(', ', $this->get_from_headers($name));
     }
 
     /**
@@ -445,6 +427,29 @@ class File implements Response
     public function get_body_content(): string
     {
         return (string) $this->body;
+    }
+
+    private function get_from_headers(string $name): array
+    {
+        if (!array_key_exists(strtolower($name), $this->headers)) {
+            return [];
+        }
+
+        $header = $this->headers[strtolower($name)];
+
+        if (! is_array($header)) {
+            if (strpos($header, ',') === false) {
+                $header = [$header];
+            } else {
+                $header_lines = explode(',', $header);
+                $header = [];
+                foreach ($header_lines as $header_line) {
+                    $header[] = trim($header_line);
+                }
+            }
+        }
+
+        return $header;
     }
 }
 

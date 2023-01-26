@@ -1880,7 +1880,9 @@ class SimplePie
                     if ($microformats) {
                         if ($hub = $locate->get_rel_link('hub')) {
                             $self = $locate->get_rel_link('self');
-                            $this->store_links($file, $hub, $self);
+                            if ($file instanceof File) {
+                                $this->store_links($file, $hub, $self);
+                            }
                         }
                         // Push the current file onto all_discovered feeds so the user can
                         // be shown this as one of the options.
