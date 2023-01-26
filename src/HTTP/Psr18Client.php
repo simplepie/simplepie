@@ -29,6 +29,9 @@ final class Psr18Client implements Client
     /** @var UriFactoryInterface */
     private $uriFactory;
 
+    /** @var int */
+    private $allowedRedirects = 5;
+
     public function __construct(ClientInterface $httpClient, RequestFactoryInterface $requestFactory, UriFactoryInterface $uriFactory)
     {
         $this->httpClient = $httpClient;
@@ -47,20 +50,50 @@ final class Psr18Client implements Client
      */
     public function request(string $method, string $url, array $headers = []): Response
     {
-        $uri = $this->uriFactory->createUri($url);
+        $permanentUrl = $url;
+        $requestedUrl = $url;
+        $remainingRedirects = $this->allowedRedirects;
 
-        $request = $this->requestFactory->createRequest($method, $uri);
+        $request = $this->requestFactory->createRequest(
+            $method,
+            $this->uriFactory->createUri($requestedUrl)
+        );
 
         foreach ($headers as $name => $value) {
             $request = $request->withHeader($name, $value);
         }
 
-        try {
-            $response = $this->httpClient->sendRequest($request);
-        } catch (ClientExceptionInterface $th) {
-            throw new HttpException($th->getMessage(), $th->getCode(), $th);
-        }
+        do {
+            $followRedirect = false;
 
-        return new Psr7Response($response, $url, $url);
+            try {
+                $response = $this->httpClient->sendRequest($request);
+            } catch (ClientExceptionInterface $th) {
+                throw new HttpException($th->getMessage(), $th->getCode(), $th);
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            // If we have a redirect
+            if (in_array($statusCode, [300, 301, 302, 303, 307, 308]) && $response->hasHeader('Location')) {
+                // Prevent infinity redirect loops
+                if ($remainingRedirects <= 0) {
+                    break;
+                }
+
+                $remainingRedirects--;
+                $followRedirect = true;
+
+                $requestedUrl = $response->getHeaderLine('Location');
+
+                if ($statusCode === 301 || $statusCode === 308) {
+                    $permanentUrl = $requestedUrl;
+                }
+
+                $request = $request->withUri($this->uriFactory->createUri($requestedUrl));
+            }
+        } while ($followRedirect);
+
+        return new Psr7Response($response, $permanentUrl, $requestedUrl);
     }
 }
