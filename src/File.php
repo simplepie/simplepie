@@ -252,8 +252,10 @@ class File implements Response
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
             if (empty($url) || !($this->body = trim(file_get_contents($url)))) {
-                $this->error = 'file_get_contents could not read the file';
+                $this->error = 'file_get_contents() could not read the file';
                 $this->success = false;
+            } else {
+                $this->status_code = 200;
             }
         }
     }

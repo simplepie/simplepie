@@ -43,71 +43,49 @@ declare(strict_types=1);
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-namespace SimplePie\HTTP;
+namespace SimplePie\Tests\Integration\HTTP;
 
-use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use SimplePie\Exception\HttpException;
-use SimplePie\File;
-use SimplePie\Misc;
+use SimplePie\HTTP\Client;
+use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Response;
 use SimplePie\Registry;
-use Throwable;
 
-/**
- * HTTP Client based on \SimplePie\File
- *
- * @package SimplePie
- * @subpackage HTTP
- * @internal
- */
-final class FileClient implements Client
+class ClientsTest extends TestCase
 {
-    private $registry;
-
-    private $options;
-
-    public function __construct(Registry $registry, array $options = [])
+    public function provideHttpClientsForLocalFiles(): iterable
     {
-        $this->registry = $registry;
-        $this->options = $options;
+        yield [new FileClient(new Registry())];
     }
 
     /**
-     * send a request and return the response
-     *
-     * @param Client::METHOD_GET $method
-     * @param string $url
-     * @param string[] $headers
-     *
-     * @throws HttpException if anything goes wrong requesting the data
+     * @dataProvider provideHttpClientsForLocalFiles
      */
-    public function request(string $method, string $url, array $headers = []): Response
+    public function testClientGetContentOfLocalFile(Client $client): void
     {
-        if ($method !== self::METHOD_GET) {
-            throw new InvalidArgumentException(sprintf(
-                '%s(): Argument #1 ($method) only supports method "%s".',
-                __METHOD__,
-                self::METHOD_GET
-            ), 1);
-        }
+        $filepath = dirname(__FILE__, 3) . '/data/feed_rss-2.0.xml';
 
-        try {
-            $file = $this->registry->create(File::class, [
-                $url,
-                $this->options['timeout'] ?? 10,
-                $this->options['redirects'] ?? 5,
-                $headers,
-                $this->options['useragent'] ?? $this->registry->call(Misc::class, 'get_default_useragent'),
-                $this->options['force_fsockopen'] ?? false,
-                $this->options['curl_options'] ?? []
-            ]);
-        } catch (Throwable $th) {
-            throw new HttpException($th->getMessage(), $th->getCode(), $th);
-        }
+        $response = $client->request(Client::METHOD_GET, $filepath);
 
-        if (! $file->success) {
-            throw new HttpException($file->error);
-        }
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame($filepath, $response->get_permanent_uri());
+        $this->assertSame($filepath, $response->get_requested_uri());
+        $this->assertSame(200, $response->get_status_code());
+        $this->assertSame([], $response->get_headers());
+        $this->assertStringStartsWith('<rss version="2.0">', $response->get_body_content());
+    }
 
-        return $file;
+    /**
+     * @dataProvider provideHttpClientsForLocalFiles
+     */
+    public function testClientThrowsHttpException(Client $client): void
+    {
+        $filepath = dirname(__FILE__, 3) . '/data/this-file-does-not-exist';
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('file_get_contents('.$filepath.'): Failed to open stream: No such file or directory');
+
+        $client->request(Client::METHOD_GET, $filepath);
     }
 }
