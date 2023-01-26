@@ -94,7 +94,12 @@ class ClientsTest extends TestCase
         $filepath = dirname(__FILE__, 3) . '/data/this-file-does-not-exist';
 
         $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('file_get_contents('.$filepath.'): Failed to open stream: No such file or directory');
+
+        if (version_compare(PHP_VERSION, '8.0', '<')) {
+            $this->expectExceptionMessage('file_get_contents('.$filepath.'): failed to open stream: No such file or directory');
+        } else {
+            $this->expectExceptionMessage('file_get_contents('.$filepath.'): Failed to open stream: No such file or directory');
+        }
 
         $client->request(Client::METHOD_GET, $filepath);
     }
