@@ -164,6 +164,8 @@ class Locator implements RegistryAware
             }
 
             return in_array($sniffed, $mime_types);
+        } else if (is_file($file->get_requested_uri())) {
+            return true;
         } else {
             return false;
         }
