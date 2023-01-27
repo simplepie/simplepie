@@ -11,7 +11,11 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriFactoryInterface;
+use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache;
 use SimplePie\File;
 use SimplePie\SimplePie;
@@ -72,6 +76,55 @@ class SimplePieTest extends TestCase
     }
 
     /**
+     * @test that requesting a feed with Psr18Client works
+     */
+    public function testRequestingAFeedWithPsr18ClientWorks(): void
+    {
+        $request = $this->createMock(RequestInterface::class);
+        $request->method('withHeader')->willReturn($request);
+
+        $requestFactory = $this->createMock(RequestFactoryInterface::class);
+        $requestFactory->method('createRequest')->willReturn($request);
+
+        $body = $this->createMock(StreamInterface::class);
+        $body->method('__toString')->willReturnCallback(function () {
+            $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
+
+            return file_get_contents($filepath);
+        });
+
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getBody')->willReturn($body);
+        $response->method('getStatusCode')->willReturn(200);
+        $response->method('hasHeader')->willReturnMap([
+            ['content-encoding', false],
+            ['content-type', true],
+        ]);
+        $response->method('getHeaderLine')->willReturnMap([
+            ['content-encoding', ''],
+            ['content-type', 'application/x-rss+xml'],
+        ]);
+        $response->method('getHeaders')->willReturn([
+            'content-type' => ['application/x-rss+xml'],
+        ]);
+
+        $client = $this->createMock(ClientInterface::class);
+        $client->method('sendRequest')->willReturn($response);
+
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+        $simplepie->set_http_client(
+            $client,
+            $requestFactory,
+            $this->createMock(UriFactoryInterface::class)
+        );
+        $simplepie->set_feed_url('https://example.org/feed.xml');
+
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
+    }
+
+    /**
      * @test that requesting a feed from cache works
      */
     public function testRequestingAFeedFromCacheWorks(): void
@@ -120,5 +173,41 @@ class SimplePieTest extends TestCase
         $this->assertSame(100, $simplepie->get_item_quantity());
 
         BaseCacheWithCallbacksMock::resetAllCallbacks();
+    }
+
+    /**
+     * @test that requesting a feed from PSR-16 cache works
+     */
+    public function testRequestingAFeedFromPsr16CacheWorks(): void
+    {
+        // Setup cache mock
+        $cache = $this->createMock(CacheInterface::class);
+        $cache->method('get')->willReturnCallback(function () {
+            $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
+            $data = unserialize(file_get_contents($cachepath));
+
+            if ($data === false) {
+                throw new Exception(sprintf(
+                    '%s::get() could not get contents of file "%s". Make sure that the file has not been modified.',
+                    CacheInterface::class,
+                    $cachepath
+                ), 1);
+            }
+
+            // Fix build in cache
+            $data['build'] = \SimplePie\Misc::get_build();
+
+            return $data;
+        });
+
+        $simplepie = new SimplePie();
+        // Set FileMock to enforce that we never make an external http request
+        $simplepie->get_registry()->register(File::class, FileConstructorThrowsExceptionMock::class);
+        // Setup cache
+        $simplepie->set_cache($cache);
+        $simplepie->set_feed_url('https://example.com/feed.xml');
+
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
     }
 }
