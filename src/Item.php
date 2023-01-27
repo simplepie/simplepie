@@ -676,7 +676,6 @@ class Item implements RegistryAware
             }
         }
         if ($this->data['date']) {
-            $date_format = (string) $date_format;
             switch ($date_format) {
                 case '':
                     return $this->sanitize($this->data['date']['raw'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
@@ -718,7 +717,6 @@ class Item implements RegistryAware
             }
         }
         if ($this->data['updated']) {
-            $date_format = (string) $date_format;
             switch ($date_format) {
                 case '':
                     return $this->sanitize($this->data['updated']['raw'], \SimplePie\SimplePie::CONSTRUCT_TEXT);

@@ -664,11 +664,7 @@ class Date
      */
     public function add_callback(callable $callback)
     {
-        if (is_callable($callback)) {
-            $this->user[] = $callback;
-        } else {
-            trigger_error('User-supplied function must be a valid callback', E_USER_WARNING);
-        }
+        $this->user[] = $callback;
     }
 
     /**
@@ -750,12 +746,11 @@ PCRE;
      * Remove RFC822 comments
      *
      * @access protected
-     * @param string $data Data to strip comments from
+     * @param string $string Data to strip comments from
      * @return string Comment stripped string
      */
-    public function remove_rfc2822_comments($string)
+    public function remove_rfc2822_comments(string $string)
     {
-        $string = (string) $string;
         $position = 0;
         $length = strlen($string);
         $depth = 0;

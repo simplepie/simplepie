@@ -1751,7 +1751,6 @@ class Misc
      */
     public static function uncomment_rfc822(string $string)
     {
-        $string = (string) $string;
         $position = 0;
         $length = strlen($string);
         $depth = 0;
