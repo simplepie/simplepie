@@ -8,6 +8,9 @@ declare(strict_types=1);
 namespace SimplePie;
 
 use InvalidArgumentException;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
@@ -20,7 +23,7 @@ use SimplePie\Exception as SimplePieException;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
-use SimplePie\HTTP\Response;
+use SimplePie\HTTP\Psr18Client;
 
 /**
  * SimplePie
@@ -428,7 +431,7 @@ class SimplePie
     public $permanent_url = null;
 
     /**
-     * @var File Instance of File class to use as a feed
+     * @var HTTP\Response Instance of \SimplePie\HTTP\Response class to use as a feed
      * @see SimplePie::set_file()
      */
     private $file;
@@ -644,6 +647,7 @@ class SimplePie
 
     /**
      * @var Client|null
+     * @see SimplePie::set_http_client()
      */
     private $http_client = null;
 
@@ -1643,7 +1647,7 @@ class SimplePie
                 $cache = $this->get_cache($this->feed_url);
             }
 
-            // Fetch the data via File into $this->raw_data
+            // Fetch the data into $this->raw_data
             if (($fetched = $this->fetch_data($cache)) === true) {
                 return true;
             } elseif ($fetched === false) {
@@ -1722,6 +1726,7 @@ class SimplePie
 
                     // Cache the file if caching is enabled
                     $this->data['cache_expiration_time'] = $this->cache_duration + time();
+
                     if ($cache && ! $cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
@@ -1759,9 +1764,10 @@ class SimplePie
     }
 
     /**
-     * Fetch the data via File
+     * Fetch the data
      *
      * If the data is already cached, attempt to fetch it from there instead
+     *
      * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
      * @return array{array<string, string>, string}|array{}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
@@ -1903,7 +1909,8 @@ class SimplePie
 
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
-            $locate = $this->registry->create(Locator::class, [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
+            $response = (! $file instanceof File) ? File::fromResponse($file) : $file;
+            $locate = $this->registry->create(Locator::class, [$response, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
             $locate->set_http_client($this->get_http_client());
 
             if (!$locate->is_feed($file)) {
@@ -1986,7 +1993,8 @@ class SimplePie
             $headers[$key] = implode(', ', $values);
         }
 
-        $sniffer = $this->registry->create(Sniffer::class, [&$file]);
+        $fileResponse = File::fromResponse($file);
+        $sniffer = $this->registry->create(Sniffer::class, [$fileResponse]);
         $sniffed = $sniffer->get_type();
 
         return [$headers, $sniffed];
@@ -3344,6 +3352,21 @@ class SimplePie
         }
 
         return $this->http_client;
+    }
+
+    /**
+     * Set a PSR-18 client and PSR-17 factories
+     *
+     * Allows you to use your own HTTP client implementations.
+     * This will become required with SimplePie 2.0.0.
+     */
+    final public function set_http_client(
+        ClientInterface $http_client,
+        RequestFactoryInterface $request_factory,
+        UriFactoryInterface $uri_factory
+    ): void {
+        $this->http_client_injected = true;
+        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
     }
 }
 

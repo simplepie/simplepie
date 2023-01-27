@@ -8,6 +8,9 @@ declare(strict_types=1);
 namespace SimplePie\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\File;
 use SimplePie\SimplePie;
 
@@ -39,6 +42,26 @@ class SimplePieTest extends TestCase
         $simplepie->enable_cache(false);
         $file = new File($filepath);
         $simplepie->set_file($file);
+
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
+    }
+
+    /**
+     * @test that requesting a local file with Psr18Client works
+     */
+    public function testRequestingALocalFileWithPsr18ClientWorks(): void
+    {
+        $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
+
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+        $simplepie->set_http_client(
+            $this->createMock(ClientInterface::class),
+            $this->createMock(RequestFactoryInterface::class),
+            $this->createMock(UriFactoryInterface::class)
+        );
+        $simplepie->set_feed_url($filepath);
 
         $this->assertTrue($simplepie->init());
         $this->assertSame(100, $simplepie->get_item_quantity());

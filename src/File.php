@@ -433,6 +433,34 @@ class File implements Response
             return implode(',', $values);
         }, $headers);
     }
+
+    /**
+     * Create a File instance from another Response
+     *
+     * For BC reasons in some places there MUST be a `File` instance
+     * instead of a `Response` implementation
+     *
+     * @see Locator::__construct()
+     * @internal
+     */
+    final public static function fromResponse(Response $response): self
+    {
+        if ($response instanceof self) {
+            return $response;
+        }
+
+        /** @var File */
+        $file = (new \ReflectionClass(File::class))->newInstanceWithoutConstructor();
+
+        $file->url = $response->get_final_requested_uri();
+        $file->useragent = null;
+        $file->set_headers($response->get_headers());
+        $file->body = $response->get_body_content();
+        $file->status_code = $response->get_status_code();
+        $file->permanent_url = $response->get_permanent_uri();
+
+        return $file;
+    }
 }
 
 class_alias('SimplePie\File', 'SimplePie_File');
