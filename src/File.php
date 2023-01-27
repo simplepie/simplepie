@@ -65,7 +65,6 @@ class File implements Response
     public $useragent;
     public $success = true;
     public $headers = [];
-    public $parsed_headers = [];
     public $body;
     public $status_code = 0;
     public $redirects = 0;
