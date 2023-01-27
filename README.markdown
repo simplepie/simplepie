@@ -18,6 +18,37 @@ Requirements
 * cURL or fsockopen()
 * PCRE support
 
+PSR-18: HTTP Client support
+--------------
+
+Since SimplePie 1.9.0 you can use a [PSR-18](https://www.php-fig.org/psr/psr-18/) HTTP client like [Guzzle](https://guzzlephp.org)
+or [every other implementation](https://packagist.org/providers/psr/http-client-implementation).
+Please note that you would also need [PSR-17](https://www.php-fig.org/psr/psr-17/) implementations of `RequestFactoryInterface` and an `UriFactoryInterface` implementation.
+
+```php
+$simplepie = new \SimplePie\SimplePie();
+$simplepie->set_http_client(
+    new \GuzzleHttp\Client(),
+    new \GuzzleHttp\Psr7\HttpFactory(),
+    new \GuzzleHttp\Psr7\HttpFactory(),
+);
+```
+
+PSR-16: Caching support
+--------------
+
+Since SimplePie 1.8.0 you can use the [PSR-16](https://www.php-fig.org/psr/psr-16/) cache from
+[Symfony](https://symfony.com/doc/current/components/cache.html)
+or [every other implementation](https://packagist.org/providers/psr/simple-cache-implementation).
+
+```php
+$simplepie = new \SimplePie\SimplePie();
+$simplepie->set_cache(
+    new \Symfony\Component\Cache\Psr16Cache(
+        new \Symfony\Component\Cache\Adapter\FilesystemAdapter()
+    ),
+);
+```
 
 What comes in the package?
 --------------------------
