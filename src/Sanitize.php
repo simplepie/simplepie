@@ -174,6 +174,9 @@ class Sanitize implements RegistryAware
         }
     }
 
+    /**
+     * @internal
+     */
     public function set_http_client(Client $http_client): void
     {
         $this->http_client = $http_client;

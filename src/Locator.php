@@ -80,7 +80,7 @@ class Locator implements RegistryAware
      */
     private $http_client = null;
 
-    public function __construct(\SimplePie\File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [], ?Client $http_client = null)
+    public function __construct(\SimplePie\HTTP\Response $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [], ?Client $http_client = null)
     {
         $this->file = $file;
         $this->useragent = $useragent;

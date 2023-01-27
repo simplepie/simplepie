@@ -46,6 +46,9 @@ declare(strict_types=1);
 namespace SimplePie\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\File;
 use SimplePie\SimplePie;
 
@@ -67,6 +70,18 @@ class SimplePieTest extends TestCase
         $simplepie->enable_cache(false);
         $file = new File($filepath);
         $simplepie->set_file($file);
+
+        yield [$simplepie];
+
+        // Test, that requesting a local file with Psr18Client works
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+        $simplepie->set_http_client(
+            $this->createMock(ClientInterface::class),
+            $this->createMock(RequestFactoryInterface::class),
+            $this->createMock(UriFactoryInterface::class)
+        );
+        $simplepie->set_feed_url($filepath);
 
         yield [$simplepie];
     }

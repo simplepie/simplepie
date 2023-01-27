@@ -46,6 +46,9 @@ declare(strict_types=1);
 namespace SimplePie;
 
 use InvalidArgumentException;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
@@ -57,6 +60,7 @@ use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Psr18Client;
 
 /**
  * SimplePie
@@ -462,7 +466,7 @@ class SimplePie
     public $permanent_url = null;
 
     /**
-     * @var object Instance of \SimplePie\File to use as a feed
+     * @var object Instance of \SimplePie\HTTP\Response to use as a feed
      * @see SimplePie::set_file()
      * @access private
      */
@@ -474,6 +478,12 @@ class SimplePie
      * @access private
      */
     public $raw_data;
+
+    /**
+     * @var Client the HTTP client
+     * @see SimplePie::set_http_client()
+     */
+    private $http_client = null;
 
     /**
      * @var int Timeout for fetching remote files
@@ -796,14 +806,14 @@ class SimplePie
     }
 
     /**
-     * Set an instance of {@see \SimplePie\File} to use as a feed
+     * Set an instance of {@see \SimplePie\HTTP\Response} to use as a feed
      *
-     * @param \SimplePie\File &$file
+     * @param \SimplePie\HTTP\Response &$file
      * @return bool True on success, false on failure
      */
     public function set_file(&$file)
     {
-        if ($file instanceof \SimplePie\File) {
+        if ($file instanceof \SimplePie\HTTP\Response) {
             $this->feed_url = $file->get_requested_uri();
             $this->permanent_url = $this->feed_url;
             $this->file =& $file;
@@ -830,6 +840,14 @@ class SimplePie
         $this->raw_data = $data;
     }
 
+    public function set_http_client(
+        ClientInterface $http_client,
+        RequestFactoryInterface $request_factory,
+        UriFactoryInterface $uri_factory
+    ): void {
+        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
+    }
+
     /**
      * Set the default timeout for fetching remote feeds
      *
@@ -842,6 +860,19 @@ class SimplePie
     public function set_timeout($timeout = 10)
     {
         $this->timeout = (int) $timeout;
+
+        // Reset a possible existing FileClient,
+        // so a new client with the changed value will be created
+        if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            $this->http_client = null;
+        } else if (is_object($this->http_client)) {
+            // Trigger notice if a PSR-18 client was set
+            trigger_error(sprintf(
+                'Using "%s()" will have no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the timeout in your HTTP client.',
+                __METHOD__,
+                get_class($this)
+            ), \E_USER_NOTICE);
+        }
     }
 
     /**
@@ -855,6 +886,19 @@ class SimplePie
     public function set_curl_options(array $curl_options = [])
     {
         $this->curl_options = $curl_options;
+
+        // Reset a possible existing FileClient,
+        // so a new client with the changed value will be created
+        if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            $this->http_client = null;
+        } else if (is_object($this->http_client)) {
+            // Trigger notice if a PSR-18 client was set
+            trigger_error(sprintf(
+                'Using "%s()" will have no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the curl options in your HTTP client.',
+                __METHOD__,
+                get_class($this)
+            ), \E_USER_NOTICE);
+        }
     }
 
     /**
@@ -866,6 +910,19 @@ class SimplePie
     public function force_fsockopen($enable = false)
     {
         $this->force_fsockopen = (bool) $enable;
+
+        // Reset a possible existing FileClient,
+        // so a new client with the changed value will be created
+        if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            $this->http_client = null;
+        } else if (is_object($this->http_client)) {
+            // Trigger notice if a PSR-18 client was set
+            trigger_error(sprintf(
+                'Using "%s()" will have no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure fsockopen in your HTTP client.',
+                __METHOD__,
+                get_class($this)
+            ), \E_USER_NOTICE);
+        }
     }
 
     /**
@@ -1302,6 +1359,19 @@ class SimplePie
         }
 
         $this->useragent = (string) $ua;
+
+        // Reset a possible existing FileClient,
+        // so a new client with the changed value will be created
+        if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            $this->http_client = null;
+        } else if (is_object($this->http_client)) {
+            // Trigger notice if a PSR-18 client was set
+            trigger_error(sprintf(
+                'Using "%s()" will have no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the useragent in your HTTP client.',
+                __METHOD__,
+                get_class($this)
+            ), \E_USER_NOTICE);
+        }
     }
 
     /**
@@ -1590,7 +1660,7 @@ class SimplePie
                 $cache = $this->get_cache($this->feed_url);
             }
 
-            // Fetch the data via \SimplePie\File into $this->raw_data
+            // Fetch the data into $this->raw_data
             if (($fetched = $this->fetch_data($cache)) === true) {
                 return true;
             } elseif ($fetched === false) {
@@ -1669,6 +1739,7 @@ class SimplePie
 
                     // Cache the file if caching is enabled
                     $this->data['cache_expiration_time'] = $this->cache_duration + time();
+
                     if ($cache && ! $cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
@@ -1706,9 +1777,10 @@ class SimplePie
     }
 
     /**
-     * Fetch the data via \SimplePie\File
+     * Fetch the data
      *
      * If the data is already cached, attempt to fetch it from there instead
+     *
      * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
      * @return array|true Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
@@ -1912,7 +1984,7 @@ class SimplePie
                     return false;
                 }
 
-                /** @var File $file */
+                /** @var Response $file */
 
                 if ($cache) {
                     $this->data = [
@@ -3213,7 +3285,7 @@ class SimplePie
      * @param string $hub
      * @param string $self
      */
-    private function store_links(&$file, $hub, $self)
+    private function store_links(File &$file, string $hub, string $self): void
     {
         if (isset($file->headers['link']['hub']) ||
               (isset($file->headers['link']) &&
@@ -3264,16 +3336,20 @@ class SimplePie
      */
     private function get_http_client(): Client
     {
-        return new FileClient(
-            $this->get_registry(),
-            [
-                'timeout' => $this->timeout,
-                'redirects' => 5,
-                'useragent' => $this->useragent,
-                'force_fsockopen' => $this->force_fsockopen,
-                'curl_options' => $this->curl_options,
-            ]
-        );
+        if ($this->http_client === null) {
+            $this->http_client = new FileClient(
+                $this->get_registry(),
+                [
+                    'timeout' => $this->timeout,
+                    'redirects' => 5,
+                    'useragent' => $this->useragent,
+                    'force_fsockopen' => $this->force_fsockopen,
+                    'curl_options' => $this->curl_options,
+                ]
+            );
+        }
+
+        return $this->http_client;
     }
 }
 

@@ -45,7 +45,7 @@ declare(strict_types=1);
 
 namespace SimplePie\Content\Type;
 
-use SimplePie\File;
+use SimplePie\HTTP\Response;
 
 /**
  * Content-type sniffing
@@ -64,18 +64,18 @@ use SimplePie\File;
 class Sniffer
 {
     /**
-     * File object
+     * Response object
      *
-     * @var \SimplePie\File
+     * @var Response
      */
     public $file;
 
     /**
      * Create an instance of the class with the input file
      *
-     * @param File $file Input file
+     * @param Response $file Input file
      */
-    public function __construct($file)
+    public function __construct(Response $file)
     {
         $this->file = $file;
     }
