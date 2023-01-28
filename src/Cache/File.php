@@ -90,7 +90,7 @@ class File implements Base
      * @param string $name Unique ID for the cache
      * @param Base::TYPE_FEED|Base::TYPE_IMAGE $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
      */
-    public function __construct($location, $name, $type)
+    public function __construct(string $location, string $name, string $type)
     {
         $this->location = $location;
         $this->filename = $name;
@@ -104,7 +104,7 @@ class File implements Base
      * @param array|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data)
+    public function save($data): bool
     {
         if (file_exists($this->name) && is_writable($this->name) || file_exists($this->location) && is_writable($this->location)) {
             if ($data instanceof \SimplePie\SimplePie) {
@@ -135,9 +135,9 @@ class File implements Base
      *
      * @return int Timestamp
      */
-    public function mtime()
+    public function mtime(): int
     {
-        return @filemtime($this->name);
+        return (int) @filemtime($this->name);
     }
 
     /**
@@ -145,7 +145,7 @@ class File implements Base
      *
      * @return bool Success status
      */
-    public function touch()
+    public function touch(): bool
     {
         return @touch($this->name);
     }
@@ -155,7 +155,7 @@ class File implements Base
      *
      * @return bool Success status
      */
-    public function unlink()
+    public function unlink(): bool
     {
         if (file_exists($this->name)) {
             return unlink($this->name);
