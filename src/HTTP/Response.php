@@ -53,6 +53,7 @@ namespace SimplePie\HTTP;
  *
  * @package SimplePie
  * @subpackage HTTP
+ * @internal
  */
 interface Response
 {
