@@ -182,8 +182,12 @@ class Sanitize implements RegistryAware
         $this->http_client = $http_client;
     }
 
+    /**
+     * @deprecated since SimplePie 1.9.0, use \SimplePie\Sanitize::set_http_client() instead.
+     */
     public function pass_file_data($file_class = 'SimplePie\File', $timeout = 10, $useragent = '', $force_fsockopen = false)
     {
+        // trigger_error(sprintf('SimplePie\Sanitize::pass_file_data() is deprecated since SimplePie 1.9.0, please use "SimplePie\Sanitize::set_http_client()" instead.'), \E_USER_DEPRECATED);
         if ($timeout) {
             $this->timeout = (string) $timeout;
         }

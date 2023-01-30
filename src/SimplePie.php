@@ -1853,8 +1853,10 @@ class SimplePie
                             $orig_timeout = $this->timeout;
                             $this->timeout = 1;
                             $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
+                            $this->status_code = $file->get_status_code();
                         } catch (HttpException $th) {
                             $this->check_modified = false;
+                            $this->status_code = 0;
 
                             if ($this->force_cache_fallback) {
                                 $cache->set_data($cacheKey, $this->data, $this->cache_duration);
@@ -1865,9 +1867,7 @@ class SimplePie
                             $this->timeout = $orig_timeout;
                         }
 
-                        $this->status_code = $file->get_status_code();
-
-                        if ($file->get_status_code() === 304) {
+                        if ($this->status_code === 304) {
                             // Set raw_data to false here too, to signify that the cache
                             // is still valid.
                             $this->raw_data = false;
