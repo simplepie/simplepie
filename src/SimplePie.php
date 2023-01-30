@@ -466,7 +466,7 @@ class SimplePie
     public $permanent_url = null;
 
     /**
-     * @var File Instance of \SimplePie\Feed to use as a feed
+     * @var File Instance of \SimplePie\File to use as a feed
      * @see SimplePie::set_file()
      */
     private $file;
@@ -3284,9 +3284,6 @@ class SimplePie
      *
      * There is no way to find PuSH links in the body of a microformats feed,
      * so they are added to the headers when found, to be used later by get_links.
-     * @param \SimplePie\File $file
-     * @param string $hub
-     * @param string $self
      */
     private function store_links(File &$file, string $hub, string $self): void
     {
