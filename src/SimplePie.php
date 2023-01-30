@@ -430,9 +430,8 @@ class SimplePie
     /**
      * @var File Instance of File class to use as a feed
      * @see SimplePie::set_file()
-     * @access private
      */
-    public $file;
+    private $file;
 
     /**
      * @var string|false Raw feed data
