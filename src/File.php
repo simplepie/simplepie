@@ -70,7 +70,7 @@ class File implements Response
     public $redirects = 0;
     public $error;
     public $method = \SimplePie\SimplePie::FILE_SOURCE_NONE;
-    /** @var string Holds the original requested URL */
+    /** @var string Holds the original requested URL or the location of a permanent (301) redirect */
     public $permanent_url;
 
     public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
