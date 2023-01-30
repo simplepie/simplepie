@@ -3289,8 +3289,6 @@ class SimplePie
      *
      * There is no way to find PuSH links in the body of a microformats feed,
      * so they are added to the headers when found, to be used later by get_links.
-     * @param string $hub
-     * @param string $self
      */
     private function store_links(File &$file, string $hub, string $self): void
     {
