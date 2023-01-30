@@ -466,11 +466,10 @@ class SimplePie
     public $permanent_url = null;
 
     /**
-     * @var object Instance of \SimplePie\HTTP\Response to use as a feed
+     * @var File Instance of \SimplePie\Feed to use as a feed
      * @see SimplePie::set_file()
-     * @access private
      */
-    public $file;
+    private $file;
 
     /**
      * @var string Raw feed data
@@ -872,7 +871,7 @@ class SimplePie
         } else if (is_object($this->http_client)) {
             // Trigger notice if a PSR-18 client was set
             trigger_error(sprintf(
-                'Using "%s()" will have no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the timeout in your HTTP client.',
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the timeout in your HTTP client instead.',
                 __METHOD__,
                 get_class($this)
             ), \E_USER_NOTICE);
@@ -898,7 +897,7 @@ class SimplePie
         } else if (is_object($this->http_client)) {
             // Trigger notice if a PSR-18 client was set
             trigger_error(sprintf(
-                'Using "%s()" will have no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the curl options in your HTTP client.',
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the curl options in your HTTP client instead.',
                 __METHOD__,
                 get_class($this)
             ), \E_USER_NOTICE);
@@ -922,7 +921,7 @@ class SimplePie
         } else if (is_object($this->http_client)) {
             // Trigger notice if a PSR-18 client was set
             trigger_error(sprintf(
-                'Using "%s()" will have no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure fsockopen in your HTTP client.',
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure fsockopen in your HTTP client instead.',
                 __METHOD__,
                 get_class($this)
             ), \E_USER_NOTICE);
@@ -1371,7 +1370,7 @@ class SimplePie
         } else if (is_object($this->http_client)) {
             // Trigger notice if a PSR-18 client was set
             trigger_error(sprintf(
-                'Using "%s()" will have no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the useragent in your HTTP client.',
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the useragent in your HTTP client instead.',
                 __METHOD__,
                 get_class($this)
             ), \E_USER_NOTICE);
