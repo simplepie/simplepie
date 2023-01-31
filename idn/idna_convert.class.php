@@ -89,6 +89,7 @@ class idna_convert
     var $_api_encoding   =  'utf8'; // Default input charset is UTF-8
     var $_allow_overlong =  false;  // Overlong UTF-8 encodings are forbidden
     var $_strict_mode    =  false;  // Behave strict or not
+    var $slast           =  0;
 
     // The constructor
     function __construct($options = false)
