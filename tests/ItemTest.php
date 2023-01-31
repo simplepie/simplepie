@@ -52,7 +52,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
      *
      * @param string $template
      */
-    protected function checkFromTemplate($template, $data)
+    protected function checkFromTemplate(string $template, $data)
     {
         if (!is_array($data)) {
             $data = [$data];

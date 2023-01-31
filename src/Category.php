@@ -100,7 +100,7 @@ class Category
      * @param string|null $label
      * @param string|null $type
      */
-    public function __construct($term = null, $scheme = null, $label = null, $type = null)
+    public function __construct(?string $term = null, ?string $scheme = null, ?string $label = null, ?string $type = null)
     {
         $this->term = $term;
         $this->scheme = $scheme;
@@ -145,7 +145,7 @@ class Category
      * @param bool $strict
      * @return string|null
      */
-    public function get_label($strict = false)
+    public function get_label(bool $strict = false)
     {
         if ($this->label === null && $strict !== true) {
             return $this->get_term();

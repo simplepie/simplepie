@@ -13,6 +13,7 @@ return (new PhpCsFixer\Config())
         '@PHP71Migration' => true,
         '@PHP71Migration:risky' => true,
         'void_return' => false,
+        'phpdoc_to_param_type' => true,
         '@PHPUnit84Migration:risky' => true,
     ])
     ->setFinder($finder)

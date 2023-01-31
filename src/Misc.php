@@ -98,7 +98,7 @@ class Misc
      * @param string $string HTML document
      * @return array
      */
-    public static function get_element($realname, $string)
+    public static function get_element(string $realname, string $string)
     {
         // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
@@ -265,7 +265,7 @@ class Misc
      * @param string $string Windows-1252 encoded string
      * @return string UTF-8 encoded string
      */
-    public static function windows_1252_to_utf8($string)
+    public static function windows_1252_to_utf8(string $string)
     {
         static $convert_table = ["\x80" => "\xE2\x82\xAC", "\x81" => "\xEF\xBF\xBD", "\x82" => "\xE2\x80\x9A", "\x83" => "\xC6\x92", "\x84" => "\xE2\x80\x9E", "\x85" => "\xE2\x80\xA6", "\x86" => "\xE2\x80\xA0", "\x87" => "\xE2\x80\xA1", "\x88" => "\xCB\x86", "\x89" => "\xE2\x80\xB0", "\x8A" => "\xC5\xA0", "\x8B" => "\xE2\x80\xB9", "\x8C" => "\xC5\x92", "\x8D" => "\xEF\xBF\xBD", "\x8E" => "\xC5\xBD", "\x8F" => "\xEF\xBF\xBD", "\x90" => "\xEF\xBF\xBD", "\x91" => "\xE2\x80\x98", "\x92" => "\xE2\x80\x99", "\x93" => "\xE2\x80\x9C", "\x94" => "\xE2\x80\x9D", "\x95" => "\xE2\x80\xA2", "\x96" => "\xE2\x80\x93", "\x97" => "\xE2\x80\x94", "\x98" => "\xCB\x9C", "\x99" => "\xE2\x84\xA2", "\x9A" => "\xC5\xA1", "\x9B" => "\xE2\x80\xBA", "\x9C" => "\xC5\x93", "\x9D" => "\xEF\xBF\xBD", "\x9E" => "\xC5\xBE", "\x9F" => "\xC5\xB8", "\xA0" => "\xC2\xA0", "\xA1" => "\xC2\xA1", "\xA2" => "\xC2\xA2", "\xA3" => "\xC2\xA3", "\xA4" => "\xC2\xA4", "\xA5" => "\xC2\xA5", "\xA6" => "\xC2\xA6", "\xA7" => "\xC2\xA7", "\xA8" => "\xC2\xA8", "\xA9" => "\xC2\xA9", "\xAA" => "\xC2\xAA", "\xAB" => "\xC2\xAB", "\xAC" => "\xC2\xAC", "\xAD" => "\xC2\xAD", "\xAE" => "\xC2\xAE", "\xAF" => "\xC2\xAF", "\xB0" => "\xC2\xB0", "\xB1" => "\xC2\xB1", "\xB2" => "\xC2\xB2", "\xB3" => "\xC2\xB3", "\xB4" => "\xC2\xB4", "\xB5" => "\xC2\xB5", "\xB6" => "\xC2\xB6", "\xB7" => "\xC2\xB7", "\xB8" => "\xC2\xB8", "\xB9" => "\xC2\xB9", "\xBA" => "\xC2\xBA", "\xBB" => "\xC2\xBB", "\xBC" => "\xC2\xBC", "\xBD" => "\xC2\xBD", "\xBE" => "\xC2\xBE", "\xBF" => "\xC2\xBF", "\xC0" => "\xC3\x80", "\xC1" => "\xC3\x81", "\xC2" => "\xC3\x82", "\xC3" => "\xC3\x83", "\xC4" => "\xC3\x84", "\xC5" => "\xC3\x85", "\xC6" => "\xC3\x86", "\xC7" => "\xC3\x87", "\xC8" => "\xC3\x88", "\xC9" => "\xC3\x89", "\xCA" => "\xC3\x8A", "\xCB" => "\xC3\x8B", "\xCC" => "\xC3\x8C", "\xCD" => "\xC3\x8D", "\xCE" => "\xC3\x8E", "\xCF" => "\xC3\x8F", "\xD0" => "\xC3\x90", "\xD1" => "\xC3\x91", "\xD2" => "\xC3\x92", "\xD3" => "\xC3\x93", "\xD4" => "\xC3\x94", "\xD5" => "\xC3\x95", "\xD6" => "\xC3\x96", "\xD7" => "\xC3\x97", "\xD8" => "\xC3\x98", "\xD9" => "\xC3\x99", "\xDA" => "\xC3\x9A", "\xDB" => "\xC3\x9B", "\xDC" => "\xC3\x9C", "\xDD" => "\xC3\x9D", "\xDE" => "\xC3\x9E", "\xDF" => "\xC3\x9F", "\xE0" => "\xC3\xA0", "\xE1" => "\xC3\xA1", "\xE2" => "\xC3\xA2", "\xE3" => "\xC3\xA3", "\xE4" => "\xC3\xA4", "\xE5" => "\xC3\xA5", "\xE6" => "\xC3\xA6", "\xE7" => "\xC3\xA7", "\xE8" => "\xC3\xA8", "\xE9" => "\xC3\xA9", "\xEA" => "\xC3\xAA", "\xEB" => "\xC3\xAB", "\xEC" => "\xC3\xAC", "\xED" => "\xC3\xAD", "\xEE" => "\xC3\xAE", "\xEF" => "\xC3\xAF", "\xF0" => "\xC3\xB0", "\xF1" => "\xC3\xB1", "\xF2" => "\xC3\xB2", "\xF3" => "\xC3\xB3", "\xF4" => "\xC3\xB4", "\xF5" => "\xC3\xB5", "\xF6" => "\xC3\xB6", "\xF7" => "\xC3\xB7", "\xF8" => "\xC3\xB8", "\xF9" => "\xC3\xB9", "\xFA" => "\xC3\xBA", "\xFB" => "\xC3\xBB", "\xFC" => "\xC3\xBC", "\xFD" => "\xC3\xBD", "\xFE" => "\xC3\xBE", "\xFF" => "\xC3\xBF"];
 
@@ -280,7 +280,7 @@ class Misc
      * @param string $output Encoding you want
      * @return string|boolean False if we can't convert it
      */
-    public static function change_encoding($data, $input, $output)
+    public static function change_encoding(string $data, string $input, string $output)
     {
         $input = Misc::encoding($input);
         $output = Misc::encoding($output);
@@ -360,7 +360,7 @@ class Misc
      * @param string $output
      * @return string|false
      */
-    protected static function change_encoding_uconverter($data, $input, $output)
+    protected static function change_encoding_uconverter(string $data, string $input, string $output)
     {
         return @\UConverter::transcode($data, $output, $input);
     }
@@ -376,7 +376,7 @@ class Misc
      * @param string $charset Character set to standardise
      * @return string Standardised name
      */
-    public static function encoding($charset)
+    public static function encoding(string $charset)
     {
         // Normalization from UTS #22
         switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
@@ -1708,7 +1708,7 @@ class Misc
      * @param string $data Data to strip comments from
      * @return string Comment stripped string
      */
-    public static function strip_comments($data)
+    public static function strip_comments(string $data)
     {
         $output = '';
         while (($start = strpos($data, '<!--')) !== false) {
@@ -1735,7 +1735,7 @@ class Misc
      * @param string $data Input data
      * @return string Output data
      */
-    public static function entities_decode($data)
+    public static function entities_decode(string $data)
     {
         // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
@@ -1746,12 +1746,11 @@ class Misc
     /**
      * Remove RFC822 comments
      *
-     * @param string $data Data to strip comments from
+     * @param string $string Data to strip comments from
      * @return string Comment stripped string
      */
-    public static function uncomment_rfc822($string)
+    public static function uncomment_rfc822(string $string)
     {
-        $string = (string) $string;
         $position = 0;
         $length = strlen($string);
         $depth = 0;
@@ -1904,9 +1903,8 @@ class Misc
      * @param int $codepoint Unicode codepoint
      * @return string UTF-8 character
      */
-    public static function codepoint_to_utf8($codepoint)
+    public static function codepoint_to_utf8(int $codepoint)
     {
-        $codepoint = (int) $codepoint;
         if ($codepoint < 0) {
             return false;
         } elseif ($codepoint <= 0x7f) {
@@ -1933,7 +1931,7 @@ class Misc
      * @param string $str The input string.
      * @return array
      */
-    public static function parse_str($str)
+    public static function parse_str(string $str)
     {
         $return = [];
         $str = explode('&', $str);
@@ -1958,7 +1956,7 @@ class Misc
      * @param \SimplePie\Registry $registry Class registry
      * @return array Possible encodings
      */
-    public static function xml_encoding($data, $registry)
+    public static function xml_encoding(string $data, \SimplePie\Registry $registry)
     {
         // UTF-32 Big Endian BOM
         if (substr($data, 0, 4) === "\x00\x00\xFE\xFF") {
@@ -2171,7 +2169,7 @@ END;
      * @param string $url the URL to sanitize.
      * @return string the same URL without HTTP credentials.
      */
-    public static function url_remove_credentials($url)
+    public static function url_remove_credentials(string $url)
     {
         return preg_replace('#^(https?://)[^/:@]+:[^/:@]+@#i', '$1', $url);
     }

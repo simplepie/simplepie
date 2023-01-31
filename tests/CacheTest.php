@@ -95,6 +95,7 @@ class CacheTest extends PHPUnit\Framework\TestCase
         }
 
         $feed = new SimplePie();
+        $this->expectDeprecation();
         $feed->set_cache_class('Mock_CacheLegacy');
         $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');

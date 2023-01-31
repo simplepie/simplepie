@@ -259,7 +259,7 @@ class Sanitize implements RegistryAware
      * @since 1.0
      * @param array|null $element_attribute Element/attribute key/value pairs, null for default
      */
-    public function set_url_replacements($element_attribute = null)
+    public function set_url_replacements(?array $element_attribute = null)
     {
         if ($element_attribute === null) {
             $element_attribute = [
@@ -637,7 +637,7 @@ class Sanitize implements RegistryAware
      *
      * @return DataCache
      */
-    private function get_cache($image_url = '')
+    private function get_cache(string $image_url = ''): DataCache
     {
         if ($this->cache === null) {
             // @trigger_error(sprintf('Not providing as PSR-16 cache implementation is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);

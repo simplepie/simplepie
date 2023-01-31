@@ -84,7 +84,7 @@ class SimplePie_Decode_HTML_Entities
      * @access public
      * @param string $data Input data
      */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->data = $data;
     }
@@ -128,7 +128,7 @@ class SimplePie_Decode_HTML_Entities
      * @param string $chars Characters to consume
      * @return mixed A series of characters that match the range, or false
      */
-    public function consume_range($chars)
+    public function consume_range(string $chars)
     {
         if ($len = strspn($this->data, $chars, $this->position)) {
             $data = substr($this->data, $this->position, $len);

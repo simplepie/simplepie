@@ -75,7 +75,7 @@ class SimplePieTest extends TestCase
      *
      * @param string $template
      */
-    private function createFeedWithTemplate($template, $data)
+    private function createFeedWithTemplate(string $template, $data): SimplePie
     {
         if (!is_array($data)) {
             $data = [$data];
@@ -263,6 +263,7 @@ class SimplePieTest extends TestCase
     public function testLegacyCallOfSetCacheClass()
     {
         $feed = new SimplePie();
+        $this->expectDeprecation();
         $feed->set_cache_class(LegacyCacheMock::class);
         $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');

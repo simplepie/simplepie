@@ -45,6 +45,8 @@ declare(strict_types=1);
 
 namespace SimplePie\Content\Type;
 
+use SimplePie\File;
+
 /**
  * Content-type sniffing
  *
@@ -71,9 +73,9 @@ class Sniffer
     /**
      * Create an instance of the class with the input file
      *
-     * @param Sniffer $file Input file
+     * @param File $file Input file
      */
-    public function __construct($file)
+    public function __construct(File $file)
     {
         $this->file = $file;
     }

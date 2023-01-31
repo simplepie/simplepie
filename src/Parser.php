@@ -376,7 +376,7 @@ class Parser implements RegistryAware
         return $cache[$string];
     }
 
-    private function parse_hcard($data, $category = false)
+    private function parse_hcard($data, $category = false): string
     {
         $name = '';
         $link = '';
@@ -400,7 +400,10 @@ class Parser implements RegistryAware
         return $data['value'] ?? '';
     }
 
-    private function parse_microformats(&$data, $url)
+    /**
+     * @return true
+     */
+    private function parse_microformats(&$data, $url): bool
     {
         $feed_title = '';
         $feed_author = null;
@@ -621,7 +624,7 @@ class Parser implements RegistryAware
         return true;
     }
 
-    private function declare_html_entities()
+    private function declare_html_entities(): string
     {
         // This is required because the RSS specification says that entity-encoded
         // html is allowed, but the xml specification says they must be declared.
