@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -54,8 +53,6 @@ use SimplePie\Registry;
 /**
  * HTTP Client based on \SimplePie\File
  *
- * @package SimplePie
- * @subpackage HTTP
  * @internal
  */
 final class FileClient implements Client
