@@ -46,16 +46,17 @@ jobs:
       - name: Run unit tests
         run: composer test
 
-  test-with-libraries:
+  test-with-optional-libraries:
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2']
-        with: ['idna-convert-v051', 'idna-convert-v3']
-        include:
-          - php: '7.2'
+        php: ['7.2', '8.2']
+        with: ['idna-convert-v051', 'idna-convert-v2', 'idna-convert-v3']
+        exclude:
+          # no PHP 8.2 support in idna-convert-v2
+          - php: '8.2'
             with: 'idna-convert-v2'
 
     name: "PHP: ${{ matrix.php }} with ${{ matrix.with }}"
