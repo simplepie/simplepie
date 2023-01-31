@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -51,16 +50,13 @@ namespace SimplePie;
  * Used by {@see \SimplePie\Enclosure::get_restriction()} and {@see \SimplePie\Enclosure::get_restrictions()}
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_restriction_class()}
- *
- * @package SimplePie
- * @subpackage API
  */
 class Restriction
 {
     /**
      * Relationship ('allow'/'deny')
      *
-     * @var string
+     * @var string|null
      * @see get_relationship()
      */
     public $relationship;
@@ -68,7 +64,7 @@ class Restriction
     /**
      * Type of restriction
      *
-     * @var string
+     * @var string|null
      * @see get_type()
      */
     public $type;
@@ -76,7 +72,7 @@ class Restriction
     /**
      * Restricted values
      *
-     * @var string
+     * @var string|null
      * @see get_value()
      */
     public $value;
@@ -87,7 +83,7 @@ class Restriction
      * For documentation on all the parameters, see the corresponding
      * properties and their accessors
      */
-    public function __construct($relationship = null, $type = null, $value = null)
+    public function __construct(?string $relationship = null, ?string $type = null, ?string $value = null)
     {
         $this->relationship = $relationship;
         $this->type = $type;

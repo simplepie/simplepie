@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -48,8 +47,6 @@ namespace SimplePie\Net;
 /**
  * Class to validate and to work with IPv6 addresses.
  *
- * @package SimplePie
- * @subpackage HTTP
  * @copyright 2003-2005 The PHP Group
  * @license http://www.opensource.org/licenses/bsd-license.php
  * @link http://pear.php.net/package/Net_IPv6
@@ -78,7 +75,7 @@ class IPv6
      * @param string $ip An IPv6 address
      * @return string The uncompressed IPv6 address
      */
-    public static function uncompress($ip)
+    public static function uncompress(string $ip)
     {
         $c1 = -1;
         $c2 = -1;
@@ -134,7 +131,7 @@ class IPv6
      * @param string $ip An IPv6 address
      * @return string The compressed IPv6 address
      */
-    public static function compress($ip)
+    public static function compress(string $ip)
     {
         // Prepare the IP to be compressed
         $ip = self::uncompress($ip);
@@ -176,7 +173,7 @@ class IPv6
      * @param string $ip An IPv6 address
      * @return array [0] contains the IPv6 represented part, and [1] the IPv4 represented part
      */
-    private static function split_v6_v4($ip)
+    private static function split_v6_v4(string $ip): array
     {
         if (strpos($ip, '.') !== false) {
             $pos = strrpos($ip, ':');
@@ -196,7 +193,7 @@ class IPv6
      * @param string $ip An IPv6 address
      * @return bool true if $ip is a valid IPv6 address
      */
-    public static function check_ipv6($ip)
+    public static function check_ipv6(string $ip)
     {
         $ip = self::uncompress($ip);
         [$ipv6, $ipv4] = self::split_v6_v4($ip);
@@ -249,7 +246,7 @@ class IPv6
      * @param string $ip An IPv6 address
      * @return bool true if $ip is a valid IPv6 address
      */
-    public static function checkIPv6($ip)
+    public static function checkIPv6(string $ip)
     {
         return self::check_ipv6($ip);
     }

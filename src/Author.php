@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -51,9 +50,6 @@ namespace SimplePie;
  * Used by {@see Item::get_author()} and {@see SimplePie::get_authors()}
  *
  * This class can be overloaded with {@see SimplePie::set_author_class()}
- *
- * @package SimplePie
- * @subpackage API
  */
 class Author
 {
@@ -88,7 +84,7 @@ class Author
      * @param string $link
      * @param string $email
      */
-    public function __construct($name = null, $link = null, $email = null)
+    public function __construct(string $name = null, string $link = null, string $email = null)
     {
         $this->name = $name;
         $this->link = $link;

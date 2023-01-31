@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -57,9 +56,6 @@ use SimplePie\File;
  *
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_content_type_sniffer_class()}
- *
- * @package SimplePie
- * @subpackage HTTP
  */
 class Sniffer
 {
@@ -75,7 +71,7 @@ class Sniffer
      *
      * @param File $file Input file
      */
-    public function __construct($file)
+    public function __construct(File $file)
     {
         $this->file = $file;
     }
