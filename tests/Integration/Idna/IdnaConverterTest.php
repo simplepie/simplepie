@@ -58,7 +58,7 @@ class IdnaConverterTest extends TestCase
     {
         $idnaConverter = new IdnaConverter();
 
-        $this->assertSame($expected, $idnaConverter->filter($encoded));
+        $this->assertSame($expected, $idnaConverter->filterDomain($encoded));
     }
 
     public function getIdnaData(): array

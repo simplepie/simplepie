@@ -61,7 +61,7 @@ final class IdnaConverter implements IdnaDomainFilter
      *
      * @return string the decoded domain name
      */
-    public function filter(string $encoded): string
+    public function filterDomain(string $encoded): string
     {
         if (class_exists(ToUnicode::class)) {
             // Support for algo26-matthias/idna-convert:^3

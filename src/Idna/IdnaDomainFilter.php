@@ -56,5 +56,5 @@ interface IdnaDomainFilter
      *
      * @return string the decoded domain name
      */
-    public function filter(string $encoded): string;
+    public function filterDomain(string $encoded): string;
 }

@@ -2385,7 +2385,7 @@ class Item implements RegistryAware
     ): Enclosure {
         $idnaConverter = $this->registry->create(IdnaDomainFilter::class);
         $parsed = $this->registry->call(Misc::class, 'parse_url', [$url]);
-        $authority = $idnaConverter->filter($parsed['authority']);
+        $authority = $idnaConverter->filterDomain($parsed['authority']);
 
         if ($authority !== $parsed['authority']) {
             $url = $this->registry->call(Misc::class, 'compress_parse_url', [
