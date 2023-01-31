@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -56,8 +55,6 @@ use Redis as NativeRedis;
  * connect to redis on `localhost` on port 6379. All tables will be
  * prefixed with `simple_primary-` and data will expire after 3600 seconds
  *
- * @package SimplePie
- * @subpackage Caching
  * @uses Redis
  * @deprecated since SimplePie 1.8.0, use implementation of "Psr\SimpleCache\CacheInterface" instead
  */

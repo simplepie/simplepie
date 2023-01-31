@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -52,9 +51,6 @@ use SimplePie\XML\Declaration\Parser as DeclarationParser;
  *
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_parser_class()}
- *
- * @package SimplePie
- * @subpackage Parsing
  */
 class Parser implements RegistryAware
 {
