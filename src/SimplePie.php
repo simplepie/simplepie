@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -57,9 +56,6 @@ use SimplePie\Content\Type\Sniffer;
 
 /**
  * SimplePie
- *
- * @package SimplePie
- * @subpackage API
  */
 class SimplePie
 {
@@ -759,9 +755,9 @@ class SimplePie
      * @since 1.1
      * @param bool $enable Force the given data/URL to be treated as a feed
      */
-    public function force_feed($enable = false)
+    public function force_feed(bool $enable = false)
     {
-        $this->force_feed = (bool) $enable;
+        $this->force_feed = $enable;
     }
 
     /**
@@ -798,7 +794,7 @@ class SimplePie
      * @param \SimplePie\File &$file
      * @return bool True on success, false on failure
      */
-    public function set_file(&$file)
+    public function set_file(\SimplePie\File &$file)
     {
         if ($file instanceof \SimplePie\File) {
             $this->feed_url = $file->url;
@@ -822,7 +818,7 @@ class SimplePie
      * @param string $data RSS or Atom data as a string.
      * @see set_feed_url()
      */
-    public function set_raw_data($data)
+    public function set_raw_data(string $data)
     {
         $this->raw_data = $data;
     }
@@ -836,7 +832,7 @@ class SimplePie
      * @since 1.0 Beta 3
      * @param int $timeout The maximum number of seconds to spend waiting to retrieve a feed.
      */
-    public function set_timeout($timeout = 10)
+    public function set_timeout(int $timeout = 10)
     {
         $this->timeout = (int) $timeout;
     }
@@ -860,9 +856,9 @@ class SimplePie
      * @since 1.0 Beta 3
      * @param bool $enable Force fsockopen() to be used
      */
-    public function force_fsockopen($enable = false)
+    public function force_fsockopen(bool $enable = false)
     {
-        $this->force_fsockopen = (bool) $enable;
+        $this->force_fsockopen = $enable;
     }
 
     /**
@@ -874,15 +870,15 @@ class SimplePie
      * @since 1.0 Preview Release
      * @param bool $enable Enable caching
      */
-    public function enable_cache($enable = true)
+    public function enable_cache(bool $enable = true)
     {
-        $this->enable_cache = (bool) $enable;
+        $this->enable_cache = $enable;
     }
 
     /**
      * Set a PSR-16 implementation as cache
      *
-     * @param CacheInterface $psr16cache The PSR-16 cache implementation
+     * @param CacheInterface $cache The PSR-16 cache implementation
      *
      * @return void
      */
@@ -903,10 +899,10 @@ class SimplePie
      *
      * @param bool $enable Force use of cache on fail.
      */
-    public function force_cache_fallback($enable = false)
+    public function force_cache_fallback(bool $enable = false)
     {
         // @trigger_error(sprintf('SimplePie\SimplePie::force_cache_fallback() is deprecated since SimplePie 1.8.0, expired cache will not be used anymore.'), \E_USER_DEPRECATED);
-        $this->force_cache_fallback = (bool) $enable;
+        $this->force_cache_fallback = $enable;
     }
 
     /**
@@ -915,9 +911,9 @@ class SimplePie
      *
      * @param int $seconds The feed content cache duration
      */
-    public function set_cache_duration($seconds = 3600)
+    public function set_cache_duration(int $seconds = 3600)
     {
-        $this->cache_duration = (int) $seconds;
+        $this->cache_duration = $seconds;
     }
 
     /**
@@ -926,9 +922,9 @@ class SimplePie
      *
      * @param int $seconds The autodiscovered feed URL cache duration.
      */
-    public function set_autodiscovery_cache_duration($seconds = 604800)
+    public function set_autodiscovery_cache_duration(int $seconds = 604800)
     {
-        $this->autodiscovery_cache_duration = (int) $seconds;
+        $this->autodiscovery_cache_duration = $seconds;
     }
 
     /**
@@ -938,10 +934,10 @@ class SimplePie
      *
      * @param string $location The file system location.
      */
-    public function set_cache_location($location = './cache')
+    public function set_cache_location(string $location = './cache')
     {
         // @trigger_error(sprintf('SimplePie\SimplePie::set_cache_location() is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()" instead.'), \E_USER_DEPRECATED);
-        $this->cache_location = (string) $location;
+        $this->cache_location = $location;
     }
 
     /**
@@ -950,7 +946,7 @@ class SimplePie
      * @param string $url The URL of the feed to be cached.
      * @return string A filename (i.e. hash, without path and without extension).
      */
-    public function get_cache_filename($url)
+    public function get_cache_filename(string $url)
     {
         // Append custom parameters to the URL to avoid cache pollution in case of multiple calls with different parameters.
         $url .= $this->force_feed ? '#force_feed' : '';
@@ -979,9 +975,9 @@ class SimplePie
      *
      * @param bool $enable Sort as reverse chronological order.
      */
-    public function enable_order_by_date($enable = true)
+    public function enable_order_by_date(bool $enable = true)
     {
-        $this->order_by_date = (bool) $enable;
+        $this->order_by_date = $enable;
     }
 
     /**
@@ -990,7 +986,7 @@ class SimplePie
      * This overrides the encoding reported by the feed, however it will fall
      * back to the normal encoding detection if the override fails
      *
-     * @param string $encoding Character encoding
+     * @param string|false $encoding Character encoding
      */
     public function set_input_encoding($encoding = false)
     {
@@ -1011,11 +1007,11 @@ class SimplePie
      * @see \SimplePie\SimplePie::LOCATOR_REMOTE_EXTENSION
      * @see \SimplePie\SimplePie::LOCATOR_REMOTE_BODY
      * @see \SimplePie\SimplePie::LOCATOR_ALL
-     * @param int $level Feed Autodiscovery Level (level can be a combination of the above constants, see bitwise OR operator)
+     * @param self::LOCATOR_* $level Feed Autodiscovery Level (level can be a combination of the above constants, see bitwise OR operator)
      */
-    public function set_autodiscovery_level($level = self::LOCATOR_ALL)
+    public function set_autodiscovery_level(int $level = self::LOCATOR_ALL)
     {
-        $this->autodiscovery = (int) $level;
+        $this->autodiscovery = $level;
     }
 
     /**
@@ -1040,9 +1036,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_cache_class($class = Cache::class)
+    public function set_cache_class(string $class = Cache::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Cache::class, $class, true);
     }
@@ -1056,9 +1052,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_locator_class($class = Locator::class)
+    public function set_locator_class(string $class = Locator::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Locator::class, $class, true);
     }
@@ -1072,9 +1068,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_parser_class($class = Parser::class)
+    public function set_parser_class(string $class = Parser::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Parser::class, $class, true);
     }
@@ -1088,9 +1084,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_file_class($class = File::class)
+    public function set_file_class(string $class = File::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(File::class, $class, true);
     }
@@ -1104,9 +1100,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_sanitize_class($class = Sanitize::class)
+    public function set_sanitize_class(string $class = Sanitize::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Sanitize::class, $class, true);
     }
@@ -1120,9 +1116,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_item_class($class = Item::class)
+    public function set_item_class(string $class = Item::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Item::class, $class, true);
     }
@@ -1136,9 +1132,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_author_class($class = Author::class)
+    public function set_author_class(string $class = Author::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Author::class, $class, true);
     }
@@ -1152,9 +1148,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_category_class($class = Category::class)
+    public function set_category_class(string $class = Category::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Category::class, $class, true);
     }
@@ -1168,9 +1164,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_enclosure_class($class = Enclosure::class)
+    public function set_enclosure_class(string $class = Enclosure::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Enclosure::class, $class, true);
     }
@@ -1184,9 +1180,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_caption_class($class = Caption::class)
+    public function set_caption_class(string $class = Caption::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Caption::class, $class, true);
     }
@@ -1200,9 +1196,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_copyright_class($class = Copyright::class)
+    public function set_copyright_class(string $class = Copyright::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Copyright::class, $class, true);
     }
@@ -1216,9 +1212,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_credit_class($class = Credit::class)
+    public function set_credit_class(string $class = Credit::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Credit::class, $class, true);
     }
@@ -1232,9 +1228,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_rating_class($class = Rating::class)
+    public function set_rating_class(string $class = Rating::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Rating::class, $class, true);
     }
@@ -1248,9 +1244,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_restriction_class($class = Restriction::class)
+    public function set_restriction_class(string $class = Restriction::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Restriction::class, $class, true);
     }
@@ -1264,9 +1260,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_content_type_sniffer_class($class = Sniffer::class)
+    public function set_content_type_sniffer_class(string $class = Sniffer::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Sniffer::class, $class, true);
     }
@@ -1280,9 +1276,9 @@ class SimplePie
      *
      * @return boolean True on success, false otherwise
      */
-    public function set_source_class($class = Source::class)
+    public function set_source_class(string $class = Source::class)
     {
-        // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
+        trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::get_registry()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
         return $this->registry->register(Source::class, $class, true);
     }
@@ -1292,7 +1288,7 @@ class SimplePie
      *
      * @param string $ua New user agent string.
      */
-    public function set_useragent($ua = null)
+    public function set_useragent(?string $ua = null)
     {
         if ($ua === null) {
             $ua = \SimplePie\Misc::get_default_useragent();
@@ -1339,7 +1335,7 @@ class SimplePie
      *
      * @param bool $set Whether to set them or not
      */
-    public function set_stupidly_fast($set = false)
+    public function set_stupidly_fast(bool $set = false)
     {
         if ($set) {
             $this->enable_order_by_date(false);
@@ -1358,9 +1354,9 @@ class SimplePie
      *
      * @param int $max Maximum number of feeds to check
      */
-    public function set_max_checked_feeds($max = 10)
+    public function set_max_checked_feeds(int $max = 10)
     {
-        $this->max_checked_feeds = (int) $max;
+        $this->max_checked_feeds = $max;
     }
 
     public function remove_div($enable = true)
@@ -1368,6 +1364,9 @@ class SimplePie
         $this->sanitize->remove_div($enable);
     }
 
+    /**
+     * @param string|false $tags Set a list of tags to strip, or set emtpy string to use default tags or false, to strip nothing.
+     */
     public function strip_htmltags($tags = '', $encode = null)
     {
         if ($tags === '') {
@@ -1430,7 +1429,7 @@ class SimplePie
      *
      * @param string $encoding
      */
-    public function set_output_encoding($encoding = 'UTF-8')
+    public function set_output_encoding(string $encoding = 'UTF-8')
     {
         $this->sanitize->set_output_encoding($encoding);
     }
@@ -1451,7 +1450,7 @@ class SimplePie
      * @since 1.0
      * @param array|null $element_attribute Element/attribute key/value pairs, null for default
      */
-    public function set_url_replacements($element_attribute = null)
+    public function set_url_replacements(?array $element_attribute = null)
     {
         $this->sanitize->set_url_replacements($element_attribute);
     }
@@ -1459,9 +1458,9 @@ class SimplePie
     /**
      * Set the list of domains for which to force HTTPS.
      * @see \SimplePie\Sanitize::set_https_domains()
-     * @param array List of HTTPS domains. Example array('biz', 'example.com', 'example.org', 'www.example.net').
+     * @param array $domains List of HTTPS domains. Example array('biz', 'example.com', 'example.org', 'www.example.net').
      */
-    public function set_https_domains($domains = [])
+    public function set_https_domains(array $domains = [])
     {
         if (is_array($domains)) {
             $this->sanitize->set_https_domains($domains);
@@ -1471,10 +1470,10 @@ class SimplePie
     /**
      * Set the handler to enable the display of cached images.
      *
-     * @param string $page Web-accessible path to the handler_image.php file.
+     * @param string|false $page Web-accessible path to the handler_image.php file.
      * @param string $qs The query string that the value should be passed to.
      */
-    public function set_image_handler($page = false, $qs = 'i')
+    public function set_image_handler($page = false, string $qs = 'i')
     {
         if ($page !== false) {
             $this->sanitize->set_image_handler($page . '?' . $qs . '=');
@@ -1486,11 +1485,11 @@ class SimplePie
     /**
      * Set the limit for items returned per-feed with multifeeds
      *
-     * @param integer $limit The maximum number of items to return.
+     * @param int $limit The maximum number of items to return.
      */
-    public function set_item_limit($limit = 0)
+    public function set_item_limit(int $limit = 0)
     {
-        $this->item_limit = (int) $limit;
+        $this->item_limit = $limit;
     }
 
     /**
@@ -1498,7 +1497,7 @@ class SimplePie
      *
      * @param boolean $enable Should we throw exceptions, or use the old-style error property?
      */
-    public function enable_exceptions($enable = true)
+    public function enable_exceptions(bool $enable = true)
     {
         $this->enable_exceptions = $enable;
     }
@@ -1973,7 +1972,7 @@ class SimplePie
      *
      * @param string $mime MIME type to serve the page as
      */
-    public function handle_content_type($mime = 'text/html')
+    public function handle_content_type(string $mime = 'text/html')
     {
         if (!headers_sent()) {
             $header = "Content-type: $mime;";
@@ -2095,7 +2094,7 @@ class SimplePie
      * iff it is a 301 redirection
      * @return string|null
      */
-    public function subscribe_url($permanent = false)
+    public function subscribe_url(bool $permanent = false)
     {
         if ($permanent) {
             if ($this->permanent_url !== null) {
@@ -2155,7 +2154,7 @@ class SimplePie
      * @param string $tag Tag name
      * @return array
      */
-    public function get_feed_tags($namespace, $tag)
+    public function get_feed_tags(string $namespace, string $tag)
     {
         $type = $this->get_type();
         if ($type & self::TYPE_ATOM_10) {
@@ -2195,7 +2194,7 @@ class SimplePie
      * @param string $tag Tag name
      * @return array
      */
-    public function get_channel_tags($namespace, $tag)
+    public function get_channel_tags(string $namespace, string $tag)
     {
         $type = $this->get_type();
         if ($type & self::TYPE_ATOM_ALL) {
@@ -2241,7 +2240,7 @@ class SimplePie
      * @param string $tag Tag name
      * @return array
      */
-    public function get_image_tags($namespace, $tag)
+    public function get_image_tags(string $namespace, string $tag)
     {
         $type = $this->get_type();
         if ($type & self::TYPE_RSS_10) {
@@ -2280,7 +2279,7 @@ class SimplePie
      * @param array $element
      * @return string
      */
-    public function get_base($element = [])
+    public function get_base(array $element = [])
     {
         if (!empty($element['xml_base_explicit']) && isset($element['xml_base'])) {
             return $element['xml_base'];
@@ -2301,7 +2300,7 @@ class SimplePie
      * @param string $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
-    public function sanitize($data, $type, $base = '')
+    public function sanitize(string $data, int $type, ?string $base = '')
     {
         try {
             return $this->sanitize->sanitize($data, $type, $base);
@@ -2352,7 +2351,7 @@ class SimplePie
      * @param int $key The category that you want to return. Remember that arrays begin with 0, not 1
      * @return \SimplePie\Category|null
      */
-    public function get_category($key = 0)
+    public function get_category(int $key = 0)
     {
         $categories = $this->get_categories();
         if (isset($categories[$key])) {
@@ -2421,7 +2420,7 @@ class SimplePie
      * @param int $key The author that you want to return. Remember that arrays begin with 0, not 1
      * @return \SimplePie\Author|null
      */
-    public function get_author($key = 0)
+    public function get_author(int $key = 0)
     {
         $authors = $this->get_authors();
         if (isset($authors[$key])) {
@@ -2500,7 +2499,7 @@ class SimplePie
      * @param int $key The contrbutor that you want to return. Remember that arrays begin with 0, not 1
      * @return \SimplePie\Author|null
      */
-    public function get_contributor($key = 0)
+    public function get_contributor(int $key = 0)
     {
         $contributors = $this->get_contributors();
         if (isset($contributors[$key])) {
@@ -2571,7 +2570,7 @@ class SimplePie
      * @param string $rel The relationship of the link to return
      * @return string|null Link URL
      */
-    public function get_link($key = 0, $rel = 'alternate')
+    public function get_link(int $key = 0, string $rel = 'alternate')
     {
         $links = $this->get_links($rel);
         if (isset($links[$key])) {
@@ -2606,7 +2605,7 @@ class SimplePie
      * @param string $rel The relationship of links to return
      * @return array|null Links found for the feed (strings)
      */
-    public function get_links($rel = 'alternate')
+    public function get_links(string $rel = 'alternate')
     {
         if (!isset($this->data['links'])) {
             $this->data['links'] = [];
@@ -2944,15 +2943,14 @@ class SimplePie
      * @param int $max Maximum value to return. 0 for no limit
      * @return int Number of items in the feed
      */
-    public function get_item_quantity($max = 0)
+    public function get_item_quantity(int $max = 0)
     {
-        $max = (int) $max;
         $qty = count($this->get_items());
         if ($max === 0) {
             return $qty;
         }
 
-        return ($qty > $max) ? $max : $qty;
+        return min($qty, $max);
     }
 
     /**
@@ -2967,7 +2965,7 @@ class SimplePie
      * @param int $key The item that you want to return. Remember that arrays begin with 0, not 1
      * @return \SimplePie\Item|null
      */
-    public function get_item($key = 0)
+    public function get_item(int $key = 0)
     {
         $items = $this->get_items();
         if (isset($items[$key])) {
@@ -2990,7 +2988,7 @@ class SimplePie
      * @param int $end Number of items to return. 0 for all items after `$start`
      * @return \SimplePie\Item[]|null List of {@see \SimplePie\Item} objects
      */
-    public function get_items($start = 0, $end = 0)
+    public function get_items(int $start = 0, int $end = 0)
     {
         if (!isset($this->data['items'])) {
             if (!empty($this->multifeed_objects)) {
@@ -3061,7 +3059,7 @@ class SimplePie
      */
     public function set_favicon_handler($page = false, $qs = 'i')
     {
-        trigger_error('Favicon handling has been removed, please use your own handling', \E_USER_DEPRECATED);
+        trigger_error('Favicon handling has been removed since SimplePie 1.3, please use your own handling', \E_USER_DEPRECATED);
         return false;
     }
 
@@ -3072,7 +3070,7 @@ class SimplePie
      */
     public function get_favicon()
     {
-        trigger_error('Favicon handling has been removed, please use your own handling', \E_USER_DEPRECATED);
+        trigger_error('Favicon handling has been removed since SimplePie 1.3, please use your own handling', \E_USER_DEPRECATED);
 
         if (($url = $this->get_link()) !== null) {
             return 'https://www.google.com/s2/favicons?domain=' . urlencode($url);
@@ -3088,14 +3086,14 @@ class SimplePie
      * @param array $args Arguments to the method
      * @return mixed
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args)
     {
         if (strpos($method, 'subscribe_') === 0) {
-            trigger_error('subscribe_*() has been deprecated, implement the callback yourself', \E_USER_DEPRECATED);
+            trigger_error('subscribe_*() has been deprecated since SimplePie 1.3, implement the callback yourself', \E_USER_DEPRECATED);
             return '';
         }
         if ($method === 'enable_xml_dump') {
-            trigger_error('enable_xml_dump() has been deprecated, use get_raw_data() instead', \E_USER_DEPRECATED);
+            trigger_error('enable_xml_dump() has been deprecated since SimplePie 1.3, use get_raw_data() instead', \E_USER_DEPRECATED);
             return false;
         }
 
@@ -3110,11 +3108,11 @@ class SimplePie
      * Sorting callback for items
      *
      * @access private
-     * @param SimplePie $a
-     * @param SimplePie $b
+     * @param Item $a
+     * @param Item $b
      * @return boolean
      */
-    public static function sort_items($a, $b)
+    public static function sort_items(Item $a, Item $b)
     {
         $a_date = $a->get_date('U');
         $b_date = $b->get_date('U');
@@ -3144,7 +3142,7 @@ class SimplePie
      * @param int $limit Maximum number of items per feed
      * @return array
      */
-    public static function merge_items($urls, $start = 0, $end = 0, $limit = 0)
+    public static function merge_items(array $urls, int $start = 0, int $end = 0, int $limit = 0)
     {
         if (is_array($urls) && sizeof($urls) > 0) {
             $items = [];
@@ -3178,7 +3176,7 @@ class SimplePie
      * @param string $hub
      * @param string $self
      */
-    private function store_links(&$file, $hub, $self)
+    private function store_links(File &$file, string $hub, string $self): void
     {
         if (isset($file->headers['link']['hub']) ||
               (isset($file->headers['link']) &&
@@ -3208,7 +3206,7 @@ class SimplePie
      *
      * @return DataCache
      */
-    private function get_cache($feed_url = '')
+    private function get_cache(string $feed_url = ''): DataCache
     {
         if ($this->cache === null) {
             // @trigger_error(sprintf('Not providing as PSR-16 cache implementation is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);

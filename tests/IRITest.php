@@ -34,7 +34,6 @@ declare(strict_types=1);
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package IRI
  * @author Sam Sneddon
  * @copyright 2008-2016 Sam Sneddon
  * @license http://www.opensource.org/licenses/bsd-license.php

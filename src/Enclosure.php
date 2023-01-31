@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -51,9 +50,6 @@ namespace SimplePie;
  * Used by {@see \SimplePie\Item::get_enclosure()} and {@see \SimplePie\Item::get_enclosures()}
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_enclosure_class()}
- *
- * @package SimplePie
- * @subpackage API
  */
 class Enclosure
 {
@@ -288,7 +284,7 @@ class Enclosure
      * @param int $key
      * @return \SimplePie\Caption|null
      */
-    public function get_caption($key = 0)
+    public function get_caption(int $key = 0)
     {
         $captions = $this->get_captions();
         if (isset($captions[$key])) {
@@ -318,7 +314,7 @@ class Enclosure
      * @param int $key
      * @return \SimplePie\Category|null
      */
-    public function get_category($key = 0)
+    public function get_category(int $key = 0)
     {
         $categories = $this->get_categories();
         if (isset($categories[$key])) {
@@ -376,7 +372,7 @@ class Enclosure
      * @param int $key
      * @return \SimplePie\Credit|null
      */
-    public function get_credit($key = 0)
+    public function get_credit(int $key = 0)
     {
         $credits = $this->get_credits();
         if (isset($credits[$key])) {
@@ -420,7 +416,7 @@ class Enclosure
      * @param bool $convert Convert seconds into hh:mm:ss
      * @return string|int|null 'hh:mm:ss' string if `$convert` was specified, otherwise integer (or null if none found)
      */
-    public function get_duration($convert = false)
+    public function get_duration(bool $convert = false)
     {
         if ($this->duration !== null) {
             if ($convert) {
@@ -495,7 +491,7 @@ class Enclosure
      * @param int $key
      * @return string|null Hash as per `media:hash`, prefixed with "$algo:"
      */
-    public function get_hash($key = 0)
+    public function get_hash(int $key = 0)
     {
         $hashes = $this->get_hashes();
         if (isset($hashes[$key])) {
@@ -554,7 +550,7 @@ class Enclosure
      * @param int $key
      * @return string|null
      */
-    public function get_keyword($key = 0)
+    public function get_keyword(int $key = 0)
     {
         $keywords = $this->get_keywords();
         if (isset($keywords[$key])) {
@@ -642,7 +638,7 @@ class Enclosure
      * @param int $key
      * @return \SimplePie\Rating|null
      */
-    public function get_rating($key = 0)
+    public function get_rating(int $key = 0)
     {
         $ratings = $this->get_ratings();
         if (isset($ratings[$key])) {
@@ -672,7 +668,7 @@ class Enclosure
      * @param int $key
      * @return \SimplePie\Restriction|null
      */
-    public function get_restriction($key = 0)
+    public function get_restriction(int $key = 0)
     {
         $restrictions = $this->get_restrictions();
         if (isset($restrictions[$key])) {
@@ -731,7 +727,7 @@ class Enclosure
      * @param int $key
      * @return string|null Thumbnail URL
      */
-    public function get_thumbnail($key = 0)
+    public function get_thumbnail(int $key = 0)
     {
         $thumbnails = $this->get_thumbnails();
         if (isset($thumbnails[$key])) {
@@ -856,7 +852,7 @@ class Enclosure
      * @param bool $native Use `<embed>`
      * @return string HTML string to output
      */
-    public function embed($options = '', $native = false)
+    public function embed($options = '', bool $native = false)
     {
         // Set up defaults
         $audio = '';
@@ -1041,7 +1037,7 @@ class Enclosure
      * @param bool $find_handler Internal use only, use {@see get_handler()} instead
      * @return string MIME type
      */
-    public function get_real_type($find_handler = false)
+    public function get_real_type(bool $find_handler = false)
     {
         // Mime-types by handler.
         $types_flash = ['application/x-shockwave-flash', 'application/futuresplash']; // Flash
@@ -1109,9 +1105,9 @@ class Enclosure
                     $type = 'audio/x-ms-wma';
                     break;
 
-                // Video mime-types
                 case '3gp':
                 case '3gpp':
+                    // Video mime-types
                     $type = 'video/3gpp';
                     break;
 
@@ -1172,8 +1168,8 @@ class Enclosure
                     $type = 'video/x-ms-wvx';
                     break;
 
-                // Flash mime-types
                 case 'spl':
+                    // Flash mime-types
                     $type = 'application/futuresplash';
                     break;
 

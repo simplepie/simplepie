@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -58,7 +57,6 @@ use SimplePie\Cache\NameFilter;
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_sanitize_class()}
  *
- * @package SimplePie
  * @todo Move to using an actual HTML parser (this will allow tags to be properly stripped, and to switch between HTML and XHTML), this will also make it easier to shorten a string while preserving HTML tags
  */
 class Sanitize implements RegistryAware
@@ -259,7 +257,7 @@ class Sanitize implements RegistryAware
      * @since 1.0
      * @param array|null $element_attribute Element/attribute key/value pairs, null for default
      */
-    public function set_url_replacements($element_attribute = null)
+    public function set_url_replacements(?array $element_attribute = null)
     {
         if ($element_attribute === null) {
             $element_attribute = [
@@ -637,7 +635,7 @@ class Sanitize implements RegistryAware
      *
      * @return DataCache
      */
-    private function get_cache($image_url = '')
+    private function get_cache(string $image_url = ''): DataCache
     {
         if ($this->cache === null) {
             // @trigger_error(sprintf('Not providing as PSR-16 cache implementation is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache()".'), \E_USER_DEPRECATED);

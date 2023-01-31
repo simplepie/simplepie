@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -48,8 +47,6 @@ namespace SimplePie;
 /**
  * Decode 'gzip' encoded HTTP data
  *
- * @package SimplePie
- * @subpackage HTTP
  * @link http://www.gzip.org/format.txt
  */
 class Gzdecode
@@ -180,7 +177,7 @@ class Gzdecode
      * @param string $name
      * @param mixed $value
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         trigger_error("Cannot write property $name", E_USER_ERROR);
     }
@@ -190,7 +187,7 @@ class Gzdecode
      *
      * @param string $data
      */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->compressed_data = $data;
         $this->compressed_size = strlen($data);

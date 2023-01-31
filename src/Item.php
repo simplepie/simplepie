@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -53,9 +52,6 @@ use SimplePie\Idna\IdnaDomainFilter;
  * Used by {@see \SimplePie\SimplePie::get_item()} and {@see \SimplePie\SimplePie::get_items()}
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_item_class()}
- *
- * @package \SimplePie\SimplePie
- * @subpackage API
  */
 class Item implements RegistryAware
 {
@@ -92,7 +88,7 @@ class Item implements RegistryAware
      * @param \SimplePie\SimplePie $feed Parent feed
      * @param array $data Raw data
      */
-    public function __construct($feed, $data)
+    public function __construct(\SimplePie\SimplePie $feed, array $data)
     {
         $this->feed = $feed;
         $this->data = $data;
@@ -145,7 +141,7 @@ class Item implements RegistryAware
      * @param string $tag Tag name
      * @return array
      */
-    public function get_item_tags($namespace, $tag)
+    public function get_item_tags(string $namespace, string $tag)
     {
         if (isset($this->data['child'][$namespace][$tag])) {
             return $this->data['child'][$namespace][$tag];
@@ -161,7 +157,7 @@ class Item implements RegistryAware
      * @param array $element
      * @return string
      */
-    public function get_base($element = [])
+    public function get_base(array $element = [])
     {
         if (!empty($element['xml_base_explicit']) && isset($element['xml_base'])) {
             return $element['xml_base'];
@@ -180,10 +176,10 @@ class Item implements RegistryAware
      * @see \SimplePie\SimplePie::sanitize()
      * @param string $data Data to sanitize
      * @param int $type One of the \SimplePie\SimplePie::CONSTRUCT_* constants
-     * @param string $base Base URL to resolve URLs against
+     * @param string|null $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
-    public function sanitize($data, $type, $base = '')
+    public function sanitize(string $data, int $type, ?string $base = '')
     {
         return $this->feed->sanitize($data, $type, $base);
     }
@@ -216,7 +212,7 @@ class Item implements RegistryAware
      * @param string|false $fn User-supplied function to generate an hash
      * @return string|null
      */
-    public function get_id($hash = false, $fn = 'md5')
+    public function get_id(bool $hash = false, $fn = 'md5')
     {
         if (!$hash) {
             if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'id')) {
@@ -292,7 +288,7 @@ class Item implements RegistryAware
      * @param boolean $description_only Should we avoid falling back to the content?
      * @return string|null
      */
-    public function get_description($description_only = false)
+    public function get_description(bool $description_only = false)
     {
         if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'summary')) &&
             ($return = $this->sanitize($tags[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$tags[0]['attribs']]), $this->get_base($tags[0])))) {
@@ -342,7 +338,7 @@ class Item implements RegistryAware
      * @param boolean $content_only Should we avoid falling back to the description?
      * @return string|null
      */
-    public function get_content($content_only = false)
+    public function get_content(bool $content_only = false)
     {
         if (($tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'content')) &&
             ($return = $this->sanitize($tags[0]['data'], $this->registry->call(Misc::class, 'atom_10_content_construct_type', [$tags[0]['attribs']]), $this->get_base($tags[0])))) {
@@ -393,7 +389,7 @@ class Item implements RegistryAware
      * @param int $key The category that you want to return.  Remember that arrays begin with 0, not 1
      * @return \SimplePie\Category|null
      */
-    public function get_category($key = 0)
+    public function get_category(int $key = 0)
     {
         $categories = $this->get_categories();
         if (isset($categories[$key])) {
@@ -465,7 +461,7 @@ class Item implements RegistryAware
      * @param int $key The author that you want to return.  Remember that arrays begin with 0, not 1
      * @return \SimplePie\Author|null
      */
-    public function get_author($key = 0)
+    public function get_author(int $key = 0)
     {
         $authors = $this->get_authors();
         if (isset($authors[$key])) {
@@ -482,7 +478,7 @@ class Item implements RegistryAware
      * @param int $key The contrbutor that you want to return.  Remember that arrays begin with 0, not 1
      * @return \SimplePie\Author|null
      */
-    public function get_contributor($key = 0)
+    public function get_contributor(int $key = 0)
     {
         $contributors = $this->get_contributors();
         if (isset($contributors[$key])) {
@@ -649,7 +645,7 @@ class Item implements RegistryAware
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date} (empty for the raw data)
      * @return int|string|null
      */
-    public function get_date($date_format = 'j F Y, g:i a')
+    public function get_date(string $date_format = 'j F Y, g:i a')
     {
         if (!isset($this->data['date'])) {
             if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'published')) {
@@ -678,7 +674,6 @@ class Item implements RegistryAware
             }
         }
         if ($this->data['date']) {
-            $date_format = (string) $date_format;
             switch ($date_format) {
                 case '':
                     return $this->sanitize($this->data['date']['raw'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
@@ -705,7 +700,7 @@ class Item implements RegistryAware
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date} (empty for the raw data)
      * @return int|string|null
      */
-    public function get_updated_date($date_format = 'j F Y, g:i a')
+    public function get_updated_date(string $date_format = 'j F Y, g:i a')
     {
         if (!isset($this->data['updated'])) {
             if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'updated')) {
@@ -720,7 +715,6 @@ class Item implements RegistryAware
             }
         }
         if ($this->data['updated']) {
-            $date_format = (string) $date_format;
             switch ($date_format) {
                 case '':
                     return $this->sanitize($this->data['updated']['raw'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
@@ -749,7 +743,7 @@ class Item implements RegistryAware
      * @param string $date_format Supports any PHP date format from {@see http://php.net/strftime} (empty for the raw data)
      * @return int|string|null
      */
-    public function get_local_date($date_format = '%c')
+    public function get_local_date(string $date_format = '%c')
     {
         if (!$date_format) {
             return $this->sanitize($this->get_date(''), \SimplePie\SimplePie::CONSTRUCT_TEXT);
@@ -767,7 +761,7 @@ class Item implements RegistryAware
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date}
      * @return int|string|null
      */
-    public function get_gmdate($date_format = 'j F Y, g:i a')
+    public function get_gmdate(string $date_format = 'j F Y, g:i a')
     {
         $date = $this->get_date('U');
         if ($date === null) {
@@ -784,7 +778,7 @@ class Item implements RegistryAware
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date}
      * @return int|string|null
      */
-    public function get_updated_gmdate($date_format = 'j F Y, g:i a')
+    public function get_updated_gmdate(string $date_format = 'j F Y, g:i a')
     {
         $date = $this->get_updated_date('U');
         if ($date === null) {
@@ -825,7 +819,7 @@ class Item implements RegistryAware
      * @param string $rel The relationship of the link to return
      * @return string|null Link URL
      */
-    public function get_link($key = 0, $rel = 'alternate')
+    public function get_link(int $key = 0, string $rel = 'alternate')
     {
         $links = $this->get_links($rel);
         if ($links && $links[$key] !== null) {
@@ -844,7 +838,7 @@ class Item implements RegistryAware
      * @param string $rel The relationship of links to return
      * @return array|null Links found for the item (strings)
      */
-    public function get_links($rel = 'alternate')
+    public function get_links(string $rel = 'alternate')
     {
         if (!isset($this->data['links'])) {
             $this->data['links'] = [];
@@ -907,7 +901,7 @@ class Item implements RegistryAware
      * @param int $key The enclosure that you want to return.  Remember that arrays begin with 0, not 1
      * @return \SimplePie\Enclosure|null
      */
-    public function get_enclosure($key = 0, $prefer = null)
+    public function get_enclosure(int $key = 0)
     {
         $enclosures = $this->get_enclosures();
         if (isset($enclosures[$key])) {
