@@ -46,6 +46,7 @@ namespace SimplePie\Tests\Integration\Idna;
 
 use Algo26\IdnaConvert\IdnaConvert;
 use Algo26\IdnaConvert\ToUnicode;
+use idna_convert;
 use PHPUnit\Framework\TestCase;
 use SimplePie\Idna\IdnaConverter;
 
@@ -63,7 +64,11 @@ class IdnaConverterTest extends TestCase
 
     public function getIdnaData(): array
     {
-        if (!class_exists(ToUnicode::class) && !class_exists(IdnaConvert::class)) {
+        if (
+            !class_exists(ToUnicode::class)
+            && !class_exists(IdnaConvert::class)
+            && !class_exists(idna_convert::class)
+        ) {
             // No idna-convert library is available
             return [
                 ['', ''],

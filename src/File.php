@@ -68,15 +68,21 @@ class File
 
     public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
     {
-        if (class_exists('idna_convert')) {
-            $idn = new \idna_convert();
-            $parsed = \SimplePie\Misc::parse_url($url);
-            $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], null);
-        }
         $this->url = $url;
         $this->permanent_url = $url;
         $this->useragent = $useragent;
+
         if (preg_match('/^http(s)?:\/\//i', $url)) {
+            // Convert only urls, not paths
+            if (class_exists('idna_convert')) {
+                $idn = new \idna_convert();
+                $parsed = \SimplePie\Misc::parse_url($url);
+                $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], null);
+
+                $this->url = $url;
+                $this->permanent_url = $url;
+            }
+
             if ($useragent === null) {
                 $useragent = ini_get('user_agent');
                 $this->useragent = $useragent;

@@ -44,6 +44,7 @@ namespace SimplePie\Idna;
 
 use Algo26\IdnaConvert\IdnaConvert;
 use Algo26\IdnaConvert\ToUnicode;
+use idna_convert;
 
 /**
  * Convert internationalized domain names using idna-convert
@@ -71,6 +72,11 @@ final class IdnaConverter implements IdnaDomainFilter
         } else if (class_exists(IdnaConvert::class)) {
             // Support for algo26-matthias/idna-convert:^2
             $idnaConvert = new IdnaConvert();
+
+            return $idnaConvert->decode($encoded);
+        } else if (class_exists(idna_convert::class)) {
+            // Support for idna_convert:0.5.1
+            $idnaConvert = new idna_convert();
 
             return $idnaConvert->decode($encoded);
         } else {
