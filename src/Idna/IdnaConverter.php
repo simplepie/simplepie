@@ -43,7 +43,7 @@
 namespace SimplePie\Idna;
 
 use Algo26\IdnaConvert\IdnaConvert;
-use Algo26\IdnaConvert\ToUnicode;
+use Algo26\IdnaConvert\ToIdn;
 use idna_convert;
 
 /**
@@ -56,32 +56,30 @@ final class IdnaConverter implements IdnaDomainFilter
     /**
      * Convert an internationalized domain name.
      *
-     * e.g. from `xn--mller-kva` to `müller`
+     * @param string $decoded The decoded domain name like `müller.tld`
      *
-     * @param string $encoded The encoded domain name
-     *
-     * @return string the decoded domain name
+     * @return string the encoded domain name like `xn--mller-kva.tld`
      */
-    public function filterDomain(string $encoded): string
+    public function filterDomain(string $decoded): string
     {
-        if (class_exists(ToUnicode::class)) {
+        if (class_exists(ToIdn::class)) {
             // Support for algo26-matthias/idna-convert:^3
-            $idnaConvert = new ToUnicode();
+            $idnaConvert = new ToIdn();
 
-            return $idnaConvert->convert($encoded);
+            return $idnaConvert->convert($decoded);
         } else if (class_exists(IdnaConvert::class)) {
             // Support for algo26-matthias/idna-convert:^2
             $idnaConvert = new IdnaConvert();
 
-            return $idnaConvert->decode($encoded);
+            return $idnaConvert->encode($decoded);
         } else if (class_exists(idna_convert::class)) {
             // Support for idna_convert:0.5.1
             $idnaConvert = new idna_convert();
 
-            return $idnaConvert->decode($encoded);
+            return $idnaConvert->encode($decoded);
         } else {
             // No idna-convert library is available
-            return $encoded;
+            return $decoded;
         }
     }
 }

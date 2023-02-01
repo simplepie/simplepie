@@ -45,7 +45,7 @@ declare(strict_types=1);
 namespace SimplePie\Tests\Integration\Idna;
 
 use Algo26\IdnaConvert\IdnaConvert;
-use Algo26\IdnaConvert\ToUnicode;
+use Algo26\IdnaConvert\ToIdn;
 use idna_convert;
 use PHPUnit\Framework\TestCase;
 use SimplePie\Idna\IdnaConverter;
@@ -55,17 +55,17 @@ class IdnaConverterTest extends TestCase
     /**
      * @dataProvider getIdnaData
      */
-    public function testIdnaConverterReturnsCorrectData(string $encoded, string $expected): void
+    public function testIdnaConverterReturnsCorrectData(string $decoded, string $expected): void
     {
         $idnaConverter = new IdnaConverter();
 
-        $this->assertSame($expected, $idnaConverter->filterDomain($encoded));
+        $this->assertSame($expected, $idnaConverter->filterDomain($decoded));
     }
 
     public function getIdnaData(): array
     {
         if (
-            !class_exists(ToUnicode::class)
+            !class_exists(ToIdn::class)
             && !class_exists(IdnaConvert::class)
             && !class_exists(idna_convert::class)
         ) {
@@ -77,10 +77,10 @@ class IdnaConverterTest extends TestCase
 
         return [
             ['', ''],
-            ['xn--mller-kva', 'müller'],
-            ['xn--weienbach-i1a', 'weißenbach'],
-            ['xn----9mcj9fole', 'يوم-جيد'],
-            ['xn----2hckbod3a', 'יום-טוב'],
+            ['müller.tld', 'xn--mller-kva.tld'],
+            ['weißenbach', 'xn--weienbach-i1a'],
+            ['يوم-جيد', 'xn----9mcj9fole'],
+            ['יום-טוב', 'xn----2hckbod3a'],
         ];
     }
 }

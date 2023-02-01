@@ -50,11 +50,9 @@ interface IdnaDomainFilter
     /**
      * Convert an internationalized domain name.
      *
-     * e.g. from `xn--mller-kva` to `müller`
+     * @param string $decoded The decoded domain name like `müller.tld`
      *
-     * @param string $encoded The encoded domain name
-     *
-     * @return string the decoded domain name
+     * @return string the encoded domain name like `xn--mller-kva.tld`
      */
-    public function filterDomain(string $encoded): string;
+    public function filterDomain(string $decoded): string;
 }
