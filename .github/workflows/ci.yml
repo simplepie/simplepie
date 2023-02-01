@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Install PHP with latest composer
         uses: shivammathur/setup-php@v2
@@ -88,7 +88,7 @@ jobs:
 
       - name: Run unit tests with idna_convert 0.5.1
         if: ${{ matrix.with == 'idna-convert-v051' }}
-        run: bin/phpunit --bootstrap=tests/bootstrap-with-idna-convert-051.php
+        run: composer test -- --bootstrap=tests/bootstrap-with-idna-convert-051.php
 
       - name: Run unit tests
         if: ${{ matrix.with != 'idna-convert-v051' }}
@@ -99,7 +99,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
