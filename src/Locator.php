@@ -221,7 +221,7 @@ class Locator implements RegistryAware
                 if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower($this->registry->call(Misc::class, 'parse_mime', [$link->getAttribute('type')])), ['text/html', 'application/rss+xml', 'application/atom+xml'])) && !isset($feeds[$href])) {
                     $this->checked_feeds++;
                     $headers = [
-                        'Accept' => File::DEFAULT_HTTP_ACCEPT,
+                        'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                     ];
                     $feed = $this->registry->create(File::class, [$href, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                     if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed, true)) {
@@ -328,7 +328,7 @@ class Locator implements RegistryAware
                 $this->checked_feeds++;
 
                 $headers = [
-                    'Accept' => File::DEFAULT_HTTP_ACCEPT,
+                    'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
                 $feed = $this->registry->create(File::class, [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                 if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {
@@ -350,7 +350,7 @@ class Locator implements RegistryAware
             if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
                 $this->checked_feeds++;
                 $headers = [
-                    'Accept' => File::DEFAULT_HTTP_ACCEPT,
+                    'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
                 $feed = $this->registry->create(File::class, [$value, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                 if ($feed->success && ($feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed)) {

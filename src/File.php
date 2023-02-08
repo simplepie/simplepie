@@ -55,9 +55,6 @@ namespace SimplePie;
  */
 class File
 {
-
-    const DEFAULT_HTTP_ACCEPT = 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1';
-
     public $url;
     public $useragent;
     public $success = true;
