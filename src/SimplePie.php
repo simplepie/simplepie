@@ -411,6 +411,11 @@ class SimplePie
     public const FILE_SOURCE_FILE_GET_CONTENTS = 16;
 
     /**
+     * @internal Default value of the HTTP Accept header when fetching/locating feeds
+     */
+    public const DEFAULT_HTTP_ACCEPT_HEADER = 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1';
+
+    /**
      * @var array Raw data
      * @access private
      */
@@ -1767,7 +1772,7 @@ class SimplePie
                     $this->check_modified = true;
                     if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag'])) {
                         $headers = [
-                            'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+                            'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                         ];
                         if (isset($this->data['headers']['last-modified'])) {
                             $headers['if-modified-since'] = $this->data['headers']['last-modified'];
@@ -1821,7 +1826,7 @@ class SimplePie
                 $file =& $this->file;
             } else {
                 $headers = [
-                    'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+                    'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
                 try {
                     $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);

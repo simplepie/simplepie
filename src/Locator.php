@@ -231,7 +231,7 @@ class Locator implements RegistryAware
                 if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower($this->registry->call(Misc::class, 'parse_mime', [$link->getAttribute('type')])), ['text/html', 'application/rss+xml', 'application/atom+xml'])) && !isset($feeds[$href])) {
                     $this->checked_feeds++;
                     $headers = [
-                        'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+                        'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                     ];
 
                     try {
@@ -344,7 +344,7 @@ class Locator implements RegistryAware
                 $this->checked_feeds++;
 
                 $headers = [
-                    'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+                    'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
 
                 try {
@@ -372,7 +372,7 @@ class Locator implements RegistryAware
             if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
                 $this->checked_feeds++;
                 $headers = [
-                    'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+                    'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
 
                 try {
