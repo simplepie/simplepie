@@ -49,6 +49,6 @@ use SimplePie\Exception;
 /**
  * HTTP exception class
  */
-class HttpException extends Exception
+final class HttpException extends Exception
 {
 }
