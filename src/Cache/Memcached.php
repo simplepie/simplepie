@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -56,8 +55,6 @@ use Memcached as NativeMemcached;
  * connect to memcached on `localhost` on port 11211. All tables will be
  * prefixed with `sp_` and data will expire after 3600 seconds
  *
- * @package    SimplePie
- * @subpackage Caching
  * @author     Paul L. McNeely
  * @uses       Memcached
  * @deprecated since SimplePie 1.8.0, use implementation of "Psr\SimpleCache\CacheInterface" instead
@@ -88,7 +85,7 @@ class Memcached implements Base
      * @param string $name Unique ID for the cache
      * @param Base::TYPE_FEED|Base::TYPE_IMAGE $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
      */
-    public function __construct($location, $name, $type)
+    public function __construct(string $location, string $name, $type)
     {
         $this->options = [
             'host'   => '127.0.0.1',
@@ -167,7 +164,7 @@ class Memcached implements Base
      * Set the last modified time and data to NativeMemcached
      * @return bool Success status
      */
-    private function setData($data)
+    private function setData($data): bool
     {
         if ($data !== false) {
             $this->cache->set($this->name . '_mtime', time(), (int)$this->options['extras']['timeout']);

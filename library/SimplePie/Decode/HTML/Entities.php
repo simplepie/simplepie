@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -50,7 +49,6 @@ declare(strict_types=1);
  * This implements HTML5 as of revision 967 (2007-06-28)
  *
  * @deprecated Use DOMDocument instead!
- * @package SimplePie
  */
 class SimplePie_Decode_HTML_Entities
 {
@@ -84,7 +82,7 @@ class SimplePie_Decode_HTML_Entities
      * @access public
      * @param string $data Input data
      */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->data = $data;
     }
@@ -128,7 +126,7 @@ class SimplePie_Decode_HTML_Entities
      * @param string $chars Characters to consume
      * @return mixed A series of characters that match the range, or false
      */
-    public function consume_range($chars)
+    public function consume_range(string $chars)
     {
         if ($len = strspn($this->data, $chars, $this->position)) {
             $data = substr($this->data, $this->position, $len);

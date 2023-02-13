@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -51,8 +50,6 @@ use Psr\SimpleCache\InvalidArgumentException;
 /**
  * Caches data into a PSR-16 cache implementation
  *
- * @package SimplePie
- * @subpackage Caching
  * @internal
  */
 final class Psr16 implements DataCache

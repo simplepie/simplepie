@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -47,9 +46,6 @@ namespace SimplePie\HTTP;
 
 /**
  * HTTP Response Parser
- *
- * @package SimplePie
- * @subpackage HTTP
  */
 class Parser
 {
@@ -163,7 +159,7 @@ class Parser
      *
      * @param string $data Input data
      */
-    public function __construct($data)
+    public function __construct(string $data)
     {
         $this->data = $data;
         $this->data_length = strlen($this->data);
@@ -490,7 +486,7 @@ class Parser
      *
      * @return string
      */
-    public static function prepareHeaders($headers, $count = 1)
+    public static function prepareHeaders(string $headers, int $count = 1)
     {
         $data = explode("\r\n\r\n", $headers, $count);
         $data = array_pop($data);

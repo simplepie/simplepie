@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -54,8 +53,6 @@ use SimplePie\HTTP\Response;
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_file_class()}
  *
- * @package SimplePie
- * @subpackage HTTP
  * @todo Move to properly supporting RFC2616 (HTTP/1.1)
  */
 class File implements Response

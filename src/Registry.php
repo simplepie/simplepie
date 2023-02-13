@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -53,8 +52,6 @@ use SimplePie\XML\Declaration\Parser as DeclarationParser;
  * Handles creating objects and calling methods
  *
  * Access this via {@see \SimplePie\SimplePie::get_registry()}
- *
- * @package SimplePie
  */
 class Registry
 {
@@ -148,7 +145,7 @@ class Registry
      * @param bool $legacy Whether to enable legacy support for this class
      * @return bool Successfulness
      */
-    public function register($type, $class, $legacy = false)
+    public function register(string $type, $class, bool $legacy = false)
     {
         if (array_key_exists($type, $this->legacyTypes)) {
             // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8.0, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
@@ -218,7 +215,7 @@ class Registry
      * @param array $parameters Parameters to pass to the constructor
      * @return T Instance of class
      */
-    public function &create($type, $parameters = [])
+    public function &create($type, array $parameters = [])
     {
         $class = $this->get_class($type);
 
@@ -246,7 +243,7 @@ class Registry
      * @param array $parameters
      * @return mixed
      */
-    public function &call($type, $method, $parameters = [])
+    public function &call($type, string $method, array $parameters = [])
     {
         $class = $this->get_class($type);
 

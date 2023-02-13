@@ -34,7 +34,6 @@ declare(strict_types=1);
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package SimplePie
  * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Sam Sneddon
@@ -52,9 +51,6 @@ use SimplePie\XML\Declaration\Parser as DeclarationParser;
  *
  *
  * This class can be overloaded with {@see \SimplePie\SimplePie::set_parser_class()}
- *
- * @package SimplePie
- * @subpackage Parsing
  */
 class Parser implements RegistryAware
 {
@@ -376,7 +372,7 @@ class Parser implements RegistryAware
         return $cache[$string];
     }
 
-    private function parse_hcard($data, $category = false)
+    private function parse_hcard($data, $category = false): string
     {
         $name = '';
         $link = '';
@@ -400,7 +396,10 @@ class Parser implements RegistryAware
         return $data['value'] ?? '';
     }
 
-    private function parse_microformats(&$data, $url)
+    /**
+     * @return true
+     */
+    private function parse_microformats(&$data, $url): bool
     {
         $feed_title = '';
         $feed_author = null;
@@ -621,7 +620,7 @@ class Parser implements RegistryAware
         return true;
     }
 
-    private function declare_html_entities()
+    private function declare_html_entities(): string
     {
         // This is required because the RSS specification says that entity-encoded
         // html is allowed, but the xml specification says they must be declared.
