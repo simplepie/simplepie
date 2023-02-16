@@ -49,6 +49,7 @@ use SimplePie\Exception\HttpException;
 use SimplePie\File;
 use SimplePie\Misc;
 use SimplePie\Registry;
+use Throwable;
 
 /**
  * HTTP Client based on \SimplePie\File
@@ -85,15 +86,19 @@ final class FileClient implements Client
             ), 1);
         }
 
-        $file = $this->registry->create(File::class, [
-            $url,
-            $this->options['timeout'] ?? 10,
-            $this->options['redirects'] ?? 5,
-            $headers,
-            $this->options['useragent'] ?? $this->registry->call(Misc::class, 'get_default_useragent'),
-            $this->options['force_fsockopen'] ?? false,
-            $this->options['curl_options'] ?? []
-        ]);
+        try {
+            $file = $this->registry->create(File::class, [
+                $url,
+                $this->options['timeout'] ?? 10,
+                $this->options['redirects'] ?? 5,
+                $headers,
+                $this->options['useragent'] ?? $this->registry->call(Misc::class, 'get_default_useragent'),
+                $this->options['force_fsockopen'] ?? false,
+                $this->options['curl_options'] ?? []
+            ]);
+        } catch (Throwable $th) {
+            throw new HttpException($th->getMessage(), $th->getCode(), $th);
+        }
 
         if (! $file->success) {
             throw new HttpException($file->error);
