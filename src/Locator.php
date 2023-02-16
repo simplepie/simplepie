@@ -44,9 +44,11 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use InvalidArgumentException;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Response;
 
 /**
  * Used for feed auto-discovery
@@ -77,8 +79,17 @@ class Locator implements RegistryAware
      */
     private $http_client = null;
 
-    public function __construct(\SimplePie\HTTP\Response $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [], ?Client $http_client = null)
+    public function __construct(/* File */ $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [], ?Client $http_client = null)
     {
+        if (! is_object($file) || ! $file instanceof Response) {
+            // For BC we're asking for `File`, but internally we accept every `Response` implementation
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($file) must be of type %s',
+                __METHOD__,
+                File::class
+            ), 1);
+        }
+
         $this->file = $file;
         $this->useragent = $useragent;
         $this->timeout = $timeout;
