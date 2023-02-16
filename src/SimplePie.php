@@ -1923,8 +1923,25 @@ class SimplePie
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
             $response = (! $file instanceof File) ? File::fromResponse($file) : $file;
-            $locate = $this->registry->create(Locator::class, [$response, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
-            $locate->set_http_client($this->get_http_client());
+            $locate = $this->registry->create(Locator::class, [
+                $response,
+                $this->timeout,
+                $this->useragent,
+                $this->max_checked_feeds,
+                $this->force_fsockopen,
+                $this->curl_options,
+                $this->get_http_client()
+            ]);
+
+            $http_client = $this->get_http_client();
+
+            if ($http_client instanceof Psr18Client) {
+                $locate->set_http_client(
+                    $http_client->getHttpClient(),
+                    $http_client->getRequestFactory(),
+                    $http_client->getUriFactory()
+                );
+            }
 
             if (!$locate->is_feed($file)) {
                 $copyStatusCode = $file->get_status_code();
