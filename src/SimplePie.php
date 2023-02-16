@@ -844,6 +844,12 @@ class SimplePie
         $this->raw_data = $data;
     }
 
+    /**
+     * Set a PSR-18 client and PSR-17 factories
+     *
+     * Allows you to use your own HTTP client implementations.
+     * This will become required with SimplePie 2.0.0.
+     */
     public function set_http_client(
         ClientInterface $http_client,
         RequestFactoryInterface $request_factory,
@@ -1631,7 +1637,16 @@ class SimplePie
             $this->registry->get_class(Cache::class),
             $this->cache
         );
-        $this->sanitize->set_http_client($this->get_http_client());
+
+        $http_client = $this->get_http_client();
+
+        if ($http_client instanceof Psr18Client) {
+            $this->sanitize->set_http_client(
+                $http_client->getHttpClient(),
+                $http_client->getRequestFactory(),
+                $http_client->getUriFactory()
+            );
+        }
 
         if (!empty($this->multifeed_url)) {
             $i = 0;

@@ -77,6 +77,21 @@ final class Psr18Client implements Client
         $this->uriFactory = $uriFactory;
     }
 
+    public function getHttpClient(): ClientInterface
+    {
+        return $this->httpClient;
+    }
+
+    public function getRequestFactory(): RequestFactoryInterface
+    {
+        return $this->requestFactory;
+    }
+
+    public function getUriFactory(): UriFactoryInterface
+    {
+        return $this->uriFactory;
+    }
+
     /**
      * send a request and return the response
      *

@@ -90,7 +90,7 @@ class Locator implements RegistryAware
         if (class_exists('DOMDocument') && $this->file->get_body_content() != '') {
             $this->dom = new \DOMDocument();
 
-            set_error_handler(['SimplePie\Misc', 'silence_errors']);
+            set_error_handler([Misc::class, 'silence_errors']);
             try {
                 $this->dom->loadHTML($this->file->get_body_content());
             } catch (\Throwable $ex) {
