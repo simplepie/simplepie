@@ -1822,6 +1822,7 @@ class SimplePie
         }
 
         $cacheKey = $this->get_cache_filename($this->feed_url);
+        $http_client = $this->get_http_client();
 
         // If it's enabled, use the cache
         if ($cache) {
@@ -1874,7 +1875,7 @@ class SimplePie
                         try {
                             $orig_timeout = $this->timeout;
                             $this->timeout = 1;
-                            $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
+                            $file = $http_client->request(Client::METHOD_GET, $this->feed_url, $headers);
                             $this->status_code = $file->get_status_code();
                         } catch (HttpException $th) {
                             $this->check_modified = false;
@@ -1919,7 +1920,7 @@ class SimplePie
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
                 try {
-                    $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
+                    $file = $http_client->request(Client::METHOD_GET, $this->feed_url, $headers);
                 } catch (HttpException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
@@ -1938,16 +1939,26 @@ class SimplePie
         }
 
         if (!$this->force_feed) {
+            if ($http_client instanceof Psr18Client) {
+                $locator_arguments = [
+                    &$file,
+                    $http_client->getHttpClient(),
+                    $http_client->getRequestFactory(),
+                    $http_client->getUriFactory()
+                ];
+            } else {
+                $locator_arguments = [
+                    &$file,
+                    $this->timeout,
+                    $this->useragent,
+                    $this->max_checked_feeds,
+                    $this->force_fsockopen,
+                    $this->curl_options
+                ];
+            }
+
             // Check if the supplied URL is a feed, if it isn't, look for it.
-            $locate = $this->registry->create(Locator::class, [
-                &$file,
-                $this->timeout,
-                $this->useragent,
-                $this->max_checked_feeds,
-                $this->force_fsockopen,
-                $this->curl_options,
-                $this->get_http_client()
-            ]);
+            $locate = $this->registry->create(Locator::class, $locator_arguments);
 
             if (!$locate->is_feed($file)) {
                 $copyStatusCode = $file->get_status_code();
