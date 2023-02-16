@@ -1822,7 +1822,6 @@ class SimplePie
         }
 
         $cacheKey = $this->get_cache_filename($this->feed_url);
-        $http_client = $this->get_http_client();
 
         // If it's enabled, use the cache
         if ($cache) {
@@ -1875,7 +1874,7 @@ class SimplePie
                         try {
                             $orig_timeout = $this->timeout;
                             $this->timeout = 1;
-                            $file = $http_client->request(Client::METHOD_GET, $this->feed_url, $headers);
+                            $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
                             $this->status_code = $file->get_status_code();
                         } catch (HttpException $th) {
                             $this->check_modified = false;
@@ -1920,7 +1919,7 @@ class SimplePie
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
                 try {
-                    $file = $http_client->request(Client::METHOD_GET, $this->feed_url, $headers);
+                    $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
                 } catch (HttpException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
@@ -1939,6 +1938,8 @@ class SimplePie
         }
 
         if (!$this->force_feed) {
+            $http_client = $this->get_http_client();
+
             if ($http_client instanceof Psr18Client) {
                 $locator_arguments = [
                     &$file,
@@ -1947,6 +1948,7 @@ class SimplePie
                     $http_client->getUriFactory()
                 ];
             } else {
+                // BC: Pass deprecated file data
                 $locator_arguments = [
                     &$file,
                     $this->timeout,
@@ -3366,7 +3368,7 @@ class SimplePie
     private function get_http_client(): Client
     {
         if ($this->http_client === null) {
-            $this->http_client = new FileClient(
+            return new FileClient(
                 $this->get_registry(),
                 [
                     'timeout' => $this->timeout,
