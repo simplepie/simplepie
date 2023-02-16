@@ -1615,7 +1615,16 @@ class SimplePie
             $this->registry->get_class(Cache::class),
             $this->cache
         );
-        $this->sanitize->set_http_client($this->get_http_client());
+
+        $http_client = $this->get_http_client();
+
+        if ($http_client instanceof Psr18Client) {
+            $this->sanitize->set_http_client(
+                $http_client->getHttpClient(),
+                $http_client->getRequestFactory(),
+                $http_client->getUriFactory()
+            );
+        }
 
         if (!empty($this->multifeed_url)) {
             $i = 0;

@@ -10,6 +10,9 @@ namespace SimplePie;
 use DOMDocument;
 use DOMXPath;
 use InvalidArgumentException;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
 use SimplePie\Cache\CallableNameFilter;
@@ -18,6 +21,7 @@ use SimplePie\Cache\NameFilter;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Psr18Client;
 
 /**
  * Used for data cleanup and post-processing
@@ -767,13 +771,16 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * Allows SimplePie to inject HTTP client.
+     * Set a PSR-18 client and PSR-17 factories
      *
-     * @internal
+     * Allows you to use your own HTTP client implementations.
      */
-    final public function set_http_client(Client $http_client): void
-    {
-        $this->http_client = $http_client;
+    final public function set_http_client(
+        ClientInterface $http_client,
+        RequestFactoryInterface $request_factory,
+        UriFactoryInterface $uri_factory
+    ): void {
+        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
     }
 }
 
