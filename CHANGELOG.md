@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/simplepie/simplepie/compare/1.8.0...master)
 
+### Changed
+
+- Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
+
+### Removed
+
+- Third-party `idna_convert` library is no longer part of the repository by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
+
 ### Deprecated
 
 - Passing multiple URLs to `SimplePie\SimplePie::set_feed_url()` is deprecated. You can create separate `SimplePie` instance per feed and then use `SimplePie::merge_items()` to get a single list of items. ([#795](https://github.com/simplepie/simplepie/pull/795))
