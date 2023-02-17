@@ -44,7 +44,6 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
-use InvalidArgumentException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
@@ -52,7 +51,6 @@ use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Psr18Client;
-use SimplePie\HTTP\Response;
 
 /**
  * Used for feed auto-discovery
@@ -83,61 +81,14 @@ class Locator implements RegistryAware
      */
     private $http_client = null;
 
-    public function __construct(/* File */ $file, /* ClientInterface */ $http_client, /* RequestFactoryInterface */ $request_factory, /* UriFactoryInterface */ $uri_factory)
+    public function __construct(/* File */ $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [])
     {
-        if (! is_object($file) || ! $file instanceof Response) {
-            // For BC we're asking for `File`, but internally we accept every `Response` implementation
-            throw new InvalidArgumentException(sprintf(
-                '%s(): Argument #1 ($file) must be of type %s',
-                __METHOD__,
-                File::class
-            ), 1);
-        }
-
         $this->file = $file;
-
-        // BC for deprecated arguments:
-        // 0 => $file,
-        // 1 => $timeout = 10,
-        // 2 => $useragent = null,
-        // 3 => $max_checked_feeds = 10,
-        // 4 => $force_fsockopen = false,
-        // 5 => $curl_options = []
-        if (! is_object($http_client)) {
-            // trigger_error(sprintf('Passing arguments `$timeout`, `$useragent`, `$max_checked_feeds`, `$force_fsockopen` and `$curl_options` to "%s" is deprecated since SimplePie 1.9.0, please provide `$http_client`, `$request_factory` and `$uri_factory` instead.', __METHOD__), \E_USER_DEPRECATED);
-
-            $this->timeout = $http_client;
-            $this->useragent = $request_factory;
-            $this->max_checked_feeds = $uri_factory;
-            $this->force_fsockopen = \func_num_args() > 4 ? func_get_arg(4) : false;
-            $this->curl_options = \func_num_args() > 5 ? func_get_arg(5) : [];
-        } else {
-            if (! is_object($http_client) || ! $http_client instanceof ClientInterface) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s(): Argument #2 ($http_client) must be of type %s',
-                    __METHOD__,
-                    ClientInterface::class
-                ), 1);
-            }
-
-            if (! is_object($request_factory) || ! $request_factory instanceof RequestFactoryInterface) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s(): Argument #3 ($request_factory) must be of type %s',
-                    __METHOD__,
-                    RequestFactoryInterface::class
-                ), 1);
-            }
-
-            if (! is_object($uri_factory) || ! $uri_factory instanceof UriFactoryInterface) {
-                throw new InvalidArgumentException(sprintf(
-                    '%s(): Argument #4 ($uri_factory) must be of type %s',
-                    __METHOD__,
-                    UriFactoryInterface::class
-                ), 1);
-            }
-
-            $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
-        }
+        $this->useragent = $useragent;
+        $this->timeout = $timeout;
+        $this->max_checked_feeds = $max_checked_feeds;
+        $this->force_fsockopen = $force_fsockopen;
+        $this->curl_options = $curl_options;
 
         if (class_exists('DOMDocument') && $this->file->get_body_content() != '') {
             $this->dom = new \DOMDocument();
@@ -152,6 +103,19 @@ class Locator implements RegistryAware
         } else {
             $this->dom = null;
         }
+    }
+
+    /**
+     * Set a PSR-18 client and PSR-17 factories
+     *
+     * Allows you to use your own HTTP client implementations.
+     */
+    public function set_http_client(
+        ClientInterface $http_client,
+        RequestFactoryInterface $request_factory,
+        UriFactoryInterface $uri_factory
+    ): void {
+        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
     }
 
     public function set_registry(\SimplePie\Registry $registry)/* : void */
