@@ -1940,7 +1940,7 @@ class SimplePie
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
             $locate = $this->registry->create(Locator::class, [
-                &$file,
+                (! $file instanceof File) ? File::fromResponse($file) : $file,
                 $this->timeout,
                 $this->useragent,
                 $this->max_checked_feeds,

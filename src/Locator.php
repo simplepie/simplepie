@@ -81,7 +81,7 @@ class Locator implements RegistryAware
      */
     private $http_client = null;
 
-    public function __construct(/* File */ $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [])
+    public function __construct(File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [])
     {
         $this->file = $file;
         $this->useragent = $useragent;
