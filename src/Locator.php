@@ -110,7 +110,7 @@ class Locator implements RegistryAware
      *
      * Allows you to use your own HTTP client implementations.
      */
-    public function set_http_client(
+    final public function set_http_client(
         ClientInterface $http_client,
         RequestFactoryInterface $request_factory,
         UriFactoryInterface $uri_factory

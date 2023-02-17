@@ -850,7 +850,7 @@ class SimplePie
      * Allows you to use your own HTTP client implementations.
      * This will become required with SimplePie 2.0.0.
      */
-    public function set_http_client(
+    final public function set_http_client(
         ClientInterface $http_client,
         RequestFactoryInterface $request_factory,
         UriFactoryInterface $uri_factory
