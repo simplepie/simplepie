@@ -2074,15 +2074,15 @@ END;
      */
     public static function get_build()
     {
-        if (static::$SIMPLEPIE_BUILD !== null) {
-            return static::$SIMPLEPIE_BUILD;
+        if (self::$SIMPLEPIE_BUILD !== null) {
+            return self::$SIMPLEPIE_BUILD;
         }
 
         $root = dirname(__FILE__, 2);
         if (file_exists($root . '/.git/index')) {
-            static::$SIMPLEPIE_BUILD = filemtime($root . '/.git/index');
+            self::$SIMPLEPIE_BUILD = filemtime($root . '/.git/index');
 
-            return static::$SIMPLEPIE_BUILD;
+            return self::$SIMPLEPIE_BUILD;
         } elseif (file_exists($root . '/SimplePie')) {
             $time = 0;
             foreach (glob($root . '/SimplePie/*.php') as $file) {
@@ -2090,18 +2090,18 @@ END;
                     $time = $mtime;
                 }
             }
-            static::$SIMPLEPIE_BUILD = $time;
+            self::$SIMPLEPIE_BUILD = $time;
 
-            return static::$SIMPLEPIE_BUILD;
+            return self::$SIMPLEPIE_BUILD;
         } elseif (file_exists(dirname(__FILE__) . '/Core.php')) {
-            static::$SIMPLEPIE_BUILD = filemtime(dirname(__FILE__) . '/Core.php');
+            self::$SIMPLEPIE_BUILD = filemtime(dirname(__FILE__) . '/Core.php');
 
-            return static::$SIMPLEPIE_BUILD;
+            return self::$SIMPLEPIE_BUILD;
         }
 
-        static::$SIMPLEPIE_BUILD = filemtime(__FILE__);
+        self::$SIMPLEPIE_BUILD = filemtime(__FILE__);
 
-        return static::$SIMPLEPIE_BUILD;
+        return self::$SIMPLEPIE_BUILD;
     }
 
     /**
