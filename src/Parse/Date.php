@@ -826,20 +826,31 @@ PCRE;
             11: Alphabetic timezone
             */
 
+            $day = (int) $match[2];
             // Find the month number
             $month = $this->month[strtolower($match[3])];
+            $year = (int) $match[4];
+            $hour = (int) $match[5];
+            $minute = (int) $match[6];
+            // Second is optional, if it is empty set it to zero
+            $second = (int) $match[7];
+
+            $tz_sign = $match[8];
+            $tz_hour = (int) $match[9];
+            $tz_minute = (int) $match[10];
+            $tz_code = isset($match[11]) ? strtoupper($match[11]) : '';
 
             // Numeric timezone
-            if ($match[8] !== '') {
-                $timezone = $match[9] * 3600;
-                $timezone += $match[10] * 60;
-                if ($match[8] === '-') {
+            if ($tz_sign !== '') {
+                $timezone = $tz_hour * 3600;
+                $timezone += $tz_minute * 60;
+                if ($tz_sign === '-') {
                     $timezone = 0 - $timezone;
                 }
             }
             // Character timezone
-            elseif (isset($this->timezone[strtoupper($match[11])])) {
-                $timezone = $this->timezone[strtoupper($match[11])];
+            elseif (isset($this->timezone[$tz_code])) {
+                $timezone = $this->timezone[$tz_code];
             }
             // Assume everything else to be -0000
             else {
@@ -847,20 +858,13 @@ PCRE;
             }
 
             // Deal with 2/3 digit years
-            if ($match[4] < 50) {
-                $match[4] += 2000;
-            } elseif ($match[4] < 1000) {
-                $match[4] += 1900;
+            if ($year < 50) {
+                $year += 2000;
+            } elseif ($year < 1000) {
+                $year += 1900;
             }
 
-            // Second is optional, if it is empty set it to zero
-            if ($match[7] !== '') {
-                $second = $match[7];
-            } else {
-                $second = 0;
-            }
-
-            return gmmktime(intval($match[5]), intval($match[6]), intval($second), intval($month), intval($match[2]), intval($match[4])) - $timezone;
+            return gmmktime($hour, $minute, $second, $month, $day, $year) - $timezone;
         }
 
         return false;
@@ -897,12 +901,20 @@ PCRE;
             8: Timezone
             */
 
+            $day = (int) $match[2];
             // Month
             $month = $this->month[strtolower($match[3])];
+            $year = (int) $match[4];
+            $hour = (int) $match[5];
+            $minute = (int) $match[6];
+            // Second is optional, if it is empty set it to zero
+            $second = (int) $match[7];
+
+            $tz_code = strtoupper($match[8]);
 
             // Character timezone
-            if (isset($this->timezone[strtoupper($match[8])])) {
-                $timezone = $this->timezone[strtoupper($match[8])];
+            if (isset($this->timezone[$tz_code])) {
+                $timezone = $this->timezone[$tz_code];
             }
             // Assume everything else to be -0000
             else {
@@ -910,13 +922,13 @@ PCRE;
             }
 
             // Deal with 2 digit year
-            if ($match[4] < 50) {
-                $match[4] += 2000;
+            if ($year < 50) {
+                $year += 2000;
             } else {
-                $match[4] += 1900;
+                $year += 1900;
             }
 
-            return gmmktime($match[5], $match[6], $match[7], $month, $match[2], $match[4]) - $timezone;
+            return gmmktime($hour, $minute, $second, $month, $day, $year) - $timezone;
         }
 
         return false;
