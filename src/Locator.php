@@ -41,12 +41,14 @@ class Locator implements RegistryAware
         $this->force_fsockopen = $force_fsockopen;
         $this->curl_options = $curl_options;
 
-        if (class_exists('DOMDocument') && $this->file->body != '') {
+        $body = $this->file->body;
+
+        if (class_exists('DOMDocument') && $body != '') {
             $this->dom = new \DOMDocument();
 
             set_error_handler([Misc::class, 'silence_errors']);
             try {
-                $this->dom->loadHTML($this->file->body);
+                $this->dom->loadHTML($body);
             } catch (\Throwable $ex) {
                 $this->dom = null;
             }

@@ -1744,7 +1744,7 @@ class SimplePie
                         $this->status_code = $file->status_code;
 
                         if ($file->success) {
-                            if ($file->status_code === 304) {
+                            if ($this->status_code === 304) {
                                 // Set raw_data to false here too, to signify that the cache
                                 // is still valid.
                                 $this->raw_data = false;
