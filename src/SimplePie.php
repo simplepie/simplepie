@@ -419,10 +419,10 @@ class SimplePie
     public $data = [];
 
     /**
-     * @var mixed Error string
+     * @var string|string[]|null Error string (or array when multiple feeds are initialized)
      * @access private
      */
-    public $error;
+    public $error = null;
 
     /**
      * @var int HTTP status code
@@ -1917,7 +1917,7 @@ class SimplePie
     /**
      * Get the error message for the occurred error
      *
-     * @return string|array Error message, or array of messages for multifeeds
+     * @return string|string[]|null Error message, or array of messages for multifeeds
      */
     public function error()
     {
