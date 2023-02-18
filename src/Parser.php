@@ -234,7 +234,7 @@ class Parser implements RegistryAware
         }
 
         if (isset($attribs[\SimplePie\SimplePie::NAMESPACE_XML]['base'])) {
-            $base = $this->registry->call(Misc::class, 'absolutize_url', [$attribs[\SimplePie\SimplePie::NAMESPACE_XML]['base'], end($this->xml_base)]);
+            $base = Misc::absolutize_url($attribs[\SimplePie\SimplePie::NAMESPACE_XML]['base'], end($this->xml_base));
             if ($base !== false) {
                 $this->xml_base[] = $base;
                 $this->xml_base_explicit[] = true;

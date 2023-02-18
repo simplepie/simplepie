@@ -417,7 +417,7 @@ class Sanitize implements RegistryAware
             }
 
             if ($type & \SimplePie\SimplePie::CONSTRUCT_IRI) {
-                $absolute = $this->registry->call(Misc::class, 'absolutize_url', [$data, $base]);
+                $absolute = Misc::absolutize_url($data, $base);
                 if ($absolute !== false) {
                     $data = $absolute;
                 }
@@ -428,7 +428,7 @@ class Sanitize implements RegistryAware
             }
 
             if ($this->output_encoding !== 'UTF-8') {
-                $data = $this->registry->call(Misc::class, 'change_encoding', [$data, 'UTF-8', $this->output_encoding]);
+                $data = Misc::change_encoding($data, 'UTF-8', $this->output_encoding);
             }
         }
         return $data;
@@ -466,7 +466,7 @@ class Sanitize implements RegistryAware
             foreach ($elements as $element) {
                 foreach ($attributes as $attribute) {
                     if ($element->hasAttribute($attribute)) {
-                        $value = $this->registry->call(Misc::class, 'absolutize_url', [$element->getAttribute($attribute), $this->base]);
+                        $value = Misc::absolutize_url($element->getAttribute($attribute), $this->base);
                         if ($value !== false) {
                             $value = $this->https_url($value);
                             $element->setAttribute($attribute, $value);

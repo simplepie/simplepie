@@ -132,7 +132,7 @@ class Locator implements RegistryAware
         $elements = $this->dom->getElementsByTagName('base');
         foreach ($elements as $element) {
             if ($element->hasAttribute('href')) {
-                $base = $this->registry->call(Misc::class, 'absolutize_url', [trim($element->getAttribute('href')), $this->http_base]);
+                $base = Misc::absolutize_url(trim($element->getAttribute('href')), $this->http_base);
                 if ($base === false) {
                     continue;
                 }
@@ -170,19 +170,19 @@ class Locator implements RegistryAware
                 break;
             }
             if ($link->hasAttribute('href') && $link->hasAttribute('rel')) {
-                $rel = array_unique($this->registry->call(Misc::class, 'space_separated_tokens', [strtolower($link->getAttribute('rel'))]));
+                $rel = array_unique(Misc::space_separated_tokens(strtolower($link->getAttribute('rel'))));
                 $line = method_exists($link, 'getLineNo') ? $link->getLineNo() : 1;
 
                 if ($this->base_location < $line) {
-                    $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
+                    $href = Misc::absolutize_url(trim($link->getAttribute('href')), $this->base);
                 } else {
-                    $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
+                    $href = Misc::absolutize_url(trim($link->getAttribute('href')), $this->http_base);
                 }
                 if ($href === false) {
                     continue;
                 }
 
-                if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower($this->registry->call(Misc::class, 'parse_mime', [$link->getAttribute('type')])), ['text/html', 'application/rss+xml', 'application/atom+xml'])) && !isset($feeds[$href])) {
+                if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower(Misc::parse_mime($link->getAttribute('type'))), ['text/html', 'application/rss+xml', 'application/atom+xml'])) && !isset($feeds[$href])) {
                     $this->checked_feeds++;
                     $headers = [
                         'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
@@ -209,18 +209,18 @@ class Locator implements RegistryAware
         foreach ($links as $link) {
             if ($link->hasAttribute('href')) {
                 $href = trim($link->getAttribute('href'));
-                $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
+                $parsed = Misc::parse_url($href);
                 if ($parsed['scheme'] === '' || preg_match('/^(https?|feed)?$/i', $parsed['scheme'])) {
                     if (method_exists($link, 'getLineNo') && $this->base_location < $link->getLineNo()) {
-                        $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
+                        $href = Misc::absolutize_url(trim($link->getAttribute('href')), $this->base);
                     } else {
-                        $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
+                        $href = Misc::absolutize_url(trim($link->getAttribute('href')), $this->http_base);
                     }
                     if ($href === false) {
                         continue;
                     }
 
-                    $current = $this->registry->call(Misc::class, 'parse_url', [$this->file->url]);
+                    $current = Misc::parse_url($this->file->url);
 
                     if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
                         $this->local[] = $href;
@@ -254,22 +254,14 @@ class Locator implements RegistryAware
         foreach ($xpath->query($query) as $link) {
             /** @var \DOMElement $link */
             $href = trim($link->getAttribute('href'));
-            $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
+            $parsed = Misc::parse_url($href);
             if ($parsed['scheme'] === '' ||
                 preg_match('/^https?$/i', $parsed['scheme'])) {
                 if (method_exists($link, 'getLineNo') &&
                     $this->base_location < $link->getLineNo()) {
-                    $href = $this->registry->call(
-                        Misc::class,
-                        'absolutize_url',
-                        [trim($link->getAttribute('href')), $this->base]
-                    );
+                    $href = Misc::absolutize_url(trim($link->getAttribute('href')), $this->base);
                 } else {
-                    $href = $this->registry->call(
-                        Misc::class,
-                        'absolutize_url',
-                        [trim($link->getAttribute('href')), $this->http_base]
-                    );
+                    $href = Misc::absolutize_url(trim($link->getAttribute('href')), $this->http_base);
                 }
                 if ($href === false) {
                     return null;
