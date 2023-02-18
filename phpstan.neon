@@ -1,0 +1,20 @@
+parameters:
+    level: 2
+
+    paths:
+        - library/
+        - src/
+        - tests/
+
+    ignoreErrors:
+        # Not used since https://github.com/simplepie/simplepie/commit/b2eb0134d53921e75f0fa70b1cf901ed82b988b1 but cannot be removed due to BC.
+        - '(Constructor of class SimplePie\\Enclosure has an unused parameter \$javascript\.)'
+
+        # Testing legacy dynamic property usage.
+        - '(Access to an undefined property SimplePie.IRI::\$nonexistant_prop\.)'
+
+        # PHPStan stubs bug https://github.com/phpstan/phpstan/issues/8629
+        -
+            message: '(^Access to an undefined property XMLReader::\$\w+\.$)'
+            # Only occurs on PHP ≥ 8.2
+            reportUnmatched: false
