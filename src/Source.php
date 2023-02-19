@@ -53,11 +53,14 @@ namespace SimplePie;
  */
 class Source implements RegistryAware
 {
+    /** @var Item */
     public $item;
+    /** @var array */
     public $data = [];
+    /** @var Registry */
     protected $registry;
 
-    public function __construct($item, $data)
+    public function __construct(Item $item, array $data)
     {
         $this->item = $item;
         $this->data = $data;

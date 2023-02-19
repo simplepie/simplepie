@@ -56,7 +56,7 @@ class Rating
     /**
      * Rating scheme
      *
-     * @var string
+     * @var ?string
      * @see get_scheme()
      */
     public $scheme;
@@ -64,7 +64,7 @@ class Rating
     /**
      * Rating value
      *
-     * @var string
+     * @var ?string
      * @see get_value()
      */
     public $value;
@@ -75,7 +75,10 @@ class Rating
      * For documentation on all the parameters, see the corresponding
      * properties and their accessors
      */
-    public function __construct($scheme = null, $value = null)
+    public function __construct(
+        ?string $scheme = null,
+        ?string $value = null
+    )
     {
         $this->scheme = $scheme;
         $this->value = $value;

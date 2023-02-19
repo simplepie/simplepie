@@ -56,7 +56,7 @@ class Credit
     /**
      * Credited role
      *
-     * @var string
+     * @var ?string
      * @see get_role()
      */
     public $role;
@@ -64,7 +64,7 @@ class Credit
     /**
      * Organizational scheme
      *
-     * @var string
+     * @var ?string
      * @see get_scheme()
      */
     public $scheme;
@@ -72,7 +72,7 @@ class Credit
     /**
      * Credited name
      *
-     * @var string
+     * @var ?string
      * @see get_name()
      */
     public $name;
@@ -83,7 +83,11 @@ class Credit
      * For documentation on all the parameters, see the corresponding
      * properties and their accessors
      */
-    public function __construct($role = null, $scheme = null, $name = null)
+    public function __construct(
+        ?string $role = null,
+        ?string $scheme = null,
+        ?string $name = null
+    )
     {
         $this->role = $role;
         $this->scheme = $scheme;
