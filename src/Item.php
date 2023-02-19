@@ -1310,11 +1310,11 @@ class Item implements RegistryAware
                 }
             } elseif ($restrictions = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'block')) {
                 foreach ($restrictions as $restriction) {
-                    $restriction_relationship = 'allow';
+                    $restriction_relationship = Restriction::RELATIONSHIP_ALLOW;
                     $restriction_type = null;
                     $restriction_value = 'itunes';
                     if (isset($restriction['data']) && strtolower($restriction['data']) === 'yes') {
-                        $restriction_relationship = 'deny';
+                        $restriction_relationship = Restriction::RELATIONSHIP_DENY;
                     }
                     $restrictions_parent[] = $this->registry->create(Restriction::class, [$restriction_relationship, $restriction_type, $restriction_value]);
                 }
@@ -1336,11 +1336,11 @@ class Item implements RegistryAware
                 }
             } elseif ($restrictions = $parent->get_channel_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'block')) {
                 foreach ($restrictions as $restriction) {
-                    $restriction_relationship = 'allow';
+                    $restriction_relationship = Restriction::RELATIONSHIP_ALLOW;
                     $restriction_type = null;
                     $restriction_value = 'itunes';
                     if (isset($restriction['data']) && strtolower($restriction['data']) === 'yes') {
-                        $restriction_relationship = 'deny';
+                        $restriction_relationship = Restriction::RELATIONSHIP_DENY;
                     }
                     $restrictions_parent[] = $this->registry->create(Restriction::class, [$restriction_relationship, $restriction_type, $restriction_value]);
                 }
@@ -1348,7 +1348,7 @@ class Item implements RegistryAware
             if (is_array($restrictions_parent)) {
                 $restrictions_parent = array_values(array_unique($restrictions_parent));
             } else {
-                $restrictions_parent = [new \SimplePie\Restriction('allow', null, 'default')];
+                $restrictions_parent = [new \SimplePie\Restriction(Restriction::RELATIONSHIP_ALLOW, null, 'default')];
             }
 
             // THUMBNAILS

@@ -53,10 +53,13 @@ namespace SimplePie;
  */
 class Restriction
 {
+    public const RELATIONSHIP_ALLOW = 'allow';
+    public const RELATIONSHIP_DENY = 'deny';
+
     /**
      * Relationship ('allow'/'deny')
      *
-     * @var string|null
+     * @var self::RELATIONSHIP_*|null
      * @see get_relationship()
      */
     public $relationship;
@@ -82,6 +85,8 @@ class Restriction
      *
      * For documentation on all the parameters, see the corresponding
      * properties and their accessors
+     *
+     * @param ?self::RELATIONSHIP_* $relationship
      */
     public function __construct(?string $relationship = null, ?string $type = null, ?string $value = null)
     {
@@ -104,7 +109,7 @@ class Restriction
     /**
      * Get the relationship
      *
-     * @return string|null Either 'allow' or 'deny'
+     * @return ?self::RELATIONSHIP_*
      */
     public function get_relationship()
     {
