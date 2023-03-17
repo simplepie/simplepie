@@ -90,7 +90,7 @@ class LocatorTest extends TestCase
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
@@ -105,7 +105,7 @@ class LocatorTest extends TestCase
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
@@ -127,7 +127,7 @@ class LocatorTest extends TestCase
 
     public function testFailDiscoveryNoDOM()
     {
-        $this->expectException('SimplePie_Exception');
+        $this->expectException(\SimplePie\Exception::class);
 
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'text/html';
@@ -170,7 +170,7 @@ class LocatorTest extends TestCase
         $locator = new Locator($data, 0, null, false);
 
         $registry = new Registry();
-        $registry->register(File::class, 'SimplePie\Tests\Fixtures\FileMock');
+        $registry->register(File::class, FileMock::class);
         $locator->set_registry($registry);
 
         $expected = [];
@@ -184,7 +184,7 @@ class LocatorTest extends TestCase
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
         $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
-        $this->assertInstanceOf('SimplePie\Tests\Fixtures\FileMock', $feed);
+        $this->assertInstanceOf(FileMock::class, $feed);
         $success = array_filter($expected, [get_class(), 'filter_success']);
 
         $found = array_map([get_class(), 'map_url_file'], $all);

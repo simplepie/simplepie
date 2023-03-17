@@ -131,7 +131,7 @@ class Sanitize implements RegistryAware
         $this->registry = $registry;
     }
 
-    public function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = 'SimplePie\Cache', DataCache $cache = null)
+    public function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = Cache::class, DataCache $cache = null)
     {
         if (isset($enable_cache)) {
             $this->enable_cache = (bool) $enable_cache;
@@ -164,7 +164,7 @@ class Sanitize implements RegistryAware
         }
     }
 
-    public function pass_file_data($file_class = 'SimplePie\File', $timeout = 10, $useragent = '', $force_fsockopen = false)
+    public function pass_file_data($file_class = File::class, $timeout = 10, $useragent = '', $force_fsockopen = false)
     {
         if ($timeout) {
             $this->timeout = (string) $timeout;
@@ -363,7 +363,7 @@ class Sanitize implements RegistryAware
 
                 $data = $this->preprocess($data, $type);
 
-                set_error_handler(['SimplePie\Misc', 'silence_errors']);
+                set_error_handler([Misc::class, 'silence_errors']);
                 $document->loadHTML($data);
                 restore_error_handler();
 

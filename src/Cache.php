@@ -65,10 +65,10 @@ class Cache
      * @var array
      */
     protected static $handlers = [
-        'mysql'     => 'SimplePie\Cache\MySQL',
-        'memcache'  => 'SimplePie\Cache\Memcache',
-        'memcached' => 'SimplePie\Cache\Memcached',
-        'redis'     => 'SimplePie\Cache\Redis'
+        'mysql'     => Cache\MySQL::class,
+        'memcache'  => Cache\Memcache::class,
+        'memcached' => Cache\Memcached::class,
+        'redis'     => Cache\Redis::class,
     ];
 
     /**
