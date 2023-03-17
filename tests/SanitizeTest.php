@@ -116,7 +116,6 @@ EOT
         $sanitize = new SimplePie_Sanitize();
 
         $registry = new SimplePie_Registry();
-        $registry->register('Misc', 'SimplePie_Misc');
         $sanitize->set_registry($registry);
 
         $base = 'http://example.com/';

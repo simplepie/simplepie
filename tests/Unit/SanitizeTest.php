@@ -132,7 +132,6 @@ EOT
         $sanitize = new Sanitize();
 
         $registry = new Registry();
-        $registry->register(Misc::class, 'SimplePie\Misc');
         $sanitize->set_registry($registry);
 
         $base = 'http://example.com/';
