@@ -1740,6 +1740,7 @@ class SimplePie
                         }
 
                         $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+
                         $this->status_code = $file->status_code;
 
                         if ($file->success) {
@@ -1748,12 +1749,15 @@ class SimplePie
                                 // is still valid.
                                 $this->raw_data = false;
                                 $cache->set_data($cacheKey, $this->data, $this->cache_duration);
+
                                 return true;
                             }
                         } else {
                             $this->check_modified = false;
+
                             if ($this->force_cache_fallback) {
                                 $cache->set_data($cacheKey, $this->data, $this->cache_duration);
+
                                 return true;
                             }
 
