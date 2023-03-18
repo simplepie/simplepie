@@ -55,6 +55,7 @@ namespace SimplePie;
  */
 class File
 {
+    /** @var string The final URL after following all redirects */
     public $url;
     public $useragent;
     public $success = true;
@@ -64,7 +65,10 @@ class File
     public $redirects = 0;
     public $error;
     public $method = \SimplePie\SimplePie::FILE_SOURCE_NONE;
+    /** @var string The permanent URL or the resource (first URL after the prefix of (only) permanent redirects) */
     public $permanent_url;
+    /** @var bool Whether the permanent URL is still writeable (prefix of permanent redirects has not ended) */
+    private $permanentUrlMutable = true;
 
     public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
     {
@@ -74,7 +78,9 @@ class File
             $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], null);
         }
         $this->url = $url;
-        $this->permanent_url = $url;
+        if ($this->permanentUrlMutable) {
+            $this->permanent_url = $url;
+        }
         $this->useragent = $useragent;
         if (preg_match('/^http(s)?:\/\//i', $url)) {
             if ($useragent === null) {
@@ -131,9 +137,8 @@ class File
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($this->headers['location'], $url);
-                            $previousStatusCode = $this->status_code;
+                            $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                             $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
-                            $this->permanent_url = ($previousStatusCode == 301) ? $location : $url;
                             return;
                         }
                     }
@@ -196,9 +201,8 @@ class File
                             if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
                                 $this->redirects++;
                                 $location = \SimplePie\Misc::absolutize_url($this->headers['location'], $url);
-                                $previousStatusCode = $this->status_code;
+                                $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                                 $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
-                                $this->permanent_url = ($previousStatusCode == 301) ? $location : $url;
                                 return;
                             }
                             if (isset($this->headers['content-encoding'])) {
