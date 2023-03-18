@@ -131,25 +131,23 @@ class LocatorTest extends PHPUnit\Framework\TestCase
      *
      * Tests are used under the LGPL license, see file for license
      * information
+     *
+     * @return iterable<array{File}>
      */
-    public static function firefoxtests()
+    public static function firefoxtests(): iterable
     {
-        $data = [
-            [new SimplePie_File(dirname(__FILE__) . '/data/fftests.html')]
-        ];
-        foreach ($data as &$row) {
-            $row[0]->headers = ['content-type' => 'text/html'];
-            $row[0]->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
-            $row[0]->url = 'http://example.com/';
-        }
+        $data = new SimplePie_File(dirname(__FILE__) . '/data/fftests.html');
+        $data->headers = ['content-type' => 'text/html'];
+        $data->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
+        $data->url = 'http://example.com/';
 
-        return $data;
+        yield [$data];
     }
 
     /**
      * @dataProvider firefoxtests
      */
-    public function test_from_file($data)
+    public function test_from_file(File $data): void
     {
         $locator = new SimplePie_Locator($data, 0, null, false);
 
