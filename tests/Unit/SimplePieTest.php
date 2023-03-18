@@ -1029,7 +1029,7 @@ EOT
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<icon>http://example.com/</icon>
-</feed>'
+</feed>
 EOT				,
                 null,
             ],
@@ -1037,7 +1037,7 @@ EOT				,
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<logo>http://example.com/</logo>
-</feed>'
+</feed>
 EOT				,
                 null,
             ],
@@ -1047,7 +1047,7 @@ EOT				,
 	<channel>
 		<a:icon>http://example.com/</a:icon>
 	</channel>
-</rdf:RDF>'
+</rdf:RDF>
 EOT				,
                 null,
             ],
@@ -1057,7 +1057,7 @@ EOT				,
 	<channel>
 		<a:logo>http://example.com/</a:logo>
 	</channel>
-</rdf:RDF>'
+</rdf:RDF>
 EOT				,
                 null,
             ],
@@ -1067,7 +1067,7 @@ EOT				,
 	<image>
 		<url>http://example.com/</url>
 	</image>
-</rdf:RDF>'
+</rdf:RDF>
 EOT				,
                 null,
             ],
