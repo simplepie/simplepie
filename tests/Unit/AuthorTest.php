@@ -61,7 +61,10 @@ class AuthorTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Author'));
     }
 
-    public function getAuthorNameDataProvider()
+    /**
+     * @return array<array{string, ?string}>
+     */
+    public function getAuthorNameDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Creator' => [
@@ -520,7 +523,7 @@ EOT
     /**
      * @dataProvider getAuthorNameDataProvider
      */
-    public function test_get_name_from_author($data, $expected)
+    public function test_get_name_from_author(string $data, ?string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -536,7 +539,10 @@ EOT
         $this->assertSame($expected, $author->get_name());
     }
 
-    public function getContributorNameDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getContributorNameDataProvider(): array
     {
         return [
             'Test Atom 0.3 Name' => [
@@ -745,7 +751,7 @@ EOT
     /**
      * @dataProvider getContributorNameDataProvider
      */
-    public function test_get_name_from_contributor($data, $expected)
+    public function test_get_name_from_contributor(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);

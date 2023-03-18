@@ -59,7 +59,10 @@ class DateTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Parse_Date'));
     }
 
-    public function w3cDtfDatesProvider()
+    /**
+     * @return iterable<array{string, int}>
+     */
+    public function w3cDtfDatesProvider(): iterable
     {
         // The examples enclosed within come from the W3C Date and Time Formats note
         // https://www.w3.org/TR/NOTE-datetime
@@ -106,7 +109,7 @@ class DateTest extends TestCase
     /**
      * @dataProvider w3cDtfDatesProvider
      */
-    public function testW3cDtf($data, $expected)
+    public function testW3cDtf(string $data, int $expected): void
     {
         $date = new Date();
         $this->assertSame(

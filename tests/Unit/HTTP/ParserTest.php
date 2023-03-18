@@ -59,7 +59,10 @@ class ParserTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_HTTP_Parser'));
     }
 
-    public function chunkedDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function chunkedDataProvider(): array
     {
         return [
             [
@@ -80,7 +83,7 @@ class ParserTest extends TestCase
     /**
      * @dataProvider chunkedDataProvider
      */
-    public function testChunkedNormal($data, $expected)
+    public function testChunkedNormal(string $data, string $expected): void
     {
         $data = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);
@@ -96,7 +99,7 @@ class ParserTest extends TestCase
     /**
      * @dataProvider chunkedDataProvider
      */
-    public function testChunkedProxy($data, $expected)
+    public function testChunkedProxy(string $data, string $expected): void
     {
         $data = "HTTP/1.0 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);
@@ -112,7 +115,7 @@ class ParserTest extends TestCase
     /**
      * @dataProvider chunkedDataProvider
      */
-    public function testChunkedProxy11($data, $expected)
+    public function testChunkedProxy11(string $data, string $expected): void
     {
         $data = "HTTP/1.1 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);

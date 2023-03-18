@@ -81,8 +81,10 @@ EOT
         );
     }
 
-
-    public function sanitizeURLDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function sanitizeURLDataProvider(): array
     {
         return [
             'simple absolute valid a href, resolved' => [
@@ -127,7 +129,7 @@ EOT
     /**
      * @dataProvider sanitizeURLDataProvider
      */
-    public function testSanitizeURLResolution($given, $expected)
+    public function testSanitizeURLResolution(string $given, string $expected): void
     {
         $sanitize = new Sanitize();
 

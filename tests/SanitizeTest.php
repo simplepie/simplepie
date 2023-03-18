@@ -65,8 +65,10 @@ EOT
         );
     }
 
-
-    public function sanitizeURLProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function sanitizeURLProvider(): array
     {
         return [
             'simple absolute valid a href, resolved' => [
@@ -111,7 +113,7 @@ EOT
     /**
      * @dataProvider sanitizeURLProvider
      */
-    public function testSanitizeURLResolution($given, $expected)
+    public function testSanitizeURLResolution(string $given, string $expected): void
     {
         $sanitize = new SimplePie_Sanitize();
 

@@ -52,7 +52,10 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 {
     use ExpectPHPException;
 
-    public static function feedmimetypes()
+    /**
+     * @return array<array{string}>
+     */
+    public static function feedmimetypes(): array
     {
         return [
             ['application/rss+xml'],
@@ -63,10 +66,11 @@ class LocatorTest extends PHPUnit\Framework\TestCase
             ['application/xml'],
         ];
     }
+
     /**
      * @dataProvider feedmimetypes
      */
-    public function testAutodiscoverOnFeed($mime)
+    public function testAutodiscoverOnFeed(string $mime): void
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;

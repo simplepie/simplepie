@@ -62,13 +62,15 @@ class CachingTest extends TestCase
 
     /**
      * @dataProvider provideSavedCacheData
+     * @param array<string, mixed> $currentDataCached
+     * @param array<string, mixed> $expectedDataWritten
      */
     public function testInitWithDifferentCacheStateCallsCacheCorrectly(
-        $testedCacheClass,
-        $currentDataCached,
-        $expectedDataWritten,
-        $currentMtime
-    ) {
+        string $testedCacheClass,
+        array $currentDataCached,
+        array $expectedDataWritten,
+        int $currentMtime
+    ): void {
         $writtenData = [];
 
         $feed = new SimplePie();
@@ -155,7 +157,10 @@ class CachingTest extends TestCase
         $this->assertSame($expectedDataWritten, $writtenData);
     }
 
-    public function provideSavedCacheData()
+    /**
+     * @return array<array{string, array<string, mixed>, array<string, mixed>, int}>
+     */
+    public function provideSavedCacheData(): array
     {
         $defaultMtime = time();
         $defaultExpirationTime = $defaultMtime + 3600;

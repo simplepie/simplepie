@@ -46,7 +46,10 @@ declare(strict_types=1);
 
 class HTTPParserTest extends PHPUnit\Framework\TestCase
 {
-    public static function chunkedProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function chunkedProvider(): array
     {
         return [
             [
@@ -67,7 +70,7 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider chunkedProvider
      */
-    public function testChunkedNormal($data, $expected)
+    public function testChunkedNormal(string $data, string $expected): void
     {
         $data = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = SimplePie_HTTP_Parser::prepareHeaders($data);
@@ -83,7 +86,7 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider chunkedProvider
      */
-    public function testChunkedProxy($data, $expected)
+    public function testChunkedProxy(string $data, string $expected): void
     {
         $data = "HTTP/1.0 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = SimplePie_HTTP_Parser::prepareHeaders($data);
@@ -99,7 +102,7 @@ class HTTPParserTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider chunkedProvider
      */
-    public function testChunkedProxy11($data, $expected)
+    public function testChunkedProxy11(string $data, string $expected): void
     {
         $data = "HTTP/1.1 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = SimplePie_HTTP_Parser::prepareHeaders($data);

@@ -62,7 +62,10 @@ class RestrictionTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Restriction'));
     }
 
-    public function getRelationshipDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getRelationshipDataProvider(): array
     {
         return [
             'iTunesRSS Channel Block Test RSS 2.0' => [
@@ -112,7 +115,7 @@ EOT
     /**
      * @dataProvider getRelationshipDataProvider
      */
-    public function test_get_relationship($data, $expected)
+    public function test_get_relationship(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
