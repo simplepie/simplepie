@@ -20,22 +20,54 @@ use SimplePie\HTTP\Response;
  */
 class File implements Response
 {
-    /** @var string The final URL after following all redirects */
+    /**
+     * @var string The final URL after following all redirects
+     * @deprecated Use `get_final_requested_uri()` method.
+     */
     public $url;
+
+    /**
+     * @var string User agent to use in requests
+     * @deprecated Set the user agent in constructor.
+     */
     public $useragent;
+
     public $success = true;
+
     /** @var array<string, non-empty-array<string>> Canonical representation of headers */
     private $parsed_headers = [];
     /** @var array<string, string> Last known value of $headers property (used to detect external modification) */
     private $last_headers = [];
-    /** @var array<string, string> Headers as string for BC. */
+    /**
+     * @var array<string, string> Headers as string for BC
+     * @deprecated Use `get_headers()` method.
+     */
     public $headers = [];
+
+    /**
+     * @var ?string Body of the HTTP response
+     * @deprecated Use `get_body_content()` method.
+     */
     public $body;
+
+    /**
+     * @var int Status code of the HTTP response
+     * @deprecated Use `get_status_code()` method.
+     */
     public $status_code = 0;
     public $redirects = 0;
     public $error;
+
+    /**
+     * @var int-mask-of<SimplePie::FILE_SOURCE_*> Bit mask representing the method used to fetch the file and whether it is a local file or remote file obtained over HTTP.
+     * @deprecated Backend is implementation detail which you should not care about; to see if the file was retrieved over HTTP, check if `get_final_requested_uri()` with `Misc::is_remote_uri()`.
+     */
     public $method = \SimplePie\SimplePie::FILE_SOURCE_NONE;
-    /** @var string The permanent URL or the resource (first URL after the prefix of (only) permanent redirects) */
+
+    /**
+     * @var string The permanent URL or the resource (first URL after the prefix of (only) permanent redirects)
+     * @deprecated Use `get_permanent_uri()` method.
+     */
     public $permanent_url;
     /** @var bool Whether the permanent URL is still writeable (prefix of permanent redirects has not ended) */
     private $permanentUrlMutable = true;
