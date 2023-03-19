@@ -16,5 +16,6 @@ return (new PhpCsFixer\Config())
         'phpdoc_to_param_type' => true,
         '@PHPUnit84Migration:risky' => true,
     ])
+    ->setRiskyAllowed(true)
     ->setFinder($finder)
 ;
