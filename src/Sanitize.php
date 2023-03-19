@@ -49,6 +49,12 @@ class Sanitize implements RegistryAware
     public $useragent = '';
     public $force_fsockopen = false;
     public $replace_url_attributes = null;
+    /**
+     * @var array<mixed> Custom curl options
+     * @see SimplePie::set_curl_options()
+     */
+    private $curl_options = [];
+
     public $registry;
 
     /**
@@ -127,7 +133,7 @@ class Sanitize implements RegistryAware
         }
     }
 
-    public function pass_file_data($file_class = File::class, $timeout = 10, $useragent = '', $force_fsockopen = false)
+    public function pass_file_data($file_class = File::class, $timeout = 10, $useragent = '', $force_fsockopen = false, array $curl_options = [])
     {
         if ($timeout) {
             $this->timeout = (string) $timeout;
@@ -140,6 +146,8 @@ class Sanitize implements RegistryAware
         if ($force_fsockopen) {
             $this->force_fsockopen = (string) $force_fsockopen;
         }
+
+        $this->curl_options = $curl_options;
     }
 
     public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
@@ -386,7 +394,7 @@ class Sanitize implements RegistryAware
                             if ($cache->get_data($image_url, false)) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
-                                $file = $this->registry->create(File::class, [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen]);
+                                $file = $this->registry->create(File::class, [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen, $this->curl_options]);
                                 $headers = $file->headers;
 
                                 if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
