@@ -761,18 +761,15 @@ class SimplePie
     /**
      * Set an instance of {@see File} to use as a feed
      *
-     * @param File &$file
      * @return bool True on success, false on failure
      */
     public function set_file(File &$file)
     {
-        if ($file instanceof File) {
-            $this->feed_url = $file->url;
-            $this->permanent_url = $this->feed_url;
-            $this->file =& $file;
-            return true;
-        }
-        return false;
+        $this->feed_url = $file->url;
+        $this->permanent_url = $this->feed_url;
+        $this->file =& $file;
+
+        return true;
     }
 
     /**
