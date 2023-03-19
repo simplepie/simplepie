@@ -19,7 +19,7 @@ class Author
     /**
      * Author's name
      *
-     * @var string
+     * @var ?string
      * @see get_name()
      */
     public $name;
@@ -27,7 +27,7 @@ class Author
     /**
      * Author's link
      *
-     * @var string
+     * @var ?string
      * @see get_link()
      */
     public $link;
@@ -35,19 +35,19 @@ class Author
     /**
      * Author's email address
      *
-     * @var string
+     * @var ?string
      * @see get_email()
      */
     public $email;
 
     /**
      * Constructor, used to input the data
-     *
-     * @param string $name
-     * @param string $link
-     * @param string $email
      */
-    public function __construct(string $name = null, string $link = null, string $email = null)
+    public function __construct(
+        ?string $name = null,
+        ?string $link = null,
+        ?string $email = null
+    )
     {
         $this->name = $name;
         $this->link = $link;

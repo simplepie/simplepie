@@ -19,7 +19,7 @@ class Copyright
     /**
      * Copyright URL
      *
-     * @var string
+     * @var ?string
      * @see get_url()
      */
     public $url;
@@ -27,7 +27,7 @@ class Copyright
     /**
      * Attribution
      *
-     * @var string
+     * @var ?string
      * @see get_attribution()
      */
     public $label;
@@ -38,7 +38,10 @@ class Copyright
      * For documentation on all the parameters, see the corresponding
      * properties and their accessors
      */
-    public function __construct($url = null, $label = null)
+    public function __construct(
+        ?string $url = null,
+        ?string $label = null
+    )
     {
         $this->url = $url;
         $this->label = $label;
