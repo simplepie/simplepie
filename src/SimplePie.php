@@ -772,18 +772,19 @@ class SimplePie
      * website you want to try to use auto-discovery on. This takes priority
      * over any set raw data.
      *
-     * You can set multiple feeds to mash together by passing an array instead
+     * Deprecated since 1.9.0: You can set multiple feeds to mash together by passing an array instead
      * of a string for the $url. Remember that with each additional feed comes
      * additional processing and resources.
      *
      * @since 1.0 Preview Release
      * @see set_raw_data()
-     * @param string|array $url This is the URL (or array of URLs) that you want to parse.
+     * @param string|array $url This is the URL (or (deprecated) array of URLs) that you want to parse.
      */
     public function set_feed_url($url)
     {
         $this->multifeed_url = [];
         if (is_array($url)) {
+            trigger_error('Fetching multiple feeds with single SimplePie instance is deprecated since SimplePie 1.9.0, create one SimplePie instance per feed and use SimplePie::merge_items to get a single list of items.', \E_USER_DEPRECATED);
             foreach ($url as $value) {
                 $this->multifeed_url[] = $this->registry->call(Misc::class, 'fix_protocol', [$value, 1]);
             }
