@@ -14,7 +14,7 @@ use SimplePie\SimplePie;
 /**
  * Mock for Base cache objects
  */
-class BaseCacheWithCallbacksMock implements Base
+final class BaseCacheWithCallbacksMock implements Base
 {
     /** @var Closure|null */
     private static $constructCallback = null;
@@ -36,32 +36,32 @@ class BaseCacheWithCallbacksMock implements Base
 
     public static function setConstructCallback(Closure $cb)
     {
-        static::$constructCallback = $cb;
+        self::$constructCallback = $cb;
     }
 
     public static function setSaveCallback(Closure $cb)
     {
-        static::$saveCallback = $cb;
+        self::$saveCallback = $cb;
     }
 
     public static function setLoadCallback(Closure $cb)
     {
-        static::$loadCallback = $cb;
+        self::$loadCallback = $cb;
     }
 
     public static function setMtimeCallback(Closure $cb)
     {
-        static::$mtimeCallback = $cb;
+        self::$mtimeCallback = $cb;
     }
 
     public static function setTouchCallback(Closure $cb)
     {
-        static::$touchCallback = $cb;
+        self::$touchCallback = $cb;
     }
 
     public static function setUnlinkCallback(Closure $cb)
     {
-        static::$unlinkCallback = $cb;
+        self::$unlinkCallback = $cb;
     }
 
     /**
@@ -69,12 +69,12 @@ class BaseCacheWithCallbacksMock implements Base
      */
     public static function resetAllCallbacks()
     {
-        static::$constructCallback = null;
-        static::$saveCallback = null;
-        static::$loadCallback = null;
-        static::$mtimeCallback = null;
-        static::$touchCallback = null;
-        static::$unlinkCallback = null;
+        self::$constructCallback = null;
+        self::$saveCallback = null;
+        self::$loadCallback = null;
+        self::$mtimeCallback = null;
+        self::$touchCallback = null;
+        self::$unlinkCallback = null;
     }
 
     /**
@@ -86,8 +86,8 @@ class BaseCacheWithCallbacksMock implements Base
      */
     public function __construct(string $location, string $name, $type)
     {
-        if (static::$constructCallback !== null) {
-            $callback = static::$constructCallback;
+        if (self::$constructCallback !== null) {
+            $callback = self::$constructCallback;
             $callback($location, $name, $type);
         }
     }
@@ -102,8 +102,8 @@ class BaseCacheWithCallbacksMock implements Base
     {
         $return = true;
 
-        if (static::$saveCallback instanceof Closure) {
-            $callback = static::$saveCallback;
+        if (self::$saveCallback instanceof Closure) {
+            $callback = self::$saveCallback;
             $return = $callback($data);
         }
 
@@ -119,8 +119,8 @@ class BaseCacheWithCallbacksMock implements Base
     {
         $return = [];
 
-        if (static::$loadCallback instanceof Closure) {
-            $callback = static::$loadCallback;
+        if (self::$loadCallback instanceof Closure) {
+            $callback = self::$loadCallback;
             $return = $callback();
         }
 
@@ -136,8 +136,8 @@ class BaseCacheWithCallbacksMock implements Base
     {
         $return = 0;
 
-        if (static::$mtimeCallback instanceof Closure) {
-            $callback = static::$mtimeCallback;
+        if (self::$mtimeCallback instanceof Closure) {
+            $callback = self::$mtimeCallback;
             $return = $callback();
         }
 
@@ -153,8 +153,8 @@ class BaseCacheWithCallbacksMock implements Base
     {
         $return = true;
 
-        if (static::$touchCallback instanceof Closure) {
-            $callback = static::$touchCallback;
+        if (self::$touchCallback instanceof Closure) {
+            $callback = self::$touchCallback;
             $return = $callback();
         }
 
@@ -170,8 +170,8 @@ class BaseCacheWithCallbacksMock implements Base
     {
         $return = true;
 
-        if (static::$unlinkCallback instanceof Closure) {
-            $callback = static::$unlinkCallback;
+        if (self::$unlinkCallback instanceof Closure) {
+            $callback = self::$unlinkCallback;
             $return = $callback();
         }
 
