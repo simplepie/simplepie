@@ -28,6 +28,7 @@ class Locator implements RegistryAware
     public $max_checked_feeds = 10;
     public $force_fsockopen = false;
     public $curl_options = [];
+    /** @var ?\DomDocument */
     public $dom;
     protected $registry;
 
@@ -251,6 +252,7 @@ class Locator implements RegistryAware
         $xpath = new \DOMXpath($this->dom);
         $query = '//a[@rel and @href] | //link[@rel and @href]';
         foreach ($xpath->query($query) as $link) {
+            /** @var \DOMElement $link */
             $href = trim($link->getAttribute('href'));
             $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
             if ($parsed['scheme'] === '' ||
