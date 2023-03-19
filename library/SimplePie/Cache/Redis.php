@@ -1,15 +1,9 @@
 <?php
 
-declare(strict_types=1);
+// SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
+// SPDX-License-Identifier: BSD-3-Clause
 
-/**
- * SimplePie Redis Cache Extension
- *
- * @author Jan Kozak <galvani78@gmail.com>
- * @link http://galvani.cz/
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @version 0.2.9
- */
+declare(strict_types=1);
 
 use SimplePie\Cache\Redis;
 

@@ -24,7 +24,7 @@ function remove_header($contents)
 {
     $tokens = token_get_all($contents);
     $stripped_source = '';
-    $stripped_doc = false;
+    $stripped_spdx = false;
     $stripped_open = false;
     $stripped_declare = false;
     $in_declare_strip = false;
@@ -42,9 +42,8 @@ function remove_header($contents)
             continue;
         }
         switch ($value[0]) {
-            case T_DOC_COMMENT:
-                if (!$stripped_doc) {
-                    $stripped_doc = true;
+            case T_COMMENT:
+                if (!$stripped_spdx) {
                     continue 2;
                 }
                 break;
@@ -61,6 +60,8 @@ function remove_header($contents)
             case T_DECLARE:
                 if (! $stripped_declare && ! $in_declare_strip) {
                     $in_declare_strip = true;
+                    // SPDX comments precede the declare statement.
+                    $stripped_spdx = true;
                     continue 2;
                 }
                 break;
