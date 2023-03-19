@@ -77,7 +77,7 @@ class RestrictionTest extends TestCase
 </rss>
 EOT
                 ,
-                'deny',
+                Restriction::RELATIONSHIP_DENY,
             ],
             'iTunesRSS Channel Block Default Test RSS 2.0' => [
 <<<EOT
@@ -90,7 +90,7 @@ EOT
 </rss>
 EOT
                 ,
-                'allow',
+                Restriction::RELATIONSHIP_ALLOW,
             ],
             'iTunesRSS Channel Block Reverse Test RSS 2.0' => [
 <<<EOT
@@ -104,7 +104,7 @@ EOT
 </rss>
 EOT
                 ,
-                'allow',
+                Restriction::RELATIONSHIP_ALLOW,
             ],
         ];
     }
