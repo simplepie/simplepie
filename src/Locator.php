@@ -43,7 +43,7 @@ class Locator implements RegistryAware
         if (class_exists('DOMDocument') && $this->file->body != '') {
             $this->dom = new \DOMDocument();
 
-            set_error_handler(['SimplePie\Misc', 'silence_errors']);
+            set_error_handler([Misc::class, 'silence_errors']);
             try {
                 $this->dom->loadHTML($this->file->body);
             } catch (\Throwable $ex) {

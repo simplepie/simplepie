@@ -5,6 +5,7 @@
 
 declare(strict_types=1);
 
+use SimplePie\File;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 
 class SubscribeUrlTest extends PHPUnit\Framework\TestCase
@@ -12,7 +13,7 @@ class SubscribeUrlTest extends PHPUnit\Framework\TestCase
     public function testDirectOverrideLegacy()
     {
         $feed = new SimplePie();
-        $feed->get_registry()->register('File', FileWithRedirectMock::class);
+        $feed->get_registry()->register(File::class, FileWithRedirectMock::class);
         $feed->enable_cache(false);
         $feed->set_feed_url('http://example.com/feed/');
 

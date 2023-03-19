@@ -75,7 +75,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 
     public function testFailDiscoveryNoDOM()
     {
-        $this->expectException('SimplePie_Exception');
+        $this->expectException(\SimplePie\Exception::class);
 
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'text/html';

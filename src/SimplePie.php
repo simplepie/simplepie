@@ -1503,7 +1503,7 @@ class SimplePie
 
         // The default sanitize class gets set in the constructor, check if it has
         // changed.
-        if ($this->registry->get_class(Sanitize::class) !== 'SimplePie\Sanitize') {
+        if ($this->registry->get_class(Sanitize::class) !== Sanitize::class) {
             $this->sanitize = $this->registry->create(Sanitize::class);
         }
         if (method_exists($this->sanitize, 'set_registry')) {

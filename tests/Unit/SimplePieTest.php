@@ -14,6 +14,7 @@ use SimplePie\File;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\Cache\LegacyCacheMock;
 use SimplePie\Tests\Fixtures\Cache\NewCacheMock;
+use SimplePie\Tests\Fixtures\Exception\SuccessException;
 use SimplePie\Tests\Fixtures\FileMock;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
@@ -231,7 +232,7 @@ class SimplePieTest extends TestCase
         $feed->set_feed_url('http://example.com/feed/');
 
         if (version_compare(PHP_VERSION, '8.0', '<')) {
-            $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
+            $this->expectException(SuccessException::class);
         } else {
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
             // This is no longer supported in PHP, so there is just no way to continue to provide BC
@@ -244,7 +245,7 @@ class SimplePieTest extends TestCase
 
     public function testDirectOverrideNew()
     {
-        $this->expectException('SimplePie\Tests\Fixtures\Exception\SuccessException');
+        $this->expectException(SuccessException::class);
 
         $feed = new SimplePie();
         $feed->get_registry()->register(Cache::class, NewCacheMock::class);
