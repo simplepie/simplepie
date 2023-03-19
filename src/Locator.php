@@ -287,7 +287,8 @@ class Locator implements RegistryAware
             if ($this->checked_feeds === $this->max_checked_feeds) {
                 break;
             }
-            if (in_array(strtolower(strrchr($value, '.')), ['.rss', '.rdf', '.atom', '.xml'])) {
+            $extension = strrchr($value, '.');
+            if ($extension !== false && in_array(strtolower($extension), ['.rss', '.rdf', '.atom', '.xml'])) {
                 $this->checked_feeds++;
 
                 $headers = [
