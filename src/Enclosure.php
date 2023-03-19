@@ -223,8 +223,7 @@ class Enclosure
         ?array $thumbnails = null,
         ?string $title = null,
         ?string $width = null
-    )
-    {
+    ) {
         $this->bitrate = $bitrate;
         $this->captions = $captions;
         $this->categories = $categories;
