@@ -63,7 +63,7 @@ class Memcache implements Base
     /**
      * Memcache instance
      *
-     * @var Memcache
+     * @var NativeMemcache
      */
     protected $cache;
 
