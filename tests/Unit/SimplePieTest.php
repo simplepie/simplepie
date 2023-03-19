@@ -225,20 +225,20 @@ class SimplePieTest extends TestCase
 
     public function testLegacyCallOfSetCacheClass()
     {
+        if (version_compare(PHP_VERSION, '8.0', '>=')) {
+            // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
+            // This is no longer supported in PHP, so there is just no way to continue to provide BC
+            // for the old non-static cache methods.
+            $this->markTestSkipped('Using legacy cache class is not compatible with PHP 8.');
+        }
+
         $feed = new SimplePie();
         $this->expectDeprecation();
         $feed->set_cache_class(LegacyCacheMock::class);
         $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 
-        if (version_compare(PHP_VERSION, '8.0', '<')) {
-            $this->expectException(SuccessException::class);
-        } else {
-            // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
-            // This is no longer supported in PHP, so there is just no way to continue to provide BC
-            // for the old non-static cache methods.
-            $this->expectError();
-        }
+        $this->expectException(SuccessException::class);
 
         $feed->init();
     }

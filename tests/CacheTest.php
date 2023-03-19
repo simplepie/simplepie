@@ -41,14 +41,14 @@ class CacheTest extends PHPUnit\Framework\TestCase
 
     public function testDirectOverrideLegacy()
     {
-        if (version_compare(PHP_VERSION, '8.0', '<')) {
-            $this->expectException(SuccessException::class);
-        } else {
+        if (version_compare(PHP_VERSION, '8.0', '>=')) {
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
             // This is no longer supported in PHP, so there is just no way to continue to provide BC
             // for the old non-static cache methods.
-            $this->expectError();
+            $this->markTestSkipped('Using legacy cache class is not compatible with PHP 8.');
         }
+
+        $this->expectException(SuccessException::class);
 
         $feed = new SimplePie();
         $this->expectDeprecation();
