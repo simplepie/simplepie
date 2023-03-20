@@ -1739,7 +1739,7 @@ class SimplePie
                             $headers['if-none-match'] = $this->data['headers']['etag'];
                         }
 
-                        $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout/10, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
+                        $file = $this->registry->create(File::class, [$this->feed_url, $this->timeout, 5, $headers, $this->useragent, $this->force_fsockopen, $this->curl_options]);
                         $this->status_code = $file->status_code;
 
                         if ($file->success) {
@@ -1757,6 +1757,7 @@ class SimplePie
                                 return true;
                             }
 
+                            $failedFile = $file;
                             unset($file);
                         }
                     }
@@ -1777,6 +1778,9 @@ class SimplePie
         if (!isset($file)) {
             if ($this->file instanceof File && $this->file->url === $this->feed_url) {
                 $file =& $this->file;
+            } elseif (isset($failedFile)) {
+                // Do not try to fetch again if we already failed once.
+                $file = $failedFile;
             } else {
                 $headers = [
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
