@@ -24,7 +24,7 @@ What comes in the package?
 2. `autoloader.php` - The SimplePie Autoloader if you want to use the separate
    file version.
 3. `README.markdown` - This document.
-4. `LICENSE.txt` - A copy of the BSD license.
+4. `LICENSES/BSD-3-Clause.txt` - A copy of the BSD license.
 5. `compatibility_test/` - The SimplePie compatibility test that checks your
    server for required settings.
 6. `demo/` - A basic feed reader demo that shows off some of SimplePie's more

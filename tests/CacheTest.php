@@ -1,58 +1,15 @@
 <?php
 
+// SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
+// SPDX-License-Identifier: BSD-3-Clause
+
 declare(strict_types=1);
-/**
- * SimplePie
- *
- * A PHP-Based RSS and Atom Feed Framework.
- * Takes the hard work out of managing a complete RSS/Atom solution.
- *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- * 	* Redistributions of source code must retain the above copyright notice, this list of
- * 	  conditions and the following disclaimer.
- *
- * 	* Redistributions in binary form must reproduce the above copyright notice, this list
- * 	  of conditions and the following disclaimer in the documentation and/or other materials
- * 	  provided with the distribution.
- *
- * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used
- * 	  to endorse or promote products derived from this software without specific prior
- * 	  written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
- * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
- * @author Ryan Parman
- * @author Sam Sneddon
- * @author Ryan McCue
- * @link http://simplepie.org/ SimplePie
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- */
 
 use SimplePie\Cache;
 use SimplePie\File;
+use SimplePie\Tests\Fixtures\Exception\SuccessException;
 use SimplePie\Tests\Fixtures\FileMock;
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
-
-/**
- * This is a dirty, dirty hack
- */
-class Exception_Success extends Exception
-{
-}
 
 class Mock_CacheLegacy extends SimplePie_Cache
 {
@@ -62,7 +19,7 @@ class Mock_CacheLegacy extends SimplePie_Cache
     }
     public function create($location, $filename, $extension)
     {
-        throw new Exception_Success('Correct function called');
+        throw new SuccessException('Correct function called');
     }
 }
 
@@ -70,7 +27,7 @@ class Mock_CacheNew extends SimplePie_Cache
 {
     public static function get_handler($location, $filename, $extension)
     {
-        throw new Exception_Success('Correct function called');
+        throw new SuccessException('Correct function called');
     }
     public function create($location, $filename, $extension)
     {
@@ -85,7 +42,7 @@ class CacheTest extends PHPUnit\Framework\TestCase
     public function testDirectOverrideLegacy()
     {
         if (version_compare(PHP_VERSION, '8.0', '<')) {
-            $this->expectException('Exception_Success');
+            $this->expectException(SuccessException::class);
         } else {
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
             // This is no longer supported in PHP, so there is just no way to continue to provide BC
@@ -95,7 +52,7 @@ class CacheTest extends PHPUnit\Framework\TestCase
 
         $feed = new SimplePie();
         $this->expectDeprecation();
-        $feed->set_cache_class('Mock_CacheLegacy');
+        $feed->set_cache_class(Mock_CacheLegacy::class);
         $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 
@@ -104,10 +61,10 @@ class CacheTest extends PHPUnit\Framework\TestCase
 
     public function testDirectOverrideNew()
     {
-        $this->expectException('Exception_Success');
+        $this->expectException(SuccessException::class);
 
         $feed = new SimplePie();
-        $feed->get_registry()->register(Cache::class, 'Mock_CacheNew');
+        $feed->get_registry()->register(Cache::class, Mock_CacheNew::class);
         $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
 

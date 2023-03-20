@@ -1,46 +1,9 @@
 <?php
 
+// SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
+// SPDX-License-Identifier: BSD-3-Clause
+
 declare(strict_types=1);
-/**
- * SimplePie
- *
- * A PHP-Based RSS and Atom Feed Framework.
- * Takes the hard work out of managing a complete RSS/Atom solution.
- *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- * 	* Redistributions of source code must retain the above copyright notice, this list of
- * 	  conditions and the following disclaimer.
- *
- * 	* Redistributions in binary form must reproduce the above copyright notice, this list
- * 	  of conditions and the following disclaimer in the documentation and/or other materials
- * 	  provided with the distribution.
- *
- * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used
- * 	  to endorse or promote products derived from this software without specific prior
- * 	  written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
- * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
- * @author Ryan Parman
- * @author Sam Sneddon
- * @author Ryan McCue
- * @link http://simplepie.org/ SimplePie
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- */
 
 namespace SimplePie;
 
@@ -54,79 +17,79 @@ namespace SimplePie;
 class Enclosure
 {
     /**
-     * @var string
+     * @var ?string
      * @see get_bitrate()
      */
     public $bitrate;
 
     /**
-     * @var array
+     * @var Caption[]|null
      * @see get_captions()
      */
     public $captions;
 
     /**
-     * @var array
+     * @var Category[]|null
      * @see get_categories()
      */
     public $categories;
 
     /**
-     * @var int
+     * @var ?int
      * @see get_channels()
      */
     public $channels;
 
     /**
-     * @var \SimplePie\Copyright
+     * @var ?Copyright
      * @see get_copyright()
      */
     public $copyright;
 
     /**
-     * @var array
+     * @var Credit[]|null
      * @see get_credits()
      */
     public $credits;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_description()
      */
     public $description;
 
     /**
-     * @var int
+     * @var ?int
      * @see get_duration()
      */
     public $duration;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_expression()
      */
     public $expression;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_framerate()
      */
     public $framerate;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_handler()
      */
     public $handler;
 
     /**
-     * @var array
+     * @var string[]|null
      * @see get_hashes()
      */
     public $hashes;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_height()
      */
     public $height;
@@ -138,79 +101,79 @@ class Enclosure
     public $javascript;
 
     /**
-     * @var array
+     * @var string[]|null
      * @see get_keywords()
      */
     public $keywords;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_language()
      */
     public $lang;
 
     /**
-     * @var string
+     * @var ?int
      * @see get_length()
      */
     public $length;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_link()
      */
     public $link;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_medium()
      */
     public $medium;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_player()
      */
     public $player;
 
     /**
-     * @var array
+     * @var Rating[]|null
      * @see get_ratings()
      */
     public $ratings;
 
     /**
-     * @var array
+     * @var ?Restriction[]
      * @see get_restrictions()
      */
     public $restrictions;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_sampling_rate()
      */
     public $samplingrate;
 
     /**
-     * @var array
+     * @var string[]|null
      * @see get_thumbnails()
      */
     public $thumbnails;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_title()
      */
     public $title;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_type()
      */
     public $type;
 
     /**
-     * @var string
+     * @var ?string
      * @see get_width()
      */
     public $width;
@@ -222,8 +185,45 @@ class Enclosure
      * properties and their accessors
      *
      * @uses idna_convert If available, this will convert an IDN
+     *
+     * @param null $javascript
+     * @param Caption[]|null $captions
+     * @param Category[]|null $categories
+     * @param Credit[]|null $credits
+     * @param string[]|null $hashes
+     * @param string[]|null $keywords
+     * @param Rating[]|null $ratings
+     * @param Restriction[]|null $restrictions
+     * @param string[]|null $thumbnails
      */
-    public function __construct($link = null, $type = null, $length = null, $javascript = null, $bitrate = null, $captions = null, $categories = null, $channels = null, $copyright = null, $credits = null, $description = null, $duration = null, $expression = null, $framerate = null, $hashes = null, $height = null, $keywords = null, $lang = null, $medium = null, $player = null, $ratings = null, $restrictions = null, $samplingrate = null, $thumbnails = null, $title = null, $width = null)
+    public function __construct(
+        ?string $link = null,
+        ?string $type = null,
+        ?int $length = null,
+        $javascript = null,
+        ?string $bitrate = null,
+        ?array $captions = null,
+        ?array $categories = null,
+        ?int $channels = null,
+        ?Copyright $copyright = null,
+        ?array $credits = null,
+        ?string $description = null,
+        ?int $duration = null,
+        ?string $expression = null,
+        ?string $framerate = null,
+        ?array $hashes = null,
+        ?string $height = null,
+        ?array $keywords = null,
+        ?string $lang = null,
+        ?string $medium = null,
+        ?string $player = null,
+        ?array $ratings = null,
+        ?array $restrictions = null,
+        ?string $samplingrate = null,
+        ?array $thumbnails = null,
+        ?string $title = null,
+        ?string $width = null
+    )
     {
         $this->bitrate = $bitrate;
         $this->captions = $captions;
@@ -303,7 +303,7 @@ class Enclosure
     /**
      * Get all captions
      *
-     * @return array|null Array of {@see \SimplePie\Caption} objects
+     * @return Caption[]|null
      */
     public function get_captions()
     {
@@ -333,7 +333,7 @@ class Enclosure
     /**
      * Get all categories
      *
-     * @return array|null Array of {@see \SimplePie\Category} objects
+     * @return \SimplePie\Category[]|null
      */
     public function get_categories()
     {
@@ -391,7 +391,7 @@ class Enclosure
     /**
      * Get all credits
      *
-     * @return array|null Array of {@see \SimplePie\Credit} objects
+     * @return Credit[]|null
      */
     public function get_credits()
     {
@@ -510,7 +510,7 @@ class Enclosure
     /**
      * Get all credits
      *
-     * @return array|null Array of strings, see {@see get_hash()}
+     * @return string[]|null Array of strings, see {@see get_hash()}
      */
     public function get_hashes()
     {
@@ -569,7 +569,7 @@ class Enclosure
     /**
      * Get all keywords
      *
-     * @return array|null Array of strings
+     * @return string[]|null
      */
     public function get_keywords()
     {
@@ -583,7 +583,7 @@ class Enclosure
     /**
      * Get length
      *
-     * @return float Length in bytes
+     * @return ?int Length in bytes
      */
     public function get_length()
     {
@@ -657,7 +657,7 @@ class Enclosure
     /**
      * Get all ratings
      *
-     * @return array|null Array of {@see \SimplePie\Rating} objects
+     * @return Rating[]|null
      */
     public function get_ratings()
     {
@@ -687,7 +687,7 @@ class Enclosure
     /**
      * Get all restrictions
      *
-     * @return array|null Array of {@see \SimplePie\Restriction} objects
+     * @return Restriction[]|null
      */
     public function get_restrictions()
     {
@@ -746,7 +746,7 @@ class Enclosure
     /**
      * Get all thumbnails
      *
-     * @return array|null Array of thumbnail URLs
+     * @return string[]|null Array of thumbnail URLs
      */
     public function get_thumbnails()
     {
@@ -1041,7 +1041,7 @@ class Enclosure
      *
      * @see get_type()
      * @param bool $find_handler Internal use only, use {@see get_handler()} instead
-     * @return string MIME type
+     * @return string|null MIME type
      */
     public function get_real_type(bool $find_handler = false)
     {
