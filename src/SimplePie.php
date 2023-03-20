@@ -3078,6 +3078,7 @@ class SimplePie
      */
     private function make_item(array $data): Item {
         $item = $this->registry->create(Item::class, [$this, $data]);
+        $item->set_sanitize($this->sanitize);
 
         return $item;
     }
