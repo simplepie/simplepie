@@ -780,10 +780,14 @@ class SimplePie
     /**
      * Set an instance of {@see File} to use as a feed
      *
+     * @deprecated since SimplePie 1.9.0, use \SimplePie\SimplePie::set_http_client() or \SimplePie\SimplePie::set_raw_data() instead.
+     *
      * @return bool True on success, false on failure
      */
     public function set_file(File &$file)
     {
+        // trigger_error(sprintf('SimplePie\SimplePie::set_file() is deprecated since SimplePie 1.9.0, please use "SimplePie\SimplePie::set_http_client()" or "SimplePie\SimplePie::set_raw_data()" instead.'), \E_USER_DEPRECATED);
+
         $this->feed_url = $file->get_final_requested_uri();
         $this->permanent_url = $this->feed_url;
         $this->file =& $file;
