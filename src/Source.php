@@ -66,9 +66,9 @@ class Source implements RegistryAware
     public function get_title()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'title')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'title')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'title')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'title')) {
@@ -307,7 +307,7 @@ class Source implements RegistryAware
 
             $keys = array_keys($this->data['links']);
             foreach ($keys as $key) {
-                if ($this->registry->call(Misc::class, 'is_isegment_nz_nc', [$key])) {
+                if (Misc::is_isegment_nz_nc($key)) {
                     if (isset($this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key])) {
                         $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key]);
                         $this->data['links'][$key] =& $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key];
@@ -331,9 +331,9 @@ class Source implements RegistryAware
     public function get_description()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'subtitle')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'tagline')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_10, 'description')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_090, 'description')) {
@@ -356,9 +356,9 @@ class Source implements RegistryAware
     public function get_copyright()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'rights')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'copyright')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'copyright')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'rights')) {

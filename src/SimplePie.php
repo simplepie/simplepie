@@ -750,10 +750,10 @@ class SimplePie
         if (is_array($url)) {
             trigger_error('Fetching multiple feeds with single SimplePie instance is deprecated since SimplePie 1.9.0, create one SimplePie instance per feed and use SimplePie::merge_items to get a single list of items.', \E_USER_DEPRECATED);
             foreach ($url as $value) {
-                $this->multifeed_url[] = $this->registry->call(Misc::class, 'fix_protocol', [$value, 1]);
+                $this->multifeed_url[] = Misc::fix_protocol($value, 1);
             }
         } else {
-            $this->feed_url = $this->registry->call(Misc::class, 'fix_protocol', [$url, 1]);
+            $this->feed_url = Misc::fix_protocol($url, 1);
             $this->permanent_url = $this->feed_url;
         }
     }
@@ -1545,7 +1545,7 @@ class SimplePie
         $cache = false;
 
         if ($this->feed_url !== null) {
-            $parsed_feed_url = $this->registry->call(Misc::class, 'parse_url', [$this->feed_url]);
+            $parsed_feed_url = Misc::parse_url($this->feed_url);
 
             // Decide whether to enable caching
             if ($this->enable_cache && $parsed_feed_url['scheme'] !== '') {
@@ -1611,7 +1611,7 @@ class SimplePie
         // Loop through each possible encoding, till we return something, or run out of possibilities
         foreach ($encodings as $encoding) {
             // Change the encoding to UTF-8 (as we always use UTF-8 internally)
-            if ($utf8_data = $this->registry->call(Misc::class, 'change_encoding', [$this->raw_data, $encoding, 'UTF-8'])) {
+            if ($utf8_data = Misc::change_encoding($this->raw_data, $encoding, 'UTF-8')) {
                 // Create new parser
                 $parser = $this->registry->create(Parser::class);
 
@@ -2292,9 +2292,9 @@ class SimplePie
     public function get_title()
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'title')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'title')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_10, 'title')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_090, 'title')) {
@@ -2603,7 +2603,7 @@ class SimplePie
 
             $keys = array_keys($this->data['links']);
             foreach ($keys as $key) {
-                if ($this->registry->call(Misc::class, 'is_isegment_nz_nc', [$key])) {
+                if (Misc::is_isegment_nz_nc($key)) {
                     if (isset($this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key])) {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key]);
                         $this->data['links'][$key] =& $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key];
@@ -2653,9 +2653,9 @@ class SimplePie
     public function get_description()
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'subtitle')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'tagline')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_10, 'description')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_MAYBE_HTML, $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_090, 'description')) {
@@ -2686,9 +2686,9 @@ class SimplePie
     public function get_copyright()
     {
         if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'rights')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_10_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'copyright')) {
-            return $this->sanitize($return[0]['data'], $this->registry->call(Misc::class, 'atom_03_construct_type', [$return[0]['attribs']]), $this->get_base($return[0]));
+            return $this->sanitize($return[0]['data'], Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'copyright')) {
             return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
         } elseif ($return = $this->get_channel_tags(self::NAMESPACE_DC_11, 'rights')) {
