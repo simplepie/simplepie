@@ -15,7 +15,7 @@ class Mock_CacheLegacy extends SimplePie_Cache
 {
     public static function get_handler($location, $filename, $extension)
     {
-        trigger_error('Legacy cache class should not have get_handler() called');
+        throw new Exception('Legacy cache class should not have get_handler() called');
     }
     public function create($location, $filename, $extension)
     {
@@ -31,7 +31,7 @@ class Mock_CacheNew extends SimplePie_Cache
     }
     public function create($location, $filename, $extension)
     {
-        trigger_error('New cache class should not have create() called');
+        throw new Exception('New cache class should not have create() called');
     }
 }
 
