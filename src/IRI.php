@@ -10,34 +10,43 @@ namespace SimplePie;
 
 /**
  * IRI parser/serialiser/normaliser
+ *
+ * @property ?string $scheme
+ * @property ?string $userinfo
+ * @property ?string $host
+ * @property ?int $port
+ * @property ?string $authority
+ * @property string $path
+ * @property ?string $query
+ * @property ?string $fragment
  */
 class IRI
 {
     /**
      * Scheme
      *
-     * @var string
+     * @var ?string
      */
     protected $scheme = null;
 
     /**
      * User Information
      *
-     * @var string
+     * @var ?string
      */
     protected $iuserinfo = null;
 
     /**
      * ihost
      *
-     * @var string
+     * @var ?string
      */
     protected $ihost = null;
 
     /**
      * Port
      *
-     * @var string
+     * @var ?int
      */
     protected $port = null;
 
@@ -51,14 +60,14 @@ class IRI
     /**
      * iquery
      *
-     * @var string
+     * @var ?string
      */
     protected $iquery = null;
 
     /**
      * ifragment
      *
-     * @var string
+     * @var ?string
      */
     protected $ifragment = null;
 
@@ -981,7 +990,7 @@ class IRI
     /**
      * Get the complete IRI
      *
-     * @return string
+     * @return string|false
      */
     public function get_iri()
     {
@@ -1024,7 +1033,7 @@ class IRI
     /**
      * Get the complete iauthority
      *
-     * @return string
+     * @return ?string
      */
     protected function get_iauthority()
     {
@@ -1048,7 +1057,7 @@ class IRI
     /**
      * Get the complete authority
      *
-     * @return string
+     * @return ?string
      */
     protected function get_authority()
     {
