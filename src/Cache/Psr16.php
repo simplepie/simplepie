@@ -9,6 +9,7 @@ namespace SimplePie\Cache;
 
 use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use Throwable;
 
 /**
  * Caches data into a PSR-16 cache implementation
@@ -47,7 +48,7 @@ final class Psr16 implements DataCache
      *
      * @return array|mixed The value of the item from the cache, or $default in case of cache miss.
      *
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException&Throwable
      *   MUST be thrown if the $key string is not a legal value.
      */
     public function get_data(string $key, $default = null)
@@ -77,7 +78,7 @@ final class Psr16 implements DataCache
      *
      * @return bool True on success and false on failure.
      *
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException&Throwable
      *   MUST be thrown if the $key string is not a legal value.
      */
     public function set_data(string $key, array $value, ?int $ttl = null): bool
@@ -97,7 +98,7 @@ final class Psr16 implements DataCache
      *
      * @return bool True if the item was successfully removed. False if there was an error.
      *
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException&Throwable
      *   MUST be thrown if the $key string is not a legal value.
      */
     public function delete_data(string $key): bool
