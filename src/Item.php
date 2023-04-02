@@ -2318,11 +2318,13 @@ class Item implements RegistryAware
         return null;
     }
 
-    public function set_sanitize(Sanitize $sanitize): void {
+    public function set_sanitize(Sanitize $sanitize): void
+    {
         $this->sanitize = $sanitize;
     }
 
-    protected function get_sanitize(): Sanitize {
+    protected function get_sanitize(): Sanitize
+    {
         if ($this->sanitize === null) {
             $this->sanitize = new Sanitize();
         }
