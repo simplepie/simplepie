@@ -41,6 +41,11 @@ class Item implements RegistryAware
     protected $registry;
 
     /**
+     * @var Sanitize|null
+     */
+    private $sanitize = null;
+
+    /**
      * Create a new item object
      *
      * This is usually used by {@see \SimplePie\SimplePie::get_items} and
@@ -2223,7 +2228,7 @@ class Item implements RegistryAware
                     $width = null;
 
                     $url = $this->sanitize($enclosure['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($enclosure));
-                    $url = $this->feed->sanitize->https_url($url);
+                    $url = $this->get_sanitize()->https_url($url);
                     if (isset($enclosure['attribs']['']['type'])) {
                         $type = $this->sanitize($enclosure['attribs']['']['type'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
                     }
@@ -2311,6 +2316,18 @@ class Item implements RegistryAware
         }
 
         return null;
+    }
+
+    public function set_sanitize(Sanitize $sanitize): void {
+        $this->sanitize = $sanitize;
+    }
+
+    protected function get_sanitize(): Sanitize {
+        if ($this->sanitize === null) {
+            $this->sanitize = new Sanitize();
+        }
+
+        return $this->sanitize;
     }
 }
 
