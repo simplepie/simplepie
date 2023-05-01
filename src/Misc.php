@@ -41,7 +41,7 @@ class Misc
         return $time;
     }
 
-    public static function absolutize_url($relative, $base)
+    public static function absolutize_url($relative, $base): string
     {
         $iri = \SimplePie\IRI::absolutize(new \SimplePie\IRI($base), $relative);
         if ($iri === false) {
@@ -56,9 +56,8 @@ class Misc
      * @deprecated since SimplePie 1.3, use DOMDocument instead (parsing HTML with regex is bad!)
      * @param string $realname Element name (including namespace prefix if applicable)
      * @param string $string HTML document
-     * @return array
      */
-    public static function get_element(string $realname, string $string)
+    public static function get_element(string $realname, string $string): array
     {
         // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
@@ -89,7 +88,7 @@ class Misc
         return $return;
     }
 
-    public static function element_implode($element)
+    public static function element_implode(array $element): string
     {
         $full = "<$element[tag]";
         foreach ($element['attribs'] as $key => $value) {
@@ -140,7 +139,7 @@ class Misc
         return $message;
     }
 
-    public static function fix_protocol($url, $http = 1)
+    public static function fix_protocol(string $url, $http = 1); string
     {
         $url = Misc::normalize_url($url);
         $parsed = Misc::parse_url($url);
@@ -166,7 +165,7 @@ class Misc
     /**
      * @deprecated since SimplePie 1.8.0, use PHP native array_replace_recursive() instead.
      */
-    public static function array_merge_recursive($array1, $array2)
+    public static function array_merge_recursive(array $array1,array $array2)
     {
         foreach ($array2 as $key => $value) {
             if (is_array($value)) {
@@ -277,7 +276,7 @@ class Misc
         return false;
     }
 
-    protected static function change_encoding_mbstring($data, $input, $output)
+    protected static function change_encoding_mbstring($data, string $input, $output)
     {
         if ($input === 'windows-949') {
             $input = 'EUC-KR';
@@ -336,7 +335,7 @@ class Misc
      * @param string $charset Character set to standardise
      * @return string Standardised name
      */
-    public static function encoding(string $charset)
+    public static function encoding(string $charset): string 
     {
         // Normalization from UTS #22
         switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
