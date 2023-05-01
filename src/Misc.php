@@ -139,7 +139,7 @@ class Misc
         return $message;
     }
 
-    public static function fix_protocol(string $url, $http = 1); string
+    public static function fix_protocol(string $url, $http = 1): string
     {
         $url = Misc::normalize_url($url);
         $parsed = Misc::parse_url($url);
@@ -165,7 +165,7 @@ class Misc
     /**
      * @deprecated since SimplePie 1.8.0, use PHP native array_replace_recursive() instead.
      */
-    public static function array_merge_recursive(array $array1,array $array2)
+    public static function array_merge_recursive(array $array1, array $array2)
     {
         foreach ($array2 as $key => $value) {
             if (is_array($value)) {
