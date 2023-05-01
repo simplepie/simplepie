@@ -41,7 +41,7 @@ class Misc
         return $time;
     }
 
-    public static function absolutize_url($relative, $base): string
+    public static function absolutize_url($relative, $base)
     {
         $iri = \SimplePie\IRI::absolutize(new \SimplePie\IRI($base), $relative);
         if ($iri === false) {
