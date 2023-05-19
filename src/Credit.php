@@ -50,8 +50,7 @@ class Credit
         ?string $role = null,
         ?string $scheme = null,
         ?string $name = null
-    )
-    {
+    ) {
         $this->role = $role;
         $this->scheme = $scheme;
         $this->name = $name;

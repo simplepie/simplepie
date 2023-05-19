@@ -355,6 +355,10 @@ HTML
      */
     public function test_get_title(string $feed, string $base, array $parsedData): void
     {
+        if (!function_exists('Mf2\parse')) {
+            $this->markTestSkipped('Test requires Mf2 library.');
+        }
+
         $parser = new Parser();
 
         $registry = new Registry();

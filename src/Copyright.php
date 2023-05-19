@@ -41,8 +41,7 @@ class Copyright
     public function __construct(
         ?string $url = null,
         ?string $label = null
-    )
-    {
+    ) {
         $this->url = $url;
         $this->label = $label;
     }

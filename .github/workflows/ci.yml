@@ -43,6 +43,10 @@ jobs:
         with:
           composer-options: --ignore-platform-reqs
 
+      - name: "Check coding style"
+        if: ${{ matrix.php == '8.2' }}
+        run: composer cs
+
       - name: Run unit tests
         run: composer test
 

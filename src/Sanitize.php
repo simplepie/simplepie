@@ -56,6 +56,12 @@ class Sanitize implements RegistryAware
     public $useragent = '';
     public $force_fsockopen = false;
     public $replace_url_attributes = null;
+    /**
+     * @var array<mixed> Custom curl options
+     * @see SimplePie::set_curl_options()
+     */
+    private $curl_options = [];
+
     public $registry;
 
     /**
@@ -155,7 +161,7 @@ class Sanitize implements RegistryAware
     /**
      * @deprecated since SimplePie 1.9.0, use \SimplePie\Sanitize::set_http_client() instead.
      */
-    public function pass_file_data($file_class = File::class, $timeout = 10, $useragent = '', $force_fsockopen = false)
+    public function pass_file_data($file_class = File::class, $timeout = 10, $useragent = '', $force_fsockopen = false, array $curl_options = [])
     {
         // trigger_error(sprintf('SimplePie\Sanitize::pass_file_data() is deprecated since SimplePie 1.9.0, please use "SimplePie\Sanitize::set_http_client()" instead.'), \E_USER_DEPRECATED);
         if ($timeout) {
@@ -169,6 +175,8 @@ class Sanitize implements RegistryAware
         if ($force_fsockopen) {
             $this->force_fsockopen = (string) $force_fsockopen;
         }
+
+        $this->curl_options = $curl_options;
     }
 
     public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
@@ -663,6 +671,7 @@ class Sanitize implements RegistryAware
                     'redirects' => 5,
                     'useragent' => $this->useragent,
                     'force_fsockopen' => $this->force_fsockopen,
+                    'curl_options' => $this->curl_options,
                 ]
             );
         }
