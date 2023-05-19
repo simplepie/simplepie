@@ -157,8 +157,18 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 
 class Mock_Misc extends SimplePie_Misc
 {
-    public static function __callStatic($name, $args)
+    public static function change_encoding_mbstring($data, $input, $output)
     {
-        return call_user_func_array(['SimplePie_Misc', $name], $args);
+        return parent::change_encoding_mbstring($data, $input, $output);
+    }
+
+    public static function change_encoding_iconv($data, $input, $output)
+    {
+        return parent::change_encoding_iconv($data, $input, $output);
+    }
+
+    public static function change_encoding_uconverter(string $data, string $input, string $output)
+    {
+        return parent::change_encoding_uconverter($data, $input, $output);
     }
 }

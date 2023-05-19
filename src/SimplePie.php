@@ -764,18 +764,15 @@ class SimplePie
     /**
      * Set an instance of {@see File} to use as a feed
      *
-     * @param File &$file
      * @return bool True on success, false on failure
      */
     public function set_file(File &$file)
     {
-        if ($file instanceof File) {
-            $this->feed_url = $file->get_requested_uri();
-            $this->permanent_url = $this->feed_url;
-            $this->file =& $file;
-            return true;
-        }
-        return false;
+        $this->feed_url = $file->get_requested_uri();
+        $this->permanent_url = $this->feed_url;
+        $this->file =& $file;
+
+        return true;
     }
 
     /**
@@ -3006,31 +3003,31 @@ class SimplePie
             if ($items = $this->get_feed_tags(self::NAMESPACE_ATOM_10, 'entry')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
+                    $this->data['items'][] = $this->make_item($items[$key]);
                 }
             }
             if ($items = $this->get_feed_tags(self::NAMESPACE_ATOM_03, 'entry')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
+                    $this->data['items'][] = $this->make_item($items[$key]);
                 }
             }
             if ($items = $this->get_feed_tags(self::NAMESPACE_RSS_10, 'item')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
+                    $this->data['items'][] = $this->make_item($items[$key]);
                 }
             }
             if ($items = $this->get_feed_tags(self::NAMESPACE_RSS_090, 'item')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
+                    $this->data['items'][] = $this->make_item($items[$key]);
                 }
             }
             if ($items = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'item')) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
-                    $this->data['items'][] = $this->registry->create(Item::class, [$this, $items[$key]]);
+                    $this->data['items'][] = $this->make_item($items[$key]);
                 }
             }
         }
@@ -3106,6 +3103,17 @@ class SimplePie
         $file = $trace[0]['file'];
         $line = $trace[0]['line'];
         trigger_error("Call to undefined method $class::$method() in $file on line $line", E_USER_ERROR);
+    }
+
+    /**
+     * Item factory
+     */
+    private function make_item(array $data): Item
+    {
+        $item = $this->registry->create(Item::class, [$this, $data]);
+        $item->set_sanitize($this->sanitize);
+
+        return $item;
     }
 
     /**

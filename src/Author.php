@@ -47,8 +47,7 @@ class Author
         ?string $name = null,
         ?string $link = null,
         ?string $email = null
-    )
-    {
+    ) {
         $this->name = $name;
         $this->link = $link;
         $this->email = $email;

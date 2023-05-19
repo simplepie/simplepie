@@ -68,8 +68,7 @@ class Caption
         ?string $startTime = null,
         ?string $endTime = null,
         ?string $text = null
-    )
-    {
+    ) {
         $this->type = $type;
         $this->lang = $lang;
         $this->startTime = $startTime;

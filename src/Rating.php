@@ -41,8 +41,7 @@ class Rating
     public function __construct(
         ?string $scheme = null,
         ?string $value = null
-    )
-    {
+    ) {
         $this->scheme = $scheme;
         $this->value = $value;
     }

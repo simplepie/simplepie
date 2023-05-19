@@ -419,7 +419,7 @@ EOT
                 ,
                 'Example Copyright Information',
             ],
-            'Test RSS 0.91-Userland DC 1.0 Rights' => [
+            'Test RSS 0.91-Userland DC 1.1 Rights' => [
 <<<EOT
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
