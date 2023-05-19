@@ -838,7 +838,7 @@ class SimplePie
         // so a new client with the changed value will be created
         if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
             $this->http_client = null;
-        } else if (is_object($this->http_client)) {
+        } elseif (is_object($this->http_client)) {
             // Trigger notice if a PSR-18 client was set
             trigger_error(sprintf(
                 'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the timeout in your HTTP client instead.',
@@ -864,7 +864,7 @@ class SimplePie
         // so a new client with the changed value will be created
         if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
             $this->http_client = null;
-        } else if (is_object($this->http_client)) {
+        } elseif (is_object($this->http_client)) {
             // Trigger notice if a PSR-18 client was set
             trigger_error(sprintf(
                 'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the curl options in your HTTP client instead.',
@@ -888,7 +888,7 @@ class SimplePie
         // so a new client with the changed value will be created
         if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
             $this->http_client = null;
-        } else if (is_object($this->http_client)) {
+        } elseif (is_object($this->http_client)) {
             // Trigger notice if a PSR-18 client was set
             trigger_error(sprintf(
                 'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure fsockopen in your HTTP client instead.',
@@ -1336,7 +1336,7 @@ class SimplePie
         // so a new client with the changed value will be created
         if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
             $this->http_client = null;
-        } else if (is_object($this->http_client)) {
+        } elseif (is_object($this->http_client)) {
             // Trigger notice if a PSR-18 client was set
             trigger_error(sprintf(
                 'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the useragent in your HTTP client instead.',

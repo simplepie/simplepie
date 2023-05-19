@@ -87,7 +87,7 @@ class SimplePieTest extends TestCase
         $requestFactory->method('createRequest')->willReturn($request);
 
         $body = $this->createMock(StreamInterface::class);
-        $body->method('getContents')->willReturnCallback(function() {
+        $body->method('getContents')->willReturnCallback(function () {
             $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
 
             return file_get_contents($filepath);
@@ -130,10 +130,10 @@ class SimplePieTest extends TestCase
     public function testRequestingAFeedFromCacheWorks(): void
     {
         // Setup cache mock
-        BaseCacheWithCallbacksMock::setSaveCallback(function($data) {
+        BaseCacheWithCallbacksMock::setSaveCallback(function ($data) {
             throw new Exception('BaseCacheWithCallbacksMock::mtime() should never been called.', 1);
         });
-        BaseCacheWithCallbacksMock::setLoadCallback(function() {
+        BaseCacheWithCallbacksMock::setLoadCallback(function () {
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
             $data = unserialize(file_get_contents($cachepath));
 
@@ -150,13 +150,13 @@ class SimplePieTest extends TestCase
 
             return $data;
         });
-        BaseCacheWithCallbacksMock::setMtimeCallback(function() {
+        BaseCacheWithCallbacksMock::setMtimeCallback(function () {
             throw new Exception('BaseCacheWithCallbacksMock::mtime() should never been called.', 1);
         });
-        BaseCacheWithCallbacksMock::setTouchCallback(function() {
+        BaseCacheWithCallbacksMock::setTouchCallback(function () {
             throw new Exception('BaseCacheWithCallbacksMock::touch() should never been called.', 1);
         });
-        BaseCacheWithCallbacksMock::setUnlinkCallback(function() {
+        BaseCacheWithCallbacksMock::setUnlinkCallback(function () {
             throw new Exception('BaseCacheWithCallbacksMock::unlink() should never been called.', 1);
         });
 
@@ -182,7 +182,7 @@ class SimplePieTest extends TestCase
     {
         // Setup cache mock
         $cache = $this->createMock(CacheInterface::class);
-        $cache->method('get')->willReturnCallback(function() {
+        $cache->method('get')->willReturnCallback(function () {
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
             $data = unserialize(file_get_contents($cachepath));
 

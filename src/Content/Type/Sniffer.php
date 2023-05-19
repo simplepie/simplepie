@@ -34,7 +34,7 @@ class Sniffer
     /**
      * Create an instance of the class with the input file
      *
-     * @param File $file Input file
+     * @param File|Response $file Input file
      */
     public function __construct(/* File */ $file)
     {
