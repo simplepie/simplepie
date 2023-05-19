@@ -96,14 +96,14 @@ class SimplePieTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
         $response->method('getBody')->willReturn($body);
         $response->method('getStatusCode')->willReturn(200);
-        $response->method('hasHeader')->willReturn($this->returnValueMap([
+        $response->method('hasHeader')->willReturnMap([
             ['content-encoding', false],
             ['content-type', true],
-        ]));
-        $response->method('getHeaderLine')->willReturn($this->returnValueMap([
+        ]);
+        $response->method('getHeaderLine')->willReturnMap([
             ['content-encoding', ''],
             ['content-type', 'application/x-rss+xml'],
-        ]));
+        ]);
         $response->method('getHeaders')->willReturn([
             'content-type' => ['application/x-rss+xml'],
         ]);

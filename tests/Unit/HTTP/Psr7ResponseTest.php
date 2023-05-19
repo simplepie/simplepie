@@ -29,18 +29,18 @@ class Psr7ResponseTest extends TestCase
         $response->method('getStatusCode')->willReturn(200);
         $response->method('getBody')->willReturn($stream);
         $response->method('getHeaders')->willReturn(['content-type' => ['application/atom+xml']]);
-        $response->method('hasHeader')->willReturn($this->returnValueMap([
+        $response->method('hasHeader')->willReturnMap([
             ['Content-Type', true],
             ['X-Custom-Header', false],
-        ]));
-        $response->method('getHeader')->willReturn($this->returnValueMap([
+        ]);
+        $response->method('getHeader')->willReturnMap([
             ['CONTENT-TYPE', ['application/atom+xml']],
             ['X-Custom-Header', []],
-        ]));
-        $response->method('getHeaderLine')->willReturn($this->returnValueMap([
+        ]);
+        $response->method('getHeaderLine')->willReturnMap([
             ['content-Type', 'application/atom+xml'],
             ['X-Custom-Header', ''],
-        ]));
+        ]);
 
         yield [new Psr7Response(
             $response,
