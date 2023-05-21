@@ -87,4 +87,18 @@ class ParserTest extends TestCase
         $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
         $this->assertSame($expected, $parser->body);
     }
+
+    public function testDuplicateHeaders(): void
+    {
+        $data = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Security-Policy: default-src 'self' http://example.com\r\nContent-Type: text/plain\r\nContent-Security-Policy: script-src http://example.com/\r\n\r\n";
+        $data = Parser::prepareHeaders($data);
+        $parser = new Parser($data);
+        $this->assertTrue($parser->parse());
+        $this->assertSame([
+            // Later Content-Type takes precedence.
+            'content-type' => 'text/plain',
+            // This is invalid but we are going to remove the parser eventually.
+            'content-security-policy' => "default-src 'self' http://example.com, script-src http://example.com/",
+        ], $parser->headers);
+    }
 }
