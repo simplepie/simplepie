@@ -111,18 +111,14 @@ class LocatorTest extends TestCase
      * Tests are used under the LGPL license, see file for license
      * information
      */
-    public function firefoxTestDataProvider()
+    public function firefoxTestDataProvider(): iterable
     {
-        $data = [
-            [new File(dirname(__DIR__) . '/data/fftests.html')]
-        ];
-        foreach ($data as &$row) {
-            $row[0]->headers = ['content-type' => 'text/html'];
-            $row[0]->method = SimplePie::FILE_SOURCE_REMOTE;
-            $row[0]->url = 'http://example.com/';
-        }
+        $data = new File(dirname(__DIR__) . '/data/fftests.html');
+        $data->headers = ['content-type' => 'text/html'];
+        $data->method = SimplePie::FILE_SOURCE_REMOTE;
+        $data->url = 'http://example.com/';
 
-        return $data;
+        yield [$data];
     }
 
     /**

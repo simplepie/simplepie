@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use SimplePie\HTTP\Response;
+
 /**
  * Used for fetching remote files and reading local files
  *
@@ -16,7 +18,7 @@ namespace SimplePie;
  *
  * @todo Move to properly supporting RFC2616 (HTTP/1.1)
  */
-class File
+class File implements Response
 {
     /** @var string The final URL after following all redirects */
     public $url;
@@ -215,6 +217,200 @@ class File
                 $this->success = false;
             }
         }
+    }
+
+    /**
+     * Return the string representation as a URI reference.
+     *
+     * Depending on which components of the URI are present, the resulting
+     * string is either a full URI or relative reference according to RFC 3986,
+     * Section 4.1. The method concatenates the various components of the URI,
+     * using the appropriate delimiters:
+     *
+     * - If a scheme is present, it MUST be suffixed by ":".
+     * - If an authority is present, it MUST be prefixed by "//".
+     * - The path can be concatenated without delimiters. But there are two
+     *   cases where the path has to be adjusted to make the URI reference
+     *   valid as PHP does not allow to throw an exception in __toString():
+     *     - If the path is rootless and an authority is present, the path MUST
+     *       be prefixed by "/".
+     *     - If the path is starting with more than one "/" and no authority is
+     *       present, the starting slashes MUST be reduced to one.
+     * - If a query is present, it MUST be prefixed by "?".
+     * - If a fragment is present, it MUST be prefixed by "#".
+     *
+     * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     * @return string the original (first requested) URL before following redirects (expect 301)
+     */
+    public function get_permanent_uri(): string
+    {
+        return (string) $this->permanent_url;
+    }
+
+    /**
+     * Return the string representation as a URI reference.
+     *
+     * Depending on which components of the URI are present, the resulting
+     * string is either a full URI or relative reference according to RFC 3986,
+     * Section 4.1. The method concatenates the various components of the URI,
+     * using the appropriate delimiters:
+     *
+     * - If a scheme is present, it MUST be suffixed by ":".
+     * - If an authority is present, it MUST be prefixed by "//".
+     * - The path can be concatenated without delimiters. But there are two
+     *   cases where the path has to be adjusted to make the URI reference
+     *   valid as PHP does not allow to throw an exception in __toString():
+     *     - If the path is rootless and an authority is present, the path MUST
+     *       be prefixed by "/".
+     *     - If the path is starting with more than one "/" and no authority is
+     *       present, the starting slashes MUST be reduced to one.
+     * - If a query is present, it MUST be prefixed by "?".
+     * - If a fragment is present, it MUST be prefixed by "#".
+     *
+     * @see http://tools.ietf.org/html/rfc3986#section-4.1
+     * @return string the final requested url after following redirects
+     */
+    public function get_requested_uri(): string
+    {
+        return (string) $this->url;
+    }
+
+    /**
+     * Gets the response status code.
+     *
+     * The status code is a 3-digit integer result code of the server's attempt
+     * to understand and satisfy the request.
+     *
+     * @return int Status code.
+     */
+    public function get_status_code(): int
+    {
+        return (int) $this->status_code;
+    }
+
+    /**
+     * Retrieves all message header values.
+     *
+     * The keys represent the header name as it will be sent over the wire, and
+     * each value is an array of strings associated with the header.
+     *
+     *     // Represent the headers as a string
+     *     foreach ($message->get_headers() as $name => $values) {
+     *         echo $name . ': ' . implode(', ', $values);
+     *     }
+     *
+     *     // Emit headers iteratively:
+     *     foreach ($message->get_headers() as $name => $values) {
+     *         foreach ($values as $value) {
+     *             header(sprintf('%s: %s', $name, $value), false);
+     *         }
+     *     }
+     *
+     * While header names are not case-sensitive, get_headers() will preserve the
+     * exact case in which headers were originally specified.
+     *
+     * @return string[][] Returns an associative array of the message's headers.
+     *     Each key MUST be a header name, and each value MUST be an array of
+     *     strings for that header.
+     */
+    public function get_headers(): array
+    {
+        $headers = [];
+
+        foreach (array_keys($this->headers) as $name) {
+            $headers[$name] = $this->get_from_headers($name);
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Checks if a header exists by the given case-insensitive name.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return bool Returns true if any header names match the given header
+     *     name using a case-insensitive string comparison. Returns false if
+     *     no matching header name is found in the message.
+     */
+    public function has_header(string $name): bool
+    {
+        return $this->get_from_headers($name) !== [];
+    }
+
+    /**
+     * Retrieves a message header value by the given case-insensitive name.
+     *
+     * This method returns an array of all the header values of the given
+     * case-insensitive header name.
+     *
+     * If the header does not appear in the message, this method MUST return an
+     * empty array.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return string[] An array of string values as provided for the given
+     *    header. If the header does not appear in the message, this method MUST
+     *    return an empty array.
+     */
+    public function get_header(string $name): array
+    {
+        return $this->get_from_headers($name);
+    }
+
+    /**
+     * Retrieves a comma-separated string of the values for a single header.
+     *
+     * This method returns all of the header values of the given
+     * case-insensitive header name as a string concatenated together using
+     * a comma.
+     *
+     * NOTE: Not all header values may be appropriately represented using
+     * comma concatenation. For such headers, use getHeader() instead
+     * and supply your own delimiter when concatenating.
+     *
+     * If the header does not appear in the message, this method MUST return
+     * an empty string.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return string A string of values as provided for the given header
+     *    concatenated together using a comma. If the header does not appear in
+     *    the message, this method MUST return an empty string.
+     */
+    public function get_header_line(string $name): string
+    {
+        return implode(', ', $this->get_from_headers($name));
+    }
+
+    /**
+     * get the body as string
+     *
+     * @return string
+     */
+    public function get_body_content(): string
+    {
+        return (string) $this->body;
+    }
+
+    private function get_from_headers(string $name): array
+    {
+        if (!array_key_exists(strtolower($name), $this->headers)) {
+            return [];
+        }
+
+        $header = $this->headers[strtolower($name)];
+
+        if (! is_array($header)) {
+            if (strpos($header, ',') === false) {
+                $header = [$header];
+            } else {
+                $header_lines = explode(',', $header);
+                $header = [];
+                foreach ($header_lines as $header_line) {
+                    $header[] = trim($header_line);
+                }
+            }
+        }
+
+        return $header;
     }
 }
 

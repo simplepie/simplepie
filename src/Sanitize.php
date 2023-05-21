@@ -13,6 +13,9 @@ use SimplePie\Cache\BaseDataCache;
 use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\NameFilter;
+use SimplePie\Exception\HttpException;
+use SimplePie\HTTP\Client;
+use SimplePie\HTTP\FileClient;
 
 /**
  * Used for data cleanup and post-processing
@@ -75,6 +78,11 @@ class Sanitize implements RegistryAware
      */
     public $https_domains = [];
 
+    /**
+     * @var Client|null
+     */
+    private $http_client = null;
+
     public function __construct()
     {
         // Set defaults
@@ -133,8 +141,17 @@ class Sanitize implements RegistryAware
         }
     }
 
+    public function set_http_client(Client $http_client): void
+    {
+        $this->http_client = $http_client;
+    }
+
+    /**
+     * @deprecated since SimplePie 1.9.0, use \SimplePie\Sanitize::set_http_client() instead.
+     */
     public function pass_file_data($file_class = File::class, $timeout = 10, $useragent = '', $force_fsockopen = false, array $curl_options = [])
     {
+        // trigger_error(sprintf('SimplePie\Sanitize::pass_file_data() is deprecated since SimplePie 1.9.0, please use "SimplePie\Sanitize::set_http_client()" instead.'), \E_USER_DEPRECATED);
         if ($timeout) {
             $this->timeout = (string) $timeout;
         }
@@ -394,11 +411,18 @@ class Sanitize implements RegistryAware
                             if ($cache->get_data($image_url, false)) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
-                                $file = $this->registry->create(File::class, [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                                $headers = $file->headers;
+                                try {
+                                    $response = $this->get_http_client()->request(
+                                        Client::METHOD_GET,
+                                        $img->getAttribute('src'),
+                                        ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']]
+                                    );
+                                } catch (HttpException $th) {
+                                    continue;
+                                }
 
-                                if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
-                                    if ($cache->set_data($image_url, ['headers' => $file->headers, 'body' => $file->body], $this->cache_duration)) {
+                                if (! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) {
+                                    if ($cache->set_data($image_url, ['headers' => $response->get_headers(), 'body' => $response->get_body_content()], $this->cache_duration)) {
                                         $img->setAttribute('src', $this->image_handler . $image_url);
                                     } else {
                                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
@@ -620,6 +644,27 @@ class Sanitize implements RegistryAware
         }
 
         return $this->cache;
+    }
+
+    /**
+     * Get a HTTP client
+     */
+    private function get_http_client(): Client
+    {
+        if ($this->http_client === null) {
+            return new FileClient(
+                $this->registry,
+                [
+                    'timeout' => $this->timeout,
+                    'redirects' => 5,
+                    'useragent' => $this->useragent,
+                    'force_fsockopen' => $this->force_fsockopen,
+                    'curl_options' => $this->curl_options,
+                ]
+            );
+        }
+
+        return $this->http_client;
     }
 }
 
