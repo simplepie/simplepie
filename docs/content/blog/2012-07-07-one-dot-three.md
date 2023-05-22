@@ -22,7 +22,7 @@ When using multifeeds with SimplePie, the `SimplePie::error()` method now return
 
 If you’re using a custom caching system, it’s now much easier to use. Rather than overriding `SimplePie_Cache`, you can now [register your handler](/api/class-SimplePie_Cache.html#_register) and use the cache location option to pass options in. We’ve also bundled a Memcache-based cache handler with SimplePie (thanks to Matt Robenolt) to make it even easier to get SimplePie up and running.
 
-This is just a summary of the changes we’ve made to SimplePie. To look at a full list of changes, head on over to [the wiki](@/wiki/misc/release_notes/simplepie_1.3.md) or for the full change list, check out [GitHub’s comparison view](https://github.com/simplepie/simplepie/compare/1.2...1.3).
+This is just a summary of the changes we’ve made to SimplePie. To look at a full list of changes, head on over to [the wiki](/wiki/misc/release_notes/simplepie_1.3) or for the full change list, check out [GitHub’s comparison view](https://github.com/simplepie/simplepie/compare/1.2...1.3).
 
 ## Rearchitecture of the Codebase
 

@@ -14,4 +14,4 @@ It would appear that this is the season for SimplePie screencasts! In the past t
 - **[CodeIgniter and SimplePie](http://www.viddler.com/explore/elliothaughin/videos/10/)** ? Elliot Haughin shows how to integrate SimplePie into your CodeIgniter projects.
 - **[Extending SimplePie to Parse Unique RSS Feeds](http://net.tutsplus.com/videos/screencasts/extending-simplepie-to-parse-unique-rss-feeds/)** ? Jeffrey Way dives a bit deeper and talks about how to extend SimplePie’s functionality while playing with a little jQuery.
 
-You can find even more tips, tricks, tutorials, and screencasts in the [SimplePie wiki](@/wiki/tutorial/_index.md).
+You can find even more tips, tricks, tutorials, and screencasts in the [SimplePie wiki](/wiki/tutorial/).

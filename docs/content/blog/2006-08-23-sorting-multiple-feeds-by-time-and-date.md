@@ -8,7 +8,7 @@ author = "Ryan Parman"
 
 <div class="chunk">
 
-**\*Update:** With the release of SimplePie 1.0, this tutorial became obsolete. [Please check out the new tutorial instead](@/wiki/tutorial/sort_multiple_feeds_by_time_and_date.md).\*
+**\*Update:** With the release of SimplePie 1.0, this tutorial became obsolete. [Please check out the new tutorial instead](/wiki/tutorial/sort_multiple_feeds_by_time_and_date).\*
 
 In this demo, I will show you how to parse multiple feeds and sort all of the posts from all feeds in reverse-chronological order (newest to oldest).
 

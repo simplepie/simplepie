@@ -12,7 +12,7 @@ chunky = true
 [Download](/downloads/_index.md?download)
 
 **Version 1.5** 180 KB zip file. Released on 17 April 2017.  
-Make sure you [meet the requirements](@/wiki/setup/requirements.md).
+Make sure you [meet the requirements](/wiki/setup/requirements).
 
 **Alternatively:** [Trunk & Branch Development Builds](/development/) | [SimplePie Plugin for WordPress](http://wordpress.org/extend/plugins/simplepie-plugin-for-wordpress/)
 
@@ -30,7 +30,7 @@ Get easy access to SimplePie [directly from your web browser!](/demo/easy_access
 
 #### SimplePie Tips, Tricks, Tutorials, and Screencasts
 
-We've worked extra hard to ensure that SimplePie is easy to use and easy to understand. That being said, it never hurts to get a little help to speed things up! We've got a collection of [tips, tricks, tutorials, and screencasts](@/wiki/tutorial/_index.md) to help you along the way!
+We've worked extra hard to ensure that SimplePie is easy to use and easy to understand. That being said, it never hurts to get a little help to speed things up! We've got a collection of [tips, tricks, tutorials, and screencasts](/wiki/tutorial/) to help you along the way!
 
 </div>
 
@@ -38,7 +38,7 @@ We've worked extra hard to ensure that SimplePie is easy to use and easy to unde
 
 #### SimplePie Plugins
 
-Looking to integrate SimplePie into your blogs, wikis, forums, or other sites? The SimplePie Community has created several plugins that allow you to use SimplePie with all sorts of other software! Check our [SimplePie Plugins](@/wiki/plugins/_index.md) page for a list of what we're aware of.
+Looking to integrate SimplePie into your blogs, wikis, forums, or other sites? The SimplePie Community has created several plugins that allow you to use SimplePie with all sorts of other software! Check our [SimplePie Plugins](/wiki/plugins/) page for a list of what we're aware of.
 
 </div>
 

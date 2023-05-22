@@ -43,7 +43,7 @@ Want to take a look at our in-development code? You can view the files on the we
 
 SimplePie is an open-source project, and we encourage anyone who is interested to get more involved. Here are some links for getting more involved.
 
-- [**Documentation Wiki**](@/wiki/_index.md) — The wiki is loaded with documentation, tutorials, code samples and other bits of information contributed by the SimplePie community.
+- [**Documentation Wiki**](/wiki/_index) — The wiki is loaded with documentation, tutorials, code samples and other bits of information contributed by the SimplePie community.
 - [**SimplePie Support List**](http://tech.groups.yahoo.com/group/simplepie-support/) — Whether you actually need support or not, there's a TON you can learn about using SimplePie simply by subscribing to the mailing list and reading what comes through.
 - [**SimplePie Development List**](http://tech.groups.yahoo.com/group/simplepie-dev/) — This is the development-related mailing list. This is NOT for support issues, but rather for discussions about SimplePie as a development project.
 - [**Bug Tracker**](http://github.com/simplepie/simplepie/issues) — This is where we keep track of bugs and feature requests for all SimplePie-related projects.
