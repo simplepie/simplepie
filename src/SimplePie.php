@@ -562,7 +562,7 @@ class SimplePie
     public $max_checked_feeds = 10;
 
     /**
-     * @var array All the feeds found during the autodiscovery process
+     * @var array|null All the feeds found during the autodiscovery process
      * @see SimplePie::get_all_discovered_feeds()
      * @access private
      */
@@ -1888,7 +1888,7 @@ class SimplePie
                         }
                         // Push the current file onto all_discovered feeds so the user can
                         // be shown this as one of the options.
-                        if (isset($this->all_discovered_feeds)) {
+                        if ($this->all_discovered_feeds !== null) {
                             $this->all_discovered_feeds[] = $file;
                         }
                     } else {
