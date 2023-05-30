@@ -50,6 +50,9 @@ jobs:
       - name: Run unit tests
         run: composer test
 
+      - name: Run static analysis
+        run: composer phpstan -- --error-format=github
+
   test-compiled:
     runs-on: ubuntu-latest
 
