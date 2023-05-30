@@ -1715,7 +1715,7 @@ class SimplePie
      *
      * If the data is already cached, attempt to fetch it from there instead
      * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
-     * @return array|true Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
+     * @return array|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
     protected function fetch_data(&$cache)
     {
