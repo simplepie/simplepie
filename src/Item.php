@@ -907,7 +907,7 @@ class Item implements RegistryAware
             $keywords_parent = null;
             $player_parent = null;
             $ratings_parent = null;
-            $restrictions_parent = null;
+            $restrictions_parent = [];
             $thumbnails_parent = null;
             $title_parent = null;
 
@@ -1312,7 +1312,7 @@ class Item implements RegistryAware
                     $restrictions_parent[] = $this->registry->create(Restriction::class, [$restriction_relationship, $restriction_type, $restriction_value]);
                 }
             }
-            if (is_array($restrictions_parent)) {
+            if (count($restrictions_parent) > 0) {
                 $restrictions_parent = array_values(array_unique($restrictions_parent));
             } else {
                 $restrictions_parent = [new \SimplePie\Restriction(Restriction::RELATIONSHIP_ALLOW, null, 'default')];
@@ -2240,7 +2240,7 @@ class Item implements RegistryAware
                 }
             }
 
-            if (count($this->data['enclosures']) === 0 && ($url || $type || $length || $bitrate || $captions_parent || $categories_parent || $channels || $copyrights_parent || $credits_parent || $description_parent || $duration_parent || $expression || $framerate || $hashes_parent || $height || $keywords_parent || $lang || $medium || $player_parent || $ratings_parent || $restrictions_parent || $samplingrate || $thumbnails_parent || $title_parent || $width)) {
+            if (count($this->data['enclosures']) === 0 && ($url || $type || $length || $bitrate || $captions_parent || $categories_parent || $channels || $copyrights_parent || $credits_parent || $description_parent || $duration_parent || $expression || $framerate || $hashes_parent || $height || $keywords_parent || $lang || $medium || $player_parent || $ratings_parent || $samplingrate || $thumbnails_parent || $title_parent || $width)) {
                 // Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
                 $this->data['enclosures'][] = $this->registry->create(Enclosure::class, [$url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width]);
             }
