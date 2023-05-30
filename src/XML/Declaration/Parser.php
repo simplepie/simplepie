@@ -121,9 +121,10 @@ class Parser
             return true;
         }
 
-        $this->version = '';
-        $this->encoding = '';
-        $this->standalone = '';
+        // Reset the parser state.
+        $this->version = '1.0';
+        $this->encoding = 'UTF-8';
+        $this->standalone = false;
         return false;
     }
 

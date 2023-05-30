@@ -152,7 +152,8 @@ class Parser
             return true;
         }
 
-        $this->http_version = '';
+        // Reset the parser state.
+        $this->http_version = 0.0;
         $this->status_code = 0;
         $this->reason = '';
         $this->headers = [];
