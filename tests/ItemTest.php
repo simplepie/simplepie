@@ -29,7 +29,10 @@ class ItemTest extends PHPUnit\Framework\TestCase
         return $feed;
     }
 
-    public static function titleprovider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function titleprovider(): array
     {
         return [
             ['Feed Title', 'Feed Title'],
@@ -57,7 +60,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20($title, $expected)
+    public function testTitleRSS20(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">
@@ -72,7 +75,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithDC10($title, $expected)
+    public function testTitleRSS20WithDC10(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -87,7 +90,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithDC11($title, $expected)
+    public function testTitleRSS20WithDC11(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -102,7 +105,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithAtom03($title, $expected)
+    public function testTitleRSS20WithAtom03(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
@@ -117,7 +120,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithAtom10($title, $expected)
+    public function testTitleRSS20WithAtom10(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
@@ -134,7 +137,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
      *
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithImageTitle($title, $expected)
+    public function testTitleRSS20WithImageTitle(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">
@@ -154,7 +157,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
      *
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithImageTitleReversed($title, $expected)
+    public function testTitleRSS20WithImageTitleReversed(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">

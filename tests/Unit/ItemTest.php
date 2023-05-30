@@ -23,7 +23,10 @@ class ItemTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Item'));
     }
 
-    public function getContentDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getContentDataProvider(): array
     {
         return [
             'Test Atom 0.3 Content' => [
@@ -646,7 +649,7 @@ EOT
     /**
      * @dataProvider getContentDataProvider
      */
-    public function test_get_content($data, $expected)
+    public function test_get_content(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -659,7 +662,10 @@ EOT
         $this->assertSame($expected, $item->get_content());
     }
 
-    public function getDateDataProvider()
+    /**
+     * @return array<array{string, int}>
+     */
+    public function getDateDataProvider(): array
     {
         return [
             'Test Atom 0.3 Created' => [
@@ -1318,7 +1324,7 @@ EOT
     /**
      * @dataProvider getDateDataProvider
      */
-    public function test_get_date($data, $expected)
+    public function test_get_date(string $data, ?int $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -1331,7 +1337,10 @@ EOT
         $this->assertSame($expected, $item->get_date('U'));
     }
 
-    public function getDescriptionDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getDescriptionDataProvider(): array
     {
         return [
             'Test Atom 0.3 Content' => [
@@ -1953,7 +1962,7 @@ EOT
     /**
      * @dataProvider getDescriptionDataProvider
      */
-    public function test_get_description($data, $expected)
+    public function test_get_description(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -1966,7 +1975,10 @@ EOT
         $this->assertSame($expected, $item->get_description());
     }
 
-    public function getIdDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getIdDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Identifier' => [
@@ -2354,7 +2366,7 @@ EOT
     /**
      * @dataProvider getIdDataProvider
      */
-    public function test_get_id($data, $expected)
+    public function test_get_id(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -2367,7 +2379,10 @@ EOT
         $this->assertSame($expected, $item->get_id());
     }
 
-    public function getLatitudeDataProvider()
+    /**
+     * @return array<array{string, float}>
+     */
+    public function getLatitudeDataProvider(): array
     {
         return [
             'Test Atom 0.3 Geo Lat' => [
@@ -2578,7 +2593,7 @@ EOT
     /**
      * @dataProvider getLatitudeDataProvider
      */
-    public function test_get_latitude($data, $expected)
+    public function test_get_latitude(string $data, float $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -2591,7 +2606,10 @@ EOT
         $this->assertSame($expected, $item->get_latitude());
     }
 
-    public function getLongitudeDataProvider()
+    /**
+     * @return array<array{string, float}>
+     */
+    public function getLongitudeDataProvider(): array
     {
         return [
             'Test Atom 0.3 Geo Long' => [
@@ -2802,7 +2820,7 @@ EOT
     /**
      * @dataProvider getLongitudeDataProvider
      */
-    public function test_get_longitude($data, $expected)
+    public function test_get_longitude(string $data, float $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -2815,7 +2833,10 @@ EOT
         $this->assertSame($expected, $item->get_longitude());
     }
 
-    public function getPermalinkDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getPermalinkDataProvider(): array
     {
         return [
             'Test Atom 0.3 Enclosure' => [
@@ -3280,7 +3301,7 @@ EOT
     /**
      * @dataProvider getBaseProvider
      */
-    public function test_get_base($data, $expected)
+    public function test_get_base(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -3355,7 +3376,7 @@ EOT
     /**
      * @dataProvider getPermalinkDataProvider
      */
-    public function test_get_permalink($data, $expected)
+    public function test_get_permalink(string $data, ?string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -3368,7 +3389,10 @@ EOT
         $this->assertSame($expected, $item->get_permalink());
     }
 
-    public function getTitleDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getTitleDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Title' => [
@@ -4778,7 +4802,7 @@ EOT
     /**
      * @dataProvider getTitleDataProvider
      */
-    public function test_get_title($data, $expected)
+    public function test_get_title(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -4794,7 +4818,7 @@ EOT
     /**
      * @dataProvider getThumbnailProvider
      */
-    public function test_get_thumbnail($data, $expected)
+    public function test_get_thumbnail(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);

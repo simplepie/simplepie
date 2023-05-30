@@ -29,13 +29,16 @@ class RegistryTest extends TestCase
     /**
      * @dataProvider getDefaultClassDataProvider
      */
-    public function testGetClassReturnsCorrectClassname(string $type, string $expected)
+    public function testGetClassReturnsCorrectClassname(string $type, string $expected): void
     {
         $registry = new Registry();
 
         $this->assertSame($expected, $registry->get_class($type));
     }
 
+    /**
+     * @return array<array{string, string}>
+     */
     public function getDefaultClassDataProvider(): array
     {
         return [
@@ -86,7 +89,7 @@ class RegistryTest extends TestCase
      *
      * @dataProvider getOverridingClassDataProvider
      */
-    public function testRegisterAllowsOverridingTheDefaultClassname(string $registeredType, string $requestedType, string $classname)
+    public function testRegisterAllowsOverridingTheDefaultClassname(string $registeredType, string $requestedType, string $classname): void
     {
         $registry = new Registry();
 
@@ -95,6 +98,9 @@ class RegistryTest extends TestCase
         $this->assertSame($classname, $registry->get_class($requestedType));
     }
 
+    /**
+     * @return array<array{string, string, string}>
+     */
     public function getOverridingClassDataProvider(): array
     {
         return [

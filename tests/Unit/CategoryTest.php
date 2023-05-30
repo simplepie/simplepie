@@ -24,7 +24,10 @@ class CategoryTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Category'));
     }
 
-    public function getFeedCategoryLableDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getFeedCategoryLableDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Subject' => [
@@ -376,7 +379,7 @@ EOT
     /**
      * @dataProvider getFeedCategoryLableDataProvider
      */
-    public function test_get_label_from_feed_category($data, $expected)
+    public function test_get_label_from_feed_category(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -389,7 +392,10 @@ EOT
         $this->assertSame($expected, $category->get_label());
     }
 
-    public function getItemCategoryLableDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getItemCategoryLableDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Subject' => [
@@ -801,7 +807,7 @@ EOT
     /**
      * @dataProvider getItemCategoryLableDataProvider
      */
-    public function test_get_label_from_item_category($data, $expected)
+    public function test_get_label_from_item_category(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
