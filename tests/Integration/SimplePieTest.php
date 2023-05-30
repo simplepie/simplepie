@@ -14,33 +14,32 @@ use SimplePie\SimplePie;
 class SimplePieTest extends TestCase
 {
     /**
-     * @return iterable<array{SimplePie}>
+     * @test that requesting a local file via SimplePie->set_feed_url() works
      */
-    public function provideSimplePieInstances(): iterable
+    public function testRequestingALocalFileWithSetFeedUrlWorks(): void
     {
         $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
 
-        // Test, that requesting a local file via SimplePie->set_feed_url() works
         $simplepie = new SimplePie();
         $simplepie->enable_cache(false);
         $simplepie->set_feed_url($filepath);
 
-        yield [$simplepie];
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
+    }
 
-        // Test, that requesting a local file via SimplePie->set_file() works
+    /**
+     * @test that requesting a local file via SimplePie->set_file() works
+     */
+    public function testRequestingALocalFileWithSetFileWorks(): void
+    {
+        $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
+
         $simplepie = new SimplePie();
         $simplepie->enable_cache(false);
         $file = new File($filepath);
         $simplepie->set_file($file);
 
-        yield [$simplepie];
-    }
-
-    /**
-     * @dataProvider provideSimplePieInstances
-     */
-    public function testSimplePieInit(SimplePie $simplepie): void
-    {
         $this->assertTrue($simplepie->init());
         $this->assertSame(100, $simplepie->get_item_quantity());
     }
