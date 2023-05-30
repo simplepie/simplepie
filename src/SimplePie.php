@@ -3189,7 +3189,7 @@ class SimplePie
      */
     public static function merge_items(array $urls, int $start = 0, int $end = 0, int $limit = 0)
     {
-        if (is_array($urls) && sizeof($urls) > 0) {
+        if (is_array($urls) && count($urls) > 0) {
             $items = [];
             foreach ($urls as $arg) {
                 if ($arg instanceof SimplePie) {
