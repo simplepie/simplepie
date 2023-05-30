@@ -681,7 +681,7 @@ class IRI
         static $cache;
         if ($clear_cache) {
             $cache = null;
-            return;
+            return false;
         }
         if (!$cache) {
             $cache = [];
@@ -761,7 +761,7 @@ class IRI
         static $cache;
         if ($clear_cache) {
             $cache = null;
-            return;
+            return false;
         }
         if (!$cache) {
             $cache = [];
@@ -908,7 +908,7 @@ class IRI
         static $cache;
         if ($clear_cache) {
             $cache = null;
-            return;
+            return false;
         }
         if (!$cache) {
             $cache = [];
