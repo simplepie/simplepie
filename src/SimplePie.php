@@ -1724,6 +1724,7 @@ class SimplePie
             $cache = new BaseDataCache($cache);
         }
 
+        // @phpstan-ignore-next-line Enforce PHPDoc type.
         if ($cache !== false && ! $cache instanceof DataCache) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #1 ($cache) must be of type %s|false',
