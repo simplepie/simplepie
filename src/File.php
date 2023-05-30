@@ -117,10 +117,10 @@ class File implements Response
                     curl_setopt($fp, $curl_param, $curl_value);
                 }
 
-                $this->headers = curl_exec($fp);
+                $responseHeaders = curl_exec($fp);
                 if (curl_errno($fp) === 23 || curl_errno($fp) === 61) {
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
-                    $this->headers = curl_exec($fp);
+                    $responseHeaders = curl_exec($fp);
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
                 if (curl_errno($fp)) {
@@ -132,15 +132,15 @@ class File implements Response
                         $this->url = $info['url'];
                     }
                     curl_close($fp);
-                    $this->headers = \SimplePie\HTTP\Parser::prepareHeaders($this->headers, $info['redirect_count'] + 1);
-                    $parser = new \SimplePie\HTTP\Parser($this->headers, true);
+                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders, $info['redirect_count'] + 1);
+                    $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
                         $this->body = trim($parser->body);
                         $this->status_code = $parser->status_code;
-                        if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
+                        if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
-                            $location = \SimplePie\Misc::absolutize_url($this->headers['location'], $url);
+                            $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
                             $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                             $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                             return;
@@ -191,27 +191,27 @@ class File implements Response
 
                     $info = stream_get_meta_data($fp);
 
-                    $this->headers = '';
+                    $responseHeaders = '';
                     while (!$info['eof'] && !$info['timed_out']) {
-                        $this->headers .= fread($fp, 1160);
+                        $responseHeaders .= fread($fp, 1160);
                         $info = stream_get_meta_data($fp);
                     }
                     if (!$info['timed_out']) {
-                        $parser = new \SimplePie\HTTP\Parser($this->headers, true);
+                        $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                         if ($parser->parse()) {
                             $this->set_headers($parser->headers);
                             $this->body = $parser->body;
                             $this->status_code = $parser->status_code;
-                            if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
+                            if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                                 $this->redirects++;
-                                $location = \SimplePie\Misc::absolutize_url($this->headers['location'], $url);
+                                $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
                                 $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                                 $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                                 return;
                             }
-                            if (isset($this->headers['content-encoding'])) {
+                            if (($contentEncodingHeader = $this->get_header_line('content-encoding')) !== '') {
                                 // Hey, we act dumb elsewhere, so let's do that here too
-                                switch (strtolower(trim($this->headers['content-encoding'], "\x09\x0A\x0D\x20"))) {
+                                switch (strtolower(trim($contentEncodingHeader, "\x09\x0A\x0D\x20"))) {
                                     case 'gzip':
                                     case 'x-gzip':
                                         $decoder = new \SimplePie\Gzdecode($this->body);

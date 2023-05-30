@@ -191,10 +191,10 @@ class Parser
     {
         if (strpos($this->data, "\x0A") !== false && strtoupper(substr($this->data, 0, 5)) === 'HTTP/') {
             $len = strspn($this->data, '0123456789.', 5);
-            $this->http_version = substr($this->data, 5, $len);
+            $http_version = substr($this->data, 5, $len);
             $this->position += 5 + $len;
-            if (substr_count($this->http_version, '.') <= 1) {
-                $this->http_version = (float) $this->http_version;
+            if (substr_count($http_version, '.') <= 1) {
+                $this->http_version = (float) $http_version;
                 $this->position += strspn($this->data, "\x09\x20", $this->position);
                 $this->state = self::STATE_STATUS;
             } else {
