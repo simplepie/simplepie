@@ -75,6 +75,7 @@ class Sanitize implements RegistryAware
      * @see \SimplePie\Sanitize::set_https_domains()
      * Array is a tree split at DNS levels. Example:
      * array('biz' => true, 'com' => array('example' => true), 'net' => array('example' => array('www' => true)))
+     * @var true|array<string, true|array<string, true|array<string, array<string, true|array<string, true|array<string, true>>>>>>
      */
     public $https_domains = [];
 
@@ -273,13 +274,18 @@ class Sanitize implements RegistryAware
      * Set the list of domains for which to force HTTPS.
      * @see \SimplePie\Misc::https_url()
      * Example array('biz', 'example.com', 'example.org', 'www.example.net');
+     *
+     * @param string[] $domains list of domain names ['biz', 'example.com', 'example.org', 'www.example.net']
+     *
+     * @return void
      */
-    public function set_https_domains($domains)
+    public function set_https_domains(array $domains)
     {
         $this->https_domains = [];
         foreach ($domains as $domain) {
             $domain = trim($domain, ". \t\n\r\0\x0B");
             $segments = array_reverse(explode('.', $domain));
+            /** @var true|array<string, true|array<string, true|array<string, array<string, true|array<string, true|array<string, true>>>>>> */ // Needed for PHPStan.
             $node =& $this->https_domains;
             foreach ($segments as $segment) {//Build a tree
                 if ($node === true) {
@@ -296,8 +302,10 @@ class Sanitize implements RegistryAware
 
     /**
      * Check if the domain is in the list of forced HTTPS.
+     *
+     * @return bool
      */
-    protected function is_https_domain($domain)
+    protected function is_https_domain(string $domain)
     {
         $domain = trim($domain, '. ');
         $segments = array_reverse(explode('.', $domain));
@@ -314,8 +322,10 @@ class Sanitize implements RegistryAware
 
     /**
      * Force HTTPS for selected Web sites.
+     *
+     * @return string
      */
-    public function https_url($url)
+    public function https_url(string $url)
     {
         return (
             strtolower(substr($url, 0, 7)) === 'http://'
