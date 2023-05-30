@@ -1102,15 +1102,14 @@ class Item implements RegistryAware
             }
 
             // DURATION
-            if ($duration_parent = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'duration')) {
+            $duration_tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'duration');
+            if ($duration_tags !== null) {
                 $seconds = null;
                 $minutes = null;
                 $hours = null;
-                if (isset($duration_parent[0]['data'])) {
-                    $temp = explode(':', $this->sanitize($duration_parent[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
-                    if (count($temp) > 0) {
-                        $seconds = (int) array_pop($temp);
-                    }
+                if (isset($duration_tags[0]['data'])) {
+                    $temp = explode(':', $this->sanitize($duration_tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
+                    $seconds = (int) array_pop($temp);
                     if (count($temp) > 0) {
                         $minutes = (int) array_pop($temp);
                         $seconds += $minutes * 60;
