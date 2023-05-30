@@ -37,10 +37,12 @@ class File implements Response
 
     public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
     {
-        if (class_exists('idna_convert')) {
-            $idn = new \idna_convert();
+        if (function_exists('idn_to_ascii')) {
             $parsed = \SimplePie\Misc::parse_url($url);
-            $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], null);
+            if ($parsed['authority'] !== '' && !ctype_print($parsed['authority'])) {
+                $authority = \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
+                $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $authority, $parsed['path'], $parsed['query'], null);
+            }
         }
         $this->url = $url;
         if ($this->permanentUrlMutable) {

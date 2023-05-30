@@ -184,7 +184,7 @@ class Enclosure
      * For documentation on all the parameters, see the corresponding
      * properties and their accessors
      *
-     * @uses idna_convert If available, this will convert an IDN
+     * @uses idn_to_ascii If available, this will convert an IDN
      *
      * @param null $javascript
      * @param Caption[]|null $captions
@@ -250,10 +250,12 @@ class Enclosure
         $this->type = $type;
         $this->width = $width;
 
-        if (class_exists('idna_convert')) {
-            $idn = new \idna_convert();
+        if (function_exists('idn_to_ascii')) {
             $parsed = \SimplePie\Misc::parse_url($link);
-            $this->link = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], $parsed['fragment']);
+            if ($parsed['authority'] !== '' && !ctype_print($parsed['authority'])) {
+                $authority = \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
+                $this->link = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $authority, $parsed['path'], $parsed['query'], $parsed['fragment']);
+            }
         }
         $this->handler = $this->get_handler(); // Needs to load last
     }
