@@ -21,10 +21,15 @@ use Throwable;
  */
 final class FileClient implements Client
 {
+    /** @var Registry */
     private $registry;
 
+    /** @var array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>} */
     private $options;
 
+    /**
+     * @param array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>} $options
+     */
     public function __construct(Registry $registry, array $options = [])
     {
         $this->registry = $registry;
@@ -35,7 +40,7 @@ final class FileClient implements Client
      * send a request and return the response
      *
      * @param Client::METHOD_* $method
-     * @param string[] $headers
+     * @param array<string, string> $headers
      *
      * @throws HttpException if anything goes wrong requesting the data
      */
@@ -55,7 +60,7 @@ final class FileClient implements Client
                 $this->options['timeout'] ?? 10,
                 $this->options['redirects'] ?? 5,
                 $headers,
-                $this->options['useragent'] ?? $this->registry->call(Misc::class, 'get_default_useragent'),
+                $this->options['useragent'] ?? Misc::get_default_useragent(),
                 $this->options['force_fsockopen'] ?? false,
                 $this->options['curl_options'] ?? []
             ]);
@@ -63,7 +68,7 @@ final class FileClient implements Client
             throw new HttpException($th->getMessage(), $th->getCode(), $th);
         }
 
-        if (! $file->success) {
+        if (!$file->success) {
             throw new HttpException($file->error);
         }
 

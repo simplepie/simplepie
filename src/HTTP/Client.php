@@ -22,7 +22,7 @@ interface Client
      * send a request and return the response
      *
      * @param Client::METHOD_* $method
-     * @param string[] $headers
+     * @param array<string, string> $headers
      *
      * @throws HttpException if anything goes wrong requesting the data
      */

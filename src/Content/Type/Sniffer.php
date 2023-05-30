@@ -46,19 +46,21 @@ class Sniffer
      */
     public function get_type()
     {
-        if ($this->file->has_header('content-type')) {
-            if (!$this->file->has_header('content-encoding')
-                && ($this->file->get_header_line('content-type') === 'text/plain'
-                    || $this->file->get_header_line('content-type') === 'text/plain; charset=ISO-8859-1'
-                    || $this->file->get_header_line('content-type') === 'text/plain; charset=iso-8859-1'
-                    || $this->file->get_header_line('content-type') === 'text/plain; charset=UTF-8')) {
+        $content_type = $this->file->has_header('content-type') ? $this->file->get_header_line('content-type') : null;
+        $content_encoding = $this->file->has_header('content-encoding') ? $this->file->get_header_line('content-encoding') : null;
+        if ($content_type !== null) {
+            if ($content_encoding === null
+                && ($content_type === 'text/plain'
+                    || $content_type === 'text/plain; charset=ISO-8859-1'
+                    || $content_type === 'text/plain; charset=iso-8859-1'
+                    || $content_type === 'text/plain; charset=UTF-8')) {
                 return $this->text_or_binary();
             }
 
-            if (($pos = strpos($this->file->get_header_line('content-type'), ';')) !== false) {
-                $official = substr($this->file->get_header_line('content-type'), 0, $pos);
+            if (($pos = strpos($content_type, ';')) !== false) {
+                $official = substr($content_type, 0, $pos);
             } else {
-                $official = $this->file->get_header_line('content-type');
+                $official = $content_type;
             }
             $official = trim(strtolower($official));
 
@@ -114,8 +116,8 @@ class Sniffer
     public function unknown()
     {
         $body = $this->file->get_body_content();
-        $ws = strspn($body, "\x09\x0A\x0B\x0C\x0D\x20");
 
+        $ws = strspn($body, "\x09\x0A\x0B\x0C\x0D\x20");
         if (strtolower(substr($body, $ws, 14)) === '<!doctype html'
             || strtolower(substr($body, $ws, 5)) === '<html'
             || strtolower(substr($body, $ws, 7)) === '<script') {
@@ -173,6 +175,7 @@ class Sniffer
     public function feed_or_html()
     {
         $body = $this->file->get_body_content();
+
         $len = strlen($body);
         $pos = strspn($body, "\x09\x0A\x0D\x20\xEF\xBB\xBF");
 

@@ -141,11 +141,6 @@ class Sanitize implements RegistryAware
         }
     }
 
-    public function set_http_client(Client $http_client): void
-    {
-        $this->http_client = $http_client;
-    }
-
     /**
      * @deprecated since SimplePie 1.9.0, use \SimplePie\Sanitize::set_http_client() instead.
      */
@@ -165,6 +160,8 @@ class Sanitize implements RegistryAware
         }
 
         $this->curl_options = $curl_options;
+        // Invalidate the registered client.
+        $this->http_client = null;
     }
 
     public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
@@ -415,7 +412,7 @@ class Sanitize implements RegistryAware
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
                                 try {
-                                    $response = $this->get_http_client()->request(
+                                    $file = $this->get_http_client()->request(
                                         Client::METHOD_GET,
                                         $img->getAttribute('src'),
                                         ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']]
@@ -424,8 +421,8 @@ class Sanitize implements RegistryAware
                                     continue;
                                 }
 
-                                if (! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) {
-                                    if ($cache->set_data($image_url, ['headers' => $response->get_headers(), 'body' => $response->get_body_content()], $this->cache_duration)) {
+                                if ((!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
+                                    if ($cache->set_data($image_url, ['headers' => $file->get_headers(), 'body' => $file->get_body_content()], $this->cache_duration)) {
                                         $img->setAttribute('src', $this->image_handler . $image_url);
                                     } else {
                                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
@@ -655,7 +652,7 @@ class Sanitize implements RegistryAware
     private function get_http_client(): Client
     {
         if ($this->http_client === null) {
-            return new FileClient(
+            $this->http_client = new FileClient(
                 $this->registry,
                 [
                     'timeout' => $this->timeout,
@@ -668,6 +665,16 @@ class Sanitize implements RegistryAware
         }
 
         return $this->http_client;
+    }
+
+    /**
+     * Allows SimplePie to inject HTTP client.
+     *
+     * @internal
+     */
+    final public function set_http_client(Client $http_client): void
+    {
+        $this->http_client = $http_client;
     }
 }
 

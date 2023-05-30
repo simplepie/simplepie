@@ -9,6 +9,7 @@ namespace SimplePie\HTTP;
 
 /**
  * HTTP Response Parser
+ * @template Psr7Compatible of bool
  */
 class Parser
 {
@@ -34,9 +35,14 @@ class Parser
     public $reason = '';
 
     /**
+     * @var Psr7Compatible whether headers are compatible with PSR-7 format.
+     */
+    private $psr7Compatible;
+
+    /**
      * Key/value pairs of the headers
      *
-     * @var array
+     * @var (Psr7Compatible is true ? array<string, non-empty-array<string>> : array<string, string>)
      */
     public $headers = [];
 
@@ -121,11 +127,13 @@ class Parser
      * Create an instance of the class with the input data
      *
      * @param string $data Input data
+     * @param Psr7Compatible $psr7Compatible Whether the data types are in format compatible with PSR-7.
      */
-    public function __construct(string $data)
+    public function __construct(string $data, bool $psr7Compatible = false)
     {
         $this->data = $data;
         $this->data_length = strlen($this->data);
+        $this->psr7Compatible = $psr7Compatible;
     }
 
     /**
@@ -232,9 +240,17 @@ class Parser
             $this->name = strtolower($this->name);
             // We should only use the last Content-Type header. c.f. issue #1
             if (isset($this->headers[$this->name]) && $this->name !== 'content-type') {
-                $this->headers[$this->name] .= ', ' . $this->value;
+                if ($this->psr7Compatible) {
+                    $this->headers[$this->name][] = $this->value;
+                } else {
+                    $this->headers[$this->name] .= ', ' . $this->value;
+                }
             } else {
-                $this->headers[$this->name] = $this->value;
+                if ($this->psr7Compatible) {
+                    $this->headers[$this->name] = [$this->value];
+                } else {
+                    $this->headers[$this->name] = $this->value;
+                }
             }
         }
         $this->name = '';
