@@ -11,6 +11,7 @@ class_exists('SimplePie\SimplePie');
 
 // @trigger_error(sprintf('Using the "SimplePie" class is deprecated since SimplePie 1.7.0, use "SimplePie\SimplePie" instead.'), \E_USER_DEPRECATED);
 
+/** @phpstan-ignore-next-line */
 if (\false) {
     /** @deprecated since SimplePie 1.7.0, use "SimplePie\SimplePie" instead */
     class SimplePie extends NamespacedSimplePie

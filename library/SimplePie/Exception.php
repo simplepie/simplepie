@@ -11,6 +11,7 @@ class_exists('SimplePie\Exception');
 
 // @trigger_error(sprintf('Using the "SimplePie_Exception" class is deprecated since SimplePie 1.7.0, use "SimplePie\Exception" instead.'), \E_USER_DEPRECATED);
 
+/** @phpstan-ignore-next-line */
 if (\false) {
     /** @deprecated since SimplePie 1.7.0, use "SimplePie\Exception" instead */
     class SimplePie_Exception extends SimplePieException
