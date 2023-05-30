@@ -1719,7 +1719,7 @@ class SimplePie
      */
     protected function fetch_data(&$cache)
     {
-        if (is_object($cache) && $cache instanceof Base) {
+        if ($cache instanceof Base) {
             // @trigger_error(sprintf('Providing $cache as "\SimplePie\Cache\Base" in %s() is deprecated since SimplePie 1.8.0, please provide "\SimplePie\Cache\DataCache" implementation instead.', __METHOD__), \E_USER_DEPRECATED);
             $cache = new BaseDataCache($cache);
         }
