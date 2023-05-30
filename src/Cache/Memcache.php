@@ -86,7 +86,7 @@ class Memcache implements Base
     /**
      * Retrieve the data saved to the cache
      *
-     * @return array Data for SimplePie::$data
+     * @return array|false Data for SimplePie::$data
      */
     public function load()
     {
@@ -101,7 +101,7 @@ class Memcache implements Base
     /**
      * Retrieve the last modified time for the cache
      *
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function mtime()
     {

@@ -595,7 +595,7 @@ class Date
      * @final
      * @access public
      * @param string $date Date to parse
-     * @return int Timestamp corresponding to date string, or false on failure
+     * @return int|false Timestamp corresponding to date string, or false on failure
      */
     public function parse(string $date)
     {
@@ -632,7 +632,7 @@ class Date
      * spaces to be used as the time separator (including more than one))
      *
      * @access protected
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function date_w3cdtf($date)
     {
@@ -754,7 +754,7 @@ PCRE;
      * Parse RFC2822's date format
      *
      * @access protected
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function date_rfc2822($date)
     {
@@ -837,7 +837,7 @@ PCRE;
      * Parse RFC850's date format
      *
      * @access protected
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function date_rfc850($date)
     {
@@ -901,7 +901,7 @@ PCRE;
      * Parse C99's asctime()'s date format
      *
      * @access protected
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function date_asctime($date)
     {
@@ -939,7 +939,7 @@ PCRE;
      * Parse dates using strtotime()
      *
      * @access protected
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function date_strtotime($date)
     {

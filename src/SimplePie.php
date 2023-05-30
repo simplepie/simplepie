@@ -434,7 +434,7 @@ class SimplePie
     public $file;
 
     /**
-     * @var string Raw feed data
+     * @var string|false Raw feed data
      * @see SimplePie::set_raw_data()
      * @access private
      */
@@ -1969,7 +1969,7 @@ class SimplePie
      * This is the same as the old `$feed->enable_xml_dump(true)`, but returns
      * the data instead of printing it.
      *
-     * @return string|boolean Raw XML data, false if the cache is used
+     * @return string|false Raw XML data, false if the cache is used
      */
     public function get_raw_data()
     {
@@ -2186,7 +2186,7 @@ class SimplePie
      * @see http://simplepie.org/wiki/faq/supported_xml_namespaces
      * @param string $namespace The URL of the XML namespace of the elements you're trying to access
      * @param string $tag Tag name
-     * @return array
+     * @return array|null
      */
     public function get_feed_tags(string $namespace, string $tag)
     {
@@ -2226,7 +2226,7 @@ class SimplePie
      * @see http://simplepie.org/wiki/faq/supported_xml_namespaces
      * @param string $namespace The URL of the XML namespace of the elements you're trying to access
      * @param string $tag Tag name
-     * @return array
+     * @return array|null
      */
     public function get_channel_tags(string $namespace, string $tag)
     {
@@ -2272,7 +2272,7 @@ class SimplePie
      * @see http://simplepie.org/wiki/faq/supported_xml_namespaces
      * @param string $namespace The URL of the XML namespace of the elements you're trying to access
      * @param string $tag Tag name
-     * @return array
+     * @return array|null
      */
     public function get_image_tags(string $namespace, string $tag)
     {
@@ -2807,7 +2807,7 @@ class SimplePie
      * @since 1.0
      * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
      * @link http://www.georss.org/ GeoRSS
-     * @return string|null
+     * @return float|null
      */
     public function get_latitude()
     {
@@ -2830,7 +2830,7 @@ class SimplePie
      * @since 1.0
      * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
      * @link http://www.georss.org/ GeoRSS
-     * @return string|null
+     * @return float|null
      */
     public function get_longitude()
     {
@@ -3155,7 +3155,7 @@ class SimplePie
      * @access private
      * @param Item $a
      * @param Item $b
-     * @return boolean
+     * @return -1|0|1
      */
     public static function sort_items(Item $a, Item $b)
     {

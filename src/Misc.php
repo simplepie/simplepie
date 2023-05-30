@@ -1869,7 +1869,7 @@ class Misc
      *
      * @static
      * @param int $codepoint Unicode codepoint
-     * @return string UTF-8 character
+     * @return string|false UTF-8 character
      */
     public static function codepoint_to_utf8(int $codepoint)
     {

@@ -15,6 +15,7 @@ namespace SimplePie;
  * @property ?string $userinfo
  * @property ?string $host
  * @property ?int $port
+ * @property-write int|string|null $port
  * @property ?string $authority
  * @property string $path
  * @property ?string $query
@@ -286,7 +287,7 @@ class IRI
      * Parse an IRI into scheme/authority/path/query/fragment segments
      *
      * @param string $iri
-     * @return array
+     * @return array|false
      */
     protected function parse_iri(string $iri)
     {
