@@ -102,8 +102,6 @@ class CachingTest extends TestCase
 
             default:
                 throw new Exception($testedCacheClass . ' is not supported.');
-
-                break;
         }
 
         $feed->init();
