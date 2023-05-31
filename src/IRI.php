@@ -792,7 +792,8 @@ class IRI
             $iuserinfo = null;
         }
         if (($port_start = strpos($remaining, ':', intval(strpos($remaining, ']')))) !== false) {
-            if (($port = substr($remaining, $port_start + 1)) === false) {
+            $port = substr($remaining, $port_start + 1);
+            if ($port === false) {
                 $port = null;
             }
             $remaining = substr($remaining, 0, $port_start);

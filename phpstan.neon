@@ -13,6 +13,20 @@ parameters:
         # Testing legacy dynamic property usage.
         - '(Access to an undefined property SimplePie.IRI::\$nonexistant_prop\.)'
 
+        -
+            message: '(^Strict comparison using === between string and false will always evaluate to false\.$)'
+            count: 1
+            path: src/HTTP/Parser.php
+            # Only occurs on PHP ≥ 8.0
+            reportUnmatched: false
+
+        -
+            message: '(^Strict comparison using === between string and false will always evaluate to false\.$)'
+            count: 1
+            path: src/IRI.php
+            # Only occurs on PHP ≥ 8.0
+            reportUnmatched: false
+
         # PHPStan stubs bug https://github.com/phpstan/phpstan/issues/8629
         -
             message: '(^Access to an undefined property XMLReader::\$\w+\.$)'
