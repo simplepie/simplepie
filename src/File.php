@@ -319,6 +319,19 @@ class File implements Response
         return $this->parsed_headers[strtolower($name)] ?? [];
     }
 
+    public function with_header(string $name, $value)
+    {
+        $this->maybe_update_headers();
+        $new = clone $this;
+
+        $newHeader = [
+            strtolower($name) => (array) $value,
+        ];
+        $new->set_headers($newHeader + $this->get_headers());
+
+        return $new;
+    }
+
     public function get_header_line(string $name): string
     {
         $this->maybe_update_headers();

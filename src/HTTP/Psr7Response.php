@@ -69,6 +69,11 @@ final class Psr7Response implements Response
         return $this->response->hasHeader($name);
     }
 
+    public function with_header(string $name, $value)
+    {
+        return new self($this->response->withHeader($name, $value), $this->permanent_url, $this->requested_url);
+    }
+
     public function get_header(string $name): array
     {
         return $this->response->getHeader($name);
