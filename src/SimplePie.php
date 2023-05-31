@@ -3394,7 +3394,7 @@ class SimplePie
         if ($hub) {
             if (isset($file->headers['link'])) {
                 if ($file->headers['link'] !== '') {
-                    $file->headers['link'] = ', ';
+                    $file->headers['link'] .= ', ';
                 }
             } else {
                 $file->headers['link'] = '';

@@ -308,7 +308,7 @@ class SimplePieTest extends TestCase
     }
 
     /**
-     * @return iterable<array{data: string, hubUrl: ?string, selfUrl: ?string}>
+     * @return iterable<array{data: string, hubUrl: ?string, selfUrl: ?string, headers?: list<string>, bogoUrl?: ?string}>
      */
     public static function microformatHubFeedProvider(): iterable
     {
@@ -384,12 +384,37 @@ HTML
             // We only promote self link when hub is set as well.
             'selfUrl' => null,
         ];
+
+        yield 'hub + self + bogo in header' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.com/',
+            'headers' => [
+                'Link: <https://bogo.test/>; rel=bogo',
+            ],
+            'bogoUrl' => 'https://bogo.test/',
+        ];
     }
 
     /**
      * @dataProvider microformatHubFeedProvider
+     *
+     * @param list<string> $headers
      */
-    public function testMicroformatLinkHub(string $data, ?string $hubUrl, ?string $selfUrl): void
+    public function testMicroformatLinkHub(string $data, ?string $hubUrl, ?string $selfUrl, array $headers = [], ?string $bogoUrl = null): void
     {
         if (!function_exists('Mf2\parse')) {
             $this->markTestSkipped('Test requires Mf2 library.');
@@ -400,7 +425,7 @@ HTML
 
         $url = $server->setResponseOfPath(
             '/index.html',
-            new MockWebServerResponse($data, [], 200)
+            new MockWebServerResponse($data, $headers, 200)
         );
 
         $feed = new SimplePie();
@@ -413,5 +438,6 @@ HTML
 
         $this->assertSame($hubUrl, $feed->get_link(0, 'hub'), 'Link rel=hub does not match');
         $this->assertSame($selfUrl, $feed->get_link(0, 'self'), 'Link rel=self does not match');
+        $this->assertSame($bogoUrl, $feed->get_link(0, 'bogo'), 'Link rel=bogo does not match');
     }
 }
