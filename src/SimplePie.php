@@ -3405,7 +3405,7 @@ class SimplePie
                 $file->headers['link'] = '';
             }
             $file->headers['link'] .= '<'.$hub.'>; rel=hub';
-            if ($self) {
+            if ($self && !preg_match('/rel=self/', $file->headers['link'])) {
                 $file->headers['link'] .= ', <'.$self.'>; rel=self';
             }
         }
