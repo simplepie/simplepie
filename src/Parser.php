@@ -111,8 +111,8 @@ class Parser implements RegistryAware
             xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE, 1);
             xml_parser_set_option($xml, XML_OPTION_CASE_FOLDING, 0);
             xml_set_object($xml, $this);
-            xml_set_character_data_handler($xml, 'cdata');
-            xml_set_element_handler($xml, 'tag_open', 'tag_close');
+            xml_set_character_data_handler($xml, [$this, 'cdata']);
+            xml_set_element_handler($xml, [$this, 'tag_open'], [$this, 'tag_close']);
 
             // Parse!
             $wrapper = @is_writable(sys_get_temp_dir()) ? 'php://temp' : 'php://memory';
