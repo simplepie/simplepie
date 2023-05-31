@@ -407,6 +407,28 @@ HTML
             ],
             'bogoUrl' => 'https://bogo.test/',
         ];
+
+        yield 'hub + self + self in header' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.org/',
+            'headers' => [
+                'Link: <https://example.org/>; rel=self',
+            ],
+        ];
     }
 
     /**
@@ -438,6 +460,7 @@ HTML
 
         $this->assertSame($hubUrl, $feed->get_link(0, 'hub'), 'Link rel=hub does not match');
         $this->assertSame($selfUrl, $feed->get_link(0, 'self'), 'Link rel=self does not match');
+        $this->assertLessThanOrEqual(1, count($feed->get_links('self') ?? []), 'Link rel=self should not be promoted from HTML when it is already present in headers');
         $this->assertSame($bogoUrl, $feed->get_link(0, 'bogo'), 'Link rel=bogo does not match');
     }
 }
