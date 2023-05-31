@@ -141,7 +141,7 @@ class Item implements RegistryAware
      * @access private
      * @see \SimplePie\SimplePie::sanitize()
      * @param string $data Data to sanitize
-     * @param int $type One of the \SimplePie\SimplePie::CONSTRUCT_* constants
+     * @param SimplePie::CONSTRUCT_* $type
      * @param string|null $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
