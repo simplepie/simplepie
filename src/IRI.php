@@ -153,7 +153,7 @@ class IRI
             $return = $this->$name;
         }
         // host -> ihost
-        elseif (($prop = 'i' . $name) && array_key_exists($prop, $props)) {
+        elseif (array_key_exists($prop = 'i' . $name, $props)) {
             $name = $prop;
             $return = $this->$prop;
         }
