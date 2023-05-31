@@ -3223,9 +3223,7 @@ class SimplePie
      */
     private function store_links(File &$file, string $hub, string $self): void
     {
-        if (isset($file->headers['link']['hub']) ||
-              (isset($file->headers['link']) &&
-               preg_match('/rel=hub/', $file->headers['link']))) {
+        if (isset($file->headers['link']) && preg_match('/rel=hub/', $file->headers['link'])) {
             return;
         }
 
