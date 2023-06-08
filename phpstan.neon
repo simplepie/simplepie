@@ -27,6 +27,14 @@ parameters:
             # Only occurs on PHP ≥ 8.0
             reportUnmatched: false
 
+        -
+            message: '(^Parameter #1 \$exception of method PHPUnit\\Framework\\TestCase::expectException\(\) expects class-string<Throwable>, string given\.$)'
+
+            count: 3
+            path: tests/Unit/Cache/Psr16Test.php
+            # Only occurs on PHP ≤ 7.4
+            reportUnmatched: false
+
         # PHPStan stubs bug https://github.com/phpstan/phpstan/issues/8629
         -
             message: '(^Access to an undefined property XMLReader::\$\w+\.$)'
