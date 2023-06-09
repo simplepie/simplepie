@@ -10,9 +10,8 @@ declare(strict_types=1);
  */
 class EncodingTest extends PHPUnit\Framework\TestCase
 {
-    /**#@+
-     * UTF-8 methods
-     */
+    /* ## UTF-8 methods */
+
     /**
      * Provider for the convert toUTF8* tests
      *
@@ -122,11 +121,10 @@ class EncodingTest extends PHPUnit\Framework\TestCase
             $this->assertSameBin2Hex($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
         }
     }
-    /**#@-*/
 
-    /**#@+
-     * UTF-16 methods
-     *
+    /* ## UTF-16 methods */
+
+    /**
      * @return array<array{string, string, string}>
      */
     public static function toUTF16(): array
@@ -146,7 +144,6 @@ class EncodingTest extends PHPUnit\Framework\TestCase
         $encoding = SimplePie_Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
-    /**#@-*/
 
     public function test_nonexistant(): void
     {

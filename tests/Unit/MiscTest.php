@@ -36,10 +36,9 @@ class MiscTest extends TestCase
         $this->assertSame('', Misc::entities_decode(''));
     }
 
+    /* ## UTF-8 methods */
+
     /**
-     * #@+
-     * UTF-8 methods
-     *
      * Provider for the convert toUTF8* tests
      *
      * @return array<array{string, string, string}>
@@ -154,11 +153,10 @@ class MiscTest extends TestCase
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_uconverter($input, $encoding, 'UTF-8'));
     }
-    /**#@-*/
 
-    /**#@+
-     * UTF-16 methods
-     *
+    /* ## UTF-16 methods */
+
+    /**
      * @return array<array{string, string, string}>
      */
     public function utf16DataProvider(): array
@@ -178,7 +176,6 @@ class MiscTest extends TestCase
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
-    /**#@-*/
 
     public function test_nonexistant(): void
     {
