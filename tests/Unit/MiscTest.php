@@ -187,12 +187,9 @@ class MiscTest extends TestCase
 
     public function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
-        if (is_string($expected)) {
-            $expected = bin2hex($expected);
-        }
-        if (is_string($actual)) {
-            $actual = bin2hex($actual);
-        }
+        $expected = bin2hex($expected);
+        $actual = bin2hex($actual);
+
         $this->assertSame($expected, $actual, $message);
     }
 

@@ -40,9 +40,8 @@ class SimplePieTest extends TestCase
      */
     private function createFeedWithTemplate(string $template, string $data): SimplePie
     {
-        if (!is_array($data)) {
-            $data = [$data];
-        }
+        $data = [$data];
+
         $xml = vsprintf($template, $data);
         $feed = new SimplePie();
         $feed->set_raw_data($xml);

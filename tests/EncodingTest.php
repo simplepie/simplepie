@@ -155,12 +155,9 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 
     public static function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
-        if (is_string($expected)) {
-            $expected = bin2hex($expected);
-        }
-        if (is_string($actual)) {
-            $actual = bin2hex($actual);
-        }
+        $expected = bin2hex($expected);
+        $actual = bin2hex($actual);
+
         static::assertSame($expected, $actual, $message);
     }
 }
