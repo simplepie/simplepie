@@ -13,12 +13,12 @@ use SimplePie\SimplePie;
 
 class ItemTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Item'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Item'));
     }
@@ -3314,7 +3314,7 @@ EOT
         $this->assertSame($expected, $item->get_content());
     }
 
-    public function getBaseProvider()
+    public function getBaseProvider(): array
     {
         return [
             'Test item get_base xml:base' => [
@@ -4830,7 +4830,7 @@ EOT
         $this->assertSame($expected, $thumbnail['url']);
     }
 
-    public function getThumbnailProvider()
+    public function getThumbnailProvider(): iterable
     {
         yield 'Test thumbnail link sanitized' => [
             <<<XML

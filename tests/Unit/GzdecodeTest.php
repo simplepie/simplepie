@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class GzdecodeTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Gzdecode'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_gzdecode'));
     }

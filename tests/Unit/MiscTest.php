@@ -14,23 +14,23 @@ use SimplePie_Misc;
 
 class MiscTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists(Misc::class));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists(SimplePie_Misc::class));
     }
 
-    public function test_existence_of_get_element()
+    public function test_existence_of_get_element(): void
     {
         // BC: make sure that get_element() exists
         $this->assertSame([], Misc::get_element('', ''));
     }
 
-    public function test_existence_of_entities_decode()
+    public function test_existence_of_entities_decode(): void
     {
         // BC: make sure that entities_decode() exists
         $this->assertSame('', Misc::entities_decode(''));
@@ -180,12 +180,12 @@ class MiscTest extends TestCase
     }
     /**#@-*/
 
-    public function test_nonexistant()
+    public function test_nonexistant(): void
     {
         $this->assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public function assertSameBin2Hex($expected, $actual, $message = '')
+    public function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
         if (is_string($expected)) {
             $expected = bin2hex($expected);

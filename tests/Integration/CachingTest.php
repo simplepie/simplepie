@@ -55,7 +55,7 @@ class CachingTest extends TestCase
                 });
 
                 // Test data written
-                $psr16->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$writtenData) {
+                $psr16->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$writtenData): bool {
                     // Ignore setting of the _mtime value
                     if (substr($key, - strlen('_mtime')) !== '_mtime') {
                         $writtenData = $value;
@@ -71,17 +71,17 @@ class CachingTest extends TestCase
 
             case Base::class:
                 // Set current cached data
-                BaseCacheWithCallbacksMock::setLoadCallback(function () use ($currentDataCached) {
+                BaseCacheWithCallbacksMock::setLoadCallback(function () use ($currentDataCached): array {
                     return $currentDataCached;
                 });
 
                 // Set current mtime
-                BaseCacheWithCallbacksMock::setMtimeCallback(function () use ($currentMtime) {
+                BaseCacheWithCallbacksMock::setMtimeCallback(function () use ($currentMtime): int {
                     return $currentMtime;
                 });
 
                 // Test data written
-                BaseCacheWithCallbacksMock::setSaveCallback(function ($data) use (&$writtenData) {
+                BaseCacheWithCallbacksMock::setSaveCallback(function ($data) use (&$writtenData): bool {
                     if ($data instanceof SimplePie) {
                         $data = $data->data;
                     }

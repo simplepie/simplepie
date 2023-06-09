@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class MemcacheTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Cache\Memcache'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Cache_Memcache'));
     }

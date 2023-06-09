@@ -16,12 +16,12 @@ use SimplePie\Tests\Fixtures\FileMock;
 
 class RegistryTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists(Registry::class));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Registry'));
     }

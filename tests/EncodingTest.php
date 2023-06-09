@@ -148,12 +148,12 @@ class EncodingTest extends PHPUnit\Framework\TestCase
     }
     /**#@-*/
 
-    public function test_nonexistant()
+    public function test_nonexistant(): void
     {
         $this->assertFalse(SimplePie_Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public static function assertSameBin2Hex($expected, $actual, $message = '')
+    public static function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
         if (is_string($expected)) {
             $expected = bin2hex($expected);

@@ -14,12 +14,12 @@ use SimplePie\Tests\Fixtures\FileMock;
 
 class FileTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\File'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_File'));
     }

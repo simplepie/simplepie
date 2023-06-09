@@ -49,7 +49,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $this->assertSame($data, $feed);
     }
 
-    public function testInvalidMIMEType()
+    public function testInvalidMIMEType(): void
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
@@ -64,7 +64,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $this->assertSame(null, $feed);
     }
 
-    public function testDirectNoDOM()
+    public function testDirectNoDOM(): void
     {
         $data = new FileMock('http://example.com/feed.xml');
 
@@ -77,7 +77,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $this->assertSame($data, $locator->find(SIMPLEPIE_LOCATOR_ALL, $found));
     }
 
-    public function testFailDiscoveryNoDOM()
+    public function testFailDiscoveryNoDOM(): void
     {
         $this->expectException(\SimplePie\Exception::class);
 
@@ -142,12 +142,12 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $this->assertSame($success, $found);
     }
 
-    protected static function filter_success($url)
+    protected static function filter_success(string $url): bool
     {
         return (stripos($url, 'bogus') === false);
     }
 
-    protected static function map_url_file($file)
+    protected static function map_url_file(File $file): string
     {
         return $file->url;
     }
