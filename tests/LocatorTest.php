@@ -39,7 +39,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
 
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
 
         $registry = new SimplePie_Registry();
         $registry->register(File::class, FileMock::class);
@@ -54,7 +54,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
 
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
 
         $registry = new SimplePie_Registry();
         $registry->register(File::class, FileMock::class);
@@ -69,7 +69,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $data = new FileMock('http://example.com/feed.xml');
 
         $registry = new SimplePie_Registry();
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
         $locator->dom = null;
         $locator->set_registry($registry);
 
@@ -86,7 +86,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
         $registry = new SimplePie_Registry();
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
         $locator->dom = null;
         $locator->set_registry($registry);
 
@@ -117,7 +117,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
      */
     public function test_from_file(File $data): void
     {
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
 
         $registry = new SimplePie_Registry();
         $registry->register(File::class, FileMock::class);

@@ -53,7 +53,7 @@ class LocatorTest extends TestCase
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
 
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
 
         $registry = new Registry();
         $registry->register(File::class, FileMock::class);
@@ -68,7 +68,7 @@ class LocatorTest extends TestCase
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
 
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
 
         $registry = new Registry();
         $registry->register(File::class, FileMock::class);
@@ -83,7 +83,7 @@ class LocatorTest extends TestCase
         $data = new FileMock('http://example.com/feed.xml');
 
         $registry = new Registry();
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
         $locator->dom = null;
         $locator->set_registry($registry);
 
@@ -100,7 +100,7 @@ class LocatorTest extends TestCase
         $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
         $registry = new Registry();
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
         $locator->dom = null;
         $locator->set_registry($registry);
 
@@ -131,7 +131,7 @@ class LocatorTest extends TestCase
      */
     public function test_from_file(File $data): void
     {
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
 
         $registry = new Registry();
         $registry->register(File::class, FileMock::class);
