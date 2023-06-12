@@ -51,7 +51,7 @@ class Sanitize implements RegistryAware
     public $timeout = 10;
     public $useragent = '';
     public $force_fsockopen = false;
-    public $replace_url_attributes = null;
+    public $replace_url_attributes = [];
     /**
      * @var array<mixed> Custom curl options
      * @see SimplePie::set_curl_options()
@@ -100,7 +100,7 @@ class Sanitize implements RegistryAware
         if ($page) {
             $this->image_handler = (string) $page;
         } else {
-            $this->image_handler = false;
+            $this->image_handler = '';
         }
     }
 
@@ -174,7 +174,7 @@ class Sanitize implements RegistryAware
                 $this->strip_htmltags = explode(',', $tags);
             }
         } else {
-            $this->strip_htmltags = false;
+            $this->strip_htmltags = [];
         }
     }
 
@@ -192,7 +192,7 @@ class Sanitize implements RegistryAware
                 $this->rename_attributes = explode(',', $attribs);
             }
         } else {
-            $this->rename_attributes = false;
+            $this->rename_attributes = [];
         }
     }
 
@@ -205,7 +205,7 @@ class Sanitize implements RegistryAware
                 $this->strip_attributes = explode(',', $attribs);
             }
         } else {
-            $this->strip_attributes = false;
+            $this->strip_attributes = [];
         }
     }
 
@@ -218,7 +218,7 @@ class Sanitize implements RegistryAware
                 $this->add_attributes = explode(',', $attribs);
             }
         } else {
-            $this->add_attributes = false;
+            $this->add_attributes = [];
         }
     }
 
@@ -267,7 +267,7 @@ class Sanitize implements RegistryAware
                 ]
             ];
         }
-        $this->replace_url_attributes = (array) $element_attribute;
+        $this->replace_url_attributes = $element_attribute;
     }
 
     /**
@@ -410,7 +410,7 @@ class Sanitize implements RegistryAware
                 }
 
                 // If image handling (caching, etc.) is enabled, cache and rewrite all the image tags.
-                if (isset($this->image_handler) && ((string) $this->image_handler) !== '' && $this->enable_cache) {
+                if ($this->image_handler !== '' && $this->enable_cache) {
                     $images = $document->getElementsByTagName('img');
 
                     foreach ($images as $img) {
