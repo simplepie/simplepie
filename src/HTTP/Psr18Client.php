@@ -55,7 +55,7 @@ final class Psr18Client implements Client
     /**
      * send a request and return the response
      *
-     * @param Client::METHOD_GET|string $method
+     * @param Client::METHOD_GET $method
      * @param string $url
      * @param string[] $headers
      *
