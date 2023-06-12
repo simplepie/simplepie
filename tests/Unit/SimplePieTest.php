@@ -52,7 +52,10 @@ class SimplePieTest extends TestCase
         return $feed;
     }
 
-    public static function titleDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function titleDataProvider(): array
     {
         return [
             ['Feed Title', 'Feed Title'],
@@ -80,7 +83,7 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider titleDataProvider
      */
-    public function testTitleRSS20($title, $expected)
+    public function testTitleRSS20(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">
@@ -95,7 +98,7 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider titleDataProvider
      */
-    public function testTitleRSS20WithDC10($title, $expected)
+    public function testTitleRSS20WithDC10(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -110,7 +113,7 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider titleDataProvider
      */
-    public function testTitleRSS20WithDC11($title, $expected)
+    public function testTitleRSS20WithDC11(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -125,7 +128,7 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider titleDataProvider
      */
-    public function testTitleRSS20WithAtom03($title, $expected)
+    public function testTitleRSS20WithAtom03(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
@@ -140,7 +143,7 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider titleDataProvider
      */
-    public function testTitleRSS20WithAtom10($title, $expected)
+    public function testTitleRSS20WithAtom10(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
@@ -157,7 +160,7 @@ class SimplePieTest extends TestCase
      *
      * @dataProvider titleDataProvider
      */
-    public function testTitleRSS20WithImageTitle($title, $expected)
+    public function testTitleRSS20WithImageTitle(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">
@@ -177,7 +180,7 @@ class SimplePieTest extends TestCase
      *
      * @dataProvider titleDataProvider
      */
-    public function testTitleRSS20WithImageTitleReversed($title, $expected)
+    public function testTitleRSS20WithImageTitleReversed(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">
@@ -268,7 +271,10 @@ class SimplePieTest extends TestCase
         $this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
     }
 
-    public function getCopyrightDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getCopyrightDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0' => [
@@ -568,7 +574,7 @@ EOT
     /**
      * @dataProvider getCopyrightDataProvider
      */
-    public function test_get_copyright($data, $expected)
+    public function test_get_copyright(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -578,7 +584,10 @@ EOT
         $this->assertSame($expected, $feed->get_copyright());
     }
 
-    public function getDescriptionDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getDescriptionDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Description' => [
@@ -976,7 +985,7 @@ EOT
     /**
      * @dataProvider getDescriptionDataProvider
      */
-    public function test_get_description($data, $expected)
+    public function test_get_description(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -986,7 +995,10 @@ EOT
         $this->assertSame($expected, $feed->get_description());
     }
 
-    public function getImageHeightDataProvider()
+    /**
+     * @return array<array{string, int|null}>
+     */
+    public function getImageHeightDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon Default' => [
@@ -1270,7 +1282,7 @@ EOT
     /**
      * @dataProvider getImageHeightDataProvider
      */
-    public function test_get_image_height($data, $expected)
+    public function test_get_image_height(string $data, ?int $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -1280,7 +1292,10 @@ EOT
         $this->assertSame($expected, $feed->get_image_height());
     }
 
-    public function getImageLinkDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getImageLinkDataProvider(): array
     {
         return [
             'Test RSS 0.90 Link' => [
@@ -1364,7 +1379,7 @@ EOT
     /**
      * @dataProvider getImageLinkDataProvider
      */
-    public function test_get_image_link($data, $expected)
+    public function test_get_image_link(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -1374,7 +1389,10 @@ EOT
         $this->assertSame($expected, $feed->get_image_link());
     }
 
-    public function getImageTitleDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getImageTitleDataProvider(): array
     {
         return [
             'Test RSS 0.90 DC 1.0 Title' => [
@@ -1608,7 +1626,7 @@ EOT
     /**
      * @dataProvider getImageTitleDataProvider
      */
-    public function test_get_image_title($data, $expected)
+    public function test_get_image_title(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -1618,7 +1636,10 @@ EOT
         $this->assertSame($expected, $feed->get_image_title());
     }
 
-    public function getImageUrlDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getImageUrlDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon' => [
@@ -1854,7 +1875,7 @@ EOT
     /**
      * @dataProvider getImageUrlDataProvider
      */
-    public function test_get_image_url($data, $expected)
+    public function test_get_image_url(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -1864,7 +1885,10 @@ EOT
         $this->assertSame($expected, $feed->get_image_url());
     }
 
-    public function getImageWidthDataProvider()
+    /**
+     * @return array<array{string, int|null}>
+     */
+    public function getImageWidthDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon Default' => [
@@ -2153,7 +2177,7 @@ EOT
     /**
      * @dataProvider getImageWidthDataProvider
      */
-    public function test_get_image_width($data, $expected)
+    public function test_get_image_width(string $data, ?int $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -2163,7 +2187,10 @@ EOT
         $this->assertSame($expected, $feed->get_image_width());
     }
 
-    public function getLanguageDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getLanguageDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Language' => [
@@ -2405,7 +2432,7 @@ EOT
     /**
      * @dataProvider getLanguageDataProvider
      */
-    public function test_get_language($data, $expected)
+    public function test_get_language(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -2415,7 +2442,10 @@ EOT
         $this->assertSame($expected, $feed->get_language());
     }
 
-    public function getLinkDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getLinkDataProvider(): array
     {
         return [
             'Test Atom 0.3 Link' => [
@@ -2670,7 +2700,7 @@ EOT
     /**
      * @dataProvider getLinkDataProvider
      */
-    public function test_get_link($data, $expected)
+    public function test_get_link(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -2680,7 +2710,10 @@ EOT
         $this->assertSame($expected, $feed->get_link());
     }
 
-    public function getTitleDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function getTitleDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Title' => [
@@ -3091,7 +3124,7 @@ EOT
     /**
      * @dataProvider getTitleDataProvider
      */
-    public function test_get_title($data, $expected)
+    public function test_get_title(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);

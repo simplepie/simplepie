@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New method `SimplePie\Locator::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777)
 - New method `SimplePie\Sanitize::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777)
 
+### Changed
+
+- Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
+
+### Removed
+
+- Third-party `idna_convert` library is no longer part of the repository by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
+
 ### Deprecated
 
 - The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead

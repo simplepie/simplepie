@@ -41,7 +41,7 @@ class FileTest extends TestCase
     {
         $this->assertSame(
             'http://example.com/feed',
-            $response->get_requested_uri()
+            $response->get_final_requested_uri()
         );
     }
 

@@ -63,11 +63,11 @@ class Psr7ResponseTest extends TestCase
     /**
      * @dataProvider getResponseData
      */
-    public function testGetRequestedUriReturnsString(Psr7Response $response): void
+    public function testGetFinalRequestedUriReturnsString(Psr7Response $response): void
     {
         $this->assertSame(
             'https://example.com/feed.xml',
-            $response->get_requested_uri()
+            $response->get_final_requested_uri()
         );
     }
 

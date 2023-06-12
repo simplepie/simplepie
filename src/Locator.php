@@ -41,7 +41,7 @@ class Locator implements RegistryAware
     protected $registry;
 
     /**
-     * @var Client
+     * @var Client|null
      */
     private $http_client = null;
 
@@ -54,12 +54,14 @@ class Locator implements RegistryAware
         $this->force_fsockopen = $force_fsockopen;
         $this->curl_options = $curl_options;
 
-        if (class_exists('DOMDocument') && $this->file->get_body_content() != '') {
+        $body = $this->file->get_body_content();
+
+        if (class_exists('DOMDocument') && $body != '') {
             $this->dom = new \DOMDocument();
 
             set_error_handler([Misc::class, 'silence_errors']);
             try {
-                $this->dom->loadHTML($this->file->get_body_content());
+                $this->dom->loadHTML($body);
             } catch (\Throwable $ex) {
                 $this->dom = null;
             }
@@ -93,7 +95,7 @@ class Locator implements RegistryAware
             return $this->file;
         }
 
-        if (preg_match('/^http(s)?:\/\//i', $this->file->get_requested_uri())) {
+        if (Misc::is_remote_uri($this->file->get_final_requested_uri())) {
             $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$this->file]);
             if ($sniffer->get_type() !== 'text/html') {
                 return null;
@@ -130,7 +132,7 @@ class Locator implements RegistryAware
 
     public function is_feed($file, $check_html = false)
     {
-        if (preg_match('/^http(s)?:\/\//i', $file->get_requested_uri())) {
+        if (Misc::is_remote_uri($file->get_final_requested_uri())) {
             $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$file]);
             $sniffed = $sniffer->get_type();
             $mime_types = ['application/rss+xml', 'application/rdf+xml',
@@ -141,7 +143,7 @@ class Locator implements RegistryAware
             }
 
             return in_array($sniffed, $mime_types);
-        } elseif (is_file($file->get_requested_uri())) {
+        } elseif (is_file($file->get_final_requested_uri())) {
             return true;
         } else {
             return false;
@@ -153,7 +155,7 @@ class Locator implements RegistryAware
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
-        $this->http_base = $this->file->get_requested_uri();
+        $this->http_base = $this->file->get_final_requested_uri();
         $this->base = $this->http_base;
         $elements = $this->dom->getElementsByTagName('base');
         foreach ($elements as $element) {
@@ -215,13 +217,13 @@ class Locator implements RegistryAware
                     ];
 
                     try {
-                        $response = $this->get_http_client()->request(Client::METHOD_GET, $href, $headers);
-                    } catch (HttpException $th) {
-                        continue;
-                    }
+                        $feed = $this->get_http_client()->request(Client::METHOD_GET, $href, $headers);
 
-                    if ((! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($response, true)) {
-                        $feeds[$href] = $response;
+                        if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed, true)) {
+                            $feeds[$href] = $feed;
+                        }
+                    } catch (HttpException $th) {
+                        // Just mark it as done and continue.
                     }
                 }
                 $done[] = $href;
@@ -252,7 +254,7 @@ class Locator implements RegistryAware
                         continue;
                     }
 
-                    $current = $this->registry->call(Misc::class, 'parse_url', [$this->file->get_requested_uri()]);
+                    $current = $this->registry->call(Misc::class, 'parse_url', [$this->file->get_final_requested_uri()]);
 
                     if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority']) {
                         $this->local[] = $href;
@@ -330,16 +332,16 @@ class Locator implements RegistryAware
                 ];
 
                 try {
-                    $response = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
+                    $feed = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
+
+                    if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed)) {
+                        return [$feed];
+                    }
                 } catch (HttpException $th) {
-                    continue;
+                    // Just unset and continue.
                 }
 
-                if ((! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($response)) {
-                    return [$response];
-                } else {
-                    unset($array[$key]);
-                }
+                unset($array[$key]);
             }
         }
         return null;
@@ -358,16 +360,16 @@ class Locator implements RegistryAware
                 ];
 
                 try {
-                    $response = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
+                    $feed = $this->get_http_client()->request(Client::METHOD_GET, $value, $headers);
+
+                    if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed)) {
+                        return [$feed];
+                    }
                 } catch (HttpException $th) {
-                    continue;
+                    // Just unset and continue.
                 }
 
-                if ((! preg_match('/^http(s)?:\/\//i', $response->get_requested_uri()) || ($response->get_status_code() === 200 || $response->get_status_code() > 206 && $response->get_status_code() < 300)) && $this->is_feed($response)) {
-                    return [$response];
-                } else {
-                    unset($array[$key]);
-                }
+                unset($array[$key]);
             }
         }
         return null;

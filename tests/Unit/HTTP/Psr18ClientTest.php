@@ -58,6 +58,6 @@ class Psr18ClientTest extends TestCase
         $response = $client->request(Client::METHOD_GET, 'https://example.com/redirect');
 
         $this->assertSame('https://example.com/redirect', $response->get_permanent_uri());
-        $this->assertSame('https://example.com/feed.xml', $response->get_requested_uri());
+        $this->assertSame('https://example.com/feed.xml', $response->get_final_requested_uri());
     }
 }

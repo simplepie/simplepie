@@ -31,7 +31,10 @@ class LocatorTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Locator'));
     }
 
-    public function feedmimetypes()
+    /**
+     * @return array<array{string}>
+     */
+    public function feedmimetypes(): array
     {
         return [
             ['application/rss+xml'],
@@ -45,7 +48,7 @@ class LocatorTest extends TestCase
     /**
      * @dataProvider feedmimetypes
      */
-    public function testAutodiscoverOnFeed($mime)
+    public function testAutodiscoverOnFeed(string $mime): void
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
@@ -110,6 +113,8 @@ class LocatorTest extends TestCase
      *
      * Tests are used under the LGPL license, see file for license
      * information
+     *
+     * @return iterable<array{File}>
      */
     public function firefoxTestDataProvider(): iterable
     {
@@ -124,7 +129,7 @@ class LocatorTest extends TestCase
     /**
      * @dataProvider firefoxTestDataProvider
      */
-    public function test_from_file($data)
+    public function test_from_file(File $data): void
     {
         $locator = new Locator($data, 0, null, false);
 

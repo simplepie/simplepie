@@ -6,7 +6,6 @@ $starttime = $starttime[1] + $starttime[0];
 // Include SimplePie
 // Located in the parent directory
 include_once('../autoloader.php');
-include_once('../idn/idna_convert.class.php');
 
 // Create a new instance of the SimplePie object
 $feed = new \SimplePie\SimplePie();

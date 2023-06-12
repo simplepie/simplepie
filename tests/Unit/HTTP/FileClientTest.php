@@ -13,17 +13,13 @@ use SimplePie\HTTP\FileClient;
 use SimplePie\Misc;
 use SimplePie\Registry;
 
-class FileClientTest extends TestCase
+final class FileClientTest extends TestCase
 {
     public function testFileClientProvidesDefaultOptionsAndHeaders()
     {
         $response = $this->createMock(File::class);
 
         $registry = $this->createMock(Registry::class);
-        $registry->expects($this->once())->method('call')->with(
-            Misc::class,
-            'get_default_useragent'
-        )->willReturn('default-useragent');
         $registry->expects($this->once())->method('create')->with(
             File::class,
             [
@@ -31,7 +27,7 @@ class FileClientTest extends TestCase
                 10,
                 5,
                 [],
-                'default-useragent',
+                Misc::get_default_useragent(),
                 false,
                 [],
             ]
@@ -50,10 +46,6 @@ class FileClientTest extends TestCase
         $response = $this->createMock(File::class);
 
         $registry = $this->createMock(Registry::class);
-        $registry->expects($this->once())->method('call')->with(
-            Misc::class,
-            'get_default_useragent'
-        )->willReturn('default-useragent');
         $registry->expects($this->once())->method('create')->with(
             File::class,
             [
@@ -61,7 +53,7 @@ class FileClientTest extends TestCase
                 30,
                 10,
                 ['Accept' => 'application/atom+xml'],
-                'default-useragent',
+                'dummy-useragent',
                 true,
                 [45 => true],
             ]
@@ -69,6 +61,7 @@ class FileClientTest extends TestCase
 
         $client = new FileClient($registry, [
             'timeout' => 30,
+            'useragent' => 'dummy-useragent',
             'redirects' => 10,
             'force_fsockopen' => true,
             'curl_options' => [

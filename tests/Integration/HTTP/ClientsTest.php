@@ -42,7 +42,7 @@ class ClientsTest extends TestCase
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame($filepath, $response->get_permanent_uri());
-        $this->assertSame($filepath, $response->get_requested_uri());
+        $this->assertSame($filepath, $response->get_final_requested_uri());
         $this->assertSame(200, $response->get_status_code());
         $this->assertSame([], $response->get_headers());
         $this->assertStringStartsWith('<rss version="2.0">', $response->get_body_content());
