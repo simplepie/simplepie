@@ -187,6 +187,7 @@ class Parser
 
     /**
      * Parse the HTTP version
+     * @return void
      */
     protected function http_version()
     {
@@ -208,6 +209,7 @@ class Parser
 
     /**
      * Parse the status code
+     * @return void
      */
     protected function status()
     {
@@ -222,6 +224,7 @@ class Parser
 
     /**
      * Parse the reason phrase
+     * @return void
      */
     protected function reason()
     {
@@ -233,6 +236,7 @@ class Parser
 
     /**
      * Deal with a new line, shifting data around as needed
+     * @return void
      */
     protected function new_line()
     {
@@ -269,6 +273,7 @@ class Parser
 
     /**
      * Parse a header name
+     * @return void
      */
     protected function name()
     {
@@ -289,6 +294,7 @@ class Parser
 
     /**
      * Parse LWS, replacing consecutive LWS characters with a single space
+     * @return void
      */
     protected function linear_whitespace()
     {
@@ -305,6 +311,7 @@ class Parser
 
     /**
      * See what state to move to while within non-quoted header values
+     * @return void
      */
     protected function value()
     {
@@ -339,6 +346,7 @@ class Parser
 
     /**
      * Parse a header value while outside quotes
+     * @return void
      */
     protected function value_char()
     {
@@ -350,6 +358,7 @@ class Parser
 
     /**
      * See what state to move to while within quoted header values
+     * @return void
      */
     protected function quote()
     {
@@ -381,6 +390,7 @@ class Parser
 
     /**
      * Parse a header value while within quotes
+     * @return void
      */
     protected function quote_char()
     {
@@ -392,6 +402,7 @@ class Parser
 
     /**
      * Parse an escaped character within quotes
+     * @return void
      */
     protected function quote_escaped()
     {
@@ -402,6 +413,7 @@ class Parser
 
     /**
      * Parse the body
+     * @return void
      */
     protected function body()
     {
@@ -416,6 +428,7 @@ class Parser
 
     /**
      * Parsed a "Transfer-Encoding: chunked" body
+     * @return void
      */
     protected function chunked()
     {

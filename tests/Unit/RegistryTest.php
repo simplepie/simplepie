@@ -28,6 +28,9 @@ class RegistryTest extends TestCase
 
     /**
      * @dataProvider getDefaultClassDataProvider
+     *
+     * @param string $type
+     * @param class-string $expected
      */
     public function testGetClassReturnsCorrectClassname(string $type, string $expected): void
     {
@@ -37,7 +40,7 @@ class RegistryTest extends TestCase
     }
 
     /**
-     * @return array<array{string, string}>
+     * @return array<array{string, class-string}>
      */
     public function getDefaultClassDataProvider(): array
     {

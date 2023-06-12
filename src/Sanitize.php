@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use DOMDocument;
+use DOMXPath;
 use InvalidArgumentException;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
@@ -28,36 +30,54 @@ use SimplePie\HTTP\FileClient;
 class Sanitize implements RegistryAware
 {
     // Private vars
-    public $base;
+    /** @var string */
+    public $base = '';
 
     // Options
+    /** @var bool */
     public $remove_div = true;
+    /** @var string */
     public $image_handler = '';
+    /** @var string[] */
     public $strip_htmltags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'];
+    /** @var bool */
     public $encode_instead_of_strip = false;
+    /** @var string[] */
     public $strip_attributes = ['bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'];
+    /** @var string[] */
     public $rename_attributes = [];
+    /** @var array<string, array<string, string>> */
     public $add_attributes = ['audio' => ['preload' => 'none'], 'iframe' => ['sandbox' => 'allow-scripts allow-same-origin'], 'video' => ['preload' => 'none']];
+    /** @var bool */
     public $strip_comments = false;
+    /** @var string */
     public $output_encoding = 'UTF-8';
+    /** @var bool */
     public $enable_cache = true;
+    /** @var string */
     public $cache_location = './cache';
+    /** @var string */
     public $cache_name_function = 'md5';
 
     /**
      * @var NameFilter
      */
     private $cache_namefilter;
+    /** @var int */
     public $timeout = 10;
+    /** @var string */
     public $useragent = '';
+    /** @var bool */
     public $force_fsockopen = false;
+    /** @var array<string, string|string[]> */
     public $replace_url_attributes = [];
     /**
-     * @var array<mixed> Custom curl options
+     * @var array<int, mixed> Custom curl options
      * @see SimplePie::set_curl_options()
      */
     private $curl_options = [];
 
+    /** @var Registry */
     public $registry;
 
     /**
@@ -90,11 +110,18 @@ class Sanitize implements RegistryAware
         $this->set_url_replacements(null);
     }
 
-    public function remove_div($enable = true)
+    /**
+     * @return void
+     */
+    public function remove_div(bool $enable = true)
     {
         $this->remove_div = (bool) $enable;
     }
 
+    /**
+     * @param string|false $page
+     * @return void
+     */
     public function set_image_handler($page = false)
     {
         if ($page) {
@@ -104,21 +131,28 @@ class Sanitize implements RegistryAware
         }
     }
 
-    public function set_registry(\SimplePie\Registry $registry)/* : void */
+    /**
+     * @return void
+     */
+    public function set_registry(\SimplePie\Registry $registry)
     {
         $this->registry = $registry;
     }
 
-    public function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = Cache::class, DataCache $cache = null)
+    /**
+     * @param string|NameFilter $cache_name_function
+     * @param class-string<Cache> $cache_class
+     * @return void
+     */
+    public function pass_cache_data(bool $enable_cache = true, string $cache_location = './cache', $cache_name_function = 'md5', string $cache_class = Cache::class, DataCache $cache = null)
     {
-        if (isset($enable_cache)) {
-            $this->enable_cache = (bool) $enable_cache;
-        }
+        $this->enable_cache = $enable_cache;
 
         if ($cache_location) {
-            $this->cache_location = (string) $cache_location;
+            $this->cache_location = $cache_location;
         }
 
+        // @phpstan-ignore-next-line Enforce PHPDoc type.
         if (! is_string($cache_name_function) && ! $cache_name_function instanceof NameFilter) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #3 ($cache_name_function) must be of type %s',
@@ -144,20 +178,23 @@ class Sanitize implements RegistryAware
 
     /**
      * @deprecated since SimplePie 1.9.0, use \SimplePie\Sanitize::set_http_client() instead.
+     * @param class-string<File> $file_class
+     * @param array<int, mixed> $curl_options
+     * @return void
      */
-    public function pass_file_data($file_class = File::class, $timeout = 10, $useragent = '', $force_fsockopen = false, array $curl_options = [])
+    public function pass_file_data(string $file_class = File::class, int $timeout = 10, string $useragent = '', bool $force_fsockopen = false, array $curl_options = [])
     {
         // trigger_error(sprintf('SimplePie\Sanitize::pass_file_data() is deprecated since SimplePie 1.9.0, please use "SimplePie\Sanitize::set_http_client()" instead.'), \E_USER_DEPRECATED);
         if ($timeout) {
-            $this->timeout = (string) $timeout;
+            $this->timeout = $timeout;
         }
 
         if ($useragent) {
-            $this->useragent = (string) $useragent;
+            $this->useragent = $useragent;
         }
 
         if ($force_fsockopen) {
-            $this->force_fsockopen = (string) $force_fsockopen;
+            $this->force_fsockopen = $force_fsockopen;
         }
 
         $this->curl_options = $curl_options;
@@ -165,6 +202,10 @@ class Sanitize implements RegistryAware
         $this->http_client = null;
     }
 
+    /**
+     * @param string[]|string $tags
+     * @return void
+     */
     public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
     {
         if ($tags) {
@@ -178,11 +219,18 @@ class Sanitize implements RegistryAware
         }
     }
 
-    public function encode_instead_of_strip($encode = false)
+    /**
+     * @return void
+     */
+    public function encode_instead_of_strip(bool $encode = false)
     {
-        $this->encode_instead_of_strip = (bool) $encode;
+        $this->encode_instead_of_strip = $encode;
     }
 
+    /**
+     * @param string[]|string $attribs
+     * @return void
+     */
     public function rename_attributes($attribs = [])
     {
         if ($attribs) {
@@ -196,6 +244,10 @@ class Sanitize implements RegistryAware
         }
     }
 
+    /**
+     * @param string[]|string $attribs
+     * @return void
+     */
     public function strip_attributes($attribs = ['bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'])
     {
         if ($attribs) {
@@ -218,14 +270,20 @@ class Sanitize implements RegistryAware
         $this->add_attributes = $attribs;
     }
 
-    public function strip_comments($strip = false)
+    /**
+     * @return void
+     */
+    public function strip_comments(bool $strip = false)
     {
-        $this->strip_comments = (bool) $strip;
+        $this->strip_comments = $strip;
     }
 
-    public function set_output_encoding($encoding = 'UTF-8')
+    /**
+     * @return void
+     */
+    public function set_output_encoding(string $encoding = 'UTF-8')
     {
-        $this->output_encoding = (string) $encoding;
+        $this->output_encoding = $encoding;
     }
 
     /**
@@ -237,7 +295,8 @@ class Sanitize implements RegistryAware
      * |ins|@cite, |q|@cite, |source|@src, |video|@src
      *
      * @since 1.0
-     * @param array|null $element_attribute Element/attribute key/value pairs, null for default
+     * @param array<string, string|string[]>|null $element_attribute Element/attribute key/value pairs, null for default
+     * @return void
      */
     public function set_url_replacements(?array $element_attribute = null)
     {
@@ -332,7 +391,12 @@ class Sanitize implements RegistryAware
         : $url;
     }
 
-    public function sanitize($data, $type, $base = '')
+    /**
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * @param string $base
+     * @return string|bool|string[]
+     */
+    public function sanitize(string $data, int $type, string $base = '')
     {
         $data = trim($data);
         if ($data !== '' || $type & \SimplePie\SimplePie::CONSTRUCT_IRI) {
@@ -472,7 +536,11 @@ class Sanitize implements RegistryAware
         return $data;
     }
 
-    protected function preprocess($html, $type)
+    /**
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * @return string
+     */
+    protected function preprocess(string $html, int $type)
     {
         $ret = '';
         $html = preg_replace('%</?(?:html|body)[^>]*?'.'>%is', '', $html);
@@ -493,7 +561,11 @@ class Sanitize implements RegistryAware
         return $ret;
     }
 
-    public function replace_urls($document, $tag, $attributes)
+    /**
+     * @param array<string>|string $attributes
+     * @return void
+     */
+    public function replace_urls(DOMDocument $document, string $tag, $attributes)
     {
         if (!is_array($attributes)) {
             $attributes = [$attributes];
@@ -515,7 +587,11 @@ class Sanitize implements RegistryAware
         }
     }
 
-    public function do_strip_htmltags($match)
+    /**
+     * @param array<int, string> $match
+     * @return string
+     */
+    public function do_strip_htmltags(array $match)
     {
         if ($this->encode_instead_of_strip) {
             if (isset($match[4]) && !in_array(strtolower($match[1]), ['script', 'style'])) {
@@ -532,7 +608,11 @@ class Sanitize implements RegistryAware
         }
     }
 
-    protected function strip_tag($tag, $document, $xpath, $type)
+    /**
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * @return void
+     */
+    protected function strip_tag(string $tag, DOMDocument $document, DOMXPath $xpath, int $type)
     {
         $elements = $xpath->query('body//' . $tag);
         if ($this->encode_instead_of_strip) {
@@ -600,28 +680,41 @@ class Sanitize implements RegistryAware
         }
     }
 
-    protected function strip_attr($attrib, $xpath)
+    /**
+     * @return void
+     */
+    protected function strip_attr(string $attrib, DOMXPath $xpath)
     {
         $elements = $xpath->query('//*[@' . $attrib . ']');
 
+        /** @var \DOMElement $element */
         foreach ($elements as $element) {
             $element->removeAttribute($attrib);
         }
     }
 
-    protected function rename_attr($attrib, $xpath)
+    /**
+     * @return void
+     */
+    protected function rename_attr(string $attrib, DOMXPath $xpath)
     {
         $elements = $xpath->query('//*[@' . $attrib . ']');
 
+        /** @var \DOMElement $element */
         foreach ($elements as $element) {
             $element->setAttribute('data-sanitized-' . $attrib, $element->getAttribute($attrib));
             $element->removeAttribute($attrib);
         }
     }
 
-    protected function add_attr($tag, $valuePairs, $document)
+    /**
+     * @param array<string, string> $valuePairs
+     * @return void
+     */
+    protected function add_attr(string $tag, array $valuePairs, DOMDocument $document)
     {
         $elements = $document->getElementsByTagName($tag);
+        /** @var \DOMElement $element */
         foreach ($elements as $element) {
             foreach ($valuePairs as $attrib => $value) {
                 $element->setAttribute($attrib, $value);

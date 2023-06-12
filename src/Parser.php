@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace SimplePie;
 
 use SimplePie\XML\Declaration\Parser as DeclarationParser;
+use XMLParser;
 
 /**
  * Parses XML into something sane
@@ -17,29 +18,51 @@ use SimplePie\XML\Declaration\Parser as DeclarationParser;
  */
 class Parser implements RegistryAware
 {
+    /** @var int */
     public $error_code;
+    /** @var string */
     public $error_string;
+    /** @var int */
     public $current_line;
+    /** @var int */
     public $current_column;
+    /** @var int */
     public $current_byte;
+    /** @var string */
     public $separator = ' ';
+    /** @var string[] */
     public $namespace = [''];
+    /** @var string[] */
     public $element = [''];
+    /** @var string[] */
     public $xml_base = [''];
+    /** @var bool[] */
     public $xml_base_explicit = [false];
+    /** @var string[] */
     public $xml_lang = [''];
+    /** @var array<string, mixed> */
     public $data = [];
+    /** @var array<array<string, mixed>> */
     public $datas = [[]];
+    /** @var int */
     public $current_xhtml_construct = -1;
+    /** @var string */
     public $encoding;
+    /** @var Registry */
     protected $registry;
 
-    public function set_registry(\SimplePie\Registry $registry)/* : void */
+    /**
+     * @return void
+     */
+    public function set_registry(\SimplePie\Registry $registry)
     {
         $this->registry = $registry;
     }
 
-    public function parse(&$data, $encoding, $url = '')
+    /**
+     * @return bool
+     */
+    public function parse(string &$data, string $encoding, string $url = '')
     {
         if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
             $doc = new \DOMDocument();
@@ -193,37 +216,60 @@ class Parser implements RegistryAware
         return true;
     }
 
+    /**
+     * @return int
+     */
     public function get_error_code()
     {
         return $this->error_code;
     }
 
+    /**
+     * @return string
+     */
     public function get_error_string()
     {
         return $this->error_string;
     }
 
+    /**
+     * @return int
+     */
     public function get_current_line()
     {
         return $this->current_line;
     }
 
+    /**
+     * @return int
+     */
     public function get_current_column()
     {
         return $this->current_column;
     }
 
+    /**
+     * @return int
+     */
     public function get_current_byte()
     {
         return $this->current_byte;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function get_data()
     {
         return $this->data;
     }
 
-    public function tag_open($parser, $tag, $attributes)
+    /**
+     * @param XMLParser|resource|null $parser
+     * @param array<string, string> $attributes
+     * @return void
+     */
+    public function tag_open($parser, string $tag, array $attributes)
     {
         [$this->namespace[], $this->element[]] = $this->split_ns($tag);
 
@@ -275,7 +321,11 @@ class Parser implements RegistryAware
         }
     }
 
-    public function cdata($parser, $cdata)
+    /**
+     * @param XMLParser|resource|null $parser
+     * @return void
+     */
+    public function cdata($parser, string $cdata)
     {
         if ($this->current_xhtml_construct >= 0) {
             $this->data['data'] .= htmlspecialchars($cdata, ENT_QUOTES, $this->encoding);
@@ -284,7 +334,11 @@ class Parser implements RegistryAware
         }
     }
 
-    public function tag_close($parser, $tag)
+    /**
+     * @param XMLParser|resource|null $parser
+     * @return void
+     */
+    public function tag_close($parser, string $tag)
     {
         if ($this->current_xhtml_construct >= 0) {
             $this->current_xhtml_construct--;
@@ -304,7 +358,10 @@ class Parser implements RegistryAware
         array_pop($this->xml_lang);
     }
 
-    public function split_ns($string)
+    /**
+     * @return array{string, string}
+     */
+    public function split_ns(string $string)
     {
         static $cache = [];
         if (!isset($cache[$string])) {
@@ -335,7 +392,10 @@ class Parser implements RegistryAware
         return $cache[$string];
     }
 
-    private function parse_hcard($data, $category = false): string
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function parse_hcard(array $data, bool $category = false): string
     {
         $name = '';
         $link = '';
@@ -362,7 +422,7 @@ class Parser implements RegistryAware
     /**
      * @return true
      */
-    private function parse_microformats(&$data, $url): bool
+    private function parse_microformats(string &$data, string $url): bool
     {
         $feed_title = '';
         $feed_author = null;

@@ -32,6 +32,7 @@ class File implements Response
      */
     public $useragent;
 
+    /** @var bool */
     public $success = true;
 
     /** @var array<string, non-empty-array<string>> Canonical representation of headers */
@@ -55,7 +56,11 @@ class File implements Response
      * @deprecated Use `get_status_code()` method.
      */
     public $status_code = 0;
+
+    /** @var int Number of redirect that were already performed during this request sequence. */
     public $redirects = 0;
+
+    /** @var ?string */
     public $error;
 
     /**
@@ -72,7 +77,16 @@ class File implements Response
     /** @var bool Whether the permanent URL is still writeable (prefix of permanent redirects has not ended) */
     private $permanentUrlMutable = true;
 
-    public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
+    /**
+     * @param string $url
+     * @param int $timeout
+     * @param int $redirects
+     * @param ?array<string, string> $headers
+     * @param ?string $useragent
+     * @param bool $force_fsockopen
+     * @param array<int, mixed> $curl_options
+     */
+    public function __construct(string $url, int $timeout = 10, int $redirects = 5, ?array $headers = null, ?string $useragent = null, bool $force_fsockopen = false, array $curl_options = [])
     {
         if (function_exists('idn_to_ascii')) {
             $parsed = \SimplePie\Misc::parse_url($url);

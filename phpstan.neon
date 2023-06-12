@@ -35,6 +35,14 @@ parameters:
             # Only occurs on PHP ≤ 7.4
             reportUnmatched: false
 
+        -
+            message: '(^Parameter \$parser of method SimplePie\\Parser::(tag_open|cdata|tag_close)\(\) has invalid type XMLParser\.$)'
+
+            count: 3
+            path: src/Parser.php
+            # Only occurs on PHP ≤ 7.4
+            reportUnmatched: false
+
         # PHPStan stubs bug https://github.com/phpstan/phpstan/issues/8629
         -
             message: '(^Access to an undefined property XMLReader::\$\w+\.$)'

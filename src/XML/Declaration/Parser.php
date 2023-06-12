@@ -153,6 +153,8 @@ class Parser
 
     /**
      * Read value
+     *
+     * @return string|false
      */
     public function get_value()
     {

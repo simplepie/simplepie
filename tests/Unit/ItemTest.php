@@ -3314,6 +3314,9 @@ EOT
         $this->assertSame($expected, $item->get_content());
     }
 
+    /**
+     * @return array<array{string, string}>
+     */
     public function getBaseProvider(): array
     {
         return [
@@ -4830,6 +4833,9 @@ EOT
         $this->assertSame($expected, $thumbnail['url']);
     }
 
+    /**
+     * @return iterable<array{string, string}>
+     */
     public function getThumbnailProvider(): iterable
     {
         yield 'Test thumbnail link sanitized' => [

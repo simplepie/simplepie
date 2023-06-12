@@ -95,7 +95,7 @@ final class BaseCacheWithCallbacksMock implements Base
     /**
      * Save data to the cache
      *
-     * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+     * @param array<mixed>|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
     public function save($data)
@@ -113,7 +113,7 @@ final class BaseCacheWithCallbacksMock implements Base
     /**
      * Retrieve the data saved to the cache
      *
-     * @return array Data for SimplePie::$data
+     * @return array<mixed> Data for SimplePie::$data
      */
     public function load()
     {

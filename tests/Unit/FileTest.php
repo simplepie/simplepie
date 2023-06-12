@@ -29,6 +29,9 @@ class FileTest extends TestCase
         $this->assertInstanceOf(Response::class, new FileMock(''));
     }
 
+    /**
+     * @return array<array{File}>
+     */
     public function getResponseData(): iterable
     {
         yield [new FileMock('http://example.com/feed')];

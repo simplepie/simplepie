@@ -23,6 +23,9 @@ class ParserTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Parser'));
     }
 
+    /**
+     * @return iterable<array{string, string, array<string, mixed>}>
+     */
     public function feedProvider(): iterable
     {
         yield [
@@ -352,6 +355,8 @@ HTML
 
     /**
      * @dataProvider feedProvider
+     *
+     * @param array<string, mixed> $parsedData
      */
     public function test_get_title(string $feed, string $base, array $parsedData): void
     {

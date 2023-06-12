@@ -25,7 +25,7 @@ class Cache
      *
      * These receive 3 parameters to their constructor, as documented in
      * {@see register()}
-     * @var array
+     * @var array<string, class-string<Base>>
      */
     protected static $handlers = [
         'mysql'     => Cache\MySQL::class,
@@ -65,8 +65,12 @@ class Cache
      * Create a new SimplePie\Cache object
      *
      * @deprecated since SimplePie 1.3.1, use {@see get_handler()} instead
+     * @param string $location
+     * @param string $filename
+     * @param Base::TYPE_FEED|Base::TYPE_IMAGE $extension
+     * @return Base
      */
-    public function create($location, $filename, $extension)
+    public function create(string $location, string $filename, $extension)
     {
         trigger_error('Cache::create() has been replaced with Cache::get_handler() since SimplePie 1.3.1, use the registry system instead.', \E_USER_DEPRECATED);
 
@@ -78,6 +82,7 @@ class Cache
      *
      * @param string $type DSN type to register for
      * @param class-string<Base> $class Name of handler class. Must implement Base
+     * @return void
      */
     public static function register(string $type, $class)
     {
@@ -88,7 +93,7 @@ class Cache
      * Parse a URL into an array
      *
      * @param string $url
-     * @return array
+     * @return array<string, mixed>
      */
     public static function parse_URL(string $url)
     {

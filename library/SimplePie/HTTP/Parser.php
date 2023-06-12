@@ -13,7 +13,11 @@ class_exists('SimplePie\HTTP\Parser');
 
 /** @phpstan-ignore-next-line */
 if (\false) {
-    /** @deprecated since SimplePie 1.7.0, use "SimplePie\HTTP\Parser" instead */
+    /**
+     * @deprecated since SimplePie 1.7.0, use "SimplePie\HTTP\Parser" instead
+     * @template Psr7Compatible of bool
+     * @extends Parser<Psr7Compatible>
+     */
     class SimplePie_HTTP_Parser extends Parser
     {
     }

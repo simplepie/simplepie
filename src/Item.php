@@ -28,7 +28,7 @@ class Item implements RegistryAware
      * Raw data
      *
      * @access private
-     * @var array
+     * @var array<string, mixed>
      */
     public $data = [];
 
@@ -52,7 +52,7 @@ class Item implements RegistryAware
      * {@see \SimplePie\SimplePie::get_item}. Avoid creating this manually.
      *
      * @param \SimplePie\SimplePie $feed Parent feed
-     * @param array $data Raw data
+     * @param array<string, mixed> $data Raw data
      */
     public function __construct(\SimplePie\SimplePie $feed, array $data)
     {
@@ -67,8 +67,9 @@ class Item implements RegistryAware
      *
      * @since 1.3
      * @param \SimplePie\Registry $registry
+     * @return void
      */
-    public function set_registry(\SimplePie\Registry $registry)/* : void */
+    public function set_registry(\SimplePie\Registry $registry)
     {
         $this->registry = $registry;
     }
@@ -105,7 +106,7 @@ class Item implements RegistryAware
      * @see http://simplepie.org/wiki/faq/supported_xml_namespaces
      * @param string $namespace The URL of the XML namespace of the elements you're trying to access
      * @param string $tag Tag name
-     * @return array|null
+     * @return array<array<string, mixed>>|null
      */
     public function get_item_tags(string $namespace, string $tag)
     {
@@ -120,7 +121,7 @@ class Item implements RegistryAware
      * Get the base URL value.
      * Uses `<xml:base>`, or item link, or feed base URL.
      *
-     * @param array $element
+     * @param array<string, mixed> $element
      * @return string
      */
     public function get_base(array $element = [])
@@ -141,7 +142,7 @@ class Item implements RegistryAware
      * @access private
      * @see \SimplePie\SimplePie::sanitize()
      * @param string $data Data to sanitize
-     * @param SimplePie::CONSTRUCT_* $type
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string|null $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
@@ -328,7 +329,7 @@ class Item implements RegistryAware
      * Uses `<media:thumbnail>`
      *
      *
-     * @return array|null
+     * @return array<string, mixed>|null
      */
     public function get_thumbnail()
     {
@@ -802,7 +803,7 @@ class Item implements RegistryAware
      *
      * @since Beta 2
      * @param string $rel The relationship of links to return
-     * @return array|null Links found for the item (strings)
+     * @return array<string>|null Links found for the item (strings)
      */
     public function get_links(string $rel = 'alternate')
     {
