@@ -209,17 +209,13 @@ class Sanitize implements RegistryAware
         }
     }
 
-    public function add_attributes($attribs = ['audio' => ['preload' => 'none'], 'iframe' => ['sandbox' => 'allow-scripts allow-same-origin'], 'video' => ['preload' => 'none']])
+    /**
+     * @param array<string, array<string, string>> $attribs
+     * @return void
+     */
+    public function add_attributes(array $attribs = ['audio' => ['preload' => 'none'], 'iframe' => ['sandbox' => 'allow-scripts allow-same-origin'], 'video' => ['preload' => 'none']])
     {
-        if ($attribs) {
-            if (is_array($attribs)) {
-                $this->add_attributes = $attribs;
-            } else {
-                $this->add_attributes = explode(',', $attribs);
-            }
-        } else {
-            $this->add_attributes = [];
-        }
+        $this->add_attributes = $attribs;
     }
 
     public function strip_comments($strip = false)
