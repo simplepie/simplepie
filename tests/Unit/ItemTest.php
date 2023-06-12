@@ -663,7 +663,7 @@ EOT
     }
 
     /**
-     * @return array<array{string, int}>
+     * @return array<string, array{string, int|null}>
      */
     public function getDateDataProvider(): array
     {
