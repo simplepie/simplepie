@@ -142,6 +142,7 @@ class LocatorTest extends TestCase
         $document->loadHTML($data->body);
         $xpath = new DOMXPath($document);
         foreach ($xpath->query('//link') as $element) {
+            /** @var \DOMElement $element */
             $expected[] = 'http://example.com' . $element->getAttribute('href');
         }
         //$expected = SimplePie_Misc::get_element('link', $data->body);
