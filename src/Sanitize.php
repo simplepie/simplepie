@@ -368,7 +368,7 @@ class Sanitize implements RegistryAware
 
                 // Strip out HTML tags and attributes that might cause various security problems.
                 // Based on recommendations by Mark Pilgrim at:
-                // http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
+                // https://web.archive.org/web/20110902041826/http://diveintomark.org:80/archives/2003/06/12/how_to_consume_rss_safely
                 if ($this->strip_htmltags) {
                     foreach ($this->strip_htmltags as $tag) {
                         $this->strip_tag($tag, $document, $xpath, $type);
