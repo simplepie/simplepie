@@ -142,6 +142,7 @@ class LocatorTest extends TestCase
         $document->loadHTML($data->body);
         $xpath = new DOMXPath($document);
         foreach ($xpath->query('//link') as $element) {
+            /** @var \DOMElement $element */
             $expected[] = 'http://example.com' . $element->getAttribute('href');
         }
         //$expected = SimplePie_Misc::get_element('link', $data->body);
@@ -149,9 +150,9 @@ class LocatorTest extends TestCase
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
         $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
         $this->assertInstanceOf(FileMock::class, $feed);
-        $success = array_filter($expected, [get_class(), 'filter_success']);
+        $success = array_filter($expected, [get_class($this), 'filter_success']);
 
-        $found = array_map([get_class(), 'map_url_file'], $all);
+        $found = array_map([get_class($this), 'map_url_file'], $all);
         $this->assertSame($success, $found);
     }
 
