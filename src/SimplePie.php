@@ -1673,7 +1673,7 @@ class SimplePie
                     $this->data['build'] = Misc::get_build();
 
                     // Cache the file if caching is enabled
-                    $this->data['cache_expiration_time'] = $this->cache_duration + time();
+                    $this->data['__cache_expiration_time'] = $this->cache_duration + time();
                     if ($cache && ! $cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
@@ -1766,7 +1766,7 @@ class SimplePie
                     $this->data = [];
                 }
                 // Check if the cache has been updated
-                elseif (isset($this->data['cache_expiration_time']) && $this->data['cache_expiration_time'] > time()) {
+                elseif (isset($this->data['__cache_expiration_time']) && $this->data['__cache_expiration_time'] > time()) {
                     // Want to know if we tried to send last-modified and/or etag headers
                     // when requesting this file. (Note that it's up to the file to
                     // support this, but we don't always send the headers either.)
@@ -1917,7 +1917,7 @@ class SimplePie
                         'url' => $this->feed_url,
                         'feed_url' => $file->get_final_requested_uri(),
                         'build' => Misc::get_build(),
-                        'cache_expiration_time' => $this->cache_duration + time(),
+                        '__cache_expiration_time' => $this->cache_duration + time(),
                     ];
 
                     if (!$cache->set_data($cacheKey, $this->data, $this->cache_duration)) {
