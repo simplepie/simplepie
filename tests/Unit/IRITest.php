@@ -25,7 +25,10 @@ class IRITest extends TestCase
         $this->assertTrue(class_exists('SimplePie_IRI'));
     }
 
-    public function rfc3986DataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function rfc3986DataProvider(): array
     {
         return [
             // Normal
@@ -78,7 +81,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider rfc3986DataProvider
      */
-    public function testStringRFC3986($relative, $expected)
+    public function testStringRFC3986(string $relative, string $expected): void
     {
         $base = new IRI('http://a/b/c/d;p?q');
         $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
@@ -87,7 +90,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider rfc3986DataProvider
      */
-    public function testObjectRFC3986($relative, $expected)
+    public function testObjectRFC3986(string $relative, string $expected): void
     {
         $base = new IRI('http://a/b/c/d;p?q');
         $expected = new IRI($expected);
@@ -97,14 +100,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider rfc3986DataProvider
      */
-    public function testBothStringRFC3986($relative, $expected)
+    public function testBothStringRFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
         $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
         $this->assertSame($expected, (string) IRI::absolutize($base, $relative));
     }
 
-    public function SpDataProvider()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public function SpDataProvider(): array
     {
         return [
             ['http://a/b/c/d', 'f%0o', 'http://a/b/c/f%250o'],
@@ -129,7 +135,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider SpDataProvider
      */
-    public function testStringSP($base, $relative, $expected)
+    public function testStringSP(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
         $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
@@ -138,14 +144,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider SpDataProvider
      */
-    public function testObjectSP($base, $relative, $expected)
+    public function testObjectSP(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
         $expected = new IRI($expected);
         $this->assertEquals($expected, IRI::absolutize($base, $relative));
     }
 
-    public function queryDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function queryDataProvider(): array
     {
         return [
             ['a=b&c=d', 'http://example.com/?a=b&c=d'],
@@ -158,7 +167,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider queryDataProvider
      */
-    public function testStringQuery($query, $expected)
+    public function testStringQuery(string $query, string $expected): void
     {
         $base = new IRI('http://example.com/');
         $base->set_query($query);
@@ -168,7 +177,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider queryDataProvider
      */
-    public function testObjectQuery($query, $expected)
+    public function testObjectQuery(string $query, string $expected): void
     {
         $base = new IRI('http://example.com/');
         $base->set_query($query);
@@ -176,7 +185,10 @@ class IRITest extends TestCase
         $this->assertEquals($expected, $base);
     }
 
-    public function absolutizeDataProvider()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public function absolutizeDataProvider(): array
     {
         return [
             ['http://example.com/', 'foo/111:bar', 'http://example.com/foo/111:bar'],
@@ -187,7 +199,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider absolutizeDataProvider
      */
-    public function testAbsolutizeString($base, $relative, $expected)
+    public function testAbsolutizeString(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
         $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
@@ -196,14 +208,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider absolutizeDataProvider
      */
-    public function testAbsolutizeObject($base, $relative, $expected)
+    public function testAbsolutizeObject(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
         $expected = new IRI($expected);
         $this->assertEquals($expected, IRI::absolutize($base, $relative));
     }
 
-    public function normalizationDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function normalizationDataProvider(): array
     {
         return [
             ['example://a/b/c/%7Bfoo%7D', 'example://a/b/c/%7Bfoo%7D'],
@@ -289,7 +304,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider normalizationDataProvider
      */
-    public function testStringNormalization($input, $output)
+    public function testStringNormalization(string $input, string $output): void
     {
         $input = new IRI($input);
         $this->assertSame($output, $input->get_iri());
@@ -298,14 +313,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider normalizationDataProvider
      */
-    public function testObjectNormalization($input, $output)
+    public function testObjectNormalization(string $input, string $output): void
     {
         $input = new IRI($input);
         $output = new IRI($output);
         $this->assertEquals($output, $input);
     }
 
-    public function uriDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function uriDataProvider(): array
     {
         return [
             ['http://example.com/%C3%A9cole', 'http://example.com/%C3%A9cole'],
@@ -317,13 +335,16 @@ class IRITest extends TestCase
     /**
      * @dataProvider uriDataProvider
      */
-    public function testURIConversion($input, $output)
+    public function testURIConversion(string $input, string $output): void
     {
         $input = new IRI($input);
         $this->assertSame($output, $input->get_uri());
     }
 
-    public function equivalenceDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function equivalenceDataProvider(): array
     {
         return [
             ['http://É.com', 'http://%C3%89.com'],
@@ -333,14 +354,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider equivalenceDataProvider
      */
-    public function testObjectEquivalence($input, $output)
+    public function testObjectEquivalence(string $input, string $output): void
     {
         $input = new IRI($input);
         $output = new IRI($output);
         $this->assertEquals($output, $input);
     }
 
-    public function notEquivalenceDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function notEquivalenceDataProvider(): array
     {
         return [
             ['http://example.com/foo/bar', 'http://example.com/foo%2Fbar'],
@@ -350,7 +374,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider notEquivalenceDataProvider
      */
-    public function testObjectNotEquivalence($input, $output)
+    public function testObjectNotEquivalence(string $input, string $output): void
     {
         $input = new IRI($input);
         $output = new IRI($output);

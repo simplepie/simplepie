@@ -31,7 +31,10 @@ class LocatorTest extends TestCase
         $this->assertTrue(class_exists('SimplePie_Locator'));
     }
 
-    public function feedmimetypes()
+    /**
+     * @return array<array{string}>
+     */
+    public function feedmimetypes(): array
     {
         return [
             ['application/rss+xml'],
@@ -45,7 +48,7 @@ class LocatorTest extends TestCase
     /**
      * @dataProvider feedmimetypes
      */
-    public function testAutodiscoverOnFeed($mime)
+    public function testAutodiscoverOnFeed(string $mime): void
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
@@ -110,25 +113,23 @@ class LocatorTest extends TestCase
      *
      * Tests are used under the LGPL license, see file for license
      * information
+     *
+     * @return iterable<array{File}>
      */
-    public function firefoxTestDataProvider()
+    public function firefoxTestDataProvider(): iterable
     {
-        $data = [
-            [new File(dirname(__DIR__) . '/data/fftests.html')]
-        ];
-        foreach ($data as &$row) {
-            $row[0]->headers = ['content-type' => 'text/html'];
-            $row[0]->method = SimplePie::FILE_SOURCE_REMOTE;
-            $row[0]->url = 'http://example.com/';
-        }
+        $data = new File(dirname(__DIR__) . '/data/fftests.html');
+        $data->headers = ['content-type' => 'text/html'];
+        $data->method = SimplePie::FILE_SOURCE_REMOTE;
+        $data->url = 'http://example.com/';
 
-        return $data;
+        yield [$data];
     }
 
     /**
      * @dataProvider firefoxTestDataProvider
      */
-    public function test_from_file($data)
+    public function test_from_file(File $data): void
     {
         $locator = new Locator($data, 0, null, false);
 
@@ -141,6 +142,7 @@ class LocatorTest extends TestCase
         $document->loadHTML($data->body);
         $xpath = new DOMXPath($document);
         foreach ($xpath->query('//link') as $element) {
+            /** @var \DOMElement $element */
             $expected[] = 'http://example.com' . $element->getAttribute('href');
         }
         //$expected = SimplePie_Misc::get_element('link', $data->body);
@@ -148,9 +150,9 @@ class LocatorTest extends TestCase
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
         $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
         $this->assertInstanceOf(FileMock::class, $feed);
-        $success = array_filter($expected, [get_class(), 'filter_success']);
+        $success = array_filter($expected, [get_class($this), 'filter_success']);
 
-        $found = array_map([get_class(), 'map_url_file'], $all);
+        $found = array_map([get_class($this), 'map_url_file'], $all);
         $this->assertSame($success, $found);
     }
 

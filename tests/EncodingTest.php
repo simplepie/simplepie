@@ -15,8 +15,10 @@ class EncodingTest extends PHPUnit\Framework\TestCase
      */
     /**
      * Provider for the convert toUTF8* tests
+     *
+     * @return array<array{string, string, string}>
      */
-    public static function toUTF8()
+    public static function toUTF8(): array
     {
         return [
             ['A', 'A', 'ASCII'],
@@ -34,8 +36,10 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 
     /**
      * Special cases with mbstring handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public static function toUTF8_mbstring()
+    public static function toUTF8_mbstring(): array
     {
         return [
             ["\xa1\xc4", "\xe2\x88\x9e", 'EUC-KR'],
@@ -44,8 +48,10 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 
     /**
      * Special cases with iconv handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public static function toUTF8_iconv()
+    public static function toUTF8_iconv(): array
     {
         return [
             ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
@@ -54,8 +60,10 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 
     /**
      * Special cases with uconverter handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public static function toUTF8_uconverter()
+    public static function toUTF8_uconverter(): array
     {
         return [
             ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
@@ -67,7 +75,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
      *
      * @dataProvider toUTF8
      */
-    public function test_convert_UTF8($input, $expected, $encoding)
+    public function test_convert_UTF8(string $input, string $expected, string $encoding): void
     {
         $encoding = SimplePie_Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-8'));
@@ -79,7 +87,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
      * Special cases only
      * @dataProvider toUTF8_mbstring
      */
-    public function test_convert_UTF8_mbstring($input, $expected, $encoding)
+    public function test_convert_UTF8_mbstring(string $input, string $expected, string $encoding): void
     {
         $encoding = SimplePie_Misc::encoding($encoding);
         if (extension_loaded('mbstring')) {
@@ -93,7 +101,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
      * Special cases only
      * @dataProvider toUTF8_iconv
      */
-    public function test_convert_UTF8_iconv($input, $expected, $encoding)
+    public function test_convert_UTF8_iconv(string $input, string $expected, string $encoding): void
     {
         $encoding = SimplePie_Misc::encoding($encoding);
         if (extension_loaded('iconv')) {
@@ -107,7 +115,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
      * Special cases only
      * @dataProvider toUTF8_uconverter
      */
-    public function test_convert_UTF8_uconverter($input, $expected, $encoding)
+    public function test_convert_UTF8_uconverter(string $input, string $expected, string $encoding): void
     {
         $encoding = SimplePie_Misc::encoding($encoding);
         if (extension_loaded('intl')) {
@@ -118,8 +126,10 @@ class EncodingTest extends PHPUnit\Framework\TestCase
 
     /**#@+
      * UTF-16 methods
+     *
+     * @return array<array{string, string, string}>
      */
-    public static function toUTF16()
+    public static function toUTF16(): array
     {
         return [
             ["\x22\x1e", "\x22\x1e", 'UTF-16BE'],
@@ -131,7 +141,7 @@ class EncodingTest extends PHPUnit\Framework\TestCase
      * Convert * to UTF-16
      * @dataProvider toUTF16
      */
-    public function test_convert_UTF16($input, $expected, $encoding)
+    public function test_convert_UTF16(string $input, string $expected, string $encoding): void
     {
         $encoding = SimplePie_Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-16'));

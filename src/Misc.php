@@ -51,6 +51,14 @@ class Misc
     }
 
     /**
+     * @internal
+     */
+    public static function is_remote_uri(string $uri): bool
+    {
+        return preg_match('/^https?:\/\//i', $uri) === 1;
+    }
+
+    /**
      * Get a HTML/XML element from a HTML string
      *
      * @deprecated since SimplePie 1.3, use DOMDocument instead (parsing HTML with regex is bad!)

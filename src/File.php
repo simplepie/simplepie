@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use SimplePie\HTTP\Response;
+
 /**
  * Used for fetching remote files and reading local files
  *
@@ -16,29 +18,68 @@ namespace SimplePie;
  *
  * @todo Move to properly supporting RFC2616 (HTTP/1.1)
  */
-class File
+class File implements Response
 {
-    /** @var string The final URL after following all redirects */
+    /**
+     * @var string The final URL after following all redirects
+     * @deprecated Use `get_final_requested_uri()` method.
+     */
     public $url;
+
+    /**
+     * @var string User agent to use in requests
+     * @deprecated Set the user agent in constructor.
+     */
     public $useragent;
+
     public $success = true;
+
+    /** @var array<string, non-empty-array<string>> Canonical representation of headers */
+    private $parsed_headers = [];
+    /** @var array<string, string> Last known value of $headers property (used to detect external modification) */
+    private $last_headers = [];
+    /**
+     * @var array<string, string> Headers as string for BC
+     * @deprecated Use `get_headers()` method.
+     */
     public $headers = [];
+
+    /**
+     * @var ?string Body of the HTTP response
+     * @deprecated Use `get_body_content()` method.
+     */
     public $body;
+
+    /**
+     * @var int Status code of the HTTP response
+     * @deprecated Use `get_status_code()` method.
+     */
     public $status_code = 0;
     public $redirects = 0;
     public $error;
+
+    /**
+     * @var int-mask-of<SimplePie::FILE_SOURCE_*> Bit mask representing the method used to fetch the file and whether it is a local file or remote file obtained over HTTP.
+     * @deprecated Backend is implementation detail which you should not care about; to see if the file was retrieved over HTTP, check if `get_final_requested_uri()` with `Misc::is_remote_uri()`.
+     */
     public $method = \SimplePie\SimplePie::FILE_SOURCE_NONE;
-    /** @var string The permanent URL or the resource (first URL after the prefix of (only) permanent redirects) */
+
+    /**
+     * @var string The permanent URL or the resource (first URL after the prefix of (only) permanent redirects)
+     * @deprecated Use `get_permanent_uri()` method.
+     */
     public $permanent_url;
     /** @var bool Whether the permanent URL is still writeable (prefix of permanent redirects has not ended) */
     private $permanentUrlMutable = true;
 
     public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
     {
-        if (class_exists('idna_convert')) {
-            $idn = new \idna_convert();
+        if (function_exists('idn_to_ascii')) {
             $parsed = \SimplePie\Misc::parse_url($url);
-            $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $idn->encode($parsed['authority']), $parsed['path'], $parsed['query'], null);
+            if ($parsed['authority'] !== '' && !ctype_print($parsed['authority'])) {
+                $authority = \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
+                $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $authority, $parsed['path'], $parsed['query'], null);
+            }
         }
         $this->url = $url;
         if ($this->permanentUrlMutable) {
@@ -92,9 +133,9 @@ class File
                     }
                     curl_close($fp);
                     $this->headers = \SimplePie\HTTP\Parser::prepareHeaders($this->headers, $info['redirect_count'] + 1);
-                    $parser = new \SimplePie\HTTP\Parser($this->headers);
+                    $parser = new \SimplePie\HTTP\Parser($this->headers, true);
                     if ($parser->parse()) {
-                        $this->headers = $parser->headers;
+                        $this->set_headers($parser->headers);
                         $this->body = trim($parser->body);
                         $this->status_code = $parser->status_code;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
@@ -156,9 +197,9 @@ class File
                         $info = stream_get_meta_data($fp);
                     }
                     if (!$info['timed_out']) {
-                        $parser = new \SimplePie\HTTP\Parser($this->headers);
+                        $parser = new \SimplePie\HTTP\Parser($this->headers, true);
                         if ($parser->parse()) {
-                            $this->headers = $parser->headers;
+                            $this->set_headers($parser->headers);
                             $this->body = $parser->body;
                             $this->status_code = $parser->status_code;
                             if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
@@ -215,6 +256,164 @@ class File
                 $this->success = false;
             }
         }
+    }
+
+    public function get_permanent_uri(): string
+    {
+        return (string) $this->permanent_url;
+    }
+
+    public function get_final_requested_uri(): string
+    {
+        return (string) $this->url;
+    }
+
+    public function get_status_code(): int
+    {
+        return (int) $this->status_code;
+    }
+
+    /**
+     * Retrieves all message header values.
+     *
+     * The keys represent the header name as it will be sent over the wire, and
+     * each value is an array of strings associated with the header.
+     *
+     *     // Represent the headers as a string
+     *     foreach ($message->get_headers() as $name => $values) {
+     *         echo $name . ': ' . implode(', ', $values);
+     *     }
+     *
+     *     // Emit headers iteratively:
+     *     foreach ($message->get_headers() as $name => $values) {
+     *         foreach ($values as $value) {
+     *             header(sprintf('%s: %s', $name, $value), false);
+     *         }
+     *     }
+     *
+     * @return string[][] Returns an associative array of the message's headers.
+     *     Each key MUST be a header name, and each value MUST be an array of
+     *     strings for that header.
+     */
+    public function get_headers(): array
+    {
+        $this->maybe_update_headers();
+        return $this->parsed_headers;
+    }
+
+    /**
+     * Checks if a header exists by the given case-insensitive name.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return bool Returns true if any header names match the given header
+     *     name using a case-insensitive string comparison. Returns false if
+     *     no matching header name is found in the message.
+     */
+    public function has_header(string $name): bool
+    {
+        $this->maybe_update_headers();
+        return $this->get_header($name) !== [];
+    }
+
+    /**
+     * Retrieves a message header value by the given case-insensitive name.
+     *
+     * This method returns an array of all the header values of the given
+     * case-insensitive header name.
+     *
+     * If the header does not appear in the message, this method MUST return an
+     * empty array.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return string[] An array of string values as provided for the given
+     *    header. If the header does not appear in the message, this method MUST
+     *    return an empty array.
+     */
+    public function get_header(string $name): array
+    {
+        $this->maybe_update_headers();
+        return $this->parsed_headers[strtolower($name)] ?? [];
+    }
+
+    /**
+     * Retrieves a comma-separated string of the values for a single header.
+     *
+     * This method returns all of the header values of the given
+     * case-insensitive header name as a string concatenated together using
+     * a comma.
+     *
+     * NOTE: Not all header values may be appropriately represented using
+     * comma concatenation. For such headers, use getHeader() instead
+     * and supply your own delimiter when concatenating.
+     *
+     * If the header does not appear in the message, this method MUST return
+     * an empty string.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @return string A string of values as provided for the given header
+     *    concatenated together using a comma. If the header does not appear in
+     *    the message, this method MUST return an empty string.
+     */
+    public function get_header_line(string $name): string
+    {
+        $this->maybe_update_headers();
+        return implode(', ', $this->get_header($name));
+    }
+
+    /**
+     * get the body as string
+     *
+     * @return string
+     */
+    public function get_body_content(): string
+    {
+        return (string) $this->body;
+    }
+
+    /**
+     * Check if the $headers property was changed and update the internal state accordingly.
+     */
+    private function maybe_update_headers(): void
+    {
+        if ($this->headers !== $this->last_headers) {
+            $this->parsed_headers = array_map(
+                function (string $header_line): array {
+                    if (strpos($header_line, ',') === false) {
+                        return [$header_line];
+                    } else {
+                        return array_map('trim', explode(',', $header_line));
+                    }
+                },
+                $this->headers
+            );
+        }
+        $this->last_headers = $this->headers;
+    }
+
+    /**
+     * Sets headers internally.
+     *
+     * @param array<string, non-empty-array<string>> $headers
+     */
+    private function set_headers(array $headers): void
+    {
+        $this->parsed_headers = $headers;
+        $this->headers = self::flatten_headers($headers);
+        $this->last_headers = $this->headers;
+    }
+
+    /**
+     * Converts PSR-7 compatible headers into a legacy format.
+     *
+     * @param array<string, non-empty-array<string>> $headers
+     *
+     * @return array<string, string>
+     */
+    private function flatten_headers(array $headers): array
+    {
+        return array_map(function (array $values): string {
+            return implode(',', $values);
+        }, $headers);
     }
 }
 

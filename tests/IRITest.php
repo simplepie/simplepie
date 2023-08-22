@@ -14,7 +14,10 @@ class IRITest extends PHPUnit\Framework\TestCase
 {
     use ExpectPHPException;
 
-    public static function rfc3986_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function rfc3986_tests(): array
     {
         return [
             // Normal
@@ -67,7 +70,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider rfc3986_tests
      */
-    public function testStringRFC3986($relative, $expected)
+    public function testStringRFC3986(string $relative, string $expected): void
     {
         $base = new SimplePie_IRI('http://a/b/c/d;p?q');
         $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
@@ -76,7 +79,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider rfc3986_tests
      */
-    public function testObjectRFC3986($relative, $expected)
+    public function testObjectRFC3986(string $relative, string $expected): void
     {
         $base = new SimplePie_IRI('http://a/b/c/d;p?q');
         $expected = new SimplePie_IRI($expected);
@@ -86,14 +89,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider rfc3986_tests
      */
-    public function testBothStringRFC3986($relative, $expected)
+    public function testBothStringRFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
         $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
         $this->assertSame($expected, (string) SimplePie_IRI::absolutize($base, $relative));
     }
 
-    public static function sp_tests()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public static function sp_tests(): array
     {
         return [
             ['http://a/b/c/d', 'f%0o', 'http://a/b/c/f%250o'],
@@ -118,7 +124,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider sp_tests
      */
-    public function testStringSP($base, $relative, $expected)
+    public function testStringSP(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
         $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
@@ -127,14 +133,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider sp_tests
      */
-    public function testObjectSP($base, $relative, $expected)
+    public function testObjectSP(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
         $expected = new SimplePie_IRI($expected);
         $this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative));
     }
 
-    public static function query_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function query_tests(): array
     {
         return [
             ['a=b&c=d', 'http://example.com/?a=b&c=d'],
@@ -147,7 +156,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider query_tests
      */
-    public function testStringQuery($query, $expected)
+    public function testStringQuery(string $query, string $expected): void
     {
         $base = new SimplePie_IRI('http://example.com/');
         $base->set_query($query);
@@ -157,7 +166,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider query_tests
      */
-    public function testObjectQuery($query, $expected)
+    public function testObjectQuery(string $query, string $expected): void
     {
         $base = new SimplePie_IRI('http://example.com/');
         $base->set_query($query);
@@ -165,7 +174,10 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $base);
     }
 
-    public static function absolutize_tests()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public static function absolutize_tests(): array
     {
         return [
             ['http://example.com/', 'foo/111:bar', 'http://example.com/foo/111:bar'],
@@ -176,7 +188,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider absolutize_tests
      */
-    public function testAbsolutizeString($base, $relative, $expected)
+    public function testAbsolutizeString(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
         $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
@@ -185,14 +197,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider absolutize_tests
      */
-    public function testAbsolutizeObject($base, $relative, $expected)
+    public function testAbsolutizeObject(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
         $expected = new SimplePie_IRI($expected);
         $this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative));
     }
 
-    public static function normalization_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function normalization_tests(): array
     {
         return [
             ['example://a/b/c/%7Bfoo%7D', 'example://a/b/c/%7Bfoo%7D'],
@@ -278,7 +293,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider normalization_tests
      */
-    public function testStringNormalization($input, $output)
+    public function testStringNormalization(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $this->assertSame($output, $input->get_iri());
@@ -287,14 +302,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider normalization_tests
      */
-    public function testObjectNormalization($input, $output)
+    public function testObjectNormalization(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $output = new SimplePie_IRI($output);
         $this->assertEquals($output, $input);
     }
 
-    public static function uri_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function uri_tests(): array
     {
         return [
             ['http://example.com/%C3%A9cole', 'http://example.com/%C3%A9cole'],
@@ -306,13 +324,16 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider uri_tests
      */
-    public function testURIConversion($input, $output)
+    public function testURIConversion(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $this->assertSame($output, $input->get_uri());
     }
 
-    public static function equivalence_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function equivalence_tests(): array
     {
         return [
             ['http://É.com', 'http://%C3%89.com'],
@@ -322,14 +343,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider equivalence_tests
      */
-    public function testObjectEquivalence($input, $output)
+    public function testObjectEquivalence(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $output = new SimplePie_IRI($output);
         $this->assertEquals($output, $input);
     }
 
-    public static function not_equivalence_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function not_equivalence_tests(): array
     {
         return [
             ['http://example.com/foo/bar', 'http://example.com/foo%2Fbar'],
@@ -339,7 +363,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider not_equivalence_tests
      */
-    public function testObjectNotEquivalence($input, $output)
+    public function testObjectNotEquivalence(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $output = new SimplePie_IRI($output);

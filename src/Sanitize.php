@@ -13,6 +13,9 @@ use SimplePie\Cache\BaseDataCache;
 use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\NameFilter;
+use SimplePie\Exception\HttpException;
+use SimplePie\HTTP\Client;
+use SimplePie\HTTP\FileClient;
 
 /**
  * Used for data cleanup and post-processing
@@ -75,6 +78,11 @@ class Sanitize implements RegistryAware
      */
     public $https_domains = [];
 
+    /**
+     * @var Client|null
+     */
+    private $http_client = null;
+
     public function __construct()
     {
         // Set defaults
@@ -133,8 +141,12 @@ class Sanitize implements RegistryAware
         }
     }
 
+    /**
+     * @deprecated since SimplePie 1.9.0, use \SimplePie\Sanitize::set_http_client() instead.
+     */
     public function pass_file_data($file_class = File::class, $timeout = 10, $useragent = '', $force_fsockopen = false, array $curl_options = [])
     {
+        // trigger_error(sprintf('SimplePie\Sanitize::pass_file_data() is deprecated since SimplePie 1.9.0, please use "SimplePie\Sanitize::set_http_client()" instead.'), \E_USER_DEPRECATED);
         if ($timeout) {
             $this->timeout = (string) $timeout;
         }
@@ -148,6 +160,8 @@ class Sanitize implements RegistryAware
         }
 
         $this->curl_options = $curl_options;
+        // Invalidate the registered client.
+        $this->http_client = null;
     }
 
     public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
@@ -303,10 +317,13 @@ class Sanitize implements RegistryAware
      */
     public function https_url($url)
     {
-        return (strtolower(substr($url, 0, 7)) === 'http://') &&
-            $this->is_https_domain(parse_url($url, PHP_URL_HOST)) ?
-            substr_replace($url, 's', 4, 0) : //Add the 's' to HTTPS
-            $url;
+        return (
+            strtolower(substr($url, 0, 7)) === 'http://'
+            && ($parsed = parse_url($url, PHP_URL_HOST)) !== false // Malformed URL
+            && $parsed !== null // Missing host
+            && $this->is_https_domain($parsed) // Should be forced?
+        ) ? substr_replace($url, 's', 4, 0) // Add the 's' to HTTPS
+        : $url;
     }
 
     public function sanitize($data, $type, $base = '')
@@ -351,7 +368,7 @@ class Sanitize implements RegistryAware
 
                 // Strip out HTML tags and attributes that might cause various security problems.
                 // Based on recommendations by Mark Pilgrim at:
-                // http://diveintomark.org/archives/2003/06/12/how_to_consume_rss_safely
+                // https://web.archive.org/web/20110902041826/http://diveintomark.org:80/archives/2003/06/12/how_to_consume_rss_safely
                 if ($this->strip_htmltags) {
                     foreach ($this->strip_htmltags as $tag) {
                         $this->strip_tag($tag, $document, $xpath, $type);
@@ -394,11 +411,18 @@ class Sanitize implements RegistryAware
                             if ($cache->get_data($image_url, false)) {
                                 $img->setAttribute('src', $this->image_handler . $image_url);
                             } else {
-                                $file = $this->registry->create(File::class, [$img->getAttribute('src'), $this->timeout, 5, ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']], $this->useragent, $this->force_fsockopen, $this->curl_options]);
-                                $headers = $file->headers;
+                                try {
+                                    $file = $this->get_http_client()->request(
+                                        Client::METHOD_GET,
+                                        $img->getAttribute('src'),
+                                        ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']]
+                                    );
+                                } catch (HttpException $th) {
+                                    continue;
+                                }
 
-                                if ($file->success && ($file->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300))) {
-                                    if ($cache->set_data($image_url, ['headers' => $file->headers, 'body' => $file->body], $this->cache_duration)) {
+                                if ((!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
+                                    if ($cache->set_data($image_url, ['headers' => $file->get_headers(), 'body' => $file->get_body_content()], $this->cache_duration)) {
                                         $img->setAttribute('src', $this->image_handler . $image_url);
                                     } else {
                                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
@@ -620,6 +644,37 @@ class Sanitize implements RegistryAware
         }
 
         return $this->cache;
+    }
+
+    /**
+     * Get a HTTP client
+     */
+    private function get_http_client(): Client
+    {
+        if ($this->http_client === null) {
+            $this->http_client = new FileClient(
+                $this->registry,
+                [
+                    'timeout' => $this->timeout,
+                    'redirects' => 5,
+                    'useragent' => $this->useragent,
+                    'force_fsockopen' => $this->force_fsockopen,
+                    'curl_options' => $this->curl_options,
+                ]
+            );
+        }
+
+        return $this->http_client;
+    }
+
+    /**
+     * Allows SimplePie to inject HTTP client.
+     *
+     * @internal
+     */
+    final public function set_http_client(Client $http_client): void
+    {
+        $this->http_client = $http_client;
     }
 }
 

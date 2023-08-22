@@ -26,7 +26,7 @@ class EnclosureTest extends TestCase
     /**
      * @dataProvider getLinkProvider
      */
-    public function test_get_link($data, $expected)
+    public function test_get_link(string $data, string $expected): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -40,7 +40,10 @@ class EnclosureTest extends TestCase
         $this->assertSame($expected, $enclosure->get_link());
     }
 
-    public function getLinkProvider()
+    /**
+     * @return iterable<array{string, string}>
+     */
+    public function getLinkProvider(): iterable
     {
         yield 'Test enclosure get_link urlencoded' => [
             <<<XML
@@ -90,7 +93,7 @@ XML
     /**
      * @dataProvider getEnclosuresProvider
      */
-    public function test_get_enclosures($data, $expected)
+    public function test_get_enclosures(string $data, int $expectedEnclosureCount): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -98,10 +101,13 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        $this->assertCount($expected, $item->get_enclosures());
+        $this->assertCount($expectedEnclosureCount, $item->get_enclosures());
     }
 
-    public function getEnclosuresProvider()
+    /**
+     * @return iterable<array{string, int}>
+     */
+    public function getEnclosuresProvider(): iterable
     {
         yield 'Test multiple enclosures MRSS' => [
             <<<XML

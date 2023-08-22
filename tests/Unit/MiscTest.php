@@ -41,8 +41,10 @@ class MiscTest extends TestCase
      * UTF-8 methods
      *
      * Provider for the convert toUTF8* tests
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf8DataProvider()
+    public function utf8DataProvider(): array
     {
         return [
             ['A', 'A', 'ASCII'],
@@ -63,7 +65,7 @@ class MiscTest extends TestCase
      *
      * @dataProvider utf8DataProvider
      */
-    public function test_convert_UTF8($input, $expected, $encoding)
+    public function test_convert_UTF8(string $input, string $expected, string $encoding): void
     {
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-8'));
@@ -71,8 +73,10 @@ class MiscTest extends TestCase
 
     /**
      * Special cases with mbstring handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf8MbstringDataProvider()
+    public function utf8MbstringDataProvider(): array
     {
         return [
             ["\xa1\xc4", "\xe2\x88\x9e", 'EUC-KR'],
@@ -85,7 +89,7 @@ class MiscTest extends TestCase
      * Special cases only
      * @dataProvider utf8MbstringDataProvider
      */
-    public function test_convert_UTF8_mbstring($input, $expected, $encoding)
+    public function test_convert_UTF8_mbstring(string $input, string $expected, string $encoding): void
     {
         if (! extension_loaded('mbstring')) {
             $this->markTestSkipped('Skipping test because mbstring extension is not available.');
@@ -97,8 +101,10 @@ class MiscTest extends TestCase
 
     /**
      * Special cases with iconv handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf8IconvDataProvider()
+    public function utf8IconvDataProvider(): array
     {
         return [
             ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
@@ -111,7 +117,7 @@ class MiscTest extends TestCase
      * Special cases only
      * @dataProvider utf8IconvDataProvider
      */
-    public function test_convert_UTF8_iconv($input, $expected, $encoding)
+    public function test_convert_UTF8_iconv(string $input, string $expected, string $encoding): void
     {
         if (! extension_loaded('iconv')) {
             $this->markTestSkipped('Skipping test because iconv extension is not available.');
@@ -123,8 +129,10 @@ class MiscTest extends TestCase
 
     /**
      * Special cases with uconverter handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf8IntlDataProvider()
+    public function utf8IntlDataProvider(): array
     {
         return [
             ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
@@ -137,7 +145,7 @@ class MiscTest extends TestCase
      * Special cases only
      * @dataProvider utf8IntlDataProvider
      */
-    public function test_convert_UTF8_uconverter($input, $expected, $encoding)
+    public function test_convert_UTF8_uconverter(string $input, string $expected, string $encoding): void
     {
         if (! extension_loaded('intl')) {
             $this->markTestSkipped('Skipping test because intl extension is not available.');
@@ -150,8 +158,10 @@ class MiscTest extends TestCase
 
     /**#@+
      * UTF-16 methods
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf16DataProvider()
+    public function utf16DataProvider(): array
     {
         return [
             ["\x22\x1e", "\x22\x1e", 'UTF-16BE'],
@@ -163,7 +173,7 @@ class MiscTest extends TestCase
      * Convert * to UTF-16
      * @dataProvider utf16DataProvider
      */
-    public function test_convert_UTF16($input, $expected, $encoding)
+    public function test_convert_UTF16(string $input, string $expected, string $encoding): void
     {
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-16'));
@@ -186,7 +196,10 @@ class MiscTest extends TestCase
         $this->assertSame($expected, $actual, $message);
     }
 
-    public function absolutizeUrlRFC3986DataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function absolutizeUrlRFC3986DataProvider(): array
     {
         // The tests enclosed within come from RFC 3986 section 5.4
         // and all share the same base URL
@@ -367,7 +380,7 @@ class MiscTest extends TestCase
     /**
      * @dataProvider absolutizeUrlRFC3986DataProvider
      */
-    public function test_absolutize_url_RFC3986($relative, $expected)
+    public function test_absolutize_url_RFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
 
@@ -377,7 +390,10 @@ class MiscTest extends TestCase
         );
     }
 
-    public function absolutizeUrlBugsDataProvider()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public function absolutizeUrlBugsDataProvider(): array
     {
         return [
             'bug 274.0' => [
@@ -471,7 +487,7 @@ class MiscTest extends TestCase
     /**
      * @dataProvider absolutizeUrlBugsDataProvider
      */
-    public function test_absolutize_url_bugs($base, $relative, $expected)
+    public function test_absolutize_url_bugs(string $base, string $relative, string $expected): void
     {
         $this->assertSame(
             $expected,
@@ -479,7 +495,10 @@ class MiscTest extends TestCase
         );
     }
 
-    public function parseDateDataProvider()
+    /**
+     * @return array<array{string, int|false}>
+     */
+    public function parseDateDataProvider(): array
     {
         return [
             // The tests enclosed within come from RFC 3339 section 5.8
@@ -717,8 +736,9 @@ class MiscTest extends TestCase
 
     /**
      * @dataProvider parseDateDataProvider
+     * @param int|false $expected
      */
-    public function test_parse_date($data, $expected)
+    public function test_parse_date(string $data, $expected): void
     {
         $this->assertSame(
             $expected,
