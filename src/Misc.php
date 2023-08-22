@@ -343,7 +343,7 @@ class Misc
      * @param string $charset Character set to standardise
      * @return string Standardised name
      */
-    public static function encoding(string $charset): string 
+    public static function encoding(string $charset): string
     {
         // Normalization from UTS #22
         switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
