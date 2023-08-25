@@ -199,6 +199,6 @@ final class Psr7Response implements Response
      */
     public function get_body_content(): string
     {
-        return $this->response->getBody()->getContents();
+        return $this->response->getBody()->__toString();
     }
 }
