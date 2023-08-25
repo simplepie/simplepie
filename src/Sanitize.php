@@ -358,7 +358,7 @@ class Sanitize implements RegistryAware
             $domain = trim($domain, ". \t\n\r\0\x0B");
             $segments = array_reverse(explode('.', $domain));
             /** @var true|array<string, true|array<string, true|array<string, array<string, true|array<string, true|array<string, true>>>>>> */ // Needed for PHPStan.
-            $node =& $this->https_domains;
+            $node = & $this->https_domains;
             foreach ($segments as $segment) {//Build a tree
                 if ($node === true) {
                     break;
@@ -366,7 +366,7 @@ class Sanitize implements RegistryAware
                 if (!isset($node[$segment])) {
                     $node[$segment] = [];
                 }
-                $node =& $node[$segment];
+                $node = & $node[$segment];
             }
             $node = true;
         }
@@ -381,10 +381,10 @@ class Sanitize implements RegistryAware
     {
         $domain = trim($domain, '. ');
         $segments = array_reverse(explode('.', $domain));
-        $node =& $this->https_domains;
+        $node = & $this->https_domains;
         foreach ($segments as $segment) {//Explore the tree
             if (isset($node[$segment])) {
-                $node =& $node[$segment];
+                $node = & $node[$segment];
             } else {
                 break;
             }

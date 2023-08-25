@@ -791,7 +791,7 @@ class SimplePie
 
         $this->feed_url = $file->get_final_requested_uri();
         $this->permanent_url = $this->feed_url;
-        $this->file =& $file;
+        $this->file = & $file;
 
         return true;
     }
@@ -1958,7 +1958,7 @@ class SimplePie
         // If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
         if (!isset($file)) {
             if ($this->file instanceof File && $this->file->get_final_requested_uri() === $this->feed_url) {
-                $file =& $this->file;
+                $file = & $this->file;
             } elseif (isset($failedFileReason)) {
                 // Do not try to fetch again if we already failed once.
                 // If the file connection had an error, set SimplePie::error to that and quit
@@ -2826,12 +2826,12 @@ class SimplePie
                 if ($this->registry->call(Misc::class, 'is_isegment_nz_nc', [$key])) {
                     if (isset($this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key])) {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key]);
-                        $this->data['links'][$key] =& $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key];
+                        $this->data['links'][$key] = & $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key];
                     } else {
-                        $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] =& $this->data['links'][$key];
+                        $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = & $this->data['links'][$key];
                     }
                 } elseif (substr($key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr($key, 41)] =& $this->data['links'][$key];
+                    $this->data['links'][substr($key, 41)] = & $this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }
