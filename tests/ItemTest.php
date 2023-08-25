@@ -12,14 +12,11 @@ class ItemTest extends PHPUnit\Framework\TestCase
 {
     /**
      * Run a test using a sprintf template and data
-     *
-     * @param string $template
      */
-    protected function checkFromTemplate(string $template, $data)
+    protected function checkFromTemplate(string $template, string $data): SimplePie
     {
-        if (!is_array($data)) {
-            $data = [$data];
-        }
+        $data = [$data];
+
         $xml = vsprintf($template, $data);
         $feed = new SimplePie();
         $feed->set_raw_data($xml);
@@ -172,7 +169,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
         $this->assertSame($expected, $feed->get_title());
     }
 
-    public function testItemWithEmptyContent()
+    public function testItemWithEmptyContent(): void
     {
         $data =
 '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">

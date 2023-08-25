@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 class SanitizeTest extends PHPUnit\Framework\TestCase
 {
-    public function testSanitize()
+    public function testSanitize(): void
     {
         $sanitize = new SimplePie_Sanitize();
 

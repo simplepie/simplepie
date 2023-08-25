@@ -23,12 +23,12 @@ class SimplePieTest extends TestCase
 {
     use ExpectPHPException;
 
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\SimplePie'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists(SimplePie::class));
     }
@@ -38,11 +38,10 @@ class SimplePieTest extends TestCase
      *
      * @param string $template
      */
-    private function createFeedWithTemplate(string $template, $data): SimplePie
+    private function createFeedWithTemplate(string $template, string $data): SimplePie
     {
-        if (!is_array($data)) {
-            $data = [$data];
-        }
+        $data = [$data];
+
         $xml = vsprintf($template, $data);
         $feed = new SimplePie();
         $feed->set_raw_data($xml);
@@ -195,7 +194,7 @@ class SimplePieTest extends TestCase
         $this->assertSame($expected, $feed->get_title());
     }
 
-    public function testItemWithEmptyContent()
+    public function testItemWithEmptyContent(): void
     {
         $data =
 '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
@@ -212,7 +211,7 @@ class SimplePieTest extends TestCase
         $this->assertSame($content, $item->get_content());
     }
 
-    public function testSetPsr16Cache()
+    public function testSetPsr16Cache(): void
     {
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn([]);
@@ -226,7 +225,7 @@ class SimplePieTest extends TestCase
         $feed->init();
     }
 
-    public function testLegacyCallOfSetCacheClass()
+    public function testLegacyCallOfSetCacheClass(): void
     {
         $feed = new SimplePie();
         $this->expectDeprecation();
@@ -246,7 +245,7 @@ class SimplePieTest extends TestCase
         $feed->init();
     }
 
-    public function testDirectOverrideNew()
+    public function testDirectOverrideNew(): void
     {
         $this->expectException(SuccessException::class);
 
@@ -258,7 +257,7 @@ class SimplePieTest extends TestCase
         $feed->init();
     }
 
-    public function testDirectOverrideLegacy()
+    public function testDirectOverrideLegacy(): void
     {
         $feed = new SimplePie();
         $feed->get_registry()->register(File::class, FileWithRedirectMock::class);

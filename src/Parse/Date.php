@@ -24,7 +24,7 @@ class Date
      * List of days, calendar day name => ordinal day number in the week
      *
      * @access protected
-     * @var array
+     * @var array<string, int<1,7>>
      */
     public $day = [
         // English
@@ -129,7 +129,7 @@ class Date
      * List of months, calendar month name => calendar month number
      *
      * @access protected
-     * @var array
+     * @var array<string, int<1,12>>
      */
     public $month = [
         // English
@@ -311,7 +311,7 @@ class Date
      * List of timezones, abbreviation => offset from UTC
      *
      * @access protected
-     * @var array
+     * @var array<string, int>
      */
     public $timezone = [
         'ACDT' => 37800,
@@ -536,7 +536,7 @@ class Date
      * Array of user-added callback methods
      *
      * @access private
-     * @var array
+     * @var array<string>
      */
     public $built_in = [];
 
@@ -544,7 +544,7 @@ class Date
      * Array of user-added callback methods
      *
      * @access private
-     * @var array
+     * @var array<callable(string): string|false>
      */
     public $user = [];
 
@@ -579,6 +579,7 @@ class Date
      * Get the object
      *
      * @access public
+     * @return Date
      */
     public static function get()
     {
@@ -595,7 +596,7 @@ class Date
      * @final
      * @access public
      * @param string $date Date to parse
-     * @return int Timestamp corresponding to date string, or false on failure
+     * @return int|false Timestamp corresponding to date string, or false on failure
      */
     public function parse(string $date)
     {
@@ -620,6 +621,7 @@ class Date
      * @final
      * @access public
      * @param callable $callback
+     * @return void
      */
     public function add_callback(callable $callback)
     {
@@ -632,9 +634,10 @@ class Date
      * spaces to be used as the time separator (including more than one))
      *
      * @access protected
-     * @return int Timestamp
+     * @param string $date
+     * @return int|false Timestamp
      */
-    public function date_w3cdtf($date)
+    public function date_w3cdtf(string $date)
     {
         $pcre = <<<'PCRE'
             /
@@ -754,9 +757,10 @@ PCRE;
      * Parse RFC2822's date format
      *
      * @access protected
-     * @return int Timestamp
+     * @param string $date
+     * @return int|false Timestamp
      */
-    public function date_rfc2822($date)
+    public function date_rfc2822(string $date)
     {
         static $pcre;
         if (!$pcre) {
@@ -837,9 +841,10 @@ PCRE;
      * Parse RFC850's date format
      *
      * @access protected
-     * @return int Timestamp
+     * @param string $date
+     * @return int|false Timestamp
      */
-    public function date_rfc850($date)
+    public function date_rfc850(string $date)
     {
         static $pcre;
         if (!$pcre) {
@@ -901,9 +906,10 @@ PCRE;
      * Parse C99's asctime()'s date format
      *
      * @access protected
-     * @return int Timestamp
+     * @param string $date
+     * @return int|false Timestamp
      */
-    public function date_asctime($date)
+    public function date_asctime(string $date)
     {
         static $pcre;
         if (!$pcre) {
@@ -939,9 +945,10 @@ PCRE;
      * Parse dates using strtotime()
      *
      * @access protected
-     * @return int Timestamp
+     * @param string $date
+     * @return int|false Timestamp
      */
-    public function date_strtotime($date)
+    public function date_strtotime(string $date)
     {
         $strtotime = strtotime($date);
         if ($strtotime === -1 || $strtotime === false) {

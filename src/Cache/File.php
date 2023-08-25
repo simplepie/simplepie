@@ -61,7 +61,7 @@ class File implements Base
     /**
      * Save data to the cache
      *
-     * @param array|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+     * @param array<mixed>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
     public function save($data)
@@ -80,7 +80,7 @@ class File implements Base
     /**
      * Retrieve the data saved to the cache
      *
-     * @return array Data for SimplePie::$data
+     * @return array<mixed>|false Data for SimplePie::$data
      */
     public function load()
     {
@@ -93,7 +93,7 @@ class File implements Base
     /**
      * Retrieve the last modified time for the cache
      *
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function mtime()
     {

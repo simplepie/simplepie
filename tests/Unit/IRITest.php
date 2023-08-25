@@ -15,12 +15,12 @@ class IRITest extends TestCase
 {
     use ExpectPHPException;
 
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\IRI'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_IRI'));
     }
@@ -381,12 +381,12 @@ class IRITest extends TestCase
         $this->assertNotEquals($output, $input);
     }
 
-    public function testInvalidAbsolutizeBase()
+    public function testInvalidAbsolutizeBase(): void
     {
         $this->assertFalse(IRI::absolutize('://not a URL', '../'));
     }
 
-    public function testInvalidPathNoHost()
+    public function testInvalidPathNoHost(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -394,21 +394,21 @@ class IRITest extends TestCase
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testInvalidRelativePathContainsColon()
+    public function testInvalidRelativePathContainsColon(): void
     {
         $iri = new IRI();
         $iri->path = '/test:/';
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testValidRelativePathContainsColon()
+    public function testValidRelativePathContainsColon(): void
     {
         $iri = new IRI();
         $iri->path = '/test/:';
         $this->assertTrue($iri->is_valid());
     }
 
-    public function testFullGamut()
+    public function testFullGamut(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -425,7 +425,7 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testReadAliased()
+    public function testReadAliased(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -442,7 +442,7 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testWriteAliased()
+    public function testWriteAliased(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -459,7 +459,7 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testNonexistantProperty()
+    public function testNonexistantProperty(): void
     {
         $this->expectNotice();
 
@@ -468,7 +468,7 @@ class IRITest extends TestCase
         $should_fail = $iri->nonexistant_prop;
     }
 
-    public function testBlankHost()
+    public function testBlankHost(): void
     {
         $iri = new IRI('http://example.com/a/?b=c#d');
         $iri->host = null;
@@ -477,7 +477,7 @@ class IRITest extends TestCase
         $this->assertSame('http:/a/?b=c#d', (string) $iri);
     }
 
-    public function testBadPort()
+    public function testBadPort(): void
     {
         $iri = new IRI();
         $iri->port = 'example';

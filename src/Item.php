@@ -28,7 +28,7 @@ class Item implements RegistryAware
      * Raw data
      *
      * @access private
-     * @var array
+     * @var array<string, mixed>
      */
     public $data = [];
 
@@ -52,7 +52,7 @@ class Item implements RegistryAware
      * {@see \SimplePie\SimplePie::get_item}. Avoid creating this manually.
      *
      * @param \SimplePie\SimplePie $feed Parent feed
-     * @param array $data Raw data
+     * @param array<string, mixed> $data Raw data
      */
     public function __construct(\SimplePie\SimplePie $feed, array $data)
     {
@@ -67,8 +67,9 @@ class Item implements RegistryAware
      *
      * @since 1.3
      * @param \SimplePie\Registry $registry
+     * @return void
      */
-    public function set_registry(\SimplePie\Registry $registry)/* : void */
+    public function set_registry(\SimplePie\Registry $registry)
     {
         $this->registry = $registry;
     }
@@ -105,7 +106,7 @@ class Item implements RegistryAware
      * @see http://simplepie.org/wiki/faq/supported_xml_namespaces
      * @param string $namespace The URL of the XML namespace of the elements you're trying to access
      * @param string $tag Tag name
-     * @return array
+     * @return array<array<string, mixed>>|null
      */
     public function get_item_tags(string $namespace, string $tag)
     {
@@ -120,7 +121,7 @@ class Item implements RegistryAware
      * Get the base URL value.
      * Uses `<xml:base>`, or item link, or feed base URL.
      *
-     * @param array $element
+     * @param array<string, mixed> $element
      * @return string
      */
     public function get_base(array $element = [])
@@ -141,7 +142,7 @@ class Item implements RegistryAware
      * @access private
      * @see \SimplePie\SimplePie::sanitize()
      * @param string $data Data to sanitize
-     * @param int $type One of the \SimplePie\SimplePie::CONSTRUCT_* constants
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string|null $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
@@ -328,7 +329,7 @@ class Item implements RegistryAware
      * Uses `<media:thumbnail>`
      *
      *
-     * @return array|null
+     * @return array<string, mixed>|null
      */
     public function get_thumbnail()
     {
@@ -582,7 +583,7 @@ class Item implements RegistryAware
      * Uses `<atom:rights>` or `<dc:rights>`
      *
      * @since 1.1
-     * @return string
+     * @return string|null
      */
     public function get_copyright()
     {
@@ -802,7 +803,7 @@ class Item implements RegistryAware
      *
      * @since Beta 2
      * @param string $rel The relationship of links to return
-     * @return array|null Links found for the item (strings)
+     * @return array<string>|null Links found for the item (strings)
      */
     public function get_links(string $rel = 'alternate')
     {
@@ -907,7 +908,7 @@ class Item implements RegistryAware
             $keywords_parent = null;
             $player_parent = null;
             $ratings_parent = null;
-            $restrictions_parent = null;
+            $restrictions_parent = [];
             $thumbnails_parent = null;
             $title_parent = null;
 
@@ -1102,20 +1103,19 @@ class Item implements RegistryAware
             }
 
             // DURATION
-            if ($duration_parent = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'duration')) {
+            $duration_tags = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'duration');
+            if ($duration_tags !== null) {
                 $seconds = null;
                 $minutes = null;
                 $hours = null;
-                if (isset($duration_parent[0]['data'])) {
-                    $temp = explode(':', $this->sanitize($duration_parent[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
-                    if (sizeof($temp) > 0) {
-                        $seconds = (int) array_pop($temp);
-                    }
-                    if (sizeof($temp) > 0) {
+                if (isset($duration_tags[0]['data'])) {
+                    $temp = explode(':', $this->sanitize($duration_tags[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT));
+                    $seconds = (int) array_pop($temp);
+                    if (count($temp) > 0) {
                         $minutes = (int) array_pop($temp);
                         $seconds += $minutes * 60;
                     }
-                    if (sizeof($temp) > 0) {
+                    if (count($temp) > 0) {
                         $hours = (int) array_pop($temp);
                         $seconds += $hours * 3600;
                     }
@@ -1313,7 +1313,7 @@ class Item implements RegistryAware
                     $restrictions_parent[] = $this->registry->create(Restriction::class, [$restriction_relationship, $restriction_type, $restriction_value]);
                 }
             }
-            if (is_array($restrictions_parent)) {
+            if (count($restrictions_parent) > 0) {
                 $restrictions_parent = array_values(array_unique($restrictions_parent));
             } else {
                 $restrictions_parent = [new \SimplePie\Restriction(Restriction::RELATIONSHIP_ALLOW, null, 'default')];
@@ -2241,7 +2241,7 @@ class Item implements RegistryAware
                 }
             }
 
-            if (sizeof($this->data['enclosures']) === 0 && ($url || $type || $length || $bitrate || $captions_parent || $categories_parent || $channels || $copyrights_parent || $credits_parent || $description_parent || $duration_parent || $expression || $framerate || $hashes_parent || $height || $keywords_parent || $lang || $medium || $player_parent || $ratings_parent || $restrictions_parent || $samplingrate || $thumbnails_parent || $title_parent || $width)) {
+            if (count($this->data['enclosures']) === 0 && ($url || $type || $length || $bitrate || $captions_parent || $categories_parent || $channels || $copyrights_parent || $credits_parent || $description_parent || $duration_parent || $expression || $framerate || $hashes_parent || $height || $keywords_parent || $lang || $medium || $player_parent || $ratings_parent || $samplingrate || $thumbnails_parent || $title_parent || $width)) {
                 // Since we don't have group or content for these, we'll just pass the '*_parent' variables directly to the constructor
                 $this->data['enclosures'][] = $this->registry->create(Enclosure::class, [$url, $type, $length, null, $bitrate, $captions_parent, $categories_parent, $channels, $copyrights_parent, $credits_parent, $description_parent, $duration_parent, $expression, $framerate, $hashes_parent, $height, $keywords_parent, $lang, $medium, $player_parent, $ratings_parent, $restrictions_parent, $samplingrate, $thumbnails_parent, $title_parent, $width]);
             }
@@ -2265,7 +2265,7 @@ class Item implements RegistryAware
      * @since 1.0
      * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
      * @link http://www.georss.org/ GeoRSS
-     * @return string|null
+     * @return float|null
      */
     public function get_latitude()
     {
@@ -2288,7 +2288,7 @@ class Item implements RegistryAware
      * @since 1.0
      * @link http://www.w3.org/2003/01/geo/ W3C WGS84 Basic Geo
      * @link http://www.georss.org/ GeoRSS
-     * @return string|null
+     * @return float|null
      */
     public function get_longitude()
     {

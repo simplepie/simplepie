@@ -17,7 +17,7 @@ use Throwable;
 
 class Psr16Test extends TestCase
 {
-    public function testSetDataReturnsTrueIfDataCouldBeWritten()
+    public function testSetDataReturnsTrueIfDataCouldBeWritten(): void
     {
         $key = 'name';
         $value = [];
@@ -31,7 +31,7 @@ class Psr16Test extends TestCase
         $this->assertTrue($cache->set_data($key, $value, $ttl));
     }
 
-    public function testSetDataReturnsFalseIfDataCouldNotBeWritten()
+    public function testSetDataReturnsFalseIfDataCouldNotBeWritten(): void
     {
         $key = 'name';
         $value = [];
@@ -45,7 +45,7 @@ class Psr16Test extends TestCase
         $this->assertFalse($cache->set_data($key, $value, $ttl));
     }
 
-    public function testSetDataWithInvalidKeyThrowsInvalidArgumentException()
+    public function testSetDataWithInvalidKeyThrowsInvalidArgumentException(): void
     {
         $key = 'invalid key';
         $value = [];
@@ -68,7 +68,7 @@ class Psr16Test extends TestCase
         $cache->set_data($key, $value, $ttl);
     }
 
-    public function testGetDataReturnsCorrectData()
+    public function testGetDataReturnsCorrectData(): void
     {
         $key = 'name';
         $value = [];
@@ -81,7 +81,7 @@ class Psr16Test extends TestCase
         $this->assertSame($value, $cache->get_data($key));
     }
 
-    public function testGetDataWithCacheMissReturnsDefault()
+    public function testGetDataWithCacheMissReturnsDefault(): void
     {
         $key = 'name';
         $default = new stdClass();
@@ -94,7 +94,7 @@ class Psr16Test extends TestCase
         $this->assertSame($default, $cache->get_data($key, $default));
     }
 
-    public function testGetDataWithCacheCorruptionReturnsDefault()
+    public function testGetDataWithCacheCorruptionReturnsDefault(): void
     {
         $key = 'name';
         $default = new stdClass();
@@ -107,7 +107,7 @@ class Psr16Test extends TestCase
         $this->assertSame($default, $cache->get_data($key, $default));
     }
 
-    public function testGetDataWithInvalidKeyThrowsInvalidArgumentException()
+    public function testGetDataWithInvalidKeyThrowsInvalidArgumentException(): void
     {
         $key = 'invalid key';
 
@@ -128,7 +128,7 @@ class Psr16Test extends TestCase
         $cache->get_data($key);
     }
 
-    public function testDeleteDataReturnsTrueIfDataCouldBeDeleted()
+    public function testDeleteDataReturnsTrueIfDataCouldBeDeleted(): void
     {
         $key = 'name';
 
@@ -140,7 +140,7 @@ class Psr16Test extends TestCase
         $this->assertTrue($cache->delete_data($key));
     }
 
-    public function testDeleteDataReturnsFalseIfDataCouldNotBeDeleted()
+    public function testDeleteDataReturnsFalseIfDataCouldNotBeDeleted(): void
     {
         $key = 'name';
 
@@ -152,7 +152,7 @@ class Psr16Test extends TestCase
         $this->assertFalse($cache->delete_data($key));
     }
 
-    public function testDeleteDataWithInvalidKeyThrowsInvalidArgumentException()
+    public function testDeleteDataWithInvalidKeyThrowsInvalidArgumentException(): void
     {
         $key = 'invalid key';
 

@@ -12,12 +12,12 @@ use SimplePie\Parse\Date;
 
 class DateTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Parse\Date'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Parse_Date'));
     }

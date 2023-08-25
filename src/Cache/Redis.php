@@ -34,7 +34,7 @@ class Redis implements Base
     /**
      * Options
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $options;
 
@@ -50,7 +50,7 @@ class Redis implements Base
      *
      * @param string $location Location string (from SimplePie::$cache_location)
      * @param string $name Unique ID for the cache
-     * @param Base::TYPE_FEED|Base::TYPE_IMAGE|array|null $options Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
+     * @param Base::TYPE_FEED|Base::TYPE_IMAGE|array<string, mixed>|null $options Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
      */
     public function __construct(string $location, string $name, $options = null)
     {
@@ -80,6 +80,7 @@ class Redis implements Base
 
     /**
      * @param NativeRedis $cache
+     * @return void
      */
     public function setRedisClient(NativeRedis $cache)
     {
@@ -89,7 +90,7 @@ class Redis implements Base
     /**
      * Save data to the cache
      *
-     * @param array|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+     * @param array<mixed>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
     public function save($data)
@@ -108,7 +109,7 @@ class Redis implements Base
     /**
      * Retrieve the data saved to the cache
      *
-     * @return array Data for SimplePie::$data
+     * @return array<mixed>|false Data for SimplePie::$data
      */
     public function load()
     {
@@ -123,7 +124,7 @@ class Redis implements Base
     /**
      * Retrieve the last modified time for the cache
      *
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function mtime()
     {

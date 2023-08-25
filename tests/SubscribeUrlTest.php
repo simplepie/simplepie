@@ -10,7 +10,7 @@ use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 
 class SubscribeUrlTest extends PHPUnit\Framework\TestCase
 {
-    public function testDirectOverrideLegacy()
+    public function testDirectOverrideLegacy(): void
     {
         $feed = new SimplePie();
         $feed->get_registry()->register(File::class, FileWithRedirectMock::class);

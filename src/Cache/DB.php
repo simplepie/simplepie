@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace SimplePie\Cache;
 
+use SimplePie\Item;
+
 /**
  * Base class for database-based caches
  *
@@ -20,7 +22,7 @@ abstract class DB implements Base
      * Converts a given {@see SimplePie} object into data to be stored
      *
      * @param \SimplePie\SimplePie $data
-     * @return array First item is the serialized data for storage, second item is the unique ID for this item
+     * @return array{string, array<string, Item>} First item is the serialized data for storage, second item is the unique ID for this item
      */
     protected static function prepare_simplepie_object_for_cache(\SimplePie\SimplePie $data)
     {

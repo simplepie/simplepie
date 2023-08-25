@@ -12,12 +12,12 @@ use SimplePie\HTTP\Parser;
 
 class ParserTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\HTTP\Parser'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_HTTP_Parser'));
     }

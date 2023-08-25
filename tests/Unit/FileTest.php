@@ -14,12 +14,12 @@ use SimplePie\Tests\Fixtures\FileMock;
 
 class FileTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\File'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_File'));
     }
@@ -29,6 +29,9 @@ class FileTest extends TestCase
         $this->assertInstanceOf(Response::class, new FileMock(''));
     }
 
+    /**
+     * @return array<array{File}>
+     */
     public function getResponseData(): iterable
     {
         yield [new FileMock('http://example.com/feed')];

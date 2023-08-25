@@ -105,6 +105,7 @@ class SimplePie_Decode_HTML_Entities
      * Unconsume one byte
      *
      * @access private
+     * @return void
      */
     public function unconsume()
     {
@@ -116,6 +117,7 @@ class SimplePie_Decode_HTML_Entities
      * Decode an entity
      *
      * @access private
+     * @return void
      */
     public function entity()
     {

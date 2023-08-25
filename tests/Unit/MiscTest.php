@@ -14,32 +14,31 @@ use SimplePie_Misc;
 
 class MiscTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists(Misc::class));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists(SimplePie_Misc::class));
     }
 
-    public function test_existence_of_get_element()
+    public function test_existence_of_get_element(): void
     {
         // BC: make sure that get_element() exists
         $this->assertSame([], Misc::get_element('', ''));
     }
 
-    public function test_existence_of_entities_decode()
+    public function test_existence_of_entities_decode(): void
     {
         // BC: make sure that entities_decode() exists
         $this->assertSame('', Misc::entities_decode(''));
     }
 
+    /* ## UTF-8 methods */
+
     /**
-     * #@+
-     * UTF-8 methods
-     *
      * Provider for the convert toUTF8* tests
      *
      * @return array<array{string, string, string}>
@@ -154,11 +153,10 @@ class MiscTest extends TestCase
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_uconverter($input, $encoding, 'UTF-8'));
     }
-    /**#@-*/
 
-    /**#@+
-     * UTF-16 methods
-     *
+    /* ## UTF-16 methods */
+
+    /**
      * @return array<array{string, string, string}>
      */
     public function utf16DataProvider(): array
@@ -178,21 +176,17 @@ class MiscTest extends TestCase
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
-    /**#@-*/
 
-    public function test_nonexistant()
+    public function test_nonexistant(): void
     {
         $this->assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public function assertSameBin2Hex($expected, $actual, $message = '')
+    public function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
-        if (is_string($expected)) {
-            $expected = bin2hex($expected);
-        }
-        if (is_string($actual)) {
-            $actual = bin2hex($actual);
-        }
+        $expected = bin2hex($expected);
+        $actual = bin2hex($actual);
+
         $this->assertSame($expected, $actual, $message);
     }
 
