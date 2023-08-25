@@ -20,6 +20,9 @@ use SimplePie\Registry;
 
 class ClientsTest extends TestCase
 {
+    /**
+     * @return array<Client[]>
+     */
     public function provideHttpClientsForLocalFiles(): iterable
     {
         yield [new FileClient(new Registry())];

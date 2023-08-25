@@ -27,7 +27,7 @@ class File implements Response
     public $url;
 
     /**
-     * @var string User agent to use in requests
+     * @var ?string User agent to use in requests
      * @deprecated Set the user agent in constructor.
      */
     public $useragent;

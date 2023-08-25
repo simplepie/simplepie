@@ -17,10 +17,19 @@ namespace SimplePie\HTTP;
  */
 final class RawTextResponse implements Response
 {
+    /**
+     * @var string
+     */
     private $raw_text;
 
+    /**
+     * @var string
+     */
     private $permanent_url;
 
+    /**
+     * @var string
+     */
     private $requested_url;
 
     public function __construct(string $raw_text, string $filepath)

@@ -22,12 +22,24 @@ use Throwable;
  */
 final class Psr18Client implements Client
 {
+    /**
+     * @var ClientInterface
+     */
     private $httpClient;
 
+    /**
+     * @var RequestFactoryInterface
+     */
     private $requestFactory;
 
+    /**
+     * @var UriFactoryInterface
+     */
     private $uriFactory;
 
+    /**
+     * @var int
+     */
     private $allowedRedirects = 5;
 
     public function __construct(ClientInterface $httpClient, RequestFactoryInterface $requestFactory, UriFactoryInterface $uriFactory)
@@ -57,7 +69,7 @@ final class Psr18Client implements Client
      *
      * @param Client::METHOD_GET $method
      * @param string $url
-     * @param string[] $headers
+     * @param array<string,string|string[]> $headers
      *
      * @throws HttpException if anything goes wrong requesting the data
      */
@@ -78,6 +90,9 @@ final class Psr18Client implements Client
         return $this->requestLocalFile($url);
     }
 
+    /**
+     * @param array<string,string|string[]> $headers
+     */
     private function requestUrl(string $method, string $url, array $headers): Response
     {
         $permanentUrl = $url;

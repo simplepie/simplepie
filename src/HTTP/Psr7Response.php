@@ -19,10 +19,19 @@ use Psr\Http\Message\ResponseInterface;
  */
 final class Psr7Response implements Response
 {
+    /**
+     * @var ResponseInterface
+     */
     private $response;
 
+    /**
+     * @var string
+     */
     private $permanent_url;
 
+    /**
+     * @var string
+     */
     private $requested_url;
 
     public function __construct(ResponseInterface $response, string $permanent_url, string $requested_url)

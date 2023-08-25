@@ -27,7 +27,7 @@ class Sniffer
     /**
      * File object
      *
-     * @var File
+     * @var File|Response
      */
     public $file;
 

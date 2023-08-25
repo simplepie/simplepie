@@ -19,7 +19,7 @@ use SimplePie\HTTP\Response;
 
 class Psr18ClientTest extends TestCase
 {
-    public function testRequestReturnsResponse()
+    public function testRequestReturnsResponse(): void
     {
         $client = new Psr18Client(
             $this->createMock(ClientInterface::class),
@@ -30,7 +30,7 @@ class Psr18ClientTest extends TestCase
         $this->assertInstanceOf(Response::class, $client->request(Client::METHOD_GET, 'https://example.com/feed.xml'));
     }
 
-    public function testRequestWithRedirectReturnsResponseWithCorrectUrls()
+    public function testRequestWithRedirectReturnsResponseWithCorrectUrls(): void
     {
         $request = $this->createMock(RequestInterface::class);
         $request->method('withUri')->willReturn($request);

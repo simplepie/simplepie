@@ -20,6 +20,9 @@ class Psr7ResponseTest extends TestCase
         $this->assertInstanceOf(Response::class, new Psr7Response($this->createMock(ResponseInterface::class), '', ''));
     }
 
+    /**
+     * @return array<Psr7Response[]>
+     */
     public function getResponseData(): iterable
     {
         $stream = $this->createMock(StreamInterface::class);
