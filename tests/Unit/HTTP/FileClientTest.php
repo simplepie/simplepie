@@ -15,7 +15,7 @@ use SimplePie\Registry;
 
 final class FileClientTest extends TestCase
 {
-    public function testFileClientProvidesDefaultOptionsAndHeaders()
+    public function testFileClientProvidesDefaultOptionsAndHeaders(): void
     {
         $response = $this->createMock(File::class);
 
@@ -41,7 +41,7 @@ final class FileClientTest extends TestCase
         );
     }
 
-    public function testFileClientProvidesCorrectOptionsAndHeaders()
+    public function testFileClientProvidesCorrectOptionsAndHeaders(): void
     {
         $response = $this->createMock(File::class);
 

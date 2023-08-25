@@ -39,7 +39,7 @@ class SimplePieTest extends TestCase
     /**
      * @dataProvider provideSimplePieInstances
      */
-    public function testSimplePieInit(SimplePie $simplepie)
+    public function testSimplePieInit(SimplePie $simplepie): void
     {
         $this->assertTrue($simplepie->init());
         $this->assertSame(100, $simplepie->get_item_quantity());

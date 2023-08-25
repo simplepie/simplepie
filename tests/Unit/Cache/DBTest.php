@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class DBTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Cache\DB'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Cache_DB'));
     }

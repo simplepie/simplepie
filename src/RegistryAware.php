@@ -17,9 +17,7 @@ interface RegistryAware
     /**
      * Set the Registry into the class
      *
-     * @param Registry $registry
-     *
      * @return void
      */
-    public function set_registry(Registry $registry)/* : void */;
+    public function set_registry(Registry $registry);
 }

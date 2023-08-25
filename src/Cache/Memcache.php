@@ -33,7 +33,7 @@ class Memcache implements Base
     /**
      * Options
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $options;
 
@@ -72,7 +72,7 @@ class Memcache implements Base
     /**
      * Save data to the cache
      *
-     * @param array|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+     * @param array<mixed>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
     public function save($data)
@@ -86,7 +86,7 @@ class Memcache implements Base
     /**
      * Retrieve the data saved to the cache
      *
-     * @return array Data for SimplePie::$data
+     * @return array<mixed>|false Data for SimplePie::$data
      */
     public function load()
     {
@@ -101,7 +101,7 @@ class Memcache implements Base
     /**
      * Retrieve the last modified time for the cache
      *
-     * @return int Timestamp
+     * @return int|false Timestamp
      */
     public function mtime()
     {

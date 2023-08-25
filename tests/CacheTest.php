@@ -39,7 +39,7 @@ class CacheTest extends PHPUnit\Framework\TestCase
 {
     use ExpectPHPException;
 
-    public function testDirectOverrideLegacy()
+    public function testDirectOverrideLegacy(): void
     {
         if (version_compare(PHP_VERSION, '8.0', '<')) {
             $this->expectException(SuccessException::class);
@@ -59,7 +59,7 @@ class CacheTest extends PHPUnit\Framework\TestCase
         $feed->init();
     }
 
-    public function testDirectOverrideNew()
+    public function testDirectOverrideNew(): void
     {
         $this->expectException(SuccessException::class);
 

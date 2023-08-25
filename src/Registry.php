@@ -51,7 +51,7 @@ class Registry
      * Class mapping
      *
      * @see register()
-     * @var array
+     * @var array<string, class-string>
      */
     protected $classes = [];
 
@@ -175,7 +175,7 @@ class Registry
      *
      * @template T class-string $type
      * @param class-string<T> $type
-     * @param array $parameters Parameters to pass to the constructor
+     * @param array<mixed> $parameters Parameters to pass to the constructor
      * @return T Instance of class
      */
     public function &create($type, array $parameters = [])
@@ -203,7 +203,7 @@ class Registry
      *
      * @param class-string $type
      * @param string $method
-     * @param array $parameters
+     * @param array<mixed> $parameters
      * @return mixed
      */
     public function &call($type, string $method, array $parameters = [])

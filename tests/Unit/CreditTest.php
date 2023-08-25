@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class CreditTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Credit'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Credit'));
     }

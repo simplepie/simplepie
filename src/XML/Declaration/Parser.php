@@ -110,7 +110,7 @@ class Parser
      * @access public
      * @return bool true on success, false on failure
      */
-    public function parse()
+    public function parse(): bool
     {
         while ($this->state && $this->state !== self::STATE_EMIT && $this->has_data()) {
             $state = $this->state;
@@ -121,9 +121,10 @@ class Parser
             return true;
         }
 
-        $this->version = '';
-        $this->encoding = '';
-        $this->standalone = '';
+        // Reset the parser state.
+        $this->version = '1.0';
+        $this->encoding = 'UTF-8';
+        $this->standalone = false;
         return false;
     }
 
@@ -133,7 +134,7 @@ class Parser
      * @access private
      * @return bool true if there is further data, false if not
      */
-    public function has_data()
+    public function has_data(): bool
     {
         return (bool) ($this->position < $this->data_length);
     }
@@ -152,6 +153,8 @@ class Parser
 
     /**
      * Read value
+     *
+     * @return string|false
      */
     public function get_value()
     {
@@ -168,7 +171,7 @@ class Parser
         return false;
     }
 
-    public function before_version_name()
+    public function before_version_name(): void
     {
         if ($this->skip_whitespace()) {
             $this->state = self::STATE_VERSION_NAME;
@@ -177,7 +180,7 @@ class Parser
         }
     }
 
-    public function version_name()
+    public function version_name(): void
     {
         if (substr($this->data, $this->position, 7) === 'version') {
             $this->position += 7;
@@ -188,7 +191,7 @@ class Parser
         }
     }
 
-    public function version_equals()
+    public function version_equals(): void
     {
         if (substr($this->data, $this->position, 1) === '=') {
             $this->position++;
@@ -199,7 +202,7 @@ class Parser
         }
     }
 
-    public function version_value()
+    public function version_value(): void
     {
         if ($this->version = $this->get_value()) {
             $this->skip_whitespace();
@@ -213,7 +216,7 @@ class Parser
         }
     }
 
-    public function encoding_name()
+    public function encoding_name(): void
     {
         if (substr($this->data, $this->position, 8) === 'encoding') {
             $this->position += 8;
@@ -224,7 +227,7 @@ class Parser
         }
     }
 
-    public function encoding_equals()
+    public function encoding_equals(): void
     {
         if (substr($this->data, $this->position, 1) === '=') {
             $this->position++;
@@ -235,7 +238,7 @@ class Parser
         }
     }
 
-    public function encoding_value()
+    public function encoding_value(): void
     {
         if ($this->encoding = $this->get_value()) {
             $this->skip_whitespace();
@@ -249,7 +252,7 @@ class Parser
         }
     }
 
-    public function standalone_name()
+    public function standalone_name(): void
     {
         if (substr($this->data, $this->position, 10) === 'standalone') {
             $this->position += 10;
@@ -260,7 +263,7 @@ class Parser
         }
     }
 
-    public function standalone_equals()
+    public function standalone_equals(): void
     {
         if (substr($this->data, $this->position, 1) === '=') {
             $this->position++;
@@ -271,7 +274,7 @@ class Parser
         }
     }
 
-    public function standalone_value()
+    public function standalone_value(): void
     {
         if ($standalone = $this->get_value()) {
             switch ($standalone) {

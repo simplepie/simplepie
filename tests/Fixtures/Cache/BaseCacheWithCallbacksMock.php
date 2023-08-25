@@ -34,32 +34,32 @@ final class BaseCacheWithCallbacksMock implements Base
     /** @var Closure|null */
     private static $unlinkCallback = null;
 
-    public static function setConstructCallback(Closure $cb)
+    public static function setConstructCallback(Closure $cb): void
     {
         self::$constructCallback = $cb;
     }
 
-    public static function setSaveCallback(Closure $cb)
+    public static function setSaveCallback(Closure $cb): void
     {
         self::$saveCallback = $cb;
     }
 
-    public static function setLoadCallback(Closure $cb)
+    public static function setLoadCallback(Closure $cb): void
     {
         self::$loadCallback = $cb;
     }
 
-    public static function setMtimeCallback(Closure $cb)
+    public static function setMtimeCallback(Closure $cb): void
     {
         self::$mtimeCallback = $cb;
     }
 
-    public static function setTouchCallback(Closure $cb)
+    public static function setTouchCallback(Closure $cb): void
     {
         self::$touchCallback = $cb;
     }
 
-    public static function setUnlinkCallback(Closure $cb)
+    public static function setUnlinkCallback(Closure $cb): void
     {
         self::$unlinkCallback = $cb;
     }
@@ -67,7 +67,7 @@ final class BaseCacheWithCallbacksMock implements Base
     /**
      * Call this after tests to reset all callbacks
      */
-    public static function resetAllCallbacks()
+    public static function resetAllCallbacks(): void
     {
         self::$constructCallback = null;
         self::$saveCallback = null;
@@ -95,7 +95,7 @@ final class BaseCacheWithCallbacksMock implements Base
     /**
      * Save data to the cache
      *
-     * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+     * @param array<mixed>|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
     public function save($data)
@@ -113,7 +113,7 @@ final class BaseCacheWithCallbacksMock implements Base
     /**
      * Retrieve the data saved to the cache
      *
-     * @return array Data for SimplePie::$data
+     * @return array<mixed> Data for SimplePie::$data
      */
     public function load()
     {
