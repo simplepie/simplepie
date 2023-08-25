@@ -26,7 +26,7 @@ class Psr7ResponseTest extends TestCase
     public function getResponseData(): iterable
     {
         $stream = $this->createMock(StreamInterface::class);
-        $stream->method('getContents')->willReturn('<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" />');
+        $stream->method('__toString')->willReturn('<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" />');
 
         $response = $this->createMock(ResponseInterface::class);
         $response->method('getStatusCode')->willReturn(200);

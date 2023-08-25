@@ -87,7 +87,7 @@ class SimplePieTest extends TestCase
         $requestFactory->method('createRequest')->willReturn($request);
 
         $body = $this->createMock(StreamInterface::class);
-        $body->method('getContents')->willReturnCallback(function () {
+        $body->method('__toString')->willReturnCallback(function () {
             $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
 
             return file_get_contents($filepath);
