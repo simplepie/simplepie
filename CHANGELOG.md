@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/simplepie/simplepie/compare/1.8.0...master)
 
+### Added
+
+- New method `SimplePie\SimplePie::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777)
+- New method `SimplePie\Locator::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777)
+- New method `SimplePie\Sanitize::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777)
+
 ### Changed
 
 - Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
@@ -17,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
+- The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead
 - The method `SimplePie\Sanitize::pass_file_data()` is deprecated, use `SimplePie\Sanitize::set_http_client()` instead
 - Passing multiple URLs to `SimplePie\SimplePie::set_feed_url()` is deprecated. You can create separate `SimplePie` instance per feed and then use `SimplePie::merge_items()` to get a single list of items. ([#795](https://github.com/simplepie/simplepie/pull/795))
 

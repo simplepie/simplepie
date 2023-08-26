@@ -8,6 +8,9 @@ declare(strict_types=1);
 namespace SimplePie;
 
 use InvalidArgumentException;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
@@ -20,6 +23,7 @@ use SimplePie\Exception as SimplePieException;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
 
 /**
@@ -430,9 +434,8 @@ class SimplePie
     /**
      * @var File Instance of File class to use as a feed
      * @see SimplePie::set_file()
-     * @access private
      */
-    public $file;
+    private $file;
 
     /**
      * @var string|false Raw feed data
@@ -777,13 +780,18 @@ class SimplePie
     /**
      * Set an instance of {@see File} to use as a feed
      *
+     * @deprecated since SimplePie 1.9.0, use \SimplePie\SimplePie::set_http_client() or \SimplePie\SimplePie::set_raw_data() instead.
+     *
+     * @param File &$file
      * @return bool True on success, false on failure
      */
     public function set_file(File &$file)
     {
+        // trigger_error(sprintf('SimplePie\SimplePie::set_file() is deprecated since SimplePie 1.9.0, please use "SimplePie\SimplePie::set_http_client()" or "SimplePie\SimplePie::set_raw_data()" instead.'), \E_USER_DEPRECATED);
+
         $this->feed_url = $file->get_final_requested_uri();
         $this->permanent_url = $this->feed_url;
-        $this->file =& $file;
+        $this->file = & $file;
 
         return true;
     }
@@ -808,6 +816,20 @@ class SimplePie
     }
 
     /**
+     * Set a PSR-18 client and PSR-17 factories
+     *
+     * Allows you to use your own HTTP client implementations.
+     * This will become required with SimplePie 2.0.0.
+     */
+    final public function set_http_client(
+        ClientInterface $http_client,
+        RequestFactoryInterface $request_factory,
+        UriFactoryInterface $uri_factory
+    ): void {
+        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
+    }
+
+    /**
      * Set the default timeout for fetching remote feeds
      *
      * This allows you to change the maximum time the feed's server to respond
@@ -828,6 +850,19 @@ class SimplePie
         }
 
         $this->timeout = (int) $timeout;
+
+        // Reset a possible existing FileClient,
+        // so a new client with the changed value will be created
+        if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            $this->http_client = null;
+        } elseif (is_object($this->http_client)) {
+            // Trigger notice if a PSR-18 client was set
+            trigger_error(sprintf(
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the timeout in your HTTP client instead.',
+                __METHOD__,
+                get_class($this)
+            ), \E_USER_NOTICE);
+        }
     }
 
     /**
@@ -850,6 +885,19 @@ class SimplePie
         }
 
         $this->curl_options = $curl_options;
+
+        // Reset a possible existing FileClient,
+        // so a new client with the changed value will be created
+        if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            $this->http_client = null;
+        } elseif (is_object($this->http_client)) {
+            // Trigger notice if a PSR-18 client was set
+            trigger_error(sprintf(
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the curl options in your HTTP client instead.',
+                __METHOD__,
+                get_class($this)
+            ), \E_USER_NOTICE);
+        }
     }
 
     /**
@@ -870,6 +918,19 @@ class SimplePie
         }
 
         $this->force_fsockopen = $enable;
+
+        // Reset a possible existing FileClient,
+        // so a new client with the changed value will be created
+        if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            $this->http_client = null;
+        } elseif (is_object($this->http_client)) {
+            // Trigger notice if a PSR-18 client was set
+            trigger_error(sprintf(
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure fsockopen in your HTTP client instead.',
+                __METHOD__,
+                get_class($this)
+            ), \E_USER_NOTICE);
+        }
     }
 
     /**
@@ -1322,6 +1383,19 @@ class SimplePie
         }
 
         $this->useragent = (string) $ua;
+
+        // Reset a possible existing FileClient,
+        // so a new client with the changed value will be created
+        if (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            $this->http_client = null;
+        } elseif (is_object($this->http_client)) {
+            // Trigger notice if a PSR-18 client was set
+            trigger_error(sprintf(
+                'Using "%s()" has no effect, because you already provided a HTTP client with "%s::set_http_client()". Configure the useragent in your HTTP client instead.',
+                __METHOD__,
+                get_class($this)
+            ), \E_USER_NOTICE);
+        }
     }
 
     /**
@@ -1608,7 +1682,16 @@ class SimplePie
             $this->registry->get_class(Cache::class),
             $this->cache
         );
-        $this->sanitize->set_http_client($this->get_http_client());
+
+        $http_client = $this->get_http_client();
+
+        if ($http_client instanceof Psr18Client) {
+            $this->sanitize->set_http_client(
+                $http_client->getHttpClient(),
+                $http_client->getRequestFactory(),
+                $http_client->getUriFactory()
+            );
+        }
 
         if (!empty($this->multifeed_url)) {
             $i = 0;
@@ -1644,7 +1727,7 @@ class SimplePie
                 $cache = $this->get_cache($this->feed_url);
             }
 
-            // Fetch the data via File into $this->raw_data
+            // Fetch the data into $this->raw_data
             if (($fetched = $this->fetch_data($cache)) === true) {
                 return true;
             } elseif ($fetched === false) {
@@ -1723,6 +1806,7 @@ class SimplePie
 
                     // Cache the file if caching is enabled
                     $this->data['cache_expiration_time'] = $this->cache_duration + time();
+
                     if ($cache && ! $cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
@@ -1760,9 +1844,10 @@ class SimplePie
     }
 
     /**
-     * Fetch the data via File
+     * Fetch the data
      *
      * If the data is already cached, attempt to fetch it from there instead
+     *
      * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
      * @return array{array<string, string>, string}|array{}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
@@ -1873,7 +1958,7 @@ class SimplePie
         // If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
         if (!isset($file)) {
             if ($this->file instanceof File && $this->file->get_final_requested_uri() === $this->feed_url) {
-                $file =& $this->file;
+                $file = & $this->file;
             } elseif (isset($failedFileReason)) {
                 // Do not try to fetch again if we already failed once.
                 // If the file connection had an error, set SimplePie::error to that and quit
@@ -1904,8 +1989,24 @@ class SimplePie
 
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
-            $locate = $this->registry->create(Locator::class, [&$file, $this->timeout, $this->useragent, $this->max_checked_feeds, $this->force_fsockopen, $this->curl_options]);
-            $locate->set_http_client($this->get_http_client());
+            $locate = $this->registry->create(Locator::class, [
+                (! $file instanceof File) ? File::fromResponse($file) : $file,
+                $this->timeout,
+                $this->useragent,
+                $this->max_checked_feeds,
+                $this->force_fsockopen,
+                $this->curl_options
+            ]);
+
+            $http_client = $this->get_http_client();
+
+            if ($http_client instanceof Psr18Client) {
+                $locate->set_http_client(
+                    $http_client->getHttpClient(),
+                    $http_client->getRequestFactory(),
+                    $http_client->getUriFactory()
+                );
+            }
 
             if (!$locate->is_feed($file)) {
                 $copyStatusCode = $file->get_status_code();
@@ -2725,12 +2826,12 @@ class SimplePie
                 if ($this->registry->call(Misc::class, 'is_isegment_nz_nc', [$key])) {
                     if (isset($this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key])) {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key]);
-                        $this->data['links'][$key] =& $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key];
+                        $this->data['links'][$key] = & $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key];
                     } else {
-                        $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] =& $this->data['links'][$key];
+                        $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = & $this->data['links'][$key];
                     }
                 } elseif (substr($key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr($key, 41)] =& $this->data['links'][$key];
+                    $this->data['links'][substr($key, 41)] = & $this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }

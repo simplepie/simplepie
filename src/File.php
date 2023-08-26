@@ -27,7 +27,7 @@ class File implements Response
     public $url;
 
     /**
-     * @var string User agent to use in requests
+     * @var ?string User agent to use in requests
      * @deprecated Set the user agent in constructor.
      */
     public $useragent;
@@ -266,8 +266,10 @@ class File implements Response
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
             if (empty($url) || !($this->body = trim(file_get_contents($url)))) {
-                $this->error = 'file_get_contents could not read the file';
+                $this->error = 'file_get_contents() could not read the file';
                 $this->success = false;
+            } else {
+                $this->status_code = 200;
             }
         }
     }
@@ -428,6 +430,36 @@ class File implements Response
         return array_map(function (array $values): string {
             return implode(',', $values);
         }, $headers);
+    }
+
+    /**
+     * Create a File instance from another Response
+     *
+     * For BC reasons in some places there MUST be a `File` instance
+     * instead of a `Response` implementation
+     *
+     * @see Locator::__construct()
+     * @internal
+     */
+    final public static function fromResponse(Response $response): self
+    {
+        $headers = [];
+
+        foreach ($response->get_headers() as $name => $header) {
+            $headers[$name] = implode(', ', $header);
+        }
+
+        /** @var File */
+        $file = (new \ReflectionClass(File::class))->newInstanceWithoutConstructor();
+
+        $file->url = $response->get_final_requested_uri();
+        $file->useragent = null;
+        $file->headers = $headers;
+        $file->body = $response->get_body_content();
+        $file->status_code = $response->get_status_code();
+        $file->permanent_url = $response->get_permanent_uri();
+
+        return $file;
     }
 }
 
