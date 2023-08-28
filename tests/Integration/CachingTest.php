@@ -145,7 +145,7 @@ class CachingTest extends TestCase
                 'content-type' => 'application/atom+xml',
             ],
             'build' => Misc::get_build(),
-            'cache_expiration_time' => $defaultMtime, // Needs to be adjust in test case
+            'cache_expiration_time' => 0, // Needs to be adjust in test case
         ];
 
         $expectNoDataWritten = [];
