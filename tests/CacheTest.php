@@ -5,11 +5,17 @@
 
 declare(strict_types=1);
 
+namespace SimplePie\Tests;
+
+use Exception;
 use PHPUnit\Framework\TestCase;
+use SimplePie;
 use SimplePie\Cache;
 use SimplePie\File;
 use SimplePie\Tests\Fixtures\Exception\SuccessException;
 use SimplePie\Tests\Fixtures\FileMock;
+use SimplePie_Cache;
+use TypeError;
 
 class Mock_CacheLegacy extends SimplePie_Cache
 {
@@ -45,11 +51,26 @@ class CacheTest extends TestCase
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
             // This is no longer supported in PHP, so there is just no way to continue to provide BC
             // for the old non-static cache methods.
-            $this->expectError();
+            $this->expectException(TypeError::class);
+            $this->expectExceptionMessage('call_user_func_array(): Argument #1 ($callback) must be a valid callback, non-static method SimplePie\Tests\Mock_CacheLegacy::create() cannot be called statically');
         }
 
         $feed = new SimplePie();
-        $this->expectDeprecation();
+
+        // PHPUnit 10 compatible way to test the deprecation error.
+        set_error_handler(
+            function ($errno, $errstr): bool {
+                $this->assertSame(
+                    '"SimplePie\SimplePie::set_cache_class()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.',
+                    $errstr,
+                );
+
+                restore_error_handler();
+                return true;
+            },
+            E_USER_DEPRECATED,
+        );
+
         $feed->set_cache_class(Mock_CacheLegacy::class);
         $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
