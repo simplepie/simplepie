@@ -6,7 +6,9 @@
 
 declare(strict_types=1);
 
-class SanitizeTest extends PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class SanitizeTest extends TestCase
 {
     public function testSanitize(): void
     {

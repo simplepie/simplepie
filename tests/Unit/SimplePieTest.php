@@ -17,12 +17,9 @@ use SimplePie\Tests\Fixtures\Cache\NewCacheMock;
 use SimplePie\Tests\Fixtures\Exception\SuccessException;
 use SimplePie\Tests\Fixtures\FileMock;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class SimplePieTest extends TestCase
 {
-    use ExpectPHPException;
-
     public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\SimplePie'));

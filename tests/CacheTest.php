@@ -5,11 +5,11 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
 use SimplePie\Cache;
 use SimplePie\File;
 use SimplePie\Tests\Fixtures\Exception\SuccessException;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class Mock_CacheLegacy extends SimplePie_Cache
 {
@@ -35,10 +35,8 @@ class Mock_CacheNew extends SimplePie_Cache
     }
 }
 
-class CacheTest extends PHPUnit\Framework\TestCase
+class CacheTest extends TestCase
 {
-    use ExpectPHPException;
-
     public function testDirectOverrideLegacy(): void
     {
         if (version_compare(PHP_VERSION, '8.0', '<')) {

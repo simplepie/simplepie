@@ -5,15 +5,13 @@
 
 declare(strict_types=1);
 
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * IRI test cases
  */
-class IRITest extends PHPUnit\Framework\TestCase
+class IRITest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @return array<array{string, string}>
      */

@@ -9,12 +9,9 @@ namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use SimplePie\IRI;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class IRITest extends TestCase
 {
-    use ExpectPHPException;
-
     public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\IRI'));

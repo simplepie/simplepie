@@ -15,12 +15,9 @@ use SimplePie\Locator;
 use SimplePie\Registry;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class LocatorTest extends TestCase
 {
-    use ExpectPHPException;
-
     public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Locator'));
