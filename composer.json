@@ -36,7 +36,7 @@
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/simple-cache": "^1 || ^2 || ^3",
-        "yoast/phpunit-polyfills": "^1.0.1"
+        "yoast/phpunit-polyfills": "^2"
     },
     "suggest": {
         "ext-curl": "",
