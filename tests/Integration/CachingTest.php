@@ -118,7 +118,7 @@ class CachingTest extends TestCase
     /**
      * @return array<array{string, array<string, mixed>, array<string, mixed>, int}>
      */
-    public function provideSavedCacheData(): array
+    public static function provideSavedCacheData(): array
     {
         $defaultMtime = time();
         $defaultExpirationTime = $defaultMtime + 3600;

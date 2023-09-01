@@ -33,7 +33,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function sanitizeURLProvider(): array
+    public static function sanitizeURLProvider(): array
     {
         return [
             'simple absolute valid a href, resolved' => [

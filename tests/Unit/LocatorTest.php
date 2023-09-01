@@ -31,7 +31,7 @@ class LocatorTest extends TestCase
     /**
      * @return array<array{string}>
      */
-    public function feedmimetypes(): array
+    public static function feedmimetypes(): array
     {
         return [
             ['application/rss+xml'],
@@ -113,7 +113,7 @@ class LocatorTest extends TestCase
      *
      * @return iterable<array{File}>
      */
-    public function firefoxTestDataProvider(): iterable
+    public static function firefoxTestDataProvider(): iterable
     {
         $data = new File(dirname(__DIR__) . '/data/fftests.html');
         $data->headers = ['content-type' => 'text/html'];

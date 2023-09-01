@@ -42,7 +42,7 @@ class RegistryTest extends TestCase
     /**
      * @return array<array{string, class-string}>
      */
-    public function getDefaultClassDataProvider(): array
+    public static function getDefaultClassDataProvider(): array
     {
         return [
             ['SimplePie\Cache', 'SimplePie\Cache'],
@@ -104,7 +104,7 @@ class RegistryTest extends TestCase
     /**
      * @return array<array{string, string, string}>
      */
-    public function getOverridingClassDataProvider(): array
+    public static function getOverridingClassDataProvider(): array
     {
         return [
             ['File',       'File',       FileMock::class],

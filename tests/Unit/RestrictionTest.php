@@ -28,7 +28,7 @@ class RestrictionTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function getRelationshipDataProvider(): array
+    public static function getRelationshipDataProvider(): array
     {
         return [
             'iTunesRSS Channel Block Test RSS 2.0' => [

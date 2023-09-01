@@ -270,7 +270,7 @@ class SimplePieTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function getCopyrightDataProvider(): array
+    public static function getCopyrightDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0' => [
@@ -583,7 +583,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getDescriptionDataProvider(): array
+    public static function getDescriptionDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Description' => [
@@ -994,7 +994,7 @@ EOT
     /**
      * @return array<array{string, int|null}>
      */
-    public function getImageHeightDataProvider(): array
+    public static function getImageHeightDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon Default' => [
@@ -1291,7 +1291,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getImageLinkDataProvider(): array
+    public static function getImageLinkDataProvider(): array
     {
         return [
             'Test RSS 0.90 Link' => [
@@ -1388,7 +1388,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getImageTitleDataProvider(): array
+    public static function getImageTitleDataProvider(): array
     {
         return [
             'Test RSS 0.90 DC 1.0 Title' => [
@@ -1635,7 +1635,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getImageUrlDataProvider(): array
+    public static function getImageUrlDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon' => [
@@ -1884,7 +1884,7 @@ EOT
     /**
      * @return array<array{string, int|null}>
      */
-    public function getImageWidthDataProvider(): array
+    public static function getImageWidthDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon Default' => [
@@ -2186,7 +2186,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getLanguageDataProvider(): array
+    public static function getLanguageDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Language' => [
@@ -2441,7 +2441,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getLinkDataProvider(): array
+    public static function getLinkDataProvider(): array
     {
         return [
             'Test Atom 0.3 Link' => [
@@ -2709,7 +2709,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getTitleDataProvider(): array
+    public static function getTitleDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Title' => [
