@@ -1,0 +1,24 @@
+parameters:
+	paths: [
+		'../../library',
+		'../../src',
+	]
+
+	exclude: []
+
+	excludeTagged: ['internal']
+
+	baseUrl: '/api/'
+
+	outputDir: '%workingDir%/../content/api'
+
+	themeDir: 'theme'
+
+	title: 'SimplePie 1.8'
+
+# Override ApiGen implementation
+services:
+	renderer.urlGenerator:
+		factory: SimplePie\ApiGen\MdUrlGenerator(ApiGen\Helpers::baseDir(%paths%), %baseUrl%)
+	renderer.latte.extension:
+		factory: SimplePie\ApiGen\LatteExtension

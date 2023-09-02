@@ -3,7 +3,10 @@ demo/cache/*
 SimplePie.compiled.php
 bin/
 vendor/
-composer.lock
+/composer.lock
 phpunit.xml
 .php-cs-fixer.cache
 .phpunit.result.cache
+docs/public/
+docs/content/api/
+docs/static/api/

@@ -1,0 +1,7 @@
+{% extends 'page.html' %}
+
+{% block content %}
+	<h1 class="storytitle">{{ page.title }}</h1>
+	{{ page.content | safe }}
+	<p class="footnote">Posted by {{ page.extra.author }} on {{ page.date | date(format="%B %e, %Y at %H:%M") }}.</p>
+{% endblock content %}

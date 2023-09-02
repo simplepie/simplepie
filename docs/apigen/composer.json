@@ -1,0 +1,14 @@
+{
+	"require": {
+		"php": "^8.0",
+		"psr/simple-cache": "^3.0"
+	},
+	"require-dev": {
+		"apigen/apigen": "^7.0.0-alpha.3"
+	},
+	"autoload": {
+		"psr-4": {
+			"SimplePie\\ApiGen\\": "src"
+		}
+	}
+}

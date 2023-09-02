@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ section.title }}{% endblock title %}
+
+{% block content %}
+{{ section.content | safe }}
+{% endblock content %}

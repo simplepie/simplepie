@@ -1,0 +1,5 @@
+# https://EditorConfig.org
+
+# Do not format files in this directory.
+# They are auto-generated or come from third parties.
+root = true
