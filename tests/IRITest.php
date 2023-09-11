@@ -456,16 +456,16 @@ class IRITest extends TestCase
             function ($errno, $errstr): bool {
                 $this->assertSame(
                     'Undefined property: SimplePie\IRI::nonexistant_prop',
-                    $errstr,
+                    $errstr
                 );
 
                 restore_error_handler();
                 return true;
             },
-            E_USER_NOTICE,
+            E_USER_NOTICE
         );
 
-        $iri->nonexistant_prop;
+        $should_fail = $iri->nonexistant_prop;
     }
 
     public function testBlankHost(): void

@@ -62,13 +62,13 @@ class CacheTest extends TestCase
             function ($errno, $errstr): bool {
                 $this->assertSame(
                     '"SimplePie\SimplePie::set_cache_class()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.',
-                    $errstr,
+                    $errstr
                 );
 
                 restore_error_handler();
                 return true;
             },
-            E_USER_DEPRECATED,
+            E_USER_DEPRECATED
         );
 
         $feed->set_cache_class(Mock_CacheLegacy::class);
