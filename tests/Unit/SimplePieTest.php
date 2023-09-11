@@ -17,6 +17,7 @@ use SimplePie\Tests\Fixtures\Cache\NewCacheMock;
 use SimplePie\Tests\Fixtures\Exception\SuccessException;
 use SimplePie\Tests\Fixtures\FileMock;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
+use TypeError;
 
 class SimplePieTest extends TestCase
 {
@@ -225,7 +226,21 @@ class SimplePieTest extends TestCase
     public function testLegacyCallOfSetCacheClass(): void
     {
         $feed = new SimplePie();
-        $this->expectDeprecation();
+
+        // PHPUnit 10 compatible way to test trigger_error().
+        set_error_handler(
+            function ($errno, $errstr): bool {
+                $this->assertSame(
+                    '"SimplePie\SimplePie::set_cache_class()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.',
+                    $errstr,
+                );
+
+                restore_error_handler();
+                return true;
+            },
+            E_USER_DEPRECATED,
+        );
+
         $feed->set_cache_class(LegacyCacheMock::class);
         $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
@@ -236,7 +251,8 @@ class SimplePieTest extends TestCase
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
             // This is no longer supported in PHP, so there is just no way to continue to provide BC
             // for the old non-static cache methods.
-            $this->expectError();
+            $this->expectException(TypeError::class);
+            $this->expectExceptionMessage('call_user_func_array(): Argument #1 ($callback) must be a valid callback, non-static method SimplePie\Tests\Fixtures\Cache\LegacyCacheMock::create() cannot be called statically');
         }
 
         $feed->init();

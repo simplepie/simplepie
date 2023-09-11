@@ -57,7 +57,7 @@ class CacheTest extends TestCase
 
         $feed = new SimplePie();
 
-        // PHPUnit 10 compatible way to test the deprecation error.
+        // PHPUnit 10 compatible way to test trigger_error().
         set_error_handler(
             function ($errno, $errstr): bool {
                 $this->assertSame(
