@@ -64,6 +64,7 @@
         "sort-packages": true
     },
     "scripts": {
+        "coverage": "phpunit --coverage-html=.phpunit.cache/code-coverage",
         "cs": "php-cs-fixer fix --verbose --dry-run --diff",
         "fix": "php-cs-fixer fix --verbose --diff",
         "phpstan": "phpstan analyze --memory-limit 512M",
