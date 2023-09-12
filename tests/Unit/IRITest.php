@@ -1,47 +1,9 @@
 <?php
 
+// SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
+// SPDX-License-Identifier: BSD-3-Clause
+
 declare(strict_types=1);
-/**
- * SimplePie
- *
- * A PHP-Based RSS and Atom Feed Framework.
- * Takes the hard work out of managing a complete RSS/Atom solution.
- *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- * 	* Redistributions of source code must retain the above copyright notice, this list of
- * 	  conditions and the following disclaimer.
- *
- * 	* Redistributions in binary form must reproduce the above copyright notice, this list
- * 	  of conditions and the following disclaimer in the documentation and/or other materials
- * 	  provided with the distribution.
- *
- * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used
- * 	  to endorse or promote products derived from this software without specific prior
- * 	  written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
- * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @package SimplePie
- * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
- * @author Ryan Parman
- * @author Sam Sneddon
- * @author Ryan McCue
- * @link http://simplepie.org/ SimplePie
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- */
 
 namespace SimplePie\Tests\Unit;
 
@@ -53,17 +15,20 @@ class IRITest extends TestCase
 {
     use ExpectPHPException;
 
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\IRI'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_IRI'));
     }
 
-    public function rfc3986DataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function rfc3986DataProvider(): array
     {
         return [
             // Normal
@@ -116,7 +81,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider rfc3986DataProvider
      */
-    public function testStringRFC3986($relative, $expected)
+    public function testStringRFC3986(string $relative, string $expected): void
     {
         $base = new IRI('http://a/b/c/d;p?q');
         $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
@@ -125,7 +90,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider rfc3986DataProvider
      */
-    public function testObjectRFC3986($relative, $expected)
+    public function testObjectRFC3986(string $relative, string $expected): void
     {
         $base = new IRI('http://a/b/c/d;p?q');
         $expected = new IRI($expected);
@@ -135,14 +100,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider rfc3986DataProvider
      */
-    public function testBothStringRFC3986($relative, $expected)
+    public function testBothStringRFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
         $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
         $this->assertSame($expected, (string) IRI::absolutize($base, $relative));
     }
 
-    public function SpDataProvider()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public function SpDataProvider(): array
     {
         return [
             ['http://a/b/c/d', 'f%0o', 'http://a/b/c/f%250o'],
@@ -167,7 +135,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider SpDataProvider
      */
-    public function testStringSP($base, $relative, $expected)
+    public function testStringSP(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
         $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
@@ -176,14 +144,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider SpDataProvider
      */
-    public function testObjectSP($base, $relative, $expected)
+    public function testObjectSP(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
         $expected = new IRI($expected);
         $this->assertEquals($expected, IRI::absolutize($base, $relative));
     }
 
-    public function queryDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function queryDataProvider(): array
     {
         return [
             ['a=b&c=d', 'http://example.com/?a=b&c=d'],
@@ -196,7 +167,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider queryDataProvider
      */
-    public function testStringQuery($query, $expected)
+    public function testStringQuery(string $query, string $expected): void
     {
         $base = new IRI('http://example.com/');
         $base->set_query($query);
@@ -206,7 +177,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider queryDataProvider
      */
-    public function testObjectQuery($query, $expected)
+    public function testObjectQuery(string $query, string $expected): void
     {
         $base = new IRI('http://example.com/');
         $base->set_query($query);
@@ -214,7 +185,10 @@ class IRITest extends TestCase
         $this->assertEquals($expected, $base);
     }
 
-    public function absolutizeDataProvider()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public function absolutizeDataProvider(): array
     {
         return [
             ['http://example.com/', 'foo/111:bar', 'http://example.com/foo/111:bar'],
@@ -225,7 +199,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider absolutizeDataProvider
      */
-    public function testAbsolutizeString($base, $relative, $expected)
+    public function testAbsolutizeString(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
         $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
@@ -234,14 +208,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider absolutizeDataProvider
      */
-    public function testAbsolutizeObject($base, $relative, $expected)
+    public function testAbsolutizeObject(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
         $expected = new IRI($expected);
         $this->assertEquals($expected, IRI::absolutize($base, $relative));
     }
 
-    public function normalizationDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function normalizationDataProvider(): array
     {
         return [
             ['example://a/b/c/%7Bfoo%7D', 'example://a/b/c/%7Bfoo%7D'],
@@ -327,7 +304,7 @@ class IRITest extends TestCase
     /**
      * @dataProvider normalizationDataProvider
      */
-    public function testStringNormalization($input, $output)
+    public function testStringNormalization(string $input, string $output): void
     {
         $input = new IRI($input);
         $this->assertSame($output, $input->get_iri());
@@ -336,14 +313,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider normalizationDataProvider
      */
-    public function testObjectNormalization($input, $output)
+    public function testObjectNormalization(string $input, string $output): void
     {
         $input = new IRI($input);
         $output = new IRI($output);
         $this->assertEquals($output, $input);
     }
 
-    public function uriDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function uriDataProvider(): array
     {
         return [
             ['http://example.com/%C3%A9cole', 'http://example.com/%C3%A9cole'],
@@ -355,13 +335,16 @@ class IRITest extends TestCase
     /**
      * @dataProvider uriDataProvider
      */
-    public function testURIConversion($input, $output)
+    public function testURIConversion(string $input, string $output): void
     {
         $input = new IRI($input);
         $this->assertSame($output, $input->get_uri());
     }
 
-    public function equivalenceDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function equivalenceDataProvider(): array
     {
         return [
             ['http://É.com', 'http://%C3%89.com'],
@@ -371,14 +354,17 @@ class IRITest extends TestCase
     /**
      * @dataProvider equivalenceDataProvider
      */
-    public function testObjectEquivalence($input, $output)
+    public function testObjectEquivalence(string $input, string $output): void
     {
         $input = new IRI($input);
         $output = new IRI($output);
         $this->assertEquals($output, $input);
     }
 
-    public function notEquivalenceDataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function notEquivalenceDataProvider(): array
     {
         return [
             ['http://example.com/foo/bar', 'http://example.com/foo%2Fbar'],
@@ -388,19 +374,19 @@ class IRITest extends TestCase
     /**
      * @dataProvider notEquivalenceDataProvider
      */
-    public function testObjectNotEquivalence($input, $output)
+    public function testObjectNotEquivalence(string $input, string $output): void
     {
         $input = new IRI($input);
         $output = new IRI($output);
         $this->assertNotEquals($output, $input);
     }
 
-    public function testInvalidAbsolutizeBase()
+    public function testInvalidAbsolutizeBase(): void
     {
         $this->assertFalse(IRI::absolutize('://not a URL', '../'));
     }
 
-    public function testInvalidPathNoHost()
+    public function testInvalidPathNoHost(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -408,21 +394,21 @@ class IRITest extends TestCase
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testInvalidRelativePathContainsColon()
+    public function testInvalidRelativePathContainsColon(): void
     {
         $iri = new IRI();
         $iri->path = '/test:/';
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testValidRelativePathContainsColon()
+    public function testValidRelativePathContainsColon(): void
     {
         $iri = new IRI();
         $iri->path = '/test/:';
         $this->assertTrue($iri->is_valid());
     }
 
-    public function testFullGamut()
+    public function testFullGamut(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -439,7 +425,7 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testReadAliased()
+    public function testReadAliased(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -456,7 +442,7 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testWriteAliased()
+    public function testWriteAliased(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -473,7 +459,7 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testNonexistantProperty()
+    public function testNonexistantProperty(): void
     {
         $this->expectNotice();
 
@@ -482,7 +468,7 @@ class IRITest extends TestCase
         $should_fail = $iri->nonexistant_prop;
     }
 
-    public function testBlankHost()
+    public function testBlankHost(): void
     {
         $iri = new IRI('http://example.com/a/?b=c#d');
         $iri->host = null;
@@ -491,7 +477,7 @@ class IRITest extends TestCase
         $this->assertSame('http:/a/?b=c#d', (string) $iri);
     }
 
-    public function testBadPort()
+    public function testBadPort(): void
     {
         $iri = new IRI();
         $iri->port = 'example';

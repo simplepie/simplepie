@@ -8,8 +8,27 @@ use SimplePie\Misc;
 
 class MiscWithPublicStaticMethodsMock extends Misc
 {
-    public static function __callStatic($name, $args)
+    /**
+     * @return string|false
+     */
+    public static function change_encoding_mbstring(string $data, string $input, string $output)
     {
-        return call_user_func_array(['SimplePie\Misc', $name], $args);
+        return parent::change_encoding_mbstring($data, $input, $output);
+    }
+
+    /**
+     * @return string|false
+     */
+    public static function change_encoding_iconv(string $data, string $input, string $output)
+    {
+        return parent::change_encoding_iconv($data, $input, $output);
+    }
+
+    /**
+     * @return string|false
+     */
+    public static function change_encoding_uconverter(string $data, string $input, string $output)
+    {
+        return parent::change_encoding_uconverter($data, $input, $output);
     }
 }

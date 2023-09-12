@@ -1,47 +1,9 @@
 <?php
 
+// SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
+// SPDX-License-Identifier: BSD-3-Clause
+
 declare(strict_types=1);
-/**
- * SimplePie
- *
- * A PHP-Based RSS and Atom Feed Framework.
- * Takes the hard work out of managing a complete RSS/Atom solution.
- *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- * 	* Redistributions of source code must retain the above copyright notice, this list of
- * 	  conditions and the following disclaimer.
- *
- * 	* Redistributions in binary form must reproduce the above copyright notice, this list
- * 	  of conditions and the following disclaimer in the documentation and/or other materials
- * 	  provided with the distribution.
- *
- * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used
- * 	  to endorse or promote products derived from this software without specific prior
- * 	  written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
- * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @package SimplePie
- * @copyright 2004-2016 Ryan Parman, Sam Sneddon, Ryan McCue
- * @author Ryan Parman
- * @author Sam Sneddon
- * @author Ryan McCue
- * @link http://simplepie.org/ SimplePie
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- */
 
 namespace SimplePie;
 
@@ -55,8 +17,6 @@ use SimplePie\XML\Declaration\Parser as DeclarationParser;
  * Handles creating objects and calling methods
  *
  * Access this via {@see \SimplePie\SimplePie::get_registry()}
- *
- * @package SimplePie
  */
 class Registry
 {
@@ -94,7 +54,7 @@ class Registry
      * Class mapping
      *
      * @see register()
-     * @var array
+     * @var array<string, class-string>
      */
     protected $classes = [];
 
@@ -151,7 +111,7 @@ class Registry
      * @param bool $legacy Whether to enable legacy support for this class
      * @return bool Successfulness
      */
-    public function register($type, $class, $legacy = false)
+    public function register(string $type, $class, bool $legacy = false)
     {
         if (array_key_exists($type, $this->legacyTypes)) {
             // trigger_error(sprintf('"%s"(): Using argument #1 ($type) with value "%s" is deprecated since SimplePie 1.8.0, use class-string "%s" instead.', __METHOD__, $type, $this->legacyTypes[$type]), \E_USER_DEPRECATED);
@@ -218,10 +178,10 @@ class Registry
      *
      * @template T class-string $type
      * @param class-string<T> $type
-     * @param array $parameters Parameters to pass to the constructor
+     * @param array<mixed> $parameters Parameters to pass to the constructor
      * @return T Instance of class
      */
-    public function &create($type, $parameters = [])
+    public function &create($type, array $parameters = [])
     {
         $class = $this->get_class($type);
 
@@ -246,10 +206,10 @@ class Registry
      *
      * @param class-string $type
      * @param string $method
-     * @param array $parameters
+     * @param array<mixed> $parameters
      * @return mixed
      */
-    public function &call($type, $method, $parameters = [])
+    public function &call($type, string $method, array $parameters = [])
     {
         $class = $this->get_class($type);
 

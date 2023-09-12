@@ -1,54 +1,23 @@
 <?php
 
-declare(strict_types=1);
+// SPDX-FileCopyrightText: 2008-2016 Sam Sneddon
+// SPDX-License-Identifier: BSD-3-Clause
 
-/**
- * IRI test cases
- *
- * Copyright (c) 2008-2016 Sam Sneddon.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 	* Redistributions of source code must retain the above copyright notice,
- *	  this list of conditions and the following disclaimer.
- *
- * 	* Redistributions in binary form must reproduce the above copyright notice,
- *	  this list of conditions and the following disclaimer in the documentation
- *	  and/or other materials provided with the distribution.
- *
- * 	* Neither the name of the SimplePie Team nor the names of its contributors
- *	  may be used to endorse or promote products derived from this software
- *	  without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @package IRI
- * @author Sam Sneddon
- * @copyright 2008-2016 Sam Sneddon
- * @license http://www.opensource.org/licenses/bsd-license.php
- * @link http://hg.gsnedders.com/iri/
- *
- */
+declare(strict_types=1);
 
 use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
+/**
+ * IRI test cases
+ */
 class IRITest extends PHPUnit\Framework\TestCase
 {
     use ExpectPHPException;
 
-    public static function rfc3986_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function rfc3986_tests(): array
     {
         return [
             // Normal
@@ -101,7 +70,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider rfc3986_tests
      */
-    public function testStringRFC3986($relative, $expected)
+    public function testStringRFC3986(string $relative, string $expected): void
     {
         $base = new SimplePie_IRI('http://a/b/c/d;p?q');
         $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
@@ -110,7 +79,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider rfc3986_tests
      */
-    public function testObjectRFC3986($relative, $expected)
+    public function testObjectRFC3986(string $relative, string $expected): void
     {
         $base = new SimplePie_IRI('http://a/b/c/d;p?q');
         $expected = new SimplePie_IRI($expected);
@@ -120,14 +89,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider rfc3986_tests
      */
-    public function testBothStringRFC3986($relative, $expected)
+    public function testBothStringRFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
         $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
         $this->assertSame($expected, (string) SimplePie_IRI::absolutize($base, $relative));
     }
 
-    public static function sp_tests()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public static function sp_tests(): array
     {
         return [
             ['http://a/b/c/d', 'f%0o', 'http://a/b/c/f%250o'],
@@ -152,7 +124,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider sp_tests
      */
-    public function testStringSP($base, $relative, $expected)
+    public function testStringSP(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
         $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
@@ -161,14 +133,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider sp_tests
      */
-    public function testObjectSP($base, $relative, $expected)
+    public function testObjectSP(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
         $expected = new SimplePie_IRI($expected);
         $this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative));
     }
 
-    public static function query_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function query_tests(): array
     {
         return [
             ['a=b&c=d', 'http://example.com/?a=b&c=d'],
@@ -181,7 +156,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider query_tests
      */
-    public function testStringQuery($query, $expected)
+    public function testStringQuery(string $query, string $expected): void
     {
         $base = new SimplePie_IRI('http://example.com/');
         $base->set_query($query);
@@ -191,7 +166,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider query_tests
      */
-    public function testObjectQuery($query, $expected)
+    public function testObjectQuery(string $query, string $expected): void
     {
         $base = new SimplePie_IRI('http://example.com/');
         $base->set_query($query);
@@ -199,7 +174,10 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $base);
     }
 
-    public static function absolutize_tests()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public static function absolutize_tests(): array
     {
         return [
             ['http://example.com/', 'foo/111:bar', 'http://example.com/foo/111:bar'],
@@ -210,7 +188,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider absolutize_tests
      */
-    public function testAbsolutizeString($base, $relative, $expected)
+    public function testAbsolutizeString(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
         $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
@@ -219,14 +197,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider absolutize_tests
      */
-    public function testAbsolutizeObject($base, $relative, $expected)
+    public function testAbsolutizeObject(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
         $expected = new SimplePie_IRI($expected);
         $this->assertEquals($expected, SimplePie_IRI::absolutize($base, $relative));
     }
 
-    public static function normalization_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function normalization_tests(): array
     {
         return [
             ['example://a/b/c/%7Bfoo%7D', 'example://a/b/c/%7Bfoo%7D'],
@@ -312,7 +293,7 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider normalization_tests
      */
-    public function testStringNormalization($input, $output)
+    public function testStringNormalization(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $this->assertSame($output, $input->get_iri());
@@ -321,14 +302,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider normalization_tests
      */
-    public function testObjectNormalization($input, $output)
+    public function testObjectNormalization(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $output = new SimplePie_IRI($output);
         $this->assertEquals($output, $input);
     }
 
-    public static function uri_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function uri_tests(): array
     {
         return [
             ['http://example.com/%C3%A9cole', 'http://example.com/%C3%A9cole'],
@@ -340,13 +324,16 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider uri_tests
      */
-    public function testURIConversion($input, $output)
+    public function testURIConversion(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $this->assertSame($output, $input->get_uri());
     }
 
-    public static function equivalence_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function equivalence_tests(): array
     {
         return [
             ['http://É.com', 'http://%C3%89.com'],
@@ -356,14 +343,17 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider equivalence_tests
      */
-    public function testObjectEquivalence($input, $output)
+    public function testObjectEquivalence(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $output = new SimplePie_IRI($output);
         $this->assertEquals($output, $input);
     }
 
-    public static function not_equivalence_tests()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function not_equivalence_tests(): array
     {
         return [
             ['http://example.com/foo/bar', 'http://example.com/foo%2Fbar'],
@@ -373,19 +363,19 @@ class IRITest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider not_equivalence_tests
      */
-    public function testObjectNotEquivalence($input, $output)
+    public function testObjectNotEquivalence(string $input, string $output): void
     {
         $input = new SimplePie_IRI($input);
         $output = new SimplePie_IRI($output);
         $this->assertNotEquals($output, $input);
     }
 
-    public function testInvalidAbsolutizeBase()
+    public function testInvalidAbsolutizeBase(): void
     {
         $this->assertFalse(SimplePie_IRI::absolutize('://not a URL', '../'));
     }
 
-    public function testInvalidPathNoHost()
+    public function testInvalidPathNoHost(): void
     {
         $iri = new SimplePie_IRI();
         $iri->scheme = 'http';
@@ -393,21 +383,21 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testInvalidRelativePathContainsColon()
+    public function testInvalidRelativePathContainsColon(): void
     {
         $iri = new SimplePie_IRI();
         $iri->path = '/test:/';
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testValidRelativePathContainsColon()
+    public function testValidRelativePathContainsColon(): void
     {
         $iri = new SimplePie_IRI();
         $iri->path = '/test/:';
         $this->assertTrue($iri->is_valid());
     }
 
-    public function testFullGamut()
+    public function testFullGamut(): void
     {
         $iri = new SimplePie_IRI();
         $iri->scheme = 'http';
@@ -424,7 +414,7 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testReadAliased()
+    public function testReadAliased(): void
     {
         $iri = new SimplePie_IRI();
         $iri->scheme = 'http';
@@ -441,7 +431,7 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testWriteAliased()
+    public function testWriteAliased(): void
     {
         $iri = new SimplePie_IRI();
         $iri->scheme = 'http';
@@ -458,7 +448,7 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testNonexistantProperty()
+    public function testNonexistantProperty(): void
     {
         $this->expectNotice();
 
@@ -467,7 +457,7 @@ class IRITest extends PHPUnit\Framework\TestCase
         $should_fail = $iri->nonexistant_prop;
     }
 
-    public function testBlankHost()
+    public function testBlankHost(): void
     {
         $iri = new SimplePie_IRI('http://example.com/a/?b=c#d');
         $iri->host = null;
@@ -476,7 +466,7 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('http:/a/?b=c#d', (string) $iri);
     }
 
-    public function testBadPort()
+    public function testBadPort(): void
     {
         $iri = new SimplePie_IRI();
         $iri->port = 'example';

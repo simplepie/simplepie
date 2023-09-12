@@ -1,62 +1,22 @@
 <?php
 
-declare(strict_types=1);
-/**
- * Tests for SimplePie_Item
- *
- * SimplePie
- *
- * A PHP-Based RSS and Atom Feed Framework.
- * Takes the hard work out of managing a complete RSS/Atom solution.
- *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- * 	* Redistributions of source code must retain the above copyright notice, this list of
- * 	  conditions and the following disclaimer.
- *
- * 	* Redistributions in binary form must reproduce the above copyright notice, this list
- * 	  of conditions and the following disclaimer in the documentation and/or other materials
- * 	  provided with the distribution.
- *
- * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used
- * 	  to endorse or promote products derived from this software without specific prior
- * 	  written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
- * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @package SimplePie
- * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
- * @author Ryan Parman
- * @author Sam Sneddon
- * @author Ryan McCue
- * @link http://simplepie.org/ SimplePie
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- */
+// SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
+// SPDX-License-Identifier: BSD-3-Clause
 
+declare(strict_types=1);
+
+/**
+ * Tests for SimplePie\Item
+ */
 class ItemTest extends PHPUnit\Framework\TestCase
 {
     /**
      * Run a test using a sprintf template and data
-     *
-     * @param string $template
      */
-    protected function checkFromTemplate($template, $data)
+    protected function checkFromTemplate(string $template, string $data): SimplePie
     {
-        if (!is_array($data)) {
-            $data = [$data];
-        }
+        $data = [$data];
+
         $xml = vsprintf($template, $data);
         $feed = new SimplePie();
         $feed->set_raw_data($xml);
@@ -66,7 +26,10 @@ class ItemTest extends PHPUnit\Framework\TestCase
         return $feed;
     }
 
-    public static function titleprovider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function titleprovider(): array
     {
         return [
             ['Feed Title', 'Feed Title'],
@@ -94,7 +57,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20($title, $expected)
+    public function testTitleRSS20(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">
@@ -109,7 +72,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithDC10($title, $expected)
+    public function testTitleRSS20WithDC10(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
@@ -124,7 +87,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithDC11($title, $expected)
+    public function testTitleRSS20WithDC11(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -139,7 +102,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithAtom03($title, $expected)
+    public function testTitleRSS20WithAtom03(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:a="http://purl.org/atom/ns#">
@@ -154,7 +117,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
     /**
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithAtom10($title, $expected)
+    public function testTitleRSS20WithAtom10(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
@@ -171,7 +134,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
      *
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithImageTitle($title, $expected)
+    public function testTitleRSS20WithImageTitle(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">
@@ -191,7 +154,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
      *
      * @dataProvider titleprovider
      */
-    public function testTitleRSS20WithImageTitleReversed($title, $expected)
+    public function testTitleRSS20WithImageTitleReversed(string $title, string $expected): void
     {
         $data =
 '<rss version="2.0">
@@ -206,7 +169,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
         $this->assertSame($expected, $feed->get_title());
     }
 
-    public function testItemWithEmptyContent()
+    public function testItemWithEmptyContent(): void
     {
         $data =
 '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">

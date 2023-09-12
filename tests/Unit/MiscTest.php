@@ -1,47 +1,9 @@
 <?php
 
+// SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
+// SPDX-License-Identifier: BSD-3-Clause
+
 declare(strict_types=1);
-/**
- * SimplePie
- *
- * A PHP-Based RSS and Atom Feed Framework.
- * Takes the hard work out of managing a complete RSS/Atom solution.
- *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- * 	* Redistributions of source code must retain the above copyright notice, this list of
- * 	  conditions and the following disclaimer.
- *
- * 	* Redistributions in binary form must reproduce the above copyright notice, this list
- * 	  of conditions and the following disclaimer in the documentation and/or other materials
- * 	  provided with the distribution.
- *
- * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used
- * 	  to endorse or promote products derived from this software without specific prior
- * 	  written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
- * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @package SimplePie
- * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
- * @author Ryan Parman
- * @author Sam Sneddon
- * @author Ryan McCue
- * @link http://simplepie.org/ SimplePie
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- */
 
 namespace SimplePie\Tests\Unit;
 
@@ -52,35 +14,36 @@ use SimplePie_Misc;
 
 class MiscTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists(Misc::class));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists(SimplePie_Misc::class));
     }
 
-    public function test_existence_of_get_element()
+    public function test_existence_of_get_element(): void
     {
         // BC: make sure that get_element() exists
         $this->assertSame([], Misc::get_element('', ''));
     }
 
-    public function test_existence_of_entities_decode()
+    public function test_existence_of_entities_decode(): void
     {
         // BC: make sure that entities_decode() exists
         $this->assertSame('', Misc::entities_decode(''));
     }
 
+    /* ## UTF-8 methods */
+
     /**
-     * #@+
-     * UTF-8 methods
-     *
      * Provider for the convert toUTF8* tests
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf8DataProvider()
+    public function utf8DataProvider(): array
     {
         return [
             ['A', 'A', 'ASCII'],
@@ -101,7 +64,7 @@ class MiscTest extends TestCase
      *
      * @dataProvider utf8DataProvider
      */
-    public function test_convert_UTF8($input, $expected, $encoding)
+    public function test_convert_UTF8(string $input, string $expected, string $encoding): void
     {
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-8'));
@@ -109,8 +72,10 @@ class MiscTest extends TestCase
 
     /**
      * Special cases with mbstring handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf8MbstringDataProvider()
+    public function utf8MbstringDataProvider(): array
     {
         return [
             ["\xa1\xc4", "\xe2\x88\x9e", 'EUC-KR'],
@@ -123,7 +88,7 @@ class MiscTest extends TestCase
      * Special cases only
      * @dataProvider utf8MbstringDataProvider
      */
-    public function test_convert_UTF8_mbstring($input, $expected, $encoding)
+    public function test_convert_UTF8_mbstring(string $input, string $expected, string $encoding): void
     {
         if (! extension_loaded('mbstring')) {
             $this->markTestSkipped('Skipping test because mbstring extension is not available.');
@@ -135,8 +100,10 @@ class MiscTest extends TestCase
 
     /**
      * Special cases with iconv handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf8IconvDataProvider()
+    public function utf8IconvDataProvider(): array
     {
         return [
             ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
@@ -149,7 +116,7 @@ class MiscTest extends TestCase
      * Special cases only
      * @dataProvider utf8IconvDataProvider
      */
-    public function test_convert_UTF8_iconv($input, $expected, $encoding)
+    public function test_convert_UTF8_iconv(string $input, string $expected, string $encoding): void
     {
         if (! extension_loaded('iconv')) {
             $this->markTestSkipped('Skipping test because iconv extension is not available.');
@@ -161,8 +128,10 @@ class MiscTest extends TestCase
 
     /**
      * Special cases with uconverter handling
+     *
+     * @return array<array{string, string, string}>
      */
-    public function utf8IntlDataProvider()
+    public function utf8IntlDataProvider(): array
     {
         return [
             ["\xfe\xff\x22\x1e", "\xe2\x88\x9e", 'UTF-16'],
@@ -175,7 +144,7 @@ class MiscTest extends TestCase
      * Special cases only
      * @dataProvider utf8IntlDataProvider
      */
-    public function test_convert_UTF8_uconverter($input, $expected, $encoding)
+    public function test_convert_UTF8_uconverter(string $input, string $expected, string $encoding): void
     {
         if (! extension_loaded('intl')) {
             $this->markTestSkipped('Skipping test because intl extension is not available.');
@@ -184,12 +153,13 @@ class MiscTest extends TestCase
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_uconverter($input, $encoding, 'UTF-8'));
     }
-    /**#@-*/
 
-    /**#@+
-     * UTF-16 methods
+    /* ## UTF-16 methods */
+
+    /**
+     * @return array<array{string, string, string}>
      */
-    public function utf16DataProvider()
+    public function utf16DataProvider(): array
     {
         return [
             ["\x22\x1e", "\x22\x1e", 'UTF-16BE'],
@@ -201,30 +171,29 @@ class MiscTest extends TestCase
      * Convert * to UTF-16
      * @dataProvider utf16DataProvider
      */
-    public function test_convert_UTF16($input, $expected, $encoding)
+    public function test_convert_UTF16(string $input, string $expected, string $encoding): void
     {
         $encoding = Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
-    /**#@-*/
 
-    public function test_nonexistant()
+    public function test_nonexistant(): void
     {
         $this->assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public function assertSameBin2Hex($expected, $actual, $message = '')
+    public function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
-        if (is_string($expected)) {
-            $expected = bin2hex($expected);
-        }
-        if (is_string($actual)) {
-            $actual = bin2hex($actual);
-        }
+        $expected = bin2hex($expected);
+        $actual = bin2hex($actual);
+
         $this->assertSame($expected, $actual, $message);
     }
 
-    public function absolutizeUrlRFC3986DataProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public function absolutizeUrlRFC3986DataProvider(): array
     {
         // The tests enclosed within come from RFC 3986 section 5.4
         // and all share the same base URL
@@ -405,7 +374,7 @@ class MiscTest extends TestCase
     /**
      * @dataProvider absolutizeUrlRFC3986DataProvider
      */
-    public function test_absolutize_url_RFC3986($relative, $expected)
+    public function test_absolutize_url_RFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
 
@@ -415,7 +384,10 @@ class MiscTest extends TestCase
         );
     }
 
-    public function absolutizeUrlBugsDataProvider()
+    /**
+     * @return array<array{string, string, string}>
+     */
+    public function absolutizeUrlBugsDataProvider(): array
     {
         return [
             'bug 274.0' => [
@@ -509,7 +481,7 @@ class MiscTest extends TestCase
     /**
      * @dataProvider absolutizeUrlBugsDataProvider
      */
-    public function test_absolutize_url_bugs($base, $relative, $expected)
+    public function test_absolutize_url_bugs(string $base, string $relative, string $expected): void
     {
         $this->assertSame(
             $expected,
@@ -517,7 +489,10 @@ class MiscTest extends TestCase
         );
     }
 
-    public function parseDateDataProvider()
+    /**
+     * @return array<array{string, int|false}>
+     */
+    public function parseDateDataProvider(): array
     {
         return [
             // The tests enclosed within come from RFC 3339 section 5.8
@@ -755,8 +730,9 @@ class MiscTest extends TestCase
 
     /**
      * @dataProvider parseDateDataProvider
+     * @param int|false $expected
      */
-    public function test_parse_date($data, $expected)
+    public function test_parse_date(string $data, $expected): void
     {
         $this->assertSame(
             $expected,

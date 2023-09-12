@@ -1,6 +1,5 @@
 <?php
 include_once('../autoloader.php');
-include_once('../idn/idna_convert.class.php');
 
 // Parse it
 $feed = new \SimplePie\SimplePie();

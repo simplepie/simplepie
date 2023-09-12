@@ -1,47 +1,9 @@
 <?php
 
+// SPDX-FileCopyrightText: 2004-2023 Ryan Parman, Sam Sneddon, Ryan McCue
+// SPDX-License-Identifier: BSD-3-Clause
+
 declare(strict_types=1);
-/**
- * SimplePie
- *
- * A PHP-Based RSS and Atom Feed Framework.
- * Takes the hard work out of managing a complete RSS/Atom solution.
- *
- * Copyright (c) 2004-2022, Ryan Parman, Sam Sneddon, Ryan McCue, and contributors
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- * 	* Redistributions of source code must retain the above copyright notice, this list of
- * 	  conditions and the following disclaimer.
- *
- * 	* Redistributions in binary form must reproduce the above copyright notice, this list
- * 	  of conditions and the following disclaimer in the documentation and/or other materials
- * 	  provided with the distribution.
- *
- * 	* Neither the name of the SimplePie Team nor the names of its contributors may be used
- * 	  to endorse or promote products derived from this software without specific prior
- * 	  written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS
- * AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @package SimplePie
- * @copyright 2004-2022 Ryan Parman, Sam Sneddon, Ryan McCue
- * @author Ryan Parman
- * @author Sam Sneddon
- * @author Ryan McCue
- * @link http://simplepie.org/ SimplePie
- * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- */
 
 namespace SimplePie\Tests\Unit\Cache;
 
@@ -52,7 +14,7 @@ use stdClass;
 
 class BaseDataCacheTest extends TestCase
 {
-    public function testSetDataReturnsTrueIfDataCouldBeWritten()
+    public function testSetDataReturnsTrueIfDataCouldBeWritten(): void
     {
         $key = 'name';
         $value = [];
@@ -66,7 +28,7 @@ class BaseDataCacheTest extends TestCase
         $this->assertTrue($cache->set_data($key, $value, $ttl));
     }
 
-    public function testSetDataReturnsFalseIfDataCouldNotBeWritten()
+    public function testSetDataReturnsFalseIfDataCouldNotBeWritten(): void
     {
         $key = 'name';
         $value = [];
@@ -80,7 +42,7 @@ class BaseDataCacheTest extends TestCase
         $this->assertFalse($cache->set_data($key, $value, $ttl));
     }
 
-    public function testGetDataReturnsCorrectData()
+    public function testGetDataReturnsCorrectData(): void
     {
         $key = 'name';
         $cachedValue = ['__cache_expiration_time' => time() + 3600];
@@ -94,7 +56,7 @@ class BaseDataCacheTest extends TestCase
         $this->assertSame($value, $cache->get_data($key));
     }
 
-    public function testGetDataWithCacheMissReturnsDefault()
+    public function testGetDataWithCacheMissReturnsDefault(): void
     {
         $key = 'name';
         $default = new stdClass();
@@ -107,7 +69,7 @@ class BaseDataCacheTest extends TestCase
         $this->assertSame($default, $cache->get_data($key, $default));
     }
 
-    public function testGetDataWithCacheExpiredReturnsDefault()
+    public function testGetDataWithCacheExpiredReturnsDefault(): void
     {
         $key = 'name';
         $cachedValue = ['__cache_expiration_time' => 0];
@@ -121,7 +83,7 @@ class BaseDataCacheTest extends TestCase
         $this->assertSame($default, $cache->get_data($key, $default));
     }
 
-    public function testGetDataWithCacheCorruptionReturnsDefault()
+    public function testGetDataWithCacheCorruptionReturnsDefault(): void
     {
         $key = 'name';
         $default = new stdClass();
@@ -134,7 +96,7 @@ class BaseDataCacheTest extends TestCase
         $this->assertSame($default, $cache->get_data($key, $default));
     }
 
-    public function testDeleteDataReturnsTrueIfDataCouldBeDeleted()
+    public function testDeleteDataReturnsTrueIfDataCouldBeDeleted(): void
     {
         $key = 'name';
 
@@ -146,7 +108,7 @@ class BaseDataCacheTest extends TestCase
         $this->assertTrue($cache->delete_data($key));
     }
 
-    public function testDeleteDataReturnsFalseIfDataCouldNotBeDeleted()
+    public function testDeleteDataReturnsFalseIfDataCouldNotBeDeleted(): void
     {
         $key = 'name';
 
