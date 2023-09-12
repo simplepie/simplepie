@@ -2052,7 +2052,8 @@ class SimplePie
                             continue;
                         }
 
-                        if ((
+                        if (
+                            (
                                 preg_match('/^http(s)?:\/\//i', $href)
                                 || (
                                     $possible_feed->get_status_code() === 200
