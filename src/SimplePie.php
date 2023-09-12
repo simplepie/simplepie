@@ -1914,7 +1914,6 @@ class SimplePie
                         if (isset($this->data['headers']['last-modified'])) {
                             $headers['if-modified-since'] = $this->data['headers']['last-modified'];
                         }
-
                         if (isset($this->data['headers']['etag'])) {
                             $headers['if-none-match'] = $this->data['headers']['etag'];
                         }
@@ -1990,8 +1989,7 @@ class SimplePie
         }
 
         if (!$this->force_feed) {
-            /** @var Detector */
-            $detector = $this->registry->create(Detector::class);
+            // Check if the supplied URL is a feed, if it isn't, look for it.
             $locate = $this->registry->create(Locator::class, [
                 (! $file instanceof File) ? File::fromResponse($file) : $file,
                 $this->timeout,
@@ -2011,11 +2009,12 @@ class SimplePie
                 );
             }
 
-            // Check if the supplied URL is a feed, if it isn't, look for it.
+            /** @var Detector */
+            $detector = $this->registry->create(Detector::class);
+
             if (! $detector->contains_feed($file->get_body_content(), $file->get_headers())) {
                 $copyStatusCode = $file->get_status_code();
                 $copyContentType = $file->get_header_line('content-type');
-
                 try {
                     $microformats = false;
                     if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
