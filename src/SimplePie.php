@@ -2012,7 +2012,7 @@ class SimplePie
             /** @var Detector */
             $detector = $this->registry->create(Detector::class);
 
-            if (! $detector->contains_feed($file->get_body_content(), $file->get_headers())) {
+            if (! $detector->contains_feed($file)) {
                 $copyStatusCode = $file->get_status_code();
                 $copyContentType = $file->get_header_line('content-type');
                 try {
@@ -2031,9 +2031,7 @@ class SimplePie
                     // Now also do feed discovery, but if microformats were found don't
                     // overwrite the current value of file.
                     $possible_feed_urls = $detector->discover_possible_feed_urls(
-                        $file->body,
-                        $file->headers,
-                        $file->permanent_url,
+                        $file,
                         $this->autodiscovery
                     );
 
@@ -2043,28 +2041,26 @@ class SimplePie
                     foreach ($possible_feed_urls as $href) {
                         $checked_feeds++;
 
-                        /** @var File */
-                        $possible_feed = $this->registry->create(File::class, [
-                            $href,
-                            $this->timeout,
-                            5,
-                            SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
-                            $this->useragent,
-                            $this->force_fsockopen,
-                            $this->curl_options
-                        ]);
+                        try {
+                            //code...
+                            $possible_feed = $http_client->request(
+                                Client::METHOD_GET,
+                                $href,
+                                ['Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER]
+                            );
+                        } catch (HttpException $th) {
+                            continue;
+                        }
 
-                        if (
-                            $possible_feed->success
-                            && (
-                                $possible_feed->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE === 0
+                        if ((
+                                preg_match('/^http(s)?:\/\//i', $href)
                                 || (
-                                    $possible_feed->status_code === 200
-                                    || $possible_feed->status_code > 206
-                                    && $possible_feed->status_code < 300
+                                    $possible_feed->get_status_code() === 200
+                                    || $possible_feed->get_status_code() > 206
+                                    && $possible_feed->get_status_code() < 300
                                 )
                             )
-                            && $detector->contains_feed($possible_feed->body, $possible_feed->headers)
+                            && $detector->contains_feed($possible_feed)
                         ) {
                             $this->all_discovered_feeds[$href] = $possible_feed;
                         }
