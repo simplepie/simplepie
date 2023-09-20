@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 require_once '../autoloader.php';
 
 function normalize_character_set($charset)

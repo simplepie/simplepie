@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 // Set up our constants
 define('SP_PATH', dirname(__FILE__, 2));
 define('COMPILED', SP_PATH . DIRECTORY_SEPARATOR . 'SimplePie.compiled.php');

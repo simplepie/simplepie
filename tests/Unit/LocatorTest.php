@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 /**
  * SimplePie
  *
@@ -186,9 +185,9 @@ class LocatorTest extends TestCase
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
         $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
         $this->assertInstanceOf('SimplePie\Tests\Fixtures\FileMock', $feed);
-        $success = array_filter($expected, [get_class(), 'filter_success']);
+        $success = array_filter($expected, [get_class($this), 'filter_success']);
 
-        $found = array_map([get_class(), 'map_url_file'], $all);
+        $found = array_map([get_class($this), 'map_url_file'], $all);
         $this->assertSame($success, $found);
     }
 
