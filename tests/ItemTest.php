@@ -5,10 +5,12 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tests for SimplePie\Item
  */
-class ItemTest extends PHPUnit\Framework\TestCase
+class ItemTest extends TestCase
 {
     /**
      * Run a test using a sprintf template and data

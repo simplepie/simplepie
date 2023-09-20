@@ -5,10 +5,12 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * HTTP parsing tests
  */
-class HTTPParserTest extends PHPUnit\Framework\TestCase
+class HTTPParserTest extends TestCase
 {
     /**
      * @return array<array{string, string}>

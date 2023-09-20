@@ -25,7 +25,7 @@ class DateTest extends TestCase
     /**
      * @return iterable<array{string, int}>
      */
-    public function w3cDtfDatesProvider(): iterable
+    public static function w3cDtfDatesProvider(): iterable
     {
         // The examples enclosed within come from the W3C Date and Time Formats note
         // https://www.w3.org/TR/NOTE-datetime

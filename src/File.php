@@ -265,10 +265,12 @@ class File implements Response
             }
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
-            if (empty($url) || !($this->body = trim(file_get_contents($url)))) {
-                $this->error = 'file_get_contents() could not read the file';
+            if (empty($url) || ! is_readable($url) ||  false === $filebody = file_get_contents($url)) {
+                $this->body = '';
+                $this->error = sprintf('file "%s" is not readable', $url);
                 $this->success = false;
             } else {
+                $this->body = trim($filebody);
                 $this->status_code = 200;
             }
         }

@@ -17,12 +17,9 @@ use SimplePie\Misc;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\Cache\BaseCacheWithCallbacksMock;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class CachingTest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @dataProvider provideSavedCacheData
      * @param array<string, mixed> $currentDataCached
@@ -121,7 +118,7 @@ class CachingTest extends TestCase
     /**
      * @return array<array{string, array<string, mixed>, array<string, mixed>, int}>
      */
-    public function provideSavedCacheData(): array
+    public static function provideSavedCacheData(): array
     {
         $defaultMtime = time();
         $defaultExpirationTime = $defaultMtime + 3600;

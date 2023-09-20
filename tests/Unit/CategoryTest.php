@@ -27,7 +27,7 @@ class CategoryTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function getFeedCategoryLableDataProvider(): array
+    public static function getFeedCategoryLableDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Subject' => [
@@ -395,7 +395,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getItemCategoryLableDataProvider(): array
+    public static function getItemCategoryLableDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Subject' => [

@@ -32,7 +32,7 @@ class FileTest extends TestCase
     /**
      * @return array<array{File}>
      */
-    public function getResponseData(): iterable
+    public static function getResponseData(): iterable
     {
         yield [new FileMock('http://example.com/feed')];
     }
