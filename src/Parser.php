@@ -133,7 +133,6 @@ class Parser implements RegistryAware
             $xml = xml_parser_create_ns($this->encoding, $this->separator);
             xml_parser_set_option($xml, XML_OPTION_SKIP_WHITE, 1);
             xml_parser_set_option($xml, XML_OPTION_CASE_FOLDING, 0);
-            xml_set_object($xml, $this);
             xml_set_character_data_handler($xml, [$this, 'cdata']);
             xml_set_element_handler($xml, [$this, 'tag_open'], [$this, 'tag_close']);
 
