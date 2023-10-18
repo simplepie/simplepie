@@ -14,12 +14,12 @@ use SimplePie\SimplePie;
 
 class AuthorTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Author'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Author'));
     }
@@ -27,7 +27,7 @@ class AuthorTest extends TestCase
     /**
      * @return array<array{string, ?string}>
      */
-    public function getAuthorNameDataProvider(): array
+    public static function getAuthorNameDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Creator' => [
@@ -505,7 +505,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getContributorNameDataProvider(): array
+    public static function getContributorNameDataProvider(): array
     {
         return [
             'Test Atom 0.3 Name' => [

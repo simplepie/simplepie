@@ -15,12 +15,12 @@ use SimplePie\SimplePie;
 
 class RestrictionTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Restriction'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Restriction'));
     }
@@ -28,7 +28,7 @@ class RestrictionTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function getRelationshipDataProvider(): array
+    public static function getRelationshipDataProvider(): array
     {
         return [
             'iTunesRSS Channel Block Test RSS 2.0' => [

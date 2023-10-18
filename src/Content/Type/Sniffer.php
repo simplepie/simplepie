@@ -7,7 +7,9 @@ declare(strict_types=1);
 
 namespace SimplePie\Content\Type;
 
+use InvalidArgumentException;
 use SimplePie\File;
+use SimplePie\HTTP\Response;
 
 /**
  * Content-type sniffing
@@ -25,17 +27,26 @@ class Sniffer
     /**
      * File object
      *
-     * @var \SimplePie\File
+     * @var File|Response
      */
     public $file;
 
     /**
      * Create an instance of the class with the input file
      *
-     * @param File $file Input file
+     * @param File|Response $file Input file
      */
-    public function __construct(File $file)
+    public function __construct(/* File */ $file)
     {
+        if (! is_object($file) || ! $file instanceof Response) {
+            // For BC we're asking for `File`, but internally we accept every `Response` implementation
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($file) must be of type %s',
+                __METHOD__,
+                File::class
+            ), 1);
+        }
+
         $this->file = $file;
     }
 
@@ -145,7 +156,7 @@ class Sniffer
     /**
      * Sniff images
      *
-     * @return string Actual Content-Type
+     * @return string|false Actual Content-Type
      */
     public function image()
     {

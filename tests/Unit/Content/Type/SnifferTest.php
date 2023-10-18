@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class SnifferTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Content\Type\Sniffer'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Content_Type_Sniffer'));
     }

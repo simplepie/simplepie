@@ -13,12 +13,12 @@ use SimplePie\SimplePie;
 
 class ItemTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Item'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Item'));
     }
@@ -26,7 +26,7 @@ class ItemTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function getContentDataProvider(): array
+    public static function getContentDataProvider(): array
     {
         return [
             'Test Atom 0.3 Content' => [
@@ -663,9 +663,9 @@ EOT
     }
 
     /**
-     * @return array<array{string, int}>
+     * @return array<string, array{string, int|null}>
      */
-    public function getDateDataProvider(): array
+    public static function getDateDataProvider(): array
     {
         return [
             'Test Atom 0.3 Created' => [
@@ -1340,7 +1340,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getDescriptionDataProvider(): array
+    public static function getDescriptionDataProvider(): array
     {
         return [
             'Test Atom 0.3 Content' => [
@@ -1978,7 +1978,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getIdDataProvider(): array
+    public static function getIdDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Identifier' => [
@@ -2382,7 +2382,7 @@ EOT
     /**
      * @return array<array{string, float}>
      */
-    public function getLatitudeDataProvider(): array
+    public static function getLatitudeDataProvider(): array
     {
         return [
             'Test Atom 0.3 Geo Lat' => [
@@ -2609,7 +2609,7 @@ EOT
     /**
      * @return array<array{string, float}>
      */
-    public function getLongitudeDataProvider(): array
+    public static function getLongitudeDataProvider(): array
     {
         return [
             'Test Atom 0.3 Geo Long' => [
@@ -2836,7 +2836,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getPermalinkDataProvider(): array
+    public static function getPermalinkDataProvider(): array
     {
         return [
             'Test Atom 0.3 Enclosure' => [
@@ -3314,7 +3314,10 @@ EOT
         $this->assertSame($expected, $item->get_content());
     }
 
-    public function getBaseProvider()
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function getBaseProvider(): array
     {
         return [
             'Test item get_base xml:base' => [
@@ -3392,7 +3395,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getTitleDataProvider(): array
+    public static function getTitleDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Title' => [
@@ -4830,7 +4833,10 @@ EOT
         $this->assertSame($expected, $thumbnail['url']);
     }
 
-    public function getThumbnailProvider()
+    /**
+     * @return iterable<array{string, string}>
+     */
+    public static function getThumbnailProvider(): iterable
     {
         yield 'Test thumbnail link sanitized' => [
             <<<XML

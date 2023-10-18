@@ -16,18 +16,21 @@ use SimplePie\Tests\Fixtures\FileMock;
 
 class RegistryTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists(Registry::class));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Registry'));
     }
 
     /**
      * @dataProvider getDefaultClassDataProvider
+     *
+     * @param string $type
+     * @param class-string $expected
      */
     public function testGetClassReturnsCorrectClassname(string $type, string $expected): void
     {
@@ -37,9 +40,9 @@ class RegistryTest extends TestCase
     }
 
     /**
-     * @return array<array{string, string}>
+     * @return array<array{string, class-string}>
      */
-    public function getDefaultClassDataProvider(): array
+    public static function getDefaultClassDataProvider(): array
     {
         return [
             ['SimplePie\Cache', 'SimplePie\Cache'],
@@ -101,7 +104,7 @@ class RegistryTest extends TestCase
     /**
      * @return array<array{string, string, string}>
      */
-    public function getOverridingClassDataProvider(): array
+    public static function getOverridingClassDataProvider(): array
     {
         return [
             ['File',       'File',       FileMock::class],

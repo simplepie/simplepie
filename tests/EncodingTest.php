@@ -5,14 +5,15 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Encoding tests for SimplePie_Misc::change_encoding() and SimplePie_Misc::encoding()
  */
-class EncodingTest extends PHPUnit\Framework\TestCase
+class EncodingTest extends TestCase
 {
-    /**#@+
-     * UTF-8 methods
-     */
+    /* ## UTF-8 methods */
+
     /**
      * Provider for the convert toUTF8* tests
      *
@@ -122,11 +123,10 @@ class EncodingTest extends PHPUnit\Framework\TestCase
             $this->assertSameBin2Hex($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
         }
     }
-    /**#@-*/
 
-    /**#@+
-     * UTF-16 methods
-     *
+    /* ## UTF-16 methods */
+
+    /**
      * @return array<array{string, string, string}>
      */
     public static function toUTF16(): array
@@ -146,37 +146,42 @@ class EncodingTest extends PHPUnit\Framework\TestCase
         $encoding = SimplePie_Misc::encoding($encoding);
         $this->assertSameBin2Hex($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
-    /**#@-*/
 
-    public function test_nonexistant()
+    public function test_nonexistant(): void
     {
         $this->assertFalse(SimplePie_Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public static function assertSameBin2Hex($expected, $actual, $message = '')
+    public static function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
-        if (is_string($expected)) {
-            $expected = bin2hex($expected);
-        }
-        if (is_string($actual)) {
-            $actual = bin2hex($actual);
-        }
+        $expected = bin2hex($expected);
+        $actual = bin2hex($actual);
+
         static::assertSame($expected, $actual, $message);
     }
 }
 
 class Mock_Misc extends SimplePie_Misc
 {
-    public static function change_encoding_mbstring($data, $input, $output)
+    /**
+     * @return string|false
+     */
+    public static function change_encoding_mbstring(string $data, string $input, string $output)
     {
         return parent::change_encoding_mbstring($data, $input, $output);
     }
 
-    public static function change_encoding_iconv($data, $input, $output)
+    /**
+     * @return string|false
+     */
+    public static function change_encoding_iconv(string $data, string $input, string $output)
     {
         return parent::change_encoding_iconv($data, $input, $output);
     }
 
+    /**
+     * @return string|false
+     */
     public static function change_encoding_uconverter(string $data, string $input, string $output)
     {
         return parent::change_encoding_uconverter($data, $input, $output);

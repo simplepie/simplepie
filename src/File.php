@@ -27,11 +27,12 @@ class File implements Response
     public $url;
 
     /**
-     * @var string User agent to use in requests
+     * @var ?string User agent to use in requests
      * @deprecated Set the user agent in constructor.
      */
     public $useragent;
 
+    /** @var bool */
     public $success = true;
 
     /** @var array<string, non-empty-array<string>> Canonical representation of headers */
@@ -55,7 +56,11 @@ class File implements Response
      * @deprecated Use `get_status_code()` method.
      */
     public $status_code = 0;
+
+    /** @var int Number of redirect that were already performed during this request sequence. */
     public $redirects = 0;
+
+    /** @var ?string */
     public $error;
 
     /**
@@ -72,7 +77,16 @@ class File implements Response
     /** @var bool Whether the permanent URL is still writeable (prefix of permanent redirects has not ended) */
     private $permanentUrlMutable = true;
 
-    public function __construct($url, $timeout = 10, $redirects = 5, $headers = null, $useragent = null, $force_fsockopen = false, $curl_options = [])
+    /**
+     * @param string $url
+     * @param int $timeout
+     * @param int $redirects
+     * @param ?array<string, string> $headers
+     * @param ?string $useragent
+     * @param bool $force_fsockopen
+     * @param array<int, mixed> $curl_options
+     */
+    public function __construct(string $url, int $timeout = 10, int $redirects = 5, ?array $headers = null, ?string $useragent = null, bool $force_fsockopen = false, array $curl_options = [])
     {
         if (function_exists('idn_to_ascii')) {
             $parsed = \SimplePie\Misc::parse_url($url);
@@ -117,10 +131,10 @@ class File implements Response
                     curl_setopt($fp, $curl_param, $curl_value);
                 }
 
-                $this->headers = curl_exec($fp);
+                $responseHeaders = curl_exec($fp);
                 if (curl_errno($fp) === 23 || curl_errno($fp) === 61) {
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
-                    $this->headers = curl_exec($fp);
+                    $responseHeaders = curl_exec($fp);
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
                 if (curl_errno($fp)) {
@@ -132,15 +146,15 @@ class File implements Response
                         $this->url = $info['url'];
                     }
                     curl_close($fp);
-                    $this->headers = \SimplePie\HTTP\Parser::prepareHeaders($this->headers, $info['redirect_count'] + 1);
-                    $parser = new \SimplePie\HTTP\Parser($this->headers, true);
+                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders, $info['redirect_count'] + 1);
+                    $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
                         $this->body = trim($parser->body);
                         $this->status_code = $parser->status_code;
-                        if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
+                        if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
-                            $location = \SimplePie\Misc::absolutize_url($this->headers['location'], $url);
+                            $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
                             $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                             $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                             return;
@@ -191,27 +205,27 @@ class File implements Response
 
                     $info = stream_get_meta_data($fp);
 
-                    $this->headers = '';
+                    $responseHeaders = '';
                     while (!$info['eof'] && !$info['timed_out']) {
-                        $this->headers .= fread($fp, 1160);
+                        $responseHeaders .= fread($fp, 1160);
                         $info = stream_get_meta_data($fp);
                     }
                     if (!$info['timed_out']) {
-                        $parser = new \SimplePie\HTTP\Parser($this->headers, true);
+                        $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                         if ($parser->parse()) {
                             $this->set_headers($parser->headers);
                             $this->body = $parser->body;
                             $this->status_code = $parser->status_code;
-                            if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && isset($this->headers['location']) && $this->redirects < $redirects) {
+                            if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                                 $this->redirects++;
-                                $location = \SimplePie\Misc::absolutize_url($this->headers['location'], $url);
+                                $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
                                 $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                                 $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                                 return;
                             }
-                            if (isset($this->headers['content-encoding'])) {
+                            if (($contentEncodingHeader = $this->get_header_line('content-encoding')) !== '') {
                                 // Hey, we act dumb elsewhere, so let's do that here too
-                                switch (strtolower(trim($this->headers['content-encoding'], "\x09\x0A\x0D\x20"))) {
+                                switch (strtolower(trim($contentEncodingHeader, "\x09\x0A\x0D\x20"))) {
                                     case 'gzip':
                                     case 'x-gzip':
                                         $decoder = new \SimplePie\Gzdecode($this->body);
@@ -251,9 +265,13 @@ class File implements Response
             }
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
-            if (empty($url) || !($this->body = trim(file_get_contents($url)))) {
-                $this->error = 'file_get_contents could not read the file';
+            if (empty($url) || ! is_readable($url) ||  false === $filebody = file_get_contents($url)) {
+                $this->body = '';
+                $this->error = sprintf('file "%s" is not readable', $url);
                 $this->success = false;
+            } else {
+                $this->body = trim($filebody);
+                $this->status_code = 200;
             }
         }
     }
@@ -414,6 +432,36 @@ class File implements Response
         return array_map(function (array $values): string {
             return implode(',', $values);
         }, $headers);
+    }
+
+    /**
+     * Create a File instance from another Response
+     *
+     * For BC reasons in some places there MUST be a `File` instance
+     * instead of a `Response` implementation
+     *
+     * @see Locator::__construct()
+     * @internal
+     */
+    final public static function fromResponse(Response $response): self
+    {
+        $headers = [];
+
+        foreach ($response->get_headers() as $name => $header) {
+            $headers[$name] = implode(', ', $header);
+        }
+
+        /** @var File */
+        $file = (new \ReflectionClass(File::class))->newInstanceWithoutConstructor();
+
+        $file->url = $response->get_final_requested_uri();
+        $file->useragent = null;
+        $file->headers = $headers;
+        $file->body = $response->get_body_content();
+        $file->status_code = $response->get_status_code();
+        $file->permanent_url = $response->get_permanent_uri();
+
+        return $file;
     }
 }
 

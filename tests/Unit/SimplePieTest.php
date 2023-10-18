@@ -17,18 +17,16 @@ use SimplePie\Tests\Fixtures\Cache\NewCacheMock;
 use SimplePie\Tests\Fixtures\Exception\SuccessException;
 use SimplePie\Tests\Fixtures\FileMock;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
+use TypeError;
 
 class SimplePieTest extends TestCase
 {
-    use ExpectPHPException;
-
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\SimplePie'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists(SimplePie::class));
     }
@@ -38,11 +36,10 @@ class SimplePieTest extends TestCase
      *
      * @param string $template
      */
-    private function createFeedWithTemplate(string $template, $data): SimplePie
+    private function createFeedWithTemplate(string $template, string $data): SimplePie
     {
-        if (!is_array($data)) {
-            $data = [$data];
-        }
+        $data = [$data];
+
         $xml = vsprintf($template, $data);
         $feed = new SimplePie();
         $feed->set_raw_data($xml);
@@ -195,7 +192,7 @@ class SimplePieTest extends TestCase
         $this->assertSame($expected, $feed->get_title());
     }
 
-    public function testItemWithEmptyContent()
+    public function testItemWithEmptyContent(): void
     {
         $data =
 '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
@@ -212,7 +209,7 @@ class SimplePieTest extends TestCase
         $this->assertSame($content, $item->get_content());
     }
 
-    public function testSetPsr16Cache()
+    public function testSetPsr16Cache(): void
     {
         $psr16 = $this->createMock(CacheInterface::class);
         $psr16->expects($this->once())->method('get')->willReturn([]);
@@ -226,10 +223,24 @@ class SimplePieTest extends TestCase
         $feed->init();
     }
 
-    public function testLegacyCallOfSetCacheClass()
+    public function testLegacyCallOfSetCacheClass(): void
     {
         $feed = new SimplePie();
-        $this->expectDeprecation();
+
+        // PHPUnit 10 compatible way to test trigger_error().
+        set_error_handler(
+            function ($errno, $errstr): bool {
+                $this->assertSame(
+                    '"SimplePie\SimplePie::set_cache_class()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.',
+                    $errstr
+                );
+
+                restore_error_handler();
+                return true;
+            },
+            E_USER_DEPRECATED
+        );
+
         $feed->set_cache_class(LegacyCacheMock::class);
         $feed->get_registry()->register(File::class, FileMock::class);
         $feed->set_feed_url('http://example.com/feed/');
@@ -240,13 +251,14 @@ class SimplePieTest extends TestCase
             // PHP 8.0 will throw a `TypeError` for trying to call a non-static method statically.
             // This is no longer supported in PHP, so there is just no way to continue to provide BC
             // for the old non-static cache methods.
-            $this->expectError();
+            $this->expectException(TypeError::class);
+            $this->expectExceptionMessage('call_user_func_array(): Argument #1 ($callback) must be a valid callback, non-static method SimplePie\Tests\Fixtures\Cache\LegacyCacheMock::create() cannot be called statically');
         }
 
         $feed->init();
     }
 
-    public function testDirectOverrideNew()
+    public function testDirectOverrideNew(): void
     {
         $this->expectException(SuccessException::class);
 
@@ -258,7 +270,7 @@ class SimplePieTest extends TestCase
         $feed->init();
     }
 
-    public function testDirectOverrideLegacy()
+    public function testDirectOverrideLegacy(): void
     {
         $feed = new SimplePie();
         $feed->get_registry()->register(File::class, FileWithRedirectMock::class);
@@ -274,7 +286,7 @@ class SimplePieTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function getCopyrightDataProvider(): array
+    public static function getCopyrightDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0' => [
@@ -587,7 +599,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getDescriptionDataProvider(): array
+    public static function getDescriptionDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Description' => [
@@ -998,7 +1010,7 @@ EOT
     /**
      * @return array<array{string, int|null}>
      */
-    public function getImageHeightDataProvider(): array
+    public static function getImageHeightDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon Default' => [
@@ -1295,7 +1307,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getImageLinkDataProvider(): array
+    public static function getImageLinkDataProvider(): array
     {
         return [
             'Test RSS 0.90 Link' => [
@@ -1392,7 +1404,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getImageTitleDataProvider(): array
+    public static function getImageTitleDataProvider(): array
     {
         return [
             'Test RSS 0.90 DC 1.0 Title' => [
@@ -1639,7 +1651,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getImageUrlDataProvider(): array
+    public static function getImageUrlDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon' => [
@@ -1888,7 +1900,7 @@ EOT
     /**
      * @return array<array{string, int|null}>
      */
-    public function getImageWidthDataProvider(): array
+    public static function getImageWidthDataProvider(): array
     {
         return [
             'Test Atom 1.0 Icon Default' => [
@@ -2190,7 +2202,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getLanguageDataProvider(): array
+    public static function getLanguageDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Language' => [
@@ -2445,7 +2457,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getLinkDataProvider(): array
+    public static function getLinkDataProvider(): array
     {
         return [
             'Test Atom 0.3 Link' => [
@@ -2713,7 +2725,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getTitleDataProvider(): array
+    public static function getTitleDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Title' => [

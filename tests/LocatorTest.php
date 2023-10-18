@@ -5,17 +5,15 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
 use SimplePie\File;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 /**
  * Tests for autodiscovery
  */
-class LocatorTest extends PHPUnit\Framework\TestCase
+class LocatorTest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @return array<array{string}>
      */
@@ -39,7 +37,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
 
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
 
         $registry = new SimplePie_Registry();
         $registry->register(File::class, FileMock::class);
@@ -49,12 +47,12 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $this->assertSame($data, $feed);
     }
 
-    public function testInvalidMIMEType()
+    public function testInvalidMIMEType(): void
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
 
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
 
         $registry = new SimplePie_Registry();
         $registry->register(File::class, FileMock::class);
@@ -64,12 +62,12 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $this->assertSame(null, $feed);
     }
 
-    public function testDirectNoDOM()
+    public function testDirectNoDOM(): void
     {
         $data = new FileMock('http://example.com/feed.xml');
 
         $registry = new SimplePie_Registry();
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
         $locator->dom = null;
         $locator->set_registry($registry);
 
@@ -77,7 +75,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $this->assertSame($data, $locator->find(SIMPLEPIE_LOCATOR_ALL, $found));
     }
 
-    public function testFailDiscoveryNoDOM()
+    public function testFailDiscoveryNoDOM(): void
     {
         $this->expectException(\SimplePie\Exception::class);
 
@@ -86,7 +84,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
         $registry = new SimplePie_Registry();
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
         $locator->dom = null;
         $locator->set_registry($registry);
 
@@ -117,7 +115,7 @@ class LocatorTest extends PHPUnit\Framework\TestCase
      */
     public function test_from_file(File $data): void
     {
-        $locator = new SimplePie_Locator($data, 0, null, false);
+        $locator = new SimplePie_Locator($data, 0, null, -1);
 
         $registry = new SimplePie_Registry();
         $registry->register(File::class, FileMock::class);
@@ -142,12 +140,12 @@ class LocatorTest extends PHPUnit\Framework\TestCase
         $this->assertSame($success, $found);
     }
 
-    protected static function filter_success($url)
+    protected static function filter_success(string $url): bool
     {
         return (stripos($url, 'bogus') === false);
     }
 
-    protected static function map_url_file($file)
+    protected static function map_url_file(File $file): string
     {
         return $file->url;
     }

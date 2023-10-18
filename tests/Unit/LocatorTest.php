@@ -15,18 +15,15 @@ use SimplePie\Locator;
 use SimplePie\Registry;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class LocatorTest extends TestCase
 {
-    use ExpectPHPException;
-
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Locator'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Locator'));
     }
@@ -34,7 +31,7 @@ class LocatorTest extends TestCase
     /**
      * @return array<array{string}>
      */
-    public function feedmimetypes(): array
+    public static function feedmimetypes(): array
     {
         return [
             ['application/rss+xml'],
@@ -53,7 +50,7 @@ class LocatorTest extends TestCase
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = $mime;
 
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
 
         $registry = new Registry();
         $registry->register(File::class, FileMock::class);
@@ -63,12 +60,12 @@ class LocatorTest extends TestCase
         $this->assertSame($data, $feed);
     }
 
-    public function testInvalidMIMEType()
+    public function testInvalidMIMEType(): void
     {
         $data = new FileMock('http://example.com/feed.xml');
         $data->headers['content-type'] = 'application/pdf';
 
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
 
         $registry = new Registry();
         $registry->register(File::class, FileMock::class);
@@ -78,12 +75,12 @@ class LocatorTest extends TestCase
         $this->assertSame(null, $feed);
     }
 
-    public function testDirectNoDOM()
+    public function testDirectNoDOM(): void
     {
         $data = new FileMock('http://example.com/feed.xml');
 
         $registry = new Registry();
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
         $locator->dom = null;
         $locator->set_registry($registry);
 
@@ -91,7 +88,7 @@ class LocatorTest extends TestCase
         $this->assertSame($data, $locator->find(SimplePie::LOCATOR_ALL, $found));
     }
 
-    public function testFailDiscoveryNoDOM()
+    public function testFailDiscoveryNoDOM(): void
     {
         $this->expectException(\SimplePie\Exception::class);
 
@@ -100,7 +97,7 @@ class LocatorTest extends TestCase
         $data->body = '<!DOCTYPE html><html><body>Hi!</body></html>';
 
         $registry = new Registry();
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
         $locator->dom = null;
         $locator->set_registry($registry);
 
@@ -116,7 +113,7 @@ class LocatorTest extends TestCase
      *
      * @return iterable<array{File}>
      */
-    public function firefoxTestDataProvider(): iterable
+    public static function firefoxTestDataProvider(): iterable
     {
         $data = new File(dirname(__DIR__) . '/data/fftests.html');
         $data->headers = ['content-type' => 'text/html'];
@@ -131,7 +128,7 @@ class LocatorTest extends TestCase
      */
     public function test_from_file(File $data): void
     {
-        $locator = new Locator($data, 0, null, false);
+        $locator = new Locator($data, 0, null, -1);
 
         $registry = new Registry();
         $registry->register(File::class, FileMock::class);
@@ -156,12 +153,12 @@ class LocatorTest extends TestCase
         $this->assertSame($success, $found);
     }
 
-    protected function filter_success($url)
+    protected function filter_success(string $url): bool
     {
         return (stripos($url, 'bogus') === false);
     }
 
-    protected function map_url_file($file)
+    protected function map_url_file(File $file): string
     {
         return $file->url;
     }

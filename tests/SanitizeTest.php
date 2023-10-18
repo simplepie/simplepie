@@ -6,9 +6,11 @@
 
 declare(strict_types=1);
 
-class SanitizeTest extends PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class SanitizeTest extends TestCase
 {
-    public function testSanitize()
+    public function testSanitize(): void
     {
         $sanitize = new SimplePie_Sanitize();
 
@@ -31,7 +33,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function sanitizeURLProvider(): array
+    public static function sanitizeURLProvider(): array
     {
         return [
             'simple absolute valid a href, resolved' => [

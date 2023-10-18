@@ -14,12 +14,12 @@ use SimplePie\SimplePie;
 
 class CategoryTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Category'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Category'));
     }
@@ -27,7 +27,7 @@ class CategoryTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function getFeedCategoryLableDataProvider(): array
+    public static function getFeedCategoryLableDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Subject' => [
@@ -395,7 +395,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getItemCategoryLableDataProvider(): array
+    public static function getItemCategoryLableDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Subject' => [

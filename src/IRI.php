@@ -15,6 +15,7 @@ namespace SimplePie;
  * @property ?string $userinfo
  * @property ?string $host
  * @property ?int $port
+ * @property-write int|string|null $port
  * @property ?string $authority
  * @property string $path
  * @property ?string $query
@@ -76,6 +77,8 @@ class IRI
      *
      * Each key is the scheme, each value is an array with each key as the IRI
      * part and value as the default value for that part.
+     *
+     * @var array<string, array<string, mixed>>
      */
     protected $normalization = [
         'acap' => [
@@ -112,6 +115,7 @@ class IRI
      *
      * @param string $name Property name
      * @param mixed $value Property value
+     * @return void
      */
     public function __set(string $name, $value)
     {
@@ -152,7 +156,7 @@ class IRI
             $return = $this->$name;
         }
         // host -> ihost
-        elseif (($prop = 'i' . $name) && array_key_exists($prop, $props)) {
+        elseif (array_key_exists($prop = 'i' . $name, $props)) {
             $name = $prop;
             $return = $this->$prop;
         }
@@ -187,6 +191,7 @@ class IRI
      * Overload __unset() to provide access via properties
      *
      * @param string $name Property name
+     * @return void
      */
     public function __unset(string $name)
     {
@@ -207,6 +212,7 @@ class IRI
 
     /**
      * Clean up
+     * @return void
      */
     public function __destruct()
     {
@@ -286,7 +292,7 @@ class IRI
      * Parse an IRI into scheme/authority/path/query/fragment segments
      *
      * @param string $iri
-     * @return array
+     * @return array<string, mixed>|false
      */
     protected function parse_iri(string $iri)
     {
@@ -490,7 +496,7 @@ class IRI
      * Removes sequences of percent encoded bytes that represent UTF-8
      * encoded characters in iunreserved
      *
-     * @param array $match PCRE match
+     * @param array<int, string> $match PCRE match
      * @return string Replacement
      */
     protected function remove_iunreserved_percent_encoded(array $match)
@@ -613,6 +619,9 @@ class IRI
         return $string;
     }
 
+    /**
+     * @return void
+     */
     protected function scheme_normalization()
     {
         if (isset($this->normalization[$this->scheme]['iuserinfo']) && $this->iuserinfo === $this->normalization[$this->scheme]['iuserinfo']) {
@@ -676,12 +685,12 @@ class IRI
      * @param string|null $iri
      * @return bool
      */
-    public function set_iri(?string $iri, $clear_cache = false)
+    public function set_iri(?string $iri, bool $clear_cache = false)
     {
         static $cache;
         if ($clear_cache) {
             $cache = null;
-            return;
+            return false;
         }
         if (!$cache) {
             $cache = [];
@@ -756,12 +765,12 @@ class IRI
      * @param string|null $authority
      * @return bool
      */
-    public function set_authority(?string $authority, $clear_cache = false)
+    public function set_authority(?string $authority, bool $clear_cache = false)
     {
         static $cache;
         if ($clear_cache) {
             $cache = null;
-            return;
+            return false;
         }
         if (!$cache) {
             $cache = [];
@@ -791,7 +800,8 @@ class IRI
             $iuserinfo = null;
         }
         if (($port_start = strpos($remaining, ':', intval(strpos($remaining, ']')))) !== false) {
-            if (($port = substr($remaining, $port_start + 1)) === false) {
+            $port = substr($remaining, $port_start + 1);
+            if ($port === false) {
                 $port = null;
             }
             $remaining = substr($remaining, 0, $port_start);
@@ -903,12 +913,12 @@ class IRI
      * @param string|null $ipath
      * @return bool
      */
-    public function set_path(?string $ipath, $clear_cache = false)
+    public function set_path(?string $ipath, bool $clear_cache = false)
     {
         static $cache;
         if ($clear_cache) {
             $cache = null;
-            return;
+            return false;
         }
         if (!$cache) {
             $cache = [];
@@ -967,9 +977,10 @@ class IRI
     /**
      * Convert an IRI to a URI (or parts thereof)
      *
+     * @param string $string
      * @return string
      */
-    public function to_uri($string)
+    public function to_uri(string $string)
     {
         static $non_ascii;
         if (!$non_ascii) {

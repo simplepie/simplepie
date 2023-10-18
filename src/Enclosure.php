@@ -251,7 +251,7 @@ class Enclosure
         $this->width = $width;
 
         if (function_exists('idn_to_ascii')) {
-            $parsed = \SimplePie\Misc::parse_url($link);
+            $parsed = \SimplePie\Misc::parse_url($link ?? '');
             if ($parsed['authority'] !== '' && !ctype_print($parsed['authority'])) {
                 $authority = \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
                 $this->link = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $authority, $parsed['path'], $parsed['query'], $parsed['fragment']);
@@ -806,7 +806,7 @@ class Enclosure
      *
      * @deprecated Use the second parameter to {@see embed} instead
      *
-     * @param array|string $options See first parameter to {@see embed}
+     * @param array<string, mixed>|string $options See first parameter to {@see embed}
      * @return string HTML string to output
      */
     public function native_embed($options = '')
@@ -855,7 +855,7 @@ class Enclosure
      * `width` and `height` set to `auto` will default to 480x270 video resolution.
      *
      * @todo If the dimensions for media:content are defined, use them when width/height are set to 'auto'.
-     * @param array|string $options Comma-separated key:value list, or array
+     * @param array<string, mixed>|string $options Comma-separated key:value list, or array
      * @param bool $native Use `<embed>`
      * @return string HTML string to output
      */

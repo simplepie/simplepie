@@ -5,12 +5,13 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
 use SimplePie\File;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 
-class SubscribeUrlTest extends PHPUnit\Framework\TestCase
+class SubscribeUrlTest extends TestCase
 {
-    public function testDirectOverrideLegacy()
+    public function testDirectOverrideLegacy(): void
     {
         $feed = new SimplePie();
         $feed->get_registry()->register(File::class, FileWithRedirectMock::class);

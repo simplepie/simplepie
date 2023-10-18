@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class MySQLTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Cache\MySQL'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Cache_MySQL'));
     }

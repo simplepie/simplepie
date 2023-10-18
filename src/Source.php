@@ -18,28 +18,42 @@ class Source implements RegistryAware
 {
     /** @var Item */
     public $item;
-    /** @var array */
+    /** @var array<string, mixed> */
     public $data = [];
     /** @var Registry */
     protected $registry;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(Item $item, array $data)
     {
         $this->item = $item;
         $this->data = $data;
     }
 
-    public function set_registry(\SimplePie\Registry $registry)/* : void */
+    /**
+     * @return void
+     */
+    public function set_registry(\SimplePie\Registry $registry)
     {
         $this->registry = $registry;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return md5(serialize($this->data));
     }
 
-    public function get_source_tags($namespace, $tag)
+    /**
+     * @param string $namespace
+     * @param string $tag
+     * @return array<array<string, mixed>>|null
+     */
+    public function get_source_tags(string $namespace, string $tag)
     {
         if (isset($this->data['child'][$namespace][$tag])) {
             return $this->data['child'][$namespace][$tag];
@@ -48,21 +62,37 @@ class Source implements RegistryAware
         return null;
     }
 
-    public function get_base($element = [])
+    /**
+     * @param array<string, mixed> $element
+     * @return string
+     */
+    public function get_base(array $element = [])
     {
         return $this->item->get_base($element);
     }
 
-    public function sanitize($data, $type, $base = '')
+    /**
+     * @param string $data
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * @param string $base
+     * @return string
+     */
+    public function sanitize(string $data, $type, string $base = '')
     {
         return $this->item->sanitize($data, $type, $base);
     }
 
+    /**
+     * @return Item
+     */
     public function get_item()
     {
         return $this->item;
     }
 
+    /**
+     * @return string|null
+     */
     public function get_title()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'title')) {
@@ -84,7 +114,11 @@ class Source implements RegistryAware
         return null;
     }
 
-    public function get_category($key = 0)
+    /**
+     * @param int $key
+     * @return Category|null
+     */
+    public function get_category(int $key = 0)
     {
         $categories = $this->get_categories();
         if (isset($categories[$key])) {
@@ -94,6 +128,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return array<Category>|null
+     */
     public function get_categories()
     {
         $categories = [];
@@ -138,7 +175,11 @@ class Source implements RegistryAware
         return null;
     }
 
-    public function get_author($key = 0)
+    /**
+     * @param int $key
+     * @return Author|null
+     */
+    public function get_author(int $key = 0)
     {
         $authors = $this->get_authors();
         if (isset($authors[$key])) {
@@ -148,6 +189,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return array<Author>|null
+     */
     public function get_authors()
     {
         $authors = [];
@@ -202,7 +246,11 @@ class Source implements RegistryAware
         return null;
     }
 
-    public function get_contributor($key = 0)
+    /**
+     * @param int $key
+     * @return Author|null
+     */
+    public function get_contributor(int $key = 0)
     {
         $contributors = $this->get_contributors();
         if (isset($contributors[$key])) {
@@ -212,6 +260,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return array<Author>|null
+     */
     public function get_contributors()
     {
         $contributors = [];
@@ -257,7 +308,12 @@ class Source implements RegistryAware
         return null;
     }
 
-    public function get_link($key = 0, $rel = 'alternate')
+    /**
+     * @param int $key
+     * @param string $rel
+     * @return string|null
+     */
+    public function get_link(int $key = 0, string $rel = 'alternate')
     {
         $links = $this->get_links($rel);
         if (isset($links[$key])) {
@@ -269,13 +325,19 @@ class Source implements RegistryAware
 
     /**
      * Added for parity between the parent-level and the item/entry-level.
+     *
+     * @return string|null
      */
     public function get_permalink()
     {
         return $this->get_link(0);
     }
 
-    public function get_links($rel = 'alternate')
+    /**
+     * @param string $rel
+     * @return array<string>|null
+     */
+    public function get_links(string $rel = 'alternate')
     {
         if (!isset($this->data['links'])) {
             $this->data['links'] = [];
@@ -328,6 +390,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return string|null
+     */
     public function get_description()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'subtitle')) {
@@ -353,6 +418,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return string|null
+     */
     public function get_copyright()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'rights')) {
@@ -370,6 +438,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return string|null
+     */
     public function get_language()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'language')) {
@@ -385,6 +456,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return float|null
+     */
     public function get_latitude()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'lat')) {
@@ -396,6 +470,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return float|null
+     */
     public function get_longitude()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_W3C_BASIC_GEO, 'long')) {
@@ -409,6 +486,9 @@ class Source implements RegistryAware
         return null;
     }
 
+    /**
+     * @return string|null
+     */
     public function get_image_url()
     {
         if ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_ITUNES, 'image')) {

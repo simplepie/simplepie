@@ -7,9 +7,15 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use DomDocument;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\Psr18Client;
+use SimplePie\HTTP\Response;
 
 /**
  * Used for feed auto-discovery
@@ -19,21 +25,35 @@ use SimplePie\HTTP\FileClient;
  */
 class Locator implements RegistryAware
 {
-    public $useragent;
-    public $timeout;
+    /** @var ?string */
+    public $useragent = null;
+    /** @var int */
+    public $timeout = 10;
+    /** @var File */
     public $file;
+    /** @var string[] */
     public $local = [];
+    /** @var string[] */
     public $elsewhere = [];
+    /** @var array<mixed> */
     public $cached_entities = [];
+    /** @var string */
     public $http_base;
+    /** @var string */
     public $base;
+    /** @var int */
     public $base_location = 0;
+    /** @var int */
     public $checked_feeds = 0;
+    /** @var int */
     public $max_checked_feeds = 10;
+    /** @var bool */
     public $force_fsockopen = false;
+    /** @var array<int, mixed> */
     public $curl_options = [];
     /** @var ?\DomDocument */
     public $dom;
+    /** @var ?Registry */
     protected $registry;
 
     /**
@@ -41,7 +61,10 @@ class Locator implements RegistryAware
      */
     private $http_client = null;
 
-    public function __construct(\SimplePie\File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10, $force_fsockopen = false, $curl_options = [])
+    /**
+     * @param array<int, mixed> $curl_options
+     */
+    public function __construct(File $file, int $timeout = 10, ?string $useragent = null, int $max_checked_feeds = 10, bool $force_fsockopen = false, array $curl_options = [])
     {
         $this->file = $file;
         $this->useragent = $useragent;
@@ -67,12 +90,33 @@ class Locator implements RegistryAware
         }
     }
 
-    public function set_registry(\SimplePie\Registry $registry)/* : void */
+    /**
+     * Set a PSR-18 client and PSR-17 factories
+     *
+     * Allows you to use your own HTTP client implementations.
+     */
+    final public function set_http_client(
+        ClientInterface $http_client,
+        RequestFactoryInterface $request_factory,
+        UriFactoryInterface $uri_factory
+    ): void {
+        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
+    }
+
+    /**
+     * @return void
+     */
+    public function set_registry(\SimplePie\Registry $registry)
     {
         $this->registry = $registry;
     }
 
-    public function find($type = \SimplePie\SimplePie::LOCATOR_ALL, &$working = null)
+    /**
+     * @param SimplePie::LOCATOR_* $type
+     * @param array<Response>|null $working
+     * @return Response|null
+     */
+    public function find(int $type = \SimplePie\SimplePie::LOCATOR_ALL, ?array &$working = null)
     {
         if ($this->is_feed($this->file)) {
             return $this->file;
@@ -113,7 +157,10 @@ class Locator implements RegistryAware
         return null;
     }
 
-    public function is_feed($file, $check_html = false)
+    /**
+     * @return bool
+     */
+    public function is_feed(Response $file, bool $check_html = false)
     {
         if (Misc::is_remote_uri($file->get_final_requested_uri())) {
             $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$file]);
@@ -133,6 +180,9 @@ class Locator implements RegistryAware
         }
     }
 
+    /**
+     * @return void
+     */
     public function get_base()
     {
         if ($this->dom === null) {
@@ -154,6 +204,9 @@ class Locator implements RegistryAware
         }
     }
 
+    /**
+     * @return array<Response>|null
+     */
     public function autodiscovery()
     {
         $done = [];
@@ -169,7 +222,12 @@ class Locator implements RegistryAware
         return null;
     }
 
-    protected function search_elements_by_tag($name, &$done, $feeds)
+    /**
+     * @param string[] $done
+     * @param array<string, Response> $feeds
+     * @return array<string, Response>
+     */
+    protected function search_elements_by_tag(string $name, array &$done, array $feeds)
     {
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
@@ -216,6 +274,9 @@ class Locator implements RegistryAware
         return $feeds;
     }
 
+    /**
+     * @return true|null
+     */
     public function get_links()
     {
         if ($this->dom === null) {
@@ -255,7 +316,10 @@ class Locator implements RegistryAware
         return null;
     }
 
-    public function get_rel_link($rel)
+    /**
+     * @return string|null
+     */
+    public function get_rel_link(string $rel)
     {
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use '.
@@ -300,7 +364,11 @@ class Locator implements RegistryAware
         return null;
     }
 
-    public function extension(&$array)
+    /**
+     * @param string[] $array
+     * @return array<Response>|null
+     */
+    public function extension(array &$array)
     {
         foreach ($array as $key => $value) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
@@ -330,7 +398,11 @@ class Locator implements RegistryAware
         return null;
     }
 
-    public function body(&$array)
+    /**
+     * @param string[] $array
+     * @return array<Response>|null
+     */
+    public function body(array &$array)
     {
         foreach ($array as $key => $value) {
             if ($this->checked_feeds === $this->max_checked_feeds) {
@@ -377,16 +449,6 @@ class Locator implements RegistryAware
         }
 
         return $this->http_client;
-    }
-
-    /**
-     * Allows SimplePie to inject HTTP client.
-     *
-     * @internal
-     */
-    final public function set_http_client(Client $http_client): void
-    {
-        $this->http_client = $http_client;
     }
 }
 

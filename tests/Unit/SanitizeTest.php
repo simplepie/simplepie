@@ -14,17 +14,17 @@ use SimplePie\Sanitize;
 
 class SanitizeTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Sanitize'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Sanitize'));
     }
 
-    public function testSanitize()
+    public function testSanitize(): void
     {
         $sanitize = new Sanitize();
 
@@ -47,7 +47,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function sanitizeURLDataProvider(): array
+    public static function sanitizeURLDataProvider(): array
     {
         return [
             'simple absolute valid a href, resolved' => [

@@ -5,15 +5,13 @@
 
 declare(strict_types=1);
 
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * IRI test cases
  */
-class IRITest extends PHPUnit\Framework\TestCase
+class IRITest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @return array<array{string, string}>
      */
@@ -370,12 +368,12 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertNotEquals($output, $input);
     }
 
-    public function testInvalidAbsolutizeBase()
+    public function testInvalidAbsolutizeBase(): void
     {
         $this->assertFalse(SimplePie_IRI::absolutize('://not a URL', '../'));
     }
 
-    public function testInvalidPathNoHost()
+    public function testInvalidPathNoHost(): void
     {
         $iri = new SimplePie_IRI();
         $iri->scheme = 'http';
@@ -383,21 +381,21 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testInvalidRelativePathContainsColon()
+    public function testInvalidRelativePathContainsColon(): void
     {
         $iri = new SimplePie_IRI();
         $iri->path = '/test:/';
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testValidRelativePathContainsColon()
+    public function testValidRelativePathContainsColon(): void
     {
         $iri = new SimplePie_IRI();
         $iri->path = '/test/:';
         $this->assertTrue($iri->is_valid());
     }
 
-    public function testFullGamut()
+    public function testFullGamut(): void
     {
         $iri = new SimplePie_IRI();
         $iri->scheme = 'http';
@@ -414,7 +412,7 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testReadAliased()
+    public function testReadAliased(): void
     {
         $iri = new SimplePie_IRI();
         $iri->scheme = 'http';
@@ -431,7 +429,7 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testWriteAliased()
+    public function testWriteAliased(): void
     {
         $iri = new SimplePie_IRI();
         $iri->scheme = 'http';
@@ -448,16 +446,29 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testNonexistantProperty()
+    public function testNonexistantProperty(): void
     {
-        $this->expectNotice();
-
         $iri = new SimplePie_IRI();
         $this->assertFalse(isset($iri->nonexistant_prop));
+
+        // PHPUnit 10 compatible way to test trigger_error().
+        set_error_handler(
+            function ($errno, $errstr): bool {
+                $this->assertSame(
+                    'Undefined property: SimplePie\IRI::nonexistant_prop',
+                    $errstr
+                );
+
+                restore_error_handler();
+                return true;
+            },
+            E_USER_NOTICE
+        );
+
         $should_fail = $iri->nonexistant_prop;
     }
 
-    public function testBlankHost()
+    public function testBlankHost(): void
     {
         $iri = new SimplePie_IRI('http://example.com/a/?b=c#d');
         $iri->host = null;
@@ -466,7 +477,7 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('http:/a/?b=c#d', (string) $iri);
     }
 
-    public function testBadPort()
+    public function testBadPort(): void
     {
         $iri = new SimplePie_IRI();
         $iri->port = 'example';

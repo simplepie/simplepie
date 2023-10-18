@@ -13,12 +13,12 @@ use SimplePie\SimplePie;
 
 class EnclosureTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Enclosure'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Enclosure'));
     }
@@ -43,7 +43,7 @@ class EnclosureTest extends TestCase
     /**
      * @return iterable<array{string, string}>
      */
-    public function getLinkProvider(): iterable
+    public static function getLinkProvider(): iterable
     {
         yield 'Test enclosure get_link urlencoded' => [
             <<<XML
@@ -107,7 +107,7 @@ XML
     /**
      * @return iterable<array{string, int}>
      */
-    public function getEnclosuresProvider(): iterable
+    public static function getEnclosuresProvider(): iterable
     {
         yield 'Test multiple enclosures MRSS' => [
             <<<XML

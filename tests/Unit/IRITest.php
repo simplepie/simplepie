@@ -9,18 +9,15 @@ namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use SimplePie\IRI;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class IRITest extends TestCase
 {
-    use ExpectPHPException;
-
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\IRI'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_IRI'));
     }
@@ -28,7 +25,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function rfc3986DataProvider(): array
+    public static function rfc3986DataProvider(): array
     {
         return [
             // Normal
@@ -110,7 +107,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string, string}>
      */
-    public function SpDataProvider(): array
+    public static function SpDataProvider(): array
     {
         return [
             ['http://a/b/c/d', 'f%0o', 'http://a/b/c/f%250o'],
@@ -154,7 +151,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function queryDataProvider(): array
+    public static function queryDataProvider(): array
     {
         return [
             ['a=b&c=d', 'http://example.com/?a=b&c=d'],
@@ -188,7 +185,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string, string}>
      */
-    public function absolutizeDataProvider(): array
+    public static function absolutizeDataProvider(): array
     {
         return [
             ['http://example.com/', 'foo/111:bar', 'http://example.com/foo/111:bar'],
@@ -218,7 +215,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function normalizationDataProvider(): array
+    public static function normalizationDataProvider(): array
     {
         return [
             ['example://a/b/c/%7Bfoo%7D', 'example://a/b/c/%7Bfoo%7D'],
@@ -323,7 +320,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function uriDataProvider(): array
+    public static function uriDataProvider(): array
     {
         return [
             ['http://example.com/%C3%A9cole', 'http://example.com/%C3%A9cole'],
@@ -344,7 +341,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function equivalenceDataProvider(): array
+    public static function equivalenceDataProvider(): array
     {
         return [
             ['http://É.com', 'http://%C3%89.com'],
@@ -364,7 +361,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function notEquivalenceDataProvider(): array
+    public static function notEquivalenceDataProvider(): array
     {
         return [
             ['http://example.com/foo/bar', 'http://example.com/foo%2Fbar'],
@@ -381,12 +378,12 @@ class IRITest extends TestCase
         $this->assertNotEquals($output, $input);
     }
 
-    public function testInvalidAbsolutizeBase()
+    public function testInvalidAbsolutizeBase(): void
     {
         $this->assertFalse(IRI::absolutize('://not a URL', '../'));
     }
 
-    public function testInvalidPathNoHost()
+    public function testInvalidPathNoHost(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -394,21 +391,21 @@ class IRITest extends TestCase
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testInvalidRelativePathContainsColon()
+    public function testInvalidRelativePathContainsColon(): void
     {
         $iri = new IRI();
         $iri->path = '/test:/';
         $this->assertFalse($iri->is_valid());
     }
 
-    public function testValidRelativePathContainsColon()
+    public function testValidRelativePathContainsColon(): void
     {
         $iri = new IRI();
         $iri->path = '/test/:';
         $this->assertTrue($iri->is_valid());
     }
 
-    public function testFullGamut()
+    public function testFullGamut(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -425,7 +422,7 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testReadAliased()
+    public function testReadAliased(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -442,7 +439,7 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testWriteAliased()
+    public function testWriteAliased(): void
     {
         $iri = new IRI();
         $iri->scheme = 'http';
@@ -459,16 +456,29 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testNonexistantProperty()
+    public function testNonexistantProperty(): void
     {
-        $this->expectNotice();
-
         $iri = new IRI();
         $this->assertFalse(isset($iri->nonexistant_prop));
+
+        // PHPUnit 10 compatible way to test trigger_error().
+        set_error_handler(
+            function ($errno, $errstr): bool {
+                $this->assertSame(
+                    'Undefined property: SimplePie\IRI::nonexistant_prop',
+                    $errstr
+                );
+
+                restore_error_handler();
+                return true;
+            },
+            E_USER_NOTICE
+        );
+
         $should_fail = $iri->nonexistant_prop;
     }
 
-    public function testBlankHost()
+    public function testBlankHost(): void
     {
         $iri = new IRI('http://example.com/a/?b=c#d');
         $iri->host = null;
@@ -477,7 +487,7 @@ class IRITest extends TestCase
         $this->assertSame('http:/a/?b=c#d', (string) $iri);
     }
 
-    public function testBadPort()
+    public function testBadPort(): void
     {
         $iri = new IRI();
         $iri->port = 'example';

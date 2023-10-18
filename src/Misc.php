@@ -14,9 +14,13 @@ use SimplePie\XML\Declaration\Parser;
  */
 class Misc
 {
+    /** @var int|null */
     private static $SIMPLEPIE_BUILD = null;
 
-    public static function time_hms($seconds)
+    /**
+     * @return string
+     */
+    public static function time_hms(int $seconds)
     {
         $time = '';
 
@@ -41,7 +45,10 @@ class Misc
         return $time;
     }
 
-    public static function absolutize_url($relative, $base)
+    /**
+     * @return string|false
+     */
+    public static function absolutize_url(string $relative, string $base)
     {
         $iri = \SimplePie\IRI::absolutize(new \SimplePie\IRI($base), $relative);
         if ($iri === false) {
@@ -64,6 +71,7 @@ class Misc
      * @deprecated since SimplePie 1.3, use DOMDocument instead (parsing HTML with regex is bad!)
      * @param string $realname Element name (including namespace prefix if applicable)
      * @param string $string HTML document
+     * @return array<array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content: string}>
      */
     public static function get_element(string $realname, string $string): array
     {
@@ -96,9 +104,13 @@ class Misc
         return $return;
     }
 
-    public static function element_implode(array $element): string
+    /**
+     * @param array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content: string} $element
+     * @return string
+     */
+    public static function element_implode(array $element)
     {
-        $full = "<$element[tag]";
+        $full = "<{$element['tag']}";
         foreach ($element['attribs'] as $key => $value) {
             $key = strtolower($key);
             $full .= " $key=\"" . htmlspecialchars($value['data'], ENT_COMPAT, 'UTF-8') . '"';
@@ -106,12 +118,19 @@ class Misc
         if ($element['self_closing']) {
             $full .= ' />';
         } else {
-            $full .= ">$element[content]</$element[tag]>";
+            $full .= ">{$element['content']}</{$element['tag']}>";
         }
         return $full;
     }
 
-    public static function error($message, $level, $file, $line)
+    /**
+     * @param string $message
+     * @param int $level
+     * @param string $file
+     * @param int $line
+     * @return string
+     */
+    public static function error(string $message, int $level, string $file, int $line)
     {
         if ((error_reporting() & $level) > 0) {
             switch ($level) {
@@ -172,6 +191,9 @@ class Misc
 
     /**
      * @deprecated since SimplePie 1.8.0, use PHP native array_replace_recursive() instead.
+     * @param array<mixed> $array1
+     * @param array<mixed> $array2
+     * @return array<mixed>
      */
     public static function array_merge_recursive(array $array1, array $array2)
     {
@@ -186,7 +208,10 @@ class Misc
         return $array1;
     }
 
-    public static function parse_url($url)
+    /**
+     * @return array<string, string>
+     */
+    public static function parse_url(string $url)
     {
         $iri = new \SimplePie\IRI($url);
         return [
@@ -198,7 +223,10 @@ class Misc
         ];
     }
 
-    public static function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
+    /**
+     * @return string
+     */
+    public static function compress_parse_url(string $scheme = '', string $authority = '', string $path = '', string $query = '', ?string $fragment = '')
     {
         $iri = new \SimplePie\IRI('');
         $iri->scheme = $scheme;
@@ -209,13 +237,20 @@ class Misc
         return $iri->get_uri();
     }
 
-    public static function normalize_url($url)
+    /**
+     * @return string
+     */
+    public static function normalize_url(string $url)
     {
         $iri = new \SimplePie\IRI($url);
         return $iri->get_uri();
     }
 
-    public static function percent_encoding_normalization($match)
+    /**
+     * @param array<int, string> $match
+     * @return string
+     */
+    public static function percent_encoding_normalization(array $match)
     {
         $integer = hexdec($match[1]);
         if ($integer >= 0x41 && $integer <= 0x5A || $integer >= 0x61 && $integer <= 0x7A || $integer >= 0x30 && $integer <= 0x39 || $integer === 0x2D || $integer === 0x2E || $integer === 0x5F || $integer === 0x7E) {
@@ -284,7 +319,10 @@ class Misc
         return false;
     }
 
-    protected static function change_encoding_mbstring($data, string $input, $output)
+    /**
+     * @return string|false
+     */
+    protected static function change_encoding_mbstring(string $data, string $input, string $output)
     {
         if ($input === 'windows-949') {
             $input = 'EUC-KR';
@@ -316,15 +354,15 @@ class Misc
         return false;
     }
 
-    protected static function change_encoding_iconv($data, $input, $output)
+    /**
+     * @return string|false
+     */
+    protected static function change_encoding_iconv(string $data, string $input, string $output)
     {
         return @iconv($input, $output, $data);
     }
 
     /**
-     * @param string $data
-     * @param string $input
-     * @param string $output
      * @return string|false
      */
     protected static function change_encoding_uconverter(string $data, string $input, string $output)
@@ -1655,16 +1693,15 @@ class Misc
         }
     }
 
+    /**
+     * @return string
+     */
     public static function get_curl_version()
     {
         if (is_array($curl = curl_version())) {
             $curl = $curl['version'];
-        } elseif (substr($curl, 0, 5) === 'curl/') {
-            $curl = substr($curl, 5, strcspn($curl, "\x09\x0A\x0B\x0C\x0D", 5));
-        } elseif (substr($curl, 0, 8) === 'libcurl/') {
-            $curl = substr($curl, 8, strcspn($curl, "\x09\x0A\x0B\x0C\x0D", 8));
         } else {
-            $curl = 0;
+            $curl = '0';
         }
         return $curl;
     }
@@ -1689,7 +1726,10 @@ class Misc
         return $output . $data;
     }
 
-    public static function parse_date($dt)
+    /**
+     * @return int|bool
+     */
+    public static function parse_date(string $dt)
     {
         $parser = \SimplePie\Parse\Date::get();
         return $parser->parse($dt);
@@ -1758,7 +1798,10 @@ class Misc
         return $output;
     }
 
-    public static function parse_mime($mime)
+    /**
+     * @return string
+     */
+    public static function parse_mime(string $mime)
     {
         if (($pos = strpos($mime, ';')) === false) {
             return trim($mime);
@@ -1767,7 +1810,11 @@ class Misc
         return trim(substr($mime, 0, $pos));
     }
 
-    public static function atom_03_construct_type($attribs)
+    /**
+     * @param array<string, array<string, string>> $attribs
+     * @return int-mask-of<SimplePie::CONSTRUCT_*>
+     */
+    public static function atom_03_construct_type(array $attribs)
     {
         if (isset($attribs['']['mode']) && strtolower(trim($attribs['']['mode'])) === 'base64') {
             $mode = \SimplePie\SimplePie::CONSTRUCT_BASE64;
@@ -1796,7 +1843,11 @@ class Misc
         return \SimplePie\SimplePie::CONSTRUCT_TEXT | $mode;
     }
 
-    public static function atom_10_construct_type($attribs)
+    /**
+     * @param array<string, array<string, string>> $attribs
+     * @return int
+     */
+    public static function atom_10_construct_type(array $attribs)
     {
         if (isset($attribs['']['type'])) {
             switch (strtolower(trim($attribs['']['type']))) {
@@ -1816,7 +1867,11 @@ class Misc
         return \SimplePie\SimplePie::CONSTRUCT_TEXT;
     }
 
-    public static function atom_10_content_construct_type($attribs)
+    /**
+     * @param array<string, array<string, string>> $attribs
+     * @return int
+     */
+    public static function atom_10_content_construct_type(array $attribs)
     {
         if (isset($attribs['']['type'])) {
             $type = strtolower(trim($attribs['']['type']));
@@ -1840,12 +1895,18 @@ class Misc
         return \SimplePie\SimplePie::CONSTRUCT_TEXT;
     }
 
-    public static function is_isegment_nz_nc($string)
+    /**
+     * @return bool
+     */
+    public static function is_isegment_nz_nc(string $string)
     {
         return (bool) preg_match('/^([A-Za-z0-9\-._~\x{A0}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}!$&\'()*+,;=@]|(%[0-9ABCDEF]{2}))+$/u', $string);
     }
 
-    public static function space_separated_tokens($string)
+    /**
+     * @return string[]
+     */
+    public static function space_separated_tokens(string $string)
     {
         $space_characters = "\x20\x09\x0A\x0B\x0C\x0D";
         $string_length = strlen($string);
@@ -1868,7 +1929,7 @@ class Misc
      *
      * @static
      * @param int $codepoint Unicode codepoint
-     * @return string UTF-8 character
+     * @return string|false UTF-8 character
      */
     public static function codepoint_to_utf8(int $codepoint)
     {
@@ -1896,7 +1957,7 @@ class Misc
      *
      * @static
      * @param string $str The input string.
-     * @return array
+     * @return array<string, array<string|null>>
      */
     public static function parse_str(string $str)
     {
@@ -1921,7 +1982,7 @@ class Misc
      * @todo Add support for EBCDIC
      * @param string $data XML data
      * @param \SimplePie\Registry $registry Class registry
-     * @return array Possible encodings
+     * @return array<string> Possible encodings
      */
     public static function xml_encoding(string $data, \SimplePie\Registry $registry)
     {
@@ -2002,6 +2063,9 @@ class Misc
         return $encoding;
     }
 
+    /**
+     * @return void
+     */
     public static function output_javascript()
     {
         if (function_exists('ob_gzhandler')) {
@@ -2041,6 +2105,8 @@ END;
      *
      * Uses the git index if it exists, otherwise uses the modification time
      * of the newest file.
+     *
+     * @return int
      */
     public static function get_build()
     {
@@ -2086,8 +2152,10 @@ END;
 
     /**
      * Format debugging information
+     *
+     * @return string
      */
-    public static function debug(&$sp)
+    public static function debug(SimplePie &$sp)
     {
         $info = 'SimplePie ' . \SimplePie\SimplePie::VERSION . ' Build ' . static::get_build() . "\n";
         $info .= 'PHP ' . PHP_VERSION . "\n";
@@ -2126,9 +2194,13 @@ END;
         return $info;
     }
 
-    public static function silence_errors($num, $str)
+    /**
+     * @return bool
+     */
+    public static function silence_errors(int $num, string $str)
     {
         // No-op
+        return true;
     }
 
     /**

@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 
 class CopyrightTest extends TestCase
 {
-    public function testNamespacedClassExists()
+    public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Copyright'));
     }
 
-    public function testClassExists()
+    public function testClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Copyright'));
     }

@@ -5,15 +5,17 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Encoding tests for SimplePie_Misc::change_encoding() and SimplePie_Misc::encoding()
  */
-class BCTest extends PHPUnit\Framework\TestCase
+class BCTest extends TestCase
 {
     /**
      * Test class SimplePie_Core exists
      */
-    public function test_class_SimplePie_Core_exists()
+    public function test_class_SimplePie_Core_exists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Core'));
     }
@@ -21,7 +23,7 @@ class BCTest extends PHPUnit\Framework\TestCase
     /**
      * Test class SimplePie_Misc exists
      */
-    public function test_class_SimplePie_Misc_exists()
+    public function test_class_SimplePie_Misc_exists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Misc'));
     }
@@ -29,7 +31,7 @@ class BCTest extends PHPUnit\Framework\TestCase
     /**
      * Test class SimplePie_Decode_HTML_Entities exists
      */
-    public function test_class_SimplePie_Decode_HTML_Entities_exists()
+    public function test_class_SimplePie_Decode_HTML_Entities_exists(): void
     {
         $this->assertTrue(class_exists('SimplePie_Decode_HTML_Entities'));
     }
