@@ -166,7 +166,7 @@ class Misc
         return $message;
     }
 
-    public static function fix_protocol(string $url, $http = 1): string
+    public static function fix_protocol(string $url, int $http = 1): string
     {
         $url = Misc::normalize_url($url);
         $parsed = Misc::parse_url($url);
