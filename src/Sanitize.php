@@ -10,9 +10,6 @@ namespace SimplePie;
 use DOMDocument;
 use DOMXPath;
 use InvalidArgumentException;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\Cache\Base;
 use SimplePie\Cache\BaseDataCache;
 use SimplePie\Cache\CallableNameFilter;
@@ -21,7 +18,6 @@ use SimplePie\Cache\NameFilter;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
-use SimplePie\HTTP\Psr18Client;
 
 /**
  * Used for data cleanup and post-processing
@@ -178,19 +174,6 @@ class Sanitize implements RegistryAware
         if ($cache !== null) {
             $this->cache = $cache;
         }
-    }
-
-    /**
-     * Set a PSR-18 client and PSR-17 factories
-     *
-     * Allows you to use your own HTTP client implementations.
-     */
-    final public function set_http_client(
-        ClientInterface $http_client,
-        RequestFactoryInterface $request_factory,
-        UriFactoryInterface $uri_factory
-    ): void {
-        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
     }
 
     /**
@@ -358,7 +341,7 @@ class Sanitize implements RegistryAware
             $domain = trim($domain, ". \t\n\r\0\x0B");
             $segments = array_reverse(explode('.', $domain));
             /** @var true|array<string, true|array<string, true|array<string, array<string, true|array<string, true|array<string, true>>>>>> */ // Needed for PHPStan.
-            $node = & $this->https_domains;
+            $node =& $this->https_domains;
             foreach ($segments as $segment) {//Build a tree
                 if ($node === true) {
                     break;
@@ -366,7 +349,7 @@ class Sanitize implements RegistryAware
                 if (!isset($node[$segment])) {
                     $node[$segment] = [];
                 }
-                $node = & $node[$segment];
+                $node =& $node[$segment];
             }
             $node = true;
         }
@@ -381,10 +364,10 @@ class Sanitize implements RegistryAware
     {
         $domain = trim($domain, '. ');
         $segments = array_reverse(explode('.', $domain));
-        $node = & $this->https_domains;
+        $node =& $this->https_domains;
         foreach ($segments as $segment) {//Explore the tree
             if (isset($node[$segment])) {
-                $node = & $node[$segment];
+                $node =& $node[$segment];
             } else {
                 break;
             }
@@ -781,6 +764,16 @@ class Sanitize implements RegistryAware
         }
 
         return $this->http_client;
+    }
+
+    /**
+     * Allows SimplePie to inject HTTP client.
+     *
+     * @internal
+     */
+    final public function set_http_client(Client $http_client): void
+    {
+        $this->http_client = $http_client;
     }
 }
 

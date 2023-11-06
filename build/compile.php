@@ -118,7 +118,7 @@ foreach ($file_paths as $file_path) {
         $pos = strpos($contents, ';');
         $namespace_name = substr($contents, 0, $pos);
 
-        $contents = $namespace_name . " {\n\n" . substr($contents, $pos + 1) . "\n\n}";
+        $contents = $namespace_name . " {\n\n" . substr($contents, $pos+1) . "\n\n}";
     } else {
         // use bracketed syntax for global namespace
         $contents = "namespace {\n\n" . $contents . "\n\n}";

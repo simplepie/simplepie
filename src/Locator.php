@@ -8,13 +8,9 @@ declare(strict_types=1);
 namespace SimplePie;
 
 use DomDocument;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\FileClient;
-use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
 
 /**
@@ -26,9 +22,9 @@ use SimplePie\HTTP\Response;
 class Locator implements RegistryAware
 {
     /** @var ?string */
-    public $useragent = null;
+    public $useragent;
     /** @var int */
-    public $timeout = 10;
+    public $timeout;
     /** @var File */
     public $file;
     /** @var string[] */
@@ -88,19 +84,6 @@ class Locator implements RegistryAware
         } else {
             $this->dom = null;
         }
-    }
-
-    /**
-     * Set a PSR-18 client and PSR-17 factories
-     *
-     * Allows you to use your own HTTP client implementations.
-     */
-    final public function set_http_client(
-        ClientInterface $http_client,
-        RequestFactoryInterface $request_factory,
-        UriFactoryInterface $uri_factory
-    ): void {
-        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
     }
 
     /**
@@ -449,6 +432,16 @@ class Locator implements RegistryAware
         }
 
         return $this->http_client;
+    }
+
+    /**
+     * Allows SimplePie to inject HTTP client.
+     *
+     * @internal
+     */
+    final public function set_http_client(Client $http_client): void
+    {
+        $this->http_client = $http_client;
     }
 }
 
