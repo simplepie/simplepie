@@ -144,7 +144,7 @@ final class Psr18Client implements Client
 
     private function requestLocalFile(string $path): Response
     {
-        if (! is_readable($path)) {
+        if (!is_readable($path)) {
             throw new HttpException(sprintf('file "%s" is not readable', $path));
         }
 

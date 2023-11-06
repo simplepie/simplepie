@@ -265,7 +265,7 @@ class File implements Response
             }
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
-            if (empty($url) || ! is_readable($url) ||  false === $filebody = file_get_contents($url)) {
+            if (empty($url) || !is_readable($url) ||  false === $filebody = file_get_contents($url)) {
                 $this->body = '';
                 $this->error = sprintf('file "%s" is not readable', $url);
                 $this->success = false;

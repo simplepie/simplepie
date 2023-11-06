@@ -43,7 +43,7 @@ class CachingTest extends TestCase
                 // Set current cached data and mtime
                 $psr16->method('get')->willReturnCallback(function ($key, $default) use ($currentDataCached, $currentMtime) {
                     // Set current mtime
-                    if (substr($key, - strlen('_mtime')) === '_mtime') {
+                    if (substr($key, -strlen('_mtime')) === '_mtime') {
                         return $currentMtime;
                     }
 
@@ -54,7 +54,7 @@ class CachingTest extends TestCase
                 // Test data written
                 $psr16->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$writtenData): bool {
                     // Ignore setting of the _mtime value
-                    if (substr($key, - strlen('_mtime')) !== '_mtime') {
+                    if (substr($key, -strlen('_mtime')) !== '_mtime') {
                         $writtenData = $value;
                     }
 
