@@ -155,7 +155,7 @@ class Registry
             $type = $this->legacyTypes[$type];
         }
 
-        if (! array_key_exists($type, $this->default)) {
+        if (!array_key_exists($type, $this->default)) {
             return false;
         }
 
@@ -196,7 +196,7 @@ class Registry
             $type = $this->legacyTypes[$type];
         }
 
-        if (! array_key_exists($type, $this->default)) {
+        if (!array_key_exists($type, $this->default)) {
             return null;
         }
 
