@@ -791,7 +791,7 @@ class SimplePie
 
         $this->feed_url = $file->get_final_requested_uri();
         $this->permanent_url = $this->feed_url;
-        $this->file = & $file;
+        $this->file = &$file;
 
         return true;
     }
@@ -1807,7 +1807,7 @@ class SimplePie
                     // Cache the file if caching is enabled
                     $this->data['cache_expiration_time'] = $this->cache_duration + time();
 
-                    if ($cache && ! $cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
+                    if ($cache && !$cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
                     return true;
@@ -1859,7 +1859,7 @@ class SimplePie
         }
 
         // @phpstan-ignore-next-line Enforce PHPDoc type.
-        if ($cache !== false && ! $cache instanceof DataCache) {
+        if ($cache !== false && !$cache instanceof DataCache) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #1 ($cache) must be of type %s|false',
                 __METHOD__,
@@ -1958,7 +1958,7 @@ class SimplePie
         // If we don't already have the file (it'll only exist if we've opened it to check if the cache has been modified), open it.
         if (!isset($file)) {
             if ($this->file instanceof File && $this->file->get_final_requested_uri() === $this->feed_url) {
-                $file = & $this->file;
+                $file = &$this->file;
             } elseif (isset($failedFileReason)) {
                 // Do not try to fetch again if we already failed once.
                 // If the file connection had an error, set SimplePie::error to that and quit
@@ -1990,7 +1990,7 @@ class SimplePie
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
             $locate = $this->registry->create(Locator::class, [
-                (! $file instanceof File) ? File::fromResponse($file) : $file,
+                (!$file instanceof File) ? File::fromResponse($file) : $file,
                 $this->timeout,
                 $this->useragent,
                 $this->max_checked_feeds,
@@ -2826,12 +2826,12 @@ class SimplePie
                 if ($this->registry->call(Misc::class, 'is_isegment_nz_nc', [$key])) {
                     if (isset($this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key])) {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = array_merge($this->data['links'][$key], $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key]);
-                        $this->data['links'][$key] = & $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key];
+                        $this->data['links'][$key] = &$this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key];
                     } else {
-                        $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = & $this->data['links'][$key];
+                        $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = &$this->data['links'][$key];
                     }
                 } elseif (substr($key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr($key, 41)] = & $this->data['links'][$key];
+                    $this->data['links'][substr($key, 41)] = &$this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }
@@ -3355,7 +3355,7 @@ class SimplePie
                 if ($arg instanceof SimplePie) {
                     $items = array_merge($items, $arg->get_items(0, $limit));
 
-                    // @phpstan-ignore-next-line Enforce PHPDoc type.
+                // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {
                     trigger_error('Arguments must be SimplePie objects', E_USER_WARNING);
                 }
