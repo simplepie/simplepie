@@ -4,17 +4,17 @@
 define('SP_PATH', dirname(__FILE__, 2));
 define('COMPILED', SP_PATH . DIRECTORY_SEPARATOR . 'SimplePie.compiled.php');
 
-if (! function_exists('str_starts_with')) {
+if (!function_exists('str_starts_with')) {
     function str_starts_with(string $haystack, string $needle): bool
     {
         return strncmp($haystack, $needle, strlen($needle)) === 0;
     }
 }
 
-if (! function_exists('str_ends_with')) {
+if (!function_exists('str_ends_with')) {
     function str_ends_with(string $haystack, string $needle): bool
     {
-        return $needle === '' || $needle === substr($haystack, - strlen($needle));
+        return $needle === '' || $needle === substr($haystack, -strlen($needle));
     }
 }
 
@@ -57,7 +57,7 @@ function remove_header($contents)
                 }
                 break;
             case T_DECLARE:
-                if (! $stripped_declare && ! $in_declare_strip) {
+                if (!$stripped_declare && !$in_declare_strip) {
                     $in_declare_strip = true;
                     continue 2;
                 }
@@ -115,7 +115,7 @@ foreach ($file_paths as $file_path) {
         $pos = strpos($contents, ';');
         $namespace_name = substr($contents, 0, $pos);
 
-        $contents = $namespace_name . " {\n\n" . substr($contents, $pos+1) . "\n\n}";
+        $contents = $namespace_name . " {\n\n" . substr($contents, $pos + 1) . "\n\n}";
     } else {
         // use bracketed syntax for global namespace
         $contents = "namespace {\n\n" . $contents . "\n\n}";

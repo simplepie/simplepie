@@ -124,7 +124,7 @@ class MiscTest extends TestCase
      */
     public function test_convert_UTF8_mbstring($input, $expected, $encoding)
     {
-        if (! extension_loaded('mbstring')) {
+        if (!extension_loaded('mbstring')) {
             $this->markTestSkipped('Skipping test because mbstring extension is not available.');
         }
 
@@ -150,7 +150,7 @@ class MiscTest extends TestCase
      */
     public function test_convert_UTF8_iconv($input, $expected, $encoding)
     {
-        if (! extension_loaded('iconv')) {
+        if (!extension_loaded('iconv')) {
             $this->markTestSkipped('Skipping test because iconv extension is not available.');
         }
 
@@ -176,7 +176,7 @@ class MiscTest extends TestCase
      */
     public function test_convert_UTF8_uconverter($input, $expected, $encoding)
     {
-        if (! extension_loaded('intl')) {
+        if (!extension_loaded('intl')) {
             $this->markTestSkipped('Skipping test because intl extension is not available.');
         }
 
