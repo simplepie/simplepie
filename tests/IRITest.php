@@ -5,15 +5,13 @@
 
 declare(strict_types=1);
 
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * IRI test cases
  */
-class IRITest extends PHPUnit\Framework\TestCase
+class IRITest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @return array<array{string, string}>
      */
@@ -450,10 +448,23 @@ class IRITest extends PHPUnit\Framework\TestCase
 
     public function testNonexistantProperty(): void
     {
-        $this->expectNotice();
-
         $iri = new SimplePie_IRI();
         $this->assertFalse(isset($iri->nonexistant_prop));
+
+        // PHPUnit 10 compatible way to test trigger_error().
+        set_error_handler(
+            function ($errno, $errstr): bool {
+                $this->assertSame(
+                    'Undefined property: SimplePie\IRI::nonexistant_prop',
+                    $errstr
+                );
+
+                restore_error_handler();
+                return true;
+            },
+            E_USER_NOTICE
+        );
+
         $should_fail = $iri->nonexistant_prop;
     }
 

@@ -5,10 +5,12 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Encoding tests for SimplePie_Misc::change_encoding() and SimplePie_Misc::encoding()
  */
-class BCTest extends PHPUnit\Framework\TestCase
+class BCTest extends TestCase
 {
     /**
      * Test class SimplePie_Core exists

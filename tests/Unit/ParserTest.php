@@ -26,7 +26,7 @@ class ParserTest extends TestCase
     /**
      * @return iterable<array{string, string, array<string, mixed>}>
      */
-    public function feedProvider(): iterable
+    public static function feedProvider(): iterable
     {
         yield [
             <<<HTML

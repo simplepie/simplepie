@@ -25,7 +25,7 @@ class ParserTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function chunkedDataProvider(): array
+    public static function chunkedDataProvider(): array
     {
         return [
             [
