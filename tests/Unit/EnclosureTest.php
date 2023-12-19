@@ -43,7 +43,7 @@ class EnclosureTest extends TestCase
     /**
      * @return iterable<array{string, string}>
      */
-    public function getLinkProvider(): iterable
+    public static function getLinkProvider(): iterable
     {
         yield 'Test enclosure get_link urlencoded' => [
             <<<XML
@@ -107,7 +107,7 @@ XML
     /**
      * @return iterable<array{string, int}>
      */
-    public function getEnclosuresProvider(): iterable
+    public static function getEnclosuresProvider(): iterable
     {
         yield 'Test multiple enclosures MRSS' => [
             <<<XML

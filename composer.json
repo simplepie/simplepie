@@ -33,10 +33,10 @@
         "friendsofphp/php-cs-fixer": "^2.19 || ^3.8",
         "mf2/mf2": "^0.5.0",
         "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^8 || ^9 || ^10",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",
-        "psr/simple-cache": "^1 || ^2 || ^3",
-        "yoast/phpunit-polyfills": "^1.0.1"
+        "psr/simple-cache": "^1 || ^2 || ^3"
     },
     "suggest": {
         "ext-curl": "",
@@ -64,6 +64,7 @@
         "sort-packages": true
     },
     "scripts": {
+        "coverage": "phpunit --coverage-html=.phpunit.cache/code-coverage",
         "cs": "php-cs-fixer fix --verbose --dry-run --diff",
         "fix": "php-cs-fixer fix --verbose --diff",
         "phpstan": "phpstan analyze --memory-limit 512M",

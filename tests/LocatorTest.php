@@ -5,17 +5,15 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
 use SimplePie\File;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 /**
  * Tests for autodiscovery
  */
-class LocatorTest extends PHPUnit\Framework\TestCase
+class LocatorTest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @return array<array{string}>
      */

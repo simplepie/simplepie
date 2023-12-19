@@ -20,24 +20,25 @@ use SimplePie\Registry;
 
 class ClientsTest extends TestCase
 {
-    /**
-     * @return array<Client[]>
-     */
-    public function provideHttpClientsForLocalFiles(): iterable
+    public function testFileClientGetContentOfLocalFile(): void
     {
-        yield [new FileClient(new Registry())];
-
-        yield [new Psr18Client(
-            $this->createMock(ClientInterface::class),
-            $this->createMock(RequestFactoryInterface::class),
-            $this->createMock(UriFactoryInterface::class)
-        )];
+        $this->runTestsWithClientGetContentOfLocalFile(
+            new FileClient(new Registry())
+        );
     }
 
-    /**
-     * @dataProvider provideHttpClientsForLocalFiles
-     */
-    public function testClientGetContentOfLocalFile(Client $client): void
+    public function testPrs18ClientGetContentOfLocalFile(): void
+    {
+        $this->runTestsWithClientGetContentOfLocalFile(
+            new Psr18Client(
+                $this->createMock(ClientInterface::class),
+                $this->createMock(RequestFactoryInterface::class),
+                $this->createMock(UriFactoryInterface::class)
+            )
+        );
+    }
+
+    private function runTestsWithClientGetContentOfLocalFile(Client $client): void
     {
         $filepath = dirname(__FILE__, 3) . '/data/feed_rss-2.0.xml';
 
@@ -51,21 +52,32 @@ class ClientsTest extends TestCase
         $this->assertStringStartsWith('<rss version="2.0">', $response->get_body_content());
     }
 
-    /**
-     * @dataProvider provideHttpClientsForLocalFiles
-     */
-    public function testClientThrowsHttpException(Client $client): void
+    public function testFileClientThrowsHttpException(): void
+    {
+        $this->runTestWithClientThrowsHttpException(
+            new FileClient(new Registry())
+        );
+    }
+
+    public function testPsr18ClientThrowsHttpException(): void
+    {
+        $this->runTestWithClientThrowsHttpException(
+            new Psr18Client(
+                $this->createMock(ClientInterface::class),
+                $this->createMock(RequestFactoryInterface::class),
+                $this->createMock(UriFactoryInterface::class)
+            )
+        );
+    }
+
+    private function runTestWithClientThrowsHttpException(Client $client): void
     {
         $filepath = dirname(__FILE__, 3) . '/data/this-file-does-not-exist';
 
         $this->expectException(HttpException::class);
-        $this->expectExceptionCode(2);
+        $this->expectExceptionCode(0);
 
-        if (version_compare(PHP_VERSION, '8.0', '<')) {
-            $this->expectExceptionMessage('file_get_contents('.$filepath.'): failed to open stream: No such file or directory');
-        } else {
-            $this->expectExceptionMessage('file_get_contents('.$filepath.'): Failed to open stream: No such file or directory');
-        }
+        $this->expectExceptionMessage(sprintf('file "%s" is not readable', $filepath));
 
         $client->request(Client::METHOD_GET, $filepath);
     }

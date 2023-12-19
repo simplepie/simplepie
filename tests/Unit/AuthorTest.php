@@ -27,7 +27,7 @@ class AuthorTest extends TestCase
     /**
      * @return array<array{string, ?string}>
      */
-    public function getAuthorNameDataProvider(): array
+    public static function getAuthorNameDataProvider(): array
     {
         return [
             'Test Atom 0.3 DC 1.0 Creator' => [
@@ -505,7 +505,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function getContributorNameDataProvider(): array
+    public static function getContributorNameDataProvider(): array
     {
         return [
             'Test Atom 0.3 Name' => [
