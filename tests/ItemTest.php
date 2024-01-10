@@ -185,6 +185,6 @@ class ItemTest extends TestCase
         $content = 'item description';
         $feed = $this->checkFromTemplate($data, $content);
         $item = $feed->get_item();
-        $this->assertSame($content, $item->get_content());
+        $this->assertSame($content, ($item ? $item->get_content() : null));
     }
 }

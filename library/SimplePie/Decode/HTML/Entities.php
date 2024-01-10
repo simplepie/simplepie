@@ -58,7 +58,8 @@ class SimplePie_Decode_HTML_Entities
      */
     public function parse()
     {
-        while (($this->position = strpos($this->data, '&', $this->position)) !== false) {
+        while (($position = strpos($this->data, '&', $this->position)) !== false) {
+            $this->position = $position;
             $this->consume();
             $this->entity();
             $this->consumed = '';
@@ -159,7 +160,7 @@ class SimplePie_Decode_HTML_Entities
                     if (isset($windows_1252_specials[$codepoint])) {
                         $replacement = $windows_1252_specials[$codepoint];
                     } else {
-                        $replacement = SimplePie_Misc::codepoint_to_utf8($codepoint);
+                        $replacement = SimplePie_Misc::codepoint_to_utf8((int) $codepoint);
                     }
 
                     if (!in_array($this->consume(), [';', false], true)) {

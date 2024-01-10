@@ -152,10 +152,10 @@ class EncodingTest extends TestCase
         $this->assertFalse(SimplePie_Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public static function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
+    public static function assertSameBin2Hex(string $expected, string|bool $actual, string $message = ''): void
     {
         $expected = bin2hex($expected);
-        $actual = bin2hex($actual);
+        $actual = bin2hex((string) $actual);
 
         static::assertSame($expected, $actual, $message);
     }

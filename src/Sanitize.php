@@ -446,10 +446,10 @@ class Sanitize implements RegistryAware
 
                 // Strip comments
                 if ($this->strip_comments) {
-                    $comments = $xpath->query('//comment()');
-
-                    foreach ($comments as $comment) {
-                        $comment->parentNode->removeChild($comment);
+                    if ($comments = $xpath->query('//comment()')) {
+                        foreach ($comments as $comment) {
+                            $comment->parentNode->removeChild($comment);
+                        }
                     }
                 }
 
@@ -523,7 +523,7 @@ class Sanitize implements RegistryAware
                 // Get content node
                 $div = $document->getElementsByTagName('body')->item(0)->firstChild;
                 // Finally, convert to a HTML string
-                $data = trim($document->saveHTML($div));
+                $data = trim((string) $document->saveHTML($div));
 
                 if ($this->remove_div) {
                     $data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '', $data);
@@ -632,6 +632,11 @@ class Sanitize implements RegistryAware
     protected function strip_tag(string $tag, DOMDocument $document, DOMXPath $xpath, int $type)
     {
         $elements = $xpath->query('body//' . $tag);
+
+        if ($elements === false) {
+            return;
+        }
+
         if ($this->encode_instead_of_strip) {
             foreach ($elements as $element) {
                 $fragment = $document->createDocumentFragment();
@@ -704,6 +709,10 @@ class Sanitize implements RegistryAware
     {
         $elements = $xpath->query('//*[@' . $attrib . ']');
 
+        if ($elements === false) {
+            return;
+        }
+
         /** @var \DOMElement $element */
         foreach ($elements as $element) {
             $element->removeAttribute($attrib);
@@ -716,6 +725,10 @@ class Sanitize implements RegistryAware
     protected function rename_attr(string $attrib, DOMXPath $xpath)
     {
         $elements = $xpath->query('//*[@' . $attrib . ']');
+
+        if ($elements === false) {
+            return;
+        }
 
         /** @var \DOMElement $element */
         foreach ($elements as $element) {

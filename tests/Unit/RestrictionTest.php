@@ -90,11 +90,11 @@ EOT
 
         if ($enclosure = $item->get_enclosure()) {
             $this->assertInstanceOf(Enclosure::class, $enclosure);
+
+            $restriction = $enclosure->get_restriction();
+            $this->assertInstanceOf(Restriction::class, $restriction);
+    
+            $this->assertSame($expected, $restriction->get_relationship());
         }
-
-        $restriction = $enclosure->get_restriction();
-        $this->assertInstanceOf(Restriction::class, $restriction);
-
-        $this->assertSame($expected, $restriction->get_relationship());
     }
 }

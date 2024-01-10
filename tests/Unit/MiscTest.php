@@ -182,10 +182,10 @@ class MiscTest extends TestCase
         $this->assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
+    public function assertSameBin2Hex(string $expected, string|bool $actual, string $message = ''): void
     {
         $expected = bin2hex($expected);
-        $actual = bin2hex($actual);
+        $actual = bin2hex((string) $actual);
 
         $this->assertSame($expected, $actual, $message);
     }

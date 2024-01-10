@@ -107,7 +107,7 @@ class IRI
      */
     public function __toString()
     {
-        return $this->get_iri();
+        return (string) $this->get_iri();
     }
 
     /**
@@ -602,7 +602,7 @@ class IRI
                     }
                 } else {
                     for ($j = $start; $j <= $i; $j++) {
-                        $string .= chr(hexdec($bytes[$j]));
+                        $string .= chr((int) hexdec($bytes[$j]));
                     }
                 }
             }
@@ -897,7 +897,7 @@ class IRI
         if ($port === null) {
             $this->port = null;
             return true;
-        } elseif (strspn($port, '0123456789') === strlen($port)) {
+        } elseif (strspn((string) $port, '0123456789') === strlen((string) $port)) {
             $this->port = (int) $port;
             $this->scheme_normalization();
             return true;
@@ -1038,7 +1038,7 @@ class IRI
      */
     public function get_uri()
     {
-        return $this->to_uri($this->get_iri());
+        return $this->to_uri((string) $this->get_iri());
     }
 
     /**

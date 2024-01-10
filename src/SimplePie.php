@@ -2830,8 +2830,8 @@ class SimplePie
                     } else {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = &$this->data['links'][$key];
                     }
-                } elseif (substr($key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr($key, 41)] = &$this->data['links'][$key];
+                } elseif (substr((string) $key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
+                    $this->data['links'][substr((string) $key, 41)] = &$this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }

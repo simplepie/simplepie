@@ -96,7 +96,7 @@ class Misc
                         if (count($attribs[$j]) === 2) {
                             $attribs[$j][2] = $attribs[$j][1];
                         }
-                        $return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode(end($attribs[$j]));
+                        $return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode((string) end($attribs[$j]));
                     }
                 }
             }
@@ -257,7 +257,7 @@ class Misc
     {
         $integer = hexdec($match[1]);
         if ($integer >= 0x41 && $integer <= 0x5A || $integer >= 0x61 && $integer <= 0x7A || $integer >= 0x30 && $integer <= 0x39 || $integer === 0x2D || $integer === 0x2E || $integer === 0x5F || $integer === 0x7E) {
-            return chr($integer);
+            return chr((int) $integer);
         }
 
         return strtoupper($match[0]);
@@ -2119,7 +2119,7 @@ END;
 
         $root = dirname(__FILE__, 2);
         if (file_exists($root . '/.git/index')) {
-            self::$SIMPLEPIE_BUILD = filemtime($root . '/.git/index');
+            self::$SIMPLEPIE_BUILD = (int) filemtime($root . '/.git/index');
 
             return self::$SIMPLEPIE_BUILD;
         } elseif (file_exists($root . '/SimplePie')) {
@@ -2133,12 +2133,12 @@ END;
 
             return self::$SIMPLEPIE_BUILD;
         } elseif (file_exists(dirname(__FILE__) . '/Core.php')) {
-            self::$SIMPLEPIE_BUILD = filemtime(dirname(__FILE__) . '/Core.php');
+            self::$SIMPLEPIE_BUILD = (int) filemtime(dirname(__FILE__) . '/Core.php');
 
             return self::$SIMPLEPIE_BUILD;
         }
 
-        self::$SIMPLEPIE_BUILD = filemtime(__FILE__);
+        self::$SIMPLEPIE_BUILD = (int) filemtime(__FILE__);
 
         return self::$SIMPLEPIE_BUILD;
     }
@@ -2177,7 +2177,7 @@ END;
                         $info .= '      Version ' . PCRE_VERSION . "\n";
                         break;
                     case 'curl':
-                        $version = curl_version();
+                        $version = (array) curl_version();
                         $info .= '      Version ' . $version['version'] . "\n";
                         break;
                     case 'mbstring':

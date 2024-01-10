@@ -73,7 +73,7 @@ class Parser implements RegistryAware
             $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                 'contains(concat(" ", @class, " "), " h-entry ")]';
             $result = $xpath->query($query);
-            if ($result->length !== 0) {
+            if ($result !== false && $result->length !== 0) {
                 return $this->parse_microformats($data, $url);
             }
         }

@@ -139,7 +139,7 @@ class IPv6
     private static function split_v6_v4(string $ip): array
     {
         if (strpos($ip, '.') !== false) {
-            $pos = strrpos($ip, ':');
+            $pos = (int) strrpos($ip, ':');
             $ipv6_part = substr($ip, 0, $pos);
             $ipv4_part = substr($ip, $pos + 1);
             return [$ipv6_part, $ipv4_part];
@@ -182,7 +182,7 @@ class IPv6
 
                 // Check the value is valid
                 $value = hexdec($ipv6_part);
-                if (dechex($value) !== strtolower($ipv6_part) || $value < 0 || $value > 0xFFFF) {
+                if (dechex((int) $value) !== strtolower($ipv6_part) || $value < 0 || $value > 0xFFFF) {
                     return false;
                 }
             }
