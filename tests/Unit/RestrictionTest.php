@@ -93,7 +93,7 @@ EOT
 
             $restriction = $enclosure->get_restriction();
             $this->assertInstanceOf(Restriction::class, $restriction);
-    
+
             $this->assertSame($expected, $restriction->get_relationship());
         }
     }

@@ -481,7 +481,7 @@ class Parser
      */
     public static function prepareHeaders(string $headers, int $count = 1)
     {
-        $data = (string) explode("\r\n\r\n", $headers, $count);
+        $data = (array) explode("\r\n\r\n", $headers, $count);
         $data = array_pop($data);
         if (false !== stripos($data, "HTTP/1.0 200 Connection established\r\n")) {
             $exploded = explode("\r\n\r\n", $data, 2);

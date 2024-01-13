@@ -117,7 +117,7 @@ class IRI
      * @param mixed $value Property value
      * @return void
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, mixed $value)
     {
         if (method_exists($this, 'set_' . $name)) {
             call_user_func([$this, 'set_' . $name], $value);
@@ -230,7 +230,7 @@ class IRI
      * @param IRI|string $relative Relative IRI
      * @return IRI|false
      */
-    public static function absolutize($base, $relative)
+    public static function absolutize(IRI|string $base, IRI|string $relative)
     {
         if (!($relative instanceof IRI)) {
             $relative = new IRI($relative);
@@ -892,7 +892,7 @@ class IRI
      * @param string|int|null $port
      * @return bool
      */
-    public function set_port($port)
+    public function set_port(string|int|null $port)
     {
         if ($port === null) {
             $this->port = null;

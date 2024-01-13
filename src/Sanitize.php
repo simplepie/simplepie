@@ -126,7 +126,7 @@ class Sanitize implements RegistryAware
      * @param string|false $page
      * @return void
      */
-    public function set_image_handler($page = false)
+    public function set_image_handler(string|bool $page = false)
     {
         if ($page) {
             $this->image_handler = (string) $page;
@@ -148,7 +148,7 @@ class Sanitize implements RegistryAware
      * @param class-string<Cache> $cache_class
      * @return void
      */
-    public function pass_cache_data(bool $enable_cache = true, string $cache_location = './cache', $cache_name_function = 'md5', string $cache_class = Cache::class, DataCache $cache = null)
+    public function pass_cache_data(bool $enable_cache = true, string $cache_location = './cache', string|NameFilter $cache_name_function = 'md5', string $cache_class = Cache::class, DataCache $cache = null)
     {
         $this->enable_cache = $enable_cache;
 
@@ -223,7 +223,7 @@ class Sanitize implements RegistryAware
      * @param string[]|string $tags
      * @return void
      */
-    public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
+    public function strip_htmltags(array|string $tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
     {
         if ($tags) {
             if (is_array($tags)) {
@@ -248,7 +248,7 @@ class Sanitize implements RegistryAware
      * @param string[]|string $attribs
      * @return void
      */
-    public function rename_attributes($attribs = [])
+    public function rename_attributes(array|string $attribs = [])
     {
         if ($attribs) {
             if (is_array($attribs)) {
@@ -265,7 +265,7 @@ class Sanitize implements RegistryAware
      * @param string[]|string $attribs
      * @return void
      */
-    public function strip_attributes($attribs = ['bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'])
+    public function strip_attributes(array|string $attribs = ['bgsound', 'expr', 'id', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc'])
     {
         if ($attribs) {
             if (is_array($attribs)) {
@@ -582,7 +582,7 @@ class Sanitize implements RegistryAware
      * @param array<string>|string $attributes
      * @return void
      */
-    public function replace_urls(DOMDocument $document, string $tag, $attributes)
+    public function replace_urls(DOMDocument $document, string $tag, array|string $attributes)
     {
         if (!is_array($attributes)) {
             $attributes = [$attributes];

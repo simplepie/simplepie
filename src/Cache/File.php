@@ -64,7 +64,7 @@ class File implements Base
      * @param array<mixed>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data)
+    public function save(array|\SimplePie\SimplePie $data)
     {
         if (file_exists($this->name) && is_writable($this->name) || file_exists($this->location) && is_writable($this->location)) {
             if ($data instanceof \SimplePie\SimplePie) {

@@ -36,7 +36,7 @@ class Sniffer
      *
      * @param File|Response $file Input file
      */
-    public function __construct(/* File */ $file)
+    public function __construct(/* File */ File|Response $file)
     {
         if (!is_object($file) || !$file instanceof Response) {
             // For BC we're asking for `File`, but internally we accept every `Response` implementation

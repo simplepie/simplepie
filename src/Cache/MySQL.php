@@ -111,7 +111,7 @@ class MySQL extends DB
      * @param array<string>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data)
+    public function save(array|\SimplePie\SimplePie $data)
     {
         if ($this->mysql === null) {
             return false;

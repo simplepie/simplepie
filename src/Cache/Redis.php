@@ -93,7 +93,7 @@ class Redis implements Base
      * @param array<mixed>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save($data)
+    public function save(array|\SimplePie\SimplePie $data)
     {
         if ($data instanceof \SimplePie\SimplePie) {
             $data = $data->data;

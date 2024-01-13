@@ -42,7 +42,7 @@ final class BaseDataCache implements DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get_data(string $key, $default = null)
+    public function get_data(string $key, mixed $default = null)
     {
         $data = $this->cache->load();
 

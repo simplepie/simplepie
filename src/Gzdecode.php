@@ -140,7 +140,7 @@ class Gzdecode
      * @param string $name
      * @param mixed $value
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, mixed $value)
     {
         trigger_error("Cannot write property $name", E_USER_ERROR);
     }

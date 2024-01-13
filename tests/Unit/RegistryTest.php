@@ -92,7 +92,7 @@ class RegistryTest extends TestCase
      * Test register() and get_class() with old and new type names
      *
      * @dataProvider getOverridingClassDataProvider
-     * 
+     *
      * @template T
      * @param class-string<T> $registeredType
      * @param class-string<T> $requestedType

@@ -38,7 +38,7 @@ interface DataCache
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get_data(string $key, $default = null);
+    public function get_data(string $key, mixed $default = null);
 
     /**
      * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
