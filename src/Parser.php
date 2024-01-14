@@ -146,7 +146,7 @@ class Parser implements RegistryAware
                     $stream_data = fread($stream, 1048576);
                     if (!xml_parse($xml, $stream_data === false ? '' : $stream_data, feof($stream))) {
                         $this->error_code = xml_get_error_code($xml);
-                        $this->error_string = xml_error_string($this->error_code);
+                        $this->error_string = (string) xml_error_string($this->error_code);
                         $return = false;
                         break;
                     }
@@ -508,23 +508,24 @@ class Parser implements RegistryAware
                         if (isset($author_cache[$author])) {
                             $author = $author_cache[$author];
                         } else {
-                            $mf = \Mf2\fetch($author);
-                            foreach ($mf['items'] as $hcard) {
-                                // Only interested in an h-card by itself in this case.
-                                if (!in_array('h-card', $hcard['type'])) {
-                                    continue;
+                            if ($mf = \Mf2\fetch($author)) {
+                                foreach ($mf['items'] as $hcard) {
+                                    // Only interested in an h-card by itself in this case.
+                                    if (!in_array('h-card', $hcard['type'])) {
+                                        continue;
+                                    }
+                                    // It must have a url property matching what we fetched.
+                                    if (!isset($hcard['properties']['url']) ||
+                                            !(in_array($author, $hcard['properties']['url']))) {
+                                        continue;
+                                    }
+                                    // Save parse_hcard the trouble of finding the correct url.
+                                    $hcard['properties']['url'][0] = $author;
+                                    // Cache this h-card for the next h-entry to check.
+                                    $author_cache[$author] = $this->parse_hcard($hcard);
+                                    $author = $author_cache[$author];
+                                    break;
                                 }
-                                // It must have a url property matching what we fetched.
-                                if (!isset($hcard['properties']['url']) ||
-                                        !(in_array($author, $hcard['properties']['url']))) {
-                                    continue;
-                                }
-                                // Save parse_hcard the trouble of finding the correct url.
-                                $hcard['properties']['url'][0] = $author;
-                                // Cache this h-card for the next h-entry to check.
-                                $author_cache[$author] = $this->parse_hcard($hcard);
-                                $author = $author_cache[$author];
-                                break;
                             }
                         }
                     }

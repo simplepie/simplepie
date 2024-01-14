@@ -601,14 +601,19 @@ class Date
     public function parse(string $date)
     {
         foreach ($this->user as $method) {
-            if (($returned = call_user_func($method, $date)) !== false) {
-                return $returned;
+            if (is_callable($method)) {
+                if (($returned = call_user_func($method, $date)) !== false) {
+                    return (int) $returned;
+                }
             }
         }
 
         foreach ($this->built_in as $method) {
-            if (($returned = call_user_func([$this, $method], $date)) !== false) {
-                return $returned;
+            $callable = [$this, $method];
+            if (is_callable($callable)) {
+                if (($returned = call_user_func($callable, $date)) !== false) {
+                    return $returned;
+                }
             }
         }
 

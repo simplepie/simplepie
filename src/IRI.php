@@ -119,8 +119,9 @@ class IRI
      */
     public function __set(string $name, mixed $value)
     {
-        if (method_exists($this, 'set_' . $name)) {
-            call_user_func([$this, 'set_' . $name], $value);
+        $callable = [$this, 'set_' . $name];
+        if (is_callable($callable)) {
+            call_user_func($callable, $value);
         } elseif (
             $name === 'iauthority'
             || $name === 'iuserinfo'
@@ -195,8 +196,9 @@ class IRI
      */
     public function __unset(string $name)
     {
-        if (method_exists($this, 'set_' . $name)) {
-            call_user_func([$this, 'set_' . $name], '');
+        $callable = [$this, 'set_' . $name];
+        if (is_callable($callable)) {
+            call_user_func($callable, '');
         }
     }
 
@@ -378,10 +380,10 @@ class IRI
     protected function replace_invalid_with_pct_encoding(string $string, string $extra_chars, bool $iprivate = false)
     {
         // Normalize as many pct-encoded sections as possible
-        $string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', [$this, 'remove_iunreserved_percent_encoded'], $string);
+        $string = (string) preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', [$this, 'remove_iunreserved_percent_encoded'], $string);
 
         // Replace invalid percent characters
-        $string = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
+        $string = (string) preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
 
         // Add unreserved and % to $extra_chars (the latter is safe because all
         // pct-encoded sections are now valid).
