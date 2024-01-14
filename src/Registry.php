@@ -217,11 +217,8 @@ class Registry
                     // Cache::create() methods in PHP < 8.0.
                     // No longer supported as of PHP 8.0.
                     if ($method === 'get_handler') {
-                        $callable = [$class, 'create'];
-                        if (is_callable($callable)) {
-                            $result = @call_user_func_array($callable, $parameters);
-                            return $result;
-                        }
+                        $result = @call_user_func_array([$class, 'create'], $parameters);
+                        return $result;
                     }
                     break;
             }
