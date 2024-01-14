@@ -387,7 +387,7 @@ class Misc
     public static function encoding(string $charset)
     {
         // Normalization from UTS #22
-        switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
+        switch (strtolower((string) preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
             case 'adobestandardencoding':
             case 'csadobestandardencoding':
                 return 'Adobe-Standard-Encoding';
@@ -2124,11 +2124,14 @@ END;
             return self::$SIMPLEPIE_BUILD;
         } elseif (file_exists($root . '/SimplePie')) {
             $time = 0;
-            foreach (glob($root . '/SimplePie/*.php') as $file) {
-                if (($mtime = filemtime($file)) > $time) {
-                    $time = $mtime;
+            if ($files = glob($root . '/SimplePie/*.php')) {
+                foreach ($files as $file) {
+                    if (($mtime = filemtime($file)) > $time) {
+                        $time = $mtime;
+                    }
                 }
             }
+
             self::$SIMPLEPIE_BUILD = $time;
 
             return self::$SIMPLEPIE_BUILD;
@@ -2213,7 +2216,7 @@ END;
      */
     public static function url_remove_credentials(string $url)
     {
-        return preg_replace('#^(https?://)[^/:@]+:[^/:@]+@#i', '$1', $url);
+        return (string) preg_replace('#^(https?://)[^/:@]+:[^/:@]+@#i', '$1', $url);
     }
 }
 

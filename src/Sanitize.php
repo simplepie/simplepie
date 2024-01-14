@@ -448,7 +448,9 @@ class Sanitize implements RegistryAware
                 if ($this->strip_comments) {
                     if ($comments = $xpath->query('//comment()')) {
                         foreach ($comments as $comment) {
-                            $comment->parentNode->removeChild($comment);
+                            if ($parentNode = $comment->parentNode) {
+                                $parentNode->removeChild($comment);
+                            }
                         }
                     }
                 }
@@ -527,12 +529,12 @@ class Sanitize implements RegistryAware
 
                 if ($this->remove_div) {
                     $data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '', $data);
-                    $data = preg_replace('/<\/div>$/', '', $data);
+                    $data = preg_replace('/<\/div>$/', '', (string) $data);
                 } else {
                     $data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
                 }
 
-                $data = str_replace('</source>', '', $data);
+                $data = str_replace('</source>', '', (string) $data);
             }
 
             if ($type & \SimplePie\SimplePie::CONSTRUCT_IRI) {
@@ -670,21 +672,26 @@ class Sanitize implements RegistryAware
 
                 $number = $element->childNodes->length;
                 for ($i = $number; $i > 0; $i--) {
-                    $child = $element->childNodes->item(0);
-                    $fragment->appendChild($child);
+                    if ($child = $element->childNodes->item(0)) {
+                        $fragment->appendChild($child);
+                    }
                 }
 
                 if (!in_array($tag, ['script', 'style'])) {
                     $fragment->appendChild(new \DOMText('</' . $tag . '>'));
                 }
 
-                $element->parentNode->replaceChild($fragment, $element);
+                if ($parentNode = $element->parentNode) {
+                    $parentNode->replaceChild($fragment, $element);
+                }
             }
 
             return;
         } elseif (in_array($tag, ['script', 'style'])) {
             foreach ($elements as $element) {
-                $element->parentNode->removeChild($element);
+                if ($parentNode = $element->parentNode) {
+                    $parentNode->removeChild($element);
+                }
             }
 
             return;
@@ -693,11 +700,14 @@ class Sanitize implements RegistryAware
                 $fragment = $document->createDocumentFragment();
                 $number = $element->childNodes->length;
                 for ($i = $number; $i > 0; $i--) {
-                    $child = $element->childNodes->item(0);
-                    $fragment->appendChild($child);
+                    if ($child = $element->childNodes->item(0)) {
+                        $fragment->appendChild($child);
+                    }
                 }
 
-                $element->parentNode->replaceChild($fragment, $element);
+                if ($parentNode = $element->parentNode) {
+                    $parentNode->replaceChild($fragment, $element);
+                }
             }
         }
     }

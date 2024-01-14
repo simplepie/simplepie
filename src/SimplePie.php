@@ -2021,8 +2021,10 @@ class SimplePie
                         // and a list of entries without an h-feed wrapper are both valid.
                         $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                             'contains(concat(" ", @class, " "), " h-entry ")]';
-                        $result = $xpath->query($query);
-                        $microformats = $result->length !== 0;
+
+                        if ($result = $xpath->query($query)) {
+                            $microformats = $result->length !== 0;
+                        }
                     }
                     // Now also do feed discovery, but if microformats were found don't
                     // overwrite the current value of file.
