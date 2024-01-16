@@ -523,7 +523,10 @@ class Sanitize implements RegistryAware
                 }
 
                 // Get content node
-                $div = $document->getElementsByTagName('body')->item(0)->firstChild;
+                $div = null;
+                if ($item = $document->getElementsByTagName('body')->item(0)) {
+                    $div = $item->firstChild;
+                }
                 // Finally, convert to a HTML string
                 $data = trim((string) $document->saveHTML($div));
 

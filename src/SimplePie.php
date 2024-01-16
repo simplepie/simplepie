@@ -2036,7 +2036,7 @@ class SimplePie
                         if ($hub = $locate->get_rel_link('hub')) {
                             $self = $locate->get_rel_link('self');
                             if ($file instanceof File) {
-                                $this->store_links($file, $hub, $self);
+                                $this->store_links($file, $hub, (string) $self);
                             }
                         }
                         // Push the current file onto all_discovered feeds so the user can
