@@ -79,7 +79,7 @@ class EncodingTest extends TestCase
     public function test_convert_UTF8(string $input, string $expected, string $encoding): void
     {
         $encoding = SimplePie_Misc::encoding($encoding);
-        $this->assertSameBin2Hex($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) SimplePie_Misc::change_encoding($input, $encoding, 'UTF-8'));
     }
 
     /**
@@ -92,7 +92,7 @@ class EncodingTest extends TestCase
     {
         $encoding = SimplePie_Misc::encoding($encoding);
         if (extension_loaded('mbstring')) {
-            $this->assertSameBin2Hex($expected, Mock_Misc::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+            $this->assertSameBin2Hex($expected, (string) Mock_Misc::change_encoding_mbstring($input, $encoding, 'UTF-8'));
         }
     }
 
@@ -106,7 +106,7 @@ class EncodingTest extends TestCase
     {
         $encoding = SimplePie_Misc::encoding($encoding);
         if (extension_loaded('iconv')) {
-            $this->assertSameBin2Hex($expected, Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
+            $this->assertSameBin2Hex($expected, (string) Mock_Misc::change_encoding_iconv($input, $encoding, 'UTF-8'));
         }
     }
 
@@ -120,7 +120,7 @@ class EncodingTest extends TestCase
     {
         $encoding = SimplePie_Misc::encoding($encoding);
         if (extension_loaded('intl')) {
-            $this->assertSameBin2Hex($expected, Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
+            $this->assertSameBin2Hex($expected, (string) Mock_Misc::change_encoding_uconverter($input, $encoding, 'UTF-8'));
         }
     }
 
@@ -144,7 +144,7 @@ class EncodingTest extends TestCase
     public function test_convert_UTF16(string $input, string $expected, string $encoding): void
     {
         $encoding = SimplePie_Misc::encoding($encoding);
-        $this->assertSameBin2Hex($expected, SimplePie_Misc::change_encoding($input, $encoding, 'UTF-16'));
+        $this->assertSameBin2Hex($expected, (string) SimplePie_Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
 
     public function test_nonexistant(): void
@@ -152,7 +152,7 @@ class EncodingTest extends TestCase
         $this->assertFalse(SimplePie_Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public static function assertSameBin2Hex(string $expected, string|bool $actual, string $message = ''): void
+    public static function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
         $expected = bin2hex($expected);
         $actual = bin2hex((string) $actual);
