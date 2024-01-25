@@ -67,7 +67,7 @@ class MiscTest extends TestCase
     public function test_convert_UTF8(string $input, string $expected, string $encoding): void
     {
         $encoding = Misc::encoding($encoding);
-        $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) Misc::change_encoding($input, $encoding, 'UTF-8'));
     }
 
     /**
@@ -95,7 +95,7 @@ class MiscTest extends TestCase
         }
 
         $encoding = Misc::encoding($encoding);
-        $this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_mbstring($input, $encoding, 'UTF-8'));
     }
 
     /**
@@ -123,7 +123,7 @@ class MiscTest extends TestCase
         }
 
         $encoding = Misc::encoding($encoding);
-        $this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_iconv($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_iconv($input, $encoding, 'UTF-8'));
     }
 
     /**
@@ -151,7 +151,7 @@ class MiscTest extends TestCase
         }
 
         $encoding = Misc::encoding($encoding);
-        $this->assertSameBin2Hex($expected, MiscWithPublicStaticMethodsMock::change_encoding_uconverter($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_uconverter($input, $encoding, 'UTF-8'));
     }
 
     /* ## UTF-16 methods */
@@ -174,7 +174,7 @@ class MiscTest extends TestCase
     public function test_convert_UTF16(string $input, string $expected, string $encoding): void
     {
         $encoding = Misc::encoding($encoding);
-        $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-16'));
+        $this->assertSameBin2Hex($expected, (string) Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
 
     public function test_nonexistant(): void
@@ -182,7 +182,7 @@ class MiscTest extends TestCase
         $this->assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
-    public function assertSameBin2Hex(string $expected, string|bool $actual, string $message = ''): void
+    public function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
         $expected = bin2hex($expected);
         $actual = bin2hex((string) $actual);
