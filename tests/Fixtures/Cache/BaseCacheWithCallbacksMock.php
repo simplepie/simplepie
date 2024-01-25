@@ -98,7 +98,7 @@ final class BaseCacheWithCallbacksMock implements Base
      * @param array<mixed>|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save(array|SimplePie $data)
+    public function save($data)
     {
         $return = true;
 

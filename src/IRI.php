@@ -232,7 +232,7 @@ class IRI
      * @param IRI|string $relative Relative IRI
      * @return IRI|false
      */
-    public static function absolutize(IRI|string $base, IRI|string $relative)
+    public static function absolutize($base, $relative)
     {
         if (!($relative instanceof IRI)) {
             $relative = new IRI($relative);
@@ -894,7 +894,7 @@ class IRI
      * @param string|int|null $port
      * @return bool
      */
-    public function set_port(string|int|null $port)
+    public function set_port($port)
     {
         if ($port === null) {
             $this->port = null;

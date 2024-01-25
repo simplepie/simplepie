@@ -763,7 +763,7 @@ class SimplePie
      * @param string|string[] $url This is the URL (or (deprecated) array of URLs) that you want to parse.
      * @return void
      */
-    public function set_feed_url(string|array $url)
+    public function set_feed_url($url)
     {
         $this->multifeed_url = [];
         if (is_array($url)) {
@@ -1067,7 +1067,7 @@ class SimplePie
      * @param string|false $encoding Character encoding
      * @return void
      */
-    public function set_input_encoding(string|bool $encoding = false)
+    public function set_input_encoding($encoding = false)
     {
         if ($encoding) {
             $this->input_encoding = (string) $encoding;
@@ -1477,7 +1477,7 @@ class SimplePie
      * @param string[]|string|false $tags Set a list of tags to strip, or set emtpy string to use default tags or false, to strip nothing.
      * @return void
      */
-    public function strip_htmltags(array|string|bool $tags = '', ?bool $encode = null)
+    public function strip_htmltags($tags = '', ?bool $encode = null)
     {
         if ($tags === '') {
             $tags = $this->strip_htmltags;
@@ -1500,7 +1500,7 @@ class SimplePie
      * @param string[]|string $attribs
      * @return void
      */
-    public function rename_attributes(array|string $attribs = '')
+    public function rename_attributes($attribs = '')
     {
         if ($attribs === '') {
             $attribs = $this->rename_attributes;
@@ -1512,7 +1512,7 @@ class SimplePie
      * @param string[]|string $attribs
      * @return void
      */
-    public function strip_attributes(array|string $attribs = '')
+    public function strip_attributes($attribs = '')
     {
         if ($attribs === '') {
             $attribs = $this->strip_attributes;
@@ -1603,7 +1603,7 @@ class SimplePie
      * @param string $qs The query string that the value should be passed to.
      * @return void
      */
-    public function set_image_handler(string|bool $page = false, string $qs = 'i')
+    public function set_image_handler($page = false, string $qs = 'i')
     {
         if ($page !== false) {
             $this->sanitize->set_image_handler($page . '?' . $qs . '=');
@@ -1851,7 +1851,7 @@ class SimplePie
      * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
      * @return array{array<string, string>, string}|array{}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
-    protected function fetch_data(Base|DataCache|bool &$cache)
+    protected function fetch_data(&$cache)
     {
         if ($cache instanceof Base) {
             // @trigger_error(sprintf('Providing $cache as "\SimplePie\Cache\Base" in %s() is deprecated since SimplePie 1.8.0, please provide "\SimplePie\Cache\DataCache" implementation instead.', __METHOD__), \E_USER_DEPRECATED);
@@ -3250,7 +3250,7 @@ class SimplePie
      * @param string|false $page
      * @return bool
      */
-    public function set_favicon_handler(string|bool $page = false, string $qs = 'i')
+    public function set_favicon_handler($page = false, string $qs = 'i')
     {
         trigger_error('Favicon handling has been removed since SimplePie 1.3, please use your own handling', \E_USER_DEPRECATED);
         return false;

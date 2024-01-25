@@ -179,7 +179,7 @@ class Item implements RegistryAware
      * @param string|false $fn User-supplied function to generate an hash
      * @return string|null
      */
-    public function get_id(bool $hash = false, string|bool $fn = 'md5')
+    public function get_id(bool $hash = false, $fn = 'md5')
     {
         if (!$hash) {
             if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'id')) {

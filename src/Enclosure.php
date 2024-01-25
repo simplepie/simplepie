@@ -809,7 +809,7 @@ class Enclosure
      * @param array<string, mixed>|string $options See first parameter to {@see embed}
      * @return string HTML string to output
      */
-    public function native_embed(array|string $options = '')
+    public function native_embed($options = '')
     {
         return $this->embed($options, true);
     }
@@ -859,7 +859,7 @@ class Enclosure
      * @param bool $native Use `<embed>`
      * @return string HTML string to output
      */
-    public function embed(array|string $options = '', bool $native = false)
+    public function embed($options = '', bool $native = false)
     {
         // Set up defaults
         $audio = '';

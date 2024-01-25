@@ -46,7 +46,7 @@ interface Base
      * @param array<mixed>|\SimplePie\SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
      * @return bool Successfulness
      */
-    public function save(array|\SimplePie\SimplePie $data);
+    public function save($data);
 
     /**
      * Retrieve the data saved to the cache

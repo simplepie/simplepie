@@ -732,7 +732,7 @@ class MiscTest extends TestCase
      * @dataProvider parseDateDataProvider
      * @param int|false $expected
      */
-    public function test_parse_date(string $data, int|bool $expected): void
+    public function test_parse_date(string $data, $expected): void
     {
         $this->assertSame(
             $expected,
