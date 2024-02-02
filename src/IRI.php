@@ -117,7 +117,7 @@ class IRI
      * @param mixed $value Property value
      * @return void
      */
-    public function __set(string $name, mixed $value)
+    public function __set(string $name, $value)
     {
         $callable = [$this, 'set_' . $name];
         if (is_callable($callable)) {

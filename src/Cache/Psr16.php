@@ -51,7 +51,7 @@ final class Psr16 implements DataCache
      * @throws InvalidArgumentException&Throwable
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get_data(string $key, mixed $default = null)
+    public function get_data(string $key, $default = null)
     {
         $data = $this->cache->get($key, $default);
 
