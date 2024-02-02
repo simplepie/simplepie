@@ -60,7 +60,7 @@ class Sanitize implements RegistryAware
     public $enable_cache = true;
     /** @var string */
     public $cache_location = './cache';
-    /** @var string */
+    /** @var callable */
     public $cache_name_function = 'md5';
 
     /**
@@ -144,7 +144,7 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param string|NameFilter $cache_name_function
+     * @param callable|NameFilter $cache_name_function
      * @param class-string<Cache> $cache_class
      * @return void
      */
@@ -157,7 +157,7 @@ class Sanitize implements RegistryAware
         }
 
         // @phpstan-ignore-next-line Enforce PHPDoc type.
-        if (!is_string($cache_name_function) && !$cache_name_function instanceof NameFilter) {
+        if (!is_callable($cache_name_function) && !$cache_name_function instanceof NameFilter) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #3 ($cache_name_function) must be of type %s',
                 __METHOD__,
@@ -166,9 +166,9 @@ class Sanitize implements RegistryAware
         }
 
         // BC: $cache_name_function could be a callable as string
-        if (is_string($cache_name_function)) {
+        if (is_callable($cache_name_function)) {
             // trigger_error(sprintf('Providing $cache_name_function as string in "%s()" is deprecated since SimplePie 1.8.0, provide as "%s" instead.', __METHOD__, NameFilter::class), \E_USER_DEPRECATED);
-            $this->cache_name_function = (string) $cache_name_function;
+            $this->cache_name_function = $cache_name_function;
 
             $cache_name_function = new CallableNameFilter($cache_name_function);
         }
@@ -651,7 +651,7 @@ class Sanitize implements RegistryAware
                     $text = '<' . $tag;
                     if ($element->hasAttributes()) {
                         $attrs = [];
-                        foreach ($element->attributes as $name => $attr) {
+                        foreach ($element->attributes ?? [] as $name => $attr) {
                             $value = $attr->value;
 
                             // In XHTML, empty values should never exist, so we repeat the value

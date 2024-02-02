@@ -523,7 +523,7 @@ class SimplePie
     public $cache_location = './cache';
 
     /**
-     * @var string Function that creates the cache filename
+     * @var callable Function that creates the cache filename
      * @see SimplePie::set_cache_name_function()
      * @access private
      */
@@ -1474,7 +1474,7 @@ class SimplePie
     }
 
     /**
-     * @param string[]|string|false $tags Set a list of tags to strip, or set emtpy string to use default tags or false, to strip nothing.
+     * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags, or false to strip nothing.
      * @return void
      */
     public function strip_htmltags($tags = '', ?bool $encode = null)
@@ -1482,8 +1482,10 @@ class SimplePie
         if ($tags === '') {
             $tags = $this->strip_htmltags;
         }
-        $this->sanitize->strip_htmltags($tags);
-        if ($encode !== null) {
+
+        if ($tags !== false) {
+            $this->sanitize->strip_htmltags($tags);
+        } elseif ($encode !== null && is_bool($tags)) {
             $this->sanitize->encode_instead_of_strip($tags);
         }
     }
@@ -3136,7 +3138,7 @@ class SimplePie
      */
     public function get_item_quantity(int $max = 0)
     {
-        $qty = count($this->get_items());
+        $qty = count($this->get_items() ?? []);
         if ($max === 0) {
             return $qty;
         }
@@ -3355,7 +3357,7 @@ class SimplePie
             $items = [];
             foreach ($urls as $arg) {
                 if ($arg instanceof SimplePie) {
-                    $items = array_merge($items, $arg->get_items(0, $limit));
+                    $items = array_merge($items, $arg->get_items(0, $limit) ?? []);
 
                     // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {
