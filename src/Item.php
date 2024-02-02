@@ -708,14 +708,14 @@ class Item implements RegistryAware
      * @since 1.0
      *
      * @param string $date_format Supports any PHP date format from {@see http://php.net/strftime} (empty for the raw data)
-     * @return int|string|null
+     * @return int|string|false|null
      */
     public function get_local_date(string $date_format = '%c')
     {
         if (!$date_format) {
-            return $this->sanitize($this->get_date(''), \SimplePie\SimplePie::CONSTRUCT_TEXT);
+            return $this->sanitize((string) $this->get_date(''), \SimplePie\SimplePie::CONSTRUCT_TEXT);
         } elseif (($date = $this->get_date('U')) !== null && $date !== false) {
-            return strftime($date_format, $date);
+            return strftime($date_format, (int) $date);
         }
 
         return null;
@@ -735,7 +735,7 @@ class Item implements RegistryAware
             return null;
         }
 
-        return gmdate($date_format, $date);
+        return gmdate($date_format, (int) $date);
     }
 
     /**
@@ -752,7 +752,7 @@ class Item implements RegistryAware
             return null;
         }
 
-        return gmdate($date_format, $date);
+        return gmdate($date_format, (int) $date);
     }
 
     /**
@@ -845,8 +845,8 @@ class Item implements RegistryAware
                     } else {
                         $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key] = &$this->data['links'][$key];
                     }
-                } elseif (substr($key, 0, 41) === \SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr($key, 41)] = &$this->data['links'][$key];
+                } elseif (substr((string) $key, 0, 41) === \SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY) {
+                    $this->data['links'][substr((string) $key, 41)] = &$this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }

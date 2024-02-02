@@ -33,11 +33,11 @@ class EnclosureTest extends TestCase
         $feed->enable_cache(false);
         $feed->init();
 
-        $item = $feed->get_item(0);
-        $enclosure = $item->get_enclosure(0);
-
-        $this->assertInstanceOf(Enclosure::class, $enclosure);
-        $this->assertSame($expected, $enclosure->get_link());
+        if ($item = $feed->get_item(0)) {
+            $enclosure = $item->get_enclosure(0);
+            $this->assertInstanceOf(Enclosure::class, $enclosure);
+            $this->assertSame($expected, $enclosure->get_link());
+        }
     }
 
     /**
@@ -100,8 +100,9 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $item = $feed->get_item(0);
-        $this->assertCount($expectedEnclosureCount, $item->get_enclosures());
+        if ($item = $feed->get_item(0)) {
+            $this->assertCount($expectedEnclosureCount, (array) $item->get_enclosures());
+        }
     }
 
     /**

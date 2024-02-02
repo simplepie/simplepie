@@ -4828,9 +4828,11 @@ EOT
         $feed->enable_cache(false);
         $feed->init();
 
-        $item = $feed->get_item(0);
-        $thumbnail = $item->get_thumbnail();
-        $this->assertSame($expected, $thumbnail['url']);
+        $thumbnail = null;
+        if ($item = $feed->get_item(0)) {
+            $thumbnail = $item->get_thumbnail();
+        }
+        $this->assertSame($expected, $thumbnail['url'] ?? null);
     }
 
     /**

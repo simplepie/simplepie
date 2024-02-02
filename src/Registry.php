@@ -217,6 +217,7 @@ class Registry
                     // Cache::create() methods in PHP < 8.0.
                     // No longer supported as of PHP 8.0.
                     if ($method === 'get_handler') {
+                        // Fixing the error PHPStan throws here breaks CacheTest::testDirectOverrideLegacy()
                         $result = @call_user_func_array([$class, 'create'], $parameters);
                         return $result;
                     }
@@ -224,8 +225,11 @@ class Registry
             }
         }
 
-        $result = call_user_func_array([$class, $method], $parameters);
-        return $result;
+        $callable = [$class, $method];
+        if (is_callable($callable)) {
+            $result = call_user_func_array($callable, $parameters);
+            return $result;
+        }
     }
 }
 

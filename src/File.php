@@ -91,7 +91,7 @@ class File implements Response
         if (function_exists('idn_to_ascii')) {
             $parsed = \SimplePie\Misc::parse_url($url);
             if ($parsed['authority'] !== '' && !ctype_print($parsed['authority'])) {
-                $authority = \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
+                $authority = (string) \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
                 $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $authority, $parsed['path'], $parsed['query'], null);
             }
         }
@@ -103,7 +103,7 @@ class File implements Response
         if (preg_match('/^http(s)?:\/\//i', $url)) {
             if ($useragent === null) {
                 $useragent = ini_get('user_agent');
-                $this->useragent = $useragent;
+                $this->useragent = (string) $useragent;
             }
             if (!is_array($headers)) {
                 $headers = [];
@@ -142,11 +142,9 @@ class File implements Response
                     $this->success = false;
                 } else {
                     // Use the updated url provided by curl_getinfo after any redirects.
-                    if ($info = curl_getinfo($fp)) {
-                        $this->url = $info['url'];
-                    }
+                    $info = (array) curl_getinfo($fp);
                     curl_close($fp);
-                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders, $info['redirect_count'] + 1);
+                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders((string) $responseHeaders, $info['redirect_count'] + 1);
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
@@ -156,17 +154,19 @@ class File implements Response
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
                             $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
-                            $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
+                            $this->__construct((string) $location, $timeout, $redirects, $headers, (string) $useragent, $force_fsockopen, $curl_options);
                             return;
                         }
                     }
                 }
             } else {
                 $this->method = \SimplePie\SimplePie::FILE_SOURCE_REMOTE | \SimplePie\SimplePie::FILE_SOURCE_FSOCKOPEN;
-                $url_parts = parse_url($url);
+                if (!($url_parts = parse_url($url))) {
+                    throw new \InvalidArgumentException('Malformed URL: ' . $url);
+                }
                 $socket_host = $url_parts['host'];
-                if (isset($url_parts['scheme']) && strtolower($url_parts['scheme']) === 'https') {
-                    $socket_host = "ssl://$url_parts[host]";
+                if (isset($url_parts['scheme']) && isset($url_parts['host']) && strtolower($url_parts['scheme']) === 'https') {
+                    $socket_host = sprintf("ssl://$url_parts[host]");
                     $url_parts['port'] = 443;
                 }
                 if (!isset($url_parts['port'])) {
@@ -188,7 +188,9 @@ class File implements Response
                         $get = '/';
                     }
                     $out = "GET $get HTTP/1.1\r\n";
-                    $out .= "Host: $url_parts[host]\r\n";
+                    if (isset($url_parts['host'])) {
+                        $out .= "Host: $url_parts[host]\r\n";
+                    }
                     $out .= "User-Agent: $useragent\r\n";
                     if (extension_loaded('zlib')) {
                         $out .= "Accept-Encoding: x-gzip,gzip,deflate\r\n";
@@ -220,7 +222,7 @@ class File implements Response
                                 $this->redirects++;
                                 $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
                                 $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
-                                $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
+                                $this->__construct((string) $location, $timeout, $redirects, $headers, (string) $useragent, $force_fsockopen, $curl_options);
                                 return;
                             }
                             if (($contentEncodingHeader = $this->get_header_line('content-encoding')) !== '') {

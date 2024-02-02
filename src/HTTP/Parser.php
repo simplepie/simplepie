@@ -448,7 +448,7 @@ class Parser
                 return;
             }
 
-            $length = hexdec(trim($matches[1]));
+            $length = (int) hexdec(trim($matches[1]));
             if ($length === 0) {
                 // Ignore trailer headers
                 $this->state = self::STATE_EMIT;
@@ -456,7 +456,7 @@ class Parser
                 return;
             }
 
-            $chunk_length = strlen($matches[0]);
+            $chunk_length = (int) strlen($matches[0]);
             $decoded .= substr($encoded, $chunk_length, $length);
             $encoded = substr($encoded, $chunk_length + $length + 2);
 
@@ -481,8 +481,8 @@ class Parser
      */
     public static function prepareHeaders(string $headers, int $count = 1)
     {
-        $data = explode("\r\n\r\n", $headers, $count);
-        $data = array_pop($data);
+        $data = (array) explode("\r\n\r\n", $headers, $count);
+        $data = (string) array_pop($data);
         if (false !== stripos($data, "HTTP/1.0 200 Connection established\r\n")) {
             $exploded = explode("\r\n\r\n", $data, 2);
             $data = end($exploded);
@@ -491,7 +491,7 @@ class Parser
             $exploded = explode("\r\n\r\n", $data, 2);
             $data = end($exploded);
         }
-        return $data;
+        return (string) $data;
     }
 }
 

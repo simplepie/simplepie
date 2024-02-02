@@ -523,7 +523,7 @@ class SimplePie
     public $cache_location = './cache';
 
     /**
-     * @var string Function that creates the cache filename
+     * @var callable Function that creates the cache filename
      * @see SimplePie::set_cache_name_function()
      * @access private
      */
@@ -1474,7 +1474,7 @@ class SimplePie
     }
 
     /**
-     * @param string[]|string|false $tags Set a list of tags to strip, or set emtpy string to use default tags or false, to strip nothing.
+     * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags, or false to strip nothing.
      * @return void
      */
     public function strip_htmltags($tags = '', ?bool $encode = null)
@@ -1482,8 +1482,10 @@ class SimplePie
         if ($tags === '') {
             $tags = $this->strip_htmltags;
         }
-        $this->sanitize->strip_htmltags($tags);
-        if ($encode !== null) {
+
+        if ($tags !== false) {
+            $this->sanitize->strip_htmltags($tags);
+        } elseif ($encode !== null && is_bool($tags)) {
             $this->sanitize->encode_instead_of_strip($tags);
         }
     }
@@ -2021,8 +2023,10 @@ class SimplePie
                         // and a list of entries without an h-feed wrapper are both valid.
                         $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                             'contains(concat(" ", @class, " "), " h-entry ")]';
-                        $result = $xpath->query($query);
-                        $microformats = $result->length !== 0;
+
+                        if ($result = $xpath->query($query)) {
+                            $microformats = $result->length !== 0;
+                        }
                     }
                     // Now also do feed discovery, but if microformats were found don't
                     // overwrite the current value of file.
@@ -2034,7 +2038,7 @@ class SimplePie
                         if ($hub = $locate->get_rel_link('hub')) {
                             $self = $locate->get_rel_link('self');
                             if ($file instanceof File) {
-                                $this->store_links($file, $hub, $self);
+                                $this->store_links($file, $hub, (string) $self);
                             }
                         }
                         // Push the current file onto all_discovered feeds so the user can
@@ -2830,8 +2834,8 @@ class SimplePie
                     } else {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = &$this->data['links'][$key];
                     }
-                } elseif (substr($key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr($key, 41)] = &$this->data['links'][$key];
+                } elseif (substr((string) $key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
+                    $this->data['links'][substr((string) $key, 41)] = &$this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }
@@ -3134,7 +3138,7 @@ class SimplePie
      */
     public function get_item_quantity(int $max = 0)
     {
-        $qty = count($this->get_items());
+        $qty = count($this->get_items() ?? []);
         if ($max === 0) {
             return $qty;
         }
@@ -3353,9 +3357,9 @@ class SimplePie
             $items = [];
             foreach ($urls as $arg) {
                 if ($arg instanceof SimplePie) {
-                    $items = array_merge($items, $arg->get_items(0, $limit));
+                    $items = array_merge($items, $arg->get_items(0, $limit) ?? []);
 
-                // @phpstan-ignore-next-line Enforce PHPDoc type.
+                    // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {
                     trigger_error('Arguments must be SimplePie objects', E_USER_WARNING);
                 }
