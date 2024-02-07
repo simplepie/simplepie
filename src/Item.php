@@ -2331,6 +2331,69 @@ class Item implements RegistryAware
 
         return $this->sanitize;
     }
+
+    public function get_images()
+    {
+        if ( !isset( $this->data['dbp_images'] ) )
+        {
+            $this->data['dbp_images'] = array();
+
+            // looking for images as enclosures / thumbnails
+
+            $enclosure	= $this->get_enclosure();
+            if ( !empty( $enclosure ) )
+            {
+                if ( false !== stripos( $enclosure->get_type() ?? '', 'image' ) ) {
+                    $this->data['dbp_images'] [] = $enclosure->get_link();
+                }
+
+                if ( 'image' == $enclosure->get_medium() ) {
+                    $this->data['dbp_images'] [] = $enclosure->get_link();
+                }
+
+                $thumbnails = $enclosure->get_thumbnails();
+                if ( !empty( $thumbnails ) ) {
+                    foreach ( $thumbnails as $thumbnail) {
+                        $this->data['dbp_images'] [] = $thumbnail;
+                    }
+                }
+            }
+
+            $this->data['dbp_images'] = array_filter( $this->data['dbp_images'] );
+            $this->data['dbp_images'] = array_filter( $this->data['dbp_images'], array($this, 'not_bookmark' ) );
+            $this->data['dbp_images'] = array_filter( $this->data['dbp_images'], array($this, 'exclude' ) );
+            $this->data['dbp_images'] = array_filter( $this->data['dbp_images'], array($this, 'is_url' ) );
+            array_unique( $this->data['dbp_images'] );
+        }
+
+        if ( empty( $this->data['dbp_images'] ) )
+        {
+            return null;
+        }
+
+        return $this->data['dbp_images'];
+    }
+
+    protected function not_bookmark( $var )
+    {
+        return !$this->string_in_array( $var, array ( 'bookmark.gif', 'feeds.feedburner.com' ) );
+    }
+
+    protected function exclude( $var )
+    {
+        return !$this->string_in_array( $var, array( 'smilies' ) );
+    }
+
+    protected function is_url( $var )
+    {
+        return $this->string_in_array( $var, array( 'http://', 'https://' ) );
+    }
+
+    protected function string_in_array( $needle, $haystack )
+    {
+        foreach ( $haystack as $hay ) if ( ( stripos( $needle, $hay ) !== false ) ) return true;
+        return false;
+    }
 }
 
 class_alias('SimplePie\Item', 'SimplePie_Item');
