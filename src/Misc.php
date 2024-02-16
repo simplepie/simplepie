@@ -73,7 +73,7 @@ class Misc
      * @param string $string HTML document
      * @return array<array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content: string}>
      */
-    public static function get_element(string $realname, string $string)
+    public static function get_element(string $realname, string $string): array
     {
         // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.3, use "DOMDocument" instead.'), \E_USER_DEPRECATED);
 
@@ -166,10 +166,7 @@ class Misc
         return $message;
     }
 
-    /**
-     * @return string
-     */
-    public static function fix_protocol(string $url, int $http = 1)
+    public static function fix_protocol(string $url, int $http = 1): string
     {
         $url = Misc::normalize_url($url);
         $parsed = Misc::parse_url($url);
@@ -384,7 +381,7 @@ class Misc
      * @param string $charset Character set to standardise
      * @return string Standardised name
      */
-    public static function encoding(string $charset)
+    public static function encoding(string $charset): string
     {
         // Normalization from UTS #22
         switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
