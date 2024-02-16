@@ -54,7 +54,7 @@ class Psr16Test extends TestCase
         $e = $this->createMock(InvalidArgumentException::class);
 
         // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
-        if (! $e instanceof Throwable) {
+        if (!$e instanceof Throwable) {
             $e = new class () extends Exception implements InvalidArgumentException {};
         }
 
@@ -114,7 +114,7 @@ class Psr16Test extends TestCase
         $e = $this->createMock(InvalidArgumentException::class);
 
         // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
-        if (! $e instanceof Throwable) {
+        if (!$e instanceof Throwable) {
             $e = new class () extends Exception implements InvalidArgumentException {};
         }
 
@@ -159,7 +159,7 @@ class Psr16Test extends TestCase
         $e = $this->createMock(InvalidArgumentException::class);
 
         // BC for PHP <8.0 and psr/simple-cache <2.0.0: $e must implement \Throwable
-        if (! $e instanceof Throwable) {
+        if (!$e instanceof Throwable) {
             $e = new class () extends Exception implements InvalidArgumentException {};
         }
 

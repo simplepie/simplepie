@@ -42,13 +42,13 @@ abstract class DB implements Base
             }
 
             if (isset($data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['feed'][0])) {
-                $channel = & $data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['feed'][0];
+                $channel = &$data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_10]['feed'][0];
             } elseif (isset($data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['feed'][0])) {
-                $channel = & $data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['feed'][0];
+                $channel = &$data->data['child'][\SimplePie\SimplePie::NAMESPACE_ATOM_03]['feed'][0];
             } elseif (isset($data->data['child'][\SimplePie\SimplePie::NAMESPACE_RDF]['RDF'][0])) {
-                $channel = & $data->data['child'][\SimplePie\SimplePie::NAMESPACE_RDF]['RDF'][0];
+                $channel = &$data->data['child'][\SimplePie\SimplePie::NAMESPACE_RDF]['RDF'][0];
             } elseif (isset($data->data['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['rss'][0]['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['channel'][0])) {
-                $channel = & $data->data['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['rss'][0]['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['channel'][0];
+                $channel = &$data->data['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['rss'][0]['child'][\SimplePie\SimplePie::NAMESPACE_RSS_20]['channel'][0];
             } else {
                 $channel = null;
             }
