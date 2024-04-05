@@ -1730,9 +1730,9 @@ class Item implements RegistryAware
 
                             // PLAYER
                             if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'])) {
-                                $player = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($player));
+                                $player = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player']));
                             } elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'])) {
-                                $player = $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($player));
+                                $player = $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player']));
                             } else {
                                 $player = $player_parent;
                             }
@@ -2082,7 +2082,7 @@ class Item implements RegistryAware
                         // PLAYER
                         if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'])) {
                             if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'])) {
-                                $player = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($player));
+                                $player = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]));
                             }
                         } else {
                             $player = $player_parent;
