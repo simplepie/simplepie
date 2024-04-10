@@ -120,8 +120,8 @@ class Item implements RegistryAware
     /**
      * Get base URL of the item itself.
      * Returns `<xml:base>` or feed base URL.
-     * Similar to `get_base()` but can safely be used during initialisation methods
-     * such as `get_links()` (`get_base()` and `get_links()` call each-other)
+     * Similar to `Item::get_base()` but can safely be used during initialisation methods
+     * such as `Item::get_links()` (`Item::get_base()` and `Item::get_links()` call each-other)
      * and is not affected by enclosures.
      *
      * @param array<string, mixed> $element
