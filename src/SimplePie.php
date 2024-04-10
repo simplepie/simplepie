@@ -3355,7 +3355,7 @@ class SimplePie
                 if ($arg instanceof SimplePie) {
                     $items = array_merge($items, $arg->get_items(0, $limit));
 
-                // @phpstan-ignore-next-line Enforce PHPDoc type.
+                    // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {
                     trigger_error('Arguments must be SimplePie objects', E_USER_WARNING);
                 }
