@@ -188,9 +188,9 @@ class Parser implements RegistryAware
                         if ($xml->namespaceURI !== '') {
                             $attrName = $xml->namespaceURI . $this->separator . $xml->localName;
                         } else {
-                            $attrName = $xml->localName;
+                            $attrName = (string) $xml->localName;
                         }
-                        $attributes[(string) $attrName] = (string) $xml->value;
+                        $attributes[$attrName] = $xml->value;
                     }
                     $this->tag_open(null, $tagName, $attributes);
                     if ($empty) {
