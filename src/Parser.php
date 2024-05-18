@@ -190,7 +190,7 @@ class Parser implements RegistryAware
                         } else {
                             $attrName = $xml->localName;
                         }
-                        $attributes[$attrName] = $xml->value;
+                        $attributes[(string) $attrName] = (string) $xml->value;
                     }
                     $this->tag_open(null, $tagName, $attributes);
                     if ($empty) {
@@ -285,14 +285,19 @@ class Parser implements RegistryAware
                 $this->xml_base_explicit[] = true;
             }
         } else {
-            $this->xml_base[] = end($this->xml_base);
+            if ($xml_base = end($this->xml_base)) {
+                $this->xml_base[] = $xml_base;
+            }
+            
             $this->xml_base_explicit[] = end($this->xml_base_explicit);
         }
 
         if (isset($attribs[\SimplePie\SimplePie::NAMESPACE_XML]['lang'])) {
             $this->xml_lang[] = $attribs[\SimplePie\SimplePie::NAMESPACE_XML]['lang'];
         } else {
-            $this->xml_lang[] = end($this->xml_lang);
+            if ($xml_lang = end($this->xml_lang)) {
+                $this->xml_lang[] = $xml_lang;
+            }
         }
 
         if ($this->current_xhtml_construct >= 0) {
