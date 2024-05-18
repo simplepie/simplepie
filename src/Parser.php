@@ -285,7 +285,7 @@ class Parser implements RegistryAware
                 $this->xml_base_explicit[] = true;
             }
         } else {
-            if ($xml_base = end($this->xml_base)) {
+            if (($xml_base = end($this->xml_base)) !== false) {
                 $this->xml_base[] = $xml_base;
             }
             
@@ -295,7 +295,7 @@ class Parser implements RegistryAware
         if (isset($attribs[\SimplePie\SimplePie::NAMESPACE_XML]['lang'])) {
             $this->xml_lang[] = $attribs[\SimplePie\SimplePie::NAMESPACE_XML]['lang'];
         } else {
-            if ($xml_lang = end($this->xml_lang)) {
+            if (($xml_lang = end($this->xml_lang)) !== false) {
                 $this->xml_lang[] = $xml_lang;
             }
         }
