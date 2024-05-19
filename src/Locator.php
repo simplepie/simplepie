@@ -263,9 +263,9 @@ class Locator implements RegistryAware
                         if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed, true)) {
                             /**
                              * Casting $href to string resolves this PHPStan error:
-                             * 
+                             *
                              * Method SimplePie\Locator::search_elements_by_tag() should return array<string, SimplePie\HTTP\Response>
-                             * but returns array<int|string, SimplePie\HTTP\Response>.  
+                             * but returns array<int|string, SimplePie\HTTP\Response>.
                              */
                             $feeds[(string) $href] = $feed;
                         }

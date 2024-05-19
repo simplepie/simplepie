@@ -288,7 +288,7 @@ class Parser implements RegistryAware
             if (($xml_base = end($this->xml_base)) !== false) {
                 $this->xml_base[] = $xml_base;
             }
-            
+
             $this->xml_base_explicit[] = end($this->xml_base_explicit);
         }
 
