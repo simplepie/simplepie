@@ -142,11 +142,11 @@ class Item implements RegistryAware
      * @access private
      * @see \SimplePie\SimplePie::sanitize()
      * @param string $data Data to sanitize
-     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
-     * @param string|null $base Base URL to resolve URLs against
+     * @param SimplePie::CONSTRUCT_* $type
+     * @param string $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
-    public function sanitize(string $data, int $type, ?string $base = '')
+    public function sanitize(string $data, int $type, string $base = '')
     {
         return $this->feed->sanitize($data, $type, $base);
     }

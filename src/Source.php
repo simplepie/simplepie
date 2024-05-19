@@ -73,7 +73,7 @@ class Source implements RegistryAware
 
     /**
      * @param string $data
-     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * @param SimplePie::CONSTRUCT_* $type
      * @param string $base
      * @return string
      */

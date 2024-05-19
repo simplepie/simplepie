@@ -2089,7 +2089,15 @@ class SimplePie
 
         $headers = [];
         foreach ($file->get_headers() as $key => $values) {
-            $headers[$key] = implode(', ', $values);
+            /**
+             * Casting $key to string resolves the below PHPStan error.  Somehow it's detecting that $key can be an integer.
+             * 
+             * Method SimplePie\SimplePie::fetch_data() should return array{}|array{array<string, string>, string}|bool 
+             * but returns array{array<int|string, string>, string}.
+             * 
+             * Offset 0 (array<string, string>) does not accept type array<int|string, string>.  
+             */
+            $headers[(string) $key] = implode(', ', $values);
         }
 
         $sniffer = $this->registry->create(Sniffer::class, [&$file]);

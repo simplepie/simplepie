@@ -261,7 +261,13 @@ class Locator implements RegistryAware
                         $feed = $this->get_http_client()->request(Client::METHOD_GET, $href, $headers);
 
                         if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed, true)) {
-                            $feeds[$href] = $feed;
+                            /**
+                             * Casting $href to string resolves this PHPStan error:
+                             * 
+                             * Method SimplePie\Locator::search_elements_by_tag() should return array<string, SimplePie\HTTP\Response>
+                             * but returns array<int|string, SimplePie\HTTP\Response>.  
+                             */
+                            $feeds[(string) $href] = $feed;
                         }
                     } catch (HttpException $th) {
                         // Just mark it as done and continue.
@@ -440,15 +446,20 @@ class Locator implements RegistryAware
     private function get_http_client(): Client
     {
         if ($this->http_client === null && $this->registry) {
+            $options = [
+                'timeout' => $this->timeout,
+                'redirects' => 5,
+                'force_fsockopen' => $this->force_fsockopen,
+                'curl_options' => $this->curl_options,
+            ];
+
+            if (!is_null($this->useragent)) {
+                $options['useragent'] = $this->useragent;
+            }
+
             return new FileClient(
                 $this->registry,
-                [
-                    'timeout' => $this->timeout,
-                    'redirects' => 5,
-                    'useragent' => $this->useragent,
-                    'force_fsockopen' => $this->force_fsockopen,
-                    'curl_options' => $this->curl_options,
-                ]
+                $options
             );
         }
 

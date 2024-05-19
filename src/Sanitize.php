@@ -559,7 +559,10 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * PHPStan seems to have trouble resolving int-mask because bitwise
+     * operators are used when operators are used when passing this parameter.
+     * https://github.com/phpstan/phpstan/issues/9384
+     * # @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @return string
      */
     protected function preprocess(string $html, int $type)
@@ -631,7 +634,10 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * PHPStan seems to have trouble resolving int-mask because bitwise
+     * operators are used when passing this parameter.
+     * https://github.com/phpstan/phpstan/issues/9384
+     * # @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @return void
      */
     protected function strip_tag(string $tag, DOMDocument $document, DOMXPath $xpath, int $type)

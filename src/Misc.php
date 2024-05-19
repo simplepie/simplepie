@@ -71,7 +71,7 @@ class Misc
      * @deprecated since SimplePie 1.3, use DOMDocument instead (parsing HTML with regex is bad!)
      * @param string $realname Element name (including namespace prefix if applicable)
      * @param string $string HTML document
-     * @return array<array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content: string}>
+     * @return array<array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content?: string}>
      */
     public static function get_element(string $realname, string $string)
     {
