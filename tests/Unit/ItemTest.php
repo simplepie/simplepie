@@ -2834,7 +2834,7 @@ EOT
     }
 
     /**
-     * @return array<array{string, string}>
+     * @return array<string, array<int, string|null>>
      */
     public static function getPermalinkDataProvider(): array
     {
@@ -3315,7 +3315,7 @@ EOT
     }
 
     /**
-     * @return array<array{string, string}>
+     * @return array<string, array<int, string|null>>
      */
     public static function getBaseProvider(): array
     {

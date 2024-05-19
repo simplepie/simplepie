@@ -411,7 +411,7 @@ class Sanitize implements RegistryAware
     /**
      * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string $base
-     * @return string|bool|string[]
+     * @return string
      */
     public function sanitize(string $data, int $type, string $base = '')
     {
