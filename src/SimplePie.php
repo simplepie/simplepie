@@ -3303,8 +3303,8 @@ class SimplePie
 
         $class = get_class($this);
         $trace = debug_backtrace();
-        $file = $trace[0]['file'];
-        $line = $trace[0]['line'];
+        $file = $trace[0]['file'] ?? '';
+        $line = $trace[0]['line'] ?? '';
         trigger_error("Call to undefined method $class::$method() in $file on line $line", E_USER_ERROR);
     }
 

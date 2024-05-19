@@ -2166,7 +2166,7 @@ END;
         $info = 'SimplePie ' . \SimplePie\SimplePie::VERSION . ' Build ' . static::get_build() . "\n";
         $info .= 'PHP ' . PHP_VERSION . "\n";
         if ($sp->error() !== null) {
-            $info .= 'Error occurred: ' . $sp->error() . "\n";
+            $info .= 'Error occurred: ' . implode(', ', (array) $sp->error()) . "\n";
         } else {
             $info .= "No error found.\n";
         }
@@ -2184,7 +2184,13 @@ END;
                         $info .= '      Version ' . $version['version'] . "\n";
                         break;
                     case 'mbstring':
-                        $info .= '      Overloading: ' . mb_get_info('func_overload') . "\n";
+                        /**
+                         * PHPStan fix:
+                         * Binary operation "." between '      Overloading: ' and non-empty-array<int|string, array|int|string>|int<min, -1>|int<1, max>|non-falsy-string results in an error.
+                         */
+                        if (is_string(mb_get_info('func_overload'))) {
+                            $info .= '      Overloading: ' . mb_get_info('func_overload') . "\n";
+                        }
                         break;
                     case 'iconv':
                         $info .= '      Version ' . ICONV_VERSION . "\n";

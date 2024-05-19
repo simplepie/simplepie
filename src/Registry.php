@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use InvalidArgumentException;
 use SimplePie\Content\Type\Sniffer;
 use SimplePie\Parse\Date;
 use SimplePie\XML\Declaration\Parser as DeclarationParser;
@@ -147,7 +148,7 @@ class Registry
      *
      * @template T
      * @param class-string<T> $type
-     * @return class-string<T>|null
+     * @return class-string<T>
      */
     public function get_class($type)
     {
@@ -158,7 +159,11 @@ class Registry
         }
 
         if (!array_key_exists($type, $this->default)) {
-            return null;
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($type) "%s" not found in default class list.',
+                __METHOD__,
+                $type
+            ), 1);
         }
 
         $class = $this->default[$type];

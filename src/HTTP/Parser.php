@@ -245,9 +245,9 @@ class Parser
             $this->name = strtolower($this->name);
             // We should only use the last Content-Type header. c.f. issue #1
             if (isset($this->headers[$this->name]) && $this->name !== 'content-type') {
-                if ($this->psr7Compatible) {
+                if ($this->psr7Compatible && is_array($this->headers[$this->name])) {
                     $this->headers[$this->name][] = $this->value;
-                } else {
+                } elseif (is_string($this->headers[$this->name])) {
                     $this->headers[$this->name] .= ', ' . $this->value;
                 }
             } else {
