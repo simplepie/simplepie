@@ -2081,6 +2081,7 @@ class SimplePie
         }
 
         $this->raw_data = $file->get_body_content();
+        $this->raw_data = trim($this->raw_data);
         $this->permanent_url = $file->get_permanent_uri();
 
         $headers = [];
