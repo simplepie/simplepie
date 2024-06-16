@@ -2117,28 +2117,8 @@ END;
             return self::$SIMPLEPIE_BUILD;
         }
 
-        $root = dirname(__FILE__, 2);
-        if (file_exists($root . '/.git/index')) {
-            self::$SIMPLEPIE_BUILD = filemtime($root . '/.git/index');
-
-            return self::$SIMPLEPIE_BUILD;
-        } elseif (file_exists($root . '/SimplePie')) {
-            $time = 0;
-            foreach (glob($root . '/SimplePie/*.php') as $file) {
-                if (($mtime = filemtime($file)) > $time) {
-                    $time = $mtime;
-                }
-            }
-            self::$SIMPLEPIE_BUILD = $time;
-
-            return self::$SIMPLEPIE_BUILD;
-        } elseif (file_exists(dirname(__FILE__) . '/Core.php')) {
-            self::$SIMPLEPIE_BUILD = filemtime(dirname(__FILE__) . '/Core.php');
-
-            return self::$SIMPLEPIE_BUILD;
-        }
-
-        self::$SIMPLEPIE_BUILD = filemtime(__FILE__);
+        $mtime = @filemtime(dirname(__FILE__) . '/SimplePie.php'); // FreshRSS
+        self::$SIMPLEPIE_BUILD = $mtime ?: (filemtime(__FILE__) ?: 0); // FreshRSS
 
         return self::$SIMPLEPIE_BUILD;
     }
