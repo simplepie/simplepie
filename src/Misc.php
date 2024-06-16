@@ -1876,8 +1876,14 @@ class Misc
      */
     public static function atom_10_content_construct_type(array $attribs)
     {
+        $type = '';
         if (isset($attribs['']['type'])) {
-            $type = strtolower(trim($attribs['']['type']));
+            $type = trim($attribs['']['type']);
+        } elseif (isset($attribs[\SimplePie\SimplePie::NAMESPACE_ATOM_10]['type'])) { // FreshRSS
+            $type = trim($attribs[\SimplePie\SimplePie::NAMESPACE_ATOM_10]['type']);
+        }
+        if ($type != '') { // FreshRSS
+            $type = strtolower($type); // FreshRSS
             switch ($type) {
                 case 'text':
                     return \SimplePie\SimplePie::CONSTRUCT_TEXT;
