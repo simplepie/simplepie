@@ -475,7 +475,7 @@ class Parser
      * Prepare headers (take care of proxies headers)
      *
      * @param string  $headers Raw headers
-     * @param integer $count   Redirection count. Default to 1.
+     * @param int $count   Redirection count. Default to 1.
      *
      * @return string
      */
