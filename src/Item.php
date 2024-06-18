@@ -193,7 +193,7 @@ class Item implements RegistryAware
      * MD5 hash based on the permalink, title and content.
      *
      * @since Beta 2
-     * @param boolean $hash Should we force using a hash instead of the supplied ID?
+     * @param bool $hash Should we force using a hash instead of the supplied ID?
      * @param string|false $fn User-supplied function to generate an hash
      * @return string|null
      */
@@ -270,7 +270,7 @@ class Item implements RegistryAware
      * `<itunes:subtitle>`
      *
      * @since 0.8
-     * @param boolean $description_only Should we avoid falling back to the content?
+     * @param bool $description_only Should we avoid falling back to the content?
      * @return string|null
      */
     public function get_description(bool $description_only = false)
@@ -320,7 +320,7 @@ class Item implements RegistryAware
      * Uses `<atom:content>` or `<content:encoded>` (RSS 1.0 Content Module)
      *
      * @since 1.0
-     * @param boolean $content_only Should we avoid falling back to the description?
+     * @param bool $content_only Should we avoid falling back to the description?
      * @return string|null
      */
     public function get_content(bool $content_only = false)

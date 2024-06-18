@@ -264,7 +264,7 @@ class Parser implements RegistryAware
     }
 
     /**
-     * @param XMLParser|resource|null $parser
+     * @param XMLParser|\resource|null $parser
      * @param array<string, string> $attributes
      * @return void
      */
@@ -321,7 +321,7 @@ class Parser implements RegistryAware
     }
 
     /**
-     * @param XMLParser|resource|null $parser
+     * @param XMLParser|\resource|null $parser
      * @return void
      */
     public function cdata($parser, string $cdata)
@@ -334,7 +334,7 @@ class Parser implements RegistryAware
     }
 
     /**
-     * @param XMLParser|resource|null $parser
+     * @param XMLParser|\resource|null $parser
      * @return void
      */
     public function tag_close($parser, string $tag)
