@@ -145,7 +145,7 @@ class Parser implements RegistryAware
                 do {
                     $stream_data = fread($stream, 1048576);
                     // NB: At some point between PHP 7.3 and 7.4, the documented signature for `fread()` has changed
-                    // from returning `string` to returning `string|false`, and in older versions, it used to be `string|null`,
+                    // from returning `string` to returning `string|false`,
                     // hence the falsy check:
                     if (!xml_parse($xml, $stream_data == false ? '' : $stream_data, feof($stream))) {
                         $this->error_code = xml_get_error_code($xml);
