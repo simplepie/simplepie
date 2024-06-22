@@ -544,14 +544,14 @@ class SimplePie_Decode_HTML_Entities
                 ];
 
                 for ($i = 0, $match = null; $i < 9 && $this->consume() !== false; $i++) {
-                    $consumed = substr($this->consumed, 1);
+                    $consumed = (string) substr($this->consumed, 1);
                     if (isset($entities[$consumed])) {
                         $match = $consumed;
                     }
                 }
 
                 if ($match !== null) {
-                    $this->data = substr_replace($this->data, $entities[$match], $this->position - strlen((string) $consumed) - 1, strlen((string) $match) + 1);
+                    $this->data = substr_replace($this->data, $entities[$match], $this->position - strlen($consumed) - 1, strlen($match) + 1);
                     $this->position += strlen($entities[$match]) - strlen($consumed) - 1;
                 }
                 break;
