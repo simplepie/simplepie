@@ -796,7 +796,7 @@ class IRI
 
         $remaining = $authority;
         if (($iuserinfo_end = strrpos($remaining, '@')) !== false) {
-            $iuserinfo = substr($remaining, 0, $iuserinfo_end);
+            $iuserinfo = (string) substr($remaining, 0, $iuserinfo_end);
             $remaining = substr($remaining, $iuserinfo_end + 1);
         } else {
             $iuserinfo = null;

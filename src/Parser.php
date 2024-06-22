@@ -143,8 +143,9 @@ class Parser implements RegistryAware
                 rewind($stream)) {
                 //Parse by chunks not to use too much memory
                 do {
-                    $stream_data = fread($stream, 1048576);
-                    if (!xml_parse($xml, $stream_data === false ? '' : $stream_data, feof($stream))) {
+                    $stream_data = (string) fread($stream, 1048576);
+
+                    if (!xml_parse($xml, $stream_data, feof($stream))) {
                         $this->error_code = xml_get_error_code($xml);
                         $this->error_string = (string) xml_error_string($this->error_code);
                         $return = false;
