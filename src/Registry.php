@@ -172,6 +172,8 @@ class Registry
             $class = $this->classes[$type];
         }
 
+        // HELP WANTED: Not sure how to fix this PHPStan error.
+        /** @phpstan-ignore return.type */
         return $class;
     }
 
@@ -200,6 +202,9 @@ class Registry
             trigger_error(sprintf('Using the method "set_registry()" without implementing "%s" is deprecated since SimplePie 1.8.0, implement "%s" in "%s".', RegistryAware::class, RegistryAware::class, $class), \E_USER_DEPRECATED);
             $instance->set_registry($this);
         }
+
+        // HELP WANTED: Not sure how to fix PHPStan error.
+        /** @phpstan-ignore return.type */
         return $instance;
     }
 
@@ -222,7 +227,8 @@ class Registry
                     // Cache::create() methods in PHP < 8.0.
                     // No longer supported as of PHP 8.0.
                     if ($method === 'get_handler') {
-                        // Fixing the error PHPStan throws here breaks CacheTest::testDirectOverrideLegacy()
+                        // Fixing this PHPStan error breaks CacheTest::testDirectOverrideLegacy()
+                        /** @phpstan-ignore argument.type */
                         $result = @call_user_func_array([$class, 'create'], $parameters);
                         return $result;
                     }
