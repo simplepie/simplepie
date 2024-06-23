@@ -77,4 +77,18 @@ interface DataCache
      *   MUST be thrown if the $key string is not a legal value.
      */
     public function delete_data(string $key): bool;
+
+    /**
+     * Retrieve the last modified time for the cache
+     *
+     * @return int Timestamp
+     */
+    public function mtime(): int;
+
+    /**
+     * Set the last modified time to the current time
+     *
+     * @return bool Success status
+     */
+    public function touch(): bool;
 }

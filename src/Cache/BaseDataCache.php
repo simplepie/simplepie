@@ -116,4 +116,24 @@ final class BaseDataCache implements DataCache
     {
         return $this->cache->unlink();
     }
+
+    /**
+     * Retrieve the last modified time for the cache
+     *
+     * @return int Timestamp
+     */
+    public function mtime(): int
+    {
+        return $this->cache->mtime();
+    }
+
+    /**
+     * Set the last modified time to the current time
+     *
+     * @return bool Success status
+     */
+    public function touch(): bool
+    {
+        return $this->cache->touch();
+    }
 }

@@ -1635,13 +1635,47 @@ class SimplePie
     }
 
     /**
+     * Computes a hash of the raw feed content,
+     * after having cleaned it from noisy elements such as statistics or comments.
+     * FreshRSS
+     * @return string $rss A hash of the cleaned content, or empty string in case of error.
+     */
+    function clean_hash(string $rss): string
+    {
+        if ($rss === '') {
+            return '';
+        }
+        //Process by chunks not to use too much memory
+        if (($stream = fopen('php://temp', 'r+'))
+            && fwrite($stream, $rss)
+            && rewind($stream)
+        ) {
+            $ctx = hash_init('sha1');
+            while ($stream_data = fread($stream, 1048576)) {
+                hash_update(
+                    $ctx, preg_replace(
+                        [
+                            '#<(lastBuildDate|pubDate|updated|feedDate|dc:date|slash:comments)>[^<]+</\\1>#',
+                            '#<(media:starRating|media:statistics) [^/<>]+/>#',
+                            '#<!--.+?-->#s',
+                        ], '', $stream_data
+                    )
+                );
+            }
+            fclose($stream);
+            return hash_final($ctx);
+        }
+        return '';
+    }
+
+    /**
      * Initialize the feed object
      *
      * This is what makes everything happen. Period. This is where all of the
      * configuration options get processed, feeds are fetched, cached, and
      * parsed, and all of that other good stuff.
      *
-     * @return bool True if successful, false otherwise
+     * @return bool|int positive integer with modification time if using cache, boolean true if otherwise successful, false otherwise // FreshRSS
      */
     public function init()
     {
@@ -1718,6 +1752,7 @@ class SimplePie
         $this->check_modified = false;
         $this->multifeed_objects = [];
         $cache = false;
+        $hash = '';
 
         if ($this->feed_url !== null) {
             $parsed_feed_url = $this->registry->call(Misc::class, 'parse_url', [$this->feed_url]);
@@ -1729,12 +1764,15 @@ class SimplePie
 
             // Fetch the data into $this->raw_data
             if (($fetched = $this->fetch_data($cache)) === true) {
-                return true;
+                return empty($this->data['mtime']) ? false : $this->data['mtime']; // FreshRSS
             } elseif ($fetched === false) {
                 return false;
             }
 
             [$headers, $sniffed] = $fetched;
+            if (isset($this->data['hash']) && is_string($this->data['hash'])) { // FreshRSS
+                $hash = $this->data['hash'];
+            }
         }
 
         // Empty response check
@@ -1803,6 +1841,8 @@ class SimplePie
                         $this->data['headers'] = $headers;
                     }
                     $this->data['build'] = Misc::get_build();
+                    $this->data['hash'] = $hash === '' ? $this->clean_hash($this->raw_data) : $hash; // FreshRSS
+                    $this->data['mtime'] = time(); // FreshRSS
 
                     // Cache the file if caching is enabled
                     $this->data['cache_expiration_time'] = $this->cache_duration + time();
@@ -1874,7 +1914,10 @@ class SimplePie
             // Load the Cache
             $this->data = $cache->get_data($cacheKey, []);
 
-            if (!empty($this->data)) {
+            if ($cache->mtime() + $this->cache_duration > time()) { // FreshRSS
+                $this->raw_data = false;
+                return true; // If the cache is still valid, just return true
+            } elseif (!empty($this->data)) {
                 // If the cache is for an outdated build of SimplePie
                 if (!isset($this->data['build']) || $this->data['build'] !== Misc::get_build()) {
                     $cache->delete_data($cacheKey);
@@ -1906,7 +1949,7 @@ class SimplePie
                     // when requesting this file. (Note that it's up to the file to
                     // support this, but we don't always send the headers either.)
                     $this->check_modified = true;
-                    if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag'])) {
+                    { // if (isset($this->data['headers']['last-modified']) || isset($this->data['headers']['etag'])) { // FreshRSS removed
                         $headers = [
                             'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                         ];
@@ -1940,6 +1983,17 @@ class SimplePie
                             $cache->set_data($cacheKey, $this->data, $this->cache_duration);
 
                             return true;
+                        }
+                    }
+                    { // FreshRSS
+                        $hash = $this->clean_hash($file->get_body_content());
+                        if ($this->data['hash'] === $hash) {
+                            syslog(LOG_DEBUG, 'SimplePie hash cache match for ' . $this->feed_url);
+                            $cache->touch();
+                            return true; // Content unchanged even though server did not send a 304
+                        } else {
+                            syslog(LOG_DEBUG, 'SimplePie hash cache no match for ' . $this->feed_url);
+                            $this->data['hash'] = $hash;
                         }
                     }
                 }
@@ -2069,6 +2123,8 @@ class SimplePie
                         'feed_url' => $file->get_final_requested_uri(),
                         'build' => Misc::get_build(),
                         'cache_expiration_time' => $this->cache_duration + time(),
+                        'hash' => $hash === '' ? $this->clean_hash($file->get_body_content()) : $hash, // FreshRSS
+                        'mtime' => time(), // FreshRSS
                     ];
 
                     if (!$cache->set_data($cacheKey, $this->data, $this->cache_duration)) {
@@ -2081,7 +2137,6 @@ class SimplePie
         }
 
         $this->raw_data = $file->get_body_content();
-        $this->raw_data = trim($this->raw_data);
         $this->permanent_url = $file->get_permanent_uri();
 
         $headers = [];
