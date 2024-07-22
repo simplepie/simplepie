@@ -32,7 +32,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.19 || ^3.8",
         "mf2/mf2": "^0.5.0",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^1.11",
         "phpunit/phpunit": "^8 || ^9 || ^10",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0",

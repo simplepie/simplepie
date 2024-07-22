@@ -450,16 +450,16 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testNonexistantProperty(): void
+    public function testNonexistentProperty(): void
     {
         $iri = new SimplePie_IRI();
-        $this->assertFalse(isset($iri->nonexistant_prop));
+        $this->assertFalse(isset($iri->nonexistent_prop));
 
         // PHPUnit 10 compatible way to test trigger_error().
         set_error_handler(
             function ($errno, $errstr): bool {
                 $this->assertSame(
-                    'Undefined property: SimplePie\IRI::nonexistant_prop',
+                    'Undefined property: SimplePie\IRI::nonexistent_prop',
                     $errstr
                 );
 
@@ -469,7 +469,7 @@ class IRITest extends TestCase
             E_USER_NOTICE
         );
 
-        $should_fail = $iri->nonexistant_prop;
+        $should_fail = $iri->nonexistent_prop;
     }
 
     public function testBlankHost(): void

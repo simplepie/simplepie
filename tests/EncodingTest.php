@@ -147,7 +147,7 @@ class EncodingTest extends TestCase
         $this->assertSameBin2Hex($expected, (string) SimplePie_Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
 
-    public function test_nonexistant(): void
+    public function test_nonexistent(): void
     {
         $this->assertFalse(SimplePie_Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
