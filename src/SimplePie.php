@@ -1474,7 +1474,7 @@ class SimplePie
     }
 
     /**
-     * @param string[]|string|false $tags Set a list of tags to strip, or set emtpy string to use default tags or false, to strip nothing.
+     * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags or false, to strip nothing.
      * @return void
      */
     public function strip_htmltags($tags = '', ?bool $encode = null)
@@ -3361,7 +3361,7 @@ class SimplePie
                 if ($arg instanceof SimplePie) {
                     $items = array_merge($items, $arg->get_items(0, $limit));
 
-                // @phpstan-ignore-next-line Enforce PHPDoc type.
+                    // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {
                     trigger_error('Arguments must be SimplePie objects', E_USER_WARNING);
                 }
