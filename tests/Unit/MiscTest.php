@@ -177,7 +177,7 @@ class MiscTest extends TestCase
         $this->assertSameBin2Hex($expected, Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
 
-    public function test_nonexistant(): void
+    public function test_nonexistent(): void
     {
         $this->assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }

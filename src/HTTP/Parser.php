@@ -110,14 +110,14 @@ class Parser
     protected $position = 0;
 
     /**
-     * Name of the hedaer currently being parsed
+     * Name of the header currently being parsed
      *
      * @var string
      */
     protected $name = '';
 
     /**
-     * Value of the hedaer currently being parsed
+     * Value of the header currently being parsed
      *
      * @var string
      */
@@ -475,7 +475,7 @@ class Parser
      * Prepare headers (take care of proxies headers)
      *
      * @param string  $headers Raw headers
-     * @param integer $count   Redirection count. Default to 1.
+     * @param int $count   Redirection count. Default to 1.
      *
      * @return string
      */

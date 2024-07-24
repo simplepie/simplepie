@@ -283,7 +283,7 @@ class Misc
      * @param string $data Raw data in $input encoding
      * @param string $input Encoding of $data
      * @param string $output Encoding you want
-     * @return string|boolean False if we can't convert it
+     * @return string|bool False if we can't convert it
      */
     public static function change_encoding(string $data, string $input, string $output)
     {
@@ -292,13 +292,13 @@ class Misc
 
         // We fail to fail on non US-ASCII bytes
         if ($input === 'US-ASCII') {
-            static $non_ascii_octects = '';
-            if (!$non_ascii_octects) {
+            static $non_ascii_octets = '';
+            if (!$non_ascii_octets) {
                 for ($i = 0x80; $i <= 0xFF; $i++) {
-                    $non_ascii_octects .= chr($i);
+                    $non_ascii_octets .= chr($i);
                 }
             }
-            $data = substr($data, 0, strcspn($data, $non_ascii_octects));
+            $data = substr($data, 0, strcspn($data, $non_ascii_octets));
         }
 
         // This is first, as behaviour of this is completely predictable

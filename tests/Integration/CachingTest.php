@@ -85,7 +85,7 @@ class CachingTest extends TestCase
 
                     $writtenData = $data;
 
-                    // Ignore internally setted '__cache_expiration_time'
+                    // Ignore internally set '__cache_expiration_time'
                     if (array_key_exists('__cache_expiration_time', $writtenData)) {
                         unset($writtenData['__cache_expiration_time']);
                     }
