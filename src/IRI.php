@@ -107,7 +107,7 @@ class IRI
      */
     public function __toString()
     {
-        return $this->get_iri();
+        return (string) $this->get_iri();
     }
 
     /**
@@ -119,8 +119,9 @@ class IRI
      */
     public function __set(string $name, $value)
     {
-        if (method_exists($this, 'set_' . $name)) {
-            call_user_func([$this, 'set_' . $name], $value);
+        $callable = [$this, 'set_' . $name];
+        if (is_callable($callable)) {
+            call_user_func($callable, $value);
         } elseif (
             $name === 'iauthority'
             || $name === 'iuserinfo'
@@ -195,8 +196,9 @@ class IRI
      */
     public function __unset(string $name)
     {
-        if (method_exists($this, 'set_' . $name)) {
-            call_user_func([$this, 'set_' . $name], '');
+        $callable = [$this, 'set_' . $name];
+        if (is_callable($callable)) {
+            call_user_func($callable, '');
         }
     }
 
@@ -378,10 +380,10 @@ class IRI
     protected function replace_invalid_with_pct_encoding(string $string, string $extra_chars, bool $iprivate = false)
     {
         // Normalize as many pct-encoded sections as possible
-        $string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', [$this, 'remove_iunreserved_percent_encoded'], $string);
+        $string = (string) preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', [$this, 'remove_iunreserved_percent_encoded'], $string);
 
         // Replace invalid percent characters
-        $string = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
+        $string = (string) preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
 
         // Add unreserved and % to $extra_chars (the latter is safe because all
         // pct-encoded sections are now valid).
@@ -602,7 +604,7 @@ class IRI
                     }
                 } else {
                     for ($j = $start; $j <= $i; $j++) {
-                        $string .= chr(hexdec($bytes[$j]));
+                        $string .= chr((int) hexdec($bytes[$j]));
                     }
                 }
             }
@@ -794,7 +796,7 @@ class IRI
 
         $remaining = $authority;
         if (($iuserinfo_end = strrpos($remaining, '@')) !== false) {
-            $iuserinfo = substr($remaining, 0, $iuserinfo_end);
+            $iuserinfo = (string) substr($remaining, 0, $iuserinfo_end);
             $remaining = substr($remaining, $iuserinfo_end + 1);
         } else {
             $iuserinfo = null;
@@ -897,7 +899,7 @@ class IRI
         if ($port === null) {
             $this->port = null;
             return true;
-        } elseif (strspn($port, '0123456789') === strlen($port)) {
+        } elseif (strspn((string) $port, '0123456789') === strlen((string) $port)) {
             $this->port = (int) $port;
             $this->scheme_normalization();
             return true;
@@ -1038,7 +1040,7 @@ class IRI
      */
     public function get_uri()
     {
-        return $this->to_uri($this->get_iri());
+        return $this->to_uri((string) $this->get_iri());
     }
 
     /**

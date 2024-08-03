@@ -71,7 +71,8 @@ class IRITest extends TestCase
     public function testStringRFC3986(string $relative, string $expected): void
     {
         $base = new SimplePie_IRI('http://a/b/c/d;p?q');
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = SimplePie_IRI::absolutize($base, $relative);
+        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
     }
 
     /**
@@ -90,7 +91,8 @@ class IRITest extends TestCase
     public function testBothStringRFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = SimplePie_IRI::absolutize($base, $relative);
+        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
         $this->assertSame($expected, (string) SimplePie_IRI::absolutize($base, $relative));
     }
 
@@ -125,7 +127,8 @@ class IRITest extends TestCase
     public function testStringSP(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = SimplePie_IRI::absolutize($base, $relative);
+        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
     }
 
     /**
@@ -189,7 +192,8 @@ class IRITest extends TestCase
     public function testAbsolutizeString(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = SimplePie_IRI::absolutize($base, $relative);
+        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
     }
 
     /**

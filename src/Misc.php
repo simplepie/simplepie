@@ -71,7 +71,7 @@ class Misc
      * @deprecated since SimplePie 1.3, use DOMDocument instead (parsing HTML with regex is bad!)
      * @param string $realname Element name (including namespace prefix if applicable)
      * @param string $string HTML document
-     * @return array<array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content: string}>
+     * @return array<array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content?: string}>
      */
     public static function get_element(string $realname, string $string)
     {
@@ -96,7 +96,7 @@ class Misc
                         if (count($attribs[$j]) === 2) {
                             $attribs[$j][2] = $attribs[$j][1];
                         }
-                        $return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode(end($attribs[$j]));
+                        $return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode((string) end($attribs[$j]));
                     }
                 }
             }
@@ -257,7 +257,7 @@ class Misc
     {
         $integer = hexdec($match[1]);
         if ($integer >= 0x41 && $integer <= 0x5A || $integer >= 0x61 && $integer <= 0x7A || $integer >= 0x30 && $integer <= 0x39 || $integer === 0x2D || $integer === 0x2E || $integer === 0x5F || $integer === 0x7E) {
-            return chr($integer);
+            return chr((int) $integer);
         }
 
         return strtoupper($match[0]);
@@ -387,7 +387,7 @@ class Misc
     public static function encoding(string $charset)
     {
         // Normalization from UTS #22
-        switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
+        switch (strtolower((string) preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
             case 'adobestandardencoding':
             case 'csadobestandardencoding':
                 return 'Adobe-Standard-Encoding';
@@ -2119,26 +2119,29 @@ END;
 
         $root = dirname(__FILE__, 2);
         if (file_exists($root . '/.git/index')) {
-            self::$SIMPLEPIE_BUILD = filemtime($root . '/.git/index');
+            self::$SIMPLEPIE_BUILD = (int) filemtime($root . '/.git/index');
 
             return self::$SIMPLEPIE_BUILD;
         } elseif (file_exists($root . '/SimplePie')) {
             $time = 0;
-            foreach (glob($root . '/SimplePie/*.php') as $file) {
-                if (($mtime = filemtime($file)) > $time) {
-                    $time = $mtime;
+            if ($files = glob($root . '/SimplePie/*.php')) {
+                foreach ($files as $file) {
+                    if (($mtime = filemtime($file)) > $time) {
+                        $time = $mtime;
+                    }
                 }
             }
+
             self::$SIMPLEPIE_BUILD = $time;
 
             return self::$SIMPLEPIE_BUILD;
         } elseif (file_exists(dirname(__FILE__) . '/Core.php')) {
-            self::$SIMPLEPIE_BUILD = filemtime(dirname(__FILE__) . '/Core.php');
+            self::$SIMPLEPIE_BUILD = (int) filemtime(dirname(__FILE__) . '/Core.php');
 
             return self::$SIMPLEPIE_BUILD;
         }
 
-        self::$SIMPLEPIE_BUILD = filemtime(__FILE__);
+        self::$SIMPLEPIE_BUILD = (int) filemtime(__FILE__);
 
         return self::$SIMPLEPIE_BUILD;
     }
@@ -2163,7 +2166,7 @@ END;
         $info = 'SimplePie ' . \SimplePie\SimplePie::VERSION . ' Build ' . static::get_build() . "\n";
         $info .= 'PHP ' . PHP_VERSION . "\n";
         if ($sp->error() !== null) {
-            $info .= 'Error occurred: ' . $sp->error() . "\n";
+            $info .= 'Error occurred: ' . implode(', ', (array) $sp->error()) . "\n";
         } else {
             $info .= "No error found.\n";
         }
@@ -2177,11 +2180,17 @@ END;
                         $info .= '      Version ' . PCRE_VERSION . "\n";
                         break;
                     case 'curl':
-                        $version = curl_version();
+                        $version = (array) curl_version();
                         $info .= '      Version ' . $version['version'] . "\n";
                         break;
                     case 'mbstring':
-                        $info .= '      Overloading: ' . mb_get_info('func_overload') . "\n";
+                        /**
+                         * PHPStan fix:
+                         * Binary operation "." between '      Overloading: ' and non-empty-array<int|string, array|int|string>|int<min, -1>|int<1, max>|non-falsy-string results in an error.
+                         */
+                        if (is_string(mb_get_info('func_overload'))) {
+                            $info .= '      Overloading: ' . mb_get_info('func_overload') . "\n";
+                        }
                         break;
                     case 'iconv':
                         $info .= '      Version ' . ICONV_VERSION . "\n";
@@ -2213,7 +2222,7 @@ END;
      */
     public static function url_remove_credentials(string $url)
     {
-        return preg_replace('#^(https?://)[^/:@]+:[^/:@]+@#i', '$1', $url);
+        return (string) preg_replace('#^(https?://)[^/:@]+:[^/:@]+@#i', '$1', $url);
     }
 }
 

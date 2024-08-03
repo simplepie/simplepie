@@ -60,7 +60,7 @@ class Sanitize implements RegistryAware
     public $enable_cache = true;
     /** @var string */
     public $cache_location = './cache';
-    /** @var string */
+    /** @var callable */
     public $cache_name_function = 'md5';
 
     /**
@@ -144,7 +144,7 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param string|NameFilter $cache_name_function
+     * @param callable|NameFilter $cache_name_function
      * @param class-string<Cache> $cache_class
      * @return void
      */
@@ -157,7 +157,7 @@ class Sanitize implements RegistryAware
         }
 
         // @phpstan-ignore-next-line Enforce PHPDoc type.
-        if (!is_string($cache_name_function) && !$cache_name_function instanceof NameFilter) {
+        if (!is_callable($cache_name_function) && !$cache_name_function instanceof NameFilter) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #3 ($cache_name_function) must be of type %s',
                 __METHOD__,
@@ -166,9 +166,9 @@ class Sanitize implements RegistryAware
         }
 
         // BC: $cache_name_function could be a callable as string
-        if (is_string($cache_name_function)) {
+        if (is_callable($cache_name_function)) {
             // trigger_error(sprintf('Providing $cache_name_function as string in "%s()" is deprecated since SimplePie 1.8.0, provide as "%s" instead.', __METHOD__, NameFilter::class), \E_USER_DEPRECATED);
-            $this->cache_name_function = (string) $cache_name_function;
+            $this->cache_name_function = $cache_name_function;
 
             $cache_name_function = new CallableNameFilter($cache_name_function);
         }
@@ -411,7 +411,7 @@ class Sanitize implements RegistryAware
     /**
      * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string $base
-     * @return string|bool|string[]
+     * @return string
      */
     public function sanitize(string $data, int $type, string $base = '')
     {
@@ -446,10 +446,12 @@ class Sanitize implements RegistryAware
 
                 // Strip comments
                 if ($this->strip_comments) {
-                    $comments = $xpath->query('//comment()');
-
-                    foreach ($comments as $comment) {
-                        $comment->parentNode->removeChild($comment);
+                    if ($comments = $xpath->query('//comment()')) {
+                        foreach ($comments as $comment) {
+                            if ($parentNode = $comment->parentNode) {
+                                $parentNode->removeChild($comment);
+                            }
+                        }
                     }
                 }
 
@@ -521,18 +523,21 @@ class Sanitize implements RegistryAware
                 }
 
                 // Get content node
-                $div = $document->getElementsByTagName('body')->item(0)->firstChild;
+                $div = null;
+                if (($item = $document->getElementsByTagName('body')->item(0)) !== null) {
+                    $div = $item->firstChild;
+                }
                 // Finally, convert to a HTML string
-                $data = trim($document->saveHTML($div));
+                $data = trim((string) $document->saveHTML($div));
 
                 if ($this->remove_div) {
                     $data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '', $data);
-                    $data = preg_replace('/<\/div>$/', '', $data);
+                    $data = preg_replace('/<\/div>$/', '', (string) $data);
                 } else {
                     $data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
                 }
 
-                $data = str_replace('</source>', '', $data);
+                $data = str_replace('</source>', '', (string) $data);
             }
 
             if ($type & \SimplePie\SimplePie::CONSTRUCT_IRI) {
@@ -554,7 +559,10 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * PHPStan seems to have trouble resolving int-mask because bitwise
+     * operators are used when operators are used when passing this parameter.
+     * https://github.com/phpstan/phpstan/issues/9384
+     * # @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @return string
      */
     protected function preprocess(string $html, int $type)
@@ -626,12 +634,20 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * PHPStan seems to have trouble resolving int-mask because bitwise
+     * operators are used when passing this parameter.
+     * https://github.com/phpstan/phpstan/issues/9384
+     * # @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @return void
      */
     protected function strip_tag(string $tag, DOMDocument $document, DOMXPath $xpath, int $type)
     {
         $elements = $xpath->query('body//' . $tag);
+
+        if ($elements === false) {
+            return;
+        }
+
         if ($this->encode_instead_of_strip) {
             foreach ($elements as $element) {
                 $fragment = $document->createDocumentFragment();
@@ -641,7 +657,7 @@ class Sanitize implements RegistryAware
                     $text = '<' . $tag;
                     if ($element->hasAttributes()) {
                         $attrs = [];
-                        foreach ($element->attributes as $name => $attr) {
+                        foreach ($element->attributes ?? [] as $name => $attr) {
                             $value = $attr->value;
 
                             // In XHTML, empty values should never exist, so we repeat the value
@@ -665,21 +681,26 @@ class Sanitize implements RegistryAware
 
                 $number = $element->childNodes->length;
                 for ($i = $number; $i > 0; $i--) {
-                    $child = $element->childNodes->item(0);
-                    $fragment->appendChild($child);
+                    if (($child = $element->childNodes->item(0)) !== null) {
+                        $fragment->appendChild($child);
+                    }
                 }
 
                 if (!in_array($tag, ['script', 'style'])) {
                     $fragment->appendChild(new \DOMText('</' . $tag . '>'));
                 }
 
-                $element->parentNode->replaceChild($fragment, $element);
+                if (($parentNode = $element->parentNode) !== null) {
+                    $parentNode->replaceChild($fragment, $element);
+                }
             }
 
             return;
         } elseif (in_array($tag, ['script', 'style'])) {
             foreach ($elements as $element) {
-                $element->parentNode->removeChild($element);
+                if (($parentNode = $element->parentNode) !== null) {
+                    $parentNode->removeChild($element);
+                }
             }
 
             return;
@@ -688,11 +709,14 @@ class Sanitize implements RegistryAware
                 $fragment = $document->createDocumentFragment();
                 $number = $element->childNodes->length;
                 for ($i = $number; $i > 0; $i--) {
-                    $child = $element->childNodes->item(0);
-                    $fragment->appendChild($child);
+                    if (($child = $element->childNodes->item(0)) !== null) {
+                        $fragment->appendChild($child);
+                    }
                 }
 
-                $element->parentNode->replaceChild($fragment, $element);
+                if (($parentNode = $element->parentNode) !== null) {
+                    $parentNode->replaceChild($fragment, $element);
+                }
             }
         }
     }
@@ -703,6 +727,10 @@ class Sanitize implements RegistryAware
     protected function strip_attr(string $attrib, DOMXPath $xpath)
     {
         $elements = $xpath->query('//*[@' . $attrib . ']');
+
+        if ($elements === false) {
+            return;
+        }
 
         /** @var \DOMElement $element */
         foreach ($elements as $element) {
@@ -716,6 +744,10 @@ class Sanitize implements RegistryAware
     protected function rename_attr(string $attrib, DOMXPath $xpath)
     {
         $elements = $xpath->query('//*[@' . $attrib . ']');
+
+        if ($elements === false) {
+            return;
+        }
 
         /** @var \DOMElement $element */
         foreach ($elements as $element) {

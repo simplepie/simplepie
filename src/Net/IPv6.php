@@ -101,7 +101,7 @@ class IPv6
         $ip_parts = self::split_v6_v4($ip);
 
         // Replace all leading zeros
-        $ip_parts[0] = preg_replace('/(^|:)0+([0-9])/', '\1\2', $ip_parts[0]);
+        $ip_parts[0] = (string) preg_replace('/(^|:)0+([0-9])/', '\1\2', $ip_parts[0]);
 
         // Find bunches of zeros
         if (preg_match_all('/(?:^|:)(?:0(?::|$))+/', $ip_parts[0], $matches, PREG_OFFSET_CAPTURE)) {
@@ -114,7 +114,9 @@ class IPv6
                 }
             }
 
-            $ip_parts[0] = substr_replace($ip_parts[0], '::', $pos, $max);
+            if (!is_null($pos)) {
+                $ip_parts[0] = substr_replace($ip_parts[0], '::', $pos, $max);
+            }
         }
 
         if ($ip_parts[1] !== '') {
@@ -139,7 +141,7 @@ class IPv6
     private static function split_v6_v4(string $ip): array
     {
         if (strpos($ip, '.') !== false) {
-            $pos = strrpos($ip, ':');
+            $pos = (int) strrpos($ip, ':');
             $ipv6_part = substr($ip, 0, $pos);
             $ipv4_part = substr($ip, $pos + 1);
             return [$ipv6_part, $ipv4_part];
@@ -182,7 +184,7 @@ class IPv6
 
                 // Check the value is valid
                 $value = hexdec($ipv6_part);
-                if (dechex($value) !== strtolower($ipv6_part) || $value < 0 || $value > 0xFFFF) {
+                if (dechex((int) $value) !== strtolower($ipv6_part) || $value < 0 || $value > 0xFFFF) {
                     return false;
                 }
             }

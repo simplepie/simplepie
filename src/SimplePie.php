@@ -523,7 +523,7 @@ class SimplePie
     public $cache_location = './cache';
 
     /**
-     * @var string Function that creates the cache filename
+     * @var callable Function that creates the cache filename
      * @see SimplePie::set_cache_name_function()
      * @access private
      */
@@ -1474,7 +1474,7 @@ class SimplePie
     }
 
     /**
-     * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags or false, to strip nothing.
+     * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags, or false to strip nothing.
      * @return void
      */
     public function strip_htmltags($tags = '', ?bool $encode = null)
@@ -1482,8 +1482,10 @@ class SimplePie
         if ($tags === '') {
             $tags = $this->strip_htmltags;
         }
-        $this->sanitize->strip_htmltags($tags);
-        if ($encode !== null) {
+
+        if ($tags !== false) {
+            $this->sanitize->strip_htmltags($tags);
+        } elseif ($encode !== null && is_bool($tags)) {
             $this->sanitize->encode_instead_of_strip($tags);
         }
     }
@@ -1849,7 +1851,7 @@ class SimplePie
      * If the data is already cached, attempt to fetch it from there instead
      *
      * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
-     * @return array{array<string, string>, string}|array{}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
+     * @return array{array<string, string>, string}|array{string, string}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
     protected function fetch_data(&$cache)
     {
@@ -2021,6 +2023,8 @@ class SimplePie
                         // and a list of entries without an h-feed wrapper are both valid.
                         $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                             'contains(concat(" ", @class, " "), " h-entry ")]';
+
+                        /** @var \DOMNodeList<\DOMNode> $result */
                         $result = $xpath->query($query);
                         $microformats = $result->length !== 0;
                     }
@@ -2034,7 +2038,7 @@ class SimplePie
                         if ($hub = $locate->get_rel_link('hub')) {
                             $self = $locate->get_rel_link('self');
                             if ($file instanceof File) {
-                                $this->store_links($file, $hub, $self);
+                                $this->store_links($file, $hub, (string) $self);
                             }
                         }
                         // Push the current file onto all_discovered feeds so the user can
@@ -2085,7 +2089,15 @@ class SimplePie
 
         $headers = [];
         foreach ($file->get_headers() as $key => $values) {
-            $headers[$key] = implode(', ', $values);
+            /**
+             * Casting $key to string resolves the below PHPStan error.  Somehow it's detecting that $key can be an integer.
+             *
+             * Method SimplePie\SimplePie::fetch_data() should return array{}|array{array<string, string>, string}|bool
+             * but returns array{array<int|string, string>, string}.
+             *
+             * Offset 0 (array<string, string>) does not accept type array<int|string, string>.
+             */
+            $headers[(string) $key] = implode(', ', $values);
         }
 
         $sniffer = $this->registry->create(Sniffer::class, [&$file]);
@@ -2834,8 +2846,8 @@ class SimplePie
                     } else {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = &$this->data['links'][$key];
                     }
-                } elseif (substr($key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr($key, 41)] = &$this->data['links'][$key];
+                } elseif (substr((string) $key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
+                    $this->data['links'][substr((string) $key, 41)] = &$this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }
@@ -3138,7 +3150,7 @@ class SimplePie
      */
     public function get_item_quantity(int $max = 0)
     {
-        $qty = count($this->get_items());
+        $qty = count($this->get_items() ?? []);
         if ($max === 0) {
             return $qty;
         }
@@ -3295,8 +3307,8 @@ class SimplePie
 
         $class = get_class($this);
         $trace = debug_backtrace();
-        $file = $trace[0]['file'];
-        $line = $trace[0]['line'];
+        $file = $trace[0]['file'] ?? '';
+        $line = $trace[0]['line'] ?? '';
         trigger_error("Call to undefined method $class::$method() in $file on line $line", E_USER_ERROR);
     }
 
@@ -3357,7 +3369,7 @@ class SimplePie
             $items = [];
             foreach ($urls as $arg) {
                 if ($arg instanceof SimplePie) {
-                    $items = array_merge($items, $arg->get_items(0, $limit));
+                    $items = array_merge($items, $arg->get_items(0, $limit) ?? []);
 
                     // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {

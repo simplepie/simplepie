@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use InvalidArgumentException;
 use SimplePie\Content\Type\Sniffer;
 use SimplePie\Parse\Date;
 use SimplePie\XML\Declaration\Parser as DeclarationParser;
@@ -147,7 +148,7 @@ class Registry
      *
      * @template T
      * @param class-string<T> $type
-     * @return class-string<T>|null
+     * @return class-string<T>
      */
     public function get_class($type)
     {
@@ -158,7 +159,11 @@ class Registry
         }
 
         if (!array_key_exists($type, $this->default)) {
-            return null;
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($type) "%s" not found in default class list.',
+                __METHOD__,
+                $type
+            ), 1);
         }
 
         $class = $this->default[$type];
@@ -167,6 +172,8 @@ class Registry
             $class = $this->classes[$type];
         }
 
+        // HELP WANTED: Not sure how to fix this PHPStan error.
+        /** @phpstan-ignore return.type */
         return $class;
     }
 
@@ -195,6 +202,9 @@ class Registry
             trigger_error(sprintf('Using the method "set_registry()" without implementing "%s" is deprecated since SimplePie 1.8.0, implement "%s" in "%s".', RegistryAware::class, RegistryAware::class, $class), \E_USER_DEPRECATED);
             $instance->set_registry($this);
         }
+
+        // HELP WANTED: Not sure how to fix PHPStan error.
+        /** @phpstan-ignore return.type */
         return $instance;
     }
 
@@ -217,6 +227,8 @@ class Registry
                     // Cache::create() methods in PHP < 8.0.
                     // No longer supported as of PHP 8.0.
                     if ($method === 'get_handler') {
+                        // Fixing this PHPStan error breaks CacheTest::testDirectOverrideLegacy()
+                        /** @phpstan-ignore argument.type */
                         $result = @call_user_func_array([$class, 'create'], $parameters);
                         return $result;
                     }
@@ -224,8 +236,11 @@ class Registry
             }
         }
 
-        $result = call_user_func_array([$class, $method], $parameters);
-        return $result;
+        $callable = [$class, $method];
+        if (is_callable($callable)) {
+            $result = call_user_func_array($callable, $parameters);
+            return $result;
+        }
     }
 }
 
