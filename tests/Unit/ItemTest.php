@@ -2834,7 +2834,7 @@ EOT
     }
 
     /**
-     * @return array<string, array<int, string|null>>
+     * @return array<string, array{string, string|null}>
      */
     public static function getPermalinkDataProvider(): array
     {

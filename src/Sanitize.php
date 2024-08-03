@@ -714,7 +714,7 @@ class Sanitize implements RegistryAware
                     }
                 }
 
-                if ($parentNode = $element->parentNode) {
+                if (($parentNode = $element->parentNode) !== null) {
                     $parentNode->replaceChild($fragment, $element);
                 }
             }
