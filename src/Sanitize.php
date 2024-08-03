@@ -524,7 +524,7 @@ class Sanitize implements RegistryAware
 
                 // Get content node
                 $div = null;
-                if ($item = $document->getElementsByTagName('body')->item(0)) {
+                if (($item = $document->getElementsByTagName('body')->item(0)) !== null) {
                     $div = $item->firstChild;
                 }
                 // Finally, convert to a HTML string
@@ -681,7 +681,7 @@ class Sanitize implements RegistryAware
 
                 $number = $element->childNodes->length;
                 for ($i = $number; $i > 0; $i--) {
-                    if ($child = $element->childNodes->item(0)) {
+                    if (($child = $element->childNodes->item(0)) !== null) {
                         $fragment->appendChild($child);
                     }
                 }
@@ -690,7 +690,7 @@ class Sanitize implements RegistryAware
                     $fragment->appendChild(new \DOMText('</' . $tag . '>'));
                 }
 
-                if ($parentNode = $element->parentNode) {
+                if (($parentNode = $element->parentNode) !== null) {
                     $parentNode->replaceChild($fragment, $element);
                 }
             }
@@ -698,7 +698,7 @@ class Sanitize implements RegistryAware
             return;
         } elseif (in_array($tag, ['script', 'style'])) {
             foreach ($elements as $element) {
-                if ($parentNode = $element->parentNode) {
+                if (($parentNode = $element->parentNode) !== null) {
                     $parentNode->removeChild($element);
                 }
             }
@@ -709,7 +709,7 @@ class Sanitize implements RegistryAware
                 $fragment = $document->createDocumentFragment();
                 $number = $element->childNodes->length;
                 for ($i = $number; $i > 0; $i--) {
-                    if ($child = $element->childNodes->item(0)) {
+                    if (($child = $element->childNodes->item(0)) !== null) {
                         $fragment->appendChild($child);
                     }
                 }

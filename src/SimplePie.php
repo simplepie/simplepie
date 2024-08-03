@@ -2024,7 +2024,7 @@ class SimplePie
                         $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                             'contains(concat(" ", @class, " "), " h-entry ")]';
 
-                        if ($result = $xpath->query($query)) {
+                        if (($result = $xpath->query($query)) !== false) {
                             $microformats = $result->length !== 0;
                         }
                     }
