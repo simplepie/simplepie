@@ -126,13 +126,14 @@ class LocatorTest extends TestCase
         $document->loadHTML((string) $data->body);
         $xpath = new DOMXPath($document);
 
-        if ($queryResult = $xpath->query('//link')) {
-            foreach ($queryResult as $element) {
-                /** @var \DOMElement $element */
-                $expected[] = 'http://example.com' . $element->getAttribute('href');
-            }
-            //$expected = SimplePie_Misc::get_element('link', $data->body);
+        /** @var \DOMNodeList<\DOMNode> $queryResult */
+        $queryResult = $xpath->query('//link');
+
+        foreach ($queryResult as $element) {
+            /** @var \DOMElement $element */
+            $expected[] = 'http://example.com' . $element->getAttribute('href');
         }
+        //$expected = SimplePie_Misc::get_element('link', $data->body);
 
         $feed = $locator->find(SIMPLEPIE_LOCATOR_ALL, $all);
         $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');

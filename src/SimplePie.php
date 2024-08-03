@@ -2024,9 +2024,9 @@ class SimplePie
                         $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                             'contains(concat(" ", @class, " "), " h-entry ")]';
 
-                        if (($result = $xpath->query($query)) !== false) {
-                            $microformats = $result->length !== 0;
-                        }
+                        /** @var \DOMNodeList<\DOMNode> $result */
+                        $result = $xpath->query($query);
+                        $microformats = $result->length !== 0;
                     }
                     // Now also do feed discovery, but if microformats were found don't
                     // overwrite the current value of file.
