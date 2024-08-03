@@ -207,8 +207,8 @@ class SimplePieTest extends TestCase
         $content = 'item description';
         $feed = $this->createFeedWithTemplate($data, $content);
         $item = $feed->get_item();
-        //$this->assertInstanceOf(Item::class, $item);
-        $this->assertSame($content, $item ? $item->get_content() : null);
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertSame($content, $item->get_content());
     }
 
     public function testSetPsr16Cache(): void
