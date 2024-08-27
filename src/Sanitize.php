@@ -60,7 +60,7 @@ class Sanitize implements RegistryAware
     public $enable_cache = true;
     /** @var string */
     public $cache_location = './cache';
-    /** @var callable */
+    /** @var callable(string): string */
     public $cache_name_function = 'md5';
 
     /**
@@ -144,7 +144,7 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param callable|NameFilter $cache_name_function
+     * @param callable(string): string|NameFilter $cache_name_function
      * @param class-string<Cache> $cache_class
      * @return void
      */
@@ -411,7 +411,7 @@ class Sanitize implements RegistryAware
     /**
      * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string $base
-     * @return string
+     * @return string Sanitized data; false if output encoding is changed to something other than UTF-8 and conversion fails
      */
     public function sanitize(string $data, int $type, string $base = '')
     {
@@ -436,6 +436,10 @@ class Sanitize implements RegistryAware
                 $document = new \DOMDocument();
                 $document->encoding = 'UTF-8';
 
+                // PHPStan seems to have trouble resolving int-mask because bitwise
+                // operators are used when operators are used when passing this parameter.
+                // https://github.com/phpstan/phpstan/issues/9384
+                /** @var int-mask-of<SimplePie::CONSTRUCT_*> $type */
                 $data = $this->preprocess($data, $type);
 
                 set_error_handler([Misc::class, 'silence_errors']);
@@ -446,12 +450,13 @@ class Sanitize implements RegistryAware
 
                 // Strip comments
                 if ($this->strip_comments) {
-                    if ($comments = $xpath->query('//comment()')) {
-                        foreach ($comments as $comment) {
-                            if ($parentNode = $comment->parentNode) {
-                                $parentNode->removeChild($comment);
-                            }
-                        }
+                    /** @var \DOMNodeList<\DOMComment> */
+                    $comments = $xpath->query('//comment()');
+
+                    foreach ($comments as $comment) {
+                        $parentNode = $comment->parentNode;
+                        assert($parentNode !== null, 'For PHPStan, comment must have a parent');
+                        $parentNode->removeChild($comment);
                     }
                 }
 
@@ -541,6 +546,7 @@ class Sanitize implements RegistryAware
             }
 
             if ($type & \SimplePie\SimplePie::CONSTRUCT_IRI) {
+                /** @var string|false */
                 $absolute = $this->registry->call(Misc::class, 'absolutize_url', [$data, $base]);
                 if ($absolute !== false) {
                     $data = $absolute;
@@ -552,6 +558,8 @@ class Sanitize implements RegistryAware
             }
 
             if ($this->output_encoding !== 'UTF-8') {
+                // This really returns string|false but changing encoding is uncommon and we are going to deprecate it, so let’s just lie to PHPStan in the interest of cleaner annotations.
+                /** @var string */
                 $data = $this->registry->call(Misc::class, 'change_encoding', [$data, 'UTF-8', $this->output_encoding]);
             }
         }
@@ -559,10 +567,7 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * PHPStan seems to have trouble resolving int-mask because bitwise
-     * operators are used when operators are used when passing this parameter.
-     * https://github.com/phpstan/phpstan/issues/9384
-     * # @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @return string
      */
     protected function preprocess(string $html, int $type)
@@ -634,10 +639,7 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * PHPStan seems to have trouble resolving int-mask because bitwise
-     * operators are used when passing this parameter.
-     * https://github.com/phpstan/phpstan/issues/9384
-     * # @param int-mask-of<SimplePie::CONSTRUCT_*> $type
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @return void
      */
     protected function strip_tag(string $tag, DOMDocument $document, DOMXPath $xpath, int $type)
@@ -655,9 +657,9 @@ class Sanitize implements RegistryAware
                 // For elements which aren't script or style, include the tag itself
                 if (!in_array($tag, ['script', 'style'])) {
                     $text = '<' . $tag;
-                    if ($element->hasAttributes()) {
+                    if ($element->attributes !== null) {
                         $attrs = [];
-                        foreach ($element->attributes ?? [] as $name => $attr) {
+                        foreach ($element->attributes as $name => $attr) {
                             $value = $attr->value;
 
                             // In XHTML, empty values should never exist, so we repeat the value

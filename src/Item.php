@@ -142,12 +142,13 @@ class Item implements RegistryAware
      * @access private
      * @see \SimplePie\SimplePie::sanitize()
      * @param string $data Data to sanitize
-     * @param SimplePie::CONSTRUCT_* $type
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
     public function sanitize(string $data, int $type, string $base = '')
     {
+        // This really returns string|false but changing encoding is uncommon and we are going to deprecate it, so let’s just lie to PHPStan in the interest of cleaner annotations.
         return $this->feed->sanitize($data, $type, $base);
     }
 
@@ -329,7 +330,7 @@ class Item implements RegistryAware
      * Uses `<media:thumbnail>`
      *
      *
-     * @return array<string, mixed>|null
+     * @return array{url: string, height?: string, width?: string, time?: string}|null
      */
     public function get_thumbnail()
     {
@@ -610,7 +611,7 @@ class Item implements RegistryAware
      * @since Beta 2 (previously called `get_item_date` since 0.8)
      *
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date} (empty for the raw data)
-     * @return int|string|null
+     * @return ($date_format is 'U' ? ?int : ?string)
      */
     public function get_date(string $date_format = 'j F Y, g:i a')
     {
@@ -665,7 +666,7 @@ class Item implements RegistryAware
      * {@see get_gmdate}
      *
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date} (empty for the raw data)
-     * @return int|string|null
+     * @return ($date_format is 'U' ? ?int : ?string)
      */
     public function get_updated_date(string $date_format = 'j F Y, g:i a')
     {
@@ -708,14 +709,18 @@ class Item implements RegistryAware
      * @since 1.0
      *
      * @param string $date_format Supports any PHP date format from {@see http://php.net/strftime} (empty for the raw data)
-     * @return int|string|false|null
+     * @return string|null|false see `strftime` for when this can return `false`
      */
     public function get_local_date(string $date_format = '%c')
     {
-        if (!$date_format) {
-            return $this->sanitize((string) $this->get_date(''), \SimplePie\SimplePie::CONSTRUCT_TEXT);
+        if ($date_format === '') {
+            if (($raw_date = $this->get_date('')) === null) {
+                return null;
+            }
+
+            return $this->sanitize($raw_date, \SimplePie\SimplePie::CONSTRUCT_TEXT);
         } elseif (($date = $this->get_date('U')) !== null && $date !== false) {
-            return strftime($date_format, (int) $date);
+            return strftime($date_format, $date);
         }
 
         return null;
@@ -735,7 +740,7 @@ class Item implements RegistryAware
             return null;
         }
 
-        return gmdate($date_format, (int) $date);
+        return gmdate($date_format, $date);
     }
 
     /**
@@ -752,7 +757,7 @@ class Item implements RegistryAware
             return null;
         }
 
-        return gmdate($date_format, (int) $date);
+        return gmdate($date_format, $date);
     }
 
     /**

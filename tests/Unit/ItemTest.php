@@ -3315,7 +3315,7 @@ EOT
     }
 
     /**
-     * @return array<string, array<int, string|null>>
+     * @return array<string, array{string, string|null}>
      */
     public static function getBaseProvider(): array
     {
@@ -4828,11 +4828,11 @@ EOT
         $feed->enable_cache(false);
         $feed->init();
 
-        $thumbnail = null;
-        if ($item = $feed->get_item(0)) {
-            $thumbnail = $item->get_thumbnail();
-        }
-        $this->assertSame($expected, $thumbnail['url'] ?? null);
+        $item = $feed->get_item(0);
+        $this->assertInstanceOf(Item::class, $item);
+        $thumbnail = $item->get_thumbnail();
+        $this->assertNotNull($thumbnail);
+        $this->assertSame($expected, $thumbnail['url']);
     }
 
     /**

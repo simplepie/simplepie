@@ -114,9 +114,8 @@ class IPv6
                 }
             }
 
-            if (!is_null($pos)) {
-                $ip_parts[0] = substr_replace($ip_parts[0], '::', $pos, $max);
-            }
+            assert($pos !== null, 'For PHPStan: Since the regex matched, there is at least one match. And because the pattern is non-empty, the loop will always end with $pos ≥ 1.');
+            $ip_parts[0] = substr_replace($ip_parts[0], '::', $pos, $max);
         }
 
         if ($ip_parts[1] !== '') {
@@ -141,7 +140,8 @@ class IPv6
     private static function split_v6_v4(string $ip): array
     {
         if (strpos($ip, '.') !== false) {
-            $pos = (int) strrpos($ip, ':');
+            $pos = strrpos($ip, ':');
+            assert($pos !== false, 'For PHPStan: IPv6 address must contain colon, since split_v6_v4 is only ever called after uncompress.');
             $ipv6_part = substr($ip, 0, $pos);
             $ipv4_part = substr($ip, $pos + 1);
             return [$ipv6_part, $ipv4_part];
@@ -184,7 +184,11 @@ class IPv6
 
                 // Check the value is valid
                 $value = hexdec($ipv6_part);
-                if (dechex((int) $value) !== strtolower($ipv6_part) || $value < 0 || $value > 0xFFFF) {
+                if ($value < 0 || $value > 0xFFFF) {
+                    return false;
+                }
+                assert(is_int($value), 'For PHPStan: $value is only float when $ipv6_part > PHP_INT_MAX');
+                if (dechex($value) !== strtolower($ipv6_part)) {
                     return false;
                 }
             }

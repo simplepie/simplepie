@@ -82,7 +82,8 @@ class IRITest extends TestCase
     {
         $base = new IRI('http://a/b/c/d;p?q');
         $absolutized = IRI::absolutize($base, $relative);
-        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -102,7 +103,8 @@ class IRITest extends TestCase
     {
         $base = 'http://a/b/c/d;p?q';
         $absolutized = IRI::absolutize($base, $relative);
-        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
         $this->assertSame($expected, (string) IRI::absolutize($base, $relative));
     }
 
@@ -138,7 +140,8 @@ class IRITest extends TestCase
     {
         $base = new IRI($base);
         $absolutized = IRI::absolutize($base, $relative);
-        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -203,7 +206,8 @@ class IRITest extends TestCase
     {
         $base = new IRI($base);
         $absolutized = IRI::absolutize($base, $relative);
-        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**

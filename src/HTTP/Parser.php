@@ -234,6 +234,36 @@ class Parser
         $this->state = self::STATE_NEW_LINE;
     }
 
+    private function add_header(string $name, string $value): void
+    {
+        if ($this->psr7Compatible) {
+            // For PHPStan: should be enforced by template parameter but PHPStan is not smart enough.
+            /** @var array<string, non-empty-array<string>> */
+            $headers = $this->headers;
+            $headers[$name][] = $value;
+        } else {
+            // For PHPStan: should be enforced by template parameter but PHPStan is not smart enough.
+            /** @var array<string, string>) */
+            $headers = $this->headers;
+            $headers[$name] .= ', ' . $value;
+        }
+    }
+
+    private function replace_header(string $name, string $value): void
+    {
+        if ($this->psr7Compatible) {
+            // For PHPStan: should be enforced by template parameter but PHPStan is not smart enough.
+            /** @var array<string, non-empty-array<string>> */
+            $headers = $this->headers;
+            $headers[$name] = [$value];
+        } else {
+            // For PHPStan: should be enforced by template parameter but PHPStan is not smart enough.
+            /** @var array<string, string>) */
+            $headers = $this->headers;
+            $headers[$name] = $value;
+        }
+    }
+
     /**
      * Deal with a new line, shifting data around as needed
      * @return void
@@ -245,17 +275,9 @@ class Parser
             $this->name = strtolower($this->name);
             // We should only use the last Content-Type header. c.f. issue #1
             if (isset($this->headers[$this->name]) && $this->name !== 'content-type') {
-                if ($this->psr7Compatible && is_array($this->headers[$this->name])) {
-                    $this->headers[$this->name][] = $this->value;
-                } elseif (is_string($this->headers[$this->name])) {
-                    $this->headers[$this->name] .= ', ' . $this->value;
-                }
+                $this->add_header($this->name, $this->value);
             } else {
-                if ($this->psr7Compatible) {
-                    $this->headers[$this->name] = [$this->value];
-                } else {
-                    $this->headers[$this->name] = $this->value;
-                }
+                $this->replace_header($this->name, $this->value);
             }
         }
         $this->name = '';
@@ -456,7 +478,7 @@ class Parser
                 return;
             }
 
-            $chunk_length = (int) strlen($matches[0]);
+            $chunk_length = strlen($matches[0]);
             $decoded .= substr($encoded, $chunk_length, $length);
             $encoded = substr($encoded, $chunk_length + $length + 2);
 
@@ -475,14 +497,14 @@ class Parser
      * Prepare headers (take care of proxies headers)
      *
      * @param string  $headers Raw headers
-     * @param integer $count   Redirection count. Default to 1.
+     * @param non-negative-int $count Redirection count. Default to 1.
      *
      * @return string
      */
     public static function prepareHeaders(string $headers, int $count = 1)
     {
-        $data = (array) explode("\r\n\r\n", $headers, $count);
-        $data = (string) array_pop($data);
+        $data = explode("\r\n\r\n", $headers, $count);
+        $data = array_pop($data);
         if (false !== stripos($data, "HTTP/1.0 200 Connection established\r\n")) {
             $exploded = explode("\r\n\r\n", $data, 2);
             $data = end($exploded);
@@ -491,7 +513,7 @@ class Parser
             $exploded = explode("\r\n\r\n", $data, 2);
             $data = end($exploded);
         }
-        return (string) $data;
+        return $data;
     }
 }
 
