@@ -639,7 +639,7 @@ class Item implements RegistryAware
 
             if (!empty($this->data['date']['raw'])) {
                 $parser = $this->registry->call(Parse\Date::class, 'get');
-                $this->data['date']['parsed'] = $parser->parse($this->data['date']['raw']) ?: null;
+                $this->data['date']['parsed'] = $parser->parse($this->data['date']['raw']);
             } else {
                 $this->data['date'] = null;
             }
