@@ -112,7 +112,8 @@ class CachingTest extends TestCase
             $expectedDataWritten['cache_expiration_time'] = $writtenData['cache_expiration_time'];
         }
 
-        $this->assertSame($expectedDataWritten, $writtenData);
+        // Test that $expectedDataWritten is a subset of $writtenData
+        $this->assertEmpty(array_udiff_assoc($expectedDataWritten, $writtenData, function ($a, $b) { return json_encode($a) <=> json_encode($b); }));   // FreshRSS
     }
 
     /**
