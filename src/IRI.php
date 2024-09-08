@@ -304,7 +304,6 @@ class IRI
             if ($match[3] === '') {
                 $match['authority'] = null;
             }
-            $match['path'] = '';
             if (!isset($match[6]) || $match[6] === '') {
                 $match['query'] = null;
             }
