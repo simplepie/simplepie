@@ -301,12 +301,10 @@ class IRI
             if ($match[1] === '') {
                 $match['scheme'] = null;
             }
-            if (!isset($match[3]) || $match[3] === '') {
+            if ($match[3] === '') {
                 $match['authority'] = null;
             }
-            if (!isset($match[5])) {
-                $match['path'] = '';
-            }
+            $match['path'] = '';
             if (!isset($match[6]) || $match[6] === '') {
                 $match['query'] = null;
             }
