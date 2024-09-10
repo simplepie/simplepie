@@ -35,8 +35,8 @@ jobs:
       - name: "Install Composer dependencies"
         uses: "ramsey/composer-install@v2"
 
-      # - name: "Check coding style"
-      #   run: composer cs
+      - name: "Check coding style"
+        run: composer cs
 
   test:
     runs-on: ubuntu-latest
