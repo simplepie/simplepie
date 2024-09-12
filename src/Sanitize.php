@@ -132,7 +132,7 @@ class Sanitize implements RegistryAware
         $this->registry = $registry;
     }
 
-    public function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = 'SimplePie\Cache', DataCache $cache = null)
+    public function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = 'SimplePie\Cache', ?DataCache $cache = null)
     {
         if (isset($enable_cache)) {
             $this->enable_cache = (bool) $enable_cache;
