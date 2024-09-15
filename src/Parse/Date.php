@@ -544,7 +544,7 @@ class Date
      * Array of user-added callback methods
      *
      * @access private
-     * @var array<callable(string): string|false>
+     * @var array<callable(string): (int|false)>
      */
     public $user = [];
 
@@ -601,19 +601,17 @@ class Date
     public function parse(string $date)
     {
         foreach ($this->user as $method) {
-            if (is_callable($method)) {
-                if (($returned = call_user_func($method, $date)) !== false) {
-                    return (int) $returned;
-                }
+            if (($returned = call_user_func($method, $date)) !== false) {
+                return (int) $returned;
             }
         }
 
         foreach ($this->built_in as $method) {
+            // TODO: we should really check this in constructor but that would require private properties.
+            /** @var callable(string): (int|false) */
             $callable = [$this, $method];
-            if (is_callable($callable)) {
-                if (($returned = call_user_func($callable, $date)) !== false) {
-                    return $returned;
-                }
+            if (($returned = call_user_func($callable, $date)) !== false) {
+                return $returned;
             }
         }
 

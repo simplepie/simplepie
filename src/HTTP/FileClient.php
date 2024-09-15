@@ -69,8 +69,8 @@ final class FileClient implements Client
             throw new HttpException($th->getMessage(), $th->getCode(), $th);
         }
 
-        if (!$file->success) {
-            throw new HttpException((string) $file->error);
+        if ($file->error !== null) {
+            throw new HttpException($file->error);
         }
 
         return $file;

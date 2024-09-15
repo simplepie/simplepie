@@ -1062,10 +1062,9 @@ class Enclosure
         $types_wmedia = ['application/asx', 'application/x-mplayer2', 'audio/x-ms-wma', 'audio/x-ms-wax', 'video/x-ms-asf-plugin', 'video/x-ms-asf', 'video/x-ms-wm', 'video/x-ms-wmv', 'video/x-ms-wvx']; // Windows Media
         $types_mp3 = ['audio/mp3', 'audio/x-mp3', 'audio/mpeg', 'audio/x-mpeg']; // MP3
 
-        if ($this->get_type() !== null) {
-            $type = strtolower((string) $this->type);
-        } else {
-            $type = null;
+        $type = $this->get_type();
+        if ($type !== null) {
+            $type = strtolower($type);
         }
 
         // If we encounter an unsupported mime-type, check the file extension and guess intelligently.

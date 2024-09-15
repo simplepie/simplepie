@@ -1677,11 +1677,13 @@ class SimplePie
 
         // Pass whatever was set with config options over to the sanitizer.
         // Pass the classes in for legacy support; new classes should use the registry instead
+        $cache = $this->registry->get_class(Cache::class);
+        assert($cache !== null, 'Cache must be defined');
         $this->sanitize->pass_cache_data(
             $this->enable_cache,
             $this->cache_location,
             $this->cache_namefilter,
-            $this->registry->get_class(Cache::class),
+            $cache,
             $this->cache
         );
 
@@ -2494,13 +2496,14 @@ class SimplePie
      * @access private
      * @see Sanitize::sanitize()
      * @param string $data Data to sanitize
-     * @param self::CONSTRUCT_* $type One of the self::CONSTRUCT_* constants
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
     public function sanitize(string $data, int $type, string $base = '')
     {
         try {
+            // This really returns string|false but changing encoding is uncommon and we are going to deprecate it, so let’s just lie to PHPStan in the interest of cleaner annotations.
             return $this->sanitize->sanitize($data, $type, $base);
         } catch (SimplePieException $e) {
             if (!$this->enable_exceptions) {

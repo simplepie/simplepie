@@ -155,7 +155,7 @@ class EncodingTest extends TestCase
     public static function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
     {
         $expected = bin2hex($expected);
-        $actual = bin2hex((string) $actual);
+        $actual = bin2hex($actual);
 
         static::assertSame($expected, $actual, $message);
     }

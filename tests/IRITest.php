@@ -72,7 +72,8 @@ class IRITest extends TestCase
     {
         $base = new SimplePie_IRI('http://a/b/c/d;p?q');
         $absolutized = SimplePie_IRI::absolutize($base, $relative);
-        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -92,8 +93,9 @@ class IRITest extends TestCase
     {
         $base = 'http://a/b/c/d;p?q';
         $absolutized = SimplePie_IRI::absolutize($base, $relative);
-        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
-        $this->assertSame($expected, (string) SimplePie_IRI::absolutize($base, $relative));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
+        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative));
     }
 
     /**
@@ -128,7 +130,8 @@ class IRITest extends TestCase
     {
         $base = new SimplePie_IRI($base);
         $absolutized = SimplePie_IRI::absolutize($base, $relative);
-        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -193,7 +196,8 @@ class IRITest extends TestCase
     {
         $base = new SimplePie_IRI($base);
         $absolutized = SimplePie_IRI::absolutize($base, $relative);
-        $this->assertSame($expected, ($absolutized ? $absolutized->get_iri() : null));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**

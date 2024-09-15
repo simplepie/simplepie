@@ -73,7 +73,7 @@ class Source implements RegistryAware
 
     /**
      * @param string $data
-     * @param SimplePie::CONSTRUCT_* $type
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string $base
      * @return string
      */
@@ -379,7 +379,7 @@ class Source implements RegistryAware
                         $this->data['links'][\SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY . $key] = &$this->data['links'][$key];
                     }
                 } elseif (substr($key, 0, 41) === \SimplePie\SimplePie::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr((string) $key, 41)] = &$this->data['links'][$key];
+                    $this->data['links'][substr($key, 41)] = &$this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }

@@ -137,6 +137,10 @@ class SimplePieTest extends TestCase
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
             $data = file_get_contents($cachepath);
 
+            if ($data !== false) {
+                $data = unserialize($data);
+            }
+
             if ($data === false) {
                 throw new Exception(sprintf(
                     '%s::setLoadCallback() could not get contents of file "%s". Make sure that the file has not been modified.',
@@ -144,8 +148,6 @@ class SimplePieTest extends TestCase
                     $cachepath
                 ), 1);
             }
-
-            $data = unserialize($data);
 
             // Fix build in cache
             $data['build'] = \SimplePie\Misc::get_build();
@@ -188,6 +190,10 @@ class SimplePieTest extends TestCase
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
             $data = file_get_contents($cachepath);
 
+            if ($data !== false) {
+                $data = unserialize($data);
+            }
+
             if ($data === false) {
                 throw new Exception(sprintf(
                     '%s::get() could not get contents of file "%s". Make sure that the file has not been modified.',
@@ -195,8 +201,6 @@ class SimplePieTest extends TestCase
                     $cachepath
                 ), 1);
             }
-
-            $data = unserialize($data);
 
             // Fix build in cache
             $data['build'] = \SimplePie\Misc::get_build();

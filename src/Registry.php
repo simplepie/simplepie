@@ -148,7 +148,7 @@ class Registry
      *
      * @template T
      * @param class-string<T> $type
-     * @return class-string<T>
+     * @return class-string<T>|null
      */
     public function get_class($type)
     {
@@ -159,21 +159,19 @@ class Registry
         }
 
         if (!array_key_exists($type, $this->default)) {
-            throw new InvalidArgumentException(sprintf(
-                '%s(): Argument #1 ($type) "%s" not found in default class list.',
-                __METHOD__,
-                $type
-            ), 1);
+            return null;
         }
 
+        // For PHPStan: values in $default should be subtypes of keys.
+        /** @var class-string<T> */
         $class = $this->default[$type];
 
         if (array_key_exists($type, $this->classes)) {
+            // For PHPStan: values in $classes should be subtypes of keys.
+            /** @var class-string<T> */
             $class = $this->classes[$type];
         }
 
-        // HELP WANTED: Not sure how to fix this PHPStan error.
-        /** @phpstan-ignore return.type */
         return $class;
     }
 
@@ -188,11 +186,20 @@ class Registry
     public function &create($type, array $parameters = [])
     {
         $class = $this->get_class($type);
+        if ($class === null) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($type) "%s" not found in class list.',
+                __METHOD__,
+                $type
+            ), 1);
+        }
 
         if (!method_exists($class, '__construct')) {
             $instance = new $class();
         } else {
             $reflector = new \ReflectionClass($class);
+            // For PHPStan: $class is T.
+            /** @var T */
             $instance = $reflector->newInstanceArgs($parameters);
         }
 
@@ -203,8 +210,6 @@ class Registry
             $instance->set_registry($this);
         }
 
-        // HELP WANTED: Not sure how to fix PHPStan error.
-        /** @phpstan-ignore return.type */
         return $instance;
     }
 
@@ -219,6 +224,13 @@ class Registry
     public function &call($type, string $method, array $parameters = [])
     {
         $class = $this->get_class($type);
+        if ($class === null) {
+            throw new InvalidArgumentException(sprintf(
+                '%s(): Argument #1 ($type) "%s" not found in class list.',
+                __METHOD__,
+                $type
+            ), 1);
+        }
 
         if (in_array($class, $this->legacy)) {
             switch ($type) {
@@ -237,10 +249,9 @@ class Registry
         }
 
         $callable = [$class, $method];
-        if (is_callable($callable)) {
-            $result = call_user_func_array($callable, $parameters);
-            return $result;
-        }
+        assert(is_callable($callable), 'For PHPstan');
+        $result = call_user_func_array($callable, $parameters);
+        return $result;
     }
 }
 
