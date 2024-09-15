@@ -992,7 +992,7 @@ class Enclosure
         // Flash Media Player file types.
         // Preferred handler for MP3 file types.
         elseif ($handler === 'fmedia' || ($handler === 'mp3' && $mediaplayer !== '')) {
-            if (is_int($height)) {
+            if (is_numeric($height)) {
                 $height += 20;
             }
 
@@ -1006,7 +1006,7 @@ class Enclosure
         // QuickTime 7 file types.  Need to test with QuickTime 6.
         // Only handle MP3's if the Flash Media Player is not present.
         elseif ($handler === 'quicktime' || ($handler === 'mp3' && $mediaplayer === '')) {
-            if (is_int($height)) {
+            if (is_numeric($height)) {
                 $height += 16;
             }
 
@@ -1023,7 +1023,7 @@ class Enclosure
 
         // Windows Media
         elseif ($handler === 'wmedia') {
-            if (is_int($height)) {
+            if (is_numeric($height)) {
                 $height += 45;
             }
 
