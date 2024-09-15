@@ -95,7 +95,7 @@ class IRITest extends TestCase
         $absolutized = SimplePie_IRI::absolutize($base, $relative);
         $this->assertNotFalse($absolutized);
         $this->assertSame($expected, $absolutized->get_iri());
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative));
+        $this->assertSame($expected, (string) SimplePie_IRI::absolutize($base, $relative));
     }
 
     /**

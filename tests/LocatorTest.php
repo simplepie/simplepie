@@ -126,7 +126,7 @@ class LocatorTest extends TestCase
         $document->loadHTML((string) $data->body);
         $xpath = new DOMXPath($document);
 
-        /** @var \DOMNodeList<\DOMNode> $queryResult */
+        /** @var \DOMNodeList<\DOMElement> $queryResult */
         $queryResult = $xpath->query('//link');
 
         foreach ($queryResult as $element) {

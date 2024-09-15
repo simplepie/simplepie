@@ -239,12 +239,12 @@ class Parser
         if ($this->psr7Compatible) {
             // For PHPStan: should be enforced by template parameter but PHPStan is not smart enough.
             /** @var array<string, non-empty-array<string>> */
-            $headers = $this->headers;
+            $headers = &$this->headers;
             $headers[$name][] = $value;
         } else {
             // For PHPStan: should be enforced by template parameter but PHPStan is not smart enough.
             /** @var array<string, string>) */
-            $headers = $this->headers;
+            $headers = &$this->headers;
             $headers[$name] .= ', ' . $value;
         }
     }
@@ -254,12 +254,12 @@ class Parser
         if ($this->psr7Compatible) {
             // For PHPStan: should be enforced by template parameter but PHPStan is not smart enough.
             /** @var array<string, non-empty-array<string>> */
-            $headers = $this->headers;
+            $headers = &$this->headers;
             $headers[$name] = [$value];
         } else {
             // For PHPStan: should be enforced by template parameter but PHPStan is not smart enough.
             /** @var array<string, string>) */
-            $headers = $this->headers;
+            $headers = &$this->headers;
             $headers[$name] = $value;
         }
     }

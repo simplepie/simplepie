@@ -2027,7 +2027,7 @@ class SimplePie
                         $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                             'contains(concat(" ", @class, " "), " h-entry ")]';
 
-                        /** @var \DOMNodeList<\DOMNode> $result */
+                        /** @var \DOMNodeList<\DOMElement> $result */
                         $result = $xpath->query($query);
                         $microformats = $result->length !== 0;
                     }
