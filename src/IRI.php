@@ -203,9 +203,9 @@ class IRI
     /**
      * Create a new IRI object, from a specified string
      *
-     * @param string $iri
+     * @param string|null $iri
      */
-    public function __construct(string $iri = null)
+    public function __construct(?string $iri = null)
     {
         $this->set_iri($iri);
     }
@@ -301,11 +301,8 @@ class IRI
             if ($match[1] === '') {
                 $match['scheme'] = null;
             }
-            if (!isset($match[3]) || $match[3] === '') {
+            if ($match[3] === '') {
                 $match['authority'] = null;
-            }
-            if (!isset($match[5])) {
-                $match['path'] = '';
             }
             if (!isset($match[6]) || $match[6] === '') {
                 $match['query'] = null;
