@@ -61,6 +61,7 @@
     },
     "config": {
         "bin-dir": "bin",
+        "lock": false,
         "sort-packages": true
     },
     "scripts": {
