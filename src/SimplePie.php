@@ -1937,6 +1937,7 @@ class SimplePie
                             // Set raw_data to false here too, to signify that the cache
                             // is still valid.
                             $this->raw_data = false;
+                            $this->data['cache_expiration_time'] = $this->cache_duration + time();
                             $cache->set_data($cacheKey, $this->data, $this->cache_duration);
 
                             return true;
