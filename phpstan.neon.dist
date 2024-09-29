@@ -59,7 +59,7 @@ parameters:
             message: '(^Unable to resolve the template type T in call to method SimplePie\\Registry::get_class\(\)$)'
             count: 2
             path: tests/Unit/RegistryTest.php
-            reportUnmatched: false
+            # reportUnmatched: false
 
         # PHPStan stubs bug https://github.com/phpstan/phpstan/issues/8629
         -
