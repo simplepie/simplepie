@@ -120,7 +120,7 @@ class CachingTest extends TestCase
      */
     public static function provideSavedCacheData(): array
     {
-        $defaultMtime = time();
+        $defaultMtime = time() - 1; // -1 to account for tests running within the same second
         $defaultExpirationTime = $defaultMtime + 3600;
 
         $expectDefaultDataWritten = [
@@ -246,10 +246,10 @@ class CachingTest extends TestCase
             [CacheInterface::class, $currentlyCachedDataWithNonFeedUrl,     $expectDataWithNewFeedUrl, $defaultMtime],
             // Check if the cache has been updated
             [Base::class,           $currentlyCachedDataIsUpdated,          $expectDefaultDataWritten, $defaultMtime],
-            [CacheInterface::class, $currentlyCachedDataIsUpdated,          $expectDefaultDataWritten, $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataIsUpdated,          $expectNoDataWritten,      $defaultMtime],
             // If the cache is still valid, just return true
             [Base::class,           $currentlyCachedDataIsValid,            $expectDefaultDataWritten, $defaultMtime],
-            [CacheInterface::class, $currentlyCachedDataIsValid,            $expectNoDataWritten,      $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataIsValid,            $expectDefaultDataWritten, $defaultMtime],
         ];
     }
 }
