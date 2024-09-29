@@ -1831,7 +1831,7 @@ class SimplePie
 
             if (!$locate->is_feed($file)) {
                 $copyStatusCode = $file->status_code;
-                $copyContentType = $file->headers['content-type'];
+                $copyContentType = $file->headers['content-type'] ?? '';
                 try {
                     $microformats = false;
                     if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
