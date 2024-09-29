@@ -735,7 +735,7 @@ class Item implements RegistryAware
      *
      * @see get_date
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date}
-     * @return int|string|null
+     * @return string|null
      */
     public function get_gmdate(string $date_format = 'j F Y, g:i a')
     {
@@ -752,7 +752,7 @@ class Item implements RegistryAware
      *
      * @see get_updated_date
      * @param string $date_format Supports any PHP date format from {@see http://php.net/date}
-     * @return int|string|null
+     * @return string|null
      */
     public function get_updated_gmdate(string $date_format = 'j F Y, g:i a')
     {
