@@ -294,7 +294,13 @@ class IRI
      * Parse an IRI into scheme/authority/path/query/fragment segments
      *
      * @param string $iri
-     * @return array<string, mixed>|false
+     * @return array{
+     *   scheme: string|null,
+     *   authority: string|null,
+     *   path: string,
+     *   query: string|null,
+     *   fragment: string|null,
+     * }|false
      */
     protected function parse_iri(string $iri)
     {
