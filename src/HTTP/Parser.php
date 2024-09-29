@@ -470,7 +470,10 @@ class Parser
                 return;
             }
 
-            $length = (int) hexdec(trim($matches[1]));
+            $length = hexdec(trim($matches[1]));
+            // For PHPStan: this will only be float when larger than PHP_INT_MAX.
+            // But even on 32-bit systems, it would mean 2GiB chunk, which sounds unlikely.
+            \assert(\is_int($length), "Length needs to be shorter than PHP_INT_MAX");
             if ($length === 0) {
                 // Ignore trailer headers
                 $this->state = self::STATE_EMIT;

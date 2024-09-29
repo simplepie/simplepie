@@ -383,10 +383,12 @@ class IRI
     protected function replace_invalid_with_pct_encoding(string $string, string $extra_chars, bool $iprivate = false)
     {
         // Normalize as many pct-encoded sections as possible
-        $string = (string) preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', [$this, 'remove_iunreserved_percent_encoded'], $string);
+        $string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', [$this, 'remove_iunreserved_percent_encoded'], $string);
+        \assert(\is_string($string), "For PHPStan: Should not occur, the regex is valid");
 
         // Replace invalid percent characters
-        $string = (string) preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
+        $string = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
+        \assert(\is_string($string), "For PHPStan: Should not occur, the regex is valid");
 
         // Add unreserved and % to $extra_chars (the latter is safe because all
         // pct-encoded sections are now valid).
@@ -501,7 +503,7 @@ class IRI
      * Removes sequences of percent encoded bytes that represent UTF-8
      * encoded characters in iunreserved
      *
-     * @param array<int, string> $match PCRE match
+     * @param array{string} $match PCRE match, a capture group #0 consisting of a sequence of valid percent-encoded bytes
      * @return string Replacement
      */
     protected function remove_iunreserved_percent_encoded(array $match)
@@ -607,6 +609,7 @@ class IRI
                     }
                 } else {
                     for ($j = $start; $j <= $i; $j++) {
+                        // Cast for PHPStan, this will always be a number between 0 and 0xFF so hexdec will return int.
                         $string .= chr((int) hexdec($bytes[$j]));
                     }
                 }
@@ -799,6 +802,8 @@ class IRI
 
         $remaining = $authority;
         if (($iuserinfo_end = strrpos($remaining, '@')) !== false) {
+            // Cast for PHPStan on PHP < 8.0. It does not detect that
+            // the range is not flipped so substr cannot return false.
             $iuserinfo = (string) substr($remaining, 0, $iuserinfo_end);
             $remaining = substr($remaining, $iuserinfo_end + 1);
         } else {
