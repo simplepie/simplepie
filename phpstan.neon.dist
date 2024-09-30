@@ -65,3 +65,6 @@ parameters:
             message: '(^Access to an undefined property XMLReader::\$\w+\.$)'
             # Only occurs on PHP ≥ 8.2
             reportUnmatched: false
+
+includes:
+    - utils/PHPStan/extension.neon
