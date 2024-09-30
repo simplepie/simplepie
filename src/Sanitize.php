@@ -546,7 +546,6 @@ class Sanitize implements RegistryAware
             }
 
             if ($type & \SimplePie\SimplePie::CONSTRUCT_IRI) {
-                /** @var string|false */
                 $absolute = $this->registry->call(Misc::class, 'absolutize_url', [$data, $base]);
                 if ($absolute !== false) {
                     $data = $absolute;
