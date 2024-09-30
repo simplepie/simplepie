@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Third-party `idna_convert` library is no longer part of the repository by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
+- The single-file build was dropped by @jtojnar in [#893](https://github.com/simplepie/simplepie/pull/893)
 
 ### Deprecated
 
