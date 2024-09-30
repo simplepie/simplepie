@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
+- Use native `gzdecode` function instead of internal PHP implementation by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882)
 
 ### Removed
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead
 - The method `SimplePie\Sanitize::pass_file_data()` is deprecated, use `SimplePie\Sanitize::set_http_client()` instead
 - Passing multiple URLs to `SimplePie\SimplePie::set_feed_url()` is deprecated. You can create separate `SimplePie` instance per feed and then use `SimplePie::merge_items()` to get a single list of items. ([#795](https://github.com/simplepie/simplepie/pull/795))
+- The `SimplePie\Gzdecode` class is deprecated. You can use native [`gzdecode`](https://www.php.net/manual/en/function.gzdecode.php) function by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882)
 
 ## [1.8.0](https://github.com/simplepie/simplepie/compare/1.7.0...1.8.0) - 2023-01-20
 
