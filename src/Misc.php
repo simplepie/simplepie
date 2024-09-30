@@ -96,7 +96,7 @@ class Misc
                         if (count($attribs[$j]) === 2) {
                             $attribs[$j][2] = $attribs[$j][1];
                         }
-                        $return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode((string) end($attribs[$j]));
+                        $return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode(end($attribs[$j]));
                     }
                 }
             }
@@ -257,6 +257,7 @@ class Misc
     {
         $integer = hexdec($match[1]);
         if ($integer >= 0x41 && $integer <= 0x5A || $integer >= 0x61 && $integer <= 0x7A || $integer >= 0x30 && $integer <= 0x39 || $integer === 0x2D || $integer === 0x2E || $integer === 0x5F || $integer === 0x7E) {
+            // Cast for PHPStan, the value would only be float when above PHP_INT_MAX, which would not go in this branch.
             return chr((int) $integer);
         }
 
@@ -387,6 +388,7 @@ class Misc
     public static function encoding(string $charset)
     {
         // Normalization from UTS #22
+        // Cast for PHPStan, the regex should not fail.
         switch (strtolower((string) preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\1', $charset))) {
             case 'adobestandardencoding':
             case 'csadobestandardencoding':
@@ -2166,6 +2168,7 @@ END;
         $info = 'SimplePie ' . \SimplePie\SimplePie::VERSION . ' Build ' . static::get_build() . "\n";
         $info .= 'PHP ' . PHP_VERSION . "\n";
         if ($sp->error() !== null) {
+            // TODO: Remove cast with multifeeds.
             $info .= 'Error occurred: ' . implode(', ', (array) $sp->error()) . "\n";
         } else {
             $info .= "No error found.\n";
@@ -2222,6 +2225,9 @@ END;
      */
     public static function url_remove_credentials(string $url)
     {
+        // Cast for PHPStan: I do not think this can fail.
+        // The regex is valid and there should be no backtracking.
+        // https://github.com/phpstan/phpstan/issues/11547
         return (string) preg_replace('#^(https?://)[^/:@]+:[^/:@]+@#i', '$1', $url);
     }
 }

@@ -4831,7 +4831,6 @@ EOT
         $item = $feed->get_item(0);
         $this->assertInstanceOf(Item::class, $item);
         $thumbnail = $item->get_thumbnail();
-        $this->assertNotNull($thumbnail);
         $this->assertSame($expected, $thumbnail['url']);
     }
 

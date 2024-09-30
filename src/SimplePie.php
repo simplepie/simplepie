@@ -523,7 +523,7 @@ class SimplePie
     public $cache_location = './cache';
 
     /**
-     * @var callable Function that creates the cache filename
+     * @var callable(string): string Function that creates the cache filename
      * @see SimplePie::set_cache_name_function()
      * @access private
      */
@@ -1481,10 +1481,8 @@ class SimplePie
         if ($tags === '') {
             $tags = $this->strip_htmltags;
         }
-
-        if ($tags !== false) {
-            $this->sanitize->strip_htmltags($tags);
-        } elseif ($encode !== null && is_bool($tags)) {
+        $this->sanitize->strip_htmltags($tags);
+        if ($encode !== null) {
             $this->sanitize->encode_instead_of_strip($tags);
         }
     }

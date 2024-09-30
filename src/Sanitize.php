@@ -220,7 +220,7 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param string[]|string $tags
+     * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags, or false to strip nothing.
      * @return void
      */
     public function strip_htmltags($tags = ['base', 'blink', 'body', 'doctype', 'embed', 'font', 'form', 'frame', 'frameset', 'html', 'iframe', 'input', 'marquee', 'meta', 'noscript', 'object', 'param', 'script', 'style'])
@@ -537,11 +537,13 @@ class Sanitize implements RegistryAware
 
                 if ($this->remove_div) {
                     $data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '', $data);
+                    // Cast for PHPStan, it is unable to validate a non-literal regex above.
                     $data = preg_replace('/<\/div>$/', '', (string) $data);
                 } else {
                     $data = preg_replace('/^<div' . \SimplePie\SimplePie::PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
                 }
 
+                // Cast for PHPStan, it is unable to validate a non-literal regex above.
                 $data = str_replace('</source>', '', (string) $data);
             }
 
