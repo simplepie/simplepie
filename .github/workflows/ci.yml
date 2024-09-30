@@ -115,4 +115,4 @@ jobs:
         run: mv src src.bak && mv library library.bak
 
       - name: Run unit tests using compiled file
-        run: bin/phpunit --bootstrap=build/bootstrap.php
+        run: composer test -- --bootstrap=build/bootstrap.php
