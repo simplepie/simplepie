@@ -1968,12 +1968,15 @@ class Misc
      * Returns an associative array of name/value pairs, where the value is an
      * array of values that have used the same name
      *
+     * @deprecated since SimplePie 1.9.0. If you need it, consider copying the function to your codebase.
      * @static
      * @param string $str The input string.
      * @return array<string, array<string|null>>
      */
     public static function parse_str(string $str)
     {
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
+
         $return = [];
         $str = explode('&', $str);
 

@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The following `SimplePie\Misc` methods are deprecated without replacement:
   - `SimplePie\Misc::element_implode()`
+  - `SimplePie\Misc::parse_str()`
   - `SimplePie\Misc::percent_encoding_normalization()`
   - `SimplePie\Misc::strip_comments()`
   - `SimplePie\Misc::uncomment_rfc822()`
