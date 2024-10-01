@@ -105,11 +105,14 @@ class Misc
     }
 
     /**
+     * @deprecated since SimplePie 1.9.0. If you need it, you can copy the function to your codebase. But you should consider using `DOMDocument` for any DOM wrangling.
      * @param array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content: string} $element
      * @return string
      */
     public static function element_implode(array $element)
     {
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
+
         $full = "<{$element['tag']}";
         foreach ($element['attribs'] as $key => $value) {
             $key = strtolower($key);
