@@ -250,6 +250,7 @@ class Misc
     }
 
     /**
+     * @deprecated since SimplePie 1.9.0. This functionality is part of `IRI` – if you need it standalone, consider copying the function to your codebase.
      * @param array<int, string> $match
      * @return string
      */
