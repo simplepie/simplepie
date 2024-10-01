@@ -1675,7 +1675,7 @@ class SimplePie
         // Pass whatever was set with config options over to the sanitizer.
         // Pass the classes in for legacy support; new classes should use the registry instead
         $cache = $this->registry->get_class(Cache::class);
-        assert($cache !== null, 'Cache must be defined');
+        \assert($cache !== null, 'Cache must be defined');
         $this->sanitize->pass_cache_data(
             $this->enable_cache,
             $this->cache_location,
@@ -1850,7 +1850,7 @@ class SimplePie
      * If the data is already cached, attempt to fetch it from there instead
      *
      * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
-     * @return array{array<string, string>, string}|array{string, string}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
+     * @return array{array<string, string>, string}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
     protected function fetch_data(&$cache)
     {
