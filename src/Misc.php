@@ -1716,11 +1716,14 @@ class Misc
     /**
      * Strip HTML comments
      *
+     * @deprecated since SimplePie 1.9.0. If you need it, you can copy the function to your codebase. But you should consider using `DOMDocument` for any DOM wrangling.
      * @param string $data Data to strip comments from
      * @return string Comment stripped string
      */
     public static function strip_comments(string $data)
     {
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
+
         $output = '';
         while (($start = strpos($data, '<!--')) !== false) {
             $output .= substr($data, 0, $start);

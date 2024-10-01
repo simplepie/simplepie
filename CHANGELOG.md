@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The following `SimplePie\Misc` methods are deprecated without replacement:
   - `SimplePie\Misc::element_implode()`
   - `SimplePie\Misc::percent_encoding_normalization()`
+  - `SimplePie\Misc::strip_comments()`
 
   If you need any of them, consider copying the function to your codebase. (by @jtojnar in [#899](https://github.com/simplepie/simplepie/pull/899))
 - The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead
