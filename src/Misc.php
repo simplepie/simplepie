@@ -1763,11 +1763,14 @@ class Misc
     /**
      * Remove RFC822 comments
      *
+     * @deprecated since SimplePie 1.9.0. If you need it, consider copying the function to your codebase.
      * @param string $string Data to strip comments from
      * @return string Comment stripped string
      */
     public static function uncomment_rfc822(string $string)
     {
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
+
         $position = 0;
         $length = strlen($string);
         $depth = 0;
