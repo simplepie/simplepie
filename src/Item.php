@@ -1734,7 +1734,8 @@ class Item implements RegistryAware
 
                             // PLAYER
                             if (isset($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'])) {
-                                $player = $this->sanitize($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player']));
+                                $playerElem = $content['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0];
+                                $player = $this->sanitize($playerElem['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($playerElem));
                             } elseif (isset($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'])) {
                                 $player = $this->sanitize($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player'][0]['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($group['child'][\SimplePie\SimplePie::NAMESPACE_MEDIARSS]['player']));
                             } else {
