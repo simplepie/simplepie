@@ -127,7 +127,7 @@ class Item implements RegistryAware
      * @param array<string, mixed> $element
      * @see get_base
      */
-    protected function get_own_base(array $element = []): string
+    private function get_own_base(array $element = []): string
     {
         if (!empty($element['xml_base_explicit']) && isset($element['xml_base'])) {
             return $element['xml_base'];
