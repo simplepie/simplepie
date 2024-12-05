@@ -1520,7 +1520,7 @@ class SimplePie
         }
         $this->sanitize->strip_htmltags($tags);
         if ($encode !== null) {
-            $this->sanitize->encode_instead_of_strip($tags);
+            $this->sanitize->encode_instead_of_strip($encode);
         }
     }
 

@@ -236,12 +236,11 @@ class File implements Response
                                 switch (strtolower(trim($contentEncodingHeader, "\x09\x0A\x0D\x20"))) {
                                     case 'gzip':
                                     case 'x-gzip':
-                                        $decoder = new \SimplePie\Gzdecode($this->body);
-                                        if (!$decoder->parse()) {
+                                        if (($decompressed = gzdecode($this->body)) === false) {
                                             $this->error = 'Unable to decode HTTP "gzip" stream';
                                             $this->success = false;
                                         } else {
-                                            $this->body = trim($decoder->data);
+                                            $this->body = trim($decompressed);
                                         }
                                         break;
 
@@ -250,7 +249,7 @@ class File implements Response
                                             $this->body = $decompressed;
                                         } elseif (($decompressed = gzuncompress($this->body)) !== false) {
                                             $this->body = $decompressed;
-                                        } elseif (function_exists('gzdecode') && ($decompressed = gzdecode($this->body)) !== false) {
+                                        } elseif (($decompressed = gzdecode($this->body)) !== false) {
                                             $this->body = $decompressed;
                                         } else {
                                             $this->error = 'Unable to decode HTTP "deflate" stream';

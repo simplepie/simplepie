@@ -297,19 +297,10 @@ class IRI
     protected function parse_iri(string $iri)
     {
         $iri = trim($iri, "\x20\x09\x0A\x0C\x0D");
-        if (preg_match('/^((?P<scheme>[^:\/?#]+):)?(\/\/(?P<authority>[^\/?#]*))?(?P<path>[^?#]*)(\?(?P<query>[^#]*))?(#(?P<fragment>.*))?$/', $iri, $match)) {
-            if ($match[1] === '') {
-                $match['scheme'] = null;
-            }
-            if ($match[3] === '') {
-                $match['authority'] = null;
-            }
-            if (!isset($match[6]) || $match[6] === '') {
-                $match['query'] = null;
-            }
-            if (!isset($match[8]) || $match[8] === '') {
-                $match['fragment'] = null;
-            }
+        if (preg_match('/^(?:(?P<scheme>[^:\/?#]+):)?(:?\/\/(?P<authority>[^\/?#]*))?(?P<path>[^?#]*)(?:\?(?P<query>[^#]*))?(?:#(?P<fragment>.*))?$/', $iri, $match, \PREG_UNMATCHED_AS_NULL)) {
+            // TODO: Remove once we require PHP ≥ 7.4.
+            $match['query'] = $match['query'] ?? null;
+            $match['fragment'] = $match['fragment'] ?? null;
             return $match;
         }
 
