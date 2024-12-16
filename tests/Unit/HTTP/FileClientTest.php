@@ -7,7 +7,9 @@ declare(strict_types=1);
 
 namespace SimplePie\Tests\Unit\HTTP;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
+use SimplePie\Exception\HttpException;
 use SimplePie\File;
 use SimplePie\HTTP\FileClient;
 use SimplePie\Misc;
@@ -68,6 +70,64 @@ final class FileClientTest extends TestCase
                 \CURLOPT_FAILONERROR => true,
             ],
         ]);
+
+        $client->request(
+            FileClient::METHOD_GET,
+            'http://example.com/feed.xml',
+            ['Accept' => 'application/atom+xml']
+        );
+    }
+
+    public function testFileClientCatchesException(): void
+    {
+        $expectedCode = 429;
+        $exception = new Exception('Test exception', $expectedCode);
+        $registry = $this->createMock(Registry::class);
+        $registry->expects($this->once())->method('create')->willThrowException($exception);
+
+        $client = new FileClient($registry, [
+            'timeout' => 30,
+            'useragent' => 'dummy-useragent',
+            'redirects' => 10,
+            'force_fsockopen' => true,
+            'curl_options' => [
+                \CURLOPT_FAILONERROR => true,
+            ],
+        ]);
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionCode($expectedCode);
+
+        $client->request(
+            FileClient::METHOD_GET,
+            'http://example.com/feed.xml',
+            ['Accept' => 'application/atom+xml']
+        );
+    }
+
+    public function testFileClientProcessesFileStatusCode(): void
+    {
+        $expectedCode = 429;
+        $response = $this->createMock(File::class);
+        $response->success = false;
+        $response->error = 'Test error';
+        $response->expects($this->once())->method('get_status_code')->willReturn($expectedCode);
+
+        $registry = $this->createMock(Registry::class);
+        $registry->expects($this->once())->method('create')->willReturn($response);
+
+        $client = new FileClient($registry, [
+            'timeout' => 30,
+            'useragent' => 'dummy-useragent',
+            'redirects' => 10,
+            'force_fsockopen' => true,
+            'curl_options' => [
+                \CURLOPT_FAILONERROR => true,
+            ],
+        ]);
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionCode($expectedCode);
 
         $client->request(
             FileClient::METHOD_GET,
