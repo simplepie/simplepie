@@ -1921,7 +1921,7 @@ class SimplePie
                             $this->status_code = $file->get_status_code();
                         } catch (HttpException $th) {
                             $this->check_modified = false;
-                            $this->status_code = 0;
+                            $this->status_code = $th->getCode();
 
                             if ($this->force_cache_fallback) {
                                 $this->data['cache_expiration_time'] = $this->cache_duration + time();
@@ -1975,6 +1975,7 @@ class SimplePie
                 } catch (HttpException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
+                    $this->status_code = $th->getCode();
 
                     return !empty($this->data);
                 }
