@@ -11,6 +11,8 @@ use SimplePie\Exception as SimplePieException;
 
 /**
  * Client exception class
+ *
+ * @internal
  */
 final class ClientException extends SimplePieException
 {
