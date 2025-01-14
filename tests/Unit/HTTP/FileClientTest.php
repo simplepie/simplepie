@@ -76,10 +76,10 @@ final class FileClientTest extends TestCase
         );
     }
 
-    public function testFileClientReturnsResponseWithStatusCode500(): void
+    public function testFileClientReturnsResponseWithStatusCode429(): void
     {
         $response = $this->createStub(File::class);
-        $response->method('get_status_code')->willReturn(500);
+        $response->method('get_status_code')->willReturn(429);
 
         $registry = $this->createStub(Registry::class);
         $registry->method('create')->willReturn($response);
@@ -96,11 +96,11 @@ final class FileClientTest extends TestCase
 
         $response = $client->request(
             FileClient::METHOD_GET,
-            'http://example.com/500-error',
+            'http://example.com/429-error',
             ['Accept' => 'application/atom+xml']
         );
 
-        // Make sure no ClientException is thrown on status code 500
-        $this->assertSame(500, $response->get_status_code());
+        // Make sure no ClientException is thrown on status code 429
+        $this->assertSame(429, $response->get_status_code());
     }
 }
