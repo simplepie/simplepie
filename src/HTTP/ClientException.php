@@ -5,13 +5,13 @@
 
 declare(strict_types=1);
 
-namespace SimplePie\Exception;
+namespace SimplePie\HTTP;
 
 use SimplePie\Exception as SimplePieException;
 
 /**
- * HTTP exception class
+ * Client exception class
  */
-final class HttpException extends SimplePieException
+final class ClientException extends SimplePieException
 {
 }

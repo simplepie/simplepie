@@ -11,8 +11,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
+use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
@@ -52,16 +52,16 @@ class ClientsTest extends TestCase
         $this->assertStringStartsWith('<rss version="2.0">', $response->get_body_content());
     }
 
-    public function testFileClientThrowsHttpException(): void
+    public function testFileClientThrowsClientException(): void
     {
-        $this->runTestWithClientThrowsHttpException(
+        $this->runTestWithClientThrowsClientException(
             new FileClient(new Registry())
         );
     }
 
-    public function testPsr18ClientThrowsHttpException(): void
+    public function testPsr18ClientThrowsClientException(): void
     {
-        $this->runTestWithClientThrowsHttpException(
+        $this->runTestWithClientThrowsClientException(
             new Psr18Client(
                 $this->createMock(ClientInterface::class),
                 $this->createMock(RequestFactoryInterface::class),
@@ -70,11 +70,11 @@ class ClientsTest extends TestCase
         );
     }
 
-    private function runTestWithClientThrowsHttpException(Client $client): void
+    private function runTestWithClientThrowsClientException(Client $client): void
     {
         $filepath = dirname(__FILE__, 3) . '/data/this-file-does-not-exist';
 
-        $this->expectException(HttpException::class);
+        $this->expectException(ClientException::class);
         $this->expectExceptionCode(0);
 
         $this->expectExceptionMessage(sprintf('file "%s" is not readable', $filepath));
