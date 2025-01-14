@@ -75,4 +75,32 @@ final class FileClientTest extends TestCase
             ['Accept' => 'application/atom+xml']
         );
     }
+
+    public function testFileClientReturnsResponseWithStatusCode500(): void
+    {
+        $response = $this->createStub(File::class);
+        $response->method('get_status_code')->willReturn(500);
+
+        $registry = $this->createStub(Registry::class);
+        $registry->method('create')->willReturn($response);
+
+        $client = new FileClient($registry, [
+            'timeout' => 30,
+            'useragent' => 'dummy-useragent',
+            'redirects' => 10,
+            'force_fsockopen' => true,
+            'curl_options' => [
+                \CURLOPT_FAILONERROR => true,
+            ],
+        ]);
+
+        $response = $client->request(
+            FileClient::METHOD_GET,
+            'http://example.com/500-error',
+            ['Accept' => 'application/atom+xml']
+        );
+
+        // Make sure no ClientException is thrown on status code 500
+        $this->assertSame(500, $response->get_status_code());
+    }
 }
