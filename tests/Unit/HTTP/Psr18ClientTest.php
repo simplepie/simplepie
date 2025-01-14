@@ -36,7 +36,7 @@ class Psr18ClientTest extends TestCase
         $response->method('getStatusCode')->willReturn(500);
 
         $psr18 = $this->createStub(ClientInterface::class);
-        $psr18->method('request')->willReturn($response);
+        $psr18->method('sendRequest')->willReturn($response);
 
         $client = new Psr18Client(
             $psr18,
