@@ -556,8 +556,8 @@ class Date
      */
     public function __construct()
     {
-        $this->day_pcre = '(' . implode('|', array_keys($this->day)) . ')';
-        $this->month_pcre = '(' . implode('|', array_keys($this->month)) . ')';
+        $this->day_pcre = '(' . implode(array_keys($this->day), '|') . ')';
+        $this->month_pcre = '(' . implode(array_keys($this->month), '|') . ')';
 
         static $cache;
         if (!isset($cache[get_class($this)])) {
