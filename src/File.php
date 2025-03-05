@@ -115,6 +115,12 @@ class File implements Response
                 foreach ($headers as $key => $value) {
                     $headers2[] = "$key: $value";
                 }
+                if (isset($curl_options[CURLOPT_HTTPHEADER])) {
+                    if (is_array($curl_options[CURLOPT_HTTPHEADER])) {
+                        $headers2 = array_merge($headers2, $curl_options[CURLOPT_HTTPHEADER]);
+                    }
+                    unset($curl_options[CURLOPT_HTTPHEADER]);
+                }
                 if (version_compare(\SimplePie\Misc::get_curl_version(), '7.10.5', '>=')) {
                     curl_setopt($fp, CURLOPT_ENCODING, '');
                 }
