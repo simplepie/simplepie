@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
+use SimplePie\Item;
 
 /**
  * Tests for SimplePie\Item
@@ -185,6 +186,7 @@ class ItemTest extends TestCase
         $content = 'item description';
         $feed = $this->checkFromTemplate($data, $content);
         $item = $feed->get_item();
+        $this->assertInstanceOf(Item::class, $item);
         $this->assertSame($content, $item->get_content());
     }
 }

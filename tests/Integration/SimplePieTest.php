@@ -135,7 +135,11 @@ class SimplePieTest extends TestCase
         });
         BaseCacheWithCallbacksMock::setLoadCallback(function () {
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
-            $data = unserialize(file_get_contents($cachepath));
+            $data = file_get_contents($cachepath);
+
+            if ($data !== false) {
+                $data = unserialize($data);
+            }
 
             if ($data === false) {
                 throw new Exception(sprintf(
@@ -184,7 +188,11 @@ class SimplePieTest extends TestCase
         $cache = $this->createMock(CacheInterface::class);
         $cache->method('get')->willReturnCallback(function () {
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
-            $data = unserialize(file_get_contents($cachepath));
+            $data = file_get_contents($cachepath);
+
+            if ($data !== false) {
+                $data = unserialize($data);
+            }
 
             if ($data === false) {
                 throw new Exception(sprintf(
