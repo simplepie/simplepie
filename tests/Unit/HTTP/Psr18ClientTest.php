@@ -30,6 +30,27 @@ class Psr18ClientTest extends TestCase
         $this->assertInstanceOf(Response::class, $client->request(Client::METHOD_GET, 'https://example.com/feed.xml'));
     }
 
+    public function testRequestReturnsResponseWithStatusCode429(): void
+    {
+        $response = $this->createStub(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(429);
+
+        $psr18 = $this->createStub(ClientInterface::class);
+        $psr18->method('sendRequest')->willReturn($response);
+
+        $client = new Psr18Client(
+            $psr18,
+            $this->createStub(RequestFactoryInterface::class),
+            $this->createStub(UriFactoryInterface::class)
+        );
+
+        // Make sure no ClientException is thrown on status code 429
+        $this->assertSame(
+            429,
+            $client->request(Client::METHOD_GET, 'https://example.com/429-error')->get_status_code()
+        );
+    }
+
     public function testRequestWithRedirectReturnsResponseWithCorrectUrls(): void
     {
         $request = $this->createMock(RequestInterface::class);
