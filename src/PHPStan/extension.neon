@@ -1,0 +1,6 @@
+
+services:
+    -
+        class: SimplePie\PHPStan\RegistryCallMethodReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension

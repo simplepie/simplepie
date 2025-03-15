@@ -64,6 +64,13 @@
         "lock": false,
         "sort-packages": true
     },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "src/PHPStan/extension.neon"
+            ]
+        }
+    },
     "scripts": {
         "coverage": "phpunit --coverage-html=.phpunit.cache/code-coverage",
         "cs": "php-cs-fixer fix --verbose --dry-run --diff",

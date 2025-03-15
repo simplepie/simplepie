@@ -1848,7 +1848,7 @@ class Misc
 
     /**
      * @param array<string, array<string, string>> $attribs
-     * @return int
+     * @return int-mask-of<SimplePie::CONSTRUCT_*>
      */
     public static function atom_10_construct_type(array $attribs)
     {
@@ -1872,7 +1872,7 @@ class Misc
 
     /**
      * @param array<string, array<string, string>> $attribs
-     * @return int
+     * @return int-mask-of<SimplePie::CONSTRUCT_*>
      */
     public static function atom_10_content_construct_type(array $attribs)
     {

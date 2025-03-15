@@ -72,6 +72,12 @@ If you'd like a single monolithic file, see the assets in the
 [releases](https://github.com/simplepie/simplepie/releases), or you can
 run `php build/compile.php` to generate `SimplePie.compiled.php` yourself.
 
+### PHPStan extension
+
+The extension aims to have dynamic parts of SimplePie API report proper types. Currently, it only covers the return value of `Registry::call()`.
+
+To use the extension, just allow it if you use [phpstan/extension-installer](https://github.com/phpstan/extension-installer), or [include](https://phpstan.org/config-reference#multiple-files) `vendor/simplepie/simplepie/src/PHPStan/extension.neon` manually in your PHPStan config.
+
 To start the demo
 -----------------
 1. Upload this package to your webserver.

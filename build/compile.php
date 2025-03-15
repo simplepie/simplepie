@@ -97,6 +97,10 @@ foreach ($files as $file_path => $info) {
         // @deprecated This will be removed with SimplePie v2
         $last_file = str_replace('src', 'library', $file_path);
         continue;
+    } elseif (str_ends_with($info->getPath(), "PHPStan")) {
+        // Skip PHPStan extension. It requires the .neon file.
+        // And no one using PHPStan probably cares for single-file builds anyway.
+        continue;
     }
 
     $file_paths[] = $file_path;
