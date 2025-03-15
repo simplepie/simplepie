@@ -70,7 +70,7 @@ final class FileClient implements Client
         }
 
         if (!$file->success) {
-            throw new HttpException($file->error);
+            throw new HttpException($file->error, $file->get_status_code());
         }
 
         return $file;
