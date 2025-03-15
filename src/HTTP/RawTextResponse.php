@@ -28,6 +28,11 @@ final class RawTextResponse implements Response
     private $permanent_url;
 
     /**
+     * @var string[][]
+     */
+    private $headers = [];
+
+    /**
      * @var string
      */
     private $requested_url;
@@ -131,7 +136,7 @@ final class RawTextResponse implements Response
      */
     public function get_headers(): array
     {
-        return [];
+        return $this->headers;
     }
 
     /**
@@ -144,7 +149,7 @@ final class RawTextResponse implements Response
      */
     public function has_header(string $name): bool
     {
-        return false;
+        return isset($this->headers[strtolower($name)]);
     }
 
     /**
@@ -163,7 +168,31 @@ final class RawTextResponse implements Response
      */
     public function get_header(string $name): array
     {
-        return [];
+        return isset($this->headers[strtolower($name)]) ? $this->headers[$name] : [];
+    }
+
+    /**
+     * Return an instance with the provided value replacing the specified header.
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * new and/or updated header and value.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @param string|string[] $value Header value(s).
+     * @return static
+     * @throws \InvalidArgumentException for invalid header names or values.
+     */
+    public function with_header(string $name, $value)
+    {
+        $new = clone $this;
+
+        $newHeader = [
+            strtolower($name) => (array) $value,
+        ];
+        $new->headers = $newHeader + $this->headers;
+
+        return $new;
     }
 
     /**
@@ -187,7 +216,7 @@ final class RawTextResponse implements Response
      */
     public function get_header_line(string $name): string
     {
-        return '';
+        return isset($this->headers[strtolower($name)]) ? implode(", ", $this->headers[$name]) : '';
     }
 
     /**

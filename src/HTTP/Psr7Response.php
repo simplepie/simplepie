@@ -150,6 +150,23 @@ final class Psr7Response implements Response
     }
 
     /**
+     * Return an instance with the provided value replacing the specified header.
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * new and/or updated header and value.
+     *
+     * @param string $name Case-insensitive header field name.
+     * @param string|string[] $value Header value(s).
+     * @return static
+     * @throws \InvalidArgumentException for invalid header names or values.
+     */
+    public function with_header(string $name, $value)
+    {
+        return new self($this->response->withHeader($name, $value), $this->permanent_url, $this->requested_url);
+    }
+
+    /**
      * Retrieves a message header value by the given case-insensitive name.
      *
      * This method returns an array of all the header values of the given
