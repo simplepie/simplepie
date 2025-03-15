@@ -18,6 +18,7 @@ use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\NameFilter;
 use SimplePie\Cache\Psr16;
+use SimplePie\Content\Detector;
 use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception as SimplePieException;
 use SimplePie\Exception\HttpException;
@@ -2009,7 +2010,10 @@ class SimplePie
                 );
             }
 
-            if (!$locate->is_feed($file)) {
+            /** @var Detector */
+            $detector = $this->registry->create(Detector::class);
+
+            if (! $detector->contains_feed($file)) {
                 $copyStatusCode = $file->get_status_code();
                 $copyContentType = $file->get_header_line('content-type');
                 try {
@@ -2027,10 +2031,47 @@ class SimplePie
                     }
                     // Now also do feed discovery, but if microformats were found don't
                     // overwrite the current value of file.
-                    $discovered = $locate->find(
-                        $this->autodiscovery,
-                        $this->all_discovered_feeds
+                    $possible_feed_urls = $detector->discover_possible_feed_urls(
+                        $file,
+                        $this->autodiscovery
                     );
+
+                    $discovered = null;
+                    $checked_feeds = 0;
+
+                    foreach ($possible_feed_urls as $href) {
+                        $checked_feeds++;
+
+                        try {
+                            //code...
+                            $possible_feed = $http_client->request(
+                                Client::METHOD_GET,
+                                $href,
+                                ['Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER]
+                            );
+                        } catch (HttpException $th) {
+                            continue;
+                        }
+
+                        if (
+                            (
+                                preg_match('/^http(s)?:\/\//i', $href)
+                                || (
+                                    $possible_feed->get_status_code() === 200
+                                    || $possible_feed->get_status_code() > 206
+                                    && $possible_feed->get_status_code() < 300
+                                )
+                            )
+                            && $detector->contains_feed($possible_feed)
+                        ) {
+                            $this->all_discovered_feeds[$href] = $possible_feed;
+                        }
+                    }
+
+                    if (! empty($this->all_discovered_feeds)) {
+                        $discovered = $this->all_discovered_feeds[0];
+                    }
+
                     if ($microformats) {
                         if ($hub = $locate->get_rel_link('hub')) {
                             $self = $locate->get_rel_link('self');
