@@ -4312,6 +4312,21 @@ EOT
                 ,
                 'Item Title',
             ],
+            'Test RSS 0.91 XML and DTD' => [
+<<<XML
+<?xml version="1.0"?>
+<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN" "http://www.rssboard.org/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<item>
+			<title>Item Title</title>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                'Item Title',
+            ],
             'Test RSS 0.91-Userland Atom 0.3 Title' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
