@@ -111,11 +111,18 @@ class Parser implements RegistryAware
             $declaration = $this->registry->create(DeclarationParser::class, [substr($data, 5, $pos - 5)]);
             if ($declaration->parse()) {
                 $data = substr($data, $pos + 2);
-                $data = '<?xml version="' . $declaration->version . '" encoding="' . $encoding . '" standalone="' . (($declaration->standalone) ? 'yes' : 'no') . '"?>' ."\n". $this->declare_html_entities() . $data;
+                $data = preg_replace('/^\\s*<!DOCTYPE\\s[^>\\[\\]]*>\s*/', '', $data);  // Strip DOCTYPE except if containing an [internal subset]
+                $data = '<?xml version="' . $declaration->version . '" encoding="' . $encoding . '" standalone="' . (($declaration->standalone) ? 'yes' : 'no') . '"?>' . "\n" .
+                    (preg_match('/^\\s*<!DOCTYPE\\s/', $data) ? '' : $this->declare_html_entities()) .  // Declare HTML entities only if no remaining DOCTYPE
+                    $data;
             } else {
                 $this->error_string = 'SimplePie bug! Please report this!';
                 return false;
             }
+        } else {
+            $data = preg_replace('/^\\s*<!DOCTYPE\\s[^>\\[\\]]*>\s*/', '', $data);   // Strip DOCTYPE except if containing an [internal subset]
+            $data = (preg_match('/^\\s*<!DOCTYPE\\s/', $data) ? '' : $this->declare_html_entities()) .  // Declare HTML entities only if no remaining DOCTYPE
+                $data;
         }
 
         $return = true;
