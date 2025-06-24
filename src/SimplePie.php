@@ -1999,7 +1999,7 @@ class SimplePie
                             $this->status_code = $file->get_status_code();
                         } catch (HttpException $th) {
                             $this->check_modified = false;
-                            $this->status_code = $th->getCode();	// FreshRSS https://github.com/simplepie/simplepie/pull/905
+                            $this->status_code = $th->getCode(); // FreshRSS https://github.com/simplepie/simplepie/pull/905
 
                             if ($this->force_cache_fallback) {
                                 $this->data['cache_expiration_time'] = \SimplePie\HTTP\Utils::negociate_cache_expiration_time($this->data['headers'] ?? [], $this->cache_duration, $this->cache_duration_min, $this->cache_duration_max); // FreshRSS
@@ -2093,7 +2093,7 @@ class SimplePie
                 } catch (HttpException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
-                    $this->status_code = $th->getCode();	// FreshRSS https://github.com/simplepie/simplepie/pull/905
+                    $this->status_code = $th->getCode(); // FreshRSS https://github.com/simplepie/simplepie/pull/905
 
                     return !empty($this->data);
                 }
