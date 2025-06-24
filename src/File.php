@@ -162,7 +162,7 @@ class File implements Response
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
-                        $this->body = trim($parser->body);
+                        $this->body = trim($parser->body, " \n\r\t\v"); // Do not trim \x00 to avoid breaking BOM or multibyte characters
                         $this->status_code = $parser->status_code;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
