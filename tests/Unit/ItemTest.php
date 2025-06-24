@@ -4371,6 +4371,78 @@ XML
                 ,
                 'Item Title',
             ],
+            'Test RSS 0.91 XML and DTD and external HTML entity' => [
+<<<XML
+<?xml version="1.0"?>
+<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN" "http://www.rssboard.org/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<item>
+			<title>caf&eacute;</title>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                'café',
+            ],
+            'Test RSS 0.91 DTD and external HTML entity' => [
+<<<XML
+<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN" "http://www.rssboard.org/rss-0.91.dtd">
+<rss version="0.91">
+	<channel>
+		<item>
+			<title>caf&eacute;</title>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                'café',
+            ],
+            'Test RSS 0.91 internal DTD with internal entity' => [
+<<<XML
+<!DOCTYPE rss [
+	<!ENTITY helloworld "Hello World!">
+]>
+<rss version="0.91">
+	<channel>
+		<item>
+			<title>&helloworld;</title>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                'Hello World!',
+            ],
+            'Test RSS 0.91 XML and undeclared HTML entity (invalid)' => [
+<<<XML
+<?xml version="1.0"?>
+<rss version="0.91">
+	<channel>
+		<item>
+			<title>caf&eacute;</title>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                'café',
+            ],
+            'Test RSS 0.91 with undeclared HTML entity (invalid)' => [
+<<<XML
+<rss version="0.91">
+	<channel>
+		<item>
+			<title>caf&eacute;</title>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                'café',
+            ],
             'Test RSS 0.91-Userland Atom 0.3 Title' => [
 <<<EOT
 <rss version="0.91" xmlns:a="http://purl.org/atom/ns#">
