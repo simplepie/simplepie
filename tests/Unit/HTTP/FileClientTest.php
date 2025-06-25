@@ -84,15 +84,7 @@ final class FileClientTest extends TestCase
         $registry = $this->createStub(Registry::class);
         $registry->method('create')->willReturn($response);
 
-        $client = new FileClient($registry, [
-            'timeout' => 30,
-            'useragent' => 'dummy-useragent',
-            'redirects' => 10,
-            'force_fsockopen' => true,
-            'curl_options' => [
-                \CURLOPT_FAILONERROR => true,
-            ],
-        ]);
+        $client = new FileClient($registry, []);
 
         $response = $client->request(
             FileClient::METHOD_GET,
