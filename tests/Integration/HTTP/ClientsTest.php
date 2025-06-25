@@ -220,4 +220,72 @@ class ClientsTest extends TestCase
         $this->assertSame($permanentLocation, $response->get_permanent_uri());
         $this->assertSame($finalLocation, $response->get_final_requested_uri());
     }
+
+    /**
+     * @return iterable<array{client: Client, kind: "remote"|"remote-gzip"|"local", endianness: "le"|"be"}>
+     */
+    public static function utf16Provider(): iterable
+    {
+        foreach (self::clientsProvider() as $clientName => $client) {
+            foreach (['remote', 'remote-gzip', 'local'] as $kind) {
+                foreach (['le', 'be'] as $endianness) {
+                    yield "$clientName-$kind-$endianness" => array_merge($client, [
+                        'kind' => $kind,
+                        'endianness' => $endianness,
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Regression test for File trimming zero bytes, which breaks UTF-16.
+     *
+     * With big-endian, `<` will be encoded as `003C`, which `trim` will mangle at the start of a file.
+     * With little-endian, `>` will be encoded as `3E00`, which `trim` will mangle at the end of a file.
+     *
+     * @dataProvider utf16Provider
+     *
+     * @param "remote"|"remote-gzip"|"local" $kind
+     * @param "le"|"be" $endianness
+     */
+    public function testUtf16(Client $client, string $kind, string $endianness): void
+    {
+        $url = dirname(__FILE__, 3) . "/data/feed-utf16$endianness.xml";
+        if ('local' !== $kind) {
+            $server = new MockWebServer();
+            $server->start();
+
+            $headers = [];
+            $body = file_get_contents($url);
+
+            if ('remote-gzip' === $kind) {
+                $headers[] = 'Content-Encoding: gzip';
+                $body = gzencode($body);
+            }
+
+            $response = new MockWebServerResponse($body, $headers, 200);
+            $url = $server->setResponseOfPath('/', $response);
+        }
+
+        $response = $client->request(Client::METHOD_GET, $url);
+
+        if ('local' !== $kind) {
+            $server->stop();
+        }
+
+        $start = $endianness === 'be' ? "\x00<\x00r\x00s\x00s\x00 " : "<\x00r\x00s\x00s\x00 \x00";
+        $end = $endianness === 'be' ? "\x00<\x00/\x00r\x00s\x00s\x00>\x00\n" : "<\x00/\x00r\x00s\x00s\x00>\x00\n\x00";
+
+        $this->assertSame(
+            $start,
+            substr($response->get_body_content(), 0, strlen($start)),
+            'Body does not start as expected: ' . $response->get_body_content()
+        );
+        $this->assertSame(
+            $end,
+            substr($response->get_body_content(), -strlen($end)),
+            'Body does not end as expected: ' . $response->get_body_content()
+        );
+    }
 }
