@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace SimplePie\Tests\Integration\HTTP;
 
+use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Response as MockWebServerResponse;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -80,5 +82,61 @@ class ClientsTest extends TestCase
         $this->expectExceptionMessage(sprintf('file "%s" is not readable', $filepath));
 
         $client->request(Client::METHOD_GET, $filepath);
+    }
+
+    public function testFileClientReturnsResponseOn429StatusCode(): void
+    {
+        $client = new FileClient(new Registry());
+
+        $server = new MockWebServer;
+        $server->start();
+
+        $url = $server->setResponseOfPath(
+            '/status/429',
+            new MockWebServerResponse('Too many redirects', [], 429)
+        );
+
+        $url = $server->getServerRoot() . '/status/429';
+
+        $response = $client->request(Client::METHOD_GET, $url);
+
+        $server->stop();
+
+        $this->assertSame(429, $response->get_status_code());
+    }
+
+    public function testFileClientReturnsResponseOn500StatusCode(): void
+    {
+        $client = new FileClient(new Registry());
+
+        $server = new MockWebServer;
+        $server->start();
+
+        $url = $server->setResponseOfPath(
+            '/status/500',
+            new MockWebServerResponse('Internal Server Error', [], 500)
+        );
+
+        $url = $server->getServerRoot() . '/status/500';
+
+        $response = $client->request(Client::METHOD_GET, $url);
+
+        $server->stop();
+
+        $this->assertSame(500, $response->get_status_code());
+    }
+
+    public function testFileClientThrowsClientExceptionIfServerIsUnreachable(): void
+    {
+        $client = new FileClient(new Registry());
+
+        $url = 'https://example.local:404/this-server-does-not-exist';
+
+        $this->expectException(ClientException::class);
+        $this->expectExceptionCode(0);
+
+        $this->expectExceptionMessage('cURL error 6: Could not resolve host: example.local');
+
+        $client->request(Client::METHOD_GET, $url);
     }
 }
