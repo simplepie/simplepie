@@ -162,7 +162,7 @@ class File implements Response
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
-                        $this->body = trim($parser->body, " \n\r\t\v"); // Do not trim \x00 to avoid breaking BOM or multibyte characters
+                        $this->body = $parser->body;
                         $this->status_code = $parser->status_code;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
@@ -246,7 +246,7 @@ class File implements Response
                                             $this->error = 'Unable to decode HTTP "gzip" stream';
                                             $this->success = false;
                                         } else {
-                                            $this->body = trim($decompressed);
+                                            $this->body = $decompressed;
                                         }
                                         break;
 
@@ -288,10 +288,15 @@ class File implements Response
                 $this->error = sprintf('file "%s" is not readable', $url);
                 $this->success = false;
             } else {
-                $this->body = trim($filebody);
+                $this->body = $filebody;
                 $this->status_code = 200;
             }
             $this->on_http_response();
+        }
+        if ($this->success) {
+            // (Leading) whitespace may cause XML parsing errors so we trim it,
+            // but we must not trim \x00 to avoid breaking BOM or multibyte characters
+            $this->body = trim($this->body, " \n\r\t\v");
         }
     }
 
