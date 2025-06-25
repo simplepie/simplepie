@@ -57,4 +57,64 @@ final class FileTest extends TestCase
         $this->assertSame("{$base}/temp2", $file->permanent_url);
         $this->assertSame("{$base}/final", $file->url);
     }
+
+    /**
+     * @return iterable<array{bool}>
+     */
+    public function staticConfigProvider(): iterable
+    {
+        yield 'curl' => [
+            'force_fsockopen' => false,
+        ];
+
+        yield 'fsockopen' => [
+            'force_fsockopen' => true,
+        ];
+
+        yield 'fsockopen_gzip' => [
+            'force_fsockopen' => true,
+            'gzip' => true,
+        ];
+
+        yield 'local' => [
+            'force_fsockopen' => false,
+            'gzip' => false,
+            'local' => true,
+        ];
+    }
+
+    /**
+     * Regression test for File trimming zero bytes, which breaks UTF-16LE.
+     * @dataProvider staticConfigProvider
+     */
+    public function testUtf16WithNulByte(bool $force_fsockopen, bool $gzip = false, bool $local = false): void
+    {
+        if ($local) {
+            $uri = __DIR__ . '/../Fixtures/feeds/haveibeenpwned.xml';
+        } else {
+            $server = new HttpServer(__DIR__ . '/Fixtures/static.php');
+            $server->start();
+
+            $base = $server->getBaseUri();
+            $uri = "{$base}/?path=../../Fixtures/feeds/haveibeenpwned.xml";
+            if ($gzip) {
+                $uri .= '&gzip=1';
+            }
+        }
+
+        $file = new File(
+            $uri,
+            10, // timeout
+            10, // redirects
+            null, // headers
+            null, // useragent
+            $force_fsockopen
+        );
+
+        if (!$local) {
+            $server->terminate();
+        }
+
+        $this->assertStringContainsString("<\x00/\x00r\x00s\x00s\x00>\x00", $file->body);
+    }
 }
