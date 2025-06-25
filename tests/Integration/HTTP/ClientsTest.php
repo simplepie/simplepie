@@ -117,8 +117,6 @@ class ClientsTest extends TestCase
             new MockWebServerResponse('Internal Server Error', [], 500)
         );
 
-        $url = $server->getServerRoot() . '/status/500';
-
         $response = $client->request(Client::METHOD_GET, $url);
 
         $server->stop();
