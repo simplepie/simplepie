@@ -133,7 +133,7 @@ class SimplePieTest extends TestCase
 
         $url = $server->setResponseOfPath(
             '/status/429',
-            new MockWebServerResponse('Too many redirects', [], status: 429)
+            new MockWebServerResponse('Too many redirects', [], 429)
         );
 
         $simplepie = new SimplePie();
