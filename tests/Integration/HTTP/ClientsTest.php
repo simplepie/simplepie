@@ -88,7 +88,7 @@ class ClientsTest extends TestCase
     {
         $client = new FileClient(new Registry());
 
-        $server = new MockWebServer;
+        $server = new MockWebServer();
         $server->start();
 
         $url = $server->setResponseOfPath(
@@ -109,7 +109,7 @@ class ClientsTest extends TestCase
     {
         $client = new FileClient(new Registry());
 
-        $server = new MockWebServer;
+        $server = new MockWebServer();
         $server->start();
 
         $url = $server->setResponseOfPath(
