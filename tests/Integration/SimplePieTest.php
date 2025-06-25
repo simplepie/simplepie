@@ -152,7 +152,7 @@ class SimplePieTest extends TestCase
 
     public function testSimplePieReturnsCorrectStatusCodeOnServerConnectionError(): void
     {
-        $url = 'https://example.local:404/this-server-does-not-exist';
+        $url = 'https://example.invalid:404/this-server-does-not-exist';
 
         $simplepie = new SimplePie();
         $simplepie->enable_cache(false);
@@ -163,7 +163,7 @@ class SimplePieTest extends TestCase
 
         $this->assertFalse($return);
         $this->assertSame(0, $simplepie->status_code());
-        $this->assertSame('cURL error 6: Could not resolve host: example.local', $simplepie->error());
+        $this->assertSame('cURL error 6: Could not resolve host: example.invalid', $simplepie->error());
 
     }
 

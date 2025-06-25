@@ -128,12 +128,12 @@ class ClientsTest extends TestCase
     {
         $client = new FileClient(new Registry());
 
-        $url = 'https://example.local:404/this-server-does-not-exist';
+        $url = 'https://example.invalid:404/this-server-does-not-exist';
 
         $this->expectException(ClientException::class);
         $this->expectExceptionCode(0);
 
-        $this->expectExceptionMessage('cURL error 6: Could not resolve host: example.local');
+        $this->expectExceptionMessage('cURL error 6: Could not resolve host: example.invalid');
 
         $client->request(Client::METHOD_GET, $url);
     }
