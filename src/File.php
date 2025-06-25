@@ -238,7 +238,7 @@ class File implements Response
                                             $this->error = 'Unable to decode HTTP "gzip" stream';
                                             $this->success = false;
                                         } else {
-                                            $this->body = trim($decompressed);
+                                            $this->body = trim($decompressed, " \n\r\t\v"); // Do not trim \x00 to avoid breaking BOM or multibyte characters
                                         }
                                         break;
 
@@ -275,7 +275,7 @@ class File implements Response
                 $this->error = sprintf('file "%s" is not readable', $url);
                 $this->success = false;
             } else {
-                $this->body = trim($filebody);
+                $this->body = trim($filebody, " \n\r\t\v"); // Do not trim \x00 to avoid breaking BOM or multibyte characters
                 $this->status_code = 200;
             }
         }
