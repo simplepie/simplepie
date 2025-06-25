@@ -280,7 +280,9 @@ class File implements Response
             }
         }
         if ($this->success) {
-            $this->body = trim($this->body, " \n\r\t\v"); // Do not trim \x00 to avoid breaking BOM or multibyte characters
+            // (Leading) whitespace may cause XML parsing errors so we trim it,
+            // but we must not trim \x00 to avoid breaking BOM or multibyte characters
+            $this->body = trim($this->body, " \n\r\t\v");
         }
     }
 
