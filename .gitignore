@@ -4,6 +4,7 @@ SimplePie.compiled.php
 bin/
 vendor/
 composer.lock
+phpstan.neon
 phpunit.xml
 .php-cs-fixer.cache
 .phpunit.cache/

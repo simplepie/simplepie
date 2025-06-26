@@ -115,6 +115,12 @@ class File implements Response
                 foreach ($headers as $key => $value) {
                     $headers2[] = "$key: $value";
                 }
+                if (isset($curl_options[CURLOPT_HTTPHEADER])) {
+                    if (is_array($curl_options[CURLOPT_HTTPHEADER])) {
+                        $headers2 = array_merge($headers2, $curl_options[CURLOPT_HTTPHEADER]);
+                    }
+                    unset($curl_options[CURLOPT_HTTPHEADER]);
+                }
                 if (version_compare(\SimplePie\Misc::get_curl_version(), '7.10.5', '>=')) {
                     curl_setopt($fp, CURLOPT_ENCODING, '');
                 }
@@ -150,7 +156,7 @@ class File implements Response
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
-                        $this->body = trim($parser->body);
+                        $this->body = $parser->body;
                         $this->status_code = $parser->status_code;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
@@ -228,12 +234,11 @@ class File implements Response
                                 switch (strtolower(trim($contentEncodingHeader, "\x09\x0A\x0D\x20"))) {
                                     case 'gzip':
                                     case 'x-gzip':
-                                        $decoder = new \SimplePie\Gzdecode($this->body);
-                                        if (!$decoder->parse()) {
+                                        if (($decompressed = gzdecode($this->body)) === false) {
                                             $this->error = 'Unable to decode HTTP "gzip" stream';
                                             $this->success = false;
                                         } else {
-                                            $this->body = trim($decoder->data);
+                                            $this->body = $decompressed;
                                         }
                                         break;
 
@@ -242,7 +247,7 @@ class File implements Response
                                             $this->body = $decompressed;
                                         } elseif (($decompressed = gzuncompress($this->body)) !== false) {
                                             $this->body = $decompressed;
-                                        } elseif (function_exists('gzdecode') && ($decompressed = gzdecode($this->body)) !== false) {
+                                        } elseif (($decompressed = gzdecode($this->body)) !== false) {
                                             $this->body = $decompressed;
                                         } else {
                                             $this->error = 'Unable to decode HTTP "deflate" stream';
@@ -270,9 +275,14 @@ class File implements Response
                 $this->error = sprintf('file "%s" is not readable', $url);
                 $this->success = false;
             } else {
-                $this->body = trim($filebody);
+                $this->body = $filebody;
                 $this->status_code = 200;
             }
+        }
+        if ($this->success) {
+            // (Leading) whitespace may cause XML parsing errors so we trim it,
+            // but we must not trim \x00 to avoid breaking BOM or multibyte characters
+            $this->body = trim($this->body, " \n\r\t\v");
         }
     }
 
