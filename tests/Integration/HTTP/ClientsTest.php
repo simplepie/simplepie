@@ -9,6 +9,7 @@ namespace SimplePie\Tests\Integration\HTTP;
 
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response as MockWebServerResponse;
+use donatj\MockWebServer\Responses\NotFoundResponse;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -136,5 +137,86 @@ class ClientsTest extends TestCase
         $this->expectExceptionMessage('cURL error 6: Could not resolve host: example.invalid');
 
         $client->request(Client::METHOD_GET, $url);
+    }
+
+    /**
+     * @return iterable<array{client: Client}>
+     */
+    public function clientsProvider(): iterable
+    {
+        yield 'curl' => [
+            'client' => new FileClient(new Registry(), [
+                'redirects' => 10,
+                'force_fsockopen' => false,
+            ]),
+        ];
+
+        yield 'fsockopen' => [
+            'client' => new FileClient(new Registry(), [
+                'redirects' => 10,
+                'force_fsockopen' => true,
+            ]),
+        ];
+    }
+
+    /**
+     * Chain of redirects designed to test their handling.
+     *
+     * @dataProvider clientsProvider
+     */
+    public function testRedirectsChain(Client $client): void
+    {
+        $server = new MockWebServer();
+        $server->start();
+
+        $server->setDefaultResponse(new NotFoundResponse());
+        $url = $server->setResponseOfPath(
+            '/perm2',
+            new MockWebServerResponse('', ['Location: /perm1'], 308)
+        );
+        $server->setResponseOfPath(
+            '/perm1',
+            new MockWebServerResponse('', ['Location: /perm0'], 301)
+        );
+        $server->setResponseOfPath(
+            '/perm0',
+            new MockWebServerResponse('', ['Location: /temp2'], 308)
+        );
+        $permanentLocation = $server->setResponseOfPath(
+            '/temp2',
+            new MockWebServerResponse('', ['Location: /temp1'], 307)
+        );
+        $server->setResponseOfPath(
+            '/temp1',
+            new MockWebServerResponse('', ['Location: /temp0'], 302)
+        );
+        $server->setResponseOfPath(
+            '/temp0',
+            new MockWebServerResponse('', ['Location: /permA'], 307)
+        );
+        $server->setResponseOfPath(
+            '/permA',
+            new MockWebServerResponse('', ['Location: /permB'], 301)
+        );
+        $server->setResponseOfPath(
+            '/permB',
+            new MockWebServerResponse('', ['Location: /permC'], 308)
+        );
+        $server->setResponseOfPath(
+            '/permC',
+            new MockWebServerResponse('', ['Location: /final'], 308)
+        );
+        $finalLocation = $server->setResponseOfPath(
+            '/final',
+            new MockWebServerResponse('OK', [], 200)
+        );
+
+        $response = $client->request(Client::METHOD_GET, $url);
+
+        $server->stop();
+
+        $this->assertSame(200, $response->get_status_code());
+        $this->assertSame($permanentLocation, $response->get_permanent_uri());
+        $this->assertSame($finalLocation, $response->get_final_requested_uri());
     }
 }
