@@ -18,8 +18,8 @@ use SimplePie\Cache\BaseDataCache;
 use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\NameFilter;
-use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
+use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Psr18Client;
 
@@ -148,7 +148,7 @@ class Sanitize implements RegistryAware
      * @param class-string<Cache> $cache_class
      * @return void
      */
-    public function pass_cache_data(bool $enable_cache = true, string $cache_location = './cache', $cache_name_function = 'md5', string $cache_class = Cache::class, DataCache $cache = null)
+    public function pass_cache_data(bool $enable_cache = true, string $cache_location = './cache', $cache_name_function = 'md5', string $cache_class = Cache::class, ?DataCache $cache = null)
     {
         $this->enable_cache = $enable_cache;
 
@@ -504,7 +504,7 @@ class Sanitize implements RegistryAware
                                         $img->getAttribute('src'),
                                         ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']]
                                     );
-                                } catch (HttpException $th) {
+                                } catch (ClientException $th) {
                                     continue;
                                 }
 

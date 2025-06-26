@@ -11,6 +11,8 @@ namespace SimplePie;
  * Decode 'gzip' encoded HTTP data
  *
  * @link http://www.gzip.org/format.txt
+ * @link https://www.php.net/manual/en/function.gzdecode.php
+ * @deprecated since SimplePie 1.9.0, use `gzdecode` function instead.
  */
 class Gzdecode
 {
@@ -142,7 +144,7 @@ class Gzdecode
      */
     public function __set(string $name, $value)
     {
-        trigger_error("Cannot write property $name", E_USER_ERROR);
+        throw new Exception("Cannot write property $name");
     }
 
     /**

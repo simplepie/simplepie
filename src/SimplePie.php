@@ -21,8 +21,8 @@ use SimplePie\Cache\Psr16;
 use SimplePie\Content\Detector;
 use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception as SimplePieException;
-use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
+use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
@@ -672,8 +672,7 @@ class SimplePie
     public function __construct()
     {
         if (version_compare(PHP_VERSION, '7.2', '<')) {
-            trigger_error('Please upgrade to PHP 7.2 or newer.');
-            die();
+            exit('Please upgrade to PHP 7.2 or newer.');
         }
 
         $this->set_useragent();
@@ -1485,7 +1484,7 @@ class SimplePie
         }
         $this->sanitize->strip_htmltags($tags);
         if ($encode !== null) {
-            $this->sanitize->encode_instead_of_strip($tags);
+            $this->sanitize->encode_instead_of_strip($encode);
         }
     }
 
@@ -1902,7 +1901,7 @@ class SimplePie
                     $this->data = [];
                 }
                 // Check if the cache has been updated
-                elseif (isset($this->data['cache_expiration_time']) && $this->data['cache_expiration_time'] > time()) {
+                elseif (!isset($this->data['cache_expiration_time']) || $this->data['cache_expiration_time'] < time()) {
                     // Want to know if we tried to send last-modified and/or etag headers
                     // when requesting this file. (Note that it's up to the file to
                     // support this, but we don't always send the headers either.)
@@ -1921,11 +1920,12 @@ class SimplePie
                         try {
                             $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
                             $this->status_code = $file->get_status_code();
-                        } catch (HttpException $th) {
+                        } catch (ClientException $th) {
                             $this->check_modified = false;
                             $this->status_code = 0;
 
                             if ($this->force_cache_fallback) {
+                                $this->data['cache_expiration_time'] = $this->cache_duration + time();
                                 $cache->set_data($cacheKey, $this->data, $this->cache_duration);
 
                                 return true;
@@ -1938,6 +1938,7 @@ class SimplePie
                             // Set raw_data to false here too, to signify that the cache
                             // is still valid.
                             $this->raw_data = false;
+                            $this->data['cache_expiration_time'] = $this->cache_duration + time();
                             $cache->set_data($cacheKey, $this->data, $this->cache_duration);
 
                             return true;
@@ -1972,7 +1973,7 @@ class SimplePie
                 ];
                 try {
                     $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
-                } catch (HttpException $th) {
+                } catch (ClientException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
 
@@ -3338,7 +3339,7 @@ class SimplePie
         $trace = debug_backtrace();
         $file = $trace[0]['file'];
         $line = $trace[0]['line'];
-        trigger_error("Call to undefined method $class::$method() in $file on line $line", E_USER_ERROR);
+        throw new SimplePieException("Call to undefined method $class::$method() in $file on line $line");
     }
 
     /**
