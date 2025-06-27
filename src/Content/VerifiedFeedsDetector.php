@@ -57,10 +57,9 @@ final class VerifiedFeedsDetector implements Detector, RegistryAware
 
         $all_discovered_feeds = [];
 
-        /** @var File|null */
         $result = $locator->find($discovery_level, $all_discovered_feeds);
 
-        if (is_object($result) && $result instanceof Response) {
+        if ($result instanceof Response) {
             return [$result->get_permanent_uri()];
         }
 
