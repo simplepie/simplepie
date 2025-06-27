@@ -1989,6 +1989,9 @@ class SimplePie
             return !empty($this->data);
         }
 
+        /** @var Detector */
+        $detector = $this->registry->create(Detector::class);
+
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
             $locate = $this->registry->create(Locator::class, [
@@ -2009,9 +2012,6 @@ class SimplePie
                     $http_client->getUriFactory()
                 );
             }
-
-            /** @var Detector */
-            $detector = $this->registry->create(Detector::class);
 
             if (! $detector->contains_feed($file)) {
                 $copyStatusCode = $file->get_status_code();
@@ -2129,8 +2129,7 @@ class SimplePie
             $headers[$key] = implode(', ', $values);
         }
 
-        $sniffer = $this->registry->create(Sniffer::class, [&$file]);
-        $sniffed = $sniffer->get_type();
+        $sniffed = $detector->detect_media_type($file);
 
         return [$headers, $sniffed];
     }
