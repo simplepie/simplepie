@@ -254,6 +254,24 @@ class SimplePieTest extends TestCase
         $this->assertSame(100, $simplepie->get_item_quantity());
     }
 
+
+    /**
+     * @test Regression for https://github.com/simplepie/simplepie/pull/445
+     *
+     * There can be no content other than BOM before XML declaration or it will fail to parse.
+     * This can occur in badly written PHP scripts so we have to trim it.
+     */
+    public function testWhitespaceBeforeXmlDeclaration(): void
+    {
+        $filepath = dirname(__FILE__, 2) . '/data/feed-with-whitespace-before-xml-declaration.xml';
+
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+        $simplepie->set_feed_url($filepath);
+
+        $this->assertTrue($simplepie->init());
+    }
+
     /**
      * @return iterable<array{path: string, feedTitle: string, titles: list<string>}>
      */
