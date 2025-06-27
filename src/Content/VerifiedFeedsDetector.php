@@ -43,7 +43,6 @@ final class VerifiedFeedsDetector implements Detector, RegistryAware
      */
     public function discover_possible_feed_urls(Response $response, int $discovery_level = SimplePie::LOCATOR_ALL): array
     {
-        /** @var Locator */
         $locator = $this->registry->create(
             Locator::class,
             [
@@ -70,7 +69,6 @@ final class VerifiedFeedsDetector implements Detector, RegistryAware
 
     public function contains_feed(Response $response): bool
     {
-        /** @var Locator */
         $locator = $this->registry->create(
             Locator::class,
             [
@@ -88,7 +86,6 @@ final class VerifiedFeedsDetector implements Detector, RegistryAware
 
     public function detect_media_type(Response $response): string
     {
-        /** @var Sniffer */
         $sniffer = $this->registry->create(
             Sniffer::class,
             [$response]

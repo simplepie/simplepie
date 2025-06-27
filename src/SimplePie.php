@@ -1989,7 +1989,6 @@ class SimplePie
             return !empty($this->data);
         }
 
-        /** @var Detector */
         $detector = $this->registry->create(Detector::class);
 
         if (!$this->force_feed) {
