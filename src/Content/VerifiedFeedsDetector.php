@@ -39,7 +39,7 @@ final class VerifiedFeedsDetector implements Detector, RegistryAware
     /**
      * @inheritDoc
      *
-     * @return string[] Always returns an array with a single URI that was verified for containing feed.
+     * @return string[] empty array or only a single URI that was already verified for containing a feed.
      */
     public function discover_possible_feed_urls(Response $response, int $discovery_level = SimplePie::LOCATOR_ALL): array
     {
