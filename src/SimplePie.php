@@ -2043,13 +2043,12 @@ class SimplePie
                         $checked_feeds++;
 
                         try {
-                            //code...
                             $possible_feed = $http_client->request(
                                 Client::METHOD_GET,
                                 $href,
                                 ['Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER]
                             );
-                        } catch (HttpException $th) {
+                        } catch (ClientException $th) {
                             continue;
                         }
 
