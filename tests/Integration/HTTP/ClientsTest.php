@@ -142,7 +142,7 @@ class ClientsTest extends TestCase
     /**
      * @return iterable<array{client: Client}>
      */
-    public function clientsProvider(): iterable
+    public static function clientsProvider(): iterable
     {
         yield 'curl' => [
             'client' => new FileClient(new Registry(), [
