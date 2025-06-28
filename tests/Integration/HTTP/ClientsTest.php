@@ -216,6 +216,7 @@ class ClientsTest extends TestCase
         $server->stop();
 
         $this->assertSame(200, $response->get_status_code());
+        $this->assertSame('OK', $response->get_body_content());
         $this->assertSame($permanentLocation, $response->get_permanent_uri());
         $this->assertSame($finalLocation, $response->get_final_requested_uri());
     }
