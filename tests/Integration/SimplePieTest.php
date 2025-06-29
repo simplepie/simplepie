@@ -366,6 +366,44 @@ HTML
             'selfUrl' => 'https://example.com/',
         ];
 
+        yield 'hub + self in `a` element (insecure and unsupported)' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <a rel="hub" href="https://pubsubhubbub.appspot.com" />
+        <a rel="self" href="https://example.com" />
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            'selfUrl' => null,
+        ];
+
+        yield 'hub + self inside `body`' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.com/',
+        ];
+
         yield 'self only' => [
             'data' => <<<HTML
 <html>
