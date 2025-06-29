@@ -331,7 +331,7 @@ class Locator implements RegistryAware
         }
 
         $xpath = new \DOMXpath($this->dom);
-        $query = '//a[@rel and @href] | //link[@rel and @href]';
+        $query = '//link[@rel and @href]';
         foreach ($xpath->query($query) as $link) {
             /** @var \DOMElement $link */
             $href = trim($link->getAttribute('href'));
