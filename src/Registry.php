@@ -7,7 +7,9 @@ declare(strict_types=1);
 
 namespace SimplePie;
 
+use SimplePie\Content\Detector;
 use SimplePie\Content\Type\Sniffer;
+use SimplePie\Content\VerifiedFeedsDetector;
 use SimplePie\Parse\Date;
 use SimplePie\XML\Declaration\Parser as DeclarationParser;
 
@@ -45,6 +47,7 @@ class Registry
         Misc::class => Misc::class,
         DeclarationParser::class => DeclarationParser::class,
         Date::class => Date::class,
+        Detector::class => VerifiedFeedsDetector::class,
     ];
 
     /**
