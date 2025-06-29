@@ -111,18 +111,14 @@ class Parser implements RegistryAware
             $declaration = $this->registry->create(DeclarationParser::class, [substr($data, 5, $pos - 5)]);
             if ($declaration->parse()) {
                 $data = substr($data, $pos + 2);
-                $data = preg_replace('/^\\s*<!DOCTYPE\\s[^>\\[\\]]*>\s*/', '', $data);  // Strip DOCTYPE except if containing an [internal subset]
                 $data = '<?xml version="' . $declaration->version . '" encoding="' . $encoding . '" standalone="' . (($declaration->standalone) ? 'yes' : 'no') . '"?>' . "\n" .
-                    (preg_match('/^\\s*<!DOCTYPE\\s/', $data) ? '' : $this->declare_html_entities()) .  // Declare HTML entities only if no remaining DOCTYPE
-                    $data;
+                    $this->set_doctype($data);
             } else {
                 $this->error_string = 'SimplePie bug! Please report this!';
                 return false;
             }
         } else {
-            $data = preg_replace('/^\\s*<!DOCTYPE\\s[^>\\[\\]]*>\s*/', '', $data);   // Strip DOCTYPE except if containing an [internal subset]
-            $data = (preg_match('/^\\s*<!DOCTYPE\\s/', $data) ? '' : $this->declare_html_entities()) .  // Declare HTML entities only if no remaining DOCTYPE
-                $data;
+            $data = $this->set_doctype($data);
         }
 
         $return = true;
@@ -649,6 +645,15 @@ class Parser implements RegistryAware
                            'child' => ['' => $channel]]];
         $this->data = ['child' => ['' => ['rss' => $rss]]];
         return true;
+    }
+
+    private function set_doctype(string $data): string
+    {
+        // Strip DOCTYPE except if containing an [internal subset]
+        $data = preg_replace('/^\\s*<!DOCTYPE\\s[^>\\[\\]]*>\s*/', '', $data);
+        // Declare HTML entities only if no remaining DOCTYPE
+        $doctype = preg_match('/^\\s*<!DOCTYPE\\s/', $data) ? '' : $this->declare_html_entities();
+        return $doctype . $data;
     }
 
     private function declare_html_entities(): string
