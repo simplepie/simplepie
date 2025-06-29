@@ -65,7 +65,7 @@ class File implements Response
 
     /**
      * @var int-mask-of<SimplePie::FILE_SOURCE_*> Bit mask representing the method used to fetch the file and whether it is a local file or remote file obtained over HTTP.
-     * @deprecated Backend is implementation detail which you should not care about; to see if the file was retrieved over HTTP, check if `get_final_requested_uri()` with `Misc::is_remote_uri()`.
+     * @deprecated Backend is implementation detail which you should not care about; to see if the file was retrieved over HTTP, check if `get_final_requested_uri()` starts with `https?://`.
      */
     public $method = \SimplePie\SimplePie::FILE_SOURCE_NONE;
 
