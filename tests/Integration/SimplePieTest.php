@@ -306,4 +306,112 @@ class SimplePieTest extends TestCase
             $this->assertSame($expectedTitle, $item->get_title(), "Title of item #$i does not match");
         }
     }
+
+    /**
+     * @return iterable<array{data: string, hubUrl: ?string, selfUrl: ?string}>
+     */
+    public static function microformatHubFeedProvider(): iterable
+    {
+        yield 'neither' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            'selfUrl' => null,
+        ];
+
+        yield 'hub only' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => null,
+        ];
+
+        yield 'hub + self' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.com/',
+        ];
+
+        yield 'self only' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            // We only promote self link when hub is set as well.
+            'selfUrl' => null,
+        ];
+    }
+
+    /**
+     * @dataProvider microformatHubFeedProvider
+     */
+    public function testMicroformatLinkHub(string $data, ?string $hubUrl, ?string $selfUrl): void
+    {
+        if (!function_exists('Mf2\parse')) {
+            $this->markTestSkipped('Test requires Mf2 library.');
+        }
+
+        $server = new MockWebServer();
+        $server->start();
+
+        $url = $server->setResponseOfPath(
+            '/index.html',
+            new MockWebServerResponse($data, [], 200)
+        );
+
+        $feed = new SimplePie();
+        $feed->set_feed_url($url);
+        $feed->enable_cache(false);
+
+        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $feed->error());
+
+        $server->stop();
+
+        $this->assertSame($hubUrl, $feed->get_link(0, 'hub'), 'Link rel=hub does not match');
+        $this->assertSame($selfUrl, $feed->get_link(0, 'self'), 'Link rel=self does not match');
+    }
 }
