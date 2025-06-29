@@ -358,7 +358,7 @@ HTML
      *
      * @param array<string, mixed> $parsedData
      */
-    public function test_get_title(string $feed, string $base, array $parsedData): void
+    public function test_parse(string $feed, string $base, array $parsedData): void
     {
         if (!function_exists('Mf2\parse')) {
             $this->markTestSkipped('Test requires Mf2 library.');
