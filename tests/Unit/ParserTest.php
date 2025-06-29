@@ -29,36 +29,7 @@ class ParserTest extends TestCase
     public static function feedProvider(): iterable
     {
         yield [
-            <<<HTML
-<!-- SPDX-FileCopyrightText: 2018 Aaron Parecki -->
-<!-- SPDX-License-Identifier: CC0-1.0 -->
-<!-- SPDX-ArtifactOfProjectName: php-mf2 -->
-<html>
-    <head>
-        <title>Test</title>
-    </head>
-    <body>
-        <div class="h-feed">
-            <a href="/author" class="p-author h-card">Author Name</a>
-            <ul>
-                <li class="h-entry">
-                    <a href="/1" class="u-url p-name">One</a>
-                </li>
-                <li class="h-entry">
-                    <a href="/2" class="u-url p-name">Two</a>
-                </li>
-                <li class="h-entry">
-                    <a href="/3" class="u-url p-name">Three</a>
-                </li>
-                <li class="h-entry">
-                    <a href="/4" class="u-url p-name">Four</a>
-                </li>
-            </ul>
-        </div>
-    </body>
-</html>
-HTML
-            ,
+            file_get_contents(dirname(__FILE__, 2) . '/data/microformats/h-feed-simple.html'),
             'https://example.com',
             [
                 'child' => [
@@ -187,44 +158,7 @@ HTML
         ];
 
         yield [
-            <<<HTML
-<!-- SPDX-FileCopyrightText: 2018 Aaron Parecki -->
-<!-- SPDX-License-Identifier: CC0-1.0 -->
-<!-- SPDX-ArtifactOfProjectName: php-mf2 -->
-<html>
-    <head>
-        <title>Test</title>
-    </head>
-    <body>
-        <div class="h-feed">
-            <a href="/author" class="p-author h-card">Author Name</a>
-            <ul>
-                <li class="h-entry">
-                    <a href="/1" class="u-url p-name">One</a>
-                </li>
-                <li class="h-entry">
-                    <a href="/2" class="u-url p-name">Two</a>
-                    <ul>
-                        <li class="p-comment h-entry"><a href="/a" class="u-url p-name">Comment A</a></li>
-                        <li class="p-comment h-entry"><a href="/b" class="u-url p-name">Comment B</a></li>
-                    </ul>
-                </li>
-                <li class="h-entry">
-                    <a href="/3" class="u-url p-name">Three</a>
-                    <ul>
-                        <li class="h-entry"><a href="/c" class="u-url p-name">Comment C</a></li>
-                        <li class="h-entry"><a href="/d" class="u-url p-name">Comment D</a></li>
-                    </ul>
-                </li>
-                <li class="h-entry">
-                    <a href="/4" class="u-url p-name">Four</a>
-                </li>
-            </ul>
-        </div>
-    </body>
-</html>
-HTML
-            ,
+            file_get_contents(dirname(__FILE__, 2) . '/data/microformats/h-feed-with-comments.html'),
             'https://example.com',
             [
                 'child' => [
