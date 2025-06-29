@@ -64,14 +64,6 @@ What comes in the package?
 7. `build/` - Scripts related to generating pieces of SimplePie
 8. `test/` - SimplePie's unit test suite.
 
-### Where's `simplepie.inc`?
-Since SimplePie 1.3, we've split the classes into separate files to make it easier
-to maintain and use.
-
-If you'd like a single monolithic file, see the assets in the
-[releases](https://github.com/simplepie/simplepie/releases), or you can
-run `php build/compile.php` to generate `SimplePie.compiled.php` yourself.
-
 To start the demo
 -----------------
 1. Upload this package to your webserver.
