@@ -253,4 +253,57 @@ class SimplePieTest extends TestCase
         $this->assertTrue($simplepie->init());
         $this->assertSame(100, $simplepie->get_item_quantity());
     }
+
+    /**
+     * @return iterable<array{path: string, feedTitle: string, titles: list<string>}>
+     */
+    public static function microformatFeedProvider(): iterable
+    {
+        yield [
+            'path' => dirname(__FILE__, 2) . '/data/microformats/h-feed-simple.html',
+            'feedTitle' => 'Test',
+            'titles' => [
+                'One',
+                'Two',
+                'Three',
+                'Four',
+            ],
+        ];
+
+        yield [
+            'path' => dirname(__FILE__, 2) . '/data/microformats/h-feed-with-comments.html',
+            'feedTitle' => 'Test',
+            'titles' => [
+                'One',
+                'Two',
+                'Three',
+                'Four',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider microformatFeedProvider
+     *
+     * @param list<string> $titles
+     */
+    public function testMicroformatItems(string $path, string $feedTitle, array $titles): void
+    {
+        if (!function_exists('Mf2\parse')) {
+            $this->markTestSkipped('Test requires Mf2 library.');
+        }
+
+        $feed = new SimplePie();
+        $feed->set_raw_data(file_get_contents($path));
+        $feed->enable_cache(false);
+
+        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $feed->error());
+
+        $this->assertSame($feedTitle, $feed->get_title());
+        $items = $feed->get_items();
+        $this->assertSame(count($titles), count($items), 'Number of items does not match');
+        foreach (array_map(null, $titles, $items) as $i => [$expectedTitle, $item]) {
+            $this->assertSame($expectedTitle, $item->get_title(), "Title of item #$i does not match");
+        }
+    }
 }
