@@ -58,7 +58,10 @@ final class Psr7Response implements Response
 
     public function get_headers(): array
     {
-        return $this->response->getHeaders();
+        // The filtering is probably redundant but let’s make PHPStan happy.
+        return array_filter($this->response->getHeaders(), function (array $header): bool {
+            return count($header) >= 1;
+        });
     }
 
     public function has_header(string $name): bool

@@ -95,7 +95,7 @@ interface Response
      *         }
      *     }
      *
-     * @return string[][] Returns an associative array of the message's headers.
+     * @return array<non-empty-array<string>> Returns an associative array of the message's headers.
      *     Each key MUST be a header name, and each value MUST be an array of
      *     strings for that header.
      */
