@@ -105,11 +105,14 @@ class Misc
     }
 
     /**
+     * @deprecated since SimplePie 1.9.0. If you need it, you can copy the function to your codebase. But you should consider using `DOMDocument` for any DOM wrangling.
      * @param array{tag: string, self_closing: bool, attribs: array<string, array{data: string}>, content: string} $element
      * @return string
      */
     public static function element_implode(array $element)
     {
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
+
         $full = "<{$element['tag']}";
         foreach ($element['attribs'] as $key => $value) {
             $key = strtolower($key);
@@ -250,6 +253,7 @@ class Misc
     }
 
     /**
+     * @deprecated since SimplePie 1.9.0. This functionality is part of `IRI` – if you need it standalone, consider copying the function to your codebase.
      * @param array<int, string> $match
      * @return string
      */
@@ -1712,11 +1716,14 @@ class Misc
     /**
      * Strip HTML comments
      *
+     * @deprecated since SimplePie 1.9.0. If you need it, you can copy the function to your codebase. But you should consider using `DOMDocument` for any DOM wrangling.
      * @param string $data Data to strip comments from
      * @return string Comment stripped string
      */
     public static function strip_comments(string $data)
     {
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
+
         $output = '';
         while (($start = strpos($data, '<!--')) !== false) {
             $output .= substr($data, 0, $start);
@@ -1756,11 +1763,14 @@ class Misc
     /**
      * Remove RFC822 comments
      *
+     * @deprecated since SimplePie 1.9.0. If you need it, consider copying the function to your codebase.
      * @param string $string Data to strip comments from
      * @return string Comment stripped string
      */
     public static function uncomment_rfc822(string $string)
     {
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
+
         $position = 0;
         $length = strlen($string);
         $depth = 0;
@@ -1848,7 +1858,7 @@ class Misc
 
     /**
      * @param array<string, array<string, string>> $attribs
-     * @return int
+     * @return int-mask-of<SimplePie::CONSTRUCT_*>
      */
     public static function atom_10_construct_type(array $attribs)
     {
@@ -1872,7 +1882,7 @@ class Misc
 
     /**
      * @param array<string, array<string, string>> $attribs
-     * @return int
+     * @return int-mask-of<SimplePie::CONSTRUCT_*>
      */
     public static function atom_10_content_construct_type(array $attribs)
     {
@@ -1958,12 +1968,15 @@ class Misc
      * Returns an associative array of name/value pairs, where the value is an
      * array of values that have used the same name
      *
+     * @deprecated since SimplePie 1.9.0. If you need it, consider copying the function to your codebase.
      * @static
      * @param string $str The input string.
      * @return array<string, array<string|null>>
      */
     public static function parse_str(string $str)
     {
+        // trigger_error(sprintf('Using method "' . __METHOD__ . '" is deprecated since SimplePie 1.9.'), \E_USER_DEPRECATED);
+
         $return = [];
         $str = explode('&', $str);
 

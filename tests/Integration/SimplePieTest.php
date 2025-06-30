@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace SimplePie\Tests\Integration;
 
+use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Response as MockWebServerResponse;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
@@ -122,6 +124,47 @@ class SimplePieTest extends TestCase
 
         $this->assertTrue($simplepie->init());
         $this->assertSame(100, $simplepie->get_item_quantity());
+    }
+
+    public function testSimplePieReturnsCorrectStatusCodeFromServerResponse(): void
+    {
+        $server = new MockWebServer();
+        $server->start();
+
+        $url = $server->setResponseOfPath(
+            '/status/429',
+            new MockWebServerResponse('Too many redirects', [], 429)
+        );
+
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+
+        $simplepie->set_feed_url($url);
+
+        $return = $simplepie->init();
+
+        $server->stop();
+
+        $this->assertFalse($return);
+        $this->assertSame(429, $simplepie->status_code());
+        $this->assertSame('Retrieved unsupported status code "429"', $simplepie->error());
+    }
+
+    public function testSimplePieReturnsCorrectStatusCodeOnServerConnectionError(): void
+    {
+        $url = 'https://example.invalid:404/this-server-does-not-exist';
+
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+
+        $simplepie->set_feed_url($url);
+
+        $return = $simplepie->init();
+
+        $this->assertFalse($return);
+        $this->assertSame(0, $simplepie->status_code());
+        $this->assertSame('cURL error 6: Could not resolve host: example.invalid', $simplepie->error());
+
     }
 
     /**
