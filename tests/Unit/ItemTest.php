@@ -3262,6 +3262,50 @@ EOT
                 ,
                 'http://example.com/',
             ],
+            'Test RSS 2.0 with channel link and enclosure from another domain' => [
+<<<XML
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+		<link>http://example.net/tests/</link>
+        <item>
+			<link>/tests/1/</link>
+			<media:content url="http://example.com/images/1.jpg" medium="image"></media:content>
+		</item>
+    </channel>
+</rss>
+XML
+                ,
+                'http://example.net/tests/1/',
+            ],
+            'Test RSS 2.0 with Atom channel link and relative enclosure' => [
+<<<XML
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <atom:link href="http://example.net/tests/" rel="self" type="application/rss+xml" />
+        <item>
+            <link>/tests/2/</link>
+            <media:content url="/images/2.jpg" medium="image"></media:content>
+        </item>
+    </channel>
+</rss>
+XML
+                ,
+                'http://example.net/tests/2/',
+            ],
+            'Test RSS 2.0 with xml:base and enclosure from another domain' => [
+<<<XML
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <item>
+            <link xml:base="http://example.net/tests/">/tests/3/</link>
+            <media:content url="http://example.com/images/3.jpg" medium="image"></media:content>
+        </item>
+    </channel>
+</rss>
+XML
+                ,
+                'http://example.net/tests/3/',
+            ],
             'Test Atom 1.0 xmlbase 1' => [
 <<<EOT
 <feed xmlns="http://www.w3.org/2005/Atom" xml:base="http://example.com/">
