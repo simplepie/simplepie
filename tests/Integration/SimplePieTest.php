@@ -253,4 +253,252 @@ class SimplePieTest extends TestCase
         $this->assertTrue($simplepie->init());
         $this->assertSame(100, $simplepie->get_item_quantity());
     }
+
+    /**
+     * @return iterable<array{path: string, feedTitle: string, titles: list<string>}>
+     */
+    public static function microformatFeedProvider(): iterable
+    {
+        yield [
+            'path' => dirname(__FILE__, 2) . '/data/microformats/h-feed-simple.html',
+            'feedTitle' => 'Test',
+            'titles' => [
+                'One',
+                'Two',
+                'Three',
+                'Four',
+            ],
+        ];
+
+        yield [
+            'path' => dirname(__FILE__, 2) . '/data/microformats/h-feed-with-comments.html',
+            'feedTitle' => 'Test',
+            'titles' => [
+                'One',
+                'Two',
+                'Three',
+                'Four',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider microformatFeedProvider
+     *
+     * @param list<string> $titles
+     */
+    public function testMicroformatItems(string $path, string $feedTitle, array $titles): void
+    {
+        if (!function_exists('Mf2\parse')) {
+            $this->markTestSkipped('Test requires Mf2 library.');
+        }
+
+        $feed = new SimplePie();
+        $feed->set_raw_data(file_get_contents($path));
+        $feed->enable_cache(false);
+
+        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $feed->error());
+
+        $this->assertSame($feedTitle, $feed->get_title());
+        $items = $feed->get_items();
+        $this->assertSame(count($titles), count($items), 'Number of items does not match');
+        foreach (array_map(null, $titles, $items) as $i => [$expectedTitle, $item]) {
+            $this->assertSame($expectedTitle, $item->get_title(), "Title of item #$i does not match");
+        }
+    }
+
+    /**
+     * @return iterable<array{data: string, hubUrl: ?string, selfUrl: ?string, headers?: list<string>, bogoUrl?: ?string}>
+     */
+    public static function microformatHubFeedProvider(): iterable
+    {
+        yield 'neither' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            'selfUrl' => null,
+        ];
+
+        yield 'hub only' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => null,
+        ];
+
+        yield 'hub + self' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.com/',
+        ];
+
+        yield 'hub + self in `a` element (insecure and unsupported)' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <a rel="hub" href="https://pubsubhubbub.appspot.com" />
+        <a rel="self" href="https://example.com" />
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            'selfUrl' => null,
+        ];
+
+        yield 'hub + self inside `body`' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.com/',
+        ];
+
+        yield 'self only' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            // We only promote self link when hub is set as well.
+            'selfUrl' => null,
+        ];
+
+        yield 'hub + self + bogo in header' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.com/',
+            'headers' => [
+                'Link: <https://bogo.test/>; rel=bogo',
+            ],
+            'bogoUrl' => 'https://bogo.test/',
+        ];
+
+        yield 'hub + self + self in header' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.org/',
+            'headers' => [
+                'Link: <https://example.org/>; rel=self',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider microformatHubFeedProvider
+     *
+     * @param list<string> $headers
+     */
+    public function testMicroformatLinkHub(string $data, ?string $hubUrl, ?string $selfUrl, array $headers = [], ?string $bogoUrl = null): void
+    {
+        if (!function_exists('Mf2\parse')) {
+            $this->markTestSkipped('Test requires Mf2 library.');
+        }
+
+        $server = new MockWebServer();
+        $server->start();
+
+        $url = $server->setResponseOfPath(
+            '/index.html',
+            new MockWebServerResponse($data, $headers, 200)
+        );
+
+        $feed = new SimplePie();
+        $feed->set_feed_url($url);
+        $feed->enable_cache(false);
+
+        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $feed->error());
+
+        $server->stop();
+
+        $this->assertSame($hubUrl, $feed->get_link(0, 'hub'), 'Link rel=hub does not match');
+        $this->assertSame($selfUrl, $feed->get_link(0, 'self'), 'Link rel=self does not match');
+        $this->assertLessThanOrEqual(1, count($feed->get_links('self') ?? []), 'Link rel=self should not be promoted from HTML when it is already present in headers');
+        $this->assertSame($bogoUrl, $feed->get_link(0, 'bogo'), 'Link rel=bogo does not match');
+    }
 }
