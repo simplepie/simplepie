@@ -11,8 +11,8 @@ use DomDocument;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
+use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
@@ -263,7 +263,7 @@ class Locator implements RegistryAware
                         if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed, true)) {
                             $feeds[$href] = $feed;
                         }
-                    } catch (HttpException $th) {
+                    } catch (ClientException $th) {
                         // Just mark it as done and continue.
                     }
                 }
@@ -388,7 +388,7 @@ class Locator implements RegistryAware
                     if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed)) {
                         return [$feed];
                     }
-                } catch (HttpException $th) {
+                } catch (ClientException $th) {
                     // Just unset and continue.
                 }
 
@@ -420,7 +420,7 @@ class Locator implements RegistryAware
                     if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed)) {
                         return [$feed];
                     }
-                } catch (HttpException $th) {
+                } catch (ClientException $th) {
                     // Just unset and continue.
                 }
 
