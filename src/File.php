@@ -280,9 +280,10 @@ class File implements Response
             }
         }
         if ($this->success) {
-            // (Leading) whitespace may cause XML parsing errors so we trim it,
-            // but we must not trim \x00 to avoid breaking BOM or multibyte characters
-            $this->body = trim($this->body, " \n\r\t\v");
+            // Leading whitespace may cause XML parsing errors (XML declaration cannot be preceded by anything other than BOM) so we trim it.
+            // Note that unlike built-in `trim` function’s default settings, we do not trim `\x00` to avoid breaking characters in UTF-16 or UTF-32 encoded strings.
+            // We also only do that when the whitespace is followed by `<`, so that we do not break e.g. UTF-16LE encoded whitespace like `\n\x00` in half.
+            $this->body = preg_replace('/^[ \n\r\t\v]+</', '<', $this->body);
         }
     }
 
