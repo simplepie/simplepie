@@ -2472,10 +2472,10 @@ class SimplePie
         if (!empty($element['xml_base_explicit']) && isset($element['xml_base'])) {
             return $element['xml_base'];
         }
-        if (($link = $this->get_link(0, 'self')) !== null) {
+        if (($link = $this->get_link(0, 'alternate')) !== null) {
             return $link;
         }
-        if (($link = $this->get_link(0, 'alternate')) !== null) {
+        if (($link = $this->get_link(0, 'self')) !== null) {
             return $link;
         }
 
