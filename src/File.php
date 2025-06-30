@@ -324,98 +324,30 @@ class File implements Response
         return (int) $this->status_code;
     }
 
-    /**
-     * Retrieves all message header values.
-     *
-     * The keys represent the header name as it will be sent over the wire, and
-     * each value is an array of strings associated with the header.
-     *
-     *     // Represent the headers as a string
-     *     foreach ($message->get_headers() as $name => $values) {
-     *         echo $name . ': ' . implode(', ', $values);
-     *     }
-     *
-     *     // Emit headers iteratively:
-     *     foreach ($message->get_headers() as $name => $values) {
-     *         foreach ($values as $value) {
-     *             header(sprintf('%s: %s', $name, $value), false);
-     *         }
-     *     }
-     *
-     * @return string[][] Returns an associative array of the message's headers.
-     *     Each key MUST be a header name, and each value MUST be an array of
-     *     strings for that header.
-     */
     public function get_headers(): array
     {
         $this->maybe_update_headers();
         return $this->parsed_headers;
     }
 
-    /**
-     * Checks if a header exists by the given case-insensitive name.
-     *
-     * @param string $name Case-insensitive header field name.
-     * @return bool Returns true if any header names match the given header
-     *     name using a case-insensitive string comparison. Returns false if
-     *     no matching header name is found in the message.
-     */
     public function has_header(string $name): bool
     {
         $this->maybe_update_headers();
         return $this->get_header($name) !== [];
     }
 
-    /**
-     * Retrieves a message header value by the given case-insensitive name.
-     *
-     * This method returns an array of all the header values of the given
-     * case-insensitive header name.
-     *
-     * If the header does not appear in the message, this method MUST return an
-     * empty array.
-     *
-     * @param string $name Case-insensitive header field name.
-     * @return string[] An array of string values as provided for the given
-     *    header. If the header does not appear in the message, this method MUST
-     *    return an empty array.
-     */
     public function get_header(string $name): array
     {
         $this->maybe_update_headers();
         return $this->parsed_headers[strtolower($name)] ?? [];
     }
 
-    /**
-     * Retrieves a comma-separated string of the values for a single header.
-     *
-     * This method returns all of the header values of the given
-     * case-insensitive header name as a string concatenated together using
-     * a comma.
-     *
-     * NOTE: Not all header values may be appropriately represented using
-     * comma concatenation. For such headers, use getHeader() instead
-     * and supply your own delimiter when concatenating.
-     *
-     * If the header does not appear in the message, this method MUST return
-     * an empty string.
-     *
-     * @param string $name Case-insensitive header field name.
-     * @return string A string of values as provided for the given header
-     *    concatenated together using a comma. If the header does not appear in
-     *    the message, this method MUST return an empty string.
-     */
     public function get_header_line(string $name): string
     {
         $this->maybe_update_headers();
         return implode(', ', $this->get_header($name));
     }
 
-    /**
-     * get the body as string
-     *
-     * @return string
-     */
     public function get_body_content(): string
     {
         return (string) $this->body;

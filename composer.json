@@ -30,6 +30,7 @@
         "ext-xmlreader": "*"
     },
     "require-dev": {
+        "donatj/mock-webserver": "^2.7",
         "friendsofphp/php-cs-fixer": "^2.19 || ^3.8",
         "mf2/mf2": "^0.5.0",
         "phpstan/phpstan": "~1.12.2",
@@ -55,6 +56,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "SimplePieUtils\\": "utils/",
             "SimplePie\\Tests\\Fixtures\\": "tests/Fixtures",
             "SimplePie\\Tests\\Unit\\": "tests/Unit"
         }

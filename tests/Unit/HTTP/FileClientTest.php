@@ -7,10 +7,9 @@ declare(strict_types=1);
 
 namespace SimplePie\Tests\Unit\HTTP;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
-use SimplePie\Exception\HttpException;
 use SimplePie\File;
+use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\Misc;
 use SimplePie\Registry;
@@ -78,60 +77,43 @@ final class FileClientTest extends TestCase
         );
     }
 
-    public function testFileClientCatchesException(): void
+    public function testFileClientReturnsResponseWithStatusCode429(): void
     {
-        $expectedCode = 429;
-        $exception = new Exception('Test exception', $expectedCode);
-        $registry = $this->createMock(Registry::class);
-        $registry->expects($this->once())->method('create')->willThrowException($exception);
+        $response = $this->createMock(File::class);
+        $response->expects($this->once())->method('get_status_code')->willReturn(429);
+        $response->success = false;
 
-        $client = new FileClient($registry, [
-            'timeout' => 30,
-            'useragent' => 'dummy-useragent',
-            'redirects' => 10,
-            'force_fsockopen' => true,
-            'curl_options' => [
-                \CURLOPT_FAILONERROR => true,
-            ],
-        ]);
+        $registry = $this->createStub(Registry::class);
+        $registry->method('create')->willReturn($response);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionCode($expectedCode);
+        $client = new FileClient($registry, []);
 
+        // Make sure no ClientException is thrown on status code 429
         $client->request(
             FileClient::METHOD_GET,
-            'http://example.com/feed.xml',
+            'http://example.com/429-error',
             ['Accept' => 'application/atom+xml']
         );
     }
 
-    public function testFileClientProcessesFileStatusCode(): void
+    public function testFileClientThrowsClientExceptionOnServerConnectionError(): void
     {
-        $expectedCode = 429;
         $response = $this->createMock(File::class);
+        $response->expects($this->once())->method('get_status_code')->willReturn(0);
         $response->success = false;
-        $response->error = 'Test error';
-        $response->expects($this->once())->method('get_status_code')->willReturn($expectedCode);
+        $response->error = 'cURL error 6: Could not resolve host: example.invalid';
 
-        $registry = $this->createMock(Registry::class);
-        $registry->expects($this->once())->method('create')->willReturn($response);
+        $registry = $this->createStub(Registry::class);
+        $registry->method('create')->willReturn($response);
 
-        $client = new FileClient($registry, [
-            'timeout' => 30,
-            'useragent' => 'dummy-useragent',
-            'redirects' => 10,
-            'force_fsockopen' => true,
-            'curl_options' => [
-                \CURLOPT_FAILONERROR => true,
-            ],
-        ]);
+        $client = new FileClient($registry, []);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionCode($expectedCode);
+        $this->expectException(ClientException::class);
+        $this->expectExceptionMessage('cURL error 6: Could not resolve host: example.invalid');
 
         $client->request(
             FileClient::METHOD_GET,
-            'http://example.com/feed.xml',
+            'https://example.invalid:404/this-server-does-not-exist',
             ['Accept' => 'application/atom+xml']
         );
     }

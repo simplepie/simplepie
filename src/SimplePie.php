@@ -20,8 +20,8 @@ use SimplePie\Cache\NameFilter;
 use SimplePie\Cache\Psr16;
 use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception as SimplePieException;
-use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
+use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
@@ -1997,7 +1997,7 @@ class SimplePie
                         try {
                             $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
                             $this->status_code = $file->get_status_code();
-                        } catch (HttpException $th) {
+                        } catch (ClientException $th) {
                             $this->check_modified = false;
                             $this->status_code = $th->getCode(); // FreshRSS https://github.com/simplepie/simplepie/pull/905
 
@@ -2090,7 +2090,7 @@ class SimplePie
                 ];
                 try {
                     $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
-                } catch (HttpException $th) {
+                } catch (ClientException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
                     $this->status_code = $th->getCode(); // FreshRSS https://github.com/simplepie/simplepie/pull/905
@@ -2605,10 +2605,10 @@ class SimplePie
         if (!empty($element['xml_base_explicit']) && isset($element['xml_base'])) {
             return $element['xml_base'];
         }
-        if (($link = $this->get_link(0, 'self')) !== null) {
+        if (($link = $this->get_link(0, 'alternate')) !== null) {
             return $link;
         }
-        if (($link = $this->get_link(0, 'alternate')) !== null) {
+        if (($link = $this->get_link(0, 'self')) !== null) {
             return $link;
         }
 
