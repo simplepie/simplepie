@@ -2032,8 +2032,9 @@ class SimplePie
                         $this->all_discovered_feeds
                     );
                     if ($microformats) {
-                        if ($hub = $locate->get_rel_link('hub')) {
-                            $self = $locate->get_rel_link('self');
+                        $hub = $locate->get_rel_link('hub');
+                        $self = $locate->get_rel_link('self');
+                        if ($hub || $self) {
                             $file = $this->store_links($file, $hub, $self);
                         }
                         // Push the current file onto all_discovered feeds so the user can
@@ -3388,19 +3389,20 @@ class SimplePie
      * There is no way to find PuSH links in the body of a microformats feed,
      * so they are added to the headers when found, to be used later by get_links.
      */
-    private function store_links(Response $file, string $hub, ?string $self): Response
+    private function store_links(Response $file, ?string $hub, ?string $self): Response
     {
         $linkHeaderLine = $file->get_header_line('link');
-        if ($linkHeaderLine !== '' && preg_match('/rel=hub/', $linkHeaderLine)) {
-            return $file;
+        $linkHeader = $file->get_header('link');
+
+        if ($hub && !preg_match('/rel=hub/', $linkHeaderLine)) {
+            $linkHeader[] = '<'.$hub.'>; rel=hub';
         }
 
-        if ($hub) {
-            $linkHeader = $file->get_header('link');
-            $linkHeader[] = '<'.$hub.'>; rel=hub';
-            if ($self && !preg_match('/rel=self/', $linkHeaderLine)) {
-                $linkHeader[] = '<'.$self.'>; rel=self';
-            }
+        if ($self && !preg_match('/rel=self/', $linkHeaderLine)) {
+            $linkHeader[] = '<'.$self.'>; rel=self';
+        }
+
+        if (count($linkHeader) > 0) {
             $file = $file->with_header('link', $linkHeader);
         }
 

@@ -419,8 +419,7 @@ HTML
 HTML
             ,
             'hubUrl' => null,
-            // We only promote self link when hub is set as well.
-            'selfUrl' => null,
+            'selfUrl' => 'https://example.com/',
         ];
 
         yield 'hub + self + bogo in header' => [
@@ -465,6 +464,28 @@ HTML
             'selfUrl' => 'https://example.org/',
             'headers' => [
                 'Link: <https://example.org/>; rel=self',
+            ],
+        ];
+
+        yield 'hub in header + self' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://switchboard.p3k.io/',
+            'selfUrl' => 'https://example.com/',
+            'headers' => [
+                'Link: <https://switchboard.p3k.io/>; rel=hub',
             ],
         ];
     }
