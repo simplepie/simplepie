@@ -385,7 +385,7 @@ HTML
             'selfUrl' => null,
         ];
 
-        yield 'hub + self inside `body`' => [
+        yield 'hub + self inside `body (insecure and unsupported)`' => [
             'data' => <<<HTML
 <html>
     <head>
@@ -400,8 +400,8 @@ HTML
 </html>
 HTML
             ,
-            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
-            'selfUrl' => 'https://example.com/',
+            'hubUrl' => null,
+            'selfUrl' => null,
         ];
 
         yield 'self only' => [
