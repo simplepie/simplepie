@@ -535,18 +535,16 @@ class Date
     /**
      * Array of user-added callback methods
      *
-     * @access private
-     * @var array<string>
+     * @var array<callable(string): int|null>
      */
-    public $built_in = [];
+    private $built_in = [];
 
     /**
      * Array of user-added callback methods
      *
-     * @access private
-     * @var array<callable(string): string|false>
+     * @var array<callable(string): int|null>
      */
-    public $user = [];
+    private $user = [];
 
     /**
      * Create new Date object, and set self::day_pcre,
@@ -561,17 +559,27 @@ class Date
 
         static $cache;
         if (!isset($cache[get_class($this)])) {
-            $all_methods = get_class_methods($this);
+            $reflection = new \ReflectionClass($this);
+            $all_methods = $reflection->getMethods();
 
             foreach ($all_methods as $method) {
-                if (strtolower(substr($method, 0, 5)) === 'date_') {
-                    $cache[get_class($this)][] = $method;
+                $name = $method->getName();
+                if (strtolower(substr($name, 0, 5)) !== 'date_') {
+                    continue;
                 }
+                $returnType = $method->getReturnType();
+                assert($returnType !== null && $returnType->getName() === 'int' && $returnType->allowsNull(), "Static method ‘{$name}’ must have return type ?int");
+                $params = $method->getParameters();
+                assert(count($params) >= 1 && ($param = $params[0]->getType()) !== null && $param->getName() === 'string', "Static method ‘{$name}’ must take string as the first argument");
+                $cache[get_class($this)][] = $name;
             }
         }
 
         foreach ($cache[get_class($this)] as $method) {
-            $this->built_in[] = $method;
+            // For PHPStan: We assert the correct type during the cache creation.
+            /** @var callable(string): int|null */
+            $callable = [$this, $method];
+            $this->built_in[] = $callable;
         }
     }
 
@@ -596,23 +604,23 @@ class Date
      * @final
      * @access public
      * @param string $date Date to parse
-     * @return int|false Timestamp corresponding to date string, or false on failure
+     * @return ?int Timestamp corresponding to date string, or null on failure
      */
-    public function parse(string $date)
+    public function parse(string $date): ?int
     {
         foreach ($this->user as $method) {
-            if (($returned = call_user_func($method, $date)) !== false) {
+            if (($returned = call_user_func($method, $date)) !== null) {
                 return $returned;
             }
         }
 
         foreach ($this->built_in as $method) {
-            if (($returned = call_user_func([$this, $method], $date)) !== false) {
+            if (($returned = call_user_func($method, $date)) !== null) {
                 return $returned;
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -634,10 +642,8 @@ class Date
      * spaces to be used as the time separator (including more than one))
      *
      * @access protected
-     * @param string $date
-     * @return int|false Timestamp
      */
-    public function date_w3cdtf(string $date)
+    public function date_w3cdtf(string $date): ?int
     {
         $pcre = <<<'PCRE'
             /
@@ -701,7 +707,7 @@ PCRE;
             return gmmktime($hour, $minute, $second, $month, $day, $year) - $timezone;
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -757,10 +763,8 @@ PCRE;
      * Parse RFC2822's date format
      *
      * @access protected
-     * @param string $date
-     * @return int|false Timestamp
      */
-    public function date_rfc2822(string $date)
+    public function date_rfc2822(string $date): ?int
     {
         static $pcre;
         if (!$pcre) {
@@ -834,17 +838,15 @@ PCRE;
             return gmmktime($hour, $minute, $second, $month, $day, $year) - $timezone;
         }
 
-        return false;
+        return null;
     }
 
     /**
      * Parse RFC850's date format
      *
      * @access protected
-     * @param string $date
-     * @return int|false Timestamp
      */
-    public function date_rfc850(string $date)
+    public function date_rfc850(string $date): ?int
     {
         static $pcre;
         if (!$pcre) {
@@ -899,17 +901,15 @@ PCRE;
             return gmmktime($hour, $minute, $second, $month, $day, $year) - $timezone;
         }
 
-        return false;
+        return null;
     }
 
     /**
      * Parse C99's asctime()'s date format
      *
      * @access protected
-     * @param string $date
-     * @return int|false Timestamp
      */
-    public function date_asctime(string $date)
+    public function date_asctime(string $date): ?int
     {
         static $pcre;
         if (!$pcre) {
@@ -938,21 +938,19 @@ PCRE;
             return gmmktime((int) $match[4], (int) $match[5], (int) $match[6], $month, (int) $match[3], (int) $match[7]);
         }
 
-        return false;
+        return null;
     }
 
     /**
      * Parse dates using strtotime()
      *
      * @access protected
-     * @param string $date
-     * @return int|false Timestamp
      */
-    public function date_strtotime(string $date)
+    public function date_strtotime(string $date): ?int
     {
         $strtotime = strtotime($date);
         if ($strtotime === -1 || $strtotime === false) {
-            return false;
+            return null;
         }
 
         return $strtotime;

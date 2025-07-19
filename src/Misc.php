@@ -1737,7 +1737,7 @@ class Misc
     }
 
     /**
-     * @return int|bool
+     * @return ?int
      */
     public static function parse_date(string $dt)
     {
