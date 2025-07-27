@@ -428,6 +428,9 @@ class Parser implements RegistryAware
      */
     private function parse_microformats(string &$data, string $url): bool
     {
+        // For PHPStan, we already check that in call site.
+        \assert(function_exists('Mf2\parse'));
+        \assert(function_exists('Mf2\fetch'));
         $feed_title = '';
         $feed_author = null;
         $author_cache = [];

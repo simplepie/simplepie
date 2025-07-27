@@ -53,6 +53,9 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
+        include:
+          - php: '8.4'
+            nomf2: true
 
     name: "PHP: ${{ matrix.php }}"
 
@@ -72,6 +75,10 @@ jobs:
       # @link https://github.com/marketplace/actions/install-composer-dependencies
       - name: "Install Composer dependencies"
         uses: "ramsey/composer-install@v2"
+
+      - name: Run unit tests
+        if: matrix.nomf2
+        run: composer remove --dev mf2/mf2
 
       - name: Run unit tests
         run: composer test
