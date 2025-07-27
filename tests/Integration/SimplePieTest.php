@@ -190,6 +190,7 @@ class SimplePieTest extends TestCase
 
             // Fix build in cache
             $data['build'] = \SimplePie\Misc::get_build();
+            $data['cache_version'] = \SimplePie\SimplePie::CACHE_VERSION; // FreshRSS
 
             return $data;
         });
@@ -239,6 +240,7 @@ class SimplePieTest extends TestCase
 
             // Fix build in cache
             $data['build'] = \SimplePie\Misc::get_build();
+            $data['cache_version'] = \SimplePie\SimplePie::CACHE_VERSION; // FreshRSS
 
             return $data;
         });
