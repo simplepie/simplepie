@@ -3190,7 +3190,7 @@ class SimplePie
      * @since Beta 2
      * @param int $start Index to start at
      * @param int $end Number of items to return. 0 for all items after `$start`
-     * @return Item[]|null List of {@see Item} objects
+     * @return Item[] List of {@see Item} objects
      */
     public function get_items(int $start = 0, int $end = 0)
     {
