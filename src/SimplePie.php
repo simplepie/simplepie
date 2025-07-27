@@ -2038,8 +2038,8 @@ class SimplePie
                     if ($microformats) {
                         if ($hub = $locate->get_rel_link('hub')) {
                             $self = $locate->get_rel_link('self');
-                            if ($file instanceof File) {
-                                $this->store_links($file, $hub, (string) $self);
+                            if ($self !== null && $file instanceof File) {
+                                $this->store_links($file, $hub, $self);
                             }
                         }
                         // Push the current file onto all_discovered feeds so the user can
@@ -2090,15 +2090,7 @@ class SimplePie
 
         $headers = [];
         foreach ($file->get_headers() as $key => $values) {
-            /**
-             * Casting $key to string resolves the below PHPStan error.  Somehow it's detecting that $key can be an integer.
-             *
-             * Method SimplePie\SimplePie::fetch_data() should return array{}|array{array<string, string>, string}|bool
-             * but returns array{array<int|string, string>, string}.
-             *
-             * Offset 0 (array<string, string>) does not accept type array<int|string, string>.
-             */
-            $headers[(string) $key] = implode(', ', $values);
+            $headers[$key] = implode(', ', $values);
         }
 
         $sniffer = $this->registry->create(Sniffer::class, [&$file]);
@@ -2853,8 +2845,8 @@ class SimplePie
                     } else {
                         $this->data['links'][self::IANA_LINK_RELATIONS_REGISTRY . $key] = &$this->data['links'][$key];
                     }
-                } elseif (substr((string) $key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
-                    $this->data['links'][substr((string) $key, 41)] = &$this->data['links'][$key];
+                } elseif (substr($key, 0, 41) === self::IANA_LINK_RELATIONS_REGISTRY) {
+                    $this->data['links'][substr($key, 41)] = &$this->data['links'][$key];
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }
@@ -3157,7 +3149,7 @@ class SimplePie
      */
     public function get_item_quantity(int $max = 0)
     {
-        $qty = count($this->get_items() ?? []);
+        $qty = count($this->get_items());
         if ($max === 0) {
             return $qty;
         }
@@ -3376,7 +3368,7 @@ class SimplePie
             $items = [];
             foreach ($urls as $arg) {
                 if ($arg instanceof SimplePie) {
-                    $items = array_merge($items, $arg->get_items(0, $limit) ?? []);
+                    $items = array_merge($items, $arg->get_items(0, $limit));
 
                     // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {

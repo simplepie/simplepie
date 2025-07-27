@@ -72,8 +72,9 @@ class Parser implements RegistryAware
             // and a list of entries without an h-feed wrapper are both valid.
             $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                 'contains(concat(" ", @class, " "), " h-entry ")]';
+            /** @var \DOMNodeList<\DOMElement> $result */
             $result = $xpath->query($query);
-            if ($result !== false && $result->length !== 0) {
+            if ($result->length !== 0) {
                 return $this->parse_microformats($data, $url);
             }
         }
@@ -650,7 +651,7 @@ class Parser implements RegistryAware
     private static function set_doctype(string $data): string
     {
         // Strip DOCTYPE except if containing an [internal subset]
-        $data = preg_replace('/^\\s*<!DOCTYPE\\s[^>\\[\\]]*>\s*/', '', $data);
+        $data = preg_replace('/^\\s*<!DOCTYPE\\s[^>\\[\\]]*>\s*/', '', $data) ?? $data;
         // Declare HTML entities only if no remaining DOCTYPE
         $doctype = preg_match('/^\\s*<!DOCTYPE\\s/', $data) ? '' : self::declare_html_entities();
         return $doctype . $data;
