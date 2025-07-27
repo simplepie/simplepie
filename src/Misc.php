@@ -2193,9 +2193,6 @@ END;
                         $version = curl_version();
                         $info .= '      Version ' . $version['version'] . "\n";
                         break;
-                    case 'mbstring':
-                        $info .= '      Overloading: ' . mb_get_info('func_overload') . "\n";
-                        break;
                     case 'iconv':
                         $info .= '      Version ' . ICONV_VERSION . "\n";
                         break;
