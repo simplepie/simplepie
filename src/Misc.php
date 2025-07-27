@@ -92,11 +92,11 @@ class Misc
                 }
                 $return[$i]['attribs'] = [];
                 if (isset($matches[$i][2][0]) && preg_match_all('/[\x09\x0A\x0B\x0C\x0D\x20]+([^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3D\x3E]*)(?:[\x09\x0A\x0B\x0C\x0D\x20]*=[\x09\x0A\x0B\x0C\x0D\x20]*(?:"([^"]*)"|\'([^\']*)\'|([^\x09\x0A\x0B\x0C\x0D\x20\x22\x27\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x3E]*)?))?/', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER)) {
-                    for ($j = 0, $total_attribs = count($attribs); $j < $total_attribs; $j++) {
-                        if (count($attribs[$j]) === 2) {
-                            $attribs[$j][2] = $attribs[$j][1];
+                    foreach ($attribs as $attrib) {
+                        if (count($attrib) === 2) {
+                            $attrib[2] = $attrib[1];
                         }
-                        $return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode(end($attribs[$j]));
+                        $return[$i]['attribs'][strtolower($attrib[1])]['data'] = Misc::entities_decode(end($attrib));
                     }
                 }
             }
