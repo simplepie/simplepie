@@ -648,7 +648,10 @@ class Sanitize implements RegistryAware
         $elements = $xpath->query('body//' . $tag);
 
         if ($elements === false) {
-            return;
+            throw new \SimplePie\Exception(sprintf(
+                '%s(): Possibly malformed expression, check argument #1 ($tag)',
+                __METHOD__
+            ), 1);
         }
 
         if ($this->encode_instead_of_strip) {
@@ -732,7 +735,10 @@ class Sanitize implements RegistryAware
         $elements = $xpath->query('//*[@' . $attrib . ']');
 
         if ($elements === false) {
-            return;
+            throw new \SimplePie\Exception(sprintf(
+                '%s(): Possibly malformed expression, check argument #1 ($attrib)',
+                __METHOD__
+            ), 1);
         }
 
         /** @var \DOMElement $element */
@@ -749,7 +755,10 @@ class Sanitize implements RegistryAware
         $elements = $xpath->query('//*[@' . $attrib . ']');
 
         if ($elements === false) {
-            return;
+            throw new \SimplePie\Exception(sprintf(
+                '%s(): Possibly malformed expression, check argument #1 ($attrib)',
+                __METHOD__
+            ), 1);
         }
 
         /** @var \DOMElement $element */
