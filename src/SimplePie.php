@@ -20,8 +20,8 @@ use SimplePie\Cache\NameFilter;
 use SimplePie\Cache\Psr16;
 use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception as SimplePieException;
-use SimplePie\Exception\HttpException;
 use SimplePie\HTTP\Client;
+use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
@@ -1483,7 +1483,7 @@ class SimplePie
         }
         $this->sanitize->strip_htmltags($tags);
         if ($encode !== null) {
-            $this->sanitize->encode_instead_of_strip($tags);
+            $this->sanitize->encode_instead_of_strip($encode);
         }
     }
 
@@ -1921,7 +1921,7 @@ class SimplePie
                         try {
                             $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
                             $this->status_code = $file->get_status_code();
-                        } catch (HttpException $th) {
+                        } catch (ClientException $th) {
                             $this->check_modified = false;
                             $this->status_code = 0;
 
@@ -1974,7 +1974,7 @@ class SimplePie
                 ];
                 try {
                     $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
-                } catch (HttpException $th) {
+                } catch (ClientException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
 
@@ -2469,8 +2469,9 @@ class SimplePie
     /**
      * Get the base URL value from the feed
      *
-     * Uses `<xml:base>` if available, otherwise uses the first link in the
-     * feed, or failing that, the URL of the feed itself.
+     * Uses `<xml:base>` if available,
+     * otherwise uses the first 'self' link or the first 'alternate' link of the feed,
+     * or failing that, the URL of the feed itself.
      *
      * @see get_link
      * @see subscribe_url
@@ -2482,8 +2483,12 @@ class SimplePie
     {
         if (!empty($element['xml_base_explicit']) && isset($element['xml_base'])) {
             return $element['xml_base'];
-        } elseif ($this->get_link() !== null) {
-            return $this->get_link();
+        }
+        if (($link = $this->get_link(0, 'alternate')) !== null) {
+            return $link;
+        }
+        if (($link = $this->get_link(0, 'self')) !== null) {
+            return $link;
         }
 
         return $this->subscribe_url() ?? '';
