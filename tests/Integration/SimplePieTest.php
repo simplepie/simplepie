@@ -133,7 +133,7 @@ class SimplePieTest extends TestCase
 
         $url = $server->setResponseOfPath(
             '/status/429',
-            new MockWebServerResponse('Too many redirects', [], 429)
+            new MockWebServerResponse('Too many requests', ['Retry-After: 3600'], 429)
         );
 
         $simplepie = new SimplePie();
@@ -147,6 +147,7 @@ class SimplePieTest extends TestCase
 
         $this->assertFalse($return);
         $this->assertSame(429, $simplepie->status_code());
+        $this->assertSame(['3600'], $simplepie->get_http_header('Retry-After'));
         $this->assertSame('Retrieved unsupported status code "429"', $simplepie->error());
     }
 
