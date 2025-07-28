@@ -138,7 +138,7 @@ class File implements Response
                 }
 
                 $responseHeaders = curl_exec($fp);
-                if (curl_errno($fp) === 23 || curl_errno($fp) === 61) {
+                if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
                     $responseHeaders = curl_exec($fp);
                 }
