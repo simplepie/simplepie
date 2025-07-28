@@ -126,7 +126,39 @@ class SimplePieTest extends TestCase
         $this->assertSame(100, $simplepie->get_item_quantity());
     }
 
-    public function testSimplePieReturnsCorrectStatusCodeFromServerResponse(): void
+    /**
+     * @return iterable<array{setupClient: callable(SimplePie): void}>
+     */
+    public static function clientsProvider(): iterable
+    {
+        yield 'file-curl' => [
+            'setupClient' =>  function (SimplePie $simplepie): void {
+                $simplepie->force_fsockopen(false);
+            }
+        ];
+
+        yield 'file-fsockopen' => [
+            'setupClient' => function (SimplePie $simplepie): void {
+                $simplepie->force_fsockopen(true);
+            },
+        ];
+
+        yield 'psr18' => [
+            'setupClient' => function (SimplePie $simplepie): void {
+                $simplepie->set_http_client(
+                    new \GuzzleHttp\Client(),
+                    new \GuzzleHttp\Psr7\HttpFactory(),
+                    new \GuzzleHttp\Psr7\HttpFactory()
+                );
+            },
+        ];
+    }
+
+    /**
+     * @dataProvider clientsProvider
+     * @param callable(SimplePie): void $setupClient
+     */
+    public function testSimplePieReturnsCorrectStatusCodeFromServerResponse(callable $setupClient): void
     {
         $server = new MockWebServer();
         $server->start();
@@ -137,6 +169,7 @@ class SimplePieTest extends TestCase
         );
 
         $simplepie = new SimplePie();
+        $setupClient($simplepie);
         $simplepie->enable_cache(false);
 
         $simplepie->set_feed_url($url);

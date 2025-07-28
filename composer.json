@@ -32,6 +32,7 @@
     "require-dev": {
         "donatj/mock-webserver": "^2.7",
         "friendsofphp/php-cs-fixer": "^2.19 || ^3.8",
+        "guzzlehttp/guzzle": "^7.9",
         "mf2/mf2": "^0.5.0",
         "phpstan/phpstan": "~1.12.2",
         "phpunit/phpunit": "^8 || ^9 || ^10",
