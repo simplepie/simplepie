@@ -2119,6 +2119,27 @@ class SimplePie
     }
 
     /**
+     * Get HTTP headers of the last request
+     *
+     * @return array<string, string[]>
+     */
+    public function get_http_headers(): array
+    {
+        return $this->data['headers'] ?? [];
+    }
+
+    /**
+     * Get specified HTTP header of the last request
+     *
+     * @return string[]
+     */
+    public function get_http_header(string $name): array
+    {
+        // todo: cache this?
+        return array_change_key_case($this->get_http_headers())[strtolower($name)];
+    }
+
+    /**
      * Get the raw XML
      *
      * This is the same as the old `$feed->enable_xml_dump(true)`, but returns
