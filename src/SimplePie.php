@@ -523,7 +523,7 @@ class SimplePie
     public $cache_location = './cache';
 
     /**
-     * @var string Function that creates the cache filename
+     * @var string&(callable(string): string) Function that creates the cache filename
      * @see SimplePie::set_cache_name_function()
      * @access private
      */
@@ -1414,10 +1414,10 @@ class SimplePie
      *
      * @deprecated since SimplePie 1.8.0, use {@see set_cache_namefilter()} instead
      *
-     * @param ?callable(string): string $function Callback function
+     * @param (string&(callable(string): string))|null $function Callback function
      * @return void
      */
-    public function set_cache_name_function(?callable $function = null)
+    public function set_cache_name_function(?string $function = null)
     {
         // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache_namefilter()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
