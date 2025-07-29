@@ -523,7 +523,7 @@ class SimplePie
     public $cache_location = './cache';
 
     /**
-     * @var callable(string): string Function that creates the cache filename
+     * @var string&(callable(string): string) Function that creates the cache filename
      * @see SimplePie::set_cache_name_function()
      * @access private
      */
@@ -1414,10 +1414,10 @@ class SimplePie
      *
      * @deprecated since SimplePie 1.8.0, use {@see set_cache_namefilter()} instead
      *
-     * @param ?callable(string): string $function Callback function
+     * @param (string&(callable(string): string))|null $function Callback function
      * @return void
      */
-    public function set_cache_name_function(?callable $function = null)
+    public function set_cache_name_function(?string $function = null)
     {
         // trigger_error(sprintf('"%s()" is deprecated since SimplePie 1.8.0, please use "SimplePie\SimplePie::set_cache_namefilter()" instead.', __METHOD__), \E_USER_DEPRECATED);
 
@@ -2036,11 +2036,10 @@ class SimplePie
                         $this->all_discovered_feeds
                     );
                     if ($microformats) {
-                        if ($hub = $locate->get_rel_link('hub')) {
-                            $self = $locate->get_rel_link('self');
-                            if ($self !== null && $file instanceof File) {
-                                $this->store_links($file, $hub, $self);
-                            }
+                        $hub = $locate->get_rel_link('hub');
+                        $self = $locate->get_rel_link('self');
+                        if ($hub || $self) {
+                            $file = $this->store_links($file, $hub, $self);
                         }
                         // Push the current file onto all_discovered feeds so the user can
                         // be shown this as one of the options.
@@ -3394,28 +3393,25 @@ class SimplePie
      *
      * There is no way to find PuSH links in the body of a microformats feed,
      * so they are added to the headers when found, to be used later by get_links.
-     * @param string $hub
-     * @param string $self
      */
-    private function store_links(File &$file, string $hub, string $self): void
+    private function store_links(Response $file, ?string $hub, ?string $self): Response
     {
-        if (isset($file->headers['link']) && preg_match('/rel=hub/', $file->headers['link'])) {
-            return;
+        $linkHeaderLine = $file->get_header_line('link');
+        $linkHeader = $file->get_header('link');
+
+        if ($hub && !preg_match('/rel=hub/', $linkHeaderLine)) {
+            $linkHeader[] = '<'.$hub.'>; rel=hub';
         }
 
-        if ($hub) {
-            if (isset($file->headers['link'])) {
-                if ($file->headers['link'] !== '') {
-                    $file->headers['link'] = ', ';
-                }
-            } else {
-                $file->headers['link'] = '';
-            }
-            $file->headers['link'] .= '<'.$hub.'>; rel=hub';
-            if ($self) {
-                $file->headers['link'] .= ', <'.$self.'>; rel=self';
-            }
+        if ($self && !preg_match('/rel=self/', $linkHeaderLine)) {
+            $linkHeader[] = '<'.$self.'>; rel=self';
         }
+
+        if (count($linkHeader) > 0) {
+            $file = $file->with_header('link', $linkHeader);
+        }
+
+        return $file;
     }
 
     /**

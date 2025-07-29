@@ -173,7 +173,7 @@ class Parser implements RegistryAware
         $xml->xml($data);
         while (@$xml->read()) {
             switch ($xml->nodeType) {
-                case constant('XMLReader::END_ELEMENT'):
+                case \XMLReader::END_ELEMENT:
                     if ($xml->namespaceURI !== '') {
                         $tagName = $xml->namespaceURI . $this->separator . $xml->localName;
                     } else {
@@ -181,7 +181,7 @@ class Parser implements RegistryAware
                     }
                     $this->tag_close(null, $tagName);
                     break;
-                case constant('XMLReader::ELEMENT'):
+                case \XMLReader::ELEMENT:
                     $empty = $xml->isEmptyElement;
                     if ($xml->namespaceURI !== '') {
                         $tagName = $xml->namespaceURI . $this->separator . $xml->localName;
@@ -202,9 +202,9 @@ class Parser implements RegistryAware
                         $this->tag_close(null, $tagName);
                     }
                     break;
-                case constant('XMLReader::TEXT'):
+                case \XMLReader::TEXT:
 
-                case constant('XMLReader::CDATA'):
+                case \XMLReader::CDATA:
                     $this->cdata(null, $xml->value);
                     break;
             }
@@ -428,6 +428,9 @@ class Parser implements RegistryAware
      */
     private function parse_microformats(string &$data, string $url): bool
     {
+        // For PHPStan, we already check that in call site.
+        \assert(function_exists('Mf2\parse'));
+        \assert(function_exists('Mf2\fetch'));
         $feed_title = '';
         $feed_author = null;
         $author_cache = [];

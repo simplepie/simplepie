@@ -138,7 +138,7 @@ class File implements Response
                 }
 
                 $responseHeaders = curl_exec($fp);
-                if (curl_errno($fp) === 23 || curl_errno($fp) === 61) {
+                if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
                     $responseHeaders = curl_exec($fp);
                 }
@@ -297,9 +297,11 @@ class File implements Response
             }
         }
         if ($this->success) {
-            // (Leading) whitespace may cause XML parsing errors so we trim it,
-            // but we must not trim \x00 to avoid breaking BOM or multibyte characters
-            $this->body = trim($this->body ?? '', " \n\r\t\v");
+            assert($this->body !== null); // For PHPStan
+            // Leading whitespace may cause XML parsing errors (XML declaration cannot be preceded by anything other than BOM) so we trim it.
+            // Note that unlike built-in `trim` function’s default settings, we do not trim `\x00` to avoid breaking characters in UTF-16 or UTF-32 encoded strings.
+            // We also only do that when the whitespace is followed by `<`, so that we do not break e.g. UTF-16LE encoded whitespace like `\n\x00` in half.
+            $this->body = preg_replace('/^[ \n\r\t\v]+</', '<', $this->body);
         }
     }
 
@@ -334,6 +336,19 @@ class File implements Response
     {
         $this->maybe_update_headers();
         return $this->parsed_headers[strtolower($name)] ?? [];
+    }
+
+    public function with_header(string $name, $value)
+    {
+        $this->maybe_update_headers();
+        $new = clone $this;
+
+        $newHeader = [
+            strtolower($name) => (array) $value,
+        ];
+        $new->set_headers($newHeader + $this->get_headers());
+
+        return $new;
     }
 
     public function get_header_line(string $name): string

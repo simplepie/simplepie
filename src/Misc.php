@@ -92,11 +92,11 @@ class Misc
                 }
                 $return[$i]['attribs'] = [];
                 if (isset($matches[$i][2][0]) && preg_match_all('/[\x09\x0A\x0B\x0C\x0D\x20]+([^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3D\x3E]*)(?:[\x09\x0A\x0B\x0C\x0D\x20]*=[\x09\x0A\x0B\x0C\x0D\x20]*(?:"([^"]*)"|\'([^\']*)\'|([^\x09\x0A\x0B\x0C\x0D\x20\x22\x27\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x3E]*)?))?/', ' ' . $matches[$i][2][0] . ' ', $attribs, PREG_SET_ORDER)) {
-                    for ($j = 0, $total_attribs = count($attribs); $j < $total_attribs; $j++) {
-                        if (count($attribs[$j]) === 2) {
-                            $attribs[$j][2] = $attribs[$j][1];
+                    foreach ($attribs as $attrib) {
+                        if (count($attrib) === 2) {
+                            $attrib[2] = $attrib[1];
                         }
-                        $return[$i]['attribs'][strtolower($attribs[$j][1])]['data'] = Misc::entities_decode(end($attribs[$j]));
+                        $return[$i]['attribs'][strtolower($attrib[1])]['data'] = Misc::entities_decode(end($attrib));
                     }
                 }
             }
@@ -2137,21 +2137,15 @@ END;
             self::$SIMPLEPIE_BUILD = (int) filemtime($root . '/.git/index');
 
             return self::$SIMPLEPIE_BUILD;
-        } elseif (file_exists($root . '/SimplePie')) {
+        } elseif (file_exists($root . '/src')) {
             $time = 0;
-            if ($files = glob($root . '/SimplePie/*.php')) {
-                foreach ($files as $file) {
-                    if (($mtime = filemtime($file)) > $time) {
-                        $time = $mtime;
-                    }
+            foreach (glob($root . '/src/*.php') ?: [] as $file) {
+                if (($mtime = filemtime($file)) > $time) {
+                    $time = $mtime;
                 }
             }
 
             self::$SIMPLEPIE_BUILD = $time;
-
-            return self::$SIMPLEPIE_BUILD;
-        } elseif (file_exists(dirname(__FILE__) . '/Core.php')) {
-            self::$SIMPLEPIE_BUILD = (int) filemtime(dirname(__FILE__) . '/Core.php');
 
             return self::$SIMPLEPIE_BUILD;
         }
@@ -2198,15 +2192,6 @@ END;
                     case 'curl':
                         $version = (array) curl_version();
                         $info .= '      Version ' . $version['version'] . "\n";
-                        break;
-                    case 'mbstring':
-                        /**
-                         * PHPStan fix:
-                         * Binary operation "." between '      Overloading: ' and non-empty-array<int|string, array|int|string>|int<min, -1>|int<1, max>|non-falsy-string results in an error.
-                         */
-                        if (is_string(mb_get_info('func_overload'))) {
-                            $info .= '      Overloading: ' . mb_get_info('func_overload') . "\n";
-                        }
                         break;
                     case 'iconv':
                         $info .= '      Version ' . ICONV_VERSION . "\n";

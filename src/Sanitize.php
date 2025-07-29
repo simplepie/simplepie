@@ -60,7 +60,7 @@ class Sanitize implements RegistryAware
     public $enable_cache = true;
     /** @var string */
     public $cache_location = './cache';
-    /** @var callable(string): string */
+    /** @var string&(callable(string): string) */
     public $cache_name_function = 'md5';
 
     /**
@@ -144,7 +144,7 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param callable(string): string|NameFilter $cache_name_function
+     * @param (string&(callable(string): string))|NameFilter $cache_name_function
      * @param class-string<Cache> $cache_class
      * @return void
      */
@@ -166,7 +166,7 @@ class Sanitize implements RegistryAware
         }
 
         // BC: $cache_name_function could be a callable as string
-        if (is_callable($cache_name_function)) {
+        if (is_string($cache_name_function)) {
             // trigger_error(sprintf('Providing $cache_name_function as string in "%s()" is deprecated since SimplePie 1.8.0, provide as "%s" instead.', __METHOD__, NameFilter::class), \E_USER_DEPRECATED);
             $this->cache_name_function = $cache_name_function;
 

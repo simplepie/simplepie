@@ -327,6 +327,8 @@ class Locator implements RegistryAware
     }
 
     /**
+     * Extracts first `link` element with given `rel` attribute inside the `head` element.
+     *
      * @return string|null
      */
     public function get_rel_link(string $rel)
@@ -343,7 +345,7 @@ class Locator implements RegistryAware
         }
 
         $xpath = new \DOMXpath($this->dom);
-        $query = '//a[@rel and @href] | //link[@rel and @href]';
+        $query = '(//head)[1]/link[@rel and @href]';
         /** @var \DOMNodeList<\DOMElement> */
         $queryResult = $xpath->query($query);
         foreach ($queryResult as $link) {
