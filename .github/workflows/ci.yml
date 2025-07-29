@@ -53,9 +53,6 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
-        include:
-          - php: '8.4'
-            nomf2: true
 
     name: "PHP: ${{ matrix.php }}"
 
