@@ -168,7 +168,7 @@ class Sanitize implements RegistryAware
         // BC: $cache_name_function could be a callable as string
         if (is_string($cache_name_function)) {
             // trigger_error(sprintf('Providing $cache_name_function as string in "%s()" is deprecated since SimplePie 1.8.0, provide as "%s" instead.', __METHOD__, NameFilter::class), \E_USER_DEPRECATED);
-            $this->cache_name_function = (string) $cache_name_function;
+            $this->cache_name_function = $cache_name_function;
 
             $cache_name_function = new CallableNameFilter($cache_name_function);
         }
