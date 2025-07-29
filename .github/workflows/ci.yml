@@ -73,6 +73,12 @@ jobs:
       - name: "Install Composer dependencies"
         uses: "ramsey/composer-install@v2"
 
+      - name: Remove MF2 for PHP >=8.4
+        # mf2 is not compatible with PHP 8.4+
+        # see https://github.com/microformats/php-mf2/pull/264
+        # see https://github.com/simplepie/simplepie/pull/929
+        if: ${{ matrix.php >= '8.4' }}
+        run: composer remove --dev mf2/mf2
       - name: Run unit tests
         run: composer test
 
