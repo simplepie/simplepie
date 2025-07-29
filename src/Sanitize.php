@@ -60,7 +60,7 @@ class Sanitize implements RegistryAware
     public $enable_cache = true;
     /** @var string */
     public $cache_location = './cache';
-    /** @var string */
+    /** @var string&(callable(string): string) */
     public $cache_name_function = 'md5';
 
     /**
@@ -144,7 +144,7 @@ class Sanitize implements RegistryAware
     }
 
     /**
-     * @param string|NameFilter $cache_name_function
+     * @param (string&(callable(string): string))|NameFilter $cache_name_function
      * @param class-string<Cache> $cache_class
      * @return void
      */
