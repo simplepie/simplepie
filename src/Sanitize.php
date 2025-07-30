@@ -157,7 +157,7 @@ class Sanitize implements RegistryAware
         }
 
         // @phpstan-ignore-next-line Enforce PHPDoc type.
-        if (!is_callable($cache_name_function) && !$cache_name_function instanceof NameFilter) {
+        if (!is_string($cache_name_function) && !$cache_name_function instanceof NameFilter) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #3 ($cache_name_function) must be of type %s',
                 __METHOD__,
