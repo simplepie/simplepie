@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use SimplePie\Cache;
 use SimplePie\File;
+use SimplePie\Item;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\Cache\LegacyCacheMock;
 use SimplePie\Tests\Fixtures\Cache\NewCacheMock;
@@ -206,6 +207,7 @@ class SimplePieTest extends TestCase
         $content = 'item description';
         $feed = $this->createFeedWithTemplate($data, $content);
         $item = $feed->get_item();
+        $this->assertInstanceOf(Item::class, $item);
         $this->assertSame($content, $item->get_content());
     }
 

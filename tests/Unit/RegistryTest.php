@@ -29,7 +29,8 @@ class RegistryTest extends TestCase
     /**
      * @dataProvider getDefaultClassDataProvider
      *
-     * @param string $type
+     * @template T
+     * @param class-string<T> $type
      * @param class-string $expected
      */
     public function testGetClassReturnsCorrectClassname(string $type, string $expected): void
@@ -91,6 +92,11 @@ class RegistryTest extends TestCase
      * Test register() and get_class() with old and new type names
      *
      * @dataProvider getOverridingClassDataProvider
+     *
+     * @template T
+     * @param class-string<T> $registeredType
+     * @param class-string<T> $requestedType
+     * @param class-string<T> $classname
      */
     public function testRegisterAllowsOverridingTheDefaultClassname(string $registeredType, string $requestedType, string $classname): void
     {

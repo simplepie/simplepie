@@ -178,7 +178,11 @@ class SimplePieTest extends TestCase
         });
         BaseCacheWithCallbacksMock::setLoadCallback(function () {
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
-            $data = unserialize(file_get_contents($cachepath));
+            $data = file_get_contents($cachepath);
+
+            if ($data !== false) {
+                $data = unserialize($data);
+            }
 
             if ($data === false) {
                 throw new Exception(sprintf(
@@ -227,7 +231,11 @@ class SimplePieTest extends TestCase
         $cache = $this->createMock(CacheInterface::class);
         $cache->method('get')->willReturnCallback(function () {
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
-            $data = unserialize(file_get_contents($cachepath));
+            $data = file_get_contents($cachepath);
+
+            if ($data !== false) {
+                $data = unserialize($data);
+            }
 
             if ($data === false) {
                 throw new Exception(sprintf(
@@ -312,15 +320,19 @@ class SimplePieTest extends TestCase
         }
 
         $feed = new SimplePie();
-        $feed->set_raw_data(file_get_contents($path));
+        $data = file_get_contents($path);
+        \assert($data !== false); // For PHPStan
+        $feed->set_raw_data($data);
         $feed->enable_cache(false);
 
-        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $feed->error());
+        $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
+        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
 
         $this->assertSame($feedTitle, $feed->get_title());
         $items = $feed->get_items();
         $this->assertSame(count($titles), count($items), 'Number of items does not match');
         foreach (array_map(null, $titles, $items) as $i => [$expectedTitle, $item]) {
+            assert($item !== null); // For PHPStan
             $this->assertSame($expectedTitle, $item->get_title(), "Title of item #$i does not match");
         }
     }
@@ -531,7 +543,8 @@ HTML
         $feed->set_feed_url($url);
         $feed->enable_cache(false);
 
-        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $feed->error());
+        $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
+        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
 
         $server->stop();
 

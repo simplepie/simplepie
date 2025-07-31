@@ -2834,7 +2834,7 @@ EOT
     }
 
     /**
-     * @return array<array{string, string}>
+     * @return array<string, array{string, string|null}>
      */
     public static function getPermalinkDataProvider(): array
     {
@@ -3359,7 +3359,7 @@ EOT
     }
 
     /**
-     * @return array<array{string, string}>
+     * @return array<string, array{string, string|null}>
      */
     public static function getBaseProvider(): array
     {
@@ -4960,7 +4960,9 @@ EOT
         $feed->init();
 
         $item = $feed->get_item(0);
+        $this->assertInstanceOf(Item::class, $item);
         $thumbnail = $item->get_thumbnail();
+        $this->assertNotNull($thumbnail);
         $this->assertSame($expected, $thumbnail['url']);
     }
 

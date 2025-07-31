@@ -29,7 +29,7 @@ class ParserTest extends TestCase
     public static function feedProvider(): iterable
     {
         yield [
-            file_get_contents(dirname(__FILE__, 2) . '/data/microformats/h-feed-simple.html'),
+            file_get_contents(dirname(__FILE__, 2) . '/data/microformats/h-feed-simple.html') ?: 'file not found',
             'https://example.com',
             [
                 'child' => [
@@ -158,7 +158,7 @@ class ParserTest extends TestCase
         ];
 
         yield [
-            file_get_contents(dirname(__FILE__, 2) . '/data/microformats/h-feed-with-comments.html'),
+            file_get_contents(dirname(__FILE__, 2) . '/data/microformats/h-feed-with-comments.html') ?: 'file not found',
             'https://example.com',
             [
                 'child' => [

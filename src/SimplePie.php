@@ -1473,7 +1473,7 @@ class SimplePie
     }
 
     /**
-     * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags or false, to strip nothing.
+     * @param string[]|string|false $tags Set a list of tags to strip, or set empty string to use default tags, or false to strip nothing.
      * @return void
      */
     public function strip_htmltags($tags = '', ?bool $encode = null)
@@ -1674,11 +1674,13 @@ class SimplePie
 
         // Pass whatever was set with config options over to the sanitizer.
         // Pass the classes in for legacy support; new classes should use the registry instead
+        $cache = $this->registry->get_class(Cache::class);
+        \assert($cache !== null, 'Cache must be defined');
         $this->sanitize->pass_cache_data(
             $this->enable_cache,
             $this->cache_location,
             $this->cache_namefilter,
-            $this->registry->get_class(Cache::class),
+            $cache,
             $this->cache
         );
 
@@ -1848,7 +1850,7 @@ class SimplePie
      * If the data is already cached, attempt to fetch it from there instead
      *
      * @param Base|DataCache|false $cache Cache handler, or false to not load from the cache
-     * @return array{array<string, string>, string}|array{}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
+     * @return array{array<string, string>, string}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
     protected function fetch_data(&$cache)
     {
@@ -2022,6 +2024,8 @@ class SimplePie
                         // and a list of entries without an h-feed wrapper are both valid.
                         $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
                             'contains(concat(" ", @class, " "), " h-entry ")]';
+
+                        /** @var \DOMNodeList<\DOMElement> $result */
                         $result = $xpath->query($query);
                         $microformats = $result->length !== 0;
                     }
@@ -2487,13 +2491,14 @@ class SimplePie
      * @access private
      * @see Sanitize::sanitize()
      * @param string $data Data to sanitize
-     * @param self::CONSTRUCT_* $type One of the self::CONSTRUCT_* constants
+     * @param int-mask-of<SimplePie::CONSTRUCT_*> $type
      * @param string $base Base URL to resolve URLs against
      * @return string Sanitized data
      */
     public function sanitize(string $data, int $type, string $base = '')
     {
         try {
+            // This really returns string|false but changing encoding is uncommon and we are going to deprecate it, so let’s just lie to PHPStan in the interest of cleaner annotations.
             return $this->sanitize->sanitize($data, $type, $base);
         } catch (SimplePieException $e) {
             if (!$this->enable_exceptions) {
@@ -3184,7 +3189,7 @@ class SimplePie
      * @since Beta 2
      * @param int $start Index to start at
      * @param int $end Number of items to return. 0 for all items after `$start`
-     * @return Item[]|null List of {@see Item} objects
+     * @return Item[] List of {@see Item} objects
      */
     public function get_items(int $start = 0, int $end = 0)
     {
@@ -3300,8 +3305,8 @@ class SimplePie
 
         $class = get_class($this);
         $trace = debug_backtrace();
-        $file = $trace[0]['file'];
-        $line = $trace[0]['line'];
+        $file = $trace[0]['file'] ?? '';
+        $line = $trace[0]['line'] ?? '';
         throw new SimplePieException("Call to undefined method $class::$method() in $file on line $line");
     }
 

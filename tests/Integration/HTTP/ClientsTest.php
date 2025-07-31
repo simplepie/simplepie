@@ -258,10 +258,12 @@ class ClientsTest extends TestCase
 
             $headers = [];
             $body = file_get_contents($url);
+            \assert($body !== false); // For PHPStan
 
             if ('remote-gzip' === $kind) {
                 $headers[] = 'Content-Encoding: gzip';
                 $body = gzencode($body);
+                \assert($body !== false); // For PHPStan
             }
 
             $response = new MockWebServerResponse($body, $headers, 200);
