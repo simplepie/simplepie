@@ -9,21 +9,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- New method `SimplePie\SimplePie::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777)
-- New method `SimplePie\Locator::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777)
-- New method `SimplePie\Sanitize::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777)
+- New method `SimplePie\SimplePie::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories (by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777))
+- New method `SimplePie\Locator::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories (by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777))
+- New method `SimplePie\Sanitize::set_http_client()` for providing PSR-18 HTTP client and PSR-17 factories (by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777))
 
 ### Changed
 
-- Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
-- Use native `gzdecode` function instead of internal PHP implementation by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882)
+- Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) (by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785))
+- Improve precision of type annotations and increased level of PHPStan checks (by @jtojnar in [#837](https://github.com/simplepie/simplepie/pull/837))
+- Use native `gzdecode` function instead of internal PHP implementation (by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882))
+- `SimplePie::set_curl_options([CURLOPT_HTTPHEADER => …])` will no longer prevent the following headers defined by SimplePie from being sent `Accept`, `if-modified-since`, `if-none-match` and `X-FORWARDED-FOR`. (by @Alkarex in [#912](https://github.com/simplepie/simplepie/pull/912))
+
+### Fixed
+
+- Do not crash when `Content-Type` header is missing (by @Art4 in [#774](https://github.com/simplepie/simplepie/pull/774))
+- Correct `File::$permanent_url` when multiple redirects are chained (by @jtojnar in [#812](https://github.com/simplepie/simplepie/pull/812))
+- Improve PHP 8.4 compatibility (by @jrfnl in [#880](https://github.com/simplepie/simplepie/pull/880), [#881](https://github.com/simplepie/simplepie/pull/881), @jtojnar in [#837](https://github.com/simplepie/simplepie/pull/837), @Girgias in [#851](https://github.com/simplepie/simplepie/pull/851))
+- Fix regression from 1.8.0 in cache invalidation (by @Alkarex in [#883](https://github.com/simplepie/simplepie/pull/883))
+- `SimplePie::strip_htmltags()` correctly propagates `$encode` argument to `Sanitize` (by @jtojnar in [#894](https://github.com/simplepie/simplepie/pull/894))
+- Stop `File` from mangling UTF-16 and UTF-32 encoded feeds (by @Alkarex in [#916](https://github.com/simplepie/simplepie/pull/916) and [#917](https://github.com/simplepie/simplepie/pull/917))
 
 ### Removed
 
-- Third-party `idna_convert` library is no longer part of the repository by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
+- Third-party `idna_convert` library is no longer part of the repository (by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785))
 
 ### Deprecated
 
+- Most public properties on `SimplePie\File` are deprecated in favour of new methods of `SimplePie\Response` interface:
+  - `SimplePie\File::$url` → `SimplePie\File::get_final_requested_uri()`
+  - `SimplePie\File::$useragent` → Pass the user agent in constructor.
+  - `SimplePie\File::$body` → `SimplePie\File::get_body_content()`
+  - `SimplePie\File::$headers` → `SimplePie\File::get_headers()`
+  - `SimplePie\File::$status_code` → `SimplePie\File::get_status_code()`
+  - `SimplePie\File::$method` – no replacement: backend is implementation detail which you should not care about; to see if the file was retrieved over HTTP, check the protocol of `SimplePie\File::get_final_requested_uri()`.
+  - `SimplePie\File::$permanent_url` → `SimplePie\File::get_permanent_uri()`
+
+  (by @jtojnar in [26e0d18d67c24fa2611cdd4f27d1d7158ef9a913](https://github.com/simplepie/simplepie/commit/26e0d18d67c24fa2611cdd4f27d1d7158ef9a913))
 - The following `SimplePie\Misc` methods are deprecated without replacement:
   - `SimplePie\Misc::element_implode()`
   - `SimplePie\Misc::parse_str()`
@@ -35,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead
 - The method `SimplePie\Sanitize::pass_file_data()` is deprecated, use `SimplePie\Sanitize::set_http_client()` instead
 - Passing multiple URLs to `SimplePie\SimplePie::set_feed_url()` is deprecated. You can create separate `SimplePie` instance per feed and then use `SimplePie::merge_items()` to get a single list of items. ([#795](https://github.com/simplepie/simplepie/pull/795))
-- The `SimplePie\Gzdecode` class is deprecated. You can use native [`gzdecode`](https://www.php.net/manual/en/function.gzdecode.php) function by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882)
+- The `SimplePie\Gzdecode` class is deprecated. You can use native [`gzdecode`](https://www.php.net/manual/en/function.gzdecode.php) function (by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882))
 
 ## [1.8.0](https://github.com/simplepie/simplepie/compare/1.7.0...1.8.0) - 2023-01-20
 
