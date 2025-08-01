@@ -1699,7 +1699,7 @@ class SimplePie
                         ],
                         '',
                         $stream_data
-                    )
+                    ) ?? ''
                 );
             }
             fclose($stream);

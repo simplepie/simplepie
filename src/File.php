@@ -255,6 +255,7 @@ class File implements Response
                                 return;
                             }
                             if (($contentEncodingHeader = $this->get_header_line('content-encoding')) !== '') {
+                                assert($this->body !== null); // For PHPStan // FreshRSS
                                 // Hey, we act dumb elsewhere, so let's do that here too
                                 switch (strtolower(trim($contentEncodingHeader, "\x09\x0A\x0D\x20"))) {
                                     case 'gzip':
