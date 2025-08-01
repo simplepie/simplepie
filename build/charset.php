@@ -112,26 +112,26 @@ function charset($charset)
 function build_function()
 {
     if ($charsets = build_character_set_list()) {
-        $return = <<<EOF
+        $return = <<<PHP
 public static function encoding(\$charset)
 {
 	// Normalization from UTS #22
 	switch (strtolower(preg_replace('/(?:[^a-zA-Z0-9]+|([^0-9])0+)/', '\\1', \$charset)))
 	{
 
-EOF;
+PHP;
         foreach ($charsets as $preferred => $aliases) {
             foreach ($aliases as $alias) {
                 $return .= "\t\tcase " . var_export($alias, true) . ":\n";
             }
             $return .= "\t\t\treturn " . var_export($preferred, true) . ";\n\n";
         }
-        $return .= <<<EOF
+        $return .= <<<PHP
 		default:
 			return \$charset;
 	}
 }
-EOF;
+PHP;
         return $return;
     }
 
