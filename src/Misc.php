@@ -1888,8 +1888,14 @@ class Misc
      */
     public static function atom_10_content_construct_type(array $attribs)
     {
+        $type = '';
         if (isset($attribs['']['type'])) {
-            $type = strtolower(trim($attribs['']['type']));
+            $type = trim($attribs['']['type']);
+        } elseif (isset($attribs[\SimplePie\SimplePie::NAMESPACE_ATOM_10]['type'])) { // FreshRSS
+            $type = trim($attribs[\SimplePie\SimplePie::NAMESPACE_ATOM_10]['type']);
+        }
+        if ($type != '') { // FreshRSS
+            $type = strtolower($type); // FreshRSS
             switch ($type) {
                 case 'text':
                     return \SimplePie\SimplePie::CONSTRUCT_TEXT;
@@ -2132,25 +2138,8 @@ END;
             return self::$SIMPLEPIE_BUILD;
         }
 
-        $root = dirname(__FILE__, 2);
-        if (file_exists($root . '/.git/index')) {
-            self::$SIMPLEPIE_BUILD = (int) filemtime($root . '/.git/index');
-
-            return self::$SIMPLEPIE_BUILD;
-        } elseif (file_exists($root . '/src')) {
-            $time = 0;
-            foreach (glob($root . '/src/*.php') ?: [] as $file) {
-                if (($mtime = filemtime($file)) > $time) {
-                    $time = $mtime;
-                }
-            }
-
-            self::$SIMPLEPIE_BUILD = $time;
-
-            return self::$SIMPLEPIE_BUILD;
-        }
-
-        self::$SIMPLEPIE_BUILD = (int) filemtime(__FILE__);
+        $mtime = @filemtime(dirname(__FILE__) . '/SimplePie.php'); // FreshRSS
+        self::$SIMPLEPIE_BUILD = $mtime ?: (filemtime(__FILE__) ?: 0); // FreshRSS
 
         return self::$SIMPLEPIE_BUILD;
     }
