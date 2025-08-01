@@ -32,7 +32,7 @@ class RestrictionTest extends TestCase
     {
         return [
             'iTunesRSS Channel Block Test RSS 2.0' => [
-<<<EOT
+<<<XML
 <rss xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 	<channel>
 		<itunes:block>yes</itunes:block>
@@ -41,12 +41,12 @@ class RestrictionTest extends TestCase
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 Restriction::RELATIONSHIP_DENY,
             ],
             'iTunesRSS Channel Block Default Test RSS 2.0' => [
-<<<EOT
+<<<XML
 <rss xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 	<channel>
 		<item>
@@ -54,12 +54,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 Restriction::RELATIONSHIP_ALLOW,
             ],
             'iTunesRSS Channel Block Reverse Test RSS 2.0' => [
-<<<EOT
+<<<XML
 <rss xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 	<channel>
 		<itunes:block>no</itunes:block>
@@ -68,7 +68,7 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 Restriction::RELATIONSHIP_ALLOW,
             ],

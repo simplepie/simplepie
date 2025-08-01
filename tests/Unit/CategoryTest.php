@@ -31,345 +31,345 @@ class CategoryTest extends TestCase
     {
         return [
             'Test Atom 0.3 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:subject>Feed Category</dc:subject>
 </feed>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test Atom 0.3 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:subject>Feed Category</dc:subject>
 </feed>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test Atom 1.0 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<dc:subject>Feed Category</dc:subject>
 </feed>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test Atom 1.0 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<dc:subject>Feed Category</dc:subject>
 </feed>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<category label="Feed Category"/>
 </feed>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<category term="Feed Category"/>
 </feed>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.90 Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category label="Feed Category"/>
 	</channel>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.90 Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category term="Feed Category"/>
 	</channel>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.90 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.90 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.91-Netscape Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category label="Feed Category"/>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.91-Netscape Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category term="Feed Category"/>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.91-Netscape DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.91-Netscape DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.91-Userland Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category label="Feed Category"/>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.91-Userland Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category term="Feed Category"/>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.91-Userland DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.91-Userland DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.92 Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category label="Feed Category"/>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.92 Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category term="Feed Category"/>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.92 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 0.92 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 1.0 Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category label="Feed Category"/>
 	</channel>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 1.0 Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category term="Feed Category"/>
 	</channel>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 1.0 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 1.0 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 2.0 Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category label="Feed Category"/>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 2.0 Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<a:category term="Feed Category"/>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 2.0 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 2.0 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<dc:subject>Feed Category</dc:subject>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             'Test RSS 2.0 Category' => [
-<<<EOT
+<<<XML
 <rss version="2.0">
 	<channel>
 		<category>Feed Category</category>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Feed Category',
             ],
             // Test Bugs
             'Test Bug 21 Test 0' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<category term="Example category"/>
 </feed>
-EOT
+XML
                 ,
                 'Example category',
             ],
@@ -399,128 +399,128 @@ EOT
     {
         return [
             'Test Atom 0.3 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<entry>
 		<dc:subject>Item Category</dc:subject>
 	</entry>
 </feed>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test Atom 0.3 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <feed version="0.3" xmlns="http://purl.org/atom/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<entry>
 		<dc:subject>Item Category</dc:subject>
 	</entry>
 </feed>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test Atom 1.0 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<entry>
 		<dc:subject>Item Category</dc:subject>
 	</entry>
 </feed>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test Atom 1.0 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<entry>
 		<dc:subject>Item Category</dc:subject>
 	</entry>
 </feed>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<category label="Item Category"/>
 	</entry>
 </feed>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<category term="Item Category"/>
 	</entry>
 </feed>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test Bug 21 Test 0' => [
-<<<EOT
+<<<XML
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<entry>
 		<category term="Example category"/>
 	</entry>
 </feed>
-EOT
+XML
                 ,
                 'Example category',
             ],
             'Test RSS 0.90 Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
 		<a:category label="Item Category"/>
 	</item>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.90 Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
 		<a:category term="Item Category"/>
 	</item>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.90 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<item>
 		<dc:subject>Item Category</dc:subject>
 	</item>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.90 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<item>
 		<dc:subject>Item Category</dc:subject>
 	</item>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.91-Netscape Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -529,12 +529,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.91-Netscape Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
@@ -543,12 +543,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.91-Netscape DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
@@ -557,12 +557,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.91-Netscape DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <!DOCTYPE rss SYSTEM "http://my.netscape.com/publish/formats/rss-0.91.dtd">
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
@@ -571,12 +571,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.91-Userland Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<item>
@@ -584,12 +584,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.91-Userland Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rss version="0.91" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<item>
@@ -597,12 +597,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.91-Userland DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<item>
@@ -610,12 +610,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.91-Userland DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rss version="0.91" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<item>
@@ -623,12 +623,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.92 Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<item>
@@ -636,12 +636,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.92 Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rss version="0.92" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<item>
@@ -649,12 +649,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.92 Category' => [
-<<<EOT
+<<<XML
 <rss version="0.92">
 	<channel>
 		<item>
@@ -662,12 +662,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.92 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<item>
@@ -675,12 +675,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 0.92 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rss version="0.92" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<item>
@@ -688,56 +688,56 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 1.0 Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
 		<a:category label="Item Category"/>
 	</item>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 1.0 Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:a="http://www.w3.org/2005/Atom">
 	<item>
 		<a:category term="Item Category"/>
 	</item>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 1.0 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<item>
 		<dc:subject>Item Category</dc:subject>
 	</item>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 1.0 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<item>
 		<dc:subject>Item Category</dc:subject>
 	</item>
 </rdf:RDF>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 2.0 Atom 1.0 Category Label' => [
-<<<EOT
+<<<XML
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<item>
@@ -745,12 +745,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 2.0 Atom 1.0 Category Term' => [
-<<<EOT
+<<<XML
 <rss version="2.0" xmlns:a="http://www.w3.org/2005/Atom">
 	<channel>
 		<item>
@@ -758,12 +758,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 2.0 Category' => [
-<<<EOT
+<<<XML
 <rss version="2.0">
 	<channel>
 		<item>
@@ -771,12 +771,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 2.0 DC 1.0 Subject' => [
-<<<EOT
+<<<XML
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
 	<channel>
 		<item>
@@ -784,12 +784,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
             'Test RSS 2.0 DC 1.1 Subject' => [
-<<<EOT
+<<<XML
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<item>
@@ -797,7 +797,7 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 'Item Category',
             ],
