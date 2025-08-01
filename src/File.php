@@ -140,7 +140,6 @@ class File implements Response
                 $responseHeaders = curl_exec($fp);
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp); // FreshRSS
-                    $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE); // FreshRSS
                     $this->on_http_response();
                     $this->error = null; // FreshRSS
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
