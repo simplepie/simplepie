@@ -10,6 +10,7 @@ namespace SimplePie\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use SimplePie\Enclosure;
 use SimplePie\SimplePie;
+use SimplePie\Item;
 
 class EnclosureTest extends TestCase
 {
@@ -34,8 +35,9 @@ class EnclosureTest extends TestCase
         $feed->init();
 
         $item = $feed->get_item(0);
-        $enclosure = $item->get_enclosure(0);
+        $this->assertInstanceOf(Item::class, $item);
 
+        $enclosure = $item->get_enclosure(0);
         $this->assertInstanceOf(Enclosure::class, $enclosure);
         $this->assertSame($expected, $enclosure->get_link());
     }
@@ -133,7 +135,8 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        $this->assertCount($expectedEnclosureCount, $item->get_enclosures());
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertCount($expectedEnclosureCount, (array) $item->get_enclosures());
     }
 
     /**

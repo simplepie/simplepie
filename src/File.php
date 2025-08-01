@@ -57,7 +57,7 @@ class File implements Response
      */
     public $status_code = 0;
 
-    /** @var int Number of redirect that were already performed during this request sequence. */
+    /** @var non-negative-int Number of redirect that were already performed during this request sequence. */
     public $redirects = 0;
 
     /** @var ?string */
@@ -91,7 +91,7 @@ class File implements Response
         if (function_exists('idn_to_ascii')) {
             $parsed = \SimplePie\Misc::parse_url($url);
             if ($parsed['authority'] !== '' && !ctype_print($parsed['authority'])) {
-                $authority = \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
+                $authority = (string) \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
                 $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $authority, $parsed['path'], $parsed['query'], null);
             }
         }
@@ -102,7 +102,7 @@ class File implements Response
         $this->useragent = $useragent;
         if (preg_match('/^http(s)?:\/\//i', $url)) {
             if ($useragent === null) {
-                $useragent = ini_get('user_agent');
+                $useragent = (string) ini_get('user_agent');
                 $this->useragent = $useragent;
             }
             if (!is_array($headers)) {
@@ -138,7 +138,7 @@ class File implements Response
                 }
 
                 $responseHeaders = curl_exec($fp);
-                if (curl_errno($fp) === 23 || curl_errno($fp) === 61) {
+                if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp); // FreshRSS
                     $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE); // FreshRSS
                     $this->on_http_response();
@@ -157,8 +157,10 @@ class File implements Response
                     if ($info = curl_getinfo($fp)) {
                         $this->url = $info['url'];
                     }
+                    // For PHPStan: We already checked that error did not occur.
+                    assert(is_array($info) && $info['redirect_count'] >= 0);
                     curl_close($fp);
-                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders, $info['redirect_count'] + 1);
+                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders((string) $responseHeaders, $info['redirect_count'] + 1);
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
@@ -167,6 +169,11 @@ class File implements Response
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
+                            if ($location === false) {
+                                $this->error = "Invalid redirect location, trying to base “{$locationHeader}” onto “{$url}”";
+                                $this->success = false;
+                                return;
+                            }
                             $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                             $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                             return;
@@ -175,10 +182,15 @@ class File implements Response
                 }
             } else {
                 $this->method = \SimplePie\SimplePie::FILE_SOURCE_REMOTE | \SimplePie\SimplePie::FILE_SOURCE_FSOCKOPEN;
-                $url_parts = parse_url($url);
+                if (($url_parts = parse_url($url)) === false) {
+                    throw new \InvalidArgumentException('Malformed URL: ' . $url);
+                }
+                if (!isset($url_parts['host'])) {
+                    throw new \InvalidArgumentException('Missing hostname: ' . $url);
+                }
                 $socket_host = $url_parts['host'];
                 if (isset($url_parts['scheme']) && strtolower($url_parts['scheme']) === 'https') {
-                    $socket_host = "ssl://$url_parts[host]";
+                    $socket_host = 'ssl://' . $socket_host;
                     $url_parts['port'] = 443;
                 }
                 if (!isset($url_parts['port'])) {
@@ -234,10 +246,16 @@ class File implements Response
                                 $this->redirects++;
                                 $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
                                 $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
+                                if ($location === false) {
+                                    $this->error = "Invalid redirect location, trying to base “{$locationHeader}” onto “{$url}”";
+                                    $this->success = false;
+                                    return;
+                                }
                                 $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                                 return;
                             }
                             if (($contentEncodingHeader = $this->get_header_line('content-encoding')) !== '') {
+                                assert($this->body !== null); // For PHPStan // FreshRSS
                                 // Hey, we act dumb elsewhere, so let's do that here too
                                 switch (strtolower(trim($contentEncodingHeader, "\x09\x0A\x0D\x20"))) {
                                     case 'gzip':
@@ -294,9 +312,11 @@ class File implements Response
             $this->on_http_response();
         }
         if ($this->success) {
-            // (Leading) whitespace may cause XML parsing errors so we trim it,
-            // but we must not trim \x00 to avoid breaking BOM or multibyte characters
-            $this->body = trim($this->body, " \n\r\t\v");
+            assert($this->body !== null); // For PHPStan
+            // Leading whitespace may cause XML parsing errors (XML declaration cannot be preceded by anything other than BOM) so we trim it.
+            // Note that unlike built-in `trim` function’s default settings, we do not trim `\x00` to avoid breaking characters in UTF-16 or UTF-32 encoded strings.
+            // We also only do that when the whitespace is followed by `<`, so that we do not break e.g. UTF-16LE encoded whitespace like `\n\x00` in half.
+            $this->body = preg_replace('/^[ \n\r\t\v]+</', '<', $this->body);
         }
     }
 
@@ -340,6 +360,19 @@ class File implements Response
     {
         $this->maybe_update_headers();
         return $this->parsed_headers[strtolower($name)] ?? [];
+    }
+
+    public function with_header(string $name, $value)
+    {
+        $this->maybe_update_headers();
+        $new = clone $this;
+
+        $newHeader = [
+            strtolower($name) => (array) $value,
+        ];
+        $new->set_headers($newHeader + $this->get_headers());
+
+        return $new;
     }
 
     public function get_header_line(string $name): string

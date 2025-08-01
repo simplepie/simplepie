@@ -88,9 +88,8 @@ EOT
         $item = $feed->get_item(0);
         $this->assertInstanceOf(Item::class, $item);
 
-        if ($enclosure = $item->get_enclosure()) {
-            $this->assertInstanceOf(Enclosure::class, $enclosure);
-        }
+        $enclosure = $item->get_enclosure();
+        $this->assertInstanceOf(Enclosure::class, $enclosure);
 
         $restriction = $enclosure->get_restriction();
         $this->assertInstanceOf(Restriction::class, $restriction);

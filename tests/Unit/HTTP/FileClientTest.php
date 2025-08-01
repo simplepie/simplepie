@@ -81,6 +81,8 @@ final class FileClientTest extends TestCase
     {
         $response = $this->createMock(File::class);
         $response->expects($this->once())->method('get_status_code')->willReturn(429);
+        // `File` enables `CURLOPT_FAILONERROR`, so it will set these on HTTP error.
+        $response->error = 'cURL error 22: The requested URL returned error: 429';
         $response->success = false;
 
         $registry = $this->createStub(Registry::class);

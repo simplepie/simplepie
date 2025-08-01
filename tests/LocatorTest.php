@@ -123,9 +123,13 @@ class LocatorTest extends TestCase
 
         $expected = [];
         $document = new DOMDocument();
-        $document->loadHTML($data->body);
+        $document->loadHTML((string) $data->body);
         $xpath = new DOMXPath($document);
-        foreach ($xpath->query('//link') as $element) {
+
+        /** @var \DOMNodeList<\DOMElement> $queryResult */
+        $queryResult = $xpath->query('//link');
+
+        foreach ($queryResult as $element) {
             /** @var \DOMElement $element */
             $expected[] = 'http://example.com' . $element->getAttribute('href');
         }
