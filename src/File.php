@@ -127,7 +127,6 @@ class File implements Response
                 curl_setopt($fp, CURLOPT_URL, $url);
                 curl_setopt($fp, CURLOPT_HEADER, 1);
                 curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($fp, CURLOPT_FAILONERROR, 1);
                 curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
                 curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
                 curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
@@ -171,6 +170,10 @@ class File implements Response
                             $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                             $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                             return;
+                        } elseif ($this->status_code >= 400) {
+                            // Copied from `curl_error` with `CURLOPT_FAILONERROR`, which we had previously.
+                            $this->error = 'cURL error ' . CURLE_HTTP_RETURNED_ERROR . ': The requested URL returned error: ' . $this->status_code;
+                            $this->success = false;
                         }
                     }
                 }

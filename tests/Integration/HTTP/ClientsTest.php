@@ -94,7 +94,7 @@ class ClientsTest extends TestCase
 
         $url = $server->setResponseOfPath(
             '/status/429',
-            new MockWebServerResponse('Too many redirects', [], 429)
+            new MockWebServerResponse('Too many requests', ['Retry-After: 3600'], 429)
         );
 
         $url = $server->getServerRoot() . '/status/429';
@@ -104,6 +104,7 @@ class ClientsTest extends TestCase
         $server->stop();
 
         $this->assertSame(429, $response->get_status_code());
+        $this->assertSame('3600', $response->get_header_line('retry-after'));
     }
 
     public function testFileClientReturnsResponseOn500StatusCode(): void
