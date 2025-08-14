@@ -328,7 +328,7 @@ class File implements Response
      * @param string|false $response The raw HTTP response headers and body, or false in case of failure (as returned by curl_exec()).
      * FreshRSS.
      */
-    protected function on_http_response(string|false $response): void
+    protected function on_http_response($response): void
     {
     }
 
