@@ -28,11 +28,11 @@ class RestrictionTest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function getRelationshipDataProvider(): array
+    public static function getRelationshipDataProvider(): array
     {
         return [
             'iTunesRSS Channel Block Test RSS 2.0' => [
-<<<EOT
+<<<XML
 <rss xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 	<channel>
 		<itunes:block>yes</itunes:block>
@@ -41,12 +41,12 @@ class RestrictionTest extends TestCase
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 Restriction::RELATIONSHIP_DENY,
             ],
             'iTunesRSS Channel Block Default Test RSS 2.0' => [
-<<<EOT
+<<<XML
 <rss xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 	<channel>
 		<item>
@@ -54,12 +54,12 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 Restriction::RELATIONSHIP_ALLOW,
             ],
             'iTunesRSS Channel Block Reverse Test RSS 2.0' => [
-<<<EOT
+<<<XML
 <rss xmlns:itunes="http://www.itunes.com/DTDs/Podcast-1.0.dtd">
 	<channel>
 		<itunes:block>no</itunes:block>
@@ -68,7 +68,7 @@ EOT
 		</item>
 	</channel>
 </rss>
-EOT
+XML
                 ,
                 Restriction::RELATIONSHIP_ALLOW,
             ],
@@ -88,9 +88,8 @@ EOT
         $item = $feed->get_item(0);
         $this->assertInstanceOf(Item::class, $item);
 
-        if ($enclosure = $item->get_enclosure()) {
-            $this->assertInstanceOf(Enclosure::class, $enclosure);
-        }
+        $enclosure = $item->get_enclosure();
+        $this->assertInstanceOf(Enclosure::class, $enclosure);
 
         $restriction = $enclosure->get_restriction();
         $this->assertInstanceOf(Restriction::class, $restriction);

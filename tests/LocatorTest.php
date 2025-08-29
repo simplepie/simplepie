@@ -5,17 +5,15 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
 use SimplePie\File;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 /**
  * Tests for autodiscovery
  */
-class LocatorTest extends PHPUnit\Framework\TestCase
+class LocatorTest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @return array<array{string}>
      */
@@ -125,9 +123,13 @@ class LocatorTest extends PHPUnit\Framework\TestCase
 
         $expected = [];
         $document = new DOMDocument();
-        $document->loadHTML($data->body);
+        $document->loadHTML((string) $data->body);
         $xpath = new DOMXPath($document);
-        foreach ($xpath->query('//link') as $element) {
+
+        /** @var \DOMNodeList<\DOMElement> $queryResult */
+        $queryResult = $xpath->query('//link');
+
+        foreach ($queryResult as $element) {
             /** @var \DOMElement $element */
             $expected[] = 'http://example.com' . $element->getAttribute('href');
         }

@@ -14,13 +14,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2']
+        php: ['8.4']
 
     name: "Check code style | PHP ${{ matrix.php }}"
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP with latest composer
         uses: shivammathur/setup-php@v2
@@ -33,7 +33,7 @@ jobs:
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
       - name: "Install Composer dependencies"
-        uses: "ramsey/composer-install@v2"
+        uses: "ramsey/composer-install@v3"
 
       - name: "Check coding style"
         run: composer cs
@@ -44,14 +44,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
+        php:
+          - '7.2'
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+          - '8.2'
+          - '8.3'
+          - '8.4'
 
     name: "PHP: ${{ matrix.php }}"
-    continue-on-error: ${{ matrix.php == '8.3' }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP with latest composer
         uses: shivammathur/setup-php@v2
@@ -63,16 +70,15 @@ jobs:
 
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
-      - name: "Install Composer dependencies (PHP < 8.3)"
-        if: ${{ matrix.php < '8.3' }}
-        uses: "ramsey/composer-install@v2"
+      - name: "Install Composer dependencies"
+        uses: "ramsey/composer-install@v3"
 
-      - name: "Install Composer dependencies (PHP 8.3)"
-        if: ${{ matrix.php >= '8.3' }}
-        uses: "ramsey/composer-install@v2"
-        with:
-          composer-options: --ignore-platform-reqs
-
+      - name: Remove MF2 for PHP >=8.4
+        # mf2 is not compatible with PHP 8.4+
+        # see https://github.com/microformats/php-mf2/pull/264
+        # see https://github.com/simplepie/simplepie/pull/929
+        if: ${{ matrix.php >= '8.4' }}
+        run: composer remove --dev mf2/mf2
       - name: Run unit tests
         run: composer test
 
@@ -85,13 +91,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2']
+        php: ['8.3']
 
     name: "Test single-file build | PHP ${{ matrix.php }}"
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -104,7 +110,7 @@ jobs:
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
       - name: "Install Composer dependencies"
-        uses: "ramsey/composer-install@v2"
+        uses: "ramsey/composer-install@v3"
         with:
           composer-options: --ignore-platform-reqs
 
@@ -115,4 +121,4 @@ jobs:
         run: mv src src.bak && mv library library.bak
 
       - name: Run unit tests using compiled file
-        run: bin/phpunit --bootstrap=build/bootstrap.php
+        run: composer test -- --bootstrap=build/bootstrap.php

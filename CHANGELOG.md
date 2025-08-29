@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785)
+- Use native `gzdecode` function instead of internal PHP implementation by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882)
 
 ### Removed
 
@@ -23,9 +24,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
+- The following `SimplePie\Misc` methods are deprecated without replacement:
+  - `SimplePie\Misc::element_implode()`
+  - `SimplePie\Misc::parse_str()`
+  - `SimplePie\Misc::percent_encoding_normalization()`
+  - `SimplePie\Misc::strip_comments()`
+  - `SimplePie\Misc::uncomment_rfc822()`
+
+  If you need any of them, consider copying the function to your codebase. (by @jtojnar in [#899](https://github.com/simplepie/simplepie/pull/899))
 - The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead
 - The method `SimplePie\Sanitize::pass_file_data()` is deprecated, use `SimplePie\Sanitize::set_http_client()` instead
 - Passing multiple URLs to `SimplePie\SimplePie::set_feed_url()` is deprecated. You can create separate `SimplePie` instance per feed and then use `SimplePie::merge_items()` to get a single list of items. ([#795](https://github.com/simplepie/simplepie/pull/795))
+- The `SimplePie\Gzdecode` class is deprecated. You can use native [`gzdecode`](https://www.php.net/manual/en/function.gzdecode.php) function by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882)
 
 ## [1.8.0](https://github.com/simplepie/simplepie/compare/1.7.0...1.8.0) - 2023-01-20
 
@@ -146,7 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Provide access to HTTP status code by @Alkarex in [#674](https://github.com/simplepie/simplepie/pull/674)
 * Fix wrong type hint by @Alkarex in [#678](https://github.com/simplepie/simplepie/pull/678)
 * Force HTTPS for selected domains by @Alkarex in [#676](https://github.com/simplepie/simplepie/pull/676)
-* Prevent cache polution by @Alkarex in [#675](https://github.com/simplepie/simplepie/pull/675)
+* Prevent cache pollution by @Alkarex in [#675](https://github.com/simplepie/simplepie/pull/675)
 * Fix typo in comment by @Alkarex in [#680](https://github.com/simplepie/simplepie/pull/680)
 * Remove HTTP credentials in HTTP Referer by @Alkarex in [#681](https://github.com/simplepie/simplepie/pull/681)
 * CI: switch to GH Actions by @jrfnl in [#688](https://github.com/simplepie/simplepie/pull/688)
@@ -301,7 +311,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed a PHP notice that occurs when a date starts with `(`. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Fixed uninitialized string offeset PHP notices. [#353](https://github.com/simplepie/simplepie/pull/353)
 * Fixed call to non-existent property in Memcache. [#311](https://github.com/simplepie/simplepie/pull/311)
-* Fixed a bug where MySQL statements were not being passed thorugh `prepare()`. [#348](https://github.com/simplepie/simplepie/pull/348)
+* Fixed a bug where MySQL statements were not being passed through `prepare()`. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Fixed an instance where an error message in `SimplePie` was not being triggered correctly. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Fixed a bug with Russian feeds. [#348](https://github.com/simplepie/simplepie/pull/348)
 * Fixed an issue with memory leaks. [#287](https://github.com/simplepie/simplepie/pull/287)

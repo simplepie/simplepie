@@ -5,10 +5,13 @@
 
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
+use SimplePie\Item;
+
 /**
  * Tests for SimplePie\Item
  */
-class ItemTest extends PHPUnit\Framework\TestCase
+class ItemTest extends TestCase
 {
     /**
      * Run a test using a sprintf template and data
@@ -183,6 +186,7 @@ class ItemTest extends PHPUnit\Framework\TestCase
         $content = 'item description';
         $feed = $this->checkFromTemplate($data, $content);
         $item = $feed->get_item();
+        $this->assertInstanceOf(Item::class, $item);
         $this->assertSame($content, $item->get_content());
     }
 }

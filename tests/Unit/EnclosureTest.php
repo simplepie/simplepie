@@ -10,6 +10,7 @@ namespace SimplePie\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use SimplePie\Enclosure;
 use SimplePie\SimplePie;
+use SimplePie\Item;
 
 class EnclosureTest extends TestCase
 {
@@ -34,8 +35,9 @@ class EnclosureTest extends TestCase
         $feed->init();
 
         $item = $feed->get_item(0);
-        $enclosure = $item->get_enclosure(0);
+        $this->assertInstanceOf(Item::class, $item);
 
+        $enclosure = $item->get_enclosure(0);
         $this->assertInstanceOf(Enclosure::class, $enclosure);
         $this->assertSame($expected, $enclosure->get_link());
     }
@@ -43,7 +45,7 @@ class EnclosureTest extends TestCase
     /**
      * @return iterable<array{string, string}>
      */
-    public function getLinkProvider(): iterable
+    public static function getLinkProvider(): iterable
     {
         yield 'Test enclosure get_link urlencoded' => [
             <<<XML
@@ -88,6 +90,38 @@ XML
             ,
             'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
         ];
+
+        yield 'Test RSS 2.0 with channel link and enclosure' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <link>http://example.net/tests/</link>
+                    <item>
+                        <link>/tests/3/</link>
+                        <media:content url="/images/3.jpg" medium="image"></media:content>
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            'http://example.net/images/3.jpg',
+        ];
+
+        yield 'Test RSS 2.0 with Atom channel link and enclosure' => [
+            <<<XML
+            <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <atom:link href="http://example.net/tests/" rel="self" type="application/rss+xml" />
+                    <item>
+                        <link>/tests/4/</link>
+                        <media:content url="/images/4.jpg" medium="image"></media:content>
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            'http://example.net/images/4.jpg',
+        ];
     }
 
     /**
@@ -101,13 +135,14 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        $this->assertCount($expectedEnclosureCount, $item->get_enclosures());
+        $this->assertInstanceOf(Item::class, $item);
+        $this->assertCount($expectedEnclosureCount, (array) $item->get_enclosures());
     }
 
     /**
      * @return iterable<array{string, int}>
      */
-    public function getEnclosuresProvider(): iterable
+    public static function getEnclosuresProvider(): iterable
     {
         yield 'Test multiple enclosures MRSS' => [
             <<<XML

@@ -5,15 +5,13 @@
 
 declare(strict_types=1);
 
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * IRI test cases
  */
-class IRITest extends PHPUnit\Framework\TestCase
+class IRITest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @return array<array{string, string}>
      */
@@ -73,7 +71,9 @@ class IRITest extends PHPUnit\Framework\TestCase
     public function testStringRFC3986(string $relative, string $expected): void
     {
         $base = new SimplePie_IRI('http://a/b/c/d;p?q');
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = SimplePie_IRI::absolutize($base, $relative);
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -92,7 +92,9 @@ class IRITest extends PHPUnit\Framework\TestCase
     public function testBothStringRFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = SimplePie_IRI::absolutize($base, $relative);
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
         $this->assertSame($expected, (string) SimplePie_IRI::absolutize($base, $relative));
     }
 
@@ -127,7 +129,9 @@ class IRITest extends PHPUnit\Framework\TestCase
     public function testStringSP(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = SimplePie_IRI::absolutize($base, $relative);
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -191,7 +195,9 @@ class IRITest extends PHPUnit\Framework\TestCase
     public function testAbsolutizeString(string $base, string $relative, string $expected): void
     {
         $base = new SimplePie_IRI($base);
-        $this->assertSame($expected, SimplePie_IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = SimplePie_IRI::absolutize($base, $relative);
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -448,13 +454,26 @@ class IRITest extends PHPUnit\Framework\TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testNonexistantProperty(): void
+    public function testNonexistentProperty(): void
     {
-        $this->expectNotice();
-
         $iri = new SimplePie_IRI();
-        $this->assertFalse(isset($iri->nonexistant_prop));
-        $should_fail = $iri->nonexistant_prop;
+        $this->assertFalse(isset($iri->nonexistent_prop));
+
+        // PHPUnit 10 compatible way to test trigger_error().
+        set_error_handler(
+            function ($errno, $errstr): bool {
+                $this->assertSame(
+                    'Undefined property: SimplePie\IRI::nonexistent_prop',
+                    $errstr
+                );
+
+                restore_error_handler();
+                return true;
+            },
+            E_USER_NOTICE
+        );
+
+        $should_fail = $iri->nonexistent_prop;
     }
 
     public function testBlankHost(): void

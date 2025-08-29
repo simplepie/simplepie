@@ -38,7 +38,7 @@ class Sniffer
      */
     public function __construct(/* File */ $file)
     {
-        if (! is_object($file) || ! $file instanceof Response) {
+        if (!is_object($file) || !$file instanceof Response) {
             // For BC we're asking for `File`, but internally we accept every `Response` implementation
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #1 ($file) must be of type %s',

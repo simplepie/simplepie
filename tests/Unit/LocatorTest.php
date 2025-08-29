@@ -15,12 +15,9 @@ use SimplePie\Locator;
 use SimplePie\Registry;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class LocatorTest extends TestCase
 {
-    use ExpectPHPException;
-
     public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\Locator'));
@@ -34,7 +31,7 @@ class LocatorTest extends TestCase
     /**
      * @return array<array{string}>
      */
-    public function feedmimetypes(): array
+    public static function feedmimetypes(): array
     {
         return [
             ['application/rss+xml'],
@@ -116,7 +113,7 @@ class LocatorTest extends TestCase
      *
      * @return iterable<array{File}>
      */
-    public function firefoxTestDataProvider(): iterable
+    public static function firefoxTestDataProvider(): iterable
     {
         $data = new File(dirname(__DIR__) . '/data/fftests.html');
         $data->headers = ['content-type' => 'text/html'];
@@ -139,9 +136,13 @@ class LocatorTest extends TestCase
 
         $expected = [];
         $document = new DOMDocument();
-        $document->loadHTML($data->body);
+        $document->loadHTML((string) $data->body);
         $xpath = new DOMXPath($document);
-        foreach ($xpath->query('//link') as $element) {
+
+        /** @var \DOMNodeList<\DOMElement> $queryResult */
+        $queryResult = $xpath->query('//link');
+
+        foreach ($queryResult as $element) {
             /** @var \DOMElement $element */
             $expected[] = 'http://example.com' . $element->getAttribute('href');
         }

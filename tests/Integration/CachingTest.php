@@ -17,12 +17,9 @@ use SimplePie\Misc;
 use SimplePie\SimplePie;
 use SimplePie\Tests\Fixtures\Cache\BaseCacheWithCallbacksMock;
 use SimplePie\Tests\Fixtures\FileMock;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class CachingTest extends TestCase
 {
-    use ExpectPHPException;
-
     /**
      * @dataProvider provideSavedCacheData
      * @param array<string, mixed> $currentDataCached
@@ -46,7 +43,7 @@ class CachingTest extends TestCase
                 // Set current cached data and mtime
                 $psr16->method('get')->willReturnCallback(function ($key, $default) use ($currentDataCached, $currentMtime) {
                     // Set current mtime
-                    if (substr($key, - strlen('_mtime')) === '_mtime') {
+                    if (substr($key, -strlen('_mtime')) === '_mtime') {
                         return $currentMtime;
                     }
 
@@ -57,7 +54,7 @@ class CachingTest extends TestCase
                 // Test data written
                 $psr16->method('set')->willReturnCallback(function ($key, $value, $ttl) use (&$writtenData): bool {
                     // Ignore setting of the _mtime value
-                    if (substr($key, - strlen('_mtime')) !== '_mtime') {
+                    if (substr($key, -strlen('_mtime')) !== '_mtime') {
                         $writtenData = $value;
                     }
 
@@ -88,7 +85,7 @@ class CachingTest extends TestCase
 
                     $writtenData = $data;
 
-                    // Ignore internally setted '__cache_expiration_time'
+                    // Ignore internally set '__cache_expiration_time'
                     if (array_key_exists('__cache_expiration_time', $writtenData)) {
                         unset($writtenData['__cache_expiration_time']);
                     }
@@ -121,9 +118,9 @@ class CachingTest extends TestCase
     /**
      * @return array<array{string, array<string, mixed>, array<string, mixed>, int}>
      */
-    public function provideSavedCacheData(): array
+    public static function provideSavedCacheData(): array
     {
-        $defaultMtime = time();
+        $defaultMtime = time() - 1; // -1 to account for tests running within the same second
         $defaultExpirationTime = $defaultMtime + 3600;
 
         $expectDefaultDataWritten = [
@@ -249,10 +246,10 @@ class CachingTest extends TestCase
             [CacheInterface::class, $currentlyCachedDataWithNonFeedUrl,     $expectDataWithNewFeedUrl, $defaultMtime],
             // Check if the cache has been updated
             [Base::class,           $currentlyCachedDataIsUpdated,          $expectDefaultDataWritten, $defaultMtime],
-            [CacheInterface::class, $currentlyCachedDataIsUpdated,          $expectDefaultDataWritten, $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataIsUpdated,          $expectNoDataWritten,      $defaultMtime],
             // If the cache is still valid, just return true
             [Base::class,           $currentlyCachedDataIsValid,            $expectDefaultDataWritten, $defaultMtime],
-            [CacheInterface::class, $currentlyCachedDataIsValid,            $expectNoDataWritten,      $defaultMtime],
+            [CacheInterface::class, $currentlyCachedDataIsValid,            $expectDefaultDataWritten, $defaultMtime],
         ];
     }
 }

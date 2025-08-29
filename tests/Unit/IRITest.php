@@ -9,12 +9,9 @@ namespace SimplePie\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use SimplePie\IRI;
-use Yoast\PHPUnitPolyfills\Polyfills\ExpectPHPException;
 
 class IRITest extends TestCase
 {
-    use ExpectPHPException;
-
     public function testNamespacedClassExists(): void
     {
         $this->assertTrue(class_exists('SimplePie\IRI'));
@@ -28,7 +25,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function rfc3986DataProvider(): array
+    public static function rfc3986DataProvider(): array
     {
         return [
             // Normal
@@ -84,7 +81,9 @@ class IRITest extends TestCase
     public function testStringRFC3986(string $relative, string $expected): void
     {
         $base = new IRI('http://a/b/c/d;p?q');
-        $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = IRI::absolutize($base, $relative);
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -103,14 +102,16 @@ class IRITest extends TestCase
     public function testBothStringRFC3986(string $relative, string $expected): void
     {
         $base = 'http://a/b/c/d;p?q';
-        $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = IRI::absolutize($base, $relative);
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
         $this->assertSame($expected, (string) IRI::absolutize($base, $relative));
     }
 
     /**
      * @return array<array{string, string, string}>
      */
-    public function SpDataProvider(): array
+    public static function SpDataProvider(): array
     {
         return [
             ['http://a/b/c/d', 'f%0o', 'http://a/b/c/f%250o'],
@@ -138,7 +139,9 @@ class IRITest extends TestCase
     public function testStringSP(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
-        $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = IRI::absolutize($base, $relative);
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -154,7 +157,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function queryDataProvider(): array
+    public static function queryDataProvider(): array
     {
         return [
             ['a=b&c=d', 'http://example.com/?a=b&c=d'],
@@ -188,7 +191,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string, string}>
      */
-    public function absolutizeDataProvider(): array
+    public static function absolutizeDataProvider(): array
     {
         return [
             ['http://example.com/', 'foo/111:bar', 'http://example.com/foo/111:bar'],
@@ -202,7 +205,9 @@ class IRITest extends TestCase
     public function testAbsolutizeString(string $base, string $relative, string $expected): void
     {
         $base = new IRI($base);
-        $this->assertSame($expected, IRI::absolutize($base, $relative)->get_iri());
+        $absolutized = IRI::absolutize($base, $relative);
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -218,7 +223,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function normalizationDataProvider(): array
+    public static function normalizationDataProvider(): array
     {
         return [
             ['example://a/b/c/%7Bfoo%7D', 'example://a/b/c/%7Bfoo%7D'],
@@ -323,7 +328,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function uriDataProvider(): array
+    public static function uriDataProvider(): array
     {
         return [
             ['http://example.com/%C3%A9cole', 'http://example.com/%C3%A9cole'],
@@ -344,7 +349,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function equivalenceDataProvider(): array
+    public static function equivalenceDataProvider(): array
     {
         return [
             ['http://É.com', 'http://%C3%89.com'],
@@ -364,7 +369,7 @@ class IRITest extends TestCase
     /**
      * @return array<array{string, string}>
      */
-    public function notEquivalenceDataProvider(): array
+    public static function notEquivalenceDataProvider(): array
     {
         return [
             ['http://example.com/foo/bar', 'http://example.com/foo%2Fbar'],
@@ -459,13 +464,26 @@ class IRITest extends TestCase
         $this->assertSame('test', $iri->fragment);
     }
 
-    public function testNonexistantProperty(): void
+    public function testNonexistentProperty(): void
     {
-        $this->expectNotice();
-
         $iri = new IRI();
-        $this->assertFalse(isset($iri->nonexistant_prop));
-        $should_fail = $iri->nonexistant_prop;
+        $this->assertFalse(isset($iri->nonexistent_prop));
+
+        // PHPUnit 10 compatible way to test trigger_error().
+        set_error_handler(
+            function ($errno, $errstr): bool {
+                $this->assertSame(
+                    'Undefined property: SimplePie\IRI::nonexistent_prop',
+                    $errstr
+                );
+
+                restore_error_handler();
+                return true;
+            },
+            E_USER_NOTICE
+        );
+
+        $should_fail = $iri->nonexistent_prop;
     }
 
     public function testBlankHost(): void

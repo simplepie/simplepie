@@ -6,21 +6,23 @@
 
 declare(strict_types=1);
 
-class SanitizeTest extends PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class SanitizeTest extends TestCase
 {
     public function testSanitize(): void
     {
         $sanitize = new SimplePie_Sanitize();
 
         $this->assertSame(
-            <<<EOT
+            <<<HTML
 &lt;head&gt; &amp; &lt;body&gt; /\ ' === ' &amp; " === ". Sbohem bez šátečku! Тут был Лёха.
-EOT
+HTML
             ,
             $sanitize->sanitize(
-                <<<EOT
+                <<<HTML
 &#60;head&#62; &amp; &lt;body&gt; /\ ' === &apos; &#38; " === &quot;. Sbohem bez šátečku! Тут был Лёха.<script>alert('XSS')</script>
-EOT
+HTML
                 ,
                 SIMPLEPIE_CONSTRUCT_MAYBE_HTML
             ),
@@ -31,7 +33,7 @@ EOT
     /**
      * @return array<array{string, string}>
      */
-    public function sanitizeURLProvider(): array
+    public static function sanitizeURLProvider(): array
     {
         return [
             'simple absolute valid a href, resolved' => [

@@ -13,10 +13,13 @@ namespace SimplePie\Cache;
 final class CallableNameFilter implements NameFilter
 {
     /**
-     * @var callable
+     * @var callable(string): string
      */
     private $callable;
 
+    /**
+     * @param callable(string): string $callable
+     */
     public function __construct(callable $callable)
     {
         $this->callable = $callable;
@@ -39,7 +42,7 @@ final class CallableNameFilter implements NameFilter
      * and encodings or longer lengths, but MUST support at least that
      * minimum.
      *
-     * @param string $name The name for the cache will be most likly an url with query string
+     * @param string $name The name for the cache will be most likely an url with query string
      *
      * @return string the new cache name
      */
