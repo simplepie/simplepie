@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/simplepie/simplepie/compare/1.8.0...master)
+## [Unreleased](https://github.com/simplepie/simplepie/compare/1.8.1...master)
 
 ### Added
 
@@ -36,6 +36,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The method `SimplePie\Sanitize::pass_file_data()` is deprecated, use `SimplePie\Sanitize::set_http_client()` instead
 - Passing multiple URLs to `SimplePie\SimplePie::set_feed_url()` is deprecated. You can create separate `SimplePie` instance per feed and then use `SimplePie::merge_items()` to get a single list of items. ([#795](https://github.com/simplepie/simplepie/pull/795))
 - The `SimplePie\Gzdecode` class is deprecated. You can use native [`gzdecode`](https://www.php.net/manual/en/function.gzdecode.php) function by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882)
+
+## [1.8.1](https://github.com/simplepie/simplepie/compare/1.8.0...1.8.1) - 2024-10-01
+
+### Changed
+
+- Disable Composer lockfile by @jrfnl in [#887](https://github.com/simplepie/simplepie/pull/887), backported in [#895](https://github.com/simplepie/simplepie/pull/895)
+
+### Fixed
+
+- Fixes for PHP 8.4 deprecations by @Girgias, @jrfnl and @jtojnar, backported in [#875](https://github.com/simplepie/simplepie/pull/875)
+- Fix locator with website missing `Content-Type` header by @jtojnar in [#891](https://github.com/simplepie/simplepie/pull/891)
+- Fix `encode` argument of `SimplePie::strip_htmltags()` @jtojnar in [#894](https://github.com/simplepie/simplepie/pull/894), backported in [#898](https://github.com/simplepie/simplepie/pull/898)
+- Reverted `strict_types` by @jtojnar in [#842](https://github.com/simplepie/simplepie/pull/842)
 
 ## [1.8.0](https://github.com/simplepie/simplepie/compare/1.7.0...1.8.0) - 2023-01-20
 
