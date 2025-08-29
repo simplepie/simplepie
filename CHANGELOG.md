@@ -20,7 +20,7 @@ Nothing yet.
 ### Changed
 
 - Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) (by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785))
-- Improve precision of type annotations and increased level of PHPStan checks (by @jtojnar in [#837](https://github.com/simplepie/simplepie/pull/837))
+- Improve precision of type annotations and increased the PHPStan checks to level 8 (by @jtojnar in [#837](https://github.com/simplepie/simplepie/pull/837))
 - Use native `gzdecode` function instead of internal PHP implementation (by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882))
 - `SimplePie\SimplePie::set_curl_options([CURLOPT_HTTPHEADER => …])` will no longer prevent the following headers defined by SimplePie from being sent: `Accept`, `if-modified-since`, `if-none-match` and `X-FORWARDED-FOR`. (by @Alkarex in [#912](https://github.com/simplepie/simplepie/pull/912))
 
@@ -72,7 +72,7 @@ Nothing yet.
 - Fixes for PHP 8.4 deprecations (by @Girgias, @jrfnl and @jtojnar, backported in [#875](https://github.com/simplepie/simplepie/pull/875))
 - Fix locator with website missing `Content-Type` header (by @jtojnar in [#891](https://github.com/simplepie/simplepie/pull/891))
 - Fix `encode` argument of `SimplePie::strip_htmltags()` @jtojnar in [#894](https://github.com/simplepie/simplepie/pull/894), backported in [#898](https://github.com/simplepie/simplepie/pull/898)
-- Reverted `strict_types` (by @jtojnar in [#842](https://github.com/simplepie/simplepie/pull/842))
+- Reverted `strict_types` only on the `one-dot-eight` branch (by @jtojnar in [#842](https://github.com/simplepie/simplepie/pull/842))
 
 ## [1.8.0](https://github.com/simplepie/simplepie/compare/1.7.0...1.8.0) - 2023-01-20
 
@@ -88,10 +88,10 @@ Nothing yet.
 ### Changed
 
 - Clarify branching strategy (by @Art4 in [#751](https://github.com/simplepie/simplepie/pull/751))
-- Use native array_replace_recursive() (by @Alkarex in [#749](https://github.com/simplepie/simplepie/pull/749))
+- Use native `array_replace_recursive()` (by @Alkarex in [#749](https://github.com/simplepie/simplepie/pull/749))
 - PHP 7.2 or newer is now required (by @Art4 in [#743](https://github.com/simplepie/simplepie/pull/743))
-- Parse\Date: Clean up regex structure (by @jtojnar in [#765](https://github.com/simplepie/simplepie/pull/765))
-- Declare strict_types=1 in every file (by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763))
+- `SimplePie\Parse\Date::date_w3cdtf()`: Clean up regex structure (by @jtojnar in [#765](https://github.com/simplepie/simplepie/pull/765))
+- Declare `strict_types=1` in every file (by @Art4 in [#763](https://github.com/simplepie/simplepie/pull/763))
 
 ### Fixed
 
