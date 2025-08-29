@@ -56,8 +56,8 @@ Nothing yet.
   - `SimplePie\Misc::uncomment_rfc822()` is deprecated
 
   If you need any of them, consider copying the function to your codebase. (by @jtojnar in [#899](https://github.com/simplepie/simplepie/pull/899))
-- The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead
-- The method `SimplePie\Sanitize::pass_file_data()` is deprecated, use `SimplePie\Sanitize::set_http_client()` instead
+- The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead (by @Art4 in [#777](https://github.com/simplepie/simplepie/pull/777))
+- The method `SimplePie\Sanitize::pass_file_data()` is deprecated, use `SimplePie\Sanitize::set_http_client()` instead (by @Art4 in [#774](https://github.com/simplepie/simplepie/pull/774))
 - Passing multiple URLs to `SimplePie\SimplePie::set_feed_url()` is deprecated. You can create separate `SimplePie` instance per feed and then use `SimplePie::merge_items()` to get a single list of items. ([#795](https://github.com/simplepie/simplepie/pull/795))
 - The `SimplePie\Gzdecode` class is deprecated. You can use native [`gzdecode`](https://www.php.net/manual/en/function.gzdecode.php) function (by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882))
 
