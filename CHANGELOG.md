@@ -16,7 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Use `idn_to_ascii` function instead of `idna_convert` library (requires `intl` extension or a [polyfill](https://github.com/symfony/polyfill-intl-idn)) (by @jtojnar in [#785](https://github.com/simplepie/simplepie/pull/785))
+- Improve precision of type annotations and increased level of PHPStan checks (by @jtojnar in [#837](https://github.com/simplepie/simplepie/pull/837))
 - Use native `gzdecode` function instead of internal PHP implementation (by @jtojnar in [#882](https://github.com/simplepie/simplepie/pull/882))
+- `SimplePie\SimplePie::set_curl_options([CURLOPT_HTTPHEADER => …])` will no longer prevent the following headers defined by SimplePie from being sent: `Accept`, `if-modified-since`, `if-none-match` and `X-FORWARDED-FOR`. (by @Alkarex in [#912](https://github.com/simplepie/simplepie/pull/912))
+
+### Fixed
+
+- Do not crash when `Content-Type` header is missing (by @Art4 in [#774](https://github.com/simplepie/simplepie/pull/774))
+- Correct `SimplePie\File::$permanent_url` when multiple redirects are chained (by @jtojnar in [#812](https://github.com/simplepie/simplepie/pull/812))
+- Improve PHP 8.4 compatibility (by @jrfnl in [#880](https://github.com/simplepie/simplepie/pull/880), [#881](https://github.com/simplepie/simplepie/pull/881), @jtojnar in [#837](https://github.com/simplepie/simplepie/pull/837), @Girgias in [#851](https://github.com/simplepie/simplepie/pull/851))
+- Fix regression from 1.8.0 in cache invalidation (by @Alkarex in [#883](https://github.com/simplepie/simplepie/pull/883))
+- `SimplePie\SimplePie::strip_htmltags()` correctly propagates `$encode` argument to `Sanitize` (by @jtojnar in [#894](https://github.com/simplepie/simplepie/pull/894))
+- Stop `SimplePie\File` from mangling UTF-16 and UTF-32 encoded feeds (by @Alkarex in [#916](https://github.com/simplepie/simplepie/pull/916) and [#917](https://github.com/simplepie/simplepie/pull/917))
 
 ### Removed
 
@@ -24,12 +35,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 
+- Most public properties on `SimplePie\File` are deprecated in favour of new methods. (by @jtojnar in [26e0d18d67c24fa2611cdd4f27d1d7158ef9a913](https://github.com/simplepie/simplepie/commit/26e0d18d67c24fa2611cdd4f27d1d7158ef9a913))
+  - `SimplePie\File::$url` is deprecated, use `SimplePie\File::get_final_requested_uri()` instead
+  - `SimplePie\File::$useragent` is deprecated, pass the user agent in constructor instead
+  - `SimplePie\File::$body` is deprecated, use `SimplePie\File::get_body_content()` instead
+  - `SimplePie\File::$headers` is deprecated, use `SimplePie\File::get_headers()` instead
+  - `SimplePie\File::$status_code` is deprecated, use `SimplePie\File::get_status_code()` instead
+  - `SimplePie\File::$method` is deprecated, no replacement: backend is implementation detail which you should not care about; to see if the file was retrieved over HTTP, check the protocol of `SimplePie\File::get_final_requested_uri()`.
+  - `SimplePie\File::$permanent_url` is deprecated, use `SimplePie\File::get_permanent_uri()` instead
+
 - The following `SimplePie\Misc` methods are deprecated without replacement:
-  - `SimplePie\Misc::element_implode()`
-  - `SimplePie\Misc::parse_str()`
-  - `SimplePie\Misc::percent_encoding_normalization()`
-  - `SimplePie\Misc::strip_comments()`
-  - `SimplePie\Misc::uncomment_rfc822()`
+  - `SimplePie\Misc::element_implode()` is deprecated
+  - `SimplePie\Misc::parse_str()` is deprecated
+  - `SimplePie\Misc::percent_encoding_normalization()` is deprecated
+  - `SimplePie\Misc::strip_comments()` is deprecated
+  - `SimplePie\Misc::uncomment_rfc822()` is deprecated
 
   If you need any of them, consider copying the function to your codebase. (by @jtojnar in [#899](https://github.com/simplepie/simplepie/pull/899))
 - The method `SimplePie\SimplePie::set_file()` is deprecated, use `SimplePie\SimplePie::set_http_client()` or `SimplePie\SimplePie::set_raw_data()` instead
