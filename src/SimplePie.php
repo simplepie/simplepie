@@ -1655,7 +1655,9 @@ class SimplePie
             if ($xml_is_sane === null) {
                 $parser_check = xml_parser_create();
                 xml_parse_into_struct($parser_check, '<foo>&amp;</foo>', $values);
-                xml_parser_free($parser_check);
+                if (\PHP_VERSION_ID < 80000) {
+                    xml_parser_free($parser_check);
+                }
                 $xml_is_sane = isset($values[0]['value']);
             }
             if (!$xml_is_sane) {
