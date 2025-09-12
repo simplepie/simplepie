@@ -28,7 +28,7 @@ final class RawTextResponse implements Response
     private $permanent_url;
 
     /**
-     * @var array<non-empty-array<string>>
+     * @var array<string, non-empty-array<string>>
      */
     private $headers = [];
 
