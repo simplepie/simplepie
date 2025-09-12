@@ -421,10 +421,8 @@ class File implements Response
      */
     final public static function fromResponse(Response $response): self
     {
-        $headers = [];
-
-        foreach ($response->get_headers() as $name => $header) {
-            $headers[$name] = implode(', ', $header);
+        if ($response instanceof self) {
+            return $response;
         }
 
         /** @var File */
@@ -432,7 +430,7 @@ class File implements Response
 
         $file->url = $response->get_final_requested_uri();
         $file->useragent = null;
-        $file->headers = $headers;
+        $file->set_headers($response->get_headers());
         $file->body = $response->get_body_content();
         $file->status_code = $response->get_status_code();
         $file->permanent_url = $response->get_permanent_uri();
