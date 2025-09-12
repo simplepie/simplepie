@@ -167,7 +167,8 @@ class Locator implements RegistryAware
         assert($this->registry !== null);
 
         if (Misc::is_remote_uri($file->get_final_requested_uri())) {
-            $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$file]);
+            $fileResponse = File::fromResponse($file);
+            $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$fileResponse]);
             $sniffed = $sniffer->get_type();
             $mime_types = ['application/rss+xml', 'application/rdf+xml',
                                 'text/rdf', 'application/atom+xml', 'text/xml',
