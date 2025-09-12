@@ -82,7 +82,7 @@ final class Psr18Client implements Client
             ), 1);
         }
 
-        if (preg_match('/^http(s)?:\/\//i', $url)) {
+        if (Misc::is_remote_uri($url)) {
             return $this->requestUrl($method, $url, $headers);
         }
 
