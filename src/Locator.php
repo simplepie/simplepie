@@ -26,9 +26,9 @@ use SimplePie\HTTP\Response;
 class Locator implements RegistryAware
 {
     /** @var ?string */
-    public $useragent = null;
+    public $useragent;
     /** @var int */
-    public $timeout = 10;
+    public $timeout;
     /** @var File */
     public $file;
     /** @var string[] */
@@ -46,11 +46,11 @@ class Locator implements RegistryAware
     /** @var int */
     public $checked_feeds = 0;
     /** @var int */
-    public $max_checked_feeds = 10;
+    public $max_checked_feeds;
     /** @var bool */
-    public $force_fsockopen = false;
+    public $force_fsockopen;
     /** @var array<int, mixed> */
-    public $curl_options = [];
+    public $curl_options;
     /** @var ?\DomDocument */
     public $dom;
     /** @var ?Registry */
