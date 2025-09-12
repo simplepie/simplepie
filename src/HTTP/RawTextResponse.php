@@ -35,13 +35,13 @@ final class RawTextResponse implements Response
     /**
      * @var string
      */
-    private $requested_url;
+    private $final_requested_url;
 
     public function __construct(string $raw_text, string $filepath)
     {
         $this->raw_text = $raw_text;
         $this->permanent_url = $filepath;
-        $this->requested_url = $filepath;
+        $this->final_requested_url = $filepath;
     }
 
     public function get_permanent_uri(): string
@@ -51,7 +51,7 @@ final class RawTextResponse implements Response
 
     public function get_final_requested_uri(): string
     {
-        return $this->requested_url;
+        return $this->final_requested_url;
     }
 
     public function get_status_code(): int
