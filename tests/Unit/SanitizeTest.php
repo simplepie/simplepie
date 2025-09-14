@@ -16,19 +16,19 @@ class SanitizeTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Sanitize'));
+        self::assertTrue(class_exists('SimplePie\Sanitize'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Sanitize'));
+        self::assertTrue(class_exists('SimplePie_Sanitize'));
     }
 
     public function testSanitize(): void
     {
         $sanitize = new Sanitize();
 
-        $this->assertSame(
+        self::assertSame(
             <<<HTML
 &lt;head&gt; &amp; &lt;body&gt; /\ ' === ' &amp; " === ". Sbohem bez šátečku! Тут был Лёха.
 HTML
@@ -101,6 +101,6 @@ HTML
 
         $base = 'http://example.com/';
 
-        $this->assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
+        self::assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
     }
 }

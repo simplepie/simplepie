@@ -13,11 +13,11 @@ class CreditTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Credit'));
+        self::assertTrue(class_exists('SimplePie\Credit'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Credit'));
+        self::assertTrue(class_exists('SimplePie_Credit'));
     }
 }
