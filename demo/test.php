@@ -6,11 +6,9 @@ $feed = new \SimplePie\SimplePie();
 if (isset($_GET['feed']) && $_GET['feed'] !== '') {
     $feed->set_feed_url($_GET['feed']);
     $feed->enable_cache(false);
-    $starttime = explode(' ', microtime());
-    $starttime = $starttime[1] + $starttime[0];
+    $starttime = microtime(true);
     $feed->init();
-    $endtime = explode(' ', microtime());
-    $endtime = $endtime[1] + $endtime[0];
+    $endtime = microtime(true);
     $time = $endtime - $starttime;
 } else {
     $time = 'null';

@@ -1,7 +1,6 @@
 <?php
 // Start counting time for the page load
-$starttime = explode(' ', microtime());
-$starttime = $starttime[1] + $starttime[0];
+$starttime = microtime(true);
 
 // Include SimplePie
 // Located in the parent directory
@@ -231,7 +230,7 @@ $feed->handle_content_type();
 
 		<div>
 			<!-- Display how fast the page was rendered. -->
-			<p class="footnote">Page processed in <?php $mtime = explode(' ', microtime()); echo round($mtime[0] + $mtime[1] - $starttime, 3); ?> seconds.</p>
+			<p class="footnote">Page processed in <?php echo round(microtime(true) - $starttime, 3); ?> seconds.</p>
 
 			<!-- Display the version of SimplePie being loaded. -->
 			<p class="footnote">Powered by <a href="<?php echo \SimplePie\SimplePie::URL; ?>"><?php echo \SimplePie\SimplePie::NAME . ' ' . \SimplePie\SimplePie::VERSION . ', Build ' . \SimplePie\Misc::get_build(); ?></a>.  Run the <a href="../compatibility_test/sp_compatibility_test.php">SimplePie Compatibility Test</a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, Ryan Parman and Sam Sneddon, and licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.</p>
