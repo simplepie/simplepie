@@ -4,9 +4,6 @@ include_once('../autoloader.php');
 // Parse it
 $feed = new \SimplePie\SimplePie();
 if (isset($_GET['feed']) && $_GET['feed'] !== '') {
-    if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-        $_GET['feed'] = stripslashes($_GET['feed']);
-    }
     $feed->set_feed_url($_GET['feed']);
     $feed->enable_cache(false);
     $starttime = explode(' ', microtime());
