@@ -83,6 +83,7 @@ jobs:
         run: composer test
 
       - name: Run static analysis
+        if: ${{ matrix.php >= '7.4' }}
         run: composer phpstan -- --error-format=github
 
   test-compiled:

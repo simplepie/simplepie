@@ -255,7 +255,7 @@ class Locator implements RegistryAware
                 } else {
                     $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
                 }
-                if ($href === false) {
+                if (!is_string($href)) {
                     continue;
                 }
 

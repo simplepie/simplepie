@@ -17,12 +17,12 @@ class RestrictionTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Restriction'));
+        self::assertTrue(class_exists('SimplePie\Restriction'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Restriction'));
+        self::assertTrue(class_exists('SimplePie_Restriction'));
     }
 
     /**
@@ -86,14 +86,14 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        $this->assertInstanceOf(Item::class, $item);
+        self::assertInstanceOf(Item::class, $item);
 
         $enclosure = $item->get_enclosure();
-        $this->assertInstanceOf(Enclosure::class, $enclosure);
+        self::assertInstanceOf(Enclosure::class, $enclosure);
 
         $restriction = $enclosure->get_restriction();
-        $this->assertInstanceOf(Restriction::class, $restriction);
+        self::assertInstanceOf(Restriction::class, $restriction);
 
-        $this->assertSame($expected, $restriction->get_relationship());
+        self::assertSame($expected, $restriction->get_relationship());
     }
 }

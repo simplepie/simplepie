@@ -16,12 +16,12 @@ class EnclosureTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Enclosure'));
+        self::assertTrue(class_exists('SimplePie\Enclosure'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Enclosure'));
+        self::assertTrue(class_exists('SimplePie_Enclosure'));
     }
 
     /**
@@ -35,11 +35,11 @@ class EnclosureTest extends TestCase
         $feed->init();
 
         $item = $feed->get_item(0);
-        $this->assertInstanceOf(Item::class, $item);
+        self::assertInstanceOf(Item::class, $item);
 
         $enclosure = $item->get_enclosure(0);
-        $this->assertInstanceOf(Enclosure::class, $enclosure);
-        $this->assertSame($expected, $enclosure->get_link());
+        self::assertInstanceOf(Enclosure::class, $enclosure);
+        self::assertSame($expected, $enclosure->get_link());
     }
 
     /**
@@ -135,8 +135,8 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        $this->assertInstanceOf(Item::class, $item);
-        $this->assertCount($expectedEnclosureCount, (array) $item->get_enclosures());
+        self::assertInstanceOf(Item::class, $item);
+        self::assertCount($expectedEnclosureCount, (array) $item->get_enclosures());
     }
 
     /**

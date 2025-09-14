@@ -1,7 +1,6 @@
 <?php
 // Start counting time for the page load
-$starttime = explode(' ', microtime());
-$starttime = $starttime[1] + $starttime[0];
+$starttime = microtime(true);
 
 // Include SimplePie
 // Located in the parent directory
@@ -20,6 +19,7 @@ if (isset($_GET['js'])) {
 // Make sure that page is getting passed a URL
 if (isset($_GET['feed']) && $_GET['feed'] !== '') {
     // Strip slashes if magic quotes is enabled (which automatically escapes certain characters)
+    // @phpstan-ignore booleanAnd.rightAlwaysFalse
     if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
         $_GET['feed'] = stripslashes($_GET['feed']);
     }
@@ -122,7 +122,13 @@ $feed->handle_content_type();
                 echo '<div class="sp_errors">' . "\r\n";
 
                 // ... and display it.
-                echo '<p>' . htmlspecialchars($feed->error()) . "</p>\r\n";
+                if (is_string($feed->error())) {
+                    echo '<p>' . htmlspecialchars($feed->error()) . "</p>\r\n";
+                } elseif (is_array($feed->error())) {
+                    foreach ($feed->error() as $error) {
+                        echo '<p>' . htmlspecialchars($error) . "</p>\r\n";
+                    }
+                }
 
                 // Close the <div> element we opened.
                 echo '</div>' . "\r\n";
@@ -236,7 +242,7 @@ $feed->handle_content_type();
 
 		<div>
 			<!-- Display how fast the page was rendered. -->
-			<p class="footnote">Page processed in <?php $mtime = explode(' ', microtime()); echo round($mtime[0] + $mtime[1] - $starttime, 3); ?> seconds.</p>
+			<p class="footnote">Page processed in <?php $mtime = microtime(true); echo round($mtime - $starttime, 3); ?> seconds.</p>
 
 			<!-- Display the version of SimplePie being loaded. -->
 			<p class="footnote">Powered by <a href="<?php echo \SimplePie\SimplePie::URL; ?>"><?php echo \SimplePie\SimplePie::NAME . ' ' . \SimplePie\SimplePie::VERSION . ', Build ' . \SimplePie\Misc::get_build(); ?></a>.  Run the <a href="../compatibility_test/sp_compatibility_test.php">SimplePie Compatibility Test</a>.  SimplePie is &copy; 2004&ndash;<?php echo date('Y'); ?>, Ryan Parman and Sam Sneddon, and licensed under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD License</a>.</p>
