@@ -1988,8 +1988,11 @@ class SimplePie
 
         // If the file connection has an error, set SimplePie::error to that and quit
         if (!(!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
+            $hasData = !empty($this->data);
             $this->error = 'Retrieved unsupported status code "' . $this->status_code . '"';
-            return !empty($this->data);
+            $this->data['headers'] = $file->get_headers();
+
+            return $hasData;
         }
 
         if (!$this->force_feed) {
@@ -2118,6 +2121,27 @@ class SimplePie
     public function status_code()
     {
         return $this->status_code;
+    }
+
+    /**
+     * Get HTTP headers of the last request
+     *
+     * @return array<string, string[]>
+     */
+    public function get_http_headers(): array
+    {
+        return $this->data['headers'] ?? [];
+    }
+
+    /**
+     * Get specified HTTP header of the last request
+     *
+     * @return string[]
+     */
+    public function get_http_header(string $name): array
+    {
+        // todo: cache this?
+        return array_change_key_case($this->get_http_headers())[strtolower($name)];
     }
 
     /**
