@@ -18,12 +18,12 @@ class RegistryTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists(Registry::class));
+        self::assertTrue(class_exists(Registry::class));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Registry'));
+        self::assertTrue(class_exists('SimplePie_Registry'));
     }
 
     /**
@@ -37,7 +37,7 @@ class RegistryTest extends TestCase
     {
         $registry = new Registry();
 
-        $this->assertSame($expected, $registry->get_class($type));
+        self::assertSame($expected, $registry->get_class($type));
     }
 
     /**
@@ -104,7 +104,7 @@ class RegistryTest extends TestCase
 
         $registry->register($registeredType, $classname);
 
-        $this->assertSame($classname, $registry->get_class($requestedType));
+        self::assertSame($classname, $registry->get_class($requestedType));
     }
 
     /**

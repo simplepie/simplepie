@@ -115,7 +115,7 @@ class CachingTest extends TestCase
             $expectedDataWritten['hash'] = $writtenData['hash'];
         }
 
-        $this->assertEqualsCanonicalizing($expectedDataWritten, $writtenData); // FreshRSS
+        self::assertEqualsCanonicalizing($expectedDataWritten, $writtenData); // FreshRSS
     }
 
     /**
