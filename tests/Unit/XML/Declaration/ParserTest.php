@@ -13,11 +13,11 @@ class ParserTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\XML\Declaration\Parser'));
+        $this->assertTrue(class_exists('SimplePie\XML\Declaration\Parser'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_XML_Declaration_Parser'));
+        $this->assertTrue(class_exists('SimplePie_XML_Declaration_Parser'));
     }
 }

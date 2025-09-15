@@ -13,11 +13,11 @@ class MySQLTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Cache\MySQL'));
+        $this->assertTrue(class_exists('SimplePie\Cache\MySQL'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Cache_MySQL'));
+        $this->assertTrue(class_exists('SimplePie_Cache_MySQL'));
     }
 }

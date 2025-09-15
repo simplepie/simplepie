@@ -37,8 +37,8 @@ class SimplePieTest extends TestCase
         $simplepie->enable_cache(false);
         $simplepie->set_feed_url($filepath);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
     }
 
     /**
@@ -53,8 +53,8 @@ class SimplePieTest extends TestCase
         $file = new File($filepath);
         $simplepie->set_file($file);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
     }
 
     /**
@@ -73,8 +73,8 @@ class SimplePieTest extends TestCase
         );
         $simplepie->set_feed_url($filepath);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
     }
 
     /**
@@ -122,8 +122,8 @@ class SimplePieTest extends TestCase
         );
         $simplepie->set_feed_url('https://example.org/feed.xml');
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
     }
 
     public function testSimplePieReturnsCorrectStatusCodeFromServerResponse(): void
@@ -145,9 +145,9 @@ class SimplePieTest extends TestCase
 
         $server->stop();
 
-        self::assertFalse($return);
-        self::assertSame(429, $simplepie->status_code());
-        self::assertSame('Retrieved unsupported status code "429"', $simplepie->error());
+        $this->assertFalse($return);
+        $this->assertSame(429, $simplepie->status_code());
+        $this->assertSame('Retrieved unsupported status code "429"', $simplepie->error());
     }
 
     public function testSimplePieReturnsCorrectStatusCodeOnServerConnectionError(): void
@@ -161,9 +161,9 @@ class SimplePieTest extends TestCase
 
         $return = $simplepie->init();
 
-        self::assertFalse($return);
-        self::assertSame(0, $simplepie->status_code());
-        self::assertSame('cURL error 6: Could not resolve host: example.invalid', $simplepie->error());
+        $this->assertFalse($return);
+        $this->assertSame(0, $simplepie->status_code());
+        $this->assertSame('cURL error 6: Could not resolve host: example.invalid', $simplepie->error());
 
     }
 
@@ -216,8 +216,8 @@ class SimplePieTest extends TestCase
 
         $simplepie->set_feed_url('https://example.com/feed.xml');
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
 
         BaseCacheWithCallbacksMock::resetAllCallbacks();
     }
@@ -258,8 +258,8 @@ class SimplePieTest extends TestCase
         $simplepie->set_cache($cache);
         $simplepie->set_feed_url('https://example.com/feed.xml');
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        $this->assertTrue($simplepie->init());
+        $this->assertSame(100, $simplepie->get_item_quantity());
     }
 
 
@@ -277,7 +277,7 @@ class SimplePieTest extends TestCase
         $simplepie->enable_cache(false);
         $simplepie->set_feed_url($filepath);
 
-        self::assertTrue($simplepie->init());
+        $this->assertTrue($simplepie->init());
     }
 
     /**
@@ -326,15 +326,15 @@ class SimplePieTest extends TestCase
         $feed->enable_cache(false);
 
         $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
-        self::assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
+        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
 
-        self::assertSame($feedTitle, $feed->get_title());
+        $this->assertSame($feedTitle, $feed->get_title());
         $items = $feed->get_items();
         // @phpstan-ignore phpunit.assertCount
-        self::assertSame(count($titles), count($items), 'Number of items does not match');
+        $this->assertSame(count($titles), count($items), 'Number of items does not match');
         foreach (array_map(null, $titles, $items) as $i => [$expectedTitle, $item]) {
             assert($item !== null); // For PHPStan
-            self::assertSame($expectedTitle, $item->get_title(), "Title of item #$i does not match");
+            $this->assertSame($expectedTitle, $item->get_title(), "Title of item #$i does not match");
         }
     }
 
@@ -545,13 +545,13 @@ HTML
         $feed->enable_cache(false);
 
         $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
-        self::assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
+        $this->assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
 
         $server->stop();
 
-        self::assertSame($hubUrl, $feed->get_link(0, 'hub'), 'Link rel=hub does not match');
-        self::assertSame($selfUrl, $feed->get_link(0, 'self'), 'Link rel=self does not match');
-        self::assertLessThanOrEqual(1, count($feed->get_links('self') ?? []), 'Link rel=self should not be promoted from HTML when it is already present in headers');
-        self::assertSame($bogoUrl, $feed->get_link(0, 'bogo'), 'Link rel=bogo does not match');
+        $this->assertSame($hubUrl, $feed->get_link(0, 'hub'), 'Link rel=hub does not match');
+        $this->assertSame($selfUrl, $feed->get_link(0, 'self'), 'Link rel=self does not match');
+        $this->assertLessThanOrEqual(1, count($feed->get_links('self') ?? []), 'Link rel=self should not be promoted from HTML when it is already present in headers');
+        $this->assertSame($bogoUrl, $feed->get_link(0, 'bogo'), 'Link rel=bogo does not match');
     }
 }

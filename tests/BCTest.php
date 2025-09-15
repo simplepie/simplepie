@@ -17,7 +17,7 @@ class BCTest extends TestCase
      */
     public function test_class_SimplePie_Core_exists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Core'));
+        $this->assertTrue(class_exists('SimplePie_Core'));
     }
 
     /**
@@ -25,7 +25,7 @@ class BCTest extends TestCase
      */
     public function test_class_SimplePie_Misc_exists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Misc'));
+        $this->assertTrue(class_exists('SimplePie_Misc'));
     }
 
     /**
@@ -33,6 +33,6 @@ class BCTest extends TestCase
      */
     public function test_class_SimplePie_Decode_HTML_Entities_exists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Decode_HTML_Entities'));
+        $this->assertTrue(class_exists('SimplePie_Decode_HTML_Entities'));
     }
 }

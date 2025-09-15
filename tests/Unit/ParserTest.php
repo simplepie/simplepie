@@ -15,12 +15,12 @@ class ParserTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Parser'));
+        $this->assertTrue(class_exists('SimplePie\Parser'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Parser'));
+        $this->assertTrue(class_exists('SimplePie_Parser'));
     }
 
     /**
@@ -305,9 +305,9 @@ class ParserTest extends TestCase
 
         $result = $parser->parse($feed, 'UTF-8', $base);
 
-        self::assertTrue($result);
-        self::assertSame($parser->get_error_code(), null);
-        self::assertSame($parser->get_error_string(), null);
-        self::assertSame($parser->get_data(), $parsedData);
+        $this->assertTrue($result);
+        $this->assertSame($parser->get_error_code(), null);
+        $this->assertSame($parser->get_error_string(), null);
+        $this->assertSame($parser->get_data(), $parsedData);
     }
 }

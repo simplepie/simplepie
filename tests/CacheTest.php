@@ -60,7 +60,7 @@ class CacheTest extends TestCase
         // PHPUnit 10 compatible way to test trigger_error().
         set_error_handler(
             function ($errno, $errstr): bool {
-                self::assertSame(
+                $this->assertSame(
                     '"SimplePie\SimplePie::set_cache_class()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.',
                     $errstr
                 );

@@ -112,7 +112,7 @@ class CachingTest extends TestCase
             $expectedDataWritten['cache_expiration_time'] = $writtenData['cache_expiration_time'];
         }
 
-        self::assertSame($expectedDataWritten, $writtenData);
+        $this->assertSame($expectedDataWritten, $writtenData);
     }
 
     /**

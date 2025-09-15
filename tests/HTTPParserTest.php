@@ -41,12 +41,12 @@ class HTTPParserTest extends TestCase
         $data = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = SimplePie_HTTP_Parser::prepareHeaders($data);
         $parser = new SimplePie_HTTP_Parser($data);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => 'text/plain'], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 
     /**
@@ -57,12 +57,12 @@ class HTTPParserTest extends TestCase
         $data = "HTTP/1.0 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = SimplePie_HTTP_Parser::prepareHeaders($data);
         $parser = new SimplePie_HTTP_Parser($data);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => 'text/plain'], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 
     /**
@@ -73,11 +73,11 @@ class HTTPParserTest extends TestCase
         $data = "HTTP/1.1 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = SimplePie_HTTP_Parser::prepareHeaders($data);
         $parser = new SimplePie_HTTP_Parser($data);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => 'text/plain'], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 }

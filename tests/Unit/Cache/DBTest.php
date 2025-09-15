@@ -13,11 +13,11 @@ class DBTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Cache\DB'));
+        $this->assertTrue(class_exists('SimplePie\Cache\DB'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Cache_DB'));
+        $this->assertTrue(class_exists('SimplePie_Cache_DB'));
     }
 }

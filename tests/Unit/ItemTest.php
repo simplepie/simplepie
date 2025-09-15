@@ -15,12 +15,12 @@ class ItemTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Item'));
+        $this->assertTrue(class_exists('SimplePie\Item'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Item'));
+        $this->assertTrue(class_exists('SimplePie_Item'));
     }
 
     /**
@@ -657,9 +657,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_content());
+        $this->assertSame($expected, $item->get_content());
     }
 
     /**
@@ -1332,9 +1332,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_date('U'));
+        $this->assertSame($expected, $item->get_date('U'));
     }
 
     /**
@@ -1970,9 +1970,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_description());
+        $this->assertSame($expected, $item->get_description());
     }
 
     /**
@@ -2374,9 +2374,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_id());
+        $this->assertSame($expected, $item->get_id());
     }
 
     /**
@@ -2601,9 +2601,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_latitude());
+        $this->assertSame($expected, $item->get_latitude());
     }
 
     /**
@@ -2828,9 +2828,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_longitude());
+        $this->assertSame($expected, $item->get_longitude());
     }
 
     /**
@@ -3353,9 +3353,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_content());
+        $this->assertSame($expected, $item->get_content());
     }
 
     /**
@@ -3431,9 +3431,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_permalink());
+        $this->assertSame($expected, $item->get_permalink());
     }
 
     /**
@@ -4944,9 +4944,9 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_title());
+        $this->assertSame($expected, $item->get_title());
     }
 
     /**
@@ -4960,10 +4960,10 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
         $thumbnail = $item->get_thumbnail();
-        self::assertNotNull($thumbnail);
-        self::assertSame($expected, $thumbnail['url']);
+        $this->assertNotNull($thumbnail);
+        $this->assertSame($expected, $thumbnail['url']);
     }
 
     /**

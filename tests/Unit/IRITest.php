@@ -14,12 +14,12 @@ class IRITest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\IRI'));
+        $this->assertTrue(class_exists('SimplePie\IRI'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_IRI'));
+        $this->assertTrue(class_exists('SimplePie_IRI'));
     }
 
     /**
@@ -82,8 +82,8 @@ class IRITest extends TestCase
     {
         $base = new IRI('http://a/b/c/d;p?q');
         $absolutized = IRI::absolutize($base, $relative);
-        self::assertNotFalse($absolutized);
-        self::assertSame($expected, $absolutized->get_iri());
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -93,7 +93,7 @@ class IRITest extends TestCase
     {
         $base = new IRI('http://a/b/c/d;p?q');
         $expected = new IRI($expected);
-        self::assertEquals($expected, IRI::absolutize($base, $relative));
+        $this->assertEquals($expected, IRI::absolutize($base, $relative));
     }
 
     /**
@@ -103,9 +103,9 @@ class IRITest extends TestCase
     {
         $base = 'http://a/b/c/d;p?q';
         $absolutized = IRI::absolutize($base, $relative);
-        self::assertNotFalse($absolutized);
-        self::assertSame($expected, $absolutized->get_iri());
-        self::assertSame($expected, (string) IRI::absolutize($base, $relative));
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
+        $this->assertSame($expected, (string) IRI::absolutize($base, $relative));
     }
 
     /**
@@ -140,8 +140,8 @@ class IRITest extends TestCase
     {
         $base = new IRI($base);
         $absolutized = IRI::absolutize($base, $relative);
-        self::assertNotFalse($absolutized);
-        self::assertSame($expected, $absolutized->get_iri());
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -151,7 +151,7 @@ class IRITest extends TestCase
     {
         $base = new IRI($base);
         $expected = new IRI($expected);
-        self::assertEquals($expected, IRI::absolutize($base, $relative));
+        $this->assertEquals($expected, IRI::absolutize($base, $relative));
     }
 
     /**
@@ -174,7 +174,7 @@ class IRITest extends TestCase
     {
         $base = new IRI('http://example.com/');
         $base->set_query($query);
-        self::assertSame($expected, $base->get_iri());
+        $this->assertSame($expected, $base->get_iri());
     }
 
     /**
@@ -185,7 +185,7 @@ class IRITest extends TestCase
         $base = new IRI('http://example.com/');
         $base->set_query($query);
         $expected = new IRI($expected);
-        self::assertEquals($expected, $base);
+        $this->assertEquals($expected, $base);
     }
 
     /**
@@ -206,8 +206,8 @@ class IRITest extends TestCase
     {
         $base = new IRI($base);
         $absolutized = IRI::absolutize($base, $relative);
-        self::assertNotFalse($absolutized);
-        self::assertSame($expected, $absolutized->get_iri());
+        $this->assertNotFalse($absolutized);
+        $this->assertSame($expected, $absolutized->get_iri());
     }
 
     /**
@@ -217,7 +217,7 @@ class IRITest extends TestCase
     {
         $base = new IRI($base);
         $expected = new IRI($expected);
-        self::assertEquals($expected, IRI::absolutize($base, $relative));
+        $this->assertEquals($expected, IRI::absolutize($base, $relative));
     }
 
     /**
@@ -312,7 +312,7 @@ class IRITest extends TestCase
     public function testStringNormalization(string $input, string $output): void
     {
         $input = new IRI($input);
-        self::assertSame($output, $input->get_iri());
+        $this->assertSame($output, $input->get_iri());
     }
 
     /**
@@ -322,7 +322,7 @@ class IRITest extends TestCase
     {
         $input = new IRI($input);
         $output = new IRI($output);
-        self::assertEquals($output, $input);
+        $this->assertEquals($output, $input);
     }
 
     /**
@@ -343,7 +343,7 @@ class IRITest extends TestCase
     public function testURIConversion(string $input, string $output): void
     {
         $input = new IRI($input);
-        self::assertSame($output, $input->get_uri());
+        $this->assertSame($output, $input->get_uri());
     }
 
     /**
@@ -363,7 +363,7 @@ class IRITest extends TestCase
     {
         $input = new IRI($input);
         $output = new IRI($output);
-        self::assertEquals($output, $input);
+        $this->assertEquals($output, $input);
     }
 
     /**
@@ -383,12 +383,12 @@ class IRITest extends TestCase
     {
         $input = new IRI($input);
         $output = new IRI($output);
-        self::assertNotEquals($output, $input);
+        $this->assertNotEquals($output, $input);
     }
 
     public function testInvalidAbsolutizeBase(): void
     {
-        self::assertFalse(IRI::absolutize('://not a URL', '../'));
+        $this->assertFalse(IRI::absolutize('://not a URL', '../'));
     }
 
     public function testInvalidPathNoHost(): void
@@ -396,21 +396,21 @@ class IRITest extends TestCase
         $iri = new IRI();
         $iri->scheme = 'http';
         $iri->path = '//test';
-        self::assertFalse($iri->is_valid());
+        $this->assertFalse($iri->is_valid());
     }
 
     public function testInvalidRelativePathContainsColon(): void
     {
         $iri = new IRI();
         $iri->path = '/test:/';
-        self::assertFalse($iri->is_valid());
+        $this->assertFalse($iri->is_valid());
     }
 
     public function testValidRelativePathContainsColon(): void
     {
         $iri = new IRI();
         $iri->path = '/test/:';
-        self::assertTrue($iri->is_valid());
+        $this->assertTrue($iri->is_valid());
     }
 
     public function testFullGamut(): void
@@ -422,12 +422,12 @@ class IRITest extends TestCase
         $iri->path = '/test/';
         $iri->fragment = 'test';
 
-        self::assertSame('http', $iri->scheme);
-        self::assertSame('user:password', $iri->userinfo);
-        self::assertSame('example.com', $iri->host);
-        self::assertSame(80, $iri->port);
-        self::assertSame('/test/', $iri->path);
-        self::assertSame('test', $iri->fragment);
+        $this->assertSame('http', $iri->scheme);
+        $this->assertSame('user:password', $iri->userinfo);
+        $this->assertSame('example.com', $iri->host);
+        $this->assertSame(80, $iri->port);
+        $this->assertSame('/test/', $iri->path);
+        $this->assertSame('test', $iri->fragment);
     }
 
     public function testReadAliased(): void
@@ -439,12 +439,12 @@ class IRITest extends TestCase
         $iri->path = '/test/';
         $iri->fragment = 'test';
 
-        self::assertSame('http', $iri->scheme);
-        self::assertSame('user:password', $iri->userinfo);
-        self::assertSame('example.com', $iri->host);
-        self::assertSame(80, $iri->port);
-        self::assertSame('/test/', $iri->path);
-        self::assertSame('test', $iri->fragment);
+        $this->assertSame('http', $iri->scheme);
+        $this->assertSame('user:password', $iri->userinfo);
+        $this->assertSame('example.com', $iri->host);
+        $this->assertSame(80, $iri->port);
+        $this->assertSame('/test/', $iri->path);
+        $this->assertSame('test', $iri->fragment);
     }
 
     public function testWriteAliased(): void
@@ -456,23 +456,23 @@ class IRITest extends TestCase
         $iri->path = '/test/';
         $iri->fragment = 'test';
 
-        self::assertSame('http', $iri->scheme);
-        self::assertSame('user:password', $iri->userinfo);
-        self::assertSame('example.com', $iri->host);
-        self::assertSame(80, $iri->port);
-        self::assertSame('/test/', $iri->path);
-        self::assertSame('test', $iri->fragment);
+        $this->assertSame('http', $iri->scheme);
+        $this->assertSame('user:password', $iri->userinfo);
+        $this->assertSame('example.com', $iri->host);
+        $this->assertSame(80, $iri->port);
+        $this->assertSame('/test/', $iri->path);
+        $this->assertSame('test', $iri->fragment);
     }
 
     public function testNonexistentProperty(): void
     {
         $iri = new IRI();
-        self::assertFalse(isset($iri->nonexistent_prop));
+        $this->assertFalse(isset($iri->nonexistent_prop));
 
         // PHPUnit 10 compatible way to test trigger_error().
         set_error_handler(
             function ($errno, $errstr): bool {
-                self::assertSame(
+                $this->assertSame(
                     'Undefined property: SimplePie\IRI::nonexistent_prop',
                     $errstr
                 );
@@ -492,8 +492,8 @@ class IRITest extends TestCase
         $iri = new IRI('http://example.com/a/?b=c#d');
         $iri->host = null;
 
-        self::assertNull($iri->host);
-        self::assertSame('http:/a/?b=c#d', (string) $iri);
+        $this->assertNull($iri->host);
+        $this->assertSame('http:/a/?b=c#d', (string) $iri);
     }
 
     public function testBadPort(): void
@@ -501,6 +501,6 @@ class IRITest extends TestCase
         $iri = new IRI();
         $iri->port = 'example';
 
-        self::assertNull($iri->port);
+        $this->assertNull($iri->port);
     }
 }

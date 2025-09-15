@@ -16,24 +16,24 @@ class MiscTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists(Misc::class));
+        $this->assertTrue(class_exists(Misc::class));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists(SimplePie_Misc::class));
+        $this->assertTrue(class_exists(SimplePie_Misc::class));
     }
 
     public function test_existence_of_get_element(): void
     {
         // BC: make sure that get_element() exists
-        self::assertSame([], Misc::get_element('', ''));
+        $this->assertSame([], Misc::get_element('', ''));
     }
 
     public function test_existence_of_entities_decode(): void
     {
         // BC: make sure that entities_decode() exists
-        self::assertSame('', Misc::entities_decode(''));
+        $this->assertSame('', Misc::entities_decode(''));
     }
 
     /* ## UTF-8 methods */
@@ -67,7 +67,7 @@ class MiscTest extends TestCase
     public function test_convert_UTF8(string $input, string $expected, string $encoding): void
     {
         $encoding = Misc::encoding($encoding);
-        self::assertSameBin2Hex($expected, (string) Misc::change_encoding($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) Misc::change_encoding($input, $encoding, 'UTF-8'));
     }
 
     /**
@@ -95,7 +95,7 @@ class MiscTest extends TestCase
         }
 
         $encoding = Misc::encoding($encoding);
-        self::assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_mbstring($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_mbstring($input, $encoding, 'UTF-8'));
     }
 
     /**
@@ -123,7 +123,7 @@ class MiscTest extends TestCase
         }
 
         $encoding = Misc::encoding($encoding);
-        self::assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_iconv($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_iconv($input, $encoding, 'UTF-8'));
     }
 
     /**
@@ -151,7 +151,7 @@ class MiscTest extends TestCase
         }
 
         $encoding = Misc::encoding($encoding);
-        self::assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_uconverter($input, $encoding, 'UTF-8'));
+        $this->assertSameBin2Hex($expected, (string) MiscWithPublicStaticMethodsMock::change_encoding_uconverter($input, $encoding, 'UTF-8'));
     }
 
     /* ## UTF-16 methods */
@@ -174,12 +174,12 @@ class MiscTest extends TestCase
     public function test_convert_UTF16(string $input, string $expected, string $encoding): void
     {
         $encoding = Misc::encoding($encoding);
-        self::assertSameBin2Hex($expected, (string) Misc::change_encoding($input, $encoding, 'UTF-16'));
+        $this->assertSameBin2Hex($expected, (string) Misc::change_encoding($input, $encoding, 'UTF-16'));
     }
 
     public function test_nonexistent(): void
     {
-        self::assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
+        $this->assertFalse(Misc::change_encoding('', 'TESTENC', 'UTF-8'));
     }
 
     public function assertSameBin2Hex(string $expected, string $actual, string $message = ''): void
@@ -187,7 +187,7 @@ class MiscTest extends TestCase
         $expected = bin2hex($expected);
         $actual = bin2hex($actual);
 
-        self::assertSame($expected, $actual, $message);
+        $this->assertSame($expected, $actual, $message);
     }
 
     /**
@@ -378,7 +378,7 @@ class MiscTest extends TestCase
     {
         $base = 'http://a/b/c/d;p?q';
 
-        self::assertSame(
+        $this->assertSame(
             $expected,
             Misc::absolutize_url($relative, $base)
         );
@@ -483,7 +483,7 @@ class MiscTest extends TestCase
      */
     public function test_absolutize_url_bugs(string $base, string $relative, string $expected): void
     {
-        self::assertSame(
+        $this->assertSame(
             $expected,
             Misc::absolutize_url($relative, $base)
         );
@@ -734,7 +734,7 @@ class MiscTest extends TestCase
      */
     public function test_parse_date(string $data, $expected): void
     {
-        self::assertSame(
+        $this->assertSame(
             $expected,
             Misc::parse_date($data)
         );

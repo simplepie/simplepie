@@ -16,12 +16,12 @@ class CategoryTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Category'));
+        $this->assertTrue(class_exists('SimplePie\Category'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Category'));
+        $this->assertTrue(class_exists('SimplePie_Category'));
     }
 
     /**
@@ -387,9 +387,9 @@ XML
         $feed->init();
 
         $category = $feed->get_category();
-        self::assertInstanceOf(Category::class, $category);
+        $this->assertInstanceOf(Category::class, $category);
 
-        self::assertSame($expected, $category->get_label());
+        $this->assertSame($expected, $category->get_label());
     }
 
     /**
@@ -815,11 +815,11 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
         $category = $item->get_category();
-        self::assertInstanceOf(Category::class, $category);
+        $this->assertInstanceOf(Category::class, $category);
 
-        self::assertSame($expected, $category->get_label());
+        $this->assertSame($expected, $category->get_label());
     }
 }

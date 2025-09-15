@@ -28,7 +28,7 @@ class Psr18ClientTest extends TestCase
         );
 
         // @phpstan-ignore staticMethod.alreadyNarrowedType
-        self::assertInstanceOf(Response::class, $client->request(Client::METHOD_GET, 'https://example.com/feed.xml'));
+        $this->assertInstanceOf(Response::class, $client->request(Client::METHOD_GET, 'https://example.com/feed.xml'));
     }
 
     public function testRequestReturnsResponseWithStatusCode429(): void
@@ -46,7 +46,7 @@ class Psr18ClientTest extends TestCase
         );
 
         // Make sure no ClientException is thrown on status code 429
-        self::assertSame(
+        $this->assertSame(
             429,
             $client->request(Client::METHOD_GET, 'https://example.com/429-error')->get_status_code()
         );
@@ -79,7 +79,7 @@ class Psr18ClientTest extends TestCase
 
         $response = $client->request(Client::METHOD_GET, 'https://example.com/redirect');
 
-        self::assertSame('https://example.com/redirect', $response->get_permanent_uri());
-        self::assertSame('https://example.com/feed.xml', $response->get_final_requested_uri());
+        $this->assertSame('https://example.com/redirect', $response->get_permanent_uri());
+        $this->assertSame('https://example.com/feed.xml', $response->get_final_requested_uri());
     }
 }

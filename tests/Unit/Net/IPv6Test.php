@@ -13,11 +13,11 @@ class IPv6Test extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Net\IPv6'));
+        $this->assertTrue(class_exists('SimplePie\Net\IPv6'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Net_IPv6'));
+        $this->assertTrue(class_exists('SimplePie_Net_IPv6'));
     }
 }

@@ -13,11 +13,11 @@ class ExceptionTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Exception'));
+        $this->assertTrue(class_exists('SimplePie\Exception'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Exception'));
+        $this->assertTrue(class_exists('SimplePie_Exception'));
     }
 }

@@ -18,7 +18,7 @@ class Psr7ResponseTest extends TestCase
     public function testPsr7ResponseExtendsResponse(): void
     {
         // @phpstan-ignore staticMethod.alreadyNarrowedType
-        self::assertInstanceOf(Response::class, new Psr7Response($this->createMock(ResponseInterface::class), '', ''));
+        $this->assertInstanceOf(Response::class, new Psr7Response($this->createMock(ResponseInterface::class), '', ''));
     }
 
     public function createPsr7Response(): Psr7Response
@@ -54,7 +54,7 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             'https://example.com',
             $response->get_permanent_uri()
         );
@@ -64,7 +64,7 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             'https://example.com/feed.xml',
             $response->get_final_requested_uri()
         );
@@ -74,7 +74,7 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             200,
             $response->get_status_code()
         );
@@ -84,7 +84,7 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             ['content-type' => ['application/atom+xml']],
             $response->get_headers()
         );
@@ -94,21 +94,21 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertTrue($response->has_header('Content-Type'));
+        $this->assertTrue($response->has_header('Content-Type'));
     }
 
     public function testHasHeadersReturnsFalse(): void
     {
         $response = $this->createPsr7Response();
 
-        self::assertFalse($response->has_header('X-Custom-Header'));
+        $this->assertFalse($response->has_header('X-Custom-Header'));
     }
 
     public function testGetHeaderReturnsArray(): void
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             ['application/atom+xml'],
             $response->get_header('CONTENT-TYPE')
         );
@@ -118,7 +118,7 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             [],
             $response->get_header('X-Custom-Header')
         );
@@ -128,7 +128,7 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             'application/atom+xml',
             $response->get_header_line('content-Type')
         );
@@ -138,7 +138,7 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             '',
             $response->get_header_line('X-Custom-Header')
         );
@@ -148,7 +148,7 @@ class Psr7ResponseTest extends TestCase
     {
         $response = $this->createPsr7Response();
 
-        self::assertSame(
+        $this->assertSame(
             '<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" />',
             $response->get_body_content()
         );

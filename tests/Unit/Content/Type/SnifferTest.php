@@ -13,11 +13,11 @@ class SnifferTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Content\Type\Sniffer'));
+        $this->assertTrue(class_exists('SimplePie\Content\Type\Sniffer'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Content_Type_Sniffer'));
+        $this->assertTrue(class_exists('SimplePie_Content_Type_Sniffer'));
     }
 }

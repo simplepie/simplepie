@@ -14,12 +14,12 @@ class ParserTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\HTTP\Parser'));
+        $this->assertTrue(class_exists('SimplePie\HTTP\Parser'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_HTTP_Parser'));
+        $this->assertTrue(class_exists('SimplePie_HTTP_Parser'));
     }
 
     /**
@@ -51,12 +51,12 @@ class ParserTest extends TestCase
         $data = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);
         $parser = new Parser($data);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => 'text/plain'], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 
     /**
@@ -67,12 +67,12 @@ class ParserTest extends TestCase
         $data = "HTTP/1.0 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);
         $parser = new Parser($data);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => 'text/plain'], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 
     /**
@@ -83,12 +83,12 @@ class ParserTest extends TestCase
         $data = "HTTP/1.1 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);
         $parser = new Parser($data);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => 'text/plain'], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => 'text/plain'], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 
     public function testDuplicateHeaders(): void
@@ -96,8 +96,8 @@ class ParserTest extends TestCase
         $data = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Security-Policy: default-src 'self' http://example.com\r\nContent-Type: text/plain\r\nContent-Security-Policy: script-src http://example.com/\r\n\r\n";
         $data = Parser::prepareHeaders($data);
         $parser = new Parser($data);
-        self::assertTrue($parser->parse());
-        self::assertSame([
+        $this->assertTrue($parser->parse());
+        $this->assertSame([
             // Later Content-Type takes precedence.
             'content-type' => 'text/plain',
             // This is invalid but we are going to remove the parser eventually.
@@ -113,12 +113,12 @@ class ParserTest extends TestCase
         $data = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);
         $parser = new Parser($data, true);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => ['text/plain']], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => ['text/plain']], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 
     /**
@@ -129,12 +129,12 @@ class ParserTest extends TestCase
         $data = "HTTP/1.0 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);
         $parser = new Parser($data, true);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => ['text/plain']], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => ['text/plain']], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 
     /**
@@ -145,12 +145,12 @@ class ParserTest extends TestCase
         $data = "HTTP/1.1 200 Connection established\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n" . $data;
         $data = Parser::prepareHeaders($data);
         $parser = new Parser($data, true);
-        self::assertTrue($parser->parse());
-        self::assertSame(1.1, $parser->http_version);
-        self::assertSame(200, $parser->status_code);
-        self::assertSame('OK', $parser->reason);
-        self::assertSame(['content-type' => ['text/plain']], $parser->headers);
-        self::assertSame($expected, $parser->body);
+        $this->assertTrue($parser->parse());
+        $this->assertSame(1.1, $parser->http_version);
+        $this->assertSame(200, $parser->status_code);
+        $this->assertSame('OK', $parser->reason);
+        $this->assertSame(['content-type' => ['text/plain']], $parser->headers);
+        $this->assertSame($expected, $parser->body);
     }
 
     public function testDuplicateHeadersPsr7(): void
@@ -158,8 +158,8 @@ class ParserTest extends TestCase
         $data = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Security-Policy: default-src 'self' http://example.com\r\nContent-Type: text/plain\r\nContent-Security-Policy: script-src http://example.com/\r\n\r\n";
         $data = Parser::prepareHeaders($data);
         $parser = new Parser($data, true);
-        self::assertTrue($parser->parse());
-        self::assertSame([
+        $this->assertTrue($parser->parse());
+        $this->assertSame([
             // Later Content-Type takes precedence.
             'content-type' => ['text/plain'],
             'content-security-policy' => ["default-src 'self' http://example.com", 'script-src http://example.com/'],

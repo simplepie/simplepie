@@ -14,7 +14,7 @@ class SanitizeTest extends TestCase
     {
         $sanitize = new SimplePie_Sanitize();
 
-        self::assertSame(
+        $this->assertSame(
             <<<HTML
 &lt;head&gt; &amp; &lt;body&gt; /\ ' === ' &amp; " === ". Sbohem bez šátečku! Тут был Лёха.
 HTML
@@ -87,6 +87,6 @@ HTML
 
         $base = 'http://example.com/';
 
-        self::assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
+        $this->assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
     }
 }

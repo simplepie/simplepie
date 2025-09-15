@@ -13,11 +13,11 @@ class CaptionTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Caption'));
+        $this->assertTrue(class_exists('SimplePie\Caption'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Caption'));
+        $this->assertTrue(class_exists('SimplePie_Caption'));
     }
 }

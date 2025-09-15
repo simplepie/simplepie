@@ -13,11 +13,11 @@ class FileTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Cache\File'));
+        $this->assertTrue(class_exists('SimplePie\Cache\File'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Cache_File'));
+        $this->assertTrue(class_exists('SimplePie_Cache_File'));
     }
 }

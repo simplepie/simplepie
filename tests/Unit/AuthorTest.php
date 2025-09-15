@@ -16,12 +16,12 @@ class AuthorTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie\Author'));
+        $this->assertTrue(class_exists('SimplePie\Author'));
     }
 
     public function testClassExists(): void
     {
-        self::assertTrue(class_exists('SimplePie_Author'));
+        $this->assertTrue(class_exists('SimplePie_Author'));
     }
 
     /**
@@ -494,12 +494,12 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
         $author = $item->get_author();
-        self::assertInstanceOf(Author::class, $author);
+        $this->assertInstanceOf(Author::class, $author);
 
-        self::assertSame($expected, $author->get_name());
+        $this->assertSame($expected, $author->get_name());
     }
 
     /**
@@ -722,11 +722,11 @@ XML
         $feed->init();
 
         $item = $feed->get_item(0);
-        self::assertInstanceOf(Item::class, $item);
+        $this->assertInstanceOf(Item::class, $item);
 
         $author = $item->get_contributor();
-        self::assertInstanceOf(Author::class, $author);
+        $this->assertInstanceOf(Author::class, $author);
 
-        self::assertSame($expected, $author->get_name());
+        $this->assertSame($expected, $author->get_name());
     }
 }
