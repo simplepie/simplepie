@@ -27,7 +27,7 @@ class Psr18ClientTest extends TestCase
             $this->createMock(UriFactoryInterface::class)
         );
 
-        // @phpstan-ignore staticMethod.alreadyNarrowedType
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertInstanceOf(Response::class, $client->request(Client::METHOD_GET, 'https://example.com/feed.xml'));
     }
 

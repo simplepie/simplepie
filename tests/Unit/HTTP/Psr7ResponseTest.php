@@ -17,7 +17,7 @@ class Psr7ResponseTest extends TestCase
 {
     public function testPsr7ResponseExtendsResponse(): void
     {
-        // @phpstan-ignore staticMethod.alreadyNarrowedType
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertInstanceOf(Response::class, new Psr7Response($this->createMock(ResponseInterface::class), '', ''));
     }
 
