@@ -111,8 +111,11 @@ class CachingTest extends TestCase
         if (array_key_exists('cache_expiration_time', $writtenData)) {
             $expectedDataWritten['cache_expiration_time'] = $writtenData['cache_expiration_time'];
         }
+        if (isset($writtenData['hash'])) { // FreshRSS
+            $expectedDataWritten['hash'] = $writtenData['hash'];
+        }
 
-        self::assertSame($expectedDataWritten, $writtenData);
+        self::assertEqualsCanonicalizing($expectedDataWritten, $writtenData); // FreshRSS
     }
 
     /**
@@ -143,6 +146,7 @@ class CachingTest extends TestCase
             ],
             'build' => Misc::get_build(),
             'cache_expiration_time' => 0, // Needs to be adjust in test case
+            'cache_version' => \SimplePie\SimplePie::CACHE_VERSION, // FreshRSS
         ];
 
         $expectNoDataWritten = [];
@@ -152,6 +156,7 @@ class CachingTest extends TestCase
             'feed_url' => 'http://example.com/feed.xml/',
             'build' => Misc::get_build(),
             'cache_expiration_time' => $defaultExpirationTime,
+            'cache_version' => \SimplePie\SimplePie::CACHE_VERSION, // FreshRSS
         ];
 
         $currentlyCachedDataIsUpdated = [
@@ -174,6 +179,7 @@ class CachingTest extends TestCase
             ],
             'build' => Misc::get_build(),
             'cache_expiration_time' => $defaultExpirationTime,
+            'cache_version' => \SimplePie\SimplePie::CACHE_VERSION, // FreshRSS
         ];
 
         $currentlyCachedDataIsValid = [
@@ -196,6 +202,7 @@ class CachingTest extends TestCase
             ],
             'build' => Misc::get_build(),
             'cache_expiration_time' => $defaultMtime,
+            'cache_version' => \SimplePie\SimplePie::CACHE_VERSION, // FreshRSS
         ];
 
         $currentlyNoDataIsCached = [];
@@ -208,6 +215,7 @@ class CachingTest extends TestCase
             'url' => 'http://example.com/some-different-url',
             'build' => Misc::get_build(),
             'cache_expiration_time' => $defaultExpirationTime,
+            'cache_version' => \SimplePie\SimplePie::CACHE_VERSION, // FreshRSS
         ];
 
         $currentlyCachedDataWithFeedUrl = [
@@ -215,6 +223,7 @@ class CachingTest extends TestCase
             'feed_url' => 'http://example.com/feed/',
             'build' => Misc::get_build(),
             'cache_expiration_time' => $defaultExpirationTime,
+            'cache_version' => \SimplePie\SimplePie::CACHE_VERSION, // FreshRSS
         ];
 
         $currentlyCachedDataWithNonFeedUrl = [
@@ -222,6 +231,7 @@ class CachingTest extends TestCase
             'feed_url' => 'http://example.com/feed.xml/',
             'build' => Misc::get_build(),
             'cache_expiration_time' => $defaultExpirationTime,
+            'cache_version' => \SimplePie\SimplePie::CACHE_VERSION, // FreshRSS
         ];
 
         return [

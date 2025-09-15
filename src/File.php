@@ -130,23 +130,30 @@ class File implements Response
                 curl_setopt($fp, CURLOPT_FAILONERROR, 1);
                 curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
                 curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
-                curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
+                // curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url)); // FreshRSS removed
                 curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
                 curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
                 foreach ($curl_options as $curl_param => $curl_value) {
                     curl_setopt($fp, $curl_param, $curl_value);
                 }
 
+                /** @var string|false $responseHeaders */
                 $responseHeaders = curl_exec($fp);
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
+                    $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp); // FreshRSS
+                    $this->on_http_response($responseHeaders);
+                    $this->error = null; // FreshRSS
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
+                    /** @var string|false $responseHeaders */
                     $responseHeaders = curl_exec($fp);
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
                 if (curl_errno($fp)) {
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
                     $this->success = false;
+                    $this->on_http_response($responseHeaders);
                 } else {
+                    $this->on_http_response($responseHeaders);
                     // Use the updated url provided by curl_getinfo after any redirects.
                     if ($info = curl_getinfo($fp)) {
                         $this->url = $info['url'];
@@ -196,6 +203,7 @@ class File implements Response
                 if (!$fp) {
                     $this->error = 'fsockopen error: ' . $errstr;
                     $this->success = false;
+                    $this->on_http_response(false);
                 } else {
                     stream_set_timeout($fp, $timeout);
                     if (isset($url_parts['path'])) {
@@ -236,6 +244,7 @@ class File implements Response
                             $this->set_headers($parser->headers);
                             $this->body = $parser->body;
                             $this->status_code = $parser->status_code;
+                            $this->on_http_response($responseHeaders);
                             if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                                 $this->redirects++;
                                 $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
@@ -249,6 +258,7 @@ class File implements Response
                                 return;
                             }
                             if (($contentEncodingHeader = $this->get_header_line('content-encoding')) !== '') {
+                                assert($this->body !== null); // For PHPStan // FreshRSS
                                 // Hey, we act dumb elsewhere, so let's do that here too
                                 switch (strtolower(trim($contentEncodingHeader, "\x09\x0A\x0D\x20"))) {
                                     case 'gzip':
@@ -279,16 +289,22 @@ class File implements Response
                                         $this->success = false;
                                 }
                             }
+                        } else {
+                            $this->error = 'Could not parse'; // FreshRSS
+                            $this->success = false; // FreshRSS
+                            $this->on_http_response($responseHeaders);
                         }
                     } else {
                         $this->error = 'fsocket timed out';
                         $this->success = false;
+                        $this->on_http_response($responseHeaders);
                     }
                     fclose($fp);
                 }
             }
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
+            $filebody = false;
             if (empty($url) || !is_readable($url) ||  false === $filebody = file_get_contents($url)) {
                 $this->body = '';
                 $this->error = sprintf('file "%s" is not readable', $url);
@@ -297,6 +313,7 @@ class File implements Response
                 $this->body = $filebody;
                 $this->status_code = 200;
             }
+            $this->on_http_response($filebody);
         }
         if ($this->success) {
             assert($this->body !== null); // For PHPStan
@@ -305,6 +322,16 @@ class File implements Response
             // We also only do that when the whitespace is followed by `<`, so that we do not break e.g. UTF-16LE encoded whitespace like `\n\x00` in half.
             $this->body = preg_replace('/^[ \n\r\t\v]+</', '<', $this->body);
         }
+    }
+
+    /**
+     * Event to allow inheriting classes to e.g. log the HTTP responses.
+     * Triggered just after an HTTP response is received.
+     * @param string|false $response The raw HTTP response headers and body, or false in case of failure (as returned by curl_exec()).
+     * FreshRSS.
+     */
+    protected function on_http_response($response): void
+    {
     }
 
     public function get_permanent_uri(): string

@@ -69,19 +69,20 @@ class BaseDataCacheTest extends TestCase
         self::assertSame($default, $cache->get_data($key, $default));
     }
 
-    public function testGetDataWithCacheExpiredReturnsDefault(): void
-    {
-        $key = 'name';
-        $cachedValue = ['__cache_expiration_time' => 0];
-        $default = new stdClass();
+    // FreshRSS commented out, to allow HTTP 304
+    // public function testGetDataWithCacheExpiredReturnsDefault(): void
+    // {
+    //     $key = 'name';
+    //     $cachedValue = ['__cache_expiration_time' => 0];
+    //     $default = new stdClass();
 
-        $baseCache = $this->createMock(Base::class);
-        $baseCache->expects($this->once())->method('load')->willReturn($cachedValue);
+    //     $baseCache = $this->createMock(Base::class);
+    //     $baseCache->expects($this->once())->method('load')->willReturn($cachedValue);
 
-        $cache = new BaseDataCache($baseCache);
+    //     $cache = new BaseDataCache($baseCache);
 
-        self::assertSame($default, $cache->get_data($key, $default));
-    }
+    //     self::assertSame($default, $cache->get_data($key, $default));
+    // }
 
     public function testGetDataWithCacheCorruptionReturnsDefault(): void
     {
