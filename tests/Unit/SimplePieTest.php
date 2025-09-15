@@ -24,12 +24,12 @@ class SimplePieTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\SimplePie'));
+        self::assertTrue(class_exists('SimplePie\SimplePie'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists(SimplePie::class));
+        self::assertTrue(class_exists(SimplePie::class));
     }
 
     /**
@@ -90,7 +90,7 @@ class SimplePieTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->createFeedWithTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -105,7 +105,7 @@ class SimplePieTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->createFeedWithTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -120,7 +120,7 @@ class SimplePieTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->createFeedWithTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -135,7 +135,7 @@ class SimplePieTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->createFeedWithTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -150,7 +150,7 @@ class SimplePieTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->createFeedWithTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -170,7 +170,7 @@ class SimplePieTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->createFeedWithTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -190,7 +190,7 @@ class SimplePieTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->createFeedWithTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     public function testItemWithEmptyContent(): void
@@ -207,8 +207,8 @@ class SimplePieTest extends TestCase
         $content = 'item description';
         $feed = $this->createFeedWithTemplate($data, $content);
         $item = $feed->get_item();
-        $this->assertInstanceOf(Item::class, $item);
-        $this->assertSame($content, $item->get_content());
+        self::assertInstanceOf(Item::class, $item);
+        self::assertSame($content, $item->get_content());
     }
 
     public function testSetPsr16Cache(): void
@@ -232,7 +232,7 @@ class SimplePieTest extends TestCase
         // PHPUnit 10 compatible way to test trigger_error().
         set_error_handler(
             function ($errno, $errstr): bool {
-                $this->assertSame(
+                self::assertSame(
                     '"SimplePie\SimplePie::set_cache_class()" is deprecated since SimplePie 1.3, please use "SimplePie\SimplePie::set_cache()" instead.',
                     $errstr
                 );
@@ -281,8 +281,8 @@ class SimplePieTest extends TestCase
 
         $feed->init();
 
-        $this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
-        $this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
+        self::assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
+        self::assertSame('https://example.com/feed/', $feed->subscribe_url(true));
     }
 
     /**
@@ -595,7 +595,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_copyright());
+        self::assertSame($expected, $feed->get_copyright());
     }
 
     /**
@@ -1006,7 +1006,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_description());
+        self::assertSame($expected, $feed->get_description());
     }
 
     /**
@@ -1303,7 +1303,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_image_height());
+        self::assertSame($expected, $feed->get_image_height());
     }
 
     /**
@@ -1400,7 +1400,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_image_link());
+        self::assertSame($expected, $feed->get_image_link());
     }
 
     /**
@@ -1647,7 +1647,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_image_title());
+        self::assertSame($expected, $feed->get_image_title());
     }
 
     /**
@@ -1896,7 +1896,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_image_url());
+        self::assertSame($expected, $feed->get_image_url());
     }
 
     /**
@@ -2198,7 +2198,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_image_width());
+        self::assertSame($expected, $feed->get_image_width());
     }
 
     /**
@@ -2453,7 +2453,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_language());
+        self::assertSame($expected, $feed->get_language());
     }
 
     /**
@@ -2721,7 +2721,7 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_link());
+        self::assertSame($expected, $feed->get_link());
     }
 
     /**
@@ -3145,6 +3145,6 @@ XML
         $feed->enable_cache(false);
         $feed->init();
 
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 }

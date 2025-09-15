@@ -16,18 +16,18 @@ class FileTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\File'));
+        self::assertTrue(class_exists('SimplePie\File'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_File'));
+        self::assertTrue(class_exists('SimplePie_File'));
     }
 
     public function testFileExtendsResponse(): void
     {
-        // @phpstan-ignore method.alreadyNarrowedType
-        $this->assertInstanceOf(Response::class, new FileMock(''));
+        // @phpstan-ignore staticMethod.alreadyNarrowedType
+        self::assertInstanceOf(Response::class, new FileMock(''));
     }
 
     /**
@@ -43,7 +43,7 @@ class FileTest extends TestCase
      */
     public function testGetRequestedUriReturnsString(File $response): void
     {
-        $this->assertSame(
+        self::assertSame(
             'http://example.com/feed',
             $response->get_final_requested_uri()
         );
@@ -54,7 +54,7 @@ class FileTest extends TestCase
      */
     public function testGetStatusCodeReturnsInt(File $response): void
     {
-        $this->assertSame(
+        self::assertSame(
             200,
             $response->get_status_code()
         );
@@ -65,7 +65,7 @@ class FileTest extends TestCase
      */
     public function testGetHeadersReturnsArray(File $response): void
     {
-        $this->assertSame(
+        self::assertSame(
             ['content-type' => ['application/atom+xml']],
             $response->get_headers()
         );
@@ -76,7 +76,7 @@ class FileTest extends TestCase
      */
     public function testHasHeadersReturnsTrue(File $response): void
     {
-        $this->assertTrue($response->has_header('Content-Type'));
+        self::assertTrue($response->has_header('Content-Type'));
     }
 
     /**
@@ -84,7 +84,7 @@ class FileTest extends TestCase
      */
     public function testHasHeadersReturnsFalse(File $response): void
     {
-        $this->assertFalse($response->has_header('X-Custom-Header'));
+        self::assertFalse($response->has_header('X-Custom-Header'));
     }
 
     /**
@@ -92,7 +92,7 @@ class FileTest extends TestCase
      */
     public function testGetHeaderReturnsArray(File $response): void
     {
-        $this->assertSame(
+        self::assertSame(
             ['application/atom+xml'],
             $response->get_header('CONTENT-TYPE')
         );
@@ -103,7 +103,7 @@ class FileTest extends TestCase
      */
     public function testGetHeaderReturnsEmptyArray(File $response): void
     {
-        $this->assertSame(
+        self::assertSame(
             [],
             $response->get_header('X-Custom-Header')
         );
@@ -114,7 +114,7 @@ class FileTest extends TestCase
      */
     public function testGetHeaderLineReturnsString(File $response): void
     {
-        $this->assertSame(
+        self::assertSame(
             'application/atom+xml',
             $response->get_header_line('content-Type')
         );
@@ -125,7 +125,7 @@ class FileTest extends TestCase
      */
     public function testGetHeaderLineReturnsEmptyString(File $response): void
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $response->get_header_line('X-Custom-Header')
         );
@@ -136,7 +136,7 @@ class FileTest extends TestCase
      */
     public function testGetBodyContentReturnsString(File $response): void
     {
-        $this->assertSame(
+        self::assertSame(
             '<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" />',
             $response->get_body_content()
         );

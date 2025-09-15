@@ -47,13 +47,13 @@ class ClientsTest extends TestCase
 
         $response = $client->request(Client::METHOD_GET, $filepath);
 
-        // @phpstan-ignore method.alreadyNarrowedType
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame($filepath, $response->get_permanent_uri());
-        $this->assertSame($filepath, $response->get_final_requested_uri());
-        $this->assertSame(200, $response->get_status_code());
-        $this->assertSame([], $response->get_headers());
-        $this->assertStringStartsWith('<rss version="2.0">', $response->get_body_content());
+        // @phpstan-ignore staticMethod.alreadyNarrowedType
+        self::assertInstanceOf(Response::class, $response);
+        self::assertSame($filepath, $response->get_permanent_uri());
+        self::assertSame($filepath, $response->get_final_requested_uri());
+        self::assertSame(200, $response->get_status_code());
+        self::assertSame([], $response->get_headers());
+        self::assertStringStartsWith('<rss version="2.0">', $response->get_body_content());
     }
 
     public function testFileClientThrowsClientException(): void
@@ -104,7 +104,7 @@ class ClientsTest extends TestCase
 
         $server->stop();
 
-        $this->assertSame(429, $response->get_status_code());
+        self::assertSame(429, $response->get_status_code());
     }
 
     public function testFileClientReturnsResponseOn500StatusCode(): void
@@ -123,7 +123,7 @@ class ClientsTest extends TestCase
 
         $server->stop();
 
-        $this->assertSame(500, $response->get_status_code());
+        self::assertSame(500, $response->get_status_code());
     }
 
     public function testFileClientThrowsClientExceptionIfServerIsUnreachable(): void
@@ -216,10 +216,10 @@ class ClientsTest extends TestCase
 
         $server->stop();
 
-        $this->assertSame(200, $response->get_status_code());
-        $this->assertSame('OK', $response->get_body_content());
-        $this->assertSame($permanentLocation, $response->get_permanent_uri());
-        $this->assertSame($finalLocation, $response->get_final_requested_uri());
+        self::assertSame(200, $response->get_status_code());
+        self::assertSame('OK', $response->get_body_content());
+        self::assertSame($permanentLocation, $response->get_permanent_uri());
+        self::assertSame($finalLocation, $response->get_final_requested_uri());
     }
 
     /**
@@ -280,12 +280,12 @@ class ClientsTest extends TestCase
         $start = $endianness === 'be' ? "\x00<\x00r\x00s\x00s\x00 " : "<\x00r\x00s\x00s\x00 \x00";
         $end = $endianness === 'be' ? "\x00<\x00/\x00r\x00s\x00s\x00>\x00\n" : "<\x00/\x00r\x00s\x00s\x00>\x00\n\x00";
 
-        $this->assertSame(
+        self::assertSame(
             $start,
             substr($response->get_body_content(), 0, strlen($start)),
             'Body does not start as expected: ' . $response->get_body_content()
         );
-        $this->assertSame(
+        self::assertSame(
             $end,
             substr($response->get_body_content(), -strlen($end)),
             'Body does not end as expected: ' . $response->get_body_content()

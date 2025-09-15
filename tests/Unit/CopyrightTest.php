@@ -13,11 +13,11 @@ class CopyrightTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Copyright'));
+        self::assertTrue(class_exists('SimplePie\Copyright'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Copyright'));
+        self::assertTrue(class_exists('SimplePie_Copyright'));
     }
 }
