@@ -1810,7 +1810,7 @@ class SimplePie
                     // Cache the file if caching is enabled
                     $this->data['cache_expiration_time'] = $this->cache_duration + time();
 
-                    if ($cache && !$cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
+                    if ($cache instanceof DataCache && !$cache->set_data($this->get_cache_filename($this->feed_url), $this->data, $this->cache_duration)) {
                         trigger_error("$this->cache_location is not writable. Make sure you've set the correct relative or absolute path, and that the location is server-writable.", E_USER_WARNING);
                     }
                     return true;
@@ -1861,7 +1861,6 @@ class SimplePie
             $cache = new BaseDataCache($cache);
         }
 
-        // @phpstan-ignore-next-line Enforce PHPDoc type.
         if ($cache !== false && !$cache instanceof DataCache) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #1 ($cache) must be of type %s|false',
@@ -2860,7 +2859,7 @@ class SimplePie
             }
             // https://datatracker.ietf.org/doc/html/rfc8288
             if (is_string($link_headers) &&
-                preg_match_all('/<(?P<uri>[^>]+)>\s*;\s*rel\s*=\s*(?P<quote>"?)' . preg_quote($rel) . '(?P=quote)\s*(?=,|$)/i', $link_headers, $matches)) {
+                preg_match_all('/<(?P<uri>[^>]+)>\s*;\s*rel\s*=\s*(?P<quote>"?)' . preg_quote($rel, '/') . '(?P=quote)\s*(?=,|$)/i', $link_headers, $matches)) {
                 return $matches['uri'];
             }
         }
@@ -3370,8 +3369,6 @@ class SimplePie
             foreach ($urls as $arg) {
                 if ($arg instanceof SimplePie) {
                     $items = array_merge($items, $arg->get_items(0, $limit));
-
-                    // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {
                     trigger_error('Arguments must be SimplePie objects', E_USER_WARNING);
                 }

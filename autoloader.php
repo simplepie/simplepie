@@ -57,6 +57,7 @@ if (!class_exists('SimplePie'))
  */
 class SimplePie_Autoloader
 {
+	/** @var string */
 	protected $path;
 
 	/**
@@ -72,7 +73,7 @@ class SimplePie_Autoloader
 	 *
 	 * @param string $class The name of the class to attempt to load.
 	 */
-	public function autoload($class)
+	public function autoload(string $class): void
 	{
 		// Only load the class if it starts with "SimplePie"
 		if (strpos($class, 'SimplePie') !== 0)
