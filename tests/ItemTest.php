@@ -69,7 +69,7 @@ class ItemTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->checkFromTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -84,7 +84,7 @@ class ItemTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->checkFromTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -99,7 +99,7 @@ class ItemTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->checkFromTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -114,7 +114,7 @@ class ItemTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->checkFromTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -129,7 +129,7 @@ class ItemTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->checkFromTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -149,7 +149,7 @@ class ItemTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->checkFromTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     /**
@@ -169,7 +169,7 @@ class ItemTest extends TestCase
 	</channel>
 </rss>';
         $feed = $this->checkFromTemplate($data, $title);
-        $this->assertSame($expected, $feed->get_title());
+        self::assertSame($expected, $feed->get_title());
     }
 
     public function testItemWithEmptyContent(): void
@@ -186,7 +186,7 @@ class ItemTest extends TestCase
         $content = 'item description';
         $feed = $this->checkFromTemplate($data, $content);
         $item = $feed->get_item();
-        $this->assertInstanceOf(Item::class, $item);
-        $this->assertSame($content, $item->get_content());
+        self::assertInstanceOf(Item::class, $item);
+        self::assertSame($content, $item->get_content());
     }
 }

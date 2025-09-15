@@ -13,11 +13,11 @@ class RedisTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Cache\Redis'));
+        self::assertTrue(class_exists('SimplePie\Cache\Redis'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Cache_Redis'));
+        self::assertTrue(class_exists('SimplePie_Cache_Redis'));
     }
 }

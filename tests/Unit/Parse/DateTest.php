@@ -14,12 +14,12 @@ class DateTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Parse\Date'));
+        self::assertTrue(class_exists('SimplePie\Parse\Date'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Parse_Date'));
+        self::assertTrue(class_exists('SimplePie_Parse_Date'));
     }
 
     /**
@@ -75,7 +75,7 @@ class DateTest extends TestCase
     public function testW3cDtf(string $data, int $expected): void
     {
         $date = new Date();
-        $this->assertSame(
+        self::assertSame(
             $expected,
             $date->date_w3cdtf($data)
         );

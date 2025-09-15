@@ -28,7 +28,7 @@ class Psr16Test extends TestCase
 
         $cache = new Psr16($psr16);
 
-        $this->assertTrue($cache->set_data($key, $value, $ttl));
+        self::assertTrue($cache->set_data($key, $value, $ttl));
     }
 
     public function testSetDataReturnsFalseIfDataCouldNotBeWritten(): void
@@ -42,7 +42,7 @@ class Psr16Test extends TestCase
 
         $cache = new Psr16($psr16);
 
-        $this->assertFalse($cache->set_data($key, $value, $ttl));
+        self::assertFalse($cache->set_data($key, $value, $ttl));
     }
 
     public function testSetDataWithInvalidKeyThrowsInvalidArgumentException(): void
@@ -78,7 +78,7 @@ class Psr16Test extends TestCase
 
         $cache = new Psr16($psr16);
 
-        $this->assertSame($value, $cache->get_data($key));
+        self::assertSame($value, $cache->get_data($key));
     }
 
     public function testGetDataWithCacheMissReturnsDefault(): void
@@ -91,7 +91,7 @@ class Psr16Test extends TestCase
 
         $cache = new Psr16($psr16);
 
-        $this->assertSame($default, $cache->get_data($key, $default));
+        self::assertSame($default, $cache->get_data($key, $default));
     }
 
     public function testGetDataWithCacheCorruptionReturnsDefault(): void
@@ -104,7 +104,7 @@ class Psr16Test extends TestCase
 
         $cache = new Psr16($psr16);
 
-        $this->assertSame($default, $cache->get_data($key, $default));
+        self::assertSame($default, $cache->get_data($key, $default));
     }
 
     public function testGetDataWithInvalidKeyThrowsInvalidArgumentException(): void
@@ -137,7 +137,7 @@ class Psr16Test extends TestCase
 
         $cache = new Psr16($psr16);
 
-        $this->assertTrue($cache->delete_data($key));
+        self::assertTrue($cache->delete_data($key));
     }
 
     public function testDeleteDataReturnsFalseIfDataCouldNotBeDeleted(): void
@@ -149,7 +149,7 @@ class Psr16Test extends TestCase
 
         $cache = new Psr16($psr16);
 
-        $this->assertFalse($cache->delete_data($key));
+        self::assertFalse($cache->delete_data($key));
     }
 
     public function testDeleteDataWithInvalidKeyThrowsInvalidArgumentException(): void
