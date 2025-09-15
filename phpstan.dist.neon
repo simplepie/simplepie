@@ -9,6 +9,7 @@ parameters:
         - library/
         - src/
         - tests/
+        - utils/
 
     excludePaths:
         analyseAndScan:
