@@ -125,7 +125,6 @@ class File implements Response
                     curl_setopt($fp, CURLOPT_ENCODING, '');
                 }
                 curl_setopt($fp, CURLOPT_URL, $url);
-                curl_setopt($fp, CURLOPT_HEADER, 1);
                 curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($fp, CURLOPT_FAILONERROR, 1);
                 curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
@@ -133,14 +132,26 @@ class File implements Response
                 curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
                 curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
                 curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+                $responseHeaders = '';
+                curl_setopt($fp, CURLOPT_HEADERFUNCTION, function (\CurlHandle $ch, string $header) use (&$responseHeaders) {
+                    if (trim($header) !== '') { // Skip e.g. separation with trailer headers
+                        $responseHeaders .= $header;
+                    }
+                    return strlen($header);
+                });
                 foreach ($curl_options as $curl_param => $curl_value) {
                     curl_setopt($fp, $curl_param, $curl_value);
                 }
 
-                $responseHeaders = curl_exec($fp);
+                /** @var string|false $responseBody */
+                $responseBody = curl_exec($fp);
+                $responseHeaders .= "\r\n";
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
-                    $responseHeaders = curl_exec($fp);
+                    $responseHeaders = '';
+                    /** @var string|false $responseBody */
+                    $responseBody = curl_exec($fp);
+                    $responseHeaders .= "\r\n";
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
                 if (curl_errno($fp)) {
@@ -160,8 +171,7 @@ class File implements Response
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
-                        $this->body = $parser->body;
-                        $this->status_code = $parser->status_code;
+                        $this->body = $responseBody;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
