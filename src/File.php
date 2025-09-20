@@ -148,7 +148,7 @@ class File implements Response
                 $responseHeaders .= "\r\n";
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp); // FreshRSS
-                    $this->on_http_response($responseHeaders);
+                    $this->on_http_response($responseBody === false ? false : $responseHeaders . $responseBody);
                     $this->error = null; // FreshRSS
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
                     $responseHeaders = '';
@@ -160,9 +160,9 @@ class File implements Response
                 if (curl_errno($fp)) {
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
                     $this->success = false;
-                    $this->on_http_response($responseHeaders);
+                    $this->on_http_response($responseBody === false ? false : $responseHeaders . $responseBody);
                 } else {
-                    $this->on_http_response($responseHeaders);
+                    $this->on_http_response($responseBody === false ? false : $responseHeaders . $responseBody);
                     // Use the updated url provided by curl_getinfo after any redirects.
                     if ($info = curl_getinfo($fp)) {
                         $this->url = $info['url'];
