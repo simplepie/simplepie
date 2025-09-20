@@ -133,7 +133,7 @@ class File implements Response
                 curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
                 curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
                 $responseHeaders = '';
-                curl_setopt($fp, CURLOPT_HEADERFUNCTION, function (\CurlHandle $ch, string $header) use (&$responseHeaders) {
+                curl_setopt($fp, CURLOPT_HEADERFUNCTION, function ($ch, string $header) use (&$responseHeaders) {
                     if (trim($header) !== '') { // Skip e.g. separation with trailer headers
                         $responseHeaders .= $header;
                     }
