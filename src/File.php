@@ -151,12 +151,10 @@ class File implements Response
                     if ($info = curl_getinfo($fp)) {
                         $this->url = $info['url'];
                     }
-                    // For PHPStan: We already checked that error did not occur.
-                    assert(is_array($info) && $info['redirect_count'] >= 0);
                     if (\PHP_VERSION_ID < 80000) {
                         curl_close($fp);
                     }
-                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders((string) $responseHeaders, $info['redirect_count'] + 1);
+                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders((string) $responseHeaders);
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
