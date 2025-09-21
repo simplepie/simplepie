@@ -143,7 +143,7 @@ class File implements Response
                     $responseHeaders = curl_exec($fp);
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
-                if (curl_errno($fp)) {
+                if (curl_errno($fp) !== CURLE_OK) {
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
                     $this->success = false;
                 } else {
