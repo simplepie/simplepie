@@ -149,10 +149,13 @@ class File implements Response
                 } else {
                     // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
                     \assert(is_string($responseHeaders));
+                    if (curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
+                        // TODO: Replace with `CURLOPT_SUPPRESS_CONNECT_HEADERS` once PHP 7.2 support is dropped.
+                        $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
+                    }
                     if (\PHP_VERSION_ID < 80000) {
                         curl_close($fp);
                     }
-                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
