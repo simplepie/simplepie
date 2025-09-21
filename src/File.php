@@ -155,7 +155,6 @@ class File implements Response
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
                         $this->body = $parser->body;
-                        $this->status_code = $parser->status_code;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
