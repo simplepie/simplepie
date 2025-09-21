@@ -147,10 +147,12 @@ class File implements Response
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
                     $this->success = false;
                 } else {
+                    // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
+                    \assert(is_string($responseHeaders));
                     if (\PHP_VERSION_ID < 80000) {
                         curl_close($fp);
                     }
-                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders((string) $responseHeaders);
+                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
