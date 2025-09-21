@@ -147,10 +147,6 @@ class File implements Response
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
                     $this->success = false;
                 } else {
-                    // Use the updated url provided by curl_getinfo after any redirects.
-                    if ($info = curl_getinfo($fp)) {
-                        $this->url = $info['url'];
-                    }
                     if (\PHP_VERSION_ID < 80000) {
                         curl_close($fp);
                     }
