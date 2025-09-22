@@ -134,9 +134,7 @@ class File implements Response
                 curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
                 $responseHeaders = '';
                 curl_setopt($fp, CURLOPT_HEADERFUNCTION, function ($ch, string $header) use (&$responseHeaders) {
-                    if (trim($header) !== '') { // Skip e.g. separation with trailer headers
-                        $responseHeaders .= $header;
-                    }
+                    $responseHeaders .= $header;
                     return strlen($header);
                 });
                 foreach ($curl_options as $curl_param => $curl_value) {
