@@ -68,7 +68,7 @@ jobs:
           coverage: none
           tools: none
 
-      - name: Remove PHPStan for older PHP
+      - name: Remove PHPStan for incompatible PHP versions
         if: ${{ matrix.php < '8.0' }}
         run: composer remove --dev phpstan/phpstan phpstan/phpstan-phpunit
 
