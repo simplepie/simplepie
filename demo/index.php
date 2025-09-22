@@ -80,7 +80,7 @@ $feed->handle_content_type();
         do centered floats purely with CSS. The table box model allows for a dynamic width while centered, while the
         CSS box model for DIVs doesn't allow for it. :( -->
         <table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td>
-<ul><li id="demo"><a href="./">SimplePie Demo</a></li><li><a href="http://simplepie.org/wiki/faq/start">FAQ/Troubleshooting</a></li><li><a href="http://simplepie.org/support/">Support Forums</a></li><li><a href="http://simplepie.org/wiki/reference/start">API Reference</a></li><li><a href="http://simplepie.org/blog/">Weblog</a></li><li><a href="../test/test.php">Unit Tests</a></li></ul>
+<ul><li id="demo"><a href="./">SimplePie Demo</a></li><li><a href="http://simplepie.org/wiki/faq/start">FAQ/Troubleshooting</a></li><li><a href="http://simplepie.org/support/">Support Forums</a></li><li><a href="http://simplepie.org/wiki/reference/start">API Reference</a></li><li><a href="http://simplepie.org/blog/">Weblog</a></li></ul>
 
             <div class="clearLeft"></div>
         </td></tr></tbody></table>
