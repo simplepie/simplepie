@@ -57,12 +57,7 @@ $feed->handle_content_type();
 <head>
 <title>SimplePie: Demo</title>
 
-<link rel="stylesheet" href="./for_the_demo/sIFR-screen.css" type="text/css" media="screen">
-<link rel="stylesheet" href="./for_the_demo/sIFR-print.css" type="text/css" media="print">
 <link rel="stylesheet" href="./for_the_demo/simplepie.css" type="text/css" media="screen, projector" />
-
-<script type="text/javascript" src="./for_the_demo/sifr.js"></script>
-<script type="text/javascript" src="./for_the_demo/sifr-config.js"></script>
 <script type="text/javascript" src="./for_the_demo/sleight.js"></script>
 <script type="text/javascript" src="?js"></script>
 
