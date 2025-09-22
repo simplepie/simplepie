@@ -70,7 +70,7 @@
         "coverage": "phpunit --coverage-html=.phpunit.cache/code-coverage",
         "cs": "php-cs-fixer fix --verbose --dry-run --diff",
         "fix": "php-cs-fixer fix --verbose --diff",
-        "phpstan": "phpstan analyse",
+        "phpstan": "phpstan analyse --memory-limit 512M",
         "test": "phpunit"
     }
 }
