@@ -157,7 +157,7 @@ class File implements Response
                     $this->success = false;
                 } else {
                     // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
-                    \assert(is_string($responseHeaders));
+                    \assert(is_string($responseBody));
                     if (curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
                         // TODO: Replace with `CURLOPT_SUPPRESS_CONNECT_HEADERS` once PHP 7.2 support is dropped.
                         $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
@@ -168,7 +168,7 @@ class File implements Response
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
-                        $this->body = $responseBody === false ? null : $responseBody;
+                        $this->body = $responseBody;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
