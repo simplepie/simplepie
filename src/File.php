@@ -152,20 +152,19 @@ class File implements Response
                     $responseHeaders .= "\r\n";
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
-                if (curl_errno($fp)) {
+                if (curl_errno($fp) !== CURLE_OK) {
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
                     $this->success = false;
                 } else {
-                    // Use the updated url provided by curl_getinfo after any redirects.
-                    if ($info = curl_getinfo($fp)) {
-                        $this->url = $info['url'];
+                    // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
+                    \assert(is_string($responseHeaders));
+                    if (curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
+                        // TODO: Replace with `CURLOPT_SUPPRESS_CONNECT_HEADERS` once PHP 7.2 support is dropped.
+                        $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
                     }
-                    // For PHPStan: We already checked that error did not occur.
-                    assert(is_array($info) && $info['redirect_count'] >= 0);
                     if (\PHP_VERSION_ID < 80000) {
                         curl_close($fp);
                     }
-                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders((string) $responseHeaders, $info['redirect_count'] + 1);
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
