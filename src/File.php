@@ -141,13 +141,11 @@ class File implements Response
                     curl_setopt($fp, $curl_param, $curl_value);
                 }
 
-                /** @var string|false $responseBody */
                 $responseBody = curl_exec($fp);
                 $responseHeaders .= "\r\n";
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     curl_setopt($fp, CURLOPT_ENCODING, 'none');
                     $responseHeaders = '';
-                    /** @var string|false $responseBody */
                     $responseBody = curl_exec($fp);
                     $responseHeaders .= "\r\n";
                 }
