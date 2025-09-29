@@ -21,8 +21,9 @@ if (isset($_GET['js'])) {
 
 // Make sure that page is getting passed a URL
 if (isset($_GET['feed']) && $_GET['feed'] !== '') {
+    $url = is_array($_GET['feed']) ? $_GET['feed'][0] : $_GET['feed'];
     // Use the URL that was passed to the page in SimplePie
-    $feed->set_feed_url($_GET['feed']);
+    $feed->set_feed_url($url);
 }
 
 // Allow us to change the input encoding from the URL string if we want to. (optional)
@@ -108,12 +109,14 @@ $feed->handle_content_type();
 
 <?php
 // Check to see if there are more than zero errors (i.e. if there are any errors at all)
-if ($feed->error()) {
+/** @var ?string */ // no multifeed → no array
+$error = $feed->error();
+if ($error !== null) {
     // If so, start a <div> element with a classname so we can style it.
     echo '<div class="sp_errors">' . "\r\n";
 
     // ... and display it.
-    echo '<p>' . htmlspecialchars($feed->error()) . "</p>\r\n";
+    echo '<p>' . htmlspecialchars($error) . "</p>\r\n";
 
     // Close the <div> element we opened.
     echo '</div>' . "\r\n";
