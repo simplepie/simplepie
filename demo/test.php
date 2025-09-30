@@ -1,19 +1,17 @@
 <?php
+
+declare(strict_types=1);
+
 include_once('../autoloader.php');
 
 // Parse it
 $feed = new \SimplePie\SimplePie();
 if (isset($_GET['feed']) && $_GET['feed'] !== '') {
-    if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-        $_GET['feed'] = stripslashes($_GET['feed']);
-    }
     $feed->set_feed_url($_GET['feed']);
     $feed->enable_cache(false);
-    $starttime = explode(' ', microtime());
-    $starttime = $starttime[1] + $starttime[0];
+    $starttime = microtime(true);
     $feed->init();
-    $endtime = explode(' ', microtime());
-    $endtime = $endtime[1] + $endtime[0];
+    $endtime = microtime(true);
     $time = $endtime - $starttime;
 } else {
     $time = 'null';
