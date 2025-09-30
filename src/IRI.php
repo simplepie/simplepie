@@ -623,22 +623,26 @@ class IRI
      */
     protected function scheme_normalization()
     {
-        if (isset($this->scheme, $this->normalization[$this->scheme]['iuserinfo']) && $this->iuserinfo === $this->normalization[$this->scheme]['iuserinfo']) {
+        if ($this->scheme === null) {
+            return;
+        }
+
+        if (isset($this->normalization[$this->scheme]['iuserinfo']) && $this->iuserinfo === $this->normalization[$this->scheme]['iuserinfo']) {
             $this->iuserinfo = null;
         }
-        if (isset($this->scheme, $this->normalization[$this->scheme]['ihost']) && $this->ihost === $this->normalization[$this->scheme]['ihost']) {
+        if (isset($this->normalization[$this->scheme]['ihost']) && $this->ihost === $this->normalization[$this->scheme]['ihost']) {
             $this->ihost = null;
         }
-        if (isset($this->scheme, $this->normalization[$this->scheme]['port']) && $this->port === $this->normalization[$this->scheme]['port']) {
+        if (isset($this->normalization[$this->scheme]['port']) && $this->port === $this->normalization[$this->scheme]['port']) {
             $this->port = null;
         }
-        if (isset($this->scheme, $this->normalization[$this->scheme]['ipath']) && $this->ipath === $this->normalization[$this->scheme]['ipath']) {
+        if (isset($this->normalization[$this->scheme]['ipath']) && $this->ipath === $this->normalization[$this->scheme]['ipath']) {
             $this->ipath = '';
         }
-        if (isset($this->scheme, $this->normalization[$this->scheme]['iquery']) && $this->iquery === $this->normalization[$this->scheme]['iquery']) {
+        if (isset($this->normalization[$this->scheme]['iquery']) && $this->iquery === $this->normalization[$this->scheme]['iquery']) {
             $this->iquery = null;
         }
-        if (isset($this->scheme, $this->normalization[$this->scheme]['ifragment']) && $this->ifragment === $this->normalization[$this->scheme]['ifragment']) {
+        if (isset($this->normalization[$this->scheme]['ifragment']) && $this->ifragment === $this->normalization[$this->scheme]['ifragment']) {
             $this->ifragment = null;
         }
     }
