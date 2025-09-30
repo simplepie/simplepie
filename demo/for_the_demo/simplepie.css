@@ -386,12 +386,3 @@ div.focus {
 p.sample_feeds {
 	text-align:justify;
 }
-
-
-/*********************************************
-SIFR STYLES
-*********************************************/
-.sIFR-active h3.header {
-	visibility:hidden;
-	line-height:1em;
-}
