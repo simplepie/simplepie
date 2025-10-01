@@ -28,6 +28,41 @@ HTML
             ),
             'XML input (with corresponding xml entities) should be cleaned and converted to utf-8 escaped HTML'
         );
+
+        $sanitize_whitelist = new SimplePie_Sanitize();
+        $sanitize_whitelist->default_attr_whitelist([
+            'title', 'role',
+        ]);
+        $sanitize_whitelist->whitelist_tags([
+            'details' => ['open'],
+            'summary' => [],
+            'p' => [],
+        ]);
+        $this->assertSame(
+            <<<HTML
+<details open title="Click to expand">
+    <summary data-xyz="123" aria-hidden="false">Details</summary>
+    <x-custom>
+        <p>...</p>
+    </x-custom>
+</details>
+HTML
+            ,
+            trim($sanitize->sanitize(
+                <<<HTML
+<details open title="Click to expand" onmouseover="alert(1)">
+    <summary data-xyz="123" aria-hidden="false">Details</summary>
+    <x-custom>
+        <p>...</p>
+    </x-custom>
+</details>
+<iframe src="https://example.net"></iframe>
+HTML
+                ,
+                SIMPLEPIE_CONSTRUCT_HTML
+            )),
+            'Non-whitelisted tags and attributes should be cleaned'
+        );
     }
 
     /**
