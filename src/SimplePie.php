@@ -2851,6 +2851,13 @@ class SimplePie
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }
+
+            // Apply HTTPS policy to all links
+            foreach ($this->data['links'] as &$links) {
+                foreach ($links as &$link) {
+                    $link = $this->sanitize->https_url($link);
+                }
+            }
         }
 
         if (isset($this->data['headers']['link'])) {
