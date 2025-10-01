@@ -4997,9 +4997,14 @@ XML
     /**
      * @dataProvider httpsDomainsProvider
      */
-    public function test_https_domains(string $data, string $expectedSelfLink, string $expectedAlternateLink,
-        string $expectedItemId, string $expectedItemAlternate, string $expectedItemContent): void
-    {
+    public function test_https_domains(
+        string $data,
+        string $expectedSelfLink,
+        string $expectedAlternateLink,
+        string $expectedItemId,
+        string $expectedItemAlternate,
+        string $expectedItemContent
+    ): void {
         $feed = new SimplePie();
         $feed->set_https_domains(['example.net', 'example.org']);
         $feed->set_raw_data($data);
