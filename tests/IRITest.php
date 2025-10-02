@@ -473,6 +473,7 @@ class IRITest extends TestCase
             E_USER_NOTICE
         );
 
+        // @phpstan-ignore property.notFound (we want to test that it fails)
         $should_fail = $iri->nonexistent_prop;
     }
 
@@ -481,7 +482,7 @@ class IRITest extends TestCase
         $iri = new SimplePie_IRI('http://example.com/a/?b=c#d');
         $iri->host = null;
 
-        self::assertSame(null, $iri->host);
+        self::assertNull($iri->host);
         self::assertSame('http:/a/?b=c#d', (string) $iri);
     }
 
@@ -490,6 +491,6 @@ class IRITest extends TestCase
         $iri = new SimplePie_IRI();
         $iri->port = 'example';
 
-        self::assertSame(null, $iri->port);
+        self::assertNull($iri->port);
     }
 }
