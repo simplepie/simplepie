@@ -641,6 +641,20 @@ class SimplePie
     public $rename_attributes = [];
 
     /**
+     * @var array<string,string[]> Stores allowed tags and attributes. Preferred over $strip_htmltags and $strip_attributes.
+     * @see SimplePie::whitelist_tags()
+     * @access private
+     */
+    public $whitelist_tags = [];
+
+    /**
+     * @var string[] Stores array of default allowed attributes.
+     * @see SimplePie::default_attr_whitelist()
+     * @access private
+     */
+    public $default_attr_whitelist = [];
+
+    /**
      * @var bool Should we throw exceptions, or use the old-style error property?
      * @access private
      */
@@ -1485,6 +1499,24 @@ class SimplePie
         if ($encode !== null) {
             $this->sanitize->encode_instead_of_strip($encode);
         }
+    }
+
+    /**
+     * @param array<string,string[]> $tags Set array of allowed tags and attributes.
+     * @return void
+     */
+    public function whitelist_tags(array $tags = [])
+    {
+        $this->sanitize->whitelist_tags($tags);
+    }
+
+    /**
+     * @param string[] $attrs Set default array of allowed attributes.
+     * @return void
+     */
+    public function default_attr_whitelist(array $attrs = [])
+    {
+        $this->sanitize->default_attr_whitelist($attrs);
     }
 
     /**
