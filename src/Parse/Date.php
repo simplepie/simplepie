@@ -945,7 +945,7 @@ PCRE;
     }
 
     /**
-     * Parse dates using strtotime()
+     * Parse dates using DateTimeImmutable()
      *
      * @access protected
      * @param string $date
@@ -953,7 +953,7 @@ PCRE;
      */
     public function date_strtotime(string $date)
     {
-        $strtotime = strtotime($date);
+        $strtotime = ( new \DateTimeImmutable( $date ) )->getTimestamp();
         if ($strtotime === -1 || $strtotime === false) {
             return false;
         }
