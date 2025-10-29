@@ -330,6 +330,7 @@ class SimplePieTest extends TestCase
 
         self::assertSame($feedTitle, $feed->get_title());
         $items = $feed->get_items();
+        // @phpstan-ignore phpunit.assertCount
         self::assertSame(count($titles), count($items), 'Number of items does not match');
         foreach (array_map(null, $titles, $items) as $i => [$expectedTitle, $item]) {
             assert($item !== null); // For PHPStan
