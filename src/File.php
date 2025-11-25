@@ -110,7 +110,7 @@ class File implements Response
             }
             if (!$force_fsockopen && function_exists('curl_exec')) {
                 $this->method = \SimplePie\SimplePie::FILE_SOURCE_REMOTE | \SimplePie\SimplePie::FILE_SOURCE_CURL;
-                 $fp = curl_init();
+                $fp = curl_init();
                 if (is_array($curl_options[CURLOPT_HTTPHEADER] ?? null)) {
                     // Save the original casing of HTTP headers
                     $headers_keys = array_combine(array_map('strtolower', array_keys($headers)), array_keys($headers));
