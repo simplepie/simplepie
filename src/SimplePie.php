@@ -1709,7 +1709,8 @@ class SimplePie
                 $single_success = $this->multifeed_objects[$i]->init();
                 $success |= $single_success;
                 if (!$single_success) {
-                    $this->error[$i] = $this->multifeed_objects[$i]->error();
+                    $error = $this->multifeed_objects[$i]->error() ?? '';
+                    $this->error[$i] = is_string($error) ? $error : implode('; ', $error);
                 }
                 $i++;
             }

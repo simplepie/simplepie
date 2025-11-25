@@ -655,6 +655,9 @@ class Sanitize implements RegistryAware
 
         if ($this->encode_instead_of_strip) {
             foreach ($elements as $element) {
+                if (!($element instanceof \DOMNode)) {
+                    continue;
+                }
                 $fragment = $document->createDocumentFragment();
 
                 // For elements which aren't script or style, include the tag itself
@@ -711,6 +714,9 @@ class Sanitize implements RegistryAware
             return;
         } else {
             foreach ($elements as $element) {
+                if (!($element instanceof \DOMNode)) {
+                    continue;
+                }
                 $fragment = $document->createDocumentFragment();
                 $number = $element->childNodes->length;
                 for ($i = $number; $i > 0; $i--) {
