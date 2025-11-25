@@ -72,6 +72,7 @@ class SimplePie_Decode_HTML_Entities
      *
      * @access private
      * @return string|false The next byte, or false, if there is no more data
+     * @phpstan-impure
      */
     public function consume()
     {
@@ -547,6 +548,7 @@ class SimplePie_Decode_HTML_Entities
                     'zwnj;' => "\xE2\x80\x8C"
                 ];
 
+                $consumed = '';
                 for ($i = 0, $match = null; $i < 9 && $this->consume() !== false; $i++) {
                     // Cast for PHPStan on PHP < 8.0: We consumed as per the loop condition,
                     // so `$this->consumed` is non-empty and the substr offset is valid.
