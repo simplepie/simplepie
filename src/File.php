@@ -113,11 +113,10 @@ class File implements Response
                 $fp = self::curlInit($url, $timeout, $headers, $useragent, $curl_options);
                 $responseHeaders = curl_exec($fp);
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
-                    if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
-                        curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, 'none');
-                    } else {
-                        curl_setopt($fp, CURLOPT_ENCODING, 'none');
+                    if (\PHP_VERSION_ID < 80000) {
+                        curl_close($fp);
                     }
+                    $fp = self::curlInit($url, $timeout, $headers, $useragent, $curl_options, false);
                     $responseHeaders = curl_exec($fp);
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
@@ -426,7 +425,8 @@ class File implements Response
         int $timeout,
         array $headers,
         string $useragent,
-        array $curl_options
+        array $curl_options,
+        bool $setAcceptEncoding = true
     ) {
         $fp = curl_init();
 
@@ -440,10 +440,12 @@ class File implements Response
             }
             unset($curl_options[CURLOPT_HTTPHEADER]);
         }
-        if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
-            curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, '');
-        } else {
-            curl_setopt($fp, CURLOPT_ENCODING, '');
+        if ($setAcceptEncoding) {
+            if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
+                curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, '');
+            } else {
+                curl_setopt($fp, CURLOPT_ENCODING, '');
+            }
         }
         /** @var non-empty-string $url */
         curl_setopt($fp, CURLOPT_URL, $url);
