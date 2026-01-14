@@ -1318,13 +1318,54 @@ XML
                 ,
                 1168531200,
             ],
+            'Test RFC 2822/ RFC 5322 formatted date' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<item>
+			<pubDate>Thu, 11 Jan 2007 16:00:00 +0000</pubDate>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200
+            ],
+            'Test date is properly formatted' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<item>
+			<pubDate>Thu, 11 Jan 2007 16:00:00 +0000</pubDate>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                '2007-01-11',
+                'Y-m-d'
+            ],
+            'Test localized RFC 2822/ RFC 5322 formatted date' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<item>
+			<pubDate>Ost, 11 Urt 2007 16:00:00 +0000</pubDate>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                null,
+                'Y-m-d'
+            ],
         ];
     }
 
     /**
      * @dataProvider getDateDataProvider
      */
-    public function test_get_date(string $data, ?int $expected): void
+    public function test_get_date(string $data, $expected, string $format = 'U'): void
     {
         $feed = new SimplePie();
         $feed->set_raw_data($data);
@@ -1334,7 +1375,7 @@ XML
         $item = $feed->get_item(0);
         self::assertInstanceOf(Item::class, $item);
 
-        self::assertSame($expected, $item->get_date('U'));
+        self::assertSame($expected, $item->get_date($format));
     }
 
     /**
