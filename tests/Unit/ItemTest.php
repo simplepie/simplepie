@@ -663,7 +663,7 @@ XML
     }
 
     /**
-     * @return array<string, array{string, int|null}>
+     * @return array<string, array{0: string, 1: int|string|null, 2?: string}>
      */
     public static function getDateDataProvider(): array
     {
@@ -1363,6 +1363,8 @@ XML
     }
 
     /**
+     * @param int|string|null $expected
+     *
      * @dataProvider getDateDataProvider
      */
     public function test_get_date(string $data, $expected, string $format = 'U'): void
