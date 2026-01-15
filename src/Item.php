@@ -672,7 +672,7 @@ class Item implements RegistryAware
                     return $this->data['date']['parsed'];
 
                 default:
-                    return $this->data['date']['parsed'] ? date($date_format, $this->data['date']['parsed']) : null;
+                    return $this->data['date']['parsed'] !== null ? date($date_format, $this->data['date']['parsed']) : null;
             }
         }
 
