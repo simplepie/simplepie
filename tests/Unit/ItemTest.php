@@ -1318,7 +1318,7 @@ XML
                 ,
                 1168531200,
             ],
-            'Test RFC 2822/ RFC 5322 formatted date' => [
+            'Test RFC 2822 formatted date' => [
 <<<XML
 <rss version="2.0">
 	<channel>
@@ -1345,7 +1345,7 @@ XML
                 '2007-01-11',
                 'Y-m-d'
             ],
-            'Test localized RFC 2822/ RFC 5322 formatted date' => [
+            'Invalid format: localized RFC 2822 formatted date' => [
 <<<XML
 <rss version="2.0">
 	<channel>
