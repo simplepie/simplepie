@@ -742,7 +742,7 @@ class Item implements RegistryAware
 
             return $this->sanitize($raw_date, \SimplePie\SimplePie::CONSTRUCT_TEXT);
         } elseif (($date = $this->get_date('U')) !== null && $date !== false) {
-            return strftime($date_format, $date);
+            return date($date_format, $date);
         }
 
         return null;
