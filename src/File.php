@@ -110,36 +110,7 @@ class File implements Response
             }
             if (!$force_fsockopen && function_exists('curl_exec')) {
                 $this->method = \SimplePie\SimplePie::FILE_SOURCE_REMOTE | \SimplePie\SimplePie::FILE_SOURCE_CURL;
-                $fp = curl_init();
-                $headers2 = [];
-                foreach ($headers as $key => $value) {
-                    $headers2[] = "$key: $value";
-                }
-                if (isset($curl_options[CURLOPT_HTTPHEADER])) {
-                    if (is_array($curl_options[CURLOPT_HTTPHEADER])) {
-                        $headers2 = array_merge($headers2, $curl_options[CURLOPT_HTTPHEADER]);
-                    }
-                    unset($curl_options[CURLOPT_HTTPHEADER]);
-                }
-                if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
-                    curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, '');
-                } else {
-                    curl_setopt($fp, CURLOPT_ENCODING, '');
-                }
-                /** @var non-empty-string $url */
-                curl_setopt($fp, CURLOPT_URL, $url);
-                curl_setopt($fp, CURLOPT_HEADER, true);
-                curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($fp, CURLOPT_FAILONERROR, true);
-                curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
-                curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
-                curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
-                curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
-                curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
-                foreach ($curl_options as $curl_param => $curl_value) {
-                    curl_setopt($fp, $curl_param, $curl_value);
-                }
-
+                $fp = self::curlInit($url, $timeout, $headers, $useragent, $curl_options);
                 $responseHeaders = curl_exec($fp);
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
@@ -443,6 +414,52 @@ class File implements Response
         $file->permanent_url = $response->get_permanent_uri();
 
         return $file;
+    }
+
+    /**
+     * @param array<string, string> $headers
+     * @param array<int, mixed> $curl_options
+     * @return \CurlHandle
+     */
+    private static function curlInit(
+        string $url,
+        int $timeout,
+        array $headers,
+        string $useragent,
+        array $curl_options
+    ) {
+        $fp = curl_init();
+
+        $headers2 = [];
+        foreach ($headers as $key => $value) {
+            $headers2[] = "$key: $value";
+        }
+        if (isset($curl_options[CURLOPT_HTTPHEADER])) {
+            if (is_array($curl_options[CURLOPT_HTTPHEADER])) {
+                $headers2 = array_merge($headers2, $curl_options[CURLOPT_HTTPHEADER]);
+            }
+            unset($curl_options[CURLOPT_HTTPHEADER]);
+        }
+        if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
+            curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, '');
+        } else {
+            curl_setopt($fp, CURLOPT_ENCODING, '');
+        }
+        /** @var non-empty-string $url */
+        curl_setopt($fp, CURLOPT_URL, $url);
+        curl_setopt($fp, CURLOPT_HEADER, true);
+        curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($fp, CURLOPT_FAILONERROR, true);
+        curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
+        curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
+        curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+        foreach ($curl_options as $curl_param => $curl_value) {
+            curl_setopt($fp, $curl_param, $curl_value);
+        }
+
+        return $fp;
     }
 }
 
