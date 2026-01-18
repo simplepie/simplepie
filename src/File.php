@@ -126,10 +126,11 @@ class File implements Response
                 } else {
                     curl_setopt($fp, CURLOPT_ENCODING, '');
                 }
+                /** @var non-empty-string $url */
                 curl_setopt($fp, CURLOPT_URL, $url);
-                curl_setopt($fp, CURLOPT_HEADER, 1);
-                curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($fp, CURLOPT_FAILONERROR, 1);
+                curl_setopt($fp, CURLOPT_HEADER, true);
+                curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($fp, CURLOPT_FAILONERROR, true);
                 curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
                 curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
                 curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));

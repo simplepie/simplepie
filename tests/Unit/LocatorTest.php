@@ -72,7 +72,7 @@ class LocatorTest extends TestCase
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
-        self::assertSame(null, $feed);
+        self::assertNull($feed);
     }
 
     public function testDirectNoDOM(): void
@@ -153,7 +153,7 @@ class LocatorTest extends TestCase
         self::assertInstanceOf(FileMock::class, $feed);
         $success = array_filter($expected, [get_class($this), 'filter_success']);
 
-        $found = array_map([get_class($this), 'map_url_file'], $all);
+        $found = is_array($all) ? array_map([get_class($this), 'map_url_file'], $all) : [];
         self::assertSame($success, $found);
     }
 
