@@ -1864,7 +1864,6 @@ class SimplePie
             $cache = new BaseDataCache($cache);
         }
 
-        // @phpstan-ignore-next-line Enforce PHPDoc type.
         if ($cache !== false && !$cache instanceof DataCache) {
             throw new InvalidArgumentException(sprintf(
                 '%s(): Argument #1 ($cache) must be of type %s|false',
@@ -3373,8 +3372,6 @@ class SimplePie
             foreach ($urls as $arg) {
                 if ($arg instanceof SimplePie) {
                     $items = array_merge($items, $arg->get_items(0, $limit));
-
-                    // @phpstan-ignore-next-line Enforce PHPDoc type.
                 } else {
                     trigger_error('Arguments must be SimplePie objects', E_USER_WARNING);
                 }

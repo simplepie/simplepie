@@ -68,6 +68,10 @@ jobs:
           coverage: none
           tools: none
 
+      - name: Remove PHPStan for incompatible PHP versions
+        if: ${{ matrix.php < '8.0' }}
+        run: composer remove --dev phpstan/phpstan phpstan/phpstan-phpunit
+
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
       - name: "Install Composer dependencies"
@@ -82,7 +86,9 @@ jobs:
       - name: Run unit tests
         run: composer test
 
+      # It would be sufficient to run PHPStan with one supported PHP version
       - name: Run static analysis
+        if: ${{ matrix.php >= '8.0' }}
         run: composer phpstan -- --error-format=github
 
   test-compiled:

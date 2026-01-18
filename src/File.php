@@ -133,7 +133,9 @@ class File implements Response
                 curl_setopt($fp, CURLOPT_FAILONERROR, true);
                 curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
                 curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
+                /** @phpstan-ignore argument.type */
                 curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
+                /** @phpstan-ignore argument.type */
                 curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
                 curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
                 foreach ($curl_options as $curl_param => $curl_value) {

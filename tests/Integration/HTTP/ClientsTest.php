@@ -47,6 +47,7 @@ class ClientsTest extends TestCase
 
         $response = $client->request(Client::METHOD_GET, $filepath);
 
+        // @phpstan-ignore staticMethod.alreadyNarrowedType
         self::assertInstanceOf(Response::class, $response);
         self::assertSame($filepath, $response->get_permanent_uri());
         self::assertSame($filepath, $response->get_final_requested_uri());
