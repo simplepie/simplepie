@@ -37,7 +37,7 @@ elseif (function_exists('memory_get_usage')) {
 }
 
 // Output buffer
-function callable_htmlspecialchars($string)
+function callable_htmlspecialchars(string $string): string
 {
     return htmlspecialchars($string);
 }

@@ -4,9 +4,12 @@
 /compatibility_test export-ignore
 /demo export-ignore
 /tests export-ignore
+/utils/PHPStan export-ignore
 .gitattributes export-ignore
 .editorconfig export-ignore
 .gitignore export-ignore
 ROADMAP.md export-ignore
 phpunit.xml.dist export-ignore
 .php-cs-fixer.dist.php export-ignore
+db.sql export-ignore
+phpstan.dist.neon export-ignore
