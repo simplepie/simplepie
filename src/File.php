@@ -121,13 +121,16 @@ class File implements Response
                     }
                     unset($curl_options[CURLOPT_HTTPHEADER]);
                 }
-                if (version_compare(\SimplePie\Misc::get_curl_version(), '7.10.5', '>=')) {
+                if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
+                    curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, '');
+                } else {
                     curl_setopt($fp, CURLOPT_ENCODING, '');
                 }
+                /** @var non-empty-string $url */
                 curl_setopt($fp, CURLOPT_URL, $url);
-                curl_setopt($fp, CURLOPT_HEADER, 1);
-                curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($fp, CURLOPT_FAILONERROR, 1);
+                curl_setopt($fp, CURLOPT_HEADER, true);
+                curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($fp, CURLOPT_FAILONERROR, true);
                 curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
                 curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
                 curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
@@ -139,7 +142,11 @@ class File implements Response
 
                 $responseHeaders = curl_exec($fp);
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
-                    curl_setopt($fp, CURLOPT_ENCODING, 'none');
+                    if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
+                        curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, 'none');
+                    } else {
+                        curl_setopt($fp, CURLOPT_ENCODING, 'none');
+                    }
                     $responseHeaders = curl_exec($fp);
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);

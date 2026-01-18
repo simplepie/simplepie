@@ -8,7 +8,6 @@
           <description>Test feed description 1</description>
           <guid>http://example.net/tests/#1.1</guid>
           <link>http://example.net/tests/#1.1</link>
-          <media:thumbnail url="/link?a=&quot;b&quot;&amp;c=&lt;d&gt;" />
       </item>
   </channel>
 </rss>
