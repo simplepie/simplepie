@@ -128,7 +128,6 @@ class File implements Response
                 }
                 /** @var non-empty-string $url */
                 curl_setopt($fp, CURLOPT_URL, $url);
-                curl_setopt($fp, CURLOPT_HEADER, true);
                 curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($fp, CURLOPT_FAILONERROR, true);
                 curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
@@ -136,18 +135,26 @@ class File implements Response
                 curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
                 curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
                 curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+                $responseHeaders = '';
+                curl_setopt($fp, CURLOPT_HEADERFUNCTION, function ($ch, string $header) use (&$responseHeaders) {
+                    $responseHeaders .= $header;
+                    return strlen($header);
+                });
                 foreach ($curl_options as $curl_param => $curl_value) {
                     curl_setopt($fp, $curl_param, $curl_value);
                 }
 
-                $responseHeaders = curl_exec($fp);
+                $responseBody = curl_exec($fp);
+                $responseHeaders .= "\r\n";
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
                         curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, 'none');
                     } else {
                         curl_setopt($fp, CURLOPT_ENCODING, 'none');
                     }
-                    $responseHeaders = curl_exec($fp);
+                    $responseHeaders = '';
+                    $responseBody = curl_exec($fp);
+                    $responseHeaders .= "\r\n";
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
                 if (curl_errno($fp) !== CURLE_OK) {
@@ -155,7 +162,7 @@ class File implements Response
                     $this->success = false;
                 } else {
                     // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
-                    \assert(is_string($responseHeaders));
+                    \assert(is_string($responseBody));
                     if (curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
                         // TODO: Replace with `CURLOPT_SUPPRESS_CONNECT_HEADERS` once PHP 7.2 support is dropped.
                         $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
@@ -166,7 +173,7 @@ class File implements Response
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
-                        $this->body = $parser->body;
+                        $this->body = $responseBody;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
