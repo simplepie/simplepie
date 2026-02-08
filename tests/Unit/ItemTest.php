@@ -5035,4 +5035,84 @@ XML
             'http://example.net/link?a=%22b%22&amp;c=%3Cd%3E',
         ];
     }
+
+
+    /**
+     * @dataProvider httpsDomainsProvider
+     */
+    public function test_https_domains(
+        string $data,
+        string $expectedSelfLink,
+        string $expectedAlternateLink,
+        string $expectedItemId,
+        string $expectedItemAlternate,
+        string $expectedItemContent
+    ): void {
+        $feed = new SimplePie();
+        $feed->set_https_domains(['example.net', 'example.org']);
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        self::assertSame($expectedSelfLink, $feed->get_links('self')[0] ?? null);
+        self::assertSame($expectedAlternateLink, $feed->get_permalink());
+
+        $item = $feed->get_item(0);
+        self::assertInstanceOf(Item::class, $item);
+        self::assertSame($expectedItemId, $item->get_id());
+        self::assertSame($expectedItemAlternate, $item->get_permalink());
+        self::assertSame($expectedItemContent, trim($item->get_content() ?? ''));
+    }
+
+    /**
+     * @return iterable<array{string, string}>
+     */
+    public static function httpsDomainsProvider(): iterable
+    {
+        yield 'Test HTTPS domains' => [ <<<XML
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Test HTTPS</title>
+    <link href="http://example.net/tests.atom" rel="self" />
+    <link href="http://example.net/tests/" rel="alternate" />
+    <entry>
+        <title>Test HTTPS link 1</title>
+        <id>http://example.net/tests/test1</id>
+        <link href="http://example.net/tests/test1" rel="alternate" />
+        <content type="html">
+            &lt;a href="http://example.net/tests/test1"&gt;Hello&lt;/a&gt;
+        </content>
+    </entry>
+</feed>
+XML
+            ,
+            'https://example.net/tests.atom',
+            'https://example.net/tests/',
+            'https://example.net/tests/test1',
+            'https://example.net/tests/test1',
+            '<a href="https://example.net/tests/test1">Hello</a>',
+        ];
+
+        yield 'Test Not HTTPS domains' => [ <<<XML
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Test Not HTTPS</title>
+    <link href="http://example.com/tests.atom" rel="self" />
+    <link href="http://example.com/tests/" rel="alternate" />
+    <entry>
+        <title>Test Not HTTPS link 1</title>
+        <id>http://example.com/tests/test1</id>
+        <link href="http://example.com/tests/test1" rel="alternate" />
+        <content type="html">
+            &lt;a href="http://example.com/tests/test1"&gt;Hello&lt;/a&gt;
+        </content>
+    </entry>
+</feed>
+XML
+            ,
+            'http://example.com/tests.atom',
+            'http://example.com/tests/',
+            'http://example.com/tests/test1',
+            'http://example.com/tests/test1',
+            '<a href="http://example.com/tests/test1">Hello</a>',
+        ];
+    }
 }
