@@ -614,7 +614,7 @@ class Parser implements RegistryAware
                     $item['category'] = [['data' => $category_csv]];
                 }
                 if (isset($entry['properties']['published'][0])) {
-                    $timestamp = strtotime($entry['properties']['published'][0]);
+                    $timestamp = ( new \DateTimeImmutable( $entry['properties']['published'][0] ) )->getTimestamp();
                     $pub_date = date('F j Y g:ia', $timestamp).' GMT';
                     $item['pubDate'] = [['data' => $pub_date]];
                 }
