@@ -553,4 +553,39 @@ HTML
         self::assertLessThanOrEqual(1, count($feed->get_links('self') ?? []), 'Link rel=self should not be promoted from HTML when it is already present in headers');
         self::assertSame($bogoUrl, $feed->get_link(0, 'bogo'), 'Link rel=bogo does not match');
     }
+
+    public function testSimplePieIgnoresBadContentEncodingHeader(): void
+    {
+        // Ensuring that cURL is available
+        \assert(function_exists('curl_exec'));
+        $server = new MockWebServer();
+        $server->start();
+
+        $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0.xml';
+        $body = file_get_contents($filepath);
+        \assert($body !== false); // For PHPStan
+
+        $url = $server->setResponseOfPath(
+            '/bad-content-encoding',
+            new MockWebServerResponse($body, [
+                'content-type: application/rss+xml',
+                'content-encoding: aws-chunked',
+            ], 200)
+        );
+
+        $feed = new SimplePie();
+        $feed->enable_cache(false);
+
+        $feed->set_feed_url($url);
+
+        // For some reason, without this, Sniffer thinks we have text/plain on error.
+        $feed->force_feed(true);
+
+        $return = $feed->init();
+        $server->stop();
+
+        $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
+        self::assertTrue($return, 'Failed fetching feed: ' . $error);
+        self::assertSame(200, $feed->status_code());
+    }
 }
