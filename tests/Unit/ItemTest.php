@@ -5087,7 +5087,7 @@ XML
             ,
             'https://example.net/tests.atom',
             'https://example.net/tests/',
-            'https://example.net/tests/test1',
+            'http://example.net/tests/test1', // Do not change ID
             'https://example.net/tests/test1',
             '<a href="https://example.net/tests/test1">Hello</a>',
         ];

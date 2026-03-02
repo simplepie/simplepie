@@ -201,23 +201,18 @@ class Item implements RegistryAware
     public function get_id(bool $hash = false, $fn = 'md5')
     {
         if (!$hash) {
-            $guid = '';
             if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'id')) {
-                $guid = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'id')) {
-                $guid = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'guid')) {
-                $guid = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'identifier')) {
-                $guid = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'identifier')) {
-                $guid = $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             } elseif (isset($this->data['attribs'][\SimplePie\SimplePie::NAMESPACE_RDF]['about'])) {
-                $guid = $this->sanitize($this->data['attribs'][\SimplePie\SimplePie::NAMESPACE_RDF]['about'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
-            }
-            if ($guid !== '') {
-                // If the ID looks like a URL, apply HTTPS policy to it.
-                return $this->get_sanitize()->https_url($guid);
+                return $this->sanitize($this->data['attribs'][\SimplePie\SimplePie::NAMESPACE_RDF]['about'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
             }
         }
         if ($fn === false) {
