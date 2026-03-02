@@ -22,6 +22,10 @@ class Source implements RegistryAware
     public $data = [];
     /** @var Registry */
     protected $registry;
+    /**
+     * @var Sanitize|null
+     */
+    private $sanitize = null;
 
     /**
      * @param array<string, mixed> $data
@@ -391,7 +395,7 @@ class Source implements RegistryAware
             // Apply HTTPS policy to all links
             foreach ($this->data['links'] as &$links) {
                 foreach ($links as &$link) {
-                    $link = $this->item->get_sanitize()->https_url($link);
+                    $link = $this->get_sanitize()->https_url($link);
                 }
             }
         }
@@ -513,6 +517,15 @@ class Source implements RegistryAware
         }
 
         return null;
+    }
+
+    protected function get_sanitize(): Sanitize
+    {
+        if ($this->sanitize === null) {
+            $this->sanitize = new Sanitize();
+        }
+
+        return $this->sanitize;
     }
 }
 
