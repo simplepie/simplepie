@@ -64,8 +64,9 @@ class Parser implements RegistryAware
      */
     public function parse(string &$data, string $encoding, string $url = '')
     {
-        if (self::contains_microformats($data) && function_exists('Mf2\parse')) {
-            return $this->parse_microformats($data, $url);
+        if (self::contains_microformats($data) && ($mf = self::parse_microformats($data, $url)) !== null) {
+            $this->data = $mf;
+            return true;
         }
 
         // Use UTF-8 if we get passed US-ASCII, as every US-ASCII character is a UTF-8 character
@@ -441,13 +442,16 @@ class Parser implements RegistryAware
     }
 
     /**
-     * @return true
+     * Requires `mf2/mf2` library.
+     *
+     * @return ?array<mixed> RSS document constructed from microformats, or `null` if the `mf2` library is not installed.
      */
-    private function parse_microformats(string &$data, string $url): bool
+    private static function parse_microformats(string &$data, string $url): ?array
     {
-        // For PHPStan, we already check that in call site.
-        \assert(function_exists('Mf2\parse'));
-        \assert(function_exists('Mf2\fetch'));
+        if (!function_exists('Mf2\parse') || !function_exists('Mf2\fetch')) {
+            return null;
+        }
+
         $feed_title = '';
         $feed_author = null;
         $author_cache = [];
@@ -664,8 +668,7 @@ class Parser implements RegistryAware
                   'item' => $items]]]]];
         $rss = [['attribs' => ['' => ['version' => '2.0']],
                            'child' => ['' => $channel]]];
-        $this->data = ['child' => ['' => ['rss' => $rss]]];
-        return true;
+        return ['child' => ['' => ['rss' => $rss]]];
     }
 
     private static function set_doctype(string $data): string
