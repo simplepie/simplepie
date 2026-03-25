@@ -64,19 +64,8 @@ class Parser implements RegistryAware
      */
     public function parse(string &$data, string $encoding, string $url = '')
     {
-        if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
-            $doc = new \DOMDocument();
-            @$doc->loadHTML($data);
-            $xpath = new \DOMXpath($doc);
-            // Check for both h-feed and h-entry, as both a feed with no entries
-            // and a list of entries without an h-feed wrapper are both valid.
-            $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
-                'contains(concat(" ", @class, " "), " h-entry ")]';
-            /** @var \DOMNodeList<\DOMElement> $result */
-            $result = $xpath->query($query);
-            if ($result->length !== 0) {
-                return $this->parse_microformats($data, $url);
-            }
+        if (self::contains_microformats($data) && function_exists('Mf2\parse')) {
+            return $this->parse_microformats($data, $url);
         }
 
         // Use UTF-8 if we get passed US-ASCII, as every US-ASCII character is a UTF-8 character
@@ -425,6 +414,30 @@ class Parser implements RegistryAware
             }
         }
         return $data['value'] ?? '';
+    }
+
+    /**
+     * Checks if the document contains `h-feed` or `h-entry` elements.
+     *
+     * Requires `dom` extension.
+     */
+    private static function contains_microformats(string $data): bool
+    {
+        if (!class_exists('DOMXpath')) {
+            return false;
+        }
+
+        $doc = new \DOMDocument();
+        @$doc->loadHTML($data);
+        $xpath = new \DOMXpath($doc);
+        // Check for both h-feed and h-entry, as both a feed with no entries
+        // and a list of entries without an h-feed wrapper are both valid.
+        $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
+            'contains(concat(" ", @class, " "), " h-entry ")]';
+        /** @var \DOMNodeList<\DOMElement> $result */
+        $result = $xpath->query($query);
+
+        return $result->length !== 0;
     }
 
     /**
