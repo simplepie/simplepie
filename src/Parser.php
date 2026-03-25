@@ -40,8 +40,13 @@ class Parser implements RegistryAware
     public $xml_base_explicit = [false];
     /** @var string[] */
     public $xml_lang = [''];
-    /** @var array<string, mixed> */
+    /**
+     * @var array<string, mixed>
+     * @deprecated since 1.10.0, use `Parser::getRootElement()`.
+     */
     public $data = [];
+    /** @var array<string, mixed> */
+    private XML\Element $root;
     /** @var array<array<string, mixed>> */
     public $datas = [[]];
     /** @var int */
@@ -65,7 +70,7 @@ class Parser implements RegistryAware
     public function parse(string &$data, string $encoding, string $url = '')
     {
         if (self::contains_microformats($data) && ($mf = self::parse_microformats($data, $url)) !== null) {
-            $this->data = $mf;
+            $this->set_root($mf);
             return true;
         }
 
@@ -262,6 +267,13 @@ class Parser implements RegistryAware
         return $this->data;
     }
 
+    private function set_root(XML\Element $root): void
+    {
+        $this->root = $root;
+        // Unfortunately, the data property is public so we need this hack.
+        $this->data = $root->get_legacy_representation();
+    }
+
     /**
      * @param XMLParser|resource|null $parser
      * @param array<string, string> $attributes
@@ -444,9 +456,9 @@ class Parser implements RegistryAware
     /**
      * Requires `mf2/mf2` library.
      *
-     * @return ?array<mixed> RSS document constructed from microformats, or `null` if the `mf2` library is not installed.
+     * @return ?XML\Root RSS document constructed from microformats, or `null` if the `mf2` library is not installed.
      */
-    private static function parse_microformats(string &$data, string $url): ?array
+    private static function parse_microformats(string &$data, string $url): ?XML\Root
     {
         if (!function_exists('Mf2\parse') || !function_exists('Mf2\fetch')) {
             return null;
@@ -645,8 +657,8 @@ class Parser implements RegistryAware
             }
         }
         // Mimic RSS data format when storing microformats.
-        $link = [['data' => $url]];
-        $image = '';
+        $link = new XML\Element()->withText($url); // TODO: not escaped
+        $image = ''; // TODO: invalid?
         if (!is_string($feed_author) &&
                 isset($feed_author['properties']['photo'][0])) {
             $image = [['child' => ['' => ['url' =>
@@ -663,12 +675,12 @@ class Parser implements RegistryAware
                 $feed_title = [['data' => htmlspecialchars($matches[1])]];
             }
         }
-        $channel = ['channel' => [['child' => ['' =>
-            ['link' => $link, 'image' => $image, 'title' => $feed_title,
-                  'item' => $items]]]]];
-        $rss = [['attribs' => ['' => ['version' => '2.0']],
-                           'child' => ['' => $channel]]];
-        return ['child' => ['' => ['rss' => $rss]]];
+        $channel = new XML\Element()->withChild('link', $link)->withChild('image', $image)->withChild('title', $feed_title)->withChild(
+            'item',
+            $items
+        );
+        $rss = new XML\Element()->withAttr('version', '2.0')->withChild('channel', $channel);
+        return new XML\Root('rss', $rss);
     }
 
     private static function set_doctype(string $data): string
