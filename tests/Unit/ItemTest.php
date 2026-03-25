@@ -5036,7 +5036,6 @@ XML
         ];
     }
 
-
     /**
      * @dataProvider httpsDomainsProvider
      */
@@ -5114,5 +5113,34 @@ XML
             'http://example.com/tests/test1',
             '<a href="http://example.com/tests/test1">Hello</a>',
         ];
+    }
+
+    public function test_get_thumbnail_returns_null_when_attributes_are_missing(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data(
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test thumbnail without attributes</title>
+                    <description>Test thumbnail without attributes</description>
+                    <link>http://example.org/tests/</link>
+                    <item>
+                        <title>Test thumbnail without attributes 1.1</title>
+                        <description>Test thumbnail without attributes 1.1</description>
+                        <guid>http://example.net/tests/#1.1</guid>
+                        <link>http://example.net/tests/#1.1</link>
+                        <media:thumbnail />
+                    </item>
+                </channel>
+            </rss>
+XML
+        );
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertInstanceOf(Item::class, $item);
+        self::assertNull($item->get_thumbnail());
     }
 }
