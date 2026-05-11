@@ -190,4 +190,110 @@ XML
             2,
         ];
     }
+
+    /**
+     * @dataProvider getEnclosureIntAttributesProvider
+     */
+    public function test_enclosure_int_attributes(string $data, ?int $expectedDuration, ?int $expectedChannels, ?int $expectedLength): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertInstanceOf(Item::class, $item);
+
+        $enclosure = $item->get_enclosure(0);
+        self::assertInstanceOf(Enclosure::class, $enclosure);
+        self::assertSame($expectedDuration, $enclosure->get_duration());
+        self::assertSame($expectedChannels, $enclosure->get_channels());
+        self::assertSame($expectedLength, $enclosure->get_length());
+    }
+
+    /**
+     * @return iterable<array{string, ?int, ?int, ?int}>
+     */
+    public static function getEnclosureIntAttributesProvider(): iterable
+    {
+        yield 'Test media:content duration, channels and fileSize' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test</title>
+                    <link>http://example.net/</link>
+                    <item>
+                        <title>Test item</title>
+                        <link>http://example.net/1</link>
+                        <media:content url="http://example.net/audio.mp3" type="audio/mpeg" duration="123" channels="2" fileSize="987654" />
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            123,
+            2,
+            987654,
+        ];
+
+        yield 'Test media:group media:content duration, channels and fileSize' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test</title>
+                    <link>http://example.net/</link>
+                    <item>
+                        <title>Test item</title>
+                        <link>http://example.net/2</link>
+                        <media:group>
+                            <media:content url="http://example.net/video.mp4" type="video/mp4" duration="456" channels="6" fileSize="12345678" />
+                        </media:group>
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            456,
+            6,
+            12345678,
+        ];
+
+        yield 'Test RSS 2.0 enclosure length' => [
+            <<<XML
+            <rss version="2.0">
+                <channel>
+                    <title>Test</title>
+                    <link>http://example.net/</link>
+                    <item>
+                        <title>Test item</title>
+                        <link>http://example.net/3</link>
+                        <enclosure url="http://example.net/audio.mp3" type="audio/mpeg" length="55443322" />
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            null,
+            null,
+            55443322,
+        ];
+
+        yield 'Test Atom 1.0 enclosure length' => [
+            <<<XML
+            <feed xmlns="http://www.w3.org/2005/Atom">
+                <title>Test</title>
+                <link href="http://example.net/" />
+                <entry>
+                    <title>Test item</title>
+                    <link href="http://example.net/4" />
+                    <link rel="enclosure" href="http://example.net/video.mp4" type="video/mp4" length="11223344" />
+                </entry>
+            </feed>
+XML
+            ,
+            null,
+            null,
+            11223344,
+        ];
+    }
 }
