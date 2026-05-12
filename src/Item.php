@@ -1446,10 +1446,10 @@ class Item implements RegistryAware
                                 $bitrate = $this->sanitize($content['attribs']['']['bitrate'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
                             }
                             if (isset($content['attribs']['']['channels'])) {
-                                $channels = $this->sanitize($content['attribs']['']['channels'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                                $channels = (int) $this->sanitize($content['attribs']['']['channels'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
                             }
                             if (isset($content['attribs']['']['duration'])) {
-                                $duration = $this->sanitize($content['attribs']['']['duration'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                                $duration = (int) $this->sanitize($content['attribs']['']['duration'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
                             } else {
                                 $duration = $duration_parent;
                             }
@@ -1903,10 +1903,10 @@ class Item implements RegistryAware
                             $bitrate = $this->sanitize($content['attribs']['']['bitrate'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
                         }
                         if (isset($content['attribs']['']['channels'])) {
-                            $channels = $this->sanitize($content['attribs']['']['channels'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                            $channels = (int) $this->sanitize($content['attribs']['']['channels'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
                         }
                         if (isset($content['attribs']['']['duration'])) {
-                            $duration = $this->sanitize($content['attribs']['']['duration'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                            $duration = (int) $this->sanitize($content['attribs']['']['duration'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
                         } else {
                             $duration = $duration_parent;
                         }
