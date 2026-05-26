@@ -59,7 +59,10 @@ class RegistryCallMethodReturnTypeExtension implements DynamicMethodReturnTypeEx
         $classType = $scope->getType($classNameArg);
         $methodType = $scope->getType($methodNameArg);
 
-        if (!$classType  instanceof ConstantStringType || !$methodType instanceof ConstantStringType) {
+        if (
+            !$classType  instanceof ConstantStringType || // @phpstan-ignore phpstanApi.instanceofType
+            !$methodType instanceof ConstantStringType // @phpstan-ignore phpstanApi.instanceofType
+        ) {
             return new MixedType();
         }
 
@@ -81,9 +84,9 @@ class RegistryCallMethodReturnTypeExtension implements DynamicMethodReturnTypeEx
         if ($argumentsArg !== null) {
             $argumentsType = $scope->getType($argumentsArg);
 
-            if ($argumentsType instanceof ConstantArrayType) {
+            if ($argumentsType instanceof ConstantArrayType) { // @phpstan-ignore phpstanApi.instanceofType
                 $argumentTypes = $argumentsType->getValueTypes();
-            } elseif ($argumentsType instanceof ArrayType) {
+            } elseif ($argumentsType instanceof ArrayType) { // @phpstan-ignore phpstanApi.instanceofType
                 $argumentTypes = [$argumentsType->getItemType()];
             } else {
                 return new MixedType();
