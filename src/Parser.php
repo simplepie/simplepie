@@ -40,8 +40,13 @@ class Parser implements RegistryAware
     public $xml_base_explicit = [false];
     /** @var string[] */
     public $xml_lang = [''];
-    /** @var array<string, mixed> */
+    /**
+     * @var array<string, mixed>
+     * @deprecated since 1.10.0, use `Parser::getRootElement()`.
+     */
     public $data = [];
+    /** @var array<string, mixed> */
+    private XML\Element $root;
     /** @var array<array<string, mixed>> */
     public $datas = [[]];
     /** @var int */
@@ -64,19 +69,9 @@ class Parser implements RegistryAware
      */
     public function parse(string &$data, string $encoding, string $url = '')
     {
-        if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
-            $doc = new \DOMDocument();
-            @$doc->loadHTML($data);
-            $xpath = new \DOMXpath($doc);
-            // Check for both h-feed and h-entry, as both a feed with no entries
-            // and a list of entries without an h-feed wrapper are both valid.
-            $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
-                'contains(concat(" ", @class, " "), " h-entry ")]';
-            /** @var \DOMNodeList<\DOMElement> $result */
-            $result = $xpath->query($query);
-            if ($result->length !== 0) {
-                return $this->parse_microformats($data, $url);
-            }
+        if (self::contains_microformats($data) && ($mf = self::parse_microformats($data, $url)) !== null) {
+            $this->set_root($mf);
+            return true;
         }
 
         // Use UTF-8 if we get passed US-ASCII, as every US-ASCII character is a UTF-8 character
@@ -275,6 +270,13 @@ class Parser implements RegistryAware
         return $this->data;
     }
 
+    private function set_root(XML\Element $root): void
+    {
+        $this->root = $root;
+        // Unfortunately, the data property is public so we need this hack.
+        $this->data = $root->get_legacy_representation();
+    }
+
     /**
      * @param XMLParser|resource|null $parser
      * @param array<string, string> $attributes
@@ -431,13 +433,40 @@ class Parser implements RegistryAware
     }
 
     /**
-     * @return true
+     * Checks if the document contains `h-feed` or `h-entry` elements.
+     *
+     * Requires `dom` extension.
      */
-    private function parse_microformats(string &$data, string $url): bool
+    private static function contains_microformats(string $data): bool
     {
-        // For PHPStan, we already check that in call site.
-        \assert(function_exists('Mf2\parse'));
-        \assert(function_exists('Mf2\fetch'));
+        if (!class_exists('DOMXpath')) {
+            return false;
+        }
+
+        $doc = new \DOMDocument();
+        @$doc->loadHTML($data);
+        $xpath = new \DOMXpath($doc);
+        // Check for both h-feed and h-entry, as both a feed with no entries
+        // and a list of entries without an h-feed wrapper are both valid.
+        $query = '//*[contains(concat(" ", @class, " "), " h-feed ") or '.
+            'contains(concat(" ", @class, " "), " h-entry ")]';
+        /** @var \DOMNodeList<\DOMElement> $result */
+        $result = $xpath->query($query);
+
+        return $result->length !== 0;
+    }
+
+    /**
+     * Requires `mf2/mf2` library.
+     *
+     * @return ?XML\Root RSS document constructed from microformats, or `null` if the `mf2` library is not installed.
+     */
+    private static function parse_microformats(string &$data, string $url): ?XML\Root
+    {
+        if (!function_exists('Mf2\parse') || !function_exists('Mf2\fetch')) {
+            return null;
+        }
+
         $feed_title = '';
         $feed_author = null;
         $author_cache = [];
@@ -631,8 +660,8 @@ class Parser implements RegistryAware
             }
         }
         // Mimic RSS data format when storing microformats.
-        $link = [['data' => $url]];
-        $image = '';
+        $link = new XML\Element()->withText($url); // TODO: not escaped
+        $image = ''; // TODO: invalid?
         if (!is_string($feed_author) &&
                 isset($feed_author['properties']['photo'][0])) {
             $image = [['child' => ['' => ['url' =>
@@ -649,13 +678,12 @@ class Parser implements RegistryAware
                 $feed_title = [['data' => htmlspecialchars($matches[1])]];
             }
         }
-        $channel = ['channel' => [['child' => ['' =>
-            ['link' => $link, 'image' => $image, 'title' => $feed_title,
-                  'item' => $items]]]]];
-        $rss = [['attribs' => ['' => ['version' => '2.0']],
-                           'child' => ['' => $channel]]];
-        $this->data = ['child' => ['' => ['rss' => $rss]]];
-        return true;
+        $channel = new XML\Element()->withChild('link', $link)->withChild('image', $image)->withChild('title', $feed_title)->withChild(
+            'item',
+            $items
+        );
+        $rss = new XML\Element()->withAttr('version', '2.0')->withChild('channel', $channel);
+        return new XML\Root('rss', $rss);
     }
 
     private static function set_doctype(string $data): string
