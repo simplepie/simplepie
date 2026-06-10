@@ -296,4 +296,85 @@ XML
             11223344,
         ];
     }
+
+    /**
+     * @dataProvider getEnclosurePlayerProvider
+     */
+    public function test_enclosure_player(string $data, ?string $expectedPlayer): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertInstanceOf(Item::class, $item);
+
+        $enclosure = $item->get_enclosure(0);
+        self::assertInstanceOf(Enclosure::class, $enclosure);
+        self::assertSame($expectedPlayer, $enclosure->get_player());
+    }
+
+    /**
+     * @return iterable<array{string,?string}>
+     */
+    public static function getEnclosurePlayerProvider(): iterable
+    {
+        yield 'Test media:player with url attribute' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test</title>
+                    <link>http://example.net/</link>
+                    <item>
+                        <title>Test item</title>
+                        <link>http://example.net/1</link>
+                        <enclosure url="http://example.net/a.mp4" type="video/mp4" />
+                        <media:player url="http://example.net/player" />
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            'http://example.net/player',
+        ];
+
+        yield 'Test media:player without url attribute' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test</title>
+                    <link>http://example.net/</link>
+                    <item>
+                        <title>Test item</title>
+                        <link>http://example.net/2</link>
+                        <enclosure url="http://example.net/a.mp4" type="video/mp4" />
+                        <media:player />
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            null,
+        ];
+
+        yield 'Test channel-level media:player without url attribute' => [
+            <<<XML
+            <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+                <channel>
+                    <title>Test</title>
+                    <link>http://example.net/</link>
+                    <media:player />
+                    <item>
+                        <title>Test item</title>
+                        <link>http://example.net/3</link>
+                        <enclosure url="http://example.net/a.mp4" type="video/mp4" />
+                    </item>
+                </channel>
+            </rss>
+XML
+            ,
+            null,
+        ];
+    }
 }
