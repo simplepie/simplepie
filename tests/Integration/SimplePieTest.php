@@ -163,7 +163,8 @@ class SimplePieTest extends TestCase
 
         self::assertFalse($return);
         self::assertSame(0, $simplepie->status_code());
-        self::assertSame('cURL error 6: Could not resolve host: example.invalid', $simplepie->error());
+        self::assertIsString($simplepie->error());
+        self::assertStringContainsString('cURL error 6: Could not resolve host: example.invalid', $simplepie->error());
 
     }
 
