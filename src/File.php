@@ -111,13 +111,25 @@ class File implements Response
             if (!$force_fsockopen && function_exists('curl_exec')) {
                 $this->method = \SimplePie\SimplePie::FILE_SOURCE_REMOTE | \SimplePie\SimplePie::FILE_SOURCE_CURL;
                 $fp = self::curlInit($url, $timeout, $headers, $useragent, $curl_options);
-                $responseHeaders = curl_exec($fp);
+                $responseHeaders = '';
+                curl_setopt($fp, CURLOPT_HEADERFUNCTION, function ($ch, string $header) use (&$responseHeaders) {
+                    $responseHeaders .= $header;
+                    return strlen($header);
+                });
+                $responseBody = curl_exec($fp);
+                $responseHeaders .= "\r\n";
                 if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
                     if (\PHP_VERSION_ID < 80000) {
                         curl_close($fp);
                     }
                     $fp = self::curlInit($url, $timeout, $headers, $useragent, $curl_options, false);
-                    $responseHeaders = curl_exec($fp);
+                    $responseHeaders = '';
+                    curl_setopt($fp, CURLOPT_HEADERFUNCTION, function ($ch, string $header) use (&$responseHeaders) {
+                        $responseHeaders .= $header;
+                        return strlen($header);
+                    });
+                    $responseBody = curl_exec($fp);
+                    $responseHeaders .= "\r\n";
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
                 if (curl_errno($fp) !== CURLE_OK) {
@@ -125,7 +137,7 @@ class File implements Response
                     $this->success = false;
                 } else {
                     // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
-                    \assert(is_string($responseHeaders));
+                    \assert(is_string($responseBody));
                     if (curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
                         // TODO: Replace with `CURLOPT_SUPPRESS_CONNECT_HEADERS` once PHP 7.2 support is dropped.
                         $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
@@ -136,7 +148,7 @@ class File implements Response
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
-                        $this->body = $parser->body;
+                        $this->body = $responseBody;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
@@ -447,7 +459,6 @@ class File implements Response
         }
         /** @var non-empty-string $url */
         curl_setopt($fp, CURLOPT_URL, $url);
-        curl_setopt($fp, CURLOPT_HEADER, true);
         curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($fp, CURLOPT_FAILONERROR, true);
         curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
