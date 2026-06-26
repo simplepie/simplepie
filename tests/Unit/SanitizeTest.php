@@ -101,6 +101,12 @@ HTML
 
         $base = 'http://example.com/';
 
-        self::assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
+        $actual = $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base);
+
+        // Remove newlines for PHP 7.2 compatibility
+        $expected = str_replace(["\n", "\r"], '', $expected);
+        $actual = str_replace(["\n", "\r"], '', $actual);
+
+        self::assertSame($expected, $actual);
     }
 }
