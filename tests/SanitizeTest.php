@@ -87,6 +87,13 @@ HTML
 
         $base = 'http://example.com/';
 
-        self::assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
+        $actual = $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base);
+
+        // Normalize whitespace between tags for PHP 7.2 compatibility
+        $normalize = static function (string $html): string {
+            return preg_replace('/>\s+</', '><', $html) ?: '';
+        };
+
+        self::assertSame($normalize($expected), $normalize($actual));
     }
 }
