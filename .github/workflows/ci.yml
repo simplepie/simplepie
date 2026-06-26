@@ -39,7 +39,7 @@ jobs:
         run: composer cs
 
   test:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
