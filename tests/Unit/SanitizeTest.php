@@ -103,11 +103,10 @@ HTML
 
         $actual = $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base);
 
-        // Normalize whitespace between tags for PHP 7.2 compatibility
-        $normalize = static function (string $html): string {
-            return preg_replace('/>\s+</', '><', $html) ?: '';
-        };
+        // Remove newlines for PHP 7.2 compatibility
+        $expected = str_replace(["\n", "\r"], '', $expected);
+        $actual = str_replace(["\n", "\r"], '', $actual);
 
-        self::assertSame($normalize($expected), $normalize($actual));
+        self::assertSame($expected, $actual);
     }
 }
