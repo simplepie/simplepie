@@ -877,6 +877,13 @@ class Item implements RegistryAware
                 }
                 $this->data['links'][$key] = array_unique($this->data['links'][$key]);
             }
+
+            // Apply HTTPS policy to all links
+            foreach ($this->data['links'] as &$links) {
+                foreach ($links as &$link) {
+                    $link = $this->get_sanitize()->https_url($link);
+                }
+            }
         }
         if (isset($this->data['links'][$rel])) {
             return $this->data['links'][$rel];
