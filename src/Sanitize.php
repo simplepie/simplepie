@@ -479,6 +479,10 @@ class Sanitize implements RegistryAware
                     foreach ($this->strip_attributes as $attrib) {
                         $this->strip_attr($attrib, $xpath);
                     }
+
+                    // The strip_attributes blacklist cannot keep up with every
+                    // inline event handler attribute, so strip them all. c.f. issue #872
+                    $this->strip_event_handler_attributes($xpath);
                 }
 
                 if ($this->add_attributes) {
@@ -750,6 +754,38 @@ class Sanitize implements RegistryAware
         /** @var \DOMElement $element */
         foreach ($elements as $element) {
             $element->removeAttribute($attrib);
+        }
+    }
+
+    /**
+     * Strip all inline event handler attributes.
+     *
+     * The HTML standard defines event handler content attributes as attributes
+     * whose name begins with "on" (e.g. `onclick`, `onmouseenter`, `onerror`).
+     * Each one is a JavaScript entry point and therefore an XSS vector. Because
+     * new ones keep being added, they cannot be reliably enumerated one-by-one
+     * in {@see $strip_attributes}, so we strip them generically. c.f. issue #872
+     *
+     * @return void
+     */
+    protected function strip_event_handler_attributes(DOMXPath $xpath): void
+    {
+        // Attribute names are lower-cased by the HTML parser, but normalise
+        // defensively so the match does not depend on that behaviour.
+        $attributes = $xpath->query(
+            '//@*[starts-with(translate(name(), \'ABCDEFGHIJKLMNOPQRSTUVWXYZ\', \'abcdefghijklmnopqrstuvwxyz\'), \'on\')]'
+        );
+
+        if ($attributes === false) {
+            return;
+        }
+
+        /** @var \DOMAttr $attribute */
+        foreach (iterator_to_array($attributes) as $attribute) {
+            $element = $attribute->ownerElement;
+            if ($element !== null) {
+                $element->removeAttribute($attribute->nodeName);
+            }
         }
     }
 

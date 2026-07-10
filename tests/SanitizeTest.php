@@ -95,4 +95,55 @@ HTML
 
         self::assertSame($expected, $actual);
     }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function eventHandlerAttributeProvider(): array
+    {
+        return [
+            // Already present in the default blacklist.
+            'onclick' => ['onclick'],
+            'onmouseover' => ['onmouseover'],
+            // Missing from the default blacklist. c.f. issue #872
+            'onmouseenter' => ['onmouseenter'],
+            'onmouseleave' => ['onmouseleave'],
+            'onwheel' => ['onwheel'],
+            'onpointerenter' => ['onpointerenter'],
+            'ontoggle' => ['ontoggle'],
+            'onbeforetoggle' => ['onbeforetoggle'],
+            // Case-insensitive matching.
+            'OnMouseEnter' => ['OnMouseEnter'],
+        ];
+    }
+
+    /**
+     * Inline event handler attributes (whose name starts with "on") are
+     * JavaScript entry points and must always be stripped, even the ones not
+     * explicitly listed in the strip_attributes blacklist.
+     *
+     * @dataProvider eventHandlerAttributeProvider
+     */
+    public function testSanitizeStripsEventHandlerAttributes(string $attribute): void
+    {
+        $sanitize = new SimplePie_Sanitize();
+
+        $registry = new SimplePie_Registry();
+        $sanitize->set_registry($registry);
+
+        $given = '<h1 ' . $attribute . '="alert(1)">Heading</h1>';
+
+        $actual = $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, 'http://example.com/');
+
+        self::assertStringNotContainsStringIgnoringCase(
+            $attribute,
+            $actual,
+            'The event handler attribute should have been stripped'
+        );
+        self::assertStringContainsString(
+            'Heading',
+            $actual,
+            'The element content should be preserved'
+        );
+    }
 }
