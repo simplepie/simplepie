@@ -42,11 +42,20 @@ final class Psr18Client implements Client
      */
     private $allowedRedirects = 5;
 
+    /** @var UrlPolicy */
+    private $urlPolicy;
+
     public function __construct(ClientInterface $httpClient, RequestFactoryInterface $requestFactory, UriFactoryInterface $uriFactory)
     {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
         $this->uriFactory = $uriFactory;
+        $this->urlPolicy = new UrlPolicy();
+    }
+
+    public function setUrlPolicy(UrlPolicy $urlPolicy): void
+    {
+        $this->urlPolicy = $urlPolicy;
     }
 
     public function getHttpClient(): ClientInterface
@@ -81,6 +90,10 @@ final class Psr18Client implements Client
                 __METHOD__,
                 self::METHOD_GET
             ), 1);
+        }
+
+        if (!$this->urlPolicy->isAllowed($url)) {
+            throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $url));
         }
 
         if (Misc::is_remote_uri($url)) {
@@ -129,7 +142,13 @@ final class Psr18Client implements Client
                 $remainingRedirects--;
                 $followRedirect = true;
 
-                $requestedUrl = $response->getHeaderLine('Location');
+                $location = $response->getHeaderLine('Location');
+
+                if (!$this->urlPolicy->isAllowed($location, true)) {
+                    throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $location));
+                }
+
+                $requestedUrl = $location;
 
                 if ($statusCode === 301 || $statusCode === 308) {
                     $permanentUrl = $requestedUrl;

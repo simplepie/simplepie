@@ -145,6 +145,12 @@ class File implements Response
                                 $this->success = false;
                                 return;
                             }
+                            if (!\SimplePie\Misc::is_remote_uri($location)) {
+                                $this->error = "Invalid redirect location, only http(s) redirects are allowed (redirect from “{$url}” to “{$location}”)";
+                                $this->status_code = 0;
+                                $this->success = false;
+                                return;
+                            }
                             $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                             $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                             return;
@@ -214,12 +220,18 @@ class File implements Response
                             if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                                 $this->redirects++;
                                 $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
-                                $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                                 if ($location === false) {
                                     $this->error = "Invalid redirect location, trying to base “{$locationHeader}” onto “{$url}”";
                                     $this->success = false;
                                     return;
                                 }
+                                if (!\SimplePie\Misc::is_remote_uri($location)) {
+                                    $this->error = "Invalid redirect location, only http(s) redirects are allowed (redirect from “{$url}” to “{$location}”)";
+                                    $this->status_code = 0;
+                                    $this->success = false;
+                                    return;
+                                }
+                                $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                                 $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                                 return;
                             }

@@ -170,6 +170,13 @@ class Misc
     }
 
     /**
+     * Normalize the protocol (scheme) of a URL, prepending `http://` to URLs
+     * without a scheme, and rewriting known syndication schemes to `http(s)`.
+     *
+     * Local filesystem paths are preserved as-is, but they are only fetchable
+     * when {@see \SimplePie\SimplePie::set_allow_local_files()} was called with
+     * `true`; otherwise the HTTP clients refuse them.
+     *
      * @return string
      */
     public static function fix_protocol(string $url, int $http = 1)

@@ -19,6 +19,7 @@ use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
 use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
+use SimplePie\HTTP\UrlPolicy;
 use SimplePie\Registry;
 
 class ClientsTest extends TestCase
@@ -26,19 +27,31 @@ class ClientsTest extends TestCase
     public function testFileClientGetContentOfLocalFile(): void
     {
         $this->runTestsWithClientGetContentOfLocalFile(
-            new FileClient(new Registry())
+            new FileClient(new Registry(), [
+                'allow_local_files' => true,
+            ])
         );
     }
 
     public function testPrs18ClientGetContentOfLocalFile(): void
     {
         $this->runTestsWithClientGetContentOfLocalFile(
-            new Psr18Client(
-                $this->createMock(ClientInterface::class),
-                $this->createMock(RequestFactoryInterface::class),
-                $this->createMock(UriFactoryInterface::class)
-            )
+            $this->createPsr18ClientWithAllowLocalFiles()
         );
+    }
+
+    private function createPsr18ClientWithAllowLocalFiles(): Psr18Client
+    {
+        $client = new Psr18Client(
+            $this->createMock(ClientInterface::class),
+            $this->createMock(RequestFactoryInterface::class),
+            $this->createMock(UriFactoryInterface::class)
+        );
+        $policy = new UrlPolicy();
+        $policy->setAllowLocalFiles(true);
+        $client->setUrlPolicy($policy);
+
+        return $client;
     }
 
     private function runTestsWithClientGetContentOfLocalFile(Client $client): void
@@ -58,18 +71,16 @@ class ClientsTest extends TestCase
     public function testFileClientThrowsClientException(): void
     {
         $this->runTestWithClientThrowsClientException(
-            new FileClient(new Registry())
+            new FileClient(new Registry(), [
+                'allow_local_files' => true,
+            ])
         );
     }
 
     public function testPsr18ClientThrowsClientException(): void
     {
         $this->runTestWithClientThrowsClientException(
-            new Psr18Client(
-                $this->createMock(ClientInterface::class),
-                $this->createMock(RequestFactoryInterface::class),
-                $this->createMock(UriFactoryInterface::class)
-            )
+            $this->createPsr18ClientWithAllowLocalFiles()
         );
     }
 
@@ -148,6 +159,7 @@ class ClientsTest extends TestCase
             'client' => new FileClient(new Registry(), [
                 'redirects' => 10,
                 'force_fsockopen' => false,
+                'allow_local_files' => true,
             ]),
         ];
 
@@ -155,8 +167,34 @@ class ClientsTest extends TestCase
             'client' => new FileClient(new Registry(), [
                 'redirects' => 10,
                 'force_fsockopen' => true,
+                'allow_local_files' => true,
             ]),
         ];
+    }
+
+    /**
+     * A redirect to a local file must be rejected instead of reading the file.
+     *
+     * @dataProvider clientsProvider
+     */
+    public function testClientRejectsRedirectToLocalFile(Client $client): void
+    {
+        $server = new MockWebServer();
+        $server->start();
+
+        $server->setDefaultResponse(new NotFoundResponse());
+        $url = $server->setResponseOfPath(
+            '/redirect-to-local-file',
+            new MockWebServerResponse('', ['Location: file:///etc/passwd'], 301)
+        );
+
+        try {
+            $this->expectException(ClientException::class);
+
+            $client->request(Client::METHOD_GET, $url);
+        } finally {
+            $server->stop();
+        }
     }
 
     /**

@@ -35,10 +35,78 @@ class SimplePieTest extends TestCase
 
         $simplepie = new SimplePie();
         $simplepie->enable_cache(false);
+        $simplepie->set_allow_local_files(true);
         $simplepie->set_feed_url($filepath);
 
         self::assertTrue($simplepie->init());
         self::assertSame(100, $simplepie->get_item_quantity());
+    }
+
+    /**
+     * @test that requesting a local file via SimplePie->set_feed_url() is rejected by default
+     */
+    public function testRequestingALocalFileWithSetFeedUrlIsRejectedByDefault(): void
+    {
+        $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
+
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+        $simplepie->set_feed_url($filepath);
+
+        self::assertFalse($simplepie->init());
+        $error = implode("\n", (array) ($simplepie->error() ?? '')); // For PHPStan
+        self::assertStringContainsString('Refusing to fetch', $error);
+    }
+
+    /**
+     * @test that autodiscovery never fetches a local file candidate, even when local files are allowed
+     */
+    public function testAutodiscoveryNeverFetchesLocalFileCandidate(): void
+    {
+        $server = new MockWebServer();
+        $server->start();
+
+        $localFeedPath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
+        $feedBody = file_get_contents(dirname(__FILE__, 2) . '/data/feed_rss-2.0.xml');
+        \assert($feedBody !== false); // For PHPStan
+
+        $server->setResponseOfPath(
+            '/feed.xml',
+            new MockWebServerResponse($feedBody, ['content-type: application/rss+xml'], 200)
+        );
+
+        // The local-file candidate is a valid feed (title "RSS.com", 100 items), the
+        // http candidate is served by the mock server (title "Test feed"). If the
+        // local candidate is ever read it wins autodiscovery and the assertion below fails.
+        $pageBody = '<!DOCTYPE html><html><head>'
+            . '<link rel="alternate" type="application/rss+xml" href="file://' . $localFeedPath . '" />'
+            . '<link rel="alternate" type="application/rss+xml" href="/feed.xml" />'
+            . '</head><body></body></html>';
+        $pageUrl = $server->setResponseOfPath(
+            '/index.html',
+            new MockWebServerResponse($pageBody, ['content-type: text/html'], 200)
+        );
+
+        $this->assertAutodiscoveryFetchesHttpCandidateOnly($pageUrl, false);
+        $this->assertAutodiscoveryFetchesHttpCandidateOnly($pageUrl, true);
+
+        $server->stop();
+    }
+
+    private function assertAutodiscoveryFetchesHttpCandidateOnly(string $pageUrl, bool $allowLocalFiles): void
+    {
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+        if ($allowLocalFiles) {
+            $simplepie->set_allow_local_files(true);
+        }
+        $simplepie->set_feed_url($pageUrl);
+
+        $error = implode("\n", (array) ($simplepie->error() ?? '')); // For PHPStan
+        self::assertTrue($simplepie->init(), 'Failed fetching feed: ' . $error);
+
+        // The http(s) candidate is discovered; the local-file candidate is never read.
+        self::assertSame('Test feed', $simplepie->get_title());
     }
 
     /**
@@ -71,6 +139,9 @@ class SimplePieTest extends TestCase
             $this->createMock(RequestFactoryInterface::class),
             $this->createMock(UriFactoryInterface::class)
         );
+        // Opt in after set_http_client() to verify the flag is applied to the
+        // already-wrapped Psr18Client as well.
+        $simplepie->set_allow_local_files(true);
         $simplepie->set_feed_url($filepath);
 
         self::assertTrue($simplepie->init());
@@ -276,6 +347,7 @@ class SimplePieTest extends TestCase
 
         $simplepie = new SimplePie();
         $simplepie->enable_cache(false);
+        $simplepie->set_allow_local_files(true);
         $simplepie->set_feed_url($filepath);
 
         self::assertTrue($simplepie->init());

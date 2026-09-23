@@ -23,11 +23,11 @@ final class FileClient implements Client
     /** @var Registry */
     private $registry;
 
-    /** @var array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>} */
+    /** @var array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>, allow_local_files?: bool} */
     private $options;
 
     /**
-     * @param array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>} $options
+     * @param array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>, allow_local_files?: bool} $options
      */
     public function __construct(Registry $registry, array $options = [])
     {
@@ -54,6 +54,10 @@ final class FileClient implements Client
             ), 1);
         }
 
+        if (!Misc::is_remote_uri($url) && !($this->options['allow_local_files'] ?? false)) {
+            throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $url));
+        }
+
         try {
             $file = $this->registry->create(File::class, [
                 $url,
@@ -70,6 +74,17 @@ final class FileClient implements Client
 
         if ($file->error !== null && $file->get_status_code() === 0) {
             throw new ClientException($file->error);
+        }
+
+        // Defense in depth: a redirect could have turned the final requested
+        // URI non-http(s), even when the initial URL passed the gate above.
+        // Note this is a no-op for File subclasses that do not update the
+        // final URI on redirect (e.g. WordPress's WP_SimplePie_File).
+        if (!($this->options['allow_local_files'] ?? false)) {
+            $finalUri = $file->get_final_requested_uri();
+            if (is_string($finalUri) && $finalUri !== '' && !Misc::is_remote_uri($finalUri)) {
+                throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $finalUri));
+            }
         }
 
         return $file;

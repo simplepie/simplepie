@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Nothing yet.
+- New method `SimplePie\SimplePie::set_allow_local_files()` for opting into fetching local files as feeds.
 
 ### Changed
 
-Nothing yet.
+- Fetching local files (filesystem paths) as feeds is now disabled by default. Only `http(s)` URIs are fetched unless `set_allow_local_files(true)` is called. Autodiscovery candidates are always restricted to `http(s)`, and redirects to non-`http(s)` locations are refused. This reduces the risk of local-file disclosure.
 
 ### Fixed
 

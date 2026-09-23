@@ -34,6 +34,23 @@ $simplepie->set_http_client(
 );
 ```
 
+Local files
+------------
+
+Fetching local files (filesystem paths) as feeds is **disabled by default** in
+the interest of security: SimplePie will only fetch `http(s)` URIs unless you
+explicitly opt in with `set_allow_local_files(true)`.
+
+```php
+$simplepie = new \SimplePie\SimplePie();
+$simplepie->set_allow_local_files(true);
+$simplepie->set_feed_url('/path/to/feed.xml');
+```
+
+Even when local files are allowed, feed candidates discovered through
+autodiscovery on a remote page are always restricted to `http(s)`, and
+redirects to non-`http(s)` locations are refused.
+
 PSR-16: Caching support
 --------------
 
