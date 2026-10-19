@@ -739,4 +739,26 @@ class MiscTest extends TestCase
             Misc::parse_date($data)
         );
     }
+
+    /**
+     * @return iterable<array{string, string}>
+     */
+    public static function fixProtocolProvider(): iterable
+    {
+        yield 'full http URL is unchanged' => ['http://example.com/feed', 'http://example.com/feed'];
+        yield 'host only' => ['example.com', 'http://example.com/'];
+        yield 'host and path' => ['www.example.com/rss/feed', 'http://www.example.com/rss/feed'];
+        yield 'host, path and query' => ['example.com/rss?cat=1&x=2', 'http://example.com/rss?cat=1&x=2'];
+        yield 'feed scheme' => ['feed://example.com/rss', 'http://example.com/rss'];
+        yield 'feed scheme wrapping http' => ['feed:http://example.com/rss', 'http://example.com/rss'];
+        yield 'feed scheme wrapping https' => ['feed:https://example.com/rss', 'https://example.com/rss'];
+    }
+
+    /**
+     * @dataProvider fixProtocolProvider
+     */
+    public function test_fix_protocol(string $input, string $expected): void
+    {
+        self::assertSame($expected, Misc::fix_protocol($input, 1));
+    }
 }

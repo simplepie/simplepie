@@ -176,12 +176,16 @@ class Misc
     {
         $url = Misc::normalize_url($url);
         $parsed = Misc::parse_url($url);
+        if (strtolower($parsed['scheme']) === 'feed' && $parsed['authority'] === '' && preg_match('#^https?://#i', $parsed['path'])) {
+            return Misc::fix_protocol(substr($url, 5), $http);
+        }
+
         if ($parsed['scheme'] !== '' && $parsed['scheme'] !== 'http' && $parsed['scheme'] !== 'https') {
             return Misc::fix_protocol(Misc::compress_parse_url('http', $parsed['authority'], $parsed['path'], $parsed['query'], $parsed['fragment']), $http);
         }
 
         if ($parsed['scheme'] === '' && $parsed['authority'] === '' && !file_exists($url)) {
-            return Misc::fix_protocol(Misc::compress_parse_url('http', $parsed['path'], '', $parsed['query'], $parsed['fragment']), $http);
+            return Misc::fix_protocol('http://' . $url, $http);
         }
 
         if ($http === 2 && $parsed['scheme'] !== '') {
@@ -238,8 +242,8 @@ class Misc
         $iri->scheme = $scheme;
         $iri->authority = $authority;
         $iri->path = $path;
-        $iri->query = $query;
-        $iri->fragment = $fragment;
+        $iri->query = $query !== '' ? $query : null;
+        $iri->fragment = $fragment !== '' ? $fragment : null;
         return $iri->get_uri();
     }
 
