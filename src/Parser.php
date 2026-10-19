@@ -108,6 +108,10 @@ class Parser implements RegistryAware
             $data = substr($data, 3);
         }
 
+        // The XML declaration must be the very first thing in the document, but
+        // plenty of feeds are served with a stray newline or space in front of it.
+        $data = ltrim($data, "\x09\x0A\x0D\x20");
+
         if (substr($data, 0, 5) === '<?xml' && strspn(substr($data, 5, 1), "\x09\x0A\x0D\x20") && ($pos = strpos($data, '?>')) !== false) {
             $declaration = $this->registry->create(DeclarationParser::class, [substr($data, 5, $pos - 5)]);
             if ($declaration->parse()) {

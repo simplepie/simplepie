@@ -3246,4 +3246,26 @@ XML
 
         self::assertSame($expected, $feed->get_title());
     }
+
+    public function test_whitespace_before_xml_declaration_is_ignored(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data("\n \t\r\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"><channel><title>Feed Title</title><item><title>Item</title></item></channel></rss>");
+        $feed->enable_cache(false);
+
+        self::assertTrue($feed->init());
+        self::assertNull($feed->error());
+        self::assertSame('Feed Title', $feed->get_title());
+        self::assertCount(1, $feed->get_items());
+    }
+
+    public function test_whitespace_after_byte_order_mark_is_ignored(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data("\xEF\xBB\xBF\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"><channel><title>Feed Title</title></channel></rss>");
+        $feed->enable_cache(false);
+
+        self::assertTrue($feed->init());
+        self::assertSame('Feed Title', $feed->get_title());
+    }
 }
