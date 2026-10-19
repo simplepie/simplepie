@@ -17,7 +17,7 @@ Nothing yet.
 
 ### Fixed
 
-Nothing yet.
+- Characters that are not allowed in XML 1.0 (such as stray control characters) are removed before parsing instead of making the whole feed fail (by @jgalea)
 
 ### Deprecated
 
