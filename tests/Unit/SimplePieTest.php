@@ -1900,6 +1900,105 @@ XML
     }
 
     /**
+     * @return array<array{string, string|null}>
+     */
+    public static function getIconUrlDataProvider(): array
+    {
+        return [
+            'Test Atom 1.0 Icon' => [
+<<<XML
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<icon>http://example.com/icon.png</icon>
+</feed>
+XML
+                ,
+                'http://example.com/icon.png',
+            ],
+            'Test Atom 1.0 Icon priority over RSS 2.0 image' => [
+<<<XML
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<atom:icon>http://example.com/icon.png</atom:icon>
+		<image>
+			<url>http://example.com/image.png</url>
+			<width>32</width>
+			<height>32</height>
+		</image>
+	</channel>
+</rss>
+XML
+                ,
+                'http://example.com/icon.png',
+            ],
+            'Test Atom 1.0 Logo is not an icon' => [
+<<<XML
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<logo>http://example.com/logo.png</logo>
+</feed>
+XML
+                ,
+                null,
+            ],
+            'Test RSS 2.0 Square image' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<image>
+			<url>http://example.com/icon.png</url>
+			<width>32</width>
+			<height>32</height>
+		</image>
+	</channel>
+</rss>
+XML
+                ,
+                'http://example.com/icon.png',
+            ],
+            'Test RSS 2.0 Default image not square' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<image>
+			<url>http://example.com/image.png</url>
+		</image>
+	</channel>
+</rss>
+XML
+                ,
+                null,
+            ],
+            'Test RSS 2.0 Non Square Image' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<image>
+			<url>http://example.com/image.png</url>
+			<width>32</width>
+			<height>31</height>
+		</image>
+	</channel>
+</rss>
+XML
+                ,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getIconUrlDataProvider
+     */
+    public function test_get_icon_url(string $data, ?string $expected): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        self::assertSame($expected, $feed->get_icon_url());
+    }
+
+    /**
      * @return array<array{string, int|null}>
      */
     public static function getImageWidthDataProvider(): array
