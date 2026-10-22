@@ -2351,7 +2351,7 @@ class Item implements RegistryAware
                     continue;
                 }
 
-                $start = trim($chapter['attribs']['']['start']);
+                $start = $this->sanitize(trim($chapter['attribs']['']['start']), \SimplePie\SimplePie::CONSTRUCT_TEXT);
                 $title = null;
                 $href = null;
                 $image = null;
