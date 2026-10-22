@@ -2335,7 +2335,7 @@ class Item implements RegistryAware
     }
 
     /**
-     * Get the `<atom:source>` for the item
+     * Get the `<atom:source>` or RSS `<source>` for the item
      *
      * @since 1.1
      * @return \SimplePie\Source|null
@@ -2343,6 +2343,8 @@ class Item implements RegistryAware
     public function get_source()
     {
         if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'source')) {
+            return $this->registry->create(Source::class, [$this, $return[0]]);
+        } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'source')) {
             return $this->registry->create(Source::class, [$this, $return[0]]);
         }
 

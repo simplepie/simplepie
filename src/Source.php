@@ -109,6 +109,8 @@ class Source implements RegistryAware
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
         } elseif ($return = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'title')) {
             return $this->sanitize($return[0]['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+        } elseif (!isset($this->data['child']) && isset($this->data['data']) && $this->data['data'] !== '') {
+            return $this->sanitize($this->data['data'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
         }
 
         return null;
@@ -369,6 +371,10 @@ class Source implements RegistryAware
             }
             if ($links = $this->get_source_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'link')) {
                 $this->data['links']['alternate'][] = $this->sanitize($links[0]['data'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($links[0]));
+            }
+
+            if (!isset($this->data['child']) && isset($this->data['attribs']['']['url'])) {
+                $this->data['links']['self'][] = $this->sanitize($this->data['attribs']['']['url'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($this->data));
             }
 
             $keys = array_keys($this->data['links']);
