@@ -1425,6 +1425,48 @@ XML
                 ,
                 1168531200,
             ],
+            'Test RSS 2.0 unparseable pubDate falls back to DC 1.1 Modified' => [
+<<<XML
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<pubDate>jeu, 11 janv. 2007 16:00:00 +0100</pubDate>
+			<dc:modified>2007-01-11T16:00:00Z</dc:modified>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200,
+            ],
+            'Test RSS 2.0 valid pubDate preferred over DC dates' => [
+<<<XML
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<pubDate>Thu, 11 Jan 2007 16:00:00 +0000</pubDate>
+			<dc:created>2008-01-11T16:00:00Z</dc:created>
+			<dc:modified>2009-01-11T16:00:00Z</dc:modified>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200,
+            ],
+            'Test RSS 2.0 unparseable pubDate without other dates' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<item>
+			<pubDate>jeu, 11 janv. 2007 16:00:00 +0100</pubDate>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                null,
+            ],
         ];
     }
 
@@ -1444,6 +1486,29 @@ XML
         self::assertInstanceOf(Item::class, $item);
 
         self::assertSame($expected, $item->get_date($format));
+    }
+
+    public function test_get_updated_date_falls_back_to_dc_modified(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data(
+            <<<XML
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<dc:modified>2007-01-11T16:00:00Z</dc:modified>
+		</item>
+	</channel>
+</rss>
+XML
+        );
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertInstanceOf(Item::class, $item);
+
+        self::assertSame(1168531200, $item->get_updated_date('U'));
     }
 
     /**
