@@ -64,7 +64,7 @@ class Parser implements RegistryAware
      */
     public function parse(string &$data, string $encoding, string $url = '')
     {
-        if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
+        if (class_exists('DOMXpath') && function_exists('Mf2\parse') && !self::is_xml_feed($data)) {
             $doc = new \DOMDocument();
             @$doc->loadHTML($data);
             $xpath = new \DOMXpath($doc);
@@ -656,6 +656,15 @@ class Parser implements RegistryAware
                            'child' => ['' => $channel]]];
         $this->data = ['child' => ['' => ['rss' => $rss]]];
         return true;
+    }
+
+    /**
+     * Whether the root element is rss, feed or rdf:RDF, so the document is an XML feed
+     * even if its content contains HTML with h-entry or h-feed classes.
+     */
+    private static function is_xml_feed(string $data): bool
+    {
+        return preg_match('/^(?:\xEF\xBB\xBF)?\s*+(?>(?:<\?.*?\?>|<!--.*?-->|<!DOCTYPE[^>\[]*+(?:\[.*?\])?\s*>)\s*+)*+<(?:[A-Za-z_][\w.-]*:)?(?:rss|feed|RDF)[\s>\/]/s', $data) === 1;
     }
 
     private static function set_doctype(string $data): string
