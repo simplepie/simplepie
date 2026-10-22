@@ -2335,6 +2335,43 @@ class Item implements RegistryAware
     }
 
     /**
+     * Get the Podlove Simple Chapters for the item
+     *
+     * Uses `<psc:chapters>`
+     *
+     * @link https://podlove.org/simple-chapters/ Podlove Simple Chapters
+     * @return \SimplePie\Chapter[]|null
+     */
+    public function get_chapters()
+    {
+        $chapters = [];
+        foreach ($this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_PODLOVE_CHAPTERS, 'chapters') ?? [] as $container) {
+            foreach ($container['child'][\SimplePie\SimplePie::NAMESPACE_PODLOVE_CHAPTERS]['chapter'] ?? [] as $chapter) {
+                if (!isset($chapter['attribs']['']['start'])) {
+                    continue;
+                }
+
+                $start = trim($chapter['attribs']['']['start']);
+                $title = null;
+                $href = null;
+                $image = null;
+                if (isset($chapter['attribs']['']['title'])) {
+                    $title = $this->sanitize($chapter['attribs']['']['title'], \SimplePie\SimplePie::CONSTRUCT_TEXT);
+                }
+                if (isset($chapter['attribs']['']['href'])) {
+                    $href = $this->sanitize($chapter['attribs']['']['href'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($chapter));
+                }
+                if (isset($chapter['attribs']['']['image'])) {
+                    $image = $this->sanitize($chapter['attribs']['']['image'], \SimplePie\SimplePie::CONSTRUCT_IRI, $this->get_base($chapter));
+                }
+                $chapters[] = $this->registry->create(Chapter::class, [$start, $title, $href, $image]);
+            }
+        }
+
+        return $chapters !== [] ? $chapters : null;
+    }
+
+    /**
      * Get the `<atom:source>` for the item
      *
      * @since 1.1

@@ -37,6 +37,7 @@ class Registry
         Category::class => Category::class,
         Enclosure::class => Enclosure::class,
         Caption::class => Caption::class,
+        Chapter::class => Chapter::class,
         Copyright::class => Copyright::class,
         Credit::class => Credit::class,
         Rating::class => Rating::class,
