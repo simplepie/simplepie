@@ -3279,7 +3279,7 @@ class SimplePie
                     $this->data['items'][] = $this->make_item($items[$key]);
                 }
             }
-            if ($this->items_outside_channel && ($this->get_type() & self::TYPE_RSS_SYNDICATION) && ($items = $this->get_feed_tags(self::NAMESPACE_RSS_20, 'item'))) {
+            if ($this->items_outside_channel && ($items = $this->get_feed_tags(self::NAMESPACE_RSS_20, 'item'))) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
                     $this->data['items'][] = $this->make_item($items[$key]);
