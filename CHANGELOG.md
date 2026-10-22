@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Nothing yet.
+- New method `SimplePie\SimplePie::get_generator()` for reading the feed's `<generator>` ([#652](https://github.com/simplepie/simplepie/issues/652))
 
 ### Changed
 

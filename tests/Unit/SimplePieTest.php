@@ -586,6 +586,68 @@ XML
     }
 
     /**
+     * @return array<array{string, ?string}>
+     */
+    public static function getGeneratorDataProvider(): array
+    {
+        return [
+            'Test RSS 2.0 Generator' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<generator>Example Generator 1.0</generator>
+	</channel>
+</rss>
+XML
+                ,
+                'Example Generator 1.0',
+            ],
+            'Test Atom 1.0 Generator' => [
+<<<XML
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<generator uri="http://example.com/" version="1.0">Example Generator</generator>
+</feed>
+XML
+                ,
+                'Example Generator',
+            ],
+            'Test Atom 0.3 Generator' => [
+<<<XML
+<feed version="0.3" xmlns="http://purl.org/atom/ns#">
+	<generator url="http://example.com/" version="1.0">Example Generator</generator>
+</feed>
+XML
+                ,
+                'Example Generator',
+            ],
+            'Test RSS 2.0 without Generator' => [
+<<<XML
+<rss version="2.0">
+	<channel>
+		<title>Example</title>
+	</channel>
+</rss>
+XML
+                ,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getGeneratorDataProvider
+     */
+    public function test_get_generator(string $data, ?string $expected): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        self::assertSame($expected, $feed->get_generator());
+    }
+
+    /**
      * @dataProvider getCopyrightDataProvider
      */
     public function test_get_copyright(string $data, string $expected): void
