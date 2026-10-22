@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Nothing yet.
+- New method `SimplePie\SimplePie::set_failure_cache_duration()` to remember a failed fetch for a given time, so repeated `init()` calls do not request an unreachable feed again (opt-in, disabled by default) ([#741](https://github.com/simplepie/simplepie/issues/741))
 
 ### Changed
 
