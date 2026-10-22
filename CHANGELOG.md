@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Nothing yet.
+- `SimplePie\Item::get_date()` falls back to `<dc:created>` and `<dc:modified>` when the item has no other date ([#754](https://github.com/simplepie/simplepie/issues/754))
 
 ### Changed
 

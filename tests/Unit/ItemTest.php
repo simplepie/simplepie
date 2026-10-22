@@ -1359,6 +1359,72 @@ XML
                 null,
                 'Y-m-d'
             ],
+            'Test RSS 2.0 DC 1.1 Created' => [
+<<<XML
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<dc:created>2007-01-11T16:00:00Z</dc:created>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200,
+            ],
+            'Test RSS 2.0 DC 1.1 Modified' => [
+<<<XML
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<dc:modified>2007-01-11T16:00:00Z</dc:modified>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200,
+            ],
+            'Test RSS 2.0 DC 1.0 Created' => [
+<<<XML
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<item>
+			<dc:created>2007-01-11T16:00:00Z</dc:created>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200,
+            ],
+            'Test RSS 2.0 DC 1.0 Modified' => [
+<<<XML
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.0/">
+	<channel>
+		<item>
+			<dc:modified>2007-01-11T16:00:00Z</dc:modified>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200,
+            ],
+            'Test RSS 2.0 DC 1.1 Date preferred over Modified' => [
+<<<XML
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<dc:modified>2008-01-11T16:00:00Z</dc:modified>
+			<dc:date>2007-01-11T16:00:00Z</dc:date>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200,
+            ],
         ];
     }
 
