@@ -43,6 +43,19 @@ class ParserTest extends TestCase
         ];
     }
 
+    public static function simpleDataProvider(): array
+    {
+        return [
+            [
+                "abra\ncadabra\nall we got\n",
+                "abra\ncadabra\nall we got\n"
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider chunkedDataProvider
+
     /**
      * @dataProvider chunkedDataProvider
      */
@@ -164,5 +177,37 @@ class ParserTest extends TestCase
             'content-type' => ['text/plain'],
             'content-security-policy' => ["default-src 'self' http://example.com", 'script-src http://example.com/'],
         ], $parser->headers);
+    }
+
+    /**
+     * @dataProvider simpleDataProvider
+     */
+    public function testEarlyHintHeaders(string $data, string $expected): void
+    {
+        $data = "HTTP/1.1 103 Early Hint\r\nLink: </style.css>; rel=preload; as=style\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" . $data;
+        $data = Parser::prepareHeaders($data);
+        $parser = new Parser($data, true);
+        self::assertTrue($parser->parse());
+        self::assertSame(1.1, $parser->http_version);
+        self::assertSame(200, $parser->status_code);
+        self::assertSame('OK', $parser->reason);
+        self::assertSame(['content-type' => ['text/plain']], $parser->headers);
+        self::assertSame($expected, $parser->body);
+    }
+
+    /**
+     * @dataProvider simpleDataProvider
+     */
+    public function testMultipleEarlyHintHeaders(string $data, string $expected): void
+    {
+        $data = "HTTP/1.1 103 Early Hint\r\nLink: </style.css>; rel=preload; as=style\r\n\r\nHTTP/1.1 103 Early Hint\r\nLink: </style.css>; rel=preload; as=style\r\n\r\nHTTP/1.1 103 Early Hint\r\nLink: </style.css>; rel=preload; as=style\r\n\r\nHTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" . $data;
+        $data = Parser::prepareHeaders($data);
+        $parser = new Parser($data, true);
+        self::assertTrue($parser->parse());
+        self::assertSame(1.1, $parser->http_version);
+        self::assertSame(200, $parser->status_code);
+        self::assertSame('OK', $parser->reason);
+        self::assertSame(['content-type' => ['text/plain']], $parser->headers);
+        self::assertSame($expected, $parser->body);
     }
 }
