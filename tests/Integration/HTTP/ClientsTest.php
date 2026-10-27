@@ -45,14 +45,12 @@ class ClientsTest extends TestCase
     {
         $filepath = dirname(__FILE__, 3) . '/data/feed_rss-2.0.xml';
 
-        $response = $client->request(Client::METHOD_GET, $filepath);
+        $this->expectException(ClientException::class);
+        $this->expectExceptionCode(0);
 
-        self::assertInstanceOf(Response::class, $response);
-        self::assertSame($filepath, $response->get_permanent_uri());
-        self::assertSame($filepath, $response->get_final_requested_uri());
-        self::assertSame(200, $response->get_status_code());
-        self::assertSame([], $response->get_headers());
-        self::assertStringStartsWith('<rss version="2.0">', $response->get_body_content());
+        $this->expectExceptionMessage(sprintf('Fetching non-http(s) URI scheme not allowed, "%s" given.', $filepath));
+
+        $client->request(Client::METHOD_GET, $filepath);
     }
 
     public function testFileClientThrowsClientException(): void
@@ -80,7 +78,7 @@ class ClientsTest extends TestCase
         $this->expectException(ClientException::class);
         $this->expectExceptionCode(0);
 
-        $this->expectExceptionMessage(sprintf('file "%s" is not readable', $filepath));
+        $this->expectExceptionMessage(sprintf('Fetching non-http(s) URI scheme not allowed, "%s" given.', $filepath));
 
         $client->request(Client::METHOD_GET, $filepath);
     }
@@ -222,12 +220,12 @@ class ClientsTest extends TestCase
     }
 
     /**
-     * @return iterable<array{client: Client, kind: "remote"|"remote-gzip"|"local", endianness: "le"|"be"}>
+     * @return iterable<array{client: Client, kind: "remote"|"remote-gzip", endianness: "le"|"be"}>
      */
     public static function utf16Provider(): iterable
     {
         foreach (self::clientsProvider() as $clientName => $client) {
-            foreach (['remote', 'remote-gzip', 'local'] as $kind) {
+            foreach (['remote', 'remote-gzip'] as $kind) {
                 foreach (['le', 'be'] as $endianness) {
                     yield "$clientName-$kind-$endianness" => array_merge($client, [
                         'kind' => $kind,
@@ -246,35 +244,32 @@ class ClientsTest extends TestCase
      *
      * @dataProvider utf16Provider
      *
-     * @param "remote"|"remote-gzip"|"local" $kind
+     * @param "remote"|"remote-gzip" $kind
      * @param "le"|"be" $endianness
      */
     public function testUtf16(Client $client, string $kind, string $endianness): void
     {
-        $url = dirname(__FILE__, 3) . "/data/feed-utf16$endianness.xml";
-        if ('local' !== $kind) {
-            $server = new MockWebServer();
-            $server->start();
+        $path = dirname(__FILE__, 3) . "/data/feed-utf16$endianness.xml";
 
-            $headers = [];
-            $body = file_get_contents($url);
+        $server = new MockWebServer();
+        $server->start();
+
+        $headers = [];
+        $body = file_get_contents($path);
+        \assert($body !== false); // For PHPStan
+
+        if ('remote-gzip' === $kind) {
+            $headers[] = 'Content-Encoding: gzip';
+            $body = gzencode($body);
             \assert($body !== false); // For PHPStan
-
-            if ('remote-gzip' === $kind) {
-                $headers[] = 'Content-Encoding: gzip';
-                $body = gzencode($body);
-                \assert($body !== false); // For PHPStan
-            }
-
-            $response = new MockWebServerResponse($body, $headers, 200);
-            $url = $server->setResponseOfPath('/', $response);
         }
+
+        $response = new MockWebServerResponse($body, $headers, 200);
+        $url = $server->setResponseOfPath('/', $response);
 
         $response = $client->request(Client::METHOD_GET, $url);
 
-        if ('local' !== $kind) {
-            $server->stop();
-        }
+        $server->stop();
 
         $start = $endianness === 'be' ? "\x00<\x00r\x00s\x00s\x00 " : "<\x00r\x00s\x00s\x00 \x00";
         $end = $endianness === 'be' ? "\x00<\x00/\x00r\x00s\x00s\x00>\x00\n" : "<\x00/\x00r\x00s\x00s\x00>\x00\n\x00";
