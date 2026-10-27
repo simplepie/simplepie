@@ -11,6 +11,7 @@ use DOMDocument;
 use DOMXPath;
 use PHPUnit\Framework\TestCase;
 use SimplePie\File;
+use SimplePie\HTTP\RawTextResponse;
 use SimplePie\Locator;
 use SimplePie\Registry;
 use SimplePie\SimplePie;
@@ -115,12 +116,11 @@ class LocatorTest extends TestCase
      */
     public static function firefoxTestDataProvider(): iterable
     {
-        $data = new File(dirname(__DIR__) . '/data/fftests.html');
-        $data->headers = ['content-type' => 'text/html'];
-        $data->method = SimplePie::FILE_SOURCE_REMOTE;
-        $data->url = 'http://example.com/';
+        $content = file_get_contents(dirname(__DIR__) . '/data/fftests.html') ?: '';
+        $url = 'http://example.com/';
+        $response = (new RawTextResponse($content, $url))->with_header('content-type', 'text/html');
 
-        yield [$data];
+        yield [File::fromResponse($response)];
     }
 
     /**
