@@ -16,58 +16,58 @@ final class UrlPolicyTest extends TestCase
     {
         $policy = new UrlPolicy();
 
-        self::assertTrue($policy->isAllowed('http://example.com/feed.xml'));
-        self::assertTrue($policy->isAllowed('https://example.com/feed.xml'));
+        self::assertTrue($policy->is_allowed('http://example.com/feed.xml'));
+        self::assertTrue($policy->is_allowed('https://example.com/feed.xml'));
     }
 
     public function testAllowsHttpUrisForDiscoveredUrls(): void
     {
         $policy = new UrlPolicy();
 
-        self::assertTrue($policy->isAllowed('http://example.com/feed.xml', true));
-        self::assertTrue($policy->isAllowed('https://example.com/feed.xml', true));
+        self::assertTrue($policy->is_allowed('http://example.com/feed.xml', true));
+        self::assertTrue($policy->is_allowed('https://example.com/feed.xml', true));
     }
 
     public function testRejectsLocalFilesByDefault(): void
     {
         $policy = new UrlPolicy();
 
-        self::assertFalse($policy->isAllowed('file:///etc/passwd'));
-        self::assertFalse($policy->isAllowed('/etc/passwd'));
+        self::assertFalse($policy->is_allowed('file:///etc/passwd'));
+        self::assertFalse($policy->is_allowed('/etc/passwd'));
     }
 
     public function testRejectsStreamWrapperUrisByDefault(): void
     {
         $policy = new UrlPolicy();
 
-        self::assertFalse($policy->isAllowed('php://filter/resource=/etc/passwd'));
+        self::assertFalse($policy->is_allowed('php://filter/resource=/etc/passwd'));
     }
 
     public function testGetAllowLocalFilesIsDisabledByDefault(): void
     {
         $policy = new UrlPolicy();
 
-        self::assertFalse($policy->getAllowLocalFiles());
+        self::assertFalse($policy->get_allow_local_files());
     }
 
     public function testAllowsLocalFilesAfterOptIn(): void
     {
         $policy = new UrlPolicy();
-        $policy->setAllowLocalFiles(true);
+        $policy->set_allow_local_files(true);
 
-        self::assertTrue($policy->getAllowLocalFiles());
-        self::assertTrue($policy->isAllowed('/etc/passwd'));
-        self::assertTrue($policy->isAllowed('file:///etc/passwd'));
+        self::assertTrue($policy->get_allow_local_files());
+        self::assertTrue($policy->is_allowed('/etc/passwd'));
+        self::assertTrue($policy->is_allowed('file:///etc/passwd'));
     }
 
     public function testDiscoveredUrlsAreAlwaysRestrictedToHttp(): void
     {
         $policy = new UrlPolicy();
-        $policy->setAllowLocalFiles(true);
+        $policy->set_allow_local_files(true);
 
-        self::assertTrue($policy->getAllowLocalFiles());
-        self::assertFalse($policy->isAllowed('file:///etc/passwd', true));
-        self::assertFalse($policy->isAllowed('/etc/passwd', true));
-        self::assertTrue($policy->isAllowed('https://example.com/feed.xml', true));
+        self::assertTrue($policy->get_allow_local_files());
+        self::assertFalse($policy->is_allowed('file:///etc/passwd', true));
+        self::assertFalse($policy->is_allowed('/etc/passwd', true));
+        self::assertTrue($policy->is_allowed('https://example.com/feed.xml', true));
     }
 }

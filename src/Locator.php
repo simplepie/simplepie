@@ -306,7 +306,7 @@ class Locator implements RegistryAware
             if ($link->hasAttribute('href')) {
                 $href = trim($link->getAttribute('href'));
                 $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
-                if ($this->is_candidate_fetchable($parsed)) {
+                if (self::is_candidate_fetchable($parsed)) {
                     if ($this->base_location < $link->getLineNo()) {
                         $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
                     } else {
@@ -359,7 +359,7 @@ class Locator implements RegistryAware
         foreach ($queryResult as $link) {
             $href = trim($link->getAttribute('href'));
             $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
-            if ($this->is_candidate_fetchable($parsed)) {
+            if (self::is_candidate_fetchable($parsed)) {
                 if ($this->base_location < $link->getLineNo()) {
                     $href = $this->registry->call(
                         Misc::class,
@@ -463,7 +463,7 @@ class Locator implements RegistryAware
      *
      * @param array<string, string> $parsed Result of {@see \SimplePie\Misc::parse_url()}
      */
-    private function is_candidate_fetchable(array $parsed): bool
+    private static function is_candidate_fetchable(array $parsed): bool
     {
         return $parsed['scheme'] === '' || preg_match('/^https?$/i', $parsed['scheme']);
     }

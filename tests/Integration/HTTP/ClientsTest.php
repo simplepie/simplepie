@@ -48,8 +48,8 @@ class ClientsTest extends TestCase
             $this->createMock(UriFactoryInterface::class)
         );
         $policy = new UrlPolicy();
-        $policy->setAllowLocalFiles(true);
-        $client->setUrlPolicy($policy);
+        $policy->set_allow_local_files(true);
+        $client->set_url_policy($policy);
 
         return $client;
     }

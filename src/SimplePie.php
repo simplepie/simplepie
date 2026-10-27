@@ -833,8 +833,8 @@ class SimplePie
         $psr18 = new Psr18Client($http_client, $request_factory, $uri_factory);
         if ($this->allow_local_files) {
             $policy = new UrlPolicy();
-            $policy->setAllowLocalFiles(true);
-            $psr18->setUrlPolicy($policy);
+            $policy->set_allow_local_files(true);
+            $psr18->set_url_policy($policy);
         }
         $this->http_client = $psr18;
     }
@@ -857,8 +857,8 @@ class SimplePie
         if (is_object($this->http_client) && $this->http_client instanceof Psr18Client) {
             // Apply the flag to an already-wrapped Psr18Client as well.
             $policy = new UrlPolicy();
-            $policy->setAllowLocalFiles($allow);
-            $this->http_client->setUrlPolicy($policy);
+            $policy->set_allow_local_files($allow);
+            $this->http_client->set_url_policy($policy);
         } elseif (is_object($this->http_client) && $this->http_client instanceof FileClient) {
             // Reset a possible existing FileClient,
             // so a new client with the changed option will be created.

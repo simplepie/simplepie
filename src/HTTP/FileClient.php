@@ -23,7 +23,7 @@ final class FileClient implements Client
     /** @var Registry */
     private $registry;
 
-    /** @var array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>, allow_local_files?: bool} */
+    /** @var array{timeout?: int, redirects?: int, useragent?: string, force_fsockopen?: bool, curl_options?: array<mixed>, allow_local_files: bool} */
     private $options;
 
     /**
@@ -32,7 +32,7 @@ final class FileClient implements Client
     public function __construct(Registry $registry, array $options = [])
     {
         $this->registry = $registry;
-        $this->options = $options;
+        $this->options = $options + ['allow_local_files' => false];
     }
 
     /**
@@ -54,7 +54,7 @@ final class FileClient implements Client
             ), 1);
         }
 
-        if (!Misc::is_remote_uri($url) && !($this->options['allow_local_files'] ?? false)) {
+        if (!Misc::is_remote_uri($url) && !$this->options['allow_local_files']) {
             throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $url));
         }
 
@@ -80,9 +80,9 @@ final class FileClient implements Client
         // URI non-http(s), even when the initial URL passed the gate above.
         // Note this is a no-op for File subclasses that do not update the
         // final URI on redirect (e.g. WordPress's WP_SimplePie_File).
-        if (!($this->options['allow_local_files'] ?? false)) {
+        if (!$this->options['allow_local_files']) {
             $finalUri = $file->get_final_requested_uri();
-            if (is_string($finalUri) && $finalUri !== '' && !Misc::is_remote_uri($finalUri)) {
+            if ($finalUri !== '' && !Misc::is_remote_uri($finalUri)) {
                 throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $finalUri));
             }
         }

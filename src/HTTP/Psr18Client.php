@@ -53,7 +53,7 @@ final class Psr18Client implements Client
         $this->urlPolicy = new UrlPolicy();
     }
 
-    public function setUrlPolicy(UrlPolicy $urlPolicy): void
+    public function set_url_policy(UrlPolicy $urlPolicy): void
     {
         $this->urlPolicy = $urlPolicy;
     }
@@ -92,7 +92,7 @@ final class Psr18Client implements Client
             ), 1);
         }
 
-        if (!$this->urlPolicy->isAllowed($url)) {
+        if (!$this->urlPolicy->is_allowed($url)) {
             throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $url));
         }
 
@@ -144,7 +144,12 @@ final class Psr18Client implements Client
 
                 $location = $response->getHeaderLine('Location');
 
-                if (!$this->urlPolicy->isAllowed($location, true)) {
+                // Resolve relative redirects against the current URL before the
+                // policy check, so a relative Location (RFC 9110) is treated as
+                // the absolute http(s) URL it points to.
+                $location = Misc::absolutize_url($location, $requestedUrl) ?: $location;
+
+                if (!$this->urlPolicy->is_allowed($location, true)) {
                     throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $location));
                 }
 
