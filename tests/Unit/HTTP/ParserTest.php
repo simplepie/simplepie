@@ -165,4 +165,37 @@ class ParserTest extends TestCase
             'content-security-policy' => ["default-src 'self' http://example.com", 'script-src http://example.com/'],
         ], $parser->headers);
     }
+
+    public function testHeaderWithJsonValuePreservesQuotes(): void
+    {
+        $jsonPayload = '{"key":"value","count":10,"nested":{"flag":true}}';
+        $data = "HTTP/1.1 200 OK\r\n" .
+                "Content-Type: application/json\r\n" .
+                "X-Custom-Data: " . $jsonPayload . "\r\n\r\n" .
+                "body";
+
+        $parser = new Parser($data);
+        self::assertTrue($parser->parse());
+        self::assertArrayHasKey('x-custom-data', (array) $parser->headers);
+        /** @var string $headerValue */
+        $headerValue = (string) ((array) $parser->headers)['x-custom-data'];
+        self::assertSame($jsonPayload, $headerValue);
+        self::assertIsArray(json_decode($headerValue, true));
+    }
+
+    public function testHeaderWithJsonValuePreservesQuotesPsr7(): void
+    {
+        $jsonPayload = '{"key":"value","count":10,"nested":{"flag":true}}';
+        $data = "HTTP/1.1 200 OK\r\n" .
+                "Content-Type: application/json\r\n" .
+                "X-Custom-Data: " . $jsonPayload . "\r\n\r\n" .
+                "body";
+
+        $parser = new Parser($data, true);
+        self::assertTrue($parser->parse());
+        self::assertIsArray($parser->headers);
+        self::assertArrayHasKey('x-custom-data', (array) $parser->headers);
+        self::assertSame([$jsonPayload], ((array) $parser->headers)['x-custom-data']);
+        self::assertIsArray(json_decode(((array) $parser->headers)['x-custom-data'][0], true));
+    }
 }

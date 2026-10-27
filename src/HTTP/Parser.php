@@ -342,14 +342,7 @@ class Parser
         } else {
             switch ($this->data[$this->position]) {
                 case '"':
-                    // Workaround for ETags: we have to include the quotes as
-                    // part of the tag.
-                    if (strtolower($this->name) === 'etag') {
-                        $this->value .= '"';
-                        $this->position++;
-                        $this->state = self::STATE_VALUE_CHAR;
-                        break;
-                    }
+                    $this->value .= '"';
                     $this->position++;
                     $this->state = self::STATE_QUOTE;
                     break;
@@ -389,6 +382,7 @@ class Parser
         } else {
             switch ($this->data[$this->position]) {
                 case '"':
+                    $this->value .= '"';
                     $this->position++;
                     $this->state = self::STATE_VALUE;
                     break;
