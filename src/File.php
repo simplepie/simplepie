@@ -264,14 +264,9 @@ class File implements Response
             }
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
-            if (empty($url) || !is_readable($url) || false === ($filebody = file_get_contents($url))) {
-                $this->body = '';
-                $this->error = sprintf('file "%s" is not readable', $url);
-                $this->success = false;
-            } else {
-                $this->body = $filebody;
-                $this->status_code = 200;
-            }
+            $this->body = '';
+            $this->error = sprintf('Fetching non-http(s) URI scheme not allowed, "%s" given.', $url);
+            $this->success = false;
         }
         if ($this->success) {
             assert($this->body !== null); // For PHPStan

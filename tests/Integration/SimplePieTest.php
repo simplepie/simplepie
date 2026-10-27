@@ -42,9 +42,11 @@ class SimplePieTest extends TestCase
     }
 
     /**
-     * @test that requesting a local file via SimplePie->set_file() works
+     * @test that requesting a local file via SimplePie->set_file() fails
+     *
+     * Note, `File` itself will be in a failed state.
      */
-    public function testRequestingALocalFileWithSetFileWorks(): void
+    public function testRequestingALocalFileWithSetFileRejected(): void
     {
         $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
 
@@ -53,8 +55,7 @@ class SimplePieTest extends TestCase
         $file = new File($filepath);
         $simplepie->set_file($file);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        self::assertFalse($simplepie->init());
     }
 
     /**
