@@ -721,6 +721,36 @@ class Item implements RegistryAware
     }
 
     /**
+     * Get the unparsed posting date/time string for the item
+     *
+     * @return string|null
+     */
+    public function get_date_raw()
+    {
+        if (($raw_date = $this->get_date('')) === null) {
+            return null;
+        }
+
+        return $this->sanitize($raw_date, \SimplePie\SimplePie::CONSTRUCT_TEXT);
+    }
+
+    /**
+     * Get the posting date/time for the item as a DateTime
+     *
+     * Obeys PHP's timezone setting, like {@see get_date}.
+     *
+     * @return \DateTime|null
+     */
+    public function get_datetime()
+    {
+        if (($date = $this->get_date('U')) === null) {
+            return null;
+        }
+
+        return (new \DateTime())->setTimestamp($date);
+    }
+
+    /**
      * Get the localized posting date/time for the item
      *
      * Returns the date formatted in the localized language. To display in
@@ -729,6 +759,7 @@ class Item implements RegistryAware
      * localizations depend on which ones are installed on your web server.
      *
      * @since 1.0
+     * @deprecated since SimplePie 1.10, `strftime()` is deprecated in PHP 8.1 and removed in PHP 9. Use {@see get_datetime} or {@see get_date_raw} and format the result in your application.
      *
      * @param string $date_format Supports any PHP date format from {@see http://php.net/strftime} (empty for the raw data)
      * @return string|null|false see `strftime` for when this can return `false`

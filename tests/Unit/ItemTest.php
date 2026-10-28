@@ -1380,6 +1380,75 @@ XML
         self::assertSame($expected, $item->get_date($format));
     }
 
+    public function test_get_datetime(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data('<rss version="2.0"><channel><item><pubDate>Tue, 10 Jan 2023 08:30:00 +0000</pubDate></item></channel></rss>');
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertInstanceOf(Item::class, $item);
+
+        $datetime = $item->get_datetime();
+        self::assertInstanceOf(\DateTime::class, $datetime);
+        self::assertSame(1673339400, $datetime->getTimestamp());
+        self::assertSame('Tue, 10 Jan 2023 08:30:00 +0000', $item->get_date_raw());
+    }
+
+    public function test_get_datetime_without_date(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data('<rss version="2.0"><channel><item><title>No date</title></item></channel></rss>');
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertInstanceOf(Item::class, $item);
+
+        self::assertNull($item->get_datetime());
+        self::assertNull($item->get_date_raw());
+    }
+
+    public function test_get_datetime_with_unparseable_date(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data('<rss version="2.0"><channel><item><pubDate>not a date</pubDate></item></channel></rss>');
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertInstanceOf(Item::class, $item);
+
+        self::assertNull($item->get_datetime());
+        self::assertSame('not a date', $item->get_date_raw());
+    }
+
+    public function test_get_datetime_with_timezone_offset(): void
+    {
+        $default = date_default_timezone_get();
+        date_default_timezone_set('America/New_York');
+
+        try {
+            $feed = new SimplePie();
+            $feed->set_raw_data('<rss version="2.0"><channel><item><pubDate>Tue, 10 Jan 2023 08:30:00 +0200</pubDate></item></channel></rss>');
+            $feed->enable_cache(false);
+            $feed->init();
+
+            $item = $feed->get_item(0);
+            self::assertInstanceOf(Item::class, $item);
+
+            $datetime = $item->get_datetime();
+            self::assertInstanceOf(\DateTime::class, $datetime);
+            self::assertSame(1673332200, $datetime->getTimestamp());
+            self::assertSame($item->get_date('U'), $datetime->getTimestamp());
+            self::assertSame($item->get_date('c'), $datetime->format('c'));
+            self::assertSame('America/New_York', $datetime->getTimezone()->getName());
+        } finally {
+            date_default_timezone_set($default);
+        }
+    }
+
     /**
      * @return array<array{string, string}>
      */
