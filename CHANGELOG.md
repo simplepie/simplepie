@@ -17,7 +17,7 @@ Nothing yet.
 
 ### Fixed
 
-Nothing yet.
+- `SimplePie\SimplePie::init()` now throws an exception for failed requests, unsupported status codes, missing feeds and parse errors when `enable_exceptions()` is enabled, instead of only setting `error()` (by @jgalea in [#755](https://github.com/simplepie/simplepie/issues/755))
 
 ### Deprecated
 

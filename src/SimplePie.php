@@ -1646,6 +1646,18 @@ class SimplePie
      */
     public function init()
     {
+        try {
+            return $this->init_feed();
+        } catch (FeedException|ClientException $e) {
+            return $this->handle_feed_exception($e);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    private function init_feed()
+    {
         // Check absolute bare minimum requirements.
         if (!extension_loaded('xml') || !extension_loaded('pcre')) {
             $this->error = 'XML or PCRE extensions not loaded!';
@@ -1706,10 +1718,15 @@ class SimplePie
             foreach ($this->multifeed_url as $url) {
                 $this->multifeed_objects[$i] = clone $this;
                 $this->multifeed_objects[$i]->set_feed_url($url);
-                $single_success = $this->multifeed_objects[$i]->init();
+                try {
+                    $single_success = $this->multifeed_objects[$i]->init();
+                    $error = $this->multifeed_objects[$i]->error() ?? '';
+                } catch (FeedException|ClientException $e) {
+                    $single_success = false;
+                    $error = $e->getMessage();
+                }
                 $success |= $single_success;
                 if (!$single_success) {
-                    $error = $this->multifeed_objects[$i]->error() ?? '';
                     $this->error[$i] = is_string($error) ? $error : implode('; ', $error);
                 }
                 $i++;
@@ -1745,9 +1762,7 @@ class SimplePie
 
         // Empty response check
         if (empty($this->raw_data)) {
-            $this->error = "A feed could not be found at `$this->feed_url`. Empty body.";
-            $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
-            return false;
+            throw new FeedException("A feed could not be found at `$this->feed_url`. Empty body.");
         }
 
         // Set up array of possible encodings
@@ -1800,9 +1815,7 @@ class SimplePie
                 if ($parser->parse($utf8_data, 'UTF-8', $this->permanent_url ?? '')) {
                     $this->data = $parser->get_data();
                     if (!($this->get_type() & ~self::TYPE_NONE)) {
-                        $this->error = "A feed could not be found at `$this->feed_url`. This does not appear to be a valid RSS or Atom feed.";
-                        $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
-                        return false;
+                        throw new FeedException("A feed could not be found at `$this->feed_url`. This does not appear to be a valid RSS or Atom feed.");
                     }
 
                     if (isset($headers)) {
@@ -1822,13 +1835,11 @@ class SimplePie
         }
 
         if (isset($parser)) {
-            // We have an error, just set Misc::error to it and quit
-            $this->error = $this->feed_url;
-            $this->error .= sprintf(' is invalid XML, likely due to invalid characters. XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column());
+            throw new FeedException($this->feed_url . sprintf(' is invalid XML, likely due to invalid characters. XML error: %s at line %d, column %d', $parser->get_error_string(), $parser->get_current_line(), $parser->get_current_column()));
         } else {
-            $this->error = 'The data could not be converted to UTF-8.';
+            $message = 'The data could not be converted to UTF-8.';
             if (!extension_loaded('mbstring') && !extension_loaded('iconv') && !class_exists('\UConverter')) {
-                $this->error .= ' You MUST have either the iconv, mbstring or intl (PHP 5.5+) extension installed and enabled.';
+                $message .= ' You MUST have either the iconv, mbstring or intl (PHP 5.5+) extension installed and enabled.';
             } else {
                 $missingExtensions = [];
                 if (!extension_loaded('iconv')) {
@@ -1840,13 +1851,11 @@ class SimplePie
                 if (!class_exists('\UConverter')) {
                     $missingExtensions[] = 'intl (PHP 5.5+)';
                 }
-                $this->error .= ' Try installing/enabling the ' . implode(' or ', $missingExtensions) . ' extension.';
+                $message .= ' Try installing/enabling the ' . implode(' or ', $missingExtensions) . ' extension.';
             }
+
+            throw new FeedException($message);
         }
-
-        $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
-
-        return false;
     }
 
     /**
@@ -1858,6 +1867,19 @@ class SimplePie
      * @return array{array<string, string>, string}|bool Returns true if the data was loaded from the cache, or an array of HTTP headers and sniffed type
      */
     protected function fetch_data(&$cache)
+    {
+        try {
+            return $this->fetch_feed_data($cache);
+        } catch (FeedException|ClientException $e) {
+            return $this->handle_feed_exception($e);
+        }
+    }
+
+    /**
+     * @param Base|DataCache|false $cache
+     * @return array{array<string, string>, string}|bool
+     */
+    private function fetch_feed_data(&$cache)
     {
         if ($cache instanceof Base) {
             // @trigger_error(sprintf('Providing $cache as "\SimplePie\Cache\Base" in %s() is deprecated since SimplePie 1.8.0, please provide "\SimplePie\Cache\DataCache" implementation instead.', __METHOD__), \E_USER_DEPRECATED);
@@ -1937,7 +1959,7 @@ class SimplePie
                                 return true;
                             }
 
-                            $failedFileReason = $th->getMessage();
+                            $failedFile = $th;
                         }
 
                         if ($this->status_code === 304) {
@@ -1967,32 +1989,21 @@ class SimplePie
         if (!isset($file)) {
             if ($this->file instanceof File && $this->file->get_final_requested_uri() === $this->feed_url) {
                 $file = &$this->file;
-            } elseif (isset($failedFileReason)) {
+            } elseif (isset($failedFile)) {
                 // Do not try to fetch again if we already failed once.
-                // If the file connection had an error, set SimplePie::error to that and quit
-                $this->error = $failedFileReason;
-
-                return !empty($this->data);
+                throw $failedFile;
             } else {
                 $headers = [
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
-                try {
-                    $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
-                } catch (ClientException $th) {
-                    // If the file connection has an error, set SimplePie::error to that and quit
-                    $this->error = $th->getMessage();
-
-                    return !empty($this->data);
-                }
+                $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
             }
         }
         $this->status_code = $file->get_status_code();
 
-        // If the file connection has an error, set SimplePie::error to that and quit
+        // If the file connection has an error, quit
         if (!(!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
-            $this->error = 'Retrieved unsupported status code "' . $this->status_code . '"';
-            return !empty($this->data);
+            throw new ClientException('Retrieved unsupported status code "' . $this->status_code . '"');
         }
 
         if (!$this->force_feed) {
@@ -2051,25 +2062,21 @@ class SimplePie
                         if ($this->all_discovered_feeds !== null) {
                             $this->all_discovered_feeds[] = $file;
                         }
-                    } else {
-                        if ($discovered) {
-                            $file = $discovered;
-                        } else {
-                            // We need to unset this so that if SimplePie::set_file() has
-                            // been called that object is untouched
-                            unset($file);
-                            $this->error = "A feed could not be found at `$this->feed_url`; the status code is `$copyStatusCode` and content-type is `$copyContentType`";
-                            $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, __FILE__, __LINE__]);
-                            return false;
-                        }
+                    } elseif ($discovered) {
+                        $file = $discovered;
                     }
                 } catch (SimplePieException $e) {
                     // We need to unset this so that if SimplePie::set_file() has been called that object is untouched
                     unset($file);
                     // This is usually because DOMDocument doesn't exist
-                    $this->error = $e->getMessage();
-                    $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, $e->getFile(), $e->getLine()]);
-                    return false;
+                    throw new FeedException($e->getMessage(), 0, $e);
+                }
+
+                if (!$microformats && !$discovered) {
+                    // We need to unset this so that if SimplePie::set_file() has
+                    // been called that object is untouched
+                    unset($file);
+                    throw new FeedException("A feed could not be found at `$this->feed_url`; the status code is `$copyStatusCode` and content-type is `$copyContentType`");
                 }
 
                 if ($cache) {
@@ -2102,6 +2109,34 @@ class SimplePie
         $sniffed = $sniffer->get_type();
 
         return [$headers, $sniffed];
+    }
+
+    /**
+     * Report an error from init() or fetch_data()
+     *
+     * Rethrows the exception when exceptions are enabled. Otherwise stores
+     * the message for error() and returns what the caller should return.
+     *
+     * @param FeedException|ClientException $e
+     * @return bool
+     */
+    private function handle_feed_exception(SimplePieException $e)
+    {
+        if ($this->enable_exceptions) {
+            throw $e;
+        }
+
+        $this->error = $e->getMessage();
+
+        // A failed request still lets us serve stale data from the cache.
+        if ($e instanceof ClientException) {
+            return !empty($this->data);
+        }
+
+        $origin = $e->getPrevious() ?? $e;
+        $this->registry->call(Misc::class, 'error', [$this->error, E_USER_NOTICE, $origin->getFile(), $origin->getLine()]);
+
+        return false;
     }
 
     /**
