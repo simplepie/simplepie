@@ -13,7 +13,7 @@ Nothing yet.
 
 ### Changed
 
-Nothing yet.
+- Local paths set via `set_feed_url` are no longer fetched using `Psr18Client`. (by @jtojnar in [#993](https://github.com/simplepie/simplepie/pull/993))
 
 ### Fixed
 
