@@ -23,8 +23,10 @@ use SimplePie\Exception as SimplePieException;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\NotAllowedException;
 use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
+use SimplePie\HTTP\UrlPolicy;
 
 /**
  * SimplePie
@@ -651,6 +653,9 @@ class SimplePie
      */
     private $http_client = null;
 
+    /** @var bool Whether local files may be fetched as feeds (disabled by default) */
+    private $allow_local_files = false;
+
     /** @var bool Whether HTTP client has been injected */
     private $http_client_injected = false;
 
@@ -825,7 +830,40 @@ class SimplePie
         RequestFactoryInterface $request_factory,
         UriFactoryInterface $uri_factory
     ): void {
-        $this->http_client = new Psr18Client($http_client, $request_factory, $uri_factory);
+        $psr18 = new Psr18Client($http_client, $request_factory, $uri_factory);
+        if ($this->allow_local_files) {
+            $policy = new UrlPolicy();
+            $policy->set_allow_local_files(true);
+            $psr18->set_url_policy($policy);
+        }
+        $this->http_client = $psr18;
+    }
+
+    /**
+     * Allow fetching local files (filesystem paths) as feeds, in addition to http(s) URLs.
+     *
+     * Disabled by default. Reduces SSRF/local-file disclosure: when disabled,
+     * only http(s) URIs are fetched and autodiscovery candidates are always
+     * restricted to http(s). Locator-discovered candidates are never fetched as
+     * local files, even when this is enabled.
+     *
+     * @param bool $allow
+     * @return void
+     */
+    public function set_allow_local_files(bool $allow)
+    {
+        $this->allow_local_files = $allow;
+
+        if (is_object($this->http_client) && $this->http_client instanceof Psr18Client) {
+            // Apply the flag to an already-wrapped Psr18Client as well.
+            $policy = new UrlPolicy();
+            $policy->set_allow_local_files($allow);
+            $this->http_client->set_url_policy($policy);
+        } elseif (is_object($this->http_client) && $this->http_client instanceof FileClient) {
+            // Reset a possible existing FileClient,
+            // so a new client with the changed option will be created.
+            $this->http_client = null;
+        }
     }
 
     /**
@@ -1926,7 +1964,7 @@ class SimplePie
                         try {
                             $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
                             $this->status_code = $file->get_status_code();
-                        } catch (ClientException $th) {
+                        } catch (ClientException | NotAllowedException $th) {
                             $this->check_modified = false;
                             $this->status_code = 0;
 
@@ -1979,7 +2017,7 @@ class SimplePie
                 ];
                 try {
                     $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
-                } catch (ClientException $th) {
+                } catch (ClientException | NotAllowedException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
 
@@ -3478,6 +3516,7 @@ class SimplePie
                     'useragent' => $this->useragent,
                     'force_fsockopen' => $this->force_fsockopen,
                     'curl_options' => $this->curl_options,
+                    'allow_local_files' => $this->allow_local_files,
                 ]
             );
             $this->http_client_injected = true;

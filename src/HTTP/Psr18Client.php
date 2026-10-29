@@ -42,11 +42,20 @@ final class Psr18Client implements Client
      */
     private $allowedRedirects = 5;
 
+    /** @var UrlPolicy */
+    private $urlPolicy;
+
     public function __construct(ClientInterface $httpClient, RequestFactoryInterface $requestFactory, UriFactoryInterface $uriFactory)
     {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
         $this->uriFactory = $uriFactory;
+        $this->urlPolicy = new UrlPolicy();
+    }
+
+    public function set_url_policy(UrlPolicy $urlPolicy): void
+    {
+        $this->urlPolicy = $urlPolicy;
     }
 
     public function getHttpClient(): ClientInterface
@@ -81,6 +90,10 @@ final class Psr18Client implements Client
                 __METHOD__,
                 self::METHOD_GET
             ), 1);
+        }
+
+        if (!$this->urlPolicy->is_allowed($url)) {
+            throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $url));
         }
 
         if (Misc::is_remote_uri($url)) {
@@ -129,7 +142,18 @@ final class Psr18Client implements Client
                 $remainingRedirects--;
                 $followRedirect = true;
 
-                $requestedUrl = $response->getHeaderLine('Location');
+                $location = $response->getHeaderLine('Location');
+
+                // Resolve relative redirects against the current URL before the
+                // policy check, so a relative Location (RFC 9110) is treated as
+                // the absolute http(s) URL it points to.
+                $location = Misc::absolutize_url($location, $requestedUrl) ?: $location;
+
+                if (!$this->urlPolicy->is_allowed($location, true)) {
+                    throw new NotAllowedException(sprintf('Refusing to fetch "%s"', $location));
+                }
+
+                $requestedUrl = $location;
 
                 if ($statusCode === 301 || $statusCode === 308) {
                     $permanentUrl = $requestedUrl;

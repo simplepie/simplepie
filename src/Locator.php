@@ -14,6 +14,7 @@ use Psr\Http\Message\UriFactoryInterface;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\NotAllowedException;
 use SimplePie\HTTP\Psr18Client;
 use SimplePie\HTTP\Response;
 
@@ -260,6 +261,12 @@ class Locator implements RegistryAware
                     continue;
                 }
 
+                // Candidate content is untrusted: never fetch non-http(s) candidates.
+                if (!Misc::is_remote_uri($href)) {
+                    $done[] = $href;
+                    continue;
+                }
+
                 if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower($this->registry->call(Misc::class, 'parse_mime', [$link->getAttribute('type')])), ['text/html', 'application/rss+xml', 'application/atom+xml'])) && !isset($feeds[$href])) {
                     $this->checked_feeds++;
                     $headers = [
@@ -272,7 +279,7 @@ class Locator implements RegistryAware
                         if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed, true)) {
                             $feeds[$href] = $feed;
                         }
-                    } catch (ClientException $th) {
+                    } catch (ClientException | NotAllowedException $th) {
                         // Just mark it as done and continue.
                     }
                 }
@@ -299,7 +306,7 @@ class Locator implements RegistryAware
             if ($link->hasAttribute('href')) {
                 $href = trim($link->getAttribute('href'));
                 $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
-                if ($parsed['scheme'] === '' || preg_match('/^(https?|feed)?$/i', $parsed['scheme'])) {
+                if (self::is_candidate_fetchable($parsed)) {
                     if ($this->base_location < $link->getLineNo()) {
                         $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
                     } else {
@@ -352,8 +359,7 @@ class Locator implements RegistryAware
         foreach ($queryResult as $link) {
             $href = trim($link->getAttribute('href'));
             $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
-            if ($parsed['scheme'] === '' ||
-                preg_match('/^https?$/i', $parsed['scheme'])) {
+            if (self::is_candidate_fetchable($parsed)) {
                 if ($this->base_location < $link->getLineNo()) {
                     $href = $this->registry->call(
                         Misc::class,
@@ -390,6 +396,9 @@ class Locator implements RegistryAware
             if ($this->checked_feeds === $this->max_checked_feeds) {
                 break;
             }
+            if (!Misc::is_remote_uri($value)) {
+                continue;
+            }
             $extension = strrchr($value, '.');
             if ($extension !== false && in_array(strtolower($extension), ['.rss', '.rdf', '.atom', '.xml'])) {
                 $this->checked_feeds++;
@@ -404,7 +413,7 @@ class Locator implements RegistryAware
                     if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed)) {
                         return [$feed];
                     }
-                } catch (ClientException $th) {
+                } catch (ClientException | NotAllowedException $th) {
                     // Just unset and continue.
                 }
 
@@ -424,6 +433,9 @@ class Locator implements RegistryAware
             if ($this->checked_feeds === $this->max_checked_feeds) {
                 break;
             }
+            if (!Misc::is_remote_uri($value)) {
+                continue;
+            }
             if (preg_match('/(feed|rss|rdf|atom|xml)/i', $value)) {
                 $this->checked_feeds++;
                 $headers = [
@@ -436,7 +448,7 @@ class Locator implements RegistryAware
                     if ((!Misc::is_remote_uri($feed->get_final_requested_uri()) || ($feed->get_status_code() === 200 || $feed->get_status_code() > 206 && $feed->get_status_code() < 300)) && $this->is_feed($feed)) {
                         return [$feed];
                     }
-                } catch (ClientException $th) {
+                } catch (ClientException | NotAllowedException $th) {
                     // Just unset and continue.
                 }
 
@@ -444,6 +456,16 @@ class Locator implements RegistryAware
             }
         }
         return null;
+    }
+
+    /**
+     * Whether a candidate href's scheme is acceptable: empty (relative) or http(s).
+     *
+     * @param array<string, string> $parsed Result of {@see \SimplePie\Misc::parse_url()}
+     */
+    private static function is_candidate_fetchable(array $parsed): bool
+    {
+        return $parsed['scheme'] === '' || preg_match('/^https?$/i', $parsed['scheme']);
     }
 
     /**

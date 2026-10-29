@@ -21,6 +21,7 @@ use SimplePie\Cache\NameFilter;
 use SimplePie\HTTP\Client;
 use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\NotAllowedException;
 use SimplePie\HTTP\Psr18Client;
 
 /**
@@ -511,7 +512,7 @@ class Sanitize implements RegistryAware
                                         $img->getAttribute('src'),
                                         ['X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']]
                                     );
-                                } catch (ClientException $th) {
+                                } catch (ClientException | NotAllowedException $th) {
                                     continue;
                                 }
 

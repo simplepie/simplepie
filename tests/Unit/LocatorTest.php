@@ -10,6 +10,13 @@ namespace SimplePie\Tests\Unit;
 use DOMDocument;
 use DOMXPath;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriFactoryInterface;
+use Psr\Http\Message\UriInterface;
 use SimplePie\File;
 use SimplePie\Locator;
 use SimplePie\Registry;
@@ -165,5 +172,86 @@ class LocatorTest extends TestCase
     protected function map_url_file(File $file): string
     {
         return $file->url;
+    }
+
+    /**
+     * @test that autodiscovery never fetches a local file candidate.
+     *
+     * The page carries a file:// candidate pointing at a real, readable feed that would win
+     * autodiscovery if it were fetched. It must be filtered out, so only the http candidate
+     * is requested and discovered.
+     */
+    public function testAutodiscoverySkipsNonHttpCandidates(): void
+    {
+        $localFeedFile = realpath(dirname(__FILE__) . '/../data/feed_rss-2.0.xml');
+        \assert($localFeedFile !== false); // For PHPStan
+        $localFeedUri = 'file://' . $localFeedFile;
+
+        $data = new FileMock('http://example.com/');
+        $data->headers['content-type'] = 'text/html';
+        $data->body = '<!DOCTYPE html><html><head>'
+            . '<link rel="alternate" type="application/rss+xml" href="' . $localFeedUri . '" />'
+            . '<link rel="alternate" type="application/rss+xml" href="/feed" />'
+            . '</head><body></body></html>';
+
+        $requestedUris = [];
+        $request = $this->createMock(RequestInterface::class);
+        $request->method('withHeader')->willReturn($request);
+        $request->method('withUri')->willReturn($request);
+
+        $requestFactory = $this->createMock(RequestFactoryInterface::class);
+        $requestFactory->method('createRequest')->willReturnCallback(
+            function (string $method, $uri) use (&$requestedUris, $request): RequestInterface {
+                \assert($uri instanceof UriInterface); // For PHPStan
+                $requestedUris[] = (string) $uri;
+
+                return $request;
+            }
+        );
+
+        $uriFactory = $this->createMock(UriFactoryInterface::class);
+        $uriFactory->method('createUri')->willReturnCallback(
+            function (string $requestedUrl): UriInterface {
+                $uri = $this->createMock(UriInterface::class);
+                $uri->method('__toString')->willReturn($requestedUrl);
+
+                return $uri;
+            }
+        );
+
+        $body = $this->createMock(StreamInterface::class);
+        $body->method('__toString')->willReturn('<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" />');
+
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getBody')->willReturn($body);
+        $response->method('getStatusCode')->willReturn(200);
+        $response->method('hasHeader')->willReturnMap([
+            ['content-encoding', false],
+            ['content-type', true],
+        ]);
+        $response->method('getHeaderLine')->willReturnMap([
+            ['content-encoding', ''],
+            ['content-type', 'application/rss+xml'],
+        ]);
+        $response->method('getHeaders')->willReturn([
+            'content-type' => ['application/rss+xml'],
+        ]);
+
+        $httpClient = $this->createMock(ClientInterface::class);
+        $httpClient->method('sendRequest')->willReturn($response);
+
+        $locator = new Locator($data, 0, null, -1);
+
+        $registry = new Registry();
+        $registry->register(File::class, FileMock::class);
+        $locator->set_registry($registry);
+        $locator->set_http_client($httpClient, $requestFactory, $uriFactory);
+
+        $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
+
+        self::assertNotNull($feed);
+        self::assertSame('http://example.com/feed', $feed->get_final_requested_uri());
+        self::assertNotContains($localFeedUri, $requestedUris);
+        self::assertContains('http://example.com/feed', $requestedUris);
     }
 }

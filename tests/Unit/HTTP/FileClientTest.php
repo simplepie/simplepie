@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use SimplePie\File;
 use SimplePie\HTTP\ClientException;
 use SimplePie\HTTP\FileClient;
+use SimplePie\HTTP\NotAllowedException;
 use SimplePie\Misc;
 use SimplePie\Registry;
 
@@ -118,5 +119,58 @@ final class FileClientTest extends TestCase
             'https://example.invalid:404/this-server-does-not-exist',
             ['Accept' => 'application/atom+xml']
         );
+    }
+
+    public function testFileClientRejectsLocalFileByDefault(): void
+    {
+        $registry = $this->createMock(Registry::class);
+        $registry->expects($this->never())->method('create');
+
+        $client = new FileClient($registry, []);
+
+        $this->expectException(NotAllowedException::class);
+        $this->expectExceptionMessage('Refusing to fetch');
+
+        $client->request(FileClient::METHOD_GET, __FILE__);
+    }
+
+    public function testFileClientRejectsFileUriByDefault(): void
+    {
+        $registry = $this->createMock(Registry::class);
+        $registry->expects($this->never())->method('create');
+
+        $client = new FileClient($registry, []);
+
+        $this->expectException(NotAllowedException::class);
+        $this->expectExceptionMessage('Refusing to fetch');
+
+        $client->request(FileClient::METHOD_GET, 'file:///etc/passwd');
+    }
+
+    public function testFileClientAllowsLocalFileWithAllowLocalFilesOption(): void
+    {
+        $filepath = __FILE__;
+
+        $response = $this->createMock(File::class);
+
+        $registry = $this->createMock(Registry::class);
+        $registry->expects($this->once())->method('create')->with(
+            File::class,
+            [
+                $filepath,
+                10,
+                5,
+                [],
+                Misc::get_default_useragent(),
+                false,
+                [],
+            ]
+        )->willReturn($response);
+
+        $client = new FileClient($registry, [
+            'allow_local_files' => true,
+        ]);
+
+        $client->request(FileClient::METHOD_GET, $filepath);
     }
 }
