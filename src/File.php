@@ -225,33 +225,40 @@ class File implements Response
                             }
                             if (($contentEncodingHeader = $this->get_header_line('content-encoding')) !== '') {
                                 // Hey, we act dumb elsewhere, so let's do that here too
-                                switch (strtolower(trim($contentEncodingHeader, "\x09\x0A\x0D\x20"))) {
-                                    case 'gzip':
-                                    case 'x-gzip':
-                                        if (($decompressed = gzdecode($this->body)) === false) {
-                                            $this->error = 'Unable to decode HTTP "gzip" stream';
-                                            $this->success = false;
-                                        } else {
-                                            $this->body = $decompressed;
-                                        }
-                                        break;
+                                // Codings are listed in the order they were applied, so undo them in reverse.
+                                $codings = array_reverse(explode(',', strtolower($contentEncodingHeader)));
+                                foreach ($codings as $coding) {
+                                    switch (trim($coding, "\x09\x0A\x0D\x20")) {
+                                        case 'gzip':
+                                        case 'x-gzip':
+                                            if (($decompressed = gzdecode($this->body)) === false) {
+                                                $this->error = 'Unable to decode HTTP "gzip" stream';
+                                                $this->success = false;
+                                            } else {
+                                                $this->body = $decompressed;
+                                            }
+                                            break;
 
-                                    case 'deflate':
-                                        if (($decompressed = gzinflate($this->body)) !== false) {
-                                            $this->body = $decompressed;
-                                        } elseif (($decompressed = gzuncompress($this->body)) !== false) {
-                                            $this->body = $decompressed;
-                                        } elseif (($decompressed = gzdecode($this->body)) !== false) {
-                                            $this->body = $decompressed;
-                                        } else {
-                                            $this->error = 'Unable to decode HTTP "deflate" stream';
-                                            $this->success = false;
-                                        }
-                                        break;
+                                        case 'deflate':
+                                            if (($decompressed = gzinflate($this->body)) !== false) {
+                                                $this->body = $decompressed;
+                                            } elseif (($decompressed = gzuncompress($this->body)) !== false) {
+                                                $this->body = $decompressed;
+                                            } elseif (($decompressed = gzdecode($this->body)) !== false) {
+                                                $this->body = $decompressed;
+                                            } else {
+                                                $this->error = 'Unable to decode HTTP "deflate" stream';
+                                                $this->success = false;
+                                            }
+                                            break;
 
-                                    default:
-                                        $this->error = 'Unknown content coding';
-                                        $this->success = false;
+                                        case 'identity':
+                                            break;
+
+                                        default:
+                                            $this->error = 'Unknown content coding';
+                                            $this->success = false;
+                                    }
                                 }
                             }
                         }
@@ -275,6 +282,12 @@ class File implements Response
         }
         if ($this->success) {
             assert($this->body !== null); // For PHPStan
+            // Servers sometimes compress the body again, or without a Content-Encoding header, which leaves gzip data after the transport decoding.
+            if ($this->method & \SimplePie\SimplePie::FILE_SOURCE_REMOTE) {
+                while (strncmp($this->body, "\x1f\x8b\x08", 3) === 0 && ($decompressed = gzdecode($this->body)) !== false) {
+                    $this->body = $decompressed;
+                }
+            }
             // Leading whitespace may cause XML parsing errors (XML declaration cannot be preceded by anything other than BOM) so we trim it.
             // Note that unlike built-in `trim` function’s default settings, we do not trim `\x00` to avoid breaking characters in UTF-16 or UTF-32 encoded strings.
             // We also only do that when the whitespace is followed by `<`, so that we do not break e.g. UTF-16LE encoded whitespace like `\n\x00` in half.
