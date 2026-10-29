@@ -2944,6 +2944,26 @@ class SimplePie
     }
 
     /**
+     * Get the generator for the feed
+     *
+     * Uses `<atom:generator>` or `<generator>`
+     *
+     * @return string|null
+     */
+    public function get_generator()
+    {
+        if ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_10, 'generator')) {
+            return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
+        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_ATOM_03, 'generator')) {
+            return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
+        } elseif ($return = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'generator')) {
+            return $this->sanitize($return[0]['data'], self::CONSTRUCT_TEXT);
+        }
+
+        return null;
+    }
+
+    /**
      * Get the language for the feed
      *
      * Uses `<language>`, `<dc:language>`, or @xml_lang
