@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use SimplePie\File;
+use SimplePie\HTTP\RawTextResponse;
 use SimplePie\Tests\Fixtures\FileMock;
 
 /**
@@ -102,12 +103,11 @@ class LocatorTest extends TestCase
      */
     public static function firefoxtests(): iterable
     {
-        $data = new SimplePie_File(dirname(__FILE__) . '/data/fftests.html');
-        $data->headers = ['content-type' => 'text/html'];
-        $data->method = SIMPLEPIE_FILE_SOURCE_REMOTE;
-        $data->url = 'http://example.com/';
+        $content = file_get_contents(__DIR__ . '/data/fftests.html') ?: '';
+        $url = 'http://example.com/';
+        $response = (new RawTextResponse($content, $url))->with_header('content-type', 'text/html');
 
-        yield [$data];
+        yield [File::fromResponse($response)];
     }
 
     /**

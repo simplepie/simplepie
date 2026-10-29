@@ -23,6 +23,10 @@ Nothing yet.
 
 - `SimplePie\SimplePie::set_item_limit()` is deprecated since it only affects multi-feed mode, which has been deprecated in SimplePie 1.9 (by @jtojnar in [#954](https://github.com/simplepie/simplepie/pull/954))
 
+### Removed
+
+- **Breaking:** Fetching non-http(s) URLs using `File` or `Psr18Client` is no longer supported. It could lead to leaking private information when a local path was returned from a redirect or discovery. Opening a local path using `SimplePie::set_feed_url()` still works. (by @jtojnar in [#994](https://github.com/simplepie/simplepie/pull/994))
+
 ## [1.9.0](https://github.com/simplepie/simplepie/compare/1.8.1...1.9.0) - 2025-09-12
 
 ### Added
