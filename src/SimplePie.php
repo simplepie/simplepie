@@ -509,6 +509,13 @@ class SimplePie
     public $cache_duration = 3600;
 
     /**
+     * @var int Duration (in seconds) to remember a failed fetch, 0 to disable
+     * @see SimplePie::set_failure_cache_duration()
+     * @access private
+     */
+    public $failure_cache_duration = 0;
+
+    /**
      * @var int Auto-discovery cache duration (in seconds)
      * @see SimplePie::set_autodiscovery_cache_duration()
      * @access private
@@ -988,6 +995,19 @@ class SimplePie
     public function set_cache_duration(int $seconds = 3600)
     {
         $this->cache_duration = $seconds;
+    }
+
+    /**
+     * Set the length of time (in seconds) that a failed fetch will be
+     * remembered. While it is remembered, init() reports the stored error
+     * instead of requesting the feed again. Disabled by default.
+     *
+     * @param int $seconds The failed fetch cache duration, 0 to disable
+     * @return void
+     */
+    public function set_failure_cache_duration(int $seconds = 900)
+    {
+        $this->failure_cache_duration = $seconds;
     }
 
     /**
@@ -1971,6 +1991,11 @@ class SimplePie
                 // Do not try to fetch again if we already failed once.
                 // If the file connection had an error, set SimplePie::error to that and quit
                 $this->error = $failedFileReason;
+                $this->remember_failure($cache);
+
+                return !empty($this->data);
+            } elseif ($cache && $this->failure_cache_duration > 0 && ($remembered = $this->get_failure_cache()->get_data($cacheKey . '_failure', [])) && isset($remembered['error'])) {
+                $this->error = $remembered['error'];
 
                 return !empty($this->data);
             } else {
@@ -1982,6 +2007,7 @@ class SimplePie
                 } catch (ClientException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
+                    $this->remember_failure($cache);
 
                     return !empty($this->data);
                 }
@@ -1992,6 +2018,7 @@ class SimplePie
         // If the file connection has an error, set SimplePie::error to that and quit
         if (!(!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
             $this->error = 'Retrieved unsupported status code "' . $this->status_code . '"';
+            $this->remember_failure($cache);
             return !empty($this->data);
         }
 
@@ -3462,6 +3489,41 @@ class SimplePie
         }
 
         return $this->cache;
+    }
+
+    /**
+     * Get the cache used to remember failed fetches
+     */
+    private function get_failure_cache(): DataCache
+    {
+        if ($this->cache === null) {
+            $cache = $this->registry->call(Cache::class, 'get_handler', [
+                $this->cache_location,
+                $this->get_cache_filename($this->feed_url) . '_failure',
+                Base::TYPE_FEED
+            ]);
+
+            return new BaseDataCache($cache);
+        }
+
+        return $this->cache;
+    }
+
+    /**
+     * Remember the current error so that the feed is not requested again
+     * until the failure cache duration has passed
+     *
+     * @param DataCache|false $cache
+     */
+    private function remember_failure($cache): void
+    {
+        if ($cache && $this->failure_cache_duration > 0 && is_string($this->error)) {
+            $this->get_failure_cache()->set_data(
+                $this->get_cache_filename($this->feed_url) . '_failure',
+                ['error' => $this->error],
+                $this->failure_cache_duration
+            );
+        }
     }
 
     /**

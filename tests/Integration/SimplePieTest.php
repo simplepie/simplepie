@@ -169,6 +169,125 @@ class SimplePieTest extends TestCase
     }
 
     /**
+     * @return iterable<string, array{string}>
+     */
+    public static function provideCacheTypes(): iterable
+    {
+        yield 'legacy cache' => ['legacy'];
+        yield 'PSR-16 cache' => ['psr16'];
+    }
+
+    /**
+     * @dataProvider provideCacheTypes
+     */
+    public function testFailedRequestIsRememberedWhenFailureCacheDurationIsSet(string $cacheType): void
+    {
+        $server = new MockWebServer();
+        $server->start();
+        $url = $server->setResponseOfPath('/failing', new MockWebServerResponse('Error', [], 500));
+
+        $cacheDir = sys_get_temp_dir() . '/simplepie-test-' . uniqid();
+        mkdir($cacheDir);
+        $arrayCache = $this->createArrayCache();
+
+        for ($i = 0; $i < 2; $i++) {
+            $simplepie = new SimplePie();
+            $simplepie->set_feed_url($url);
+            $simplepie->set_failure_cache_duration(60);
+            if ($cacheType === 'psr16') {
+                $simplepie->set_cache($arrayCache);
+            } else {
+                $simplepie->set_cache_location($cacheDir);
+            }
+
+            self::assertFalse($simplepie->init());
+            self::assertSame('Retrieved unsupported status code "500"', $simplepie->error());
+        }
+
+        self::assertNotNull($server->getRequestByOffset(0));
+        self::assertNull($server->getRequestByOffset(1));
+        $server->stop();
+        array_map('unlink', glob($cacheDir . '/*') ?: []);
+        rmdir($cacheDir);
+    }
+
+    public function testFailedRequestIsNotRememberedByDefault(): void
+    {
+        $server = new MockWebServer();
+        $server->start();
+        $url = $server->setResponseOfPath('/failing', new MockWebServerResponse('Error', [], 500));
+
+        $cache = $this->createArrayCache();
+
+        for ($i = 0; $i < 2; $i++) {
+            $simplepie = new SimplePie();
+            $simplepie->set_feed_url($url);
+            $simplepie->set_cache($cache);
+            self::assertFalse($simplepie->init());
+        }
+
+        self::assertNotNull($server->getRequestByOffset(1));
+        $server->stop();
+    }
+
+    private function createArrayCache(): CacheInterface
+    {
+        return new class () implements CacheInterface {
+            /** @var array<string, mixed> */
+            private $items = [];
+
+            public function get(string $key, mixed $default = null): mixed
+            {
+                return $this->items[$key] ?? $default;
+            }
+
+            public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
+            {
+                $this->items[$key] = $value;
+
+                return true;
+            }
+
+            public function delete(string $key): bool
+            {
+                unset($this->items[$key]);
+
+                return true;
+            }
+
+            public function clear(): bool
+            {
+                $this->items = [];
+
+                return true;
+            }
+
+            /** @param iterable<string> $keys */
+            public function getMultiple(iterable $keys, mixed $default = null): iterable
+            {
+                return [];
+            }
+
+            /** @param iterable<string, mixed> $values */
+            public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
+            {
+                return true;
+            }
+
+            /** @param iterable<string> $keys */
+            public function deleteMultiple(iterable $keys): bool
+            {
+                return true;
+            }
+
+            public function has(string $key): bool
+            {
+                return isset($this->items[$key]);
+            }
+        };
+    }
+
+    /**
      * @test that requesting a feed from cache works
      */
     public function testRequestingAFeedFromCacheWorks(): void
