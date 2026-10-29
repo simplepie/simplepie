@@ -17,7 +17,7 @@ Nothing yet.
 
 ### Fixed
 
-Nothing yet.
+- Do not parse RSS and Atom feeds as microformats when their content contains `h-entry` or `h-feed` classes (by @jgalea)
 
 ### Deprecated
 

@@ -307,6 +307,17 @@ class SimplePieTest extends TestCase
                 'Four',
             ],
         ];
+
+        yield [
+            'path' => dirname(__FILE__, 2) . '/data/microformats/h-feed-xhtml.xhtml',
+            'feedTitle' => 'Test',
+            'titles' => [
+                'One',
+                'Two',
+                'Three',
+                'Four',
+            ],
+        ];
     }
 
     /**
@@ -336,6 +347,98 @@ class SimplePieTest extends TestCase
             assert($item !== null); // For PHPStan
             self::assertSame($expectedTitle, $item->get_title(), "Title of item #$i does not match");
         }
+    }
+
+    /**
+     * @return iterable<array{data: string}>
+     */
+    public static function xmlFeedWithMicroformatsInContentProvider(): iterable
+    {
+        yield 'RSS 2.0' => [
+            'data' => <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Test</title>
+        <link>https://example.com/</link>
+        <item>
+            <title>Item title</title>
+            <description><![CDATA[<p>Intro</p><div class="h-entry"><p class="p-name">Entry name</p></div>]]></description>
+        </item>
+    </channel>
+</rss>
+XML
+            ,
+        ];
+
+        yield 'RSS 2.0 without XML declaration' => [
+            'data' => <<<XML
+
+<rss version="2.0">
+    <channel>
+        <title>Test</title>
+        <link>https://example.com/</link>
+        <item>
+            <title>Item title</title>
+            <description><![CDATA[<p>Intro</p><div class="h-entry"><p class="p-name">Entry name</p></div>]]></description>
+        </item>
+    </channel>
+</rss>
+XML
+            ,
+        ];
+
+        yield 'RSS 1.0' => [
+            'data' => <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- comment -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/">
+    <channel rdf:about="https://example.com/">
+        <title>Test</title>
+        <link>https://example.com/</link>
+    </channel>
+    <item rdf:about="https://example.com/1">
+        <title>Item title</title>
+        <link>https://example.com/1</link>
+        <description><![CDATA[<p>Intro</p><div class="h-entry"><p class="p-name">Entry name</p></div>]]></description>
+    </item>
+</rdf:RDF>
+XML
+            ,
+        ];
+
+        yield 'Atom' => [
+            'data' => <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="feed.xsl"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Test</title>
+    <entry>
+        <title>Item title</title>
+        <content type="html"><![CDATA[<p>Intro</p><div class="h-entry"><p class="p-name">Entry name</p></div>]]></content>
+    </entry>
+</feed>
+XML
+            ,
+        ];
+    }
+
+    /**
+     * @dataProvider xmlFeedWithMicroformatsInContentProvider
+     */
+    public function testXmlFeedWithMicroformatsInContent(string $data): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+
+        $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
+        self::assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
+
+        self::assertSame('Test', $feed->get_title());
+        $items = $feed->get_items();
+        self::assertCount(1, $items);
+        self::assertSame('Item title', $items[0]->get_title());
     }
 
     /**
