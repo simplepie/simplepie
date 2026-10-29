@@ -9,15 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Nothing yet.
+- New method `SimplePie\SimplePie::get_icon_url()` for the feed favicon, taken from `atom:icon` or a square RSS 2.0 `image` (by @Alkarex in [#974](https://github.com/simplepie/simplepie/pull/974))
 
 ### Changed
 
-Nothing yet.
+- `SimplePie\Item::get_date()` now returns `null` for a date that cannot be parsed, instead of raising an error or returning the current date (by @arraintxo in [#964](https://github.com/simplepie/simplepie/pull/964))
+- Exclude more development files from the Composer package (by @johnbillion in [#955](https://github.com/simplepie/simplepie/pull/955))
 
 ### Fixed
 
-Nothing yet.
+- Normalize the declared encoding to uppercase, so `utf-8` and `UTF-8` are no longer treated as different encodings (by @Alkarex in [#936](https://github.com/simplepie/simplepie/pull/936))
+- Use `CURLOPT_ACCEPT_ENCODING` instead of the renamed `CURLOPT_ENCODING` on cURL versions that support it (by @mmeier86 in [#960](https://github.com/simplepie/simplepie/pull/960))
+- Disable cURL content decoding when the server sends a `Content-Encoding` header cURL cannot handle (by @mmeier86 in [#962](https://github.com/simplepie/simplepie/pull/962))
+- Do not trigger an undefined array key warning in `SimplePie\Item::get_thumbnail()` for an empty `<media:thumbnail />` (by @Alkarex in [#970](https://github.com/simplepie/simplepie/pull/970))
+- Fix `TypeError` in `SimplePie\Enclosure` when `channels` or `duration` were parsed as strings (by @Alkarex in [#975](https://github.com/simplepie/simplepie/pull/975))
+- Fix `TypeError` in `SimplePie\Enclosure` when a media player element has no `url` (by @Alkarex in [#978](https://github.com/simplepie/simplepie/pull/978))
+- Set `XML_OPTION_PARSE_HUGE` where PHP 8.4 supports it, so huge feeds parse the same as on earlier PHP versions (by @LeeXiaolan in [#977](https://github.com/simplepie/simplepie/pull/977))
+- Fix “Using null as an array offset” deprecations on PHP 8.5 (by @swissspidy in [#949](https://github.com/simplepie/simplepie/pull/949), @Alkarex in [#979](https://github.com/simplepie/simplepie/pull/979))
 
 ### Deprecated
 
