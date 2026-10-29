@@ -340,6 +340,11 @@ class SimplePie
     public const NAMESPACE_ITUNES = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
 
     /**
+     * Podlove Simple Chapters Namespace
+     */
+    public const NAMESPACE_PODLOVE_CHAPTERS = 'http://podlove.org/simple-chapters';
+
+    /**
      * XHTML Namespace
      */
     public const NAMESPACE_XHTML = 'http://www.w3.org/1999/xhtml';

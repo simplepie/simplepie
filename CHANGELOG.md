@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Nothing yet.
+- New method `SimplePie\Item::get_chapters()` and class `SimplePie\Chapter` for reading Podlove Simple Chapters (`<psc:chapters>`)
 
 ### Changed
 
