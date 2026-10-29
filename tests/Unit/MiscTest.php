@@ -739,4 +739,40 @@ class MiscTest extends TestCase
             Misc::parse_date($data)
         );
     }
+
+    /**
+     * @return iterable<array{string, string}>
+     */
+    public static function fixProtocolProvider(): iterable
+    {
+        yield 'full http URL is unchanged' => ['http://example.com/feed', 'http://example.com/feed'];
+        yield 'host only' => ['example.com', 'http://example.com/'];
+        yield 'host and path' => ['www.example.com/rss/feed', 'http://www.example.com/rss/feed'];
+        yield 'host, path and query' => ['example.com/rss?cat=1&x=2', 'http://example.com/rss?cat=1&x=2'];
+        yield 'feed scheme' => ['feed://example.com/rss', 'http://example.com/rss'];
+        yield 'feed scheme wrapping http' => ['feed:http://example.com/rss', 'http://example.com/rss'];
+        yield 'feed scheme wrapping https' => ['feed:https://example.com/rss', 'https://example.com/rss'];
+        yield 'feed scheme wrapping http in capitals' => ['FEED:HTTP://example.com/rss', 'http://example.com/rss'];
+        yield 'feed prefix with slashes wrapping http' => ['feed://http://example.com/rss', 'http://example.com/rss'];
+        yield 'feed prefix with slashes wrapping https' => ['feed://https://example.com/rss', 'https://example.com/rss'];
+        yield 'feed scheme with port' => ['feed://example.com:8080/rss', 'http://example.com:8080/rss'];
+        yield 'host and port' => ['example.com:8080', 'http://example.com:8080/'];
+        yield 'host, port and path' => ['example.com:8080/feed', 'http://example.com:8080/feed'];
+        yield 'host, port and query' => ['example.com:8080?x=1', 'http://example.com:8080/?x=1'];
+        yield 'localhost and port' => ['localhost:8080/feed', 'http://localhost:8080/feed'];
+        yield 'IPv6 host and port' => ['[::1]:8080/feed', 'http://[::1]:8080/feed'];
+        yield 'protocol-relative URL' => ['//example.com/feed', 'http://example.com/feed'];
+        yield 'protocol-relative URL with port' => ['//example.com:8080/feed', 'http://example.com:8080/feed'];
+        yield 'https URL with port is unchanged' => ['https://example.com:8443/feed?x=1#top', 'https://example.com:8443/feed?x=1#top'];
+        yield 'userinfo is kept' => ['https://user:pass@example.com/feed', 'https://user:pass@example.com/feed'];
+        yield 'other scheme is replaced, not read as host and port' => ['ftp://example.com:2121/feed', 'http://example.com:2121/feed'];
+    }
+
+    /**
+     * @dataProvider fixProtocolProvider
+     */
+    public function test_fix_protocol(string $input, string $expected): void
+    {
+        self::assertSame($expected, Misc::fix_protocol($input, 1));
+    }
 }

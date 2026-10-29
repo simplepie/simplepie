@@ -174,6 +174,19 @@ class Misc
      */
     public static function fix_protocol(string $url, int $http = 1)
     {
+        if (preg_match('#^feed:(?://)?(?=https?://)#i', $url, $feed_prefix)) {
+            return Misc::fix_protocol(substr($url, strlen($feed_prefix[0])), $http);
+        }
+
+        // "host:port/path" would otherwise be read as scheme "host"
+        if (preg_match('#^(?:[a-z0-9_-]+(?:\.[a-z0-9_-]+)+|localhost|\[[0-9a-f:.]+\]):[0-9]{1,5}(?:[/?\#]|$)#i', $url)) {
+            return Misc::fix_protocol('http://' . $url, $http);
+        }
+
+        if (preg_match('#^//[^/]#', $url)) {
+            return Misc::fix_protocol('http:' . $url, $http);
+        }
+
         $url = Misc::normalize_url($url);
         $parsed = Misc::parse_url($url);
         if ($parsed['scheme'] !== '' && $parsed['scheme'] !== 'http' && $parsed['scheme'] !== 'https') {
@@ -181,7 +194,7 @@ class Misc
         }
 
         if ($parsed['scheme'] === '' && $parsed['authority'] === '' && !file_exists($url)) {
-            return Misc::fix_protocol(Misc::compress_parse_url('http', $parsed['path'], '', $parsed['query'], $parsed['fragment']), $http);
+            return Misc::fix_protocol('http://' . $url, $http);
         }
 
         if ($http === 2 && $parsed['scheme'] !== '') {
@@ -238,8 +251,8 @@ class Misc
         $iri->scheme = $scheme;
         $iri->authority = $authority;
         $iri->path = $path;
-        $iri->query = $query;
-        $iri->fragment = $fragment;
+        $iri->query = $query !== '' ? $query : null;
+        $iri->fragment = $fragment !== '' ? $fragment : null;
         return $iri->get_uri();
     }
 

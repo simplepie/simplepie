@@ -17,7 +17,7 @@ Nothing yet.
 
 ### Fixed
 
-Nothing yet.
+- `SimplePie\Misc::fix_protocol()` no longer mangles feed URLs without a scheme (such as `example.com/feed`) or with a `feed:http://` prefix, and no longer appends an empty `?#` to rewritten URLs (by @jgalea)
 
 ### Deprecated
 
