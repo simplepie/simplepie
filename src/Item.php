@@ -644,14 +644,14 @@ class Item implements RegistryAware
                 [\SimplePie\SimplePie::NAMESPACE_RSS_20, 'pubDate'],
                 [\SimplePie\SimplePie::NAMESPACE_DC_11, 'date'],
                 [\SimplePie\SimplePie::NAMESPACE_DC_10, 'date'],
-                [\SimplePie\SimplePie::NAMESPACE_DC_11, 'created'],
-                [\SimplePie\SimplePie::NAMESPACE_DC_10, 'created'],
-                [\SimplePie\SimplePie::NAMESPACE_DC_11, 'modified'],
-                [\SimplePie\SimplePie::NAMESPACE_DC_10, 'modified'],
                 [\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'updated'],
                 [\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'issued'],
                 [\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'created'],
                 [\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'modified'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_11, 'created'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_10, 'created'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_11, 'modified'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_10, 'modified'],
             ];
 
             $parser = $this->registry->call(Parse\Date::class, 'get');

@@ -1454,6 +1454,21 @@ XML
                 ,
                 1168531200,
             ],
+            'Test RSS 2.0 atom:updated preferred over DC dates' => [
+<<<XML
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<item>
+			<atom:updated>2007-01-11T16:00:00Z</atom:updated>
+			<dc:created>2008-01-11T16:00:00Z</dc:created>
+			<dc:modified>2009-01-11T16:00:00Z</dc:modified>
+		</item>
+	</channel>
+</rss>
+XML
+                ,
+                1168531200,
+            ],
             'Test RSS 2.0 unparseable pubDate without other dates' => [
 <<<XML
 <rss version="2.0">
