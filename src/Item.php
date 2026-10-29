@@ -625,7 +625,8 @@ class Item implements RegistryAware
      * Get the posting date/time for the item
      *
      * Uses `<atom:published>`, `<atom:updated>`, `<atom:issued>`,
-     * `<atom:modified>`, `<pubDate>` or `<dc:date>`
+     * `<atom:modified>`, `<pubDate>`, `<dc:date>`,
+     * `<dc:created>` or `<dc:modified>`
      *
      * Note: obeys PHP's timezone setting. To get a UTC date/time, use
      * {@see get_gmdate}
@@ -638,29 +639,39 @@ class Item implements RegistryAware
     public function get_date(string $date_format = 'j F Y, g:i a')
     {
         if (!isset($this->data['date'])) {
-            if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'published')) {
-                $this->data['date']['raw'] = $return[0]['data'];
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_RSS_20, 'pubDate')) {
-                $this->data['date']['raw'] = $return[0]['data'];
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'date')) {
-                $this->data['date']['raw'] = $return[0]['data'];
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'date')) {
-                $this->data['date']['raw'] = $return[0]['data'];
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'updated')) {
-                $this->data['date']['raw'] = $return[0]['data'];
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'issued')) {
-                $this->data['date']['raw'] = $return[0]['data'];
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'created')) {
-                $this->data['date']['raw'] = $return[0]['data'];
-            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'modified')) {
-                $this->data['date']['raw'] = $return[0]['data'];
-            }
+            $candidates = [
+                [\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'published'],
+                [\SimplePie\SimplePie::NAMESPACE_RSS_20, 'pubDate'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_11, 'date'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_10, 'date'],
+                [\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'updated'],
+                [\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'issued'],
+                [\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'created'],
+                [\SimplePie\SimplePie::NAMESPACE_ATOM_03, 'modified'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_11, 'created'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_10, 'created'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_11, 'modified'],
+                [\SimplePie\SimplePie::NAMESPACE_DC_10, 'modified'],
+            ];
 
-            if (!empty($this->data['date']['raw'])) {
-                $parser = $this->registry->call(Parse\Date::class, 'get');
-                $this->data['date']['parsed'] = $parser->parse($this->data['date']['raw']) ?: null;
-            } else {
-                $this->data['date'] = null;
+            $parser = $this->registry->call(Parse\Date::class, 'get');
+            $first = null;
+            $this->data['date'] = null;
+            foreach ($candidates as [$namespace, $tag]) {
+                if (!($return = $this->get_item_tags($namespace, $tag))) {
+                    continue;
+                }
+                $raw = $return[0]['data'];
+                if ($first === null) {
+                    $first = $raw;
+                }
+                if (!empty($raw) && ($parsed = $parser->parse($raw))) {
+                    $this->data['date'] = ['raw' => $raw, 'parsed' => $parsed];
+                    break;
+                }
+            }
+            if ($this->data['date'] === null && !empty($first)) {
+                $this->data['date'] = ['raw' => $first, 'parsed' => null];
             }
         }
         if ($this->data['date']) {
@@ -682,7 +693,7 @@ class Item implements RegistryAware
     /**
      * Get the update date/time for the item
      *
-     * Uses `<atom:updated>`
+     * Uses `<atom:updated>` or `<dc:modified>`
      *
      * Note: obeys PHP's timezone setting. To get a UTC date/time, use
      * {@see get_gmdate}
@@ -694,6 +705,10 @@ class Item implements RegistryAware
     {
         if (!isset($this->data['updated'])) {
             if ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_ATOM_10, 'updated')) {
+                $this->data['updated']['raw'] = $return[0]['data'];
+            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_11, 'modified')) {
+                $this->data['updated']['raw'] = $return[0]['data'];
+            } elseif ($return = $this->get_item_tags(\SimplePie\SimplePie::NAMESPACE_DC_10, 'modified')) {
                 $this->data['updated']['raw'] = $return[0]['data'];
             }
 
