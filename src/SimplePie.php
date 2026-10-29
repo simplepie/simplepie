@@ -475,6 +475,13 @@ class SimplePie
     public $force_feed = false;
 
     /**
+     * @var bool Also return RSS 2.0 items that follow the closing channel tag
+     * @see SimplePie::set_items_outside_channel()
+     * @access private
+     */
+    public $items_outside_channel = false;
+
+    /**
      * @var bool Enable/Disable Caching
      * @see SimplePie::enable_cache()
      * @access private
@@ -744,6 +751,19 @@ class SimplePie
     public function force_feed(bool $enable = false)
     {
         $this->force_feed = $enable;
+    }
+
+    /**
+     * Also return RSS 2.0 items placed after the closing `</channel>` tag
+     *
+     * Such feeds are invalid, so this is off by default.
+     *
+     * @param bool $enable Return items that are children of `<rss>` instead of `<channel>`
+     * @return void
+     */
+    public function set_items_outside_channel(bool $enable = false)
+    {
+        $this->items_outside_channel = $enable;
     }
 
     /**
@@ -3254,6 +3274,12 @@ class SimplePie
                 }
             }
             if ($items = $this->get_channel_tags(self::NAMESPACE_RSS_20, 'item')) {
+                $keys = array_keys($items);
+                foreach ($keys as $key) {
+                    $this->data['items'][] = $this->make_item($items[$key]);
+                }
+            }
+            if ($this->items_outside_channel && ($items = $this->get_feed_tags(self::NAMESPACE_RSS_20, 'item'))) {
                 $keys = array_keys($items);
                 foreach ($keys as $key) {
                     $this->data['items'][] = $this->make_item($items[$key]);

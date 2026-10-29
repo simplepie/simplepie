@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Nothing yet.
+- New method `SimplePie\SimplePie::set_items_outside_channel()` to also return RSS 2.0 items placed after the closing `</channel>` tag (by @jgalea in [#1001](https://github.com/simplepie/simplepie/pull/1001))
 
 ### Changed
 

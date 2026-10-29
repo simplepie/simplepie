@@ -3246,4 +3246,64 @@ XML
 
         self::assertSame($expected, $feed->get_title());
     }
+
+    private const RSS_ITEMS_OUTSIDE_CHANNEL = <<<XML
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Feed Title</title>
+        <link>https://example.com/</link>
+        <description>Feed description</description>
+    </channel>
+    <item>
+        <title>First</title>
+        <link>https://example.com/1</link>
+    </item>
+    <item>
+        <title>Second</title>
+        <link>https://example.com/2</link>
+    </item>
+</rss>
+XML;
+
+    public function test_rss_items_after_channel_are_ignored_by_default(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data(self::RSS_ITEMS_OUTSIDE_CHANNEL);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        self::assertSame(0, $feed->get_item_quantity());
+    }
+
+    public function test_rss_items_after_channel_are_returned_when_enabled(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data(self::RSS_ITEMS_OUTSIDE_CHANNEL);
+        $feed->enable_cache(false);
+        $feed->set_items_outside_channel(true);
+        $feed->init();
+
+        self::assertSame(2, $feed->get_item_quantity());
+        $item = $feed->get_item(1);
+        self::assertNotNull($item);
+        self::assertSame('Second', $item->get_title());
+        self::assertSame('https://example.com/2', $item->get_link());
+    }
+
+    public function test_rss_items_inside_and_after_channel_are_both_returned_when_enabled(): void
+    {
+        $data = str_replace(
+            '</channel>',
+            '<item><title>Inside</title></item></channel>',
+            self::RSS_ITEMS_OUTSIDE_CHANNEL
+        );
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->set_items_outside_channel(true);
+        $feed->init();
+
+        self::assertSame(3, $feed->get_item_quantity());
+    }
 }
