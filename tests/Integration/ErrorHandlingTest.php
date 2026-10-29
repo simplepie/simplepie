@@ -129,6 +129,20 @@ class ErrorHandlingTest extends TestCase
             'Connection timed out',
             true,
         ];
+
+        yield 'conditional request returns error status with stale cache' => [
+            function (TestCase $test): SimplePie {
+                $client = self::createClientReturning($test, 500, 'text/html', 'Server error');
+
+                $feed = self::createFeedWithHttpClient($test, $client);
+                $feed->set_cache(self::createStaleCache($test));
+                $feed->enable_cache(true);
+
+                return $feed;
+            },
+            'Retrieved unsupported status code "500"',
+            true,
+        ];
     }
 
     /**
@@ -162,6 +176,47 @@ class ErrorHandlingTest extends TestCase
         $feed->init();
     }
 
+    /**
+     * @dataProvider exceptionsEnabledProvider
+     */
+    public function testFailedConditionalRequestFallsBackToStaleCacheWhenForced(bool $exceptions): void
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $client->method('sendRequest')->willThrowException(self::createClientException('Connection timed out'));
+
+        $feed = self::createFeedWithHttpClient($this, $client);
+        $feed->set_cache(self::createStaleCache($this));
+        $feed->enable_cache(true);
+        $feed->force_cache_fallback(true);
+        $feed->enable_exceptions($exceptions);
+
+        self::assertTrue($feed->init());
+        self::assertNull($feed->error());
+    }
+
+    /**
+     * @dataProvider exceptionsEnabledProvider
+     */
+    public function testNotModifiedResponseServesStaleCache(bool $exceptions): void
+    {
+        $feed = self::createFeedWithHttpClient($this, self::createClientReturning($this, 304, 'text/html', ''));
+        $feed->set_cache(self::createStaleCache($this));
+        $feed->enable_cache(true);
+        $feed->enable_exceptions($exceptions);
+
+        self::assertTrue($feed->init());
+        self::assertNull($feed->error());
+    }
+
+    /**
+     * @return iterable<string, array{bool}>
+     */
+    public static function exceptionsEnabledProvider(): iterable
+    {
+        yield 'exceptions disabled' => [false];
+        yield 'exceptions enabled' => [true];
+    }
+
     public function testMultifeedCollectsErrorsWithExceptionsEnabled(): void
     {
         $client = $this->createMock(ClientInterface::class);
@@ -173,6 +228,20 @@ class ErrorHandlingTest extends TestCase
 
         self::assertFalse($feed->init());
         self::assertSame(['Connection refused', 'Connection refused'], $feed->error());
+    }
+
+    private static function createStaleCache(TestCase $test): CacheInterface
+    {
+        $cache = $test->createMock(CacheInterface::class);
+        $cache->method('get')->willReturn([
+            'child' => [],
+            'headers' => ['etag' => '"abc"'],
+            'build' => Misc::get_build(),
+            'cache_expiration_time' => 0,
+        ]);
+        $cache->method('set')->willReturn(true);
+
+        return $cache;
     }
 
     private static function createFeedWithRawData(string $data): SimplePie
