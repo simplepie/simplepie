@@ -17,7 +17,7 @@ Nothing yet.
 
 ### Fixed
 
-Nothing yet.
+- Strip all inline event handler attributes (those named `on*`, such as `onmouseenter`) during HTML sanitization, closing an XSS hole that the `strip_attributes` blacklist could not keep up with (by @TowyTowy in [#872](https://github.com/simplepie/simplepie/issues/872))
 
 ### Deprecated
 
