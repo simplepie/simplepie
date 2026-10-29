@@ -46,6 +46,10 @@ class Parser implements RegistryAware
     public $datas = [[]];
     /** @var int */
     public $current_xhtml_construct = -1;
+    /** @var bool */
+    public $preserve_description_markup = false;
+    /** @var bool */
+    private $in_description_markup = false;
     /** @var string */
     public $encoding;
     /** @var Registry */
@@ -307,9 +311,21 @@ class Parser implements RegistryAware
             $this->xml_lang[] = end($this->xml_lang) ?: '';
         }
 
+        if (
+            $this->preserve_description_markup
+            && $this->current_xhtml_construct < 0
+            && in_array(end($this->namespace), ['', \SimplePie\SimplePie::NAMESPACE_XHTML], true)
+            && count($this->element) > 2
+            && $this->namespace[count($this->namespace) - 2] === \SimplePie\SimplePie::NAMESPACE_RSS_20
+            && $this->element[count($this->element) - 2] === 'description'
+        ) {
+            $this->current_xhtml_construct = 0;
+            $this->in_description_markup = true;
+        }
+
         if ($this->current_xhtml_construct >= 0) {
             $this->current_xhtml_construct++;
-            if (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_XHTML) {
+            if (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_XHTML || ($this->in_description_markup && end($this->namespace) === '')) {
                 $this->data['data'] .= '<' . end($this->element);
                 if (isset($attribs[''])) {
                     foreach ($attribs[''] as $name => $value) {
@@ -353,7 +369,10 @@ class Parser implements RegistryAware
     {
         if ($this->current_xhtml_construct >= 0) {
             $this->current_xhtml_construct--;
-            if (end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_XHTML && !in_array(end($this->element), ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param'])) {
+            if ($this->current_xhtml_construct < 0) {
+                $this->in_description_markup = false;
+            }
+            if ((end($this->namespace) === \SimplePie\SimplePie::NAMESPACE_XHTML || ($this->in_description_markup && end($this->namespace) === '')) && !in_array(end($this->element), ['area', 'base', 'basefont', 'br', 'col', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param'])) {
                 $this->data['data'] .= '</' . end($this->element) . '>';
             }
         }

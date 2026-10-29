@@ -3246,4 +3246,103 @@ XML
 
         self::assertSame($expected, $feed->get_title());
     }
+
+    private const RSS_DESCRIPTION_WITH_CHILD_MARKUP = <<<XML
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Feed Title</title>
+        <link>https://example.com/</link>
+        <description>Feed description</description>
+        <item>
+            <title>Entry Title</title>
+            <link>https://example.com/1</link>
+            <description>Intro &amp; <p class="intro">Hello <b>big</b> &amp; small<br/>world</p> outro</description>
+        </item>
+    </channel>
+</rss>
+XML;
+
+    public function test_rss_description_drops_child_markup_by_default(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data(self::RSS_DESCRIPTION_WITH_CHILD_MARKUP);
+        $feed->enable_cache(false);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertNotNull($item);
+        self::assertSame('Intro &amp;  outro', $item->get_description());
+    }
+
+    public function test_rss_description_with_child_markup_is_preserved_when_enabled(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data(self::RSS_DESCRIPTION_WITH_CHILD_MARKUP);
+        $feed->enable_cache(false);
+        $feed->set_preserve_description_markup(true);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertNotNull($item);
+        self::assertSame(
+            'Intro &amp; <p class="intro">Hello <b>big</b> &amp; small<br>world</p> outro',
+            $item->get_description()
+        );
+        self::assertSame('Feed description', $feed->get_description());
+    }
+
+    public function test_rss_description_with_only_text_is_unchanged_when_markup_preserved(): void
+    {
+        $data = str_replace(
+            'Intro &amp; <p class="intro">Hello <b>big</b> &amp; small<br/>world</p> outro',
+            '&lt;p&gt;AT&amp;amp;T&lt;/p&gt;',
+            self::RSS_DESCRIPTION_WITH_CHILD_MARKUP
+        );
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->set_preserve_description_markup(true);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertNotNull($item);
+        self::assertSame('<p>AT&amp;T</p>', $item->get_description());
+    }
+
+    public function test_rss_description_cdata_before_child_markup_is_not_double_escaped(): void
+    {
+        $data = str_replace(
+            'Intro &amp; <p class="intro">Hello <b>big</b> &amp; small<br/>world</p> outro',
+            '<![CDATA[<b>cdata</b>]]><p>child</p>',
+            self::RSS_DESCRIPTION_WITH_CHILD_MARKUP
+        );
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->set_preserve_description_markup(true);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertNotNull($item);
+        self::assertSame('<b>cdata</b><p>child</p>', $item->get_description());
+    }
+
+    public function test_rss_description_with_foreign_namespace_child_is_not_serialized(): void
+    {
+        $data = str_replace(
+            ['<rss version="2.0">', 'Intro &amp; <p class="intro">Hello <b>big</b> &amp; small<br/>world</p> outro'],
+            ['<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">', 'Text <media:thumbnail url="https://example.com/a.jpg"/> more'],
+            self::RSS_DESCRIPTION_WITH_CHILD_MARKUP
+        );
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+        $feed->set_preserve_description_markup(true);
+        $feed->init();
+
+        $item = $feed->get_item(0);
+        self::assertNotNull($item);
+        self::assertSame('Text  more', $item->get_description());
+    }
 }

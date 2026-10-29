@@ -475,6 +475,13 @@ class SimplePie
     public $force_feed = false;
 
     /**
+     * @var bool Keep child elements inside RSS 2.0 descriptions as markup
+     * @see SimplePie::set_preserve_description_markup()
+     * @access private
+     */
+    public $preserve_description_markup = false;
+
+    /**
      * @var bool Enable/Disable Caching
      * @see SimplePie::enable_cache()
      * @access private
@@ -744,6 +751,22 @@ class SimplePie
     public function force_feed(bool $enable = false)
     {
         $this->force_feed = $enable;
+    }
+
+    /**
+     * Keep unescaped child elements inside RSS 2.0 `<description>` as markup
+     *
+     * Valid RSS escapes or wraps in CDATA any markup in a description. Some feeds
+     * put the elements there directly, which are dropped by default.
+     * The setting is applied when the feed is parsed, so cached feeds pick it up
+     * once the cache expires.
+     *
+     * @param bool $enable Serialize child elements of `<description>` back to HTML
+     * @return void
+     */
+    public function set_preserve_description_markup(bool $enable = false)
+    {
+        $this->preserve_description_markup = $enable;
     }
 
     /**
@@ -1795,6 +1818,7 @@ class SimplePie
             if ($utf8_data = $this->registry->call(Misc::class, 'change_encoding', [$this->raw_data, $encoding, 'UTF-8'])) {
                 // Create new parser
                 $parser = $this->registry->create(Parser::class);
+                $parser->preserve_description_markup = $this->preserve_description_markup;
 
                 // If it's parsed fine
                 if ($parser->parse($utf8_data, 'UTF-8', $this->permanent_url ?? '')) {

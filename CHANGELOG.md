@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-Nothing yet.
+- New method `SimplePie\SimplePie::set_preserve_description_markup()` to keep unescaped child elements of RSS 2.0 `<description>` as HTML; applied at parse time, so cached feeds pick it up when the cache expires (by @jgalea in [#999](https://github.com/simplepie/simplepie/pull/999))
 
 ### Changed
 
