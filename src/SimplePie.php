@@ -670,10 +670,6 @@ class SimplePie
      */
     public function __construct()
     {
-        if (version_compare(PHP_VERSION, '7.2', '<')) {
-            exit('Please upgrade to PHP 7.2 or newer.');
-        }
-
         $this->set_useragent();
 
         $this->set_cache_namefilter(new CallableNameFilter($this->cache_name_function));

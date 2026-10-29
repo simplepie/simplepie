@@ -13,7 +13,7 @@ Nothing yet.
 
 ### Changed
 
-Nothing yet.
+- Minimum supported PHP version is now 7.4 (by @jgalea)
 
 ### Fixed
 
