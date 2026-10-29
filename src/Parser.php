@@ -387,6 +387,10 @@ class Parser implements RegistryAware
                     $namespace = \SimplePie\SimplePie::NAMESPACE_ITUNES;
                 }
 
+                if ($namespace === \SimplePie\SimplePie::NAMESPACE_ATOM_10_WRONG) {
+                    $namespace = \SimplePie\SimplePie::NAMESPACE_ATOM_10;
+                }
+
                 // Normalize the Media RSS namespaces
                 if ($namespace === \SimplePie\SimplePie::NAMESPACE_MEDIARSS_WRONG ||
                     $namespace === \SimplePie\SimplePie::NAMESPACE_MEDIARSS_WRONG2 ||
