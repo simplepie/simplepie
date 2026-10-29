@@ -3246,4 +3246,31 @@ XML
 
         self::assertSame($expected, $feed->get_title());
     }
+
+    public function test_control_characters_do_not_invalidate_the_feed(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"><channel><title>Feed\x08 Title</title><item><title>It\x0Bem\x1F</title><description>a\x00b</description></item></channel></rss>");
+        $feed->enable_cache(false);
+
+        self::assertTrue($feed->init());
+        self::assertNull($feed->error());
+        self::assertSame('Feed Title', $feed->get_title());
+        $item = $feed->get_item(0);
+        self::assertNotNull($item);
+        self::assertSame('Item', $item->get_title());
+        self::assertSame('ab', $item->get_description());
+    }
+
+    public function test_valid_whitespace_control_characters_are_kept(): void
+    {
+        $feed = new SimplePie();
+        $feed->set_raw_data("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"><channel><title>Feed</title><item><title>a</title><description>one\ttwo\nthree</description></item></channel></rss>");
+        $feed->enable_cache(false);
+
+        self::assertTrue($feed->init());
+        $item = $feed->get_item(0);
+        self::assertNotNull($item);
+        self::assertSame("one\ttwo\nthree", $item->get_description());
+    }
 }

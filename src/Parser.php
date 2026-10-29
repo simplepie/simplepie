@@ -108,6 +108,12 @@ class Parser implements RegistryAware
             $data = substr($data, 3);
         }
 
+        // Characters that are not allowed in XML 1.0 make the whole feed fail to parse,
+        // so drop them rather than losing every item over a stray control character.
+        if (strtoupper($this->encoding) === 'UTF-8') {
+            $data = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]|\xEF\xBF[\xBE\xBF]/', '', $data) ?? $data;
+        }
+
         if (substr($data, 0, 5) === '<?xml' && strspn(substr($data, 5, 1), "\x09\x0A\x0D\x20") && ($pos = strpos($data, '?>')) !== false) {
             $declaration = $this->registry->create(DeclarationParser::class, [substr($data, 5, $pos - 5)]);
             if ($declaration->parse()) {
