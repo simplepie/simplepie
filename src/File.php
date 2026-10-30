@@ -57,7 +57,7 @@ class File implements Response
      */
     public $status_code = 0;
 
-    /** @var int Number of redirect that were already performed during this request sequence. */
+    /** @var non-negative-int Number of redirect that were already performed during this request sequence. */
     public $redirects = 0;
 
     /** @var ?string */
@@ -91,7 +91,7 @@ class File implements Response
         if (function_exists('idn_to_ascii')) {
             $parsed = \SimplePie\Misc::parse_url($url);
             if ($parsed['authority'] !== '' && !ctype_print($parsed['authority'])) {
-                $authority = \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
+                $authority = (string) \idn_to_ascii($parsed['authority'], \IDNA_NONTRANSITIONAL_TO_ASCII, \INTL_IDNA_VARIANT_UTS46);
                 $url = \SimplePie\Misc::compress_parse_url($parsed['scheme'], $authority, $parsed['path'], $parsed['query'], null);
             }
         }
@@ -102,7 +102,7 @@ class File implements Response
         $this->useragent = $useragent;
         if (preg_match('/^http(s)?:\/\//i', $url)) {
             if ($useragent === null) {
-                $useragent = ini_get('user_agent');
+                $useragent = (string) ini_get('user_agent');
                 $this->useragent = $useragent;
             }
             if (!is_array($headers)) {
@@ -110,57 +110,41 @@ class File implements Response
             }
             if (!$force_fsockopen && function_exists('curl_exec')) {
                 $this->method = \SimplePie\SimplePie::FILE_SOURCE_REMOTE | \SimplePie\SimplePie::FILE_SOURCE_CURL;
-                $fp = curl_init();
-                $headers2 = [];
-                foreach ($headers as $key => $value) {
-                    $headers2[] = "$key: $value";
-                }
-                if (isset($curl_options[CURLOPT_HTTPHEADER])) {
-                    if (is_array($curl_options[CURLOPT_HTTPHEADER])) {
-                        $headers2 = array_merge($headers2, $curl_options[CURLOPT_HTTPHEADER]);
-                    }
-                    unset($curl_options[CURLOPT_HTTPHEADER]);
-                }
-                if (version_compare(\SimplePie\Misc::get_curl_version(), '7.10.5', '>=')) {
-                    curl_setopt($fp, CURLOPT_ENCODING, '');
-                }
-                curl_setopt($fp, CURLOPT_URL, $url);
-                curl_setopt($fp, CURLOPT_HEADER, 1);
-                curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($fp, CURLOPT_FAILONERROR, 1);
-                curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
-                curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
-                curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
-                curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
-                curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
-                foreach ($curl_options as $curl_param => $curl_value) {
-                    curl_setopt($fp, $curl_param, $curl_value);
-                }
-
+                $fp = self::curlInit($url, $timeout, $headers, $useragent, $curl_options);
                 $responseHeaders = curl_exec($fp);
-                if (curl_errno($fp) === 23 || curl_errno($fp) === 61) {
-                    curl_setopt($fp, CURLOPT_ENCODING, 'none');
+                if (curl_errno($fp) === CURLE_WRITE_ERROR || curl_errno($fp) === CURLE_BAD_CONTENT_ENCODING) {
+                    if (\PHP_VERSION_ID < 80000) {
+                        curl_close($fp);
+                    }
+                    $fp = self::curlInit($url, $timeout, $headers, $useragent, $curl_options, false);
                     $responseHeaders = curl_exec($fp);
                 }
                 $this->status_code = curl_getinfo($fp, CURLINFO_HTTP_CODE);
-                if (curl_errno($fp)) {
+                if (curl_errno($fp) !== CURLE_OK) {
                     $this->error = 'cURL error ' . curl_errno($fp) . ': ' . curl_error($fp);
                     $this->success = false;
                 } else {
-                    // Use the updated url provided by curl_getinfo after any redirects.
-                    if ($info = curl_getinfo($fp)) {
-                        $this->url = $info['url'];
+                    // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
+                    \assert(is_string($responseHeaders));
+                    if (curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
+                        // TODO: Replace with `CURLOPT_SUPPRESS_CONNECT_HEADERS` once PHP 7.2 support is dropped.
+                        $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
                     }
-                    curl_close($fp);
-                    $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders, $info['redirect_count'] + 1);
+                    if (\PHP_VERSION_ID < 80000) {
+                        curl_close($fp);
+                    }
                     $parser = new \SimplePie\HTTP\Parser($responseHeaders, true);
                     if ($parser->parse()) {
                         $this->set_headers($parser->headers);
                         $this->body = $parser->body;
-                        $this->status_code = $parser->status_code;
                         if ((in_array($this->status_code, [300, 301, 302, 303, 307]) || $this->status_code > 307 && $this->status_code < 400) && ($locationHeader = $this->get_header_line('location')) !== '' && $this->redirects < $redirects) {
                             $this->redirects++;
                             $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
+                            if ($location === false) {
+                                $this->error = "Invalid redirect location, trying to base “{$locationHeader}” onto “{$url}”";
+                                $this->success = false;
+                                return;
+                            }
                             $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                             $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                             return;
@@ -169,10 +153,15 @@ class File implements Response
                 }
             } else {
                 $this->method = \SimplePie\SimplePie::FILE_SOURCE_REMOTE | \SimplePie\SimplePie::FILE_SOURCE_FSOCKOPEN;
-                $url_parts = parse_url($url);
+                if (($url_parts = parse_url($url)) === false) {
+                    throw new \InvalidArgumentException('Malformed URL: ' . $url);
+                }
+                if (!isset($url_parts['host'])) {
+                    throw new \InvalidArgumentException('Missing hostname: ' . $url);
+                }
                 $socket_host = $url_parts['host'];
                 if (isset($url_parts['scheme']) && strtolower($url_parts['scheme']) === 'https') {
-                    $socket_host = "ssl://$url_parts[host]";
+                    $socket_host = 'ssl://' . $socket_host;
                     $url_parts['port'] = 443;
                 }
                 if (!isset($url_parts['port'])) {
@@ -226,6 +215,11 @@ class File implements Response
                                 $this->redirects++;
                                 $location = \SimplePie\Misc::absolutize_url($locationHeader, $url);
                                 $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
+                                if ($location === false) {
+                                    $this->error = "Invalid redirect location, trying to base “{$locationHeader}” onto “{$url}”";
+                                    $this->success = false;
+                                    return;
+                                }
                                 $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                                 return;
                             }
@@ -270,7 +264,7 @@ class File implements Response
             }
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
-            if (empty($url) || !is_readable($url) ||  false === $filebody = file_get_contents($url)) {
+            if (empty($url) || !is_readable($url) || false === ($filebody = file_get_contents($url))) {
                 $this->body = '';
                 $this->error = sprintf('file "%s" is not readable', $url);
                 $this->success = false;
@@ -280,9 +274,11 @@ class File implements Response
             }
         }
         if ($this->success) {
-            // (Leading) whitespace may cause XML parsing errors so we trim it,
-            // but we must not trim \x00 to avoid breaking BOM or multibyte characters
-            $this->body = trim($this->body, " \n\r\t\v");
+            assert($this->body !== null); // For PHPStan
+            // Leading whitespace may cause XML parsing errors (XML declaration cannot be preceded by anything other than BOM) so we trim it.
+            // Note that unlike built-in `trim` function’s default settings, we do not trim `\x00` to avoid breaking characters in UTF-16 or UTF-32 encoded strings.
+            // We also only do that when the whitespace is followed by `<`, so that we do not break e.g. UTF-16LE encoded whitespace like `\n\x00` in half.
+            $this->body = preg_replace('/^[ \n\r\t\v]+</', '<', $this->body);
         }
     }
 
@@ -301,98 +297,43 @@ class File implements Response
         return (int) $this->status_code;
     }
 
-    /**
-     * Retrieves all message header values.
-     *
-     * The keys represent the header name as it will be sent over the wire, and
-     * each value is an array of strings associated with the header.
-     *
-     *     // Represent the headers as a string
-     *     foreach ($message->get_headers() as $name => $values) {
-     *         echo $name . ': ' . implode(', ', $values);
-     *     }
-     *
-     *     // Emit headers iteratively:
-     *     foreach ($message->get_headers() as $name => $values) {
-     *         foreach ($values as $value) {
-     *             header(sprintf('%s: %s', $name, $value), false);
-     *         }
-     *     }
-     *
-     * @return string[][] Returns an associative array of the message's headers.
-     *     Each key MUST be a header name, and each value MUST be an array of
-     *     strings for that header.
-     */
     public function get_headers(): array
     {
         $this->maybe_update_headers();
         return $this->parsed_headers;
     }
 
-    /**
-     * Checks if a header exists by the given case-insensitive name.
-     *
-     * @param string $name Case-insensitive header field name.
-     * @return bool Returns true if any header names match the given header
-     *     name using a case-insensitive string comparison. Returns false if
-     *     no matching header name is found in the message.
-     */
     public function has_header(string $name): bool
     {
         $this->maybe_update_headers();
         return $this->get_header($name) !== [];
     }
 
-    /**
-     * Retrieves a message header value by the given case-insensitive name.
-     *
-     * This method returns an array of all the header values of the given
-     * case-insensitive header name.
-     *
-     * If the header does not appear in the message, this method MUST return an
-     * empty array.
-     *
-     * @param string $name Case-insensitive header field name.
-     * @return string[] An array of string values as provided for the given
-     *    header. If the header does not appear in the message, this method MUST
-     *    return an empty array.
-     */
     public function get_header(string $name): array
     {
         $this->maybe_update_headers();
         return $this->parsed_headers[strtolower($name)] ?? [];
     }
 
-    /**
-     * Retrieves a comma-separated string of the values for a single header.
-     *
-     * This method returns all of the header values of the given
-     * case-insensitive header name as a string concatenated together using
-     * a comma.
-     *
-     * NOTE: Not all header values may be appropriately represented using
-     * comma concatenation. For such headers, use getHeader() instead
-     * and supply your own delimiter when concatenating.
-     *
-     * If the header does not appear in the message, this method MUST return
-     * an empty string.
-     *
-     * @param string $name Case-insensitive header field name.
-     * @return string A string of values as provided for the given header
-     *    concatenated together using a comma. If the header does not appear in
-     *    the message, this method MUST return an empty string.
-     */
+    public function with_header(string $name, $value)
+    {
+        $this->maybe_update_headers();
+        $new = clone $this;
+
+        $newHeader = [
+            strtolower($name) => (array) $value,
+        ];
+        $new->set_headers($newHeader + $this->get_headers());
+
+        return $new;
+    }
+
     public function get_header_line(string $name): string
     {
         $this->maybe_update_headers();
         return implode(', ', $this->get_header($name));
     }
 
-    /**
-     * get the body as string
-     *
-     * @return string
-     */
     public function get_body_content(): string
     {
         return (string) $this->body;
@@ -455,10 +396,8 @@ class File implements Response
      */
     final public static function fromResponse(Response $response): self
     {
-        $headers = [];
-
-        foreach ($response->get_headers() as $name => $header) {
-            $headers[$name] = implode(', ', $header);
+        if ($response instanceof self) {
+            return $response;
         }
 
         /** @var File */
@@ -466,12 +405,61 @@ class File implements Response
 
         $file->url = $response->get_final_requested_uri();
         $file->useragent = null;
-        $file->headers = $headers;
+        $file->set_headers($response->get_headers());
         $file->body = $response->get_body_content();
         $file->status_code = $response->get_status_code();
         $file->permanent_url = $response->get_permanent_uri();
 
         return $file;
+    }
+
+    /**
+     * @param array<string, string> $headers
+     * @param array<int, mixed> $curl_options
+     * @return \CurlHandle
+     */
+    private static function curlInit(
+        string $url,
+        int $timeout,
+        array $headers,
+        string $useragent,
+        array $curl_options,
+        bool $setAcceptEncoding = true
+    ) {
+        $fp = curl_init();
+
+        $headers2 = [];
+        foreach ($headers as $key => $value) {
+            $headers2[] = "$key: $value";
+        }
+        if (isset($curl_options[CURLOPT_HTTPHEADER])) {
+            if (is_array($curl_options[CURLOPT_HTTPHEADER])) {
+                $headers2 = array_merge($headers2, $curl_options[CURLOPT_HTTPHEADER]);
+            }
+            unset($curl_options[CURLOPT_HTTPHEADER]);
+        }
+        if ($setAcceptEncoding) {
+            if (version_compare(\SimplePie\Misc::get_curl_version(), '7.21.6', '>=')) {
+                curl_setopt($fp, CURLOPT_ACCEPT_ENCODING, '');
+            } else {
+                curl_setopt($fp, CURLOPT_ENCODING, '');
+            }
+        }
+        /** @var non-empty-string $url */
+        curl_setopt($fp, CURLOPT_URL, $url);
+        curl_setopt($fp, CURLOPT_HEADER, true);
+        curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($fp, CURLOPT_FAILONERROR, true);
+        curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($fp, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($fp, CURLOPT_REFERER, \SimplePie\Misc::url_remove_credentials($url));
+        curl_setopt($fp, CURLOPT_USERAGENT, $useragent);
+        curl_setopt($fp, CURLOPT_HTTPHEADER, $headers2);
+        foreach ($curl_options as $curl_param => $curl_value) {
+            curl_setopt($fp, $curl_param, $curl_value);
+        }
+
+        return $fp;
     }
 }
 

@@ -14,15 +14,15 @@ class SanitizeTest extends TestCase
     {
         $sanitize = new SimplePie_Sanitize();
 
-        $this->assertSame(
-            <<<EOT
+        self::assertSame(
+            <<<HTML
 &lt;head&gt; &amp; &lt;body&gt; /\ ' === ' &amp; " === ". Sbohem bez šátečku! Тут был Лёха.
-EOT
+HTML
             ,
             $sanitize->sanitize(
-                <<<EOT
+                <<<HTML
 &#60;head&#62; &amp; &lt;body&gt; /\ ' === &apos; &#38; " === &quot;. Sbohem bez šátečku! Тут был Лёха.<script>alert('XSS')</script>
-EOT
+HTML
                 ,
                 SIMPLEPIE_CONSTRUCT_MAYBE_HTML
             ),
@@ -87,6 +87,12 @@ EOT
 
         $base = 'http://example.com/';
 
-        $this->assertSame($expected, $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base));
+        $actual = $sanitize->sanitize($given, SIMPLEPIE_CONSTRUCT_HTML, $base);
+
+        // Remove newlines for PHP 7.2 compatibility
+        $expected = str_replace(["\n", "\r"], '', $expected);
+        $actual = str_replace(["\n", "\r"], '', $actual);
+
+        self::assertSame($expected, $actual);
     }
 }

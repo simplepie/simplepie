@@ -13,11 +13,11 @@ class GzdecodeTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Gzdecode'));
+        self::assertTrue(class_exists('SimplePie\Gzdecode'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_gzdecode'));
+        self::assertTrue(class_exists('SimplePie_gzdecode'));
     }
 }

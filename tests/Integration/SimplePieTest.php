@@ -37,8 +37,8 @@ class SimplePieTest extends TestCase
         $simplepie->enable_cache(false);
         $simplepie->set_feed_url($filepath);
 
-        $this->assertTrue($simplepie->init());
-        $this->assertSame(100, $simplepie->get_item_quantity());
+        self::assertTrue($simplepie->init());
+        self::assertSame(100, $simplepie->get_item_quantity());
     }
 
     /**
@@ -53,8 +53,8 @@ class SimplePieTest extends TestCase
         $file = new File($filepath);
         $simplepie->set_file($file);
 
-        $this->assertTrue($simplepie->init());
-        $this->assertSame(100, $simplepie->get_item_quantity());
+        self::assertTrue($simplepie->init());
+        self::assertSame(100, $simplepie->get_item_quantity());
     }
 
     /**
@@ -73,8 +73,8 @@ class SimplePieTest extends TestCase
         );
         $simplepie->set_feed_url($filepath);
 
-        $this->assertTrue($simplepie->init());
-        $this->assertSame(100, $simplepie->get_item_quantity());
+        self::assertTrue($simplepie->init());
+        self::assertSame(100, $simplepie->get_item_quantity());
     }
 
     /**
@@ -122,8 +122,8 @@ class SimplePieTest extends TestCase
         );
         $simplepie->set_feed_url('https://example.org/feed.xml');
 
-        $this->assertTrue($simplepie->init());
-        $this->assertSame(100, $simplepie->get_item_quantity());
+        self::assertTrue($simplepie->init());
+        self::assertSame(100, $simplepie->get_item_quantity());
     }
 
     public function testSimplePieReturnsCorrectStatusCodeFromServerResponse(): void
@@ -145,9 +145,9 @@ class SimplePieTest extends TestCase
 
         $server->stop();
 
-        $this->assertFalse($return);
-        $this->assertSame(429, $simplepie->status_code());
-        $this->assertSame('Retrieved unsupported status code "429"', $simplepie->error());
+        self::assertFalse($return);
+        self::assertSame(429, $simplepie->status_code());
+        self::assertSame('Retrieved unsupported status code "429"', $simplepie->error());
     }
 
     public function testSimplePieReturnsCorrectStatusCodeOnServerConnectionError(): void
@@ -161,9 +161,10 @@ class SimplePieTest extends TestCase
 
         $return = $simplepie->init();
 
-        $this->assertFalse($return);
-        $this->assertSame(0, $simplepie->status_code());
-        $this->assertSame('cURL error 6: Could not resolve host: example.invalid', $simplepie->error());
+        self::assertFalse($return);
+        self::assertSame(0, $simplepie->status_code());
+        self::assertIsString($simplepie->error()); // For PHPStan
+        self::assertStringContainsString('cURL error 6: Could not resolve host: example.invalid', $simplepie->error());
 
     }
 
@@ -178,7 +179,11 @@ class SimplePieTest extends TestCase
         });
         BaseCacheWithCallbacksMock::setLoadCallback(function () {
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
-            $data = unserialize(file_get_contents($cachepath));
+            $data = file_get_contents($cachepath);
+
+            if ($data !== false) {
+                $data = unserialize($data);
+            }
 
             if ($data === false) {
                 throw new Exception(sprintf(
@@ -212,8 +217,8 @@ class SimplePieTest extends TestCase
 
         $simplepie->set_feed_url('https://example.com/feed.xml');
 
-        $this->assertTrue($simplepie->init());
-        $this->assertSame(100, $simplepie->get_item_quantity());
+        self::assertTrue($simplepie->init());
+        self::assertSame(100, $simplepie->get_item_quantity());
 
         BaseCacheWithCallbacksMock::resetAllCallbacks();
     }
@@ -227,7 +232,11 @@ class SimplePieTest extends TestCase
         $cache = $this->createMock(CacheInterface::class);
         $cache->method('get')->willReturnCallback(function () {
             $cachepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.spc';
-            $data = unserialize(file_get_contents($cachepath));
+            $data = file_get_contents($cachepath);
+
+            if ($data !== false) {
+                $data = unserialize($data);
+            }
 
             if ($data === false) {
                 throw new Exception(sprintf(
@@ -250,7 +259,334 @@ class SimplePieTest extends TestCase
         $simplepie->set_cache($cache);
         $simplepie->set_feed_url('https://example.com/feed.xml');
 
-        $this->assertTrue($simplepie->init());
-        $this->assertSame(100, $simplepie->get_item_quantity());
+        self::assertTrue($simplepie->init());
+        self::assertSame(100, $simplepie->get_item_quantity());
+    }
+
+
+    /**
+     * @test Regression for https://github.com/simplepie/simplepie/pull/445
+     *
+     * There can be no content other than BOM before XML declaration or it will fail to parse.
+     * This can occur in badly written PHP scripts so we have to trim it.
+     */
+    public function testWhitespaceBeforeXmlDeclaration(): void
+    {
+        $filepath = dirname(__FILE__, 2) . '/data/feed-with-whitespace-before-xml-declaration.xml';
+
+        $simplepie = new SimplePie();
+        $simplepie->enable_cache(false);
+        $simplepie->set_feed_url($filepath);
+
+        self::assertTrue($simplepie->init());
+    }
+
+    /**
+     * @return iterable<array{path: string, feedTitle: string, titles: list<string>}>
+     */
+    public static function microformatFeedProvider(): iterable
+    {
+        yield [
+            'path' => dirname(__FILE__, 2) . '/data/microformats/h-feed-simple.html',
+            'feedTitle' => 'Test',
+            'titles' => [
+                'One',
+                'Two',
+                'Three',
+                'Four',
+            ],
+        ];
+
+        yield [
+            'path' => dirname(__FILE__, 2) . '/data/microformats/h-feed-with-comments.html',
+            'feedTitle' => 'Test',
+            'titles' => [
+                'One',
+                'Two',
+                'Three',
+                'Four',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider microformatFeedProvider
+     *
+     * @param list<string> $titles
+     */
+    public function testMicroformatItems(string $path, string $feedTitle, array $titles): void
+    {
+        if (!function_exists('Mf2\parse')) {
+            $this->markTestSkipped('Test requires Mf2 library.');
+        }
+
+        $feed = new SimplePie();
+        $data = file_get_contents($path);
+        \assert($data !== false); // For PHPStan
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+
+        $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
+        self::assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
+
+        self::assertSame($feedTitle, $feed->get_title());
+        $items = $feed->get_items();
+        self::assertSame(count($titles), count($items), 'Number of items does not match');
+        foreach (array_map(null, $titles, $items) as $i => [$expectedTitle, $item]) {
+            assert($item !== null); // For PHPStan
+            self::assertSame($expectedTitle, $item->get_title(), "Title of item #$i does not match");
+        }
+    }
+
+    /**
+     * @return iterable<array{data: string, hubUrl: ?string, selfUrl: ?string, headers?: list<string>, bogoUrl?: ?string}>
+     */
+    public static function microformatHubFeedProvider(): iterable
+    {
+        yield 'neither' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            'selfUrl' => null,
+        ];
+
+        yield 'hub only' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => null,
+        ];
+
+        yield 'hub + self' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.com/',
+        ];
+
+        yield 'hub + self in `a` element (insecure and unsupported)' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <a rel="hub" href="https://pubsubhubbub.appspot.com" />
+        <a rel="self" href="https://example.com" />
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            'selfUrl' => null,
+        ];
+
+        yield 'hub + self inside `body (insecure and unsupported)`' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            'selfUrl' => null,
+        ];
+
+        yield 'self only' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => null,
+            'selfUrl' => 'https://example.com/',
+        ];
+
+        yield 'hub + self + bogo in header' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.com/',
+            'headers' => [
+                'Link: <https://bogo.test/>; rel=bogo',
+            ],
+            'bogoUrl' => 'https://bogo.test/',
+        ];
+
+        yield 'hub + self + self in header' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://pubsubhubbub.appspot.com/',
+            'selfUrl' => 'https://example.org/',
+            'headers' => [
+                'Link: <https://example.org/>; rel=self',
+            ],
+        ];
+
+        yield 'hub in header + self' => [
+            'data' => <<<HTML
+<html>
+    <head>
+        <title>Test</title>
+        <link rel="hub" href="https://pubsubhubbub.appspot.com">
+        <link rel="self" href="https://example.com">
+    </head>
+    <body>
+        <div class="h-feed">
+        </div>
+    </body>
+</html>
+HTML
+            ,
+            'hubUrl' => 'https://switchboard.p3k.io/',
+            'selfUrl' => 'https://example.com/',
+            'headers' => [
+                'Link: <https://switchboard.p3k.io/>; rel=hub',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider microformatHubFeedProvider
+     *
+     * @param list<string> $headers
+     */
+    public function testMicroformatLinkHub(string $data, ?string $hubUrl, ?string $selfUrl, array $headers = [], ?string $bogoUrl = null): void
+    {
+        if (!function_exists('Mf2\parse')) {
+            $this->markTestSkipped('Test requires Mf2 library.');
+        }
+
+        $server = new MockWebServer();
+        $server->start();
+
+        $url = $server->setResponseOfPath(
+            '/index.html',
+            new MockWebServerResponse($data, $headers, 200)
+        );
+
+        $feed = new SimplePie();
+        $feed->set_feed_url($url);
+        $feed->enable_cache(false);
+
+        $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
+        self::assertTrue($feed->init(), 'Failed fetching feed: ' . $error);
+
+        $server->stop();
+
+        self::assertSame($hubUrl, $feed->get_link(0, 'hub'), 'Link rel=hub does not match');
+        self::assertSame($selfUrl, $feed->get_link(0, 'self'), 'Link rel=self does not match');
+        self::assertLessThanOrEqual(1, count($feed->get_links('self') ?? []), 'Link rel=self should not be promoted from HTML when it is already present in headers');
+        self::assertSame($bogoUrl, $feed->get_link(0, 'bogo'), 'Link rel=bogo does not match');
+    }
+
+    public function testSimplePieIgnoresBadContentEncodingHeader(): void
+    {
+        // Ensuring that cURL is available
+        \assert(function_exists('curl_exec'));
+        $server = new MockWebServer();
+        $server->start();
+
+        $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0.xml';
+        $body = file_get_contents($filepath);
+        \assert($body !== false); // For PHPStan
+
+        $url = $server->setResponseOfPath(
+            '/bad-content-encoding',
+            new MockWebServerResponse($body, [
+                'content-type: application/rss+xml',
+                'content-encoding: aws-chunked',
+            ], 200)
+        );
+
+        $feed = new SimplePie();
+        $feed->enable_cache(false);
+
+        $feed->set_feed_url($url);
+
+        // For some reason, without this, Sniffer thinks we have text/plain on error.
+        $feed->force_feed(true);
+
+        $return = $feed->init();
+        $server->stop();
+
+        $error = implode("\n", (array) ($feed->error() ?? '')); // For PHPStan
+        self::assertTrue($return, 'Failed fetching feed: ' . $error);
+        self::assertSame(200, $feed->status_code());
     }
 }

@@ -20,12 +20,12 @@ class LocatorTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Locator'));
+        self::assertTrue(class_exists('SimplePie\Locator'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Locator'));
+        self::assertTrue(class_exists('SimplePie_Locator'));
     }
 
     /**
@@ -57,7 +57,7 @@ class LocatorTest extends TestCase
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
-        $this->assertSame($data, $feed);
+        self::assertSame($data, $feed);
     }
 
     public function testInvalidMIMEType(): void
@@ -72,7 +72,7 @@ class LocatorTest extends TestCase
         $locator->set_registry($registry);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
-        $this->assertSame(null, $feed);
+        self::assertNull($feed);
     }
 
     public function testDirectNoDOM(): void
@@ -84,8 +84,8 @@ class LocatorTest extends TestCase
         $locator->dom = null;
         $locator->set_registry($registry);
 
-        $this->assertTrue($locator->is_feed($data));
-        $this->assertSame($data, $locator->find(SimplePie::LOCATOR_ALL, $found));
+        self::assertTrue($locator->is_feed($data));
+        self::assertSame($data, $locator->find(SimplePie::LOCATOR_ALL, $found));
     }
 
     public function testFailDiscoveryNoDOM(): void
@@ -101,8 +101,8 @@ class LocatorTest extends TestCase
         $locator->dom = null;
         $locator->set_registry($registry);
 
-        $this->assertFalse($locator->is_feed($data));
-        $this->assertFalse($locator->find(SimplePie::LOCATOR_ALL, $found));
+        self::assertFalse($locator->is_feed($data));
+        self::assertFalse($locator->find(SimplePie::LOCATOR_ALL, $found));
     }
 
     /**
@@ -136,21 +136,25 @@ class LocatorTest extends TestCase
 
         $expected = [];
         $document = new DOMDocument();
-        $document->loadHTML($data->body);
+        $document->loadHTML((string) $data->body);
         $xpath = new DOMXPath($document);
-        foreach ($xpath->query('//link') as $element) {
+
+        /** @var \DOMNodeList<\DOMElement> $queryResult */
+        $queryResult = $xpath->query('//link');
+
+        foreach ($queryResult as $element) {
             /** @var \DOMElement $element */
             $expected[] = 'http://example.com' . $element->getAttribute('href');
         }
         //$expected = SimplePie_Misc::get_element('link', $data->body);
 
         $feed = $locator->find(SimplePie::LOCATOR_ALL, $all);
-        $this->assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
-        $this->assertInstanceOf(FileMock::class, $feed);
+        self::assertFalse($locator->is_feed($data), 'HTML document not be a feed itself');
+        self::assertInstanceOf(FileMock::class, $feed);
         $success = array_filter($expected, [get_class($this), 'filter_success']);
 
-        $found = array_map([get_class($this), 'map_url_file'], $all);
-        $this->assertSame($success, $found);
+        $found = is_array($all) ? array_map([get_class($this), 'map_url_file'], $all) : [];
+        self::assertSame($success, $found);
     }
 
     protected function filter_success(string $url): bool

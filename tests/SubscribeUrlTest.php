@@ -20,7 +20,7 @@ class SubscribeUrlTest extends TestCase
 
         $feed->init();
 
-        $this->assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
-        $this->assertSame('https://example.com/feed/', $feed->subscribe_url(true));
+        self::assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
+        self::assertSame('https://example.com/feed/', $feed->subscribe_url(true));
     }
 }

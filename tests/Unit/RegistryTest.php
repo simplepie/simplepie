@@ -18,25 +18,26 @@ class RegistryTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists(Registry::class));
+        self::assertTrue(class_exists(Registry::class));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Registry'));
+        self::assertTrue(class_exists('SimplePie_Registry'));
     }
 
     /**
      * @dataProvider getDefaultClassDataProvider
      *
-     * @param string $type
+     * @template T
+     * @param class-string<T> $type
      * @param class-string $expected
      */
     public function testGetClassReturnsCorrectClassname(string $type, string $expected): void
     {
         $registry = new Registry();
 
-        $this->assertSame($expected, $registry->get_class($type));
+        self::assertSame($expected, $registry->get_class($type));
     }
 
     /**
@@ -91,6 +92,11 @@ class RegistryTest extends TestCase
      * Test register() and get_class() with old and new type names
      *
      * @dataProvider getOverridingClassDataProvider
+     *
+     * @template T
+     * @param class-string<T> $registeredType
+     * @param class-string<T> $requestedType
+     * @param class-string<T> $classname
      */
     public function testRegisterAllowsOverridingTheDefaultClassname(string $registeredType, string $requestedType, string $classname): void
     {
@@ -98,7 +104,7 @@ class RegistryTest extends TestCase
 
         $registry->register($registeredType, $classname);
 
-        $this->assertSame($classname, $registry->get_class($requestedType));
+        self::assertSame($classname, $registry->get_class($requestedType));
     }
 
     /**

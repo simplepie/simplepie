@@ -13,11 +13,11 @@ class MemcacheTest extends TestCase
 {
     public function testNamespacedClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie\Cache\Memcache'));
+        self::assertTrue(class_exists('SimplePie\Cache\Memcache'));
     }
 
     public function testClassExists(): void
     {
-        $this->assertTrue(class_exists('SimplePie_Cache_Memcache'));
+        self::assertTrue(class_exists('SimplePie_Cache_Memcache'));
     }
 }

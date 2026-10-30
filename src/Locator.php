@@ -26,9 +26,9 @@ use SimplePie\HTTP\Response;
 class Locator implements RegistryAware
 {
     /** @var ?string */
-    public $useragent = null;
+    public $useragent;
     /** @var int */
-    public $timeout = 10;
+    public $timeout;
     /** @var File */
     public $file;
     /** @var string[] */
@@ -46,11 +46,11 @@ class Locator implements RegistryAware
     /** @var int */
     public $checked_feeds = 0;
     /** @var int */
-    public $max_checked_feeds = 10;
+    public $max_checked_feeds;
     /** @var bool */
-    public $force_fsockopen = false;
+    public $force_fsockopen;
     /** @var array<int, mixed> */
-    public $curl_options = [];
+    public $curl_options;
     /** @var ?\DomDocument */
     public $dom;
     /** @var ?Registry */
@@ -112,12 +112,14 @@ class Locator implements RegistryAware
     }
 
     /**
-     * @param SimplePie::LOCATOR_* $type
+     * @param int-mask-of<SimplePie::LOCATOR_*> $type
      * @param array<Response>|null $working
      * @return Response|null
      */
     public function find(int $type = \SimplePie\SimplePie::LOCATOR_ALL, ?array &$working = null)
     {
+        assert($this->registry !== null);
+
         if ($this->is_feed($this->file)) {
             return $this->file;
         }
@@ -162,8 +164,11 @@ class Locator implements RegistryAware
      */
     public function is_feed(Response $file, bool $check_html = false)
     {
+        assert($this->registry !== null);
+
         if (Misc::is_remote_uri($file->get_final_requested_uri())) {
-            $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$file]);
+            $fileResponse = File::fromResponse($file);
+            $sniffer = $this->registry->create(Content\Type\Sniffer::class, [$fileResponse]);
             $sniffed = $sniffer->get_type();
             $mime_types = ['application/rss+xml', 'application/rdf+xml',
                                 'text/rdf', 'application/atom+xml', 'text/xml',
@@ -185,6 +190,8 @@ class Locator implements RegistryAware
      */
     public function get_base()
     {
+        assert($this->registry !== null);
+
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
@@ -198,7 +205,7 @@ class Locator implements RegistryAware
                     continue;
                 }
                 $this->base = $base;
-                $this->base_location = method_exists($element, 'getLineNo') ? $element->getLineNo() : 0;
+                $this->base_location = $element->getLineNo();
                 break;
             }
         }
@@ -229,6 +236,8 @@ class Locator implements RegistryAware
      */
     protected function search_elements_by_tag(string $name, array &$done, array $feeds)
     {
+        assert($this->registry !== null);
+
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
@@ -240,7 +249,7 @@ class Locator implements RegistryAware
             }
             if ($link->hasAttribute('href') && $link->hasAttribute('rel')) {
                 $rel = array_unique($this->registry->call(Misc::class, 'space_separated_tokens', [strtolower($link->getAttribute('rel'))]));
-                $line = method_exists($link, 'getLineNo') ? $link->getLineNo() : 1;
+                $line = $link->getLineNo();
 
                 if ($this->base_location < $line) {
                     $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
@@ -279,6 +288,8 @@ class Locator implements RegistryAware
      */
     public function get_links()
     {
+        assert($this->registry !== null);
+
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use locator');
         }
@@ -289,7 +300,7 @@ class Locator implements RegistryAware
                 $href = trim($link->getAttribute('href'));
                 $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
                 if ($parsed['scheme'] === '' || preg_match('/^(https?|feed)?$/i', $parsed['scheme'])) {
-                    if (method_exists($link, 'getLineNo') && $this->base_location < $link->getLineNo()) {
+                    if ($this->base_location < $link->getLineNo()) {
                         $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->base]);
                     } else {
                         $href = $this->registry->call(Misc::class, 'absolutize_url', [trim($link->getAttribute('href')), $this->http_base]);
@@ -317,10 +328,14 @@ class Locator implements RegistryAware
     }
 
     /**
+     * Extracts first `link` element with given `rel` attribute inside the `head` element.
+     *
      * @return string|null
      */
     public function get_rel_link(string $rel)
     {
+        assert($this->registry !== null);
+
         if ($this->dom === null) {
             throw new \SimplePie\Exception('DOMDocument not found, unable to use '.
                                           'locator');
@@ -331,15 +346,15 @@ class Locator implements RegistryAware
         }
 
         $xpath = new \DOMXpath($this->dom);
-        $query = '//a[@rel and @href] | //link[@rel and @href]';
-        foreach ($xpath->query($query) as $link) {
-            /** @var \DOMElement $link */
+        $query = '(//head)[1]/link[@rel and @href]';
+        /** @var \DOMNodeList<\DOMElement> */
+        $queryResult = $xpath->query($query);
+        foreach ($queryResult as $link) {
             $href = trim($link->getAttribute('href'));
             $parsed = $this->registry->call(Misc::class, 'parse_url', [$href]);
             if ($parsed['scheme'] === '' ||
                 preg_match('/^https?$/i', $parsed['scheme'])) {
-                if (method_exists($link, 'getLineNo') &&
-                    $this->base_location < $link->getLineNo()) {
+                if ($this->base_location < $link->getLineNo()) {
                     $href = $this->registry->call(
                         Misc::class,
                         'absolutize_url',
@@ -361,6 +376,7 @@ class Locator implements RegistryAware
                 }
             }
         }
+
         return null;
     }
 
@@ -435,16 +451,23 @@ class Locator implements RegistryAware
      */
     private function get_http_client(): Client
     {
+        assert($this->registry !== null);
+
         if ($this->http_client === null) {
+            $options = [
+                'timeout' => $this->timeout,
+                'redirects' => 5,
+                'force_fsockopen' => $this->force_fsockopen,
+                'curl_options' => $this->curl_options,
+            ];
+
+            if ($this->useragent !== null) {
+                $options['useragent'] = $this->useragent;
+            }
+
             return new FileClient(
                 $this->registry,
-                [
-                    'timeout' => $this->timeout,
-                    'redirects' => 5,
-                    'useragent' => $this->useragent,
-                    'force_fsockopen' => $this->force_fsockopen,
-                    'curl_options' => $this->curl_options,
-                ]
+                $options
             );
         }
 
