@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New method `SimplePie\SimplePie::get_icon_url()` for the feed favicon, taken from `atom:icon` or a square RSS 2.0 `image` (by @Alkarex in [#974](https://github.com/simplepie/simplepie/pull/974))
 - Publish [security policy](SECURITY.md) (by @jgalea in [#1013](https://github.com/simplepie/simplepie/pull/1013))
+- Feeds that incorrectly declare the namespace as `https://www.w3.org/2005/Atom` are now parsed as Atom (by @jgalea in [#1010](https://github.com/simplepie/simplepie/pull/1010))
 
 ### Changed
 

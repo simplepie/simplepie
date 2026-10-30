@@ -3246,4 +3246,35 @@ XML
 
         self::assertSame($expected, $feed->get_title());
     }
+
+    public function test_atom_feed_with_https_namespace_is_parsed(): void
+    {
+        $data = <<<XML
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="https://www.w3.org/2005/Atom">
+    <title>Feed Title</title>
+    <link href="https://example.com/"/>
+    <entry>
+        <title>Entry Title</title>
+        <link href="https://example.com/entry"/>
+        <id>https://example.com/entry</id>
+        <updated>2022-09-06T19:07:33Z</updated>
+        <summary>Entry summary</summary>
+    </entry>
+</feed>
+XML;
+        $feed = new SimplePie();
+        $feed->set_raw_data($data);
+        $feed->enable_cache(false);
+
+        self::assertTrue($feed->init());
+        self::assertNull($feed->error());
+        self::assertSame(SimplePie::TYPE_ATOM_10, $feed->get_type());
+        self::assertSame('Feed Title', $feed->get_title());
+        self::assertSame(1, $feed->get_item_quantity());
+        $item = $feed->get_item(0);
+        self::assertNotNull($item);
+        self::assertSame('Entry Title', $item->get_title());
+        self::assertSame('Entry summary', $item->get_description());
+    }
 }
