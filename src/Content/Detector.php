@@ -28,7 +28,7 @@ interface Detector
      * Inspired by the Ultra-liberal RSS locator from Mark Pilgrim
      * @link http://web.archive.org/web/20110607232437/http://diveintomark.org/archives/2002/08/15/ultraliberal_rss_locator
      *
-     * @param SimplePie::LOCATOR_* $discovery_level
+     * @param int-mask-of<SimplePie::LOCATOR_*> $discovery_level
      *
      * @return string[] Array of possible feed urls. The urls are not requested or checked for containing a feed
      */

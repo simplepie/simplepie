@@ -87,7 +87,7 @@ final class VerifiedFeedsDetector implements Detector, RegistryAware
     {
         $sniffer = $this->registry->create(
             Sniffer::class,
-            [$response]
+            [(! $response instanceof File) ? File::fromResponse($response) : $response]
         );
 
         return (string) $sniffer->get_type();
