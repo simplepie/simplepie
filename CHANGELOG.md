@@ -17,7 +17,7 @@ Nothing yet.
 
 ### Fixed
 
-Nothing yet.
+- Feeds with whitespace before the XML declaration are parsed instead of being rejected as invalid XML (by @jgalea)
 
 ### Deprecated
 
