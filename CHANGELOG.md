@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Accept feeds larger than 10 MB with libxml 2.7.0 and newer, as older versions did; this only works on PHP 8.4.0 and newer (by @LeeXiaolan in [#977](https://github.com/simplepie/simplepie/pull/977))
 - Fix “Using null as an array offset” deprecations on PHP 8.5 (by @swissspidy in [#949](https://github.com/simplepie/simplepie/pull/949), @Alkarex in [#979](https://github.com/simplepie/simplepie/pull/979))
 - Fix incorrect argument typing information for static analyzers (by @jtojnar in [#946](https://github.com/simplepie/simplepie/pull/946))
-- `File`: Fix reporting interim instead of final status code (by @Alkarex in [#945](https://github.com/simplepie/simplepie/pull/945))
+- `File`: Stop reporting interim instead of final status code (by @Alkarex in [#945](https://github.com/simplepie/simplepie/pull/945))
 - `Psr18Client` handles 308 redirects (by @jtojnar in [#938](https://github.com/simplepie/simplepie/pull/938))
 - `SimplePie\Content\Type\Sniffer::__construct()` expects `File` as parameter instead of `mixed` again. This reverts accidental BC break from 1.9.0. (by @jtojnar in [#938](https://github.com/simplepie/simplepie/pull/938))
 
