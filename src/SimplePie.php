@@ -18,6 +18,7 @@ use SimplePie\Cache\CallableNameFilter;
 use SimplePie\Cache\DataCache;
 use SimplePie\Cache\NameFilter;
 use SimplePie\Cache\Psr16;
+use SimplePie\Content\Detector;
 use SimplePie\Content\Type\Sniffer;
 use SimplePie\Exception as SimplePieException;
 use SimplePie\HTTP\Client;
@@ -1995,6 +1996,8 @@ class SimplePie
             return !empty($this->data);
         }
 
+        $detector = $this->registry->create(Detector::class);
+
         if (!$this->force_feed) {
             // Check if the supplied URL is a feed, if it isn't, look for it.
             $locate = $this->registry->create(Locator::class, [
@@ -2016,7 +2019,7 @@ class SimplePie
                 );
             }
 
-            if (!$locate->is_feed($file)) {
+            if (! $detector->contains_feed($file)) {
                 $copyStatusCode = $file->get_status_code();
                 $copyContentType = $file->get_header_line('content-type');
                 try {
@@ -2036,11 +2039,53 @@ class SimplePie
                     }
                     // Now also do feed discovery, but if microformats were found don't
                     // overwrite the current value of file.
-                    $discovered = $locate->find(
-                        $this->autodiscovery,
-                        $this->all_discovered_feeds
+                    $possible_feed_urls = $detector->discover_possible_feed_urls(
+                        $file,
+                        $this->autodiscovery
                     );
+
+                    $discovered = null;
+                    $checked_feeds = 0;
+                    $this->all_discovered_feeds = [];
+
+                    foreach ($possible_feed_urls as $href) {
+                        if ($checked_feeds >= $this->max_checked_feeds) {
+                            break;
+                        }
+
+                        $checked_feeds++;
+
+                        try {
+                            $possible_feed = $http_client->request(
+                                Client::METHOD_GET,
+                                $href,
+                                ['Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER]
+                            );
+                        } catch (ClientException $th) {
+                            continue;
+                        }
+
+                        if (
+                            (
+                                !Misc::is_remote_uri($href)
+                                || (
+                                    $possible_feed->get_status_code() === 200
+                                    || $possible_feed->get_status_code() > 206
+                                    && $possible_feed->get_status_code() < 300
+                                )
+                            )
+                            && $detector->contains_feed($possible_feed)
+                        ) {
+                            $this->all_discovered_feeds[] = $possible_feed;
+                        }
+                    }
+
+                    if ($this->all_discovered_feeds !== []) {
+                        $discovered = $this->all_discovered_feeds[0];
+                    }
+
                     if ($microformats) {
+                        $locate->get_base();
                         $hub = $locate->get_rel_link('hub');
                         $self = $locate->get_rel_link('self');
                         if ($hub || $self) {
@@ -2097,9 +2142,7 @@ class SimplePie
             $headers[$key] = implode(', ', $values);
         }
 
-        $fileResponse = File::fromResponse($file);
-        $sniffer = $this->registry->create(Sniffer::class, [$fileResponse]);
-        $sniffed = $sniffer->get_type();
+        $sniffed = $detector->detect_media_type($file);
 
         return [$headers, $sniffed];
     }
