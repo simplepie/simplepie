@@ -18,6 +18,11 @@ use XMLParser;
  */
 class Parser implements RegistryAware
 {
+    /**
+     * Atom 1.0 namespace with the scheme mistyped as https, treated as NAMESPACE_ATOM_10.
+     */
+    private const NAMESPACE_ATOM_10_WRONG = 'https://www.w3.org/2005/Atom';
+
     /** @var int */
     public $error_code;
     /** @var string */
@@ -385,6 +390,10 @@ class Parser implements RegistryAware
                 $local_name = substr($string, $pos + $separator_length);
                 if (strtolower($namespace) === \SimplePie\SimplePie::NAMESPACE_ITUNES) {
                     $namespace = \SimplePie\SimplePie::NAMESPACE_ITUNES;
+                }
+
+                if ($namespace === self::NAMESPACE_ATOM_10_WRONG) {
+                    $namespace = \SimplePie\SimplePie::NAMESPACE_ATOM_10;
                 }
 
                 // Normalize the Media RSS namespaces
