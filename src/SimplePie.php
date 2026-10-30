@@ -254,11 +254,6 @@ class SimplePie
     public const NAMESPACE_ATOM_10 = 'http://www.w3.org/2005/Atom';
 
     /**
-     * Atom 1.0 namespace with the scheme mistyped as https, treated as NAMESPACE_ATOM_10.
-     */
-    public const NAMESPACE_ATOM_10_WRONG = 'https://www.w3.org/2005/Atom';
-
-    /**
      * Atom 0.3 Namespace
      */
     public const NAMESPACE_ATOM_03 = 'http://purl.org/atom/ns#';

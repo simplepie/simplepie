@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Atom 1.0 feeds that declare the namespace as `https://www.w3.org/2005/Atom` are now parsed as Atom (by @jgalea in [#1010](https://github.com/simplepie/simplepie/pull/1010))
+- Feeds that incorrectly declare the namespace as `https://www.w3.org/2005/Atom` are now parsed as Atom (by @jgalea in [#1010](https://github.com/simplepie/simplepie/pull/1010))
 
 ### Changed
 
