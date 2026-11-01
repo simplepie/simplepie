@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Minimum supported PHP version is now 7.4 (by @jgalea)
 - `SimplePie\Item::get_date()` now returns `null` for a date that cannot be parsed, instead of the Unix epoch on PHP < 8.0 or the current time on PHP 8.0+ (by @arraintxo in [#964](https://github.com/simplepie/simplepie/pull/964))
 - Exclude more development files from the Composer package (by @johnbillion in [#955](https://github.com/simplepie/simplepie/pull/955))
 

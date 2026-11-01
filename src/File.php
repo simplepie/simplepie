@@ -126,8 +126,8 @@ class File implements Response
                 } else {
                     // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
                     \assert(is_string($responseHeaders));
-                    if (curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
-                        // TODO: Replace with `CURLOPT_SUPPRESS_CONNECT_HEADERS` once PHP 7.2 support is dropped.
+                    if (!\defined('CURLOPT_SUPPRESS_CONNECT_HEADERS') && curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
+                        // libcurl older than 7.54 has no CURLOPT_SUPPRESS_CONNECT_HEADERS.
                         $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
                     }
                     if (\PHP_VERSION_ID < 80000) {
@@ -448,6 +448,9 @@ class File implements Response
         /** @var non-empty-string $url */
         curl_setopt($fp, CURLOPT_URL, $url);
         curl_setopt($fp, CURLOPT_HEADER, true);
+        if (\defined('CURLOPT_SUPPRESS_CONNECT_HEADERS')) {
+            curl_setopt($fp, CURLOPT_SUPPRESS_CONNECT_HEADERS, true);
+        }
         curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($fp, CURLOPT_FAILONERROR, true);
         curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
