@@ -275,9 +275,22 @@ class SimplePieTest extends TestCase
     {
         $filepath = dirname(__FILE__, 2) . '/data/feed-with-whitespace-before-xml-declaration.xml';
 
+        $server = new MockWebServer();
+        $server->start();
+
+        $body = file_get_contents($filepath);
+        \assert($body !== false); // For PHPStan
+
+        $url = $server->setResponseOfPath(
+            '/feed',
+            new MockWebServerResponse($body, [
+                'content-type: application/rss+xml',
+            ], 200)
+        );
+
         $simplepie = new SimplePie();
         $simplepie->enable_cache(false);
-        $simplepie->set_feed_url($filepath);
+        $simplepie->set_feed_url($url);
 
         self::assertTrue($simplepie->init());
     }
