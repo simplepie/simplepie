@@ -18,7 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimum supported PHP version is now 7.4 (by @jgalea)
 - `SimplePie\Item::get_date()` now returns `null` for a date that cannot be parsed, instead of the Unix epoch on PHP < 8.0 or the current time on PHP 8.0+ (by @arraintxo in [#964](https://github.com/simplepie/simplepie/pull/964))
 - Exclude more development files from the Composer package (by @johnbillion in [#955](https://github.com/simplepie/simplepie/pull/955))
-- Local paths set via `set_feed_url` are no longer fetched using `Psr18Client`. (by @jtojnar in [#993](https://github.com/simplepie/simplepie/pull/993))
 
 ### Fixed
 
@@ -42,7 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- **Breaking:** Fetching non-http(s) URLs using `File` or `Psr18Client` is no longer supported. It could lead to leaking private information when a local path was returned from a redirect or discovery. Opening a local path using `SimplePie::set_feed_url()` still works. (by @jtojnar in [#994](https://github.com/simplepie/simplepie/pull/994))
+- **Breaking:** Fetching non-http(s) URLs using `File` or `Psr18Client` is no longer supported. ([CVE-2026-111234](https://github.com/advisories/GHSA-9fwh-fc64-58p8)). (by @jtojnar in [#994](https://github.com/simplepie/simplepie/pull/994))
+- **Breaking:** Fetching local paths set via `set_feed_url` is no longer supported. Use `SimplePie::set_raw_data()` with the contents of the file, obtained e.g. using `file_get_contents`. (by @jtojnar in [#993](https://github.com/simplepie/simplepie/pull/993) and [#994](https://github.com/simplepie/simplepie/pull/994))
 
 ## [1.9.0](https://github.com/simplepie/simplepie/compare/1.8.1...1.9.0) - 2025-09-12
 

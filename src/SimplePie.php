@@ -1729,8 +1729,15 @@ class SimplePie
         if ($this->feed_url !== null) {
             $parsed_feed_url = $this->registry->call(Misc::class, 'parse_url', [$this->feed_url]);
 
+            $scheme = $parsed_feed_url['scheme'];
+            if (!Misc::is_remote_uri($this->feed_url)) {
+                $source = $scheme === '' ? 'local feeds' : "feeds from $scheme";
+                $this->error = "Fetching $source not supported";
+                return false;
+            }
+
             // Decide whether to enable caching
-            if ($this->enable_cache && $parsed_feed_url['scheme'] !== '') {
+            if ($this->enable_cache && $scheme !== '') {
                 $cache = $this->get_cache($this->feed_url);
             }
 
@@ -1878,11 +1885,6 @@ class SimplePie
 
         // If it's enabled, use the cache
         if ($cache) {
-            // Sanity check, consumers should not pass cache for local files.
-            if (!Misc::is_remote_uri($this->feed_url)) {
-                throw new SimplePieException('Attempting to use a cache with a local file');
-            }
-
             // Load the Cache
             $this->data = $cache->get_data($cacheKey, []);
 
@@ -1984,11 +1986,7 @@ class SimplePie
                     'Accept' => SimplePie::DEFAULT_HTTP_ACCEPT_HEADER,
                 ];
                 try {
-                    if (Misc::is_remote_uri($this->feed_url)) {
-                        $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
-                    } else {
-                        $file = self::readLocalFile($this->feed_url);
-                    }
+                    $file = $this->get_http_client()->request(Client::METHOD_GET, $this->feed_url, $headers);
                 } catch (ClientException $th) {
                     // If the file connection has an error, set SimplePie::error to that and quit
                     $this->error = $th->getMessage();
@@ -3494,31 +3492,6 @@ class SimplePie
         }
 
         return $this->http_client;
-    }
-
-    private static function readLocalFile(string $path): RawTextResponse
-    {
-        if (!is_readable($path)) {
-            throw new ClientException(sprintf('file "%s" is not readable', $path));
-        }
-
-        try {
-            $raw = file_get_contents($path);
-        } catch (\Throwable $th) {
-            // Catch warnings promoted to errors by custom error handlers.
-            throw new ClientException($th->getMessage(), $th->getCode(), $th);
-        }
-
-        if ($raw === false) {
-            throw new ClientException('file_get_contents() could not read the file', 1);
-        }
-
-        // Leading whitespace may cause XML parsing errors (XML declaration cannot be preceded by anything other than BOM) so we trim it.
-        // Note that unlike built-in `trim` function’s default settings, we do not trim `\x00` to avoid breaking characters in UTF-16 or UTF-32 encoded strings.
-        // We also only do that when the whitespace is followed by `<`, so that we do not break e.g. UTF-16LE encoded whitespace like `\n\x00` in half.
-        $raw = preg_replace('/^[ \n\r\t\v]+</', '<', $raw) ?? '';
-
-        return new RawTextResponse($raw, $path);
     }
 }
 

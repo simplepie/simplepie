@@ -37,8 +37,8 @@ class SimplePieTest extends TestCase
         $simplepie->enable_cache(false);
         $simplepie->set_feed_url($filepath);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        self::assertFalse($simplepie->init());
+        self::assertSame($simplepie->error(), 'Fetching local feeds not supported');
     }
 
     /**
@@ -74,8 +74,8 @@ class SimplePieTest extends TestCase
         );
         $simplepie->set_feed_url($filepath);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        self::assertFalse($simplepie->init());
+        self::assertSame($simplepie->error(), 'Fetching local feeds not supported');
     }
 
     /**
