@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `File`: Stop reporting interim instead of final status code (by @Alkarex in [#945](https://github.com/simplepie/simplepie/pull/945))
 - `Psr18Client` handles 308 redirects (by @jtojnar in [#938](https://github.com/simplepie/simplepie/pull/938))
 - `SimplePie\Content\Type\Sniffer::__construct()` expects `File` as parameter instead of `mixed` again. This reverts accidental BC break from 1.9.0. (by @jtojnar in [#938](https://github.com/simplepie/simplepie/pull/938))
+- Feeds with whitespace before the XML declaration are parsed instead of being rejected as invalid XML (by @jgalea in [#1005](https://github.com/simplepie/simplepie/pull/1005))
 
 ### Deprecated
 
