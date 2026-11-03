@@ -795,10 +795,12 @@ class Item implements RegistryAware
     public function get_permalink()
     {
         $link = $this->get_link();
-        $enclosure = $this->get_enclosure(0);
         if ($link !== null) {
             return $link;
-        } elseif ($enclosure !== null) {
+        }
+
+        $enclosure = $this->get_enclosure(0);
+        if ($enclosure !== null) {
             return $enclosure->get_link();
         }
 
