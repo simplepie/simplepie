@@ -69,7 +69,7 @@ class Parser implements RegistryAware
      */
     public function parse(string &$data, string $encoding, string $url = '')
     {
-        if (class_exists('DOMXpath') && function_exists('Mf2\parse')) {
+        if (class_exists('DOMXpath') && function_exists('Mf2\parse') && self::may_contain_microformats($data, $encoding)) {
             $doc = new \DOMDocument();
             @$doc->loadHTML($data);
             $xpath = new \DOMXpath($doc);
@@ -670,6 +670,22 @@ class Parser implements RegistryAware
                            'child' => ['' => $channel]]];
         $this->data = ['child' => ['' => ['rss' => $rss]]];
         return true;
+    }
+
+    /**
+     * Cheap check that rules out the h-feed/h-entry query below without building a DOM.
+     * For ASCII-compatible input the class names can only appear literally
+     * or spelled with character references.
+     */
+    private static function may_contain_microformats(string $data, string $encoding): bool
+    {
+        if (!in_array(strtoupper($encoding), ['UTF-8', 'US-ASCII'], true)) {
+            return true;
+        }
+
+        return strpos($data, 'h-feed') !== false
+            || strpos($data, 'h-entry') !== false
+            || preg_match('/&#(?:0*(?:45|10[0-4]|11[0-6]|12[01])(?![0-9])|x0*(?:2d|6[0-9a-f]|7[0-9])(?![0-9a-f]))/i', $data) === 1;
     }
 
     private static function set_doctype(string $data): string
