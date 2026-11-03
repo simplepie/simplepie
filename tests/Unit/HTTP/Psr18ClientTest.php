@@ -81,4 +81,37 @@ class Psr18ClientTest extends TestCase
         self::assertSame('https://example.com/redirect', $response->get_permanent_uri());
         self::assertSame('https://example.com/feed.xml', $response->get_final_requested_uri());
     }
+
+    public function testRelativeRedirectLocationIsResolvedAgainstCurrentUrl(): void
+    {
+        $request = $this->createMock(RequestInterface::class);
+        $request->method('withUri')->willReturn($request);
+
+        $requestFactory = $this->createMock(RequestFactoryInterface::class);
+        $requestFactory->method('createRequest')->willReturn($request);
+
+        $response1 = $this->createMock(ResponseInterface::class);
+        $response1->method('getStatusCode')->willReturn(302);
+        $response1->method('hasHeader')->with('Location')->willReturn(true);
+        $response1->method('getHeaderLine')->with('Location')->willReturn('/feed.xml');
+
+        $response2 = $this->createMock(ResponseInterface::class);
+        $response2->method('getStatusCode')->willReturn(200);
+
+        $httpClient = $this->createMock(ClientInterface::class);
+        $httpClient->method('sendRequest')->willReturnOnConsecutiveCalls($response1, $response2);
+
+        $client = new Psr18Client(
+            $httpClient,
+            $requestFactory,
+            $this->createMock(UriFactoryInterface::class)
+        );
+
+        // A relative Location is resolved against the current URL before being followed.
+        $response = $client->request(Client::METHOD_GET, 'https://example.com/redirect');
+
+        self::assertSame(200, $response->get_status_code());
+        self::assertSame('https://example.com/redirect', $response->get_permanent_uri());
+        self::assertSame('https://example.com/feed.xml', $response->get_final_requested_uri());
+    }
 }
