@@ -37,14 +37,16 @@ class SimplePieTest extends TestCase
         $simplepie->enable_cache(false);
         $simplepie->set_feed_url($filepath);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        self::assertFalse($simplepie->init());
+        self::assertSame($simplepie->error(), 'Fetching local feeds not supported');
     }
 
     /**
-     * @test that requesting a local file via SimplePie->set_file() works
+     * @test that requesting a local file via SimplePie->set_file() fails
+     *
+     * Note, `File` itself will be in a failed state.
      */
-    public function testRequestingALocalFileWithSetFileWorks(): void
+    public function testRequestingALocalFileWithSetFileRejected(): void
     {
         $filepath = dirname(__FILE__, 2) . '/data/feed_rss-2.0_for_file_mock.xml';
 
@@ -53,8 +55,7 @@ class SimplePieTest extends TestCase
         $file = new File($filepath);
         $simplepie->set_file($file);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        self::assertFalse($simplepie->init());
     }
 
     /**
@@ -73,8 +74,8 @@ class SimplePieTest extends TestCase
         );
         $simplepie->set_feed_url($filepath);
 
-        self::assertTrue($simplepie->init());
-        self::assertSame(100, $simplepie->get_item_quantity());
+        self::assertFalse($simplepie->init());
+        self::assertSame($simplepie->error(), 'Fetching local feeds not supported');
     }
 
     /**
@@ -274,9 +275,22 @@ class SimplePieTest extends TestCase
     {
         $filepath = dirname(__FILE__, 2) . '/data/feed-with-whitespace-before-xml-declaration.xml';
 
+        $server = new MockWebServer();
+        $server->start();
+
+        $body = file_get_contents($filepath);
+        \assert($body !== false); // For PHPStan
+
+        $url = $server->setResponseOfPath(
+            '/feed',
+            new MockWebServerResponse($body, [
+                'content-type: application/rss+xml',
+            ], 200)
+        );
+
         $simplepie = new SimplePie();
         $simplepie->enable_cache(false);
-        $simplepie->set_feed_url($filepath);
+        $simplepie->set_feed_url($url);
 
         self::assertTrue($simplepie->init());
     }
