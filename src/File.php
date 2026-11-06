@@ -138,8 +138,8 @@ class File implements Response
                 } else {
                     // For PHPStan: `curl_exec` returns `false` only on error so the `is_string` check will always pass.
                     \assert(is_string($responseBody));
-                    if (curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
-                        // TODO: Replace with `CURLOPT_SUPPRESS_CONNECT_HEADERS` once PHP 7.2 support is dropped.
+                    if (!\defined('CURLOPT_SUPPRESS_CONNECT_HEADERS') && curl_getinfo($fp, CURLINFO_HTTP_CONNECTCODE) !== 0) {
+                        // libcurl older than 7.54 has no CURLOPT_SUPPRESS_CONNECT_HEADERS.
                         $responseHeaders = \SimplePie\HTTP\Parser::prepareHeaders($responseHeaders);
                     }
                     if (\PHP_VERSION_ID < 80000) {
@@ -276,14 +276,9 @@ class File implements Response
             }
         } else {
             $this->method = \SimplePie\SimplePie::FILE_SOURCE_LOCAL | \SimplePie\SimplePie::FILE_SOURCE_FILE_GET_CONTENTS;
-            if (empty($url) || !is_readable($url) || false === ($filebody = file_get_contents($url))) {
-                $this->body = '';
-                $this->error = sprintf('file "%s" is not readable', $url);
-                $this->success = false;
-            } else {
-                $this->body = $filebody;
-                $this->status_code = 200;
-            }
+            $this->body = '';
+            $this->error = sprintf('Fetching non-http(s) URI scheme not allowed, "%s" given.', $url);
+            $this->success = false;
         }
         if ($this->success) {
             assert($this->body !== null); // For PHPStan
@@ -459,6 +454,9 @@ class File implements Response
         }
         /** @var non-empty-string $url */
         curl_setopt($fp, CURLOPT_URL, $url);
+        if (\defined('CURLOPT_SUPPRESS_CONNECT_HEADERS')) {
+            curl_setopt($fp, CURLOPT_SUPPRESS_CONNECT_HEADERS, true);
+        }
         curl_setopt($fp, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($fp, CURLOPT_FAILONERROR, true);
         curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
