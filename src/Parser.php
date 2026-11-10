@@ -18,6 +18,11 @@ use XMLParser;
  */
 class Parser implements RegistryAware
 {
+    /**
+     * Atom 1.0 namespace with the scheme mistyped as https, treated as NAMESPACE_ATOM_10.
+     */
+    private const NAMESPACE_ATOM_10_WRONG = 'https://www.w3.org/2005/Atom';
+
     /** @var int */
     public $error_code;
     /** @var string */
@@ -112,6 +117,11 @@ class Parser implements RegistryAware
             /** @phpstan-ignore parameterByRef.type (for PHP < 8.0) */
             $data = substr($data, 3);
         }
+
+        // The XML declaration must be the very first thing in the document, but
+        // plenty of feeds are served with a stray newline or space in front of it.
+        // Only strip it when followed by `<`, so a UTF-16LE character like `\n\x00` is not split.
+        $data = (string) preg_replace('/^[ \n\r\t\v]+</', '<', $data);
 
         if (substr($data, 0, 5) === '<?xml' && strspn(substr($data, 5, 1), "\x09\x0A\x0D\x20") && ($pos = strpos($data, '?>')) !== false) {
             $declaration = $this->registry->create(DeclarationParser::class, [substr($data, 5, $pos - 5)]);
@@ -394,6 +404,10 @@ class Parser implements RegistryAware
                 $local_name = substr($string, $pos + $separator_length);
                 if (strtolower($namespace) === \SimplePie\SimplePie::NAMESPACE_ITUNES) {
                     $namespace = \SimplePie\SimplePie::NAMESPACE_ITUNES;
+                }
+
+                if ($namespace === self::NAMESPACE_ATOM_10_WRONG) {
+                    $namespace = \SimplePie\SimplePie::NAMESPACE_ATOM_10;
                 }
 
                 // Normalize the Media RSS namespaces
