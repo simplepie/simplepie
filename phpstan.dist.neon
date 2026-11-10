@@ -1,6 +1,6 @@
 parameters:
     phpVersion:
-        min: 70200 # PHP 7.2
+        min: 70400 # PHP 7.4
         max: 80599 # PHP 8.5
 
     level: 8
