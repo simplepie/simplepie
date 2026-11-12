@@ -26,6 +26,7 @@ class FileTest extends TestCase
 
     public function testFileExtendsResponse(): void
     {
+        // @phpstan-ignore staticMethod.alreadyNarrowedType
         self::assertInstanceOf(Response::class, new FileMock(''));
     }
 
