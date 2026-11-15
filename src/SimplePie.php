@@ -1997,6 +1997,11 @@ class SimplePie
         }
         $this->status_code = $file->get_status_code();
 
+        if ($file instanceof File && !$file->success) {
+            $this->error = $file->error;
+            return !empty($this->data);
+        }
+
         // If the file connection has an error, set SimplePie::error to that and quit
         if (!(!Misc::is_remote_uri($file->get_final_requested_uri()) || ($file->get_status_code() === 200 || $file->get_status_code() > 206 && $file->get_status_code() < 300))) {
             $this->error = 'Retrieved unsupported status code "' . $this->status_code . '"';

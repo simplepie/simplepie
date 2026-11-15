@@ -17,6 +17,7 @@ use SimplePie\Tests\Fixtures\Cache\LegacyCacheMock;
 use SimplePie\Tests\Fixtures\Cache\NewCacheMock;
 use SimplePie\Tests\Fixtures\Exception\SuccessException;
 use SimplePie\Tests\Fixtures\FileMock;
+use SimplePie\Tests\Fixtures\FileWithFailedTransferMock;
 use SimplePie\Tests\Fixtures\FileWithRedirectMock;
 use TypeError;
 
@@ -283,6 +284,17 @@ class SimplePieTest extends TestCase
 
         self::assertSame('https://example.com/feed/2019-10-07', $feed->subscribe_url());
         self::assertSame('https://example.com/feed/', $feed->subscribe_url(true));
+    }
+
+    public function testFailedTransferWithStatusCodeIsReportedAsError(): void
+    {
+        $feed = new SimplePie();
+        $feed->get_registry()->register(File::class, FileWithFailedTransferMock::class);
+        $feed->enable_cache(false);
+        $feed->set_feed_url('http://example.com/feed/');
+
+        self::assertFalse($feed->init());
+        self::assertSame('cURL error 28: Operation timed out', $feed->error());
     }
 
     /**
