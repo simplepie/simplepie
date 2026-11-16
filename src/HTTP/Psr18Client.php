@@ -131,7 +131,11 @@ final class Psr18Client implements Client
                 $remainingRedirects--;
                 $followRedirect = true;
 
-                $requestedUrl = $response->getHeaderLine('Location');
+                $location = $response->getHeaderLine('Location');
+
+                // Resolve relative redirects against the current URL before
+                // forwarding, as RFC 9110 permits relative Location headers.
+                $requestedUrl = Misc::absolutize_url($location, $requestedUrl) ?: $location;
 
                 if ($statusCode === 301 || $statusCode === 308) {
                     $permanentUrl = $requestedUrl;
