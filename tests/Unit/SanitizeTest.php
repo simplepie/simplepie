@@ -45,6 +45,35 @@ HTML
     }
 
     /**
+     * Test HTML5 tag closing compliance.
+     */
+    public function testSanitizeHtml5TagClosingCompliance(): void
+    {
+        if (PHP_VERSION_ID < 80400 || get_parent_class(\Dom\HTMLDocument::class) === \DOMDocument::class) {
+            self::markTestSkipped('Requires the HTML5 parser of a native `Dom\HTMLDocument` (PHP 8.4+)');
+        }
+        $sanitize = new Sanitize();
+
+        self::assertSame(
+            <<<'HTML'
+            <ul>
+                <li><div></div></li>
+                <li>Item</li>
+            </ul>
+            HTML,
+            $sanitize->sanitize(
+                <<<'HTML'
+                <ul>
+                    <li><div></li>
+                    <li>Item</li>
+                </ul>
+                HTML,
+                SIMPLEPIE_CONSTRUCT_MAYBE_HTML
+            )
+        );
+    }
+
+    /**
      * @return array<array{string, string}>
      */
     public static function sanitizeURLDataProvider(): array
