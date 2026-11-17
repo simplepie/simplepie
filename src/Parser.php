@@ -94,22 +94,27 @@ class Parser implements RegistryAware
         // Strip BOM:
         // UTF-32 Big Endian BOM
         if (substr($data, 0, 4) === "\x00\x00\xFE\xFF") {
+            /** @phpstan-ignore parameterByRef.type (for PHP < 8.0) */
             $data = substr($data, 4);
         }
         // UTF-32 Little Endian BOM
         elseif (substr($data, 0, 4) === "\xFF\xFE\x00\x00") {
+            /** @phpstan-ignore parameterByRef.type (for PHP < 8.0) */
             $data = substr($data, 4);
         }
         // UTF-16 Big Endian BOM
         elseif (substr($data, 0, 2) === "\xFE\xFF") {
+            /** @phpstan-ignore parameterByRef.type (for PHP < 8.0) */
             $data = substr($data, 2);
         }
         // UTF-16 Little Endian BOM
         elseif (substr($data, 0, 2) === "\xFF\xFE") {
+            /** @phpstan-ignore parameterByRef.type (for PHP < 8.0) */
             $data = substr($data, 2);
         }
         // UTF-8 BOM
         elseif (substr($data, 0, 3) === "\xEF\xBB\xBF") {
+            /** @phpstan-ignore parameterByRef.type (for PHP < 8.0) */
             $data = substr($data, 3);
         }
 
@@ -121,6 +126,7 @@ class Parser implements RegistryAware
         if (substr($data, 0, 5) === '<?xml' && strspn(substr($data, 5, 1), "\x09\x0A\x0D\x20") && ($pos = strpos($data, '?>')) !== false) {
             $declaration = $this->registry->create(DeclarationParser::class, [substr($data, 5, $pos - 5)]);
             if ($declaration->parse()) {
+                /** @phpstan-ignore parameterByRef.type (for PHP < 8.0) */
                 $data = substr($data, $pos + 2);
                 $data = '<?xml version="' . $declaration->version . '" encoding="' . $encoding . '" standalone="' . (($declaration->standalone) ? 'yes' : 'no') . '"?>' . "\n" .
                     self::set_doctype($data);
@@ -289,6 +295,7 @@ class Parser implements RegistryAware
      * @param XMLParser|resource|null $parser
      * @param array<string, string> $attributes
      * @return void
+     * @phpstan-ignore class.notFound (XMLParser requires PHP >= 8.0)
      */
     public function tag_open($parser, string $tag, array $attributes)
     {
@@ -345,6 +352,7 @@ class Parser implements RegistryAware
     /**
      * @param XMLParser|resource|null $parser
      * @return void
+     * @phpstan-ignore class.notFound (XMLParser requires PHP >= 8.0)
      */
     public function cdata($parser, string $cdata)
     {
@@ -358,6 +366,7 @@ class Parser implements RegistryAware
     /**
      * @param XMLParser|resource|null $parser
      * @return void
+     * @phpstan-ignore class.notFound (XMLParser requires PHP >= 8.0)
      */
     public function tag_close($parser, string $tag)
     {

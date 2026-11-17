@@ -483,6 +483,7 @@ class IRITest extends TestCase
             E_USER_NOTICE
         );
 
+        // @phpstan-ignore property.notFound (we want to test that it fails)
         $should_fail = $iri->nonexistent_prop;
     }
 
