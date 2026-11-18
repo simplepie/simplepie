@@ -371,10 +371,10 @@ function fnLoadPngs() {
 						<td>7.4.0 or higher</td>
 						<td><?php echo phpversion(); ?></td>
 					</tr>
-						<tr class="<?php echo ($xml_ok) ? 'enabled' : 'disabled'; ?>">
-							<td><a href="http://php.net/xml">XML</a></td>
-							<td>Enabled</td>
-							<td><?php echo ($xml_ok) ? 'Enabled' : 'Disabled'; ?></td>
+					<tr class="<?php echo ($xml_ok) ? 'enabled' : 'disabled'; ?>">
+						<td><a href="http://php.net/xml">XML</a></td>
+						<td>Enabled</td>
+						<td><?php echo ($xml_ok) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
 					<tr class="<?php echo ($pcre_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/pcre">PCRE</a>&sup1;</td>
