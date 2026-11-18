@@ -49,8 +49,7 @@ HTML
      */
     public function testSanitizeHtml5TagClosingCompliance(): void
     {
-        // @phpstan-ignore class.notFound
-        if (PHP_VERSION_ID < 80400 || get_parent_class(\Dom\HTMLDocument::class) === \DOMDocument::class) {
+        if (!class_exists('Dom\HTMLDocument') || get_parent_class('Dom\HTMLDocument') === \DOMDocument::class) {
             self::markTestSkipped('Requires the HTML5 parser of a native `Dom\HTMLDocument` (PHP 8.4+)');
         }
         $sanitize = new Sanitize();
