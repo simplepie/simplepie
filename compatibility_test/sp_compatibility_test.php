@@ -414,7 +414,7 @@ function fnLoadPngs() {
 					<?php if ($php_ok): ?>
 						<li><strong>PHP:</strong> You are running a supported version of PHP.  <em>No problems here.</em></li>
 						<?php if ($xml_ok): ?>
-								<li><strong>XML:</strong> You have XML support installed.  <em>No problems here.</em></li>
+							<li><strong>XML:</strong> You have XML support installed.  <em>No problems here.</em></li>
 							<?php if ($pcre_ok): ?>
 								<li><strong>PCRE:</strong> You have PCRE support installed. <em>No problems here.</em></li>
 								<?php if ($curl_ok): ?>
