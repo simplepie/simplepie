@@ -50,11 +50,5 @@ parameters:
             # Only occurs on PHP ≤ 7.4
             reportUnmatched: false
 
-        # PHPStan stubs bug https://github.com/phpstan/phpstan/issues/8629
-        -
-            message: '(^Access to an undefined property XMLReader::\$\w+\.$)'
-            # Only occurs on PHP ≥ 8.2
-            reportUnmatched: false
-
 includes:
     - utils/PHPStan/extension.neon
