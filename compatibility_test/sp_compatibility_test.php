@@ -21,23 +21,7 @@ $zlib_ok = extension_loaded('zlib');
 $mbstring_ok = extension_loaded('mbstring');
 $iconv_ok = extension_loaded('iconv');
 $intl_ok = extension_loaded('intl');
-if (extension_loaded('xmlreader'))
-{
-	$xml_ok = true;
-}
-elseif (extension_loaded('xml'))
-{
-	$parser_check = xml_parser_create();
-	xml_parse_into_struct($parser_check, '<foo>&amp;</foo>', $values);
-    if (\PHP_VERSION_ID < 80000) {
-	    xml_parser_free($parser_check);
-    }
-	$xml_ok = isset($values[0]['value']);
-}
-else
-{
-	$xml_ok = false;
-}
+$xml_ok = extension_loaded('xml');
 
 
 
@@ -65,7 +49,7 @@ echo sprintf($testRow,str_pad(($php_ok ? 'Passed' : 'Failed'), 7),str_pad('PHP',
 
 
 
-echo sprintf($testRow,str_pad(($xml_ok ? 'Passed' : 'Failed'), 7),str_pad('XML',20),str_pad('Enabled', 20),str_pad(($xml_ok ? 'Enabled, and sane' : 'Disabled, or broken'), 20));
+echo sprintf($testRow,str_pad(($xml_ok ? 'Passed' : 'Failed'), 7),str_pad('XML',20),str_pad('Enabled', 20),str_pad(($xml_ok ? 'Enabled' : 'Disabled'), 20));
 
 
 echo sprintf($testRow,str_pad(($pcre_ok ? 'Passed' : 'Failed'), 7),str_pad('PCRE ^^^',20),str_pad('Enabled', 20),str_pad(($pcre_ok ? 'Enabled' : 'Disabled'), 20));
@@ -98,7 +82,7 @@ else:
 		echo "PHP: You are running a supported version of PHP.  No problems here.\n";
 
 		if ($xml_ok):
-			echo "XML: You have XMLReader support or a version of XML support that isn't broken installed.  No problems here.\n";
+			echo "XML: You have XML support installed.  No problems here.\n";
 		if ($pcre_ok):
 			echo "PCRE: You have PCRE support installed.  No problems here.\n";
             if ($curl_ok):
@@ -189,7 +173,7 @@ echo <<<EOF
 
 Bottom Line: We're sorry ...
 Your webhost does not support the minimum requirements for SimplePie.
-It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the xmlreader, xml, mbstring, iconv, curl, and zlib extensions.
+It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the xml, mbstring, iconv, curl, and zlib extensions.
 
 EOF;
 
@@ -387,10 +371,10 @@ function fnLoadPngs() {
 						<td>7.4.0 or higher</td>
 						<td><?php echo phpversion(); ?></td>
 					</tr>
-					<tr class="<?php echo ($xml_ok) ? 'enabled, and sane' : 'disabled, or broken'; ?>">
-						<td><a href="http://php.net/xml">XML</a></td>
-						<td>Enabled</td>
-						<td><?php echo ($xml_ok) ? 'Enabled, and sane' : 'Disabled, or broken'; ?></td>
+						<tr class="<?php echo ($xml_ok) ? 'enabled' : 'disabled'; ?>">
+							<td><a href="http://php.net/xml">XML</a></td>
+							<td>Enabled</td>
+							<td><?php echo ($xml_ok) ? 'Enabled' : 'Disabled'; ?></td>
 					</tr>
 					<tr class="<?php echo ($pcre_ok) ? 'enabled' : 'disabled'; ?>">
 						<td><a href="http://php.net/pcre">PCRE</a>&sup1;</td>
@@ -430,7 +414,7 @@ function fnLoadPngs() {
 					<?php if ($php_ok): ?>
 						<li><strong>PHP:</strong> You are running a supported version of PHP.  <em>No problems here.</em></li>
 						<?php if ($xml_ok): ?>
-							<li><strong>XML:</strong> You have XMLReader support or a version of XML support that isn't broken installed.  <em>No problems here.</em></li>
+								<li><strong>XML:</strong> You have XML support installed.  <em>No problems here.</em></li>
 							<?php if ($pcre_ok): ?>
 								<li><strong>PCRE:</strong> You have PCRE support installed. <em>No problems here.</em></li>
 								<?php if ($curl_ok): ?>
@@ -482,7 +466,7 @@ function fnLoadPngs() {
 				<p class="footnote"><em><strong>Note</strong></em>: Passing this test does not guarantee that SimplePie will run on your webhost &mdash; it only ensures that the basic requirements have been addressed.</p>
 			<?php } else { ?>
 				<h3>Bottom Line: We're sorry…</h3>
-				<p><em>Your webhost does not support the minimum requirements for SimplePie.</em>  It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the <code>xmlreader</code>, <code>xml</code>, <code>mbstring</code>, <code>iconv</code>, <code>curl</code>, and <code>zlib</code> extensions.</p>
+				<p><em>Your webhost does not support the minimum requirements for SimplePie.</em>  It may be a good idea to contact your webhost, and ask them to install a more recent version of PHP as well as the <code>xml</code>, <code>mbstring</code>, <code>iconv</code>, <code>curl</code>, and <code>zlib</code> extensions.</p>
 			<?php } ?>
 		</div>
 

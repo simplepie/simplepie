@@ -26,8 +26,7 @@
     "require": {
         "php": ">=7.4.0",
         "ext-pcre": "*",
-        "ext-xml": "*",
-        "ext-xmlreader": "*"
+        "ext-xml": "*"
     },
     "require-dev": {
         "donatj/mock-webserver": "^2.7",
