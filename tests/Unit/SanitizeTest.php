@@ -109,4 +109,68 @@ HTML
 
         self::assertSame($expected, $actual);
     }
+
+    /**
+     * @return array<array{string}>
+     */
+    public static function rawTextElementDataProvider(): array
+    {
+        return [
+            'noembed' => ['noembed'],
+            'noframes' => ['noframes'],
+            'textarea' => ['textarea'],
+            'xmp' => ['xmp'],
+        ];
+    }
+
+    /**
+     * Browsers read the content of e.g. `<xmp>` as text ending at the first `</xmp>`,
+     * while libxml2 builds child elements there, and writes `<!--...-->` and `&{...}`
+     * found in their attribute values without escaping `<` and `>`.
+     *
+     * @dataProvider rawTextElementDataProvider
+     */
+    public function testMarkupInRawTextElementKeepsOnlyText(string $tag): void
+    {
+        $sanitize = new Sanitize();
+        $sanitize->set_registry(new Registry());
+        $base = 'http://example.com/';
+
+        foreach (['<!--%s-->', '&amp;{%s}'] as $unescapedByLibxml) {
+            $title = sprintf($unescapedByLibxml, '</' . $tag . '><form method=post>');
+            $actual = $sanitize->sanitize(
+                '<' . $tag . '><a title="' . $title . '">Hello</a> <b>world</b></' . $tag . '>',
+                SIMPLEPIE_CONSTRUCT_HTML,
+                $base
+            );
+
+            // The attribute value must not end the raw text element early in a browser and become live markup
+            self::assertStringNotContainsString('<form', $actual);
+            // Only the text may remain in a raw text element
+            self::assertStringContainsString('Hello', $actual);
+            self::assertStringContainsString('world', $actual);
+        }
+    }
+
+    /**
+     * Same as testMarkupInRawTextElementKeepsOnlyText(), but with an element the default
+     * strip list removes (`<iframe>`), provided nothing is stripped at all.
+     */
+    public function testMarkupInRawTextElementKeepsOnlyTextWhenNothingIsStripped(): void
+    {
+        $sanitize = new Sanitize();
+        $sanitize->set_registry(new Registry());
+        $sanitize->strip_htmltags(false);
+        $base = 'http://example.com/';
+
+        $title = sprintf('<!--%s-->', '</iframe><form method=post>');
+        $actual = $sanitize->sanitize(
+            '<iframe><a title="' . $title . '">Hello</a></iframe>',
+            SIMPLEPIE_CONSTRUCT_HTML,
+            $base
+        );
+
+        self::assertStringNotContainsString('<form', $actual);
+        self::assertStringContainsString('Hello', $actual);
+    }
 }

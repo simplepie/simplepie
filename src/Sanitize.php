@@ -469,6 +469,9 @@ class Sanitize implements RegistryAware
                     }
                 }
 
+                // Browsers read the content of elements such as <xmp> as text, so only text may be output in them
+                $this->flatten_raw_text_elements($xpath);
+
                 if ($this->rename_attributes) {
                     foreach ($this->rename_attributes as $attrib) {
                         $this->rename_attr($attrib, $xpath);
@@ -565,6 +568,52 @@ class Sanitize implements RegistryAware
             }
         }
         return $data;
+    }
+
+    /**
+     * Elements whose content is read by Web browsers as text up to their first matching end tag,
+     * whereas `DOMDocument::loadHTML()` may build child elements in them.
+     * Serializing such child elements would let e.g. `<xmp><a title="<!--</xmp><img>-->">`
+     * end the element early in a browser and turn the rest of the attribute value into live markup.
+     * `<script>` and `<style>` are not listed because libxml2 already parses their content as text.
+     * @var list<string>
+     */
+    private const RAW_TEXT_ELEMENTS = [
+        'iframe',
+        'noembed',
+        'noframes',
+        'noscript',
+        'plaintext',
+        'textarea',
+        'title',
+        'xmp',
+    ];
+
+    /**
+     * Replace the content of raw text elements by its text only.
+     *
+     * Serializing child elements there would let e.g. `<xmp><a title="<!--</xmp><img>-->">`
+     * end the element early in a browser and turn the rest of the attribute value into live markup.
+     */
+    private function flatten_raw_text_elements(\DOMXPath $xpath): void
+    {
+        $elements = $xpath->query('//*[self::' . implode(' or self::', self::RAW_TEXT_ELEMENTS) . '][node()]');
+        if ($elements === false) {
+            return;
+        }
+        foreach ($elements as $element) {
+            if (!($element instanceof \DOMElement)) {
+                continue;
+            }
+            $text = $element->textContent;
+            while (($child = $element->firstChild) !== null) {
+                // This also removes comments and processing instructions, which `textContent` omits
+                $element->removeChild($child);
+            }
+            if ($text !== '') {
+                $element->appendChild(new \DOMText($text));
+            }
+        }
     }
 
     /**
