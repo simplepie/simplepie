@@ -469,7 +469,6 @@ class Sanitize implements RegistryAware
                     }
                 }
 
-                // Browsers read the content of elements such as <xmp> as text, so only text may be output in them
                 $this->flatten_raw_text_elements($xpath);
 
                 if ($this->rename_attributes) {
