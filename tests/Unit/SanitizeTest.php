@@ -149,12 +149,18 @@ HTML
             // Only the text may remain in a raw text element
             self::assertStringContainsString('Hello', $actual);
             self::assertStringContainsString('world', $actual);
+            // Whatever a consumer ingests when re-parsing the output must not be executable either
+            self::assertNoExecutableMarkupIngested($actual);
         }
     }
 
     /**
      * Same as testMarkupInRawTextElementKeepsOnlyText(), but with an element the default
      * strip list removes (`<iframe>`), provided nothing is stripped at all.
+     *
+     * Regardless of what libxml2 makes of the payload — attribute glue on older
+     * versions, live markup beyond an early-terminated raw text element on newer
+     * ones — the sanitized output must not ingest anything executable.
      */
     public function testMarkupInRawTextElementKeepsOnlyTextWhenNothingIsStripped(): void
     {
@@ -163,14 +169,45 @@ HTML
         $sanitize->strip_htmltags(false);
         $base = 'http://example.com/';
 
-        $title = sprintf('<!--%s-->', '</iframe><form method=post>');
+        $title = sprintf('<!--%s-->', '</iframe><img src=x onerror=alert(1)>');
         $actual = $sanitize->sanitize(
             '<iframe><a title="' . $title . '">Hello</a></iframe>',
             SIMPLEPIE_CONSTRUCT_HTML,
             $base
         );
 
-        self::assertStringNotContainsString('<form', $actual);
+        // Event handlers must not survive anywhere in the output
+        self::assertStringNotContainsString('onerror', $actual);
+        // The regular text of the raw text element must remain
         self::assertStringContainsString('Hello', $actual);
+        // What a consumer ingests when re-parsing the output must not be executable either
+        self::assertNoExecutableMarkupIngested($actual);
+    }
+
+    /**
+     * Asserts that re-parsing the HTML ingests no executable markup:
+     * no script elements and no event-handler attributes, and no markup
+     * characters embedded in attribute values, which older libxml2 would
+     * write unescaped into the serialized output.
+     */
+    private static function assertNoExecutableMarkupIngested(string $html): void
+    {
+        $doc = new \DOMDocument();
+        $previous = \libxml_use_internal_errors(true);
+        if ($doc->loadHTML($html) === false) {
+            \libxml_use_internal_errors($previous);
+            self::fail('Could not re-parse the sanitized output');
+        }
+        \libxml_use_internal_errors($previous);
+        $xpath = new \DOMXPath($doc);
+        $handlers = $xpath->query('//@*[starts-with(name(), "on")]');
+        $scripts = $xpath->query('//script');
+        $markupInAttributes = $xpath->query('//@*[contains(., "<")]');
+        self::assertNotFalse($handlers);
+        self::assertNotFalse($scripts);
+        self::assertNotFalse($markupInAttributes);
+        self::assertCount(0, $handlers);
+        self::assertCount(0, $scripts);
+        self::assertCount(0, $markupInAttributes);
     }
 }
