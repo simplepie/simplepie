@@ -739,4 +739,41 @@ class MiscTest extends TestCase
             Misc::parse_date($data)
         );
     }
+
+    /**
+     * Provider for the url_remove_credentials() tests
+     *
+     * @return array<array{string, string}>
+     */
+    public static function urlRemoveCredentialsDataProvider(): array
+    {
+        return [
+            'no credentials' => ['https://example.net/feed.xml', 'https://example.net/feed.xml'],
+            'user and password' => ['https://user:password@example.net/feed.xml', 'https://example.net/feed.xml'],
+            'user and password, uppercase scheme' => ['HTTP://user:password@example.net:8080/feed.xml', 'HTTP://example.net:8080/feed.xml'],
+            'user only, e.g. API key' => ['https://token@example.net/feed.xml', 'https://example.net/feed.xml'],
+            'empty password' => ['https://token:@example.net/feed.xml', 'https://example.net/feed.xml'],
+            'empty user' => ['https://:password@example.net/feed.xml', 'https://example.net/feed.xml'],
+            'colon in the password' => ['https://user:pass:word@example.net/feed.xml', 'https://example.net/feed.xml'],
+            'unencoded @ in the password' => ['https://user:pass@word@example.net/feed.xml', 'https://example.net/feed.xml'],
+            'IPv6 host' => ['https://user:p%40ss&amp;word@[2001:db8::1]:8080/feed.xml', 'https://[2001:db8::1]:8080/feed.xml'],
+            'no path' => ['https://user:password@example.net', 'https://example.net'],
+            'proxy URL' => ['socks5h://user:password@proxy.example.net:1080', 'socks5h://proxy.example.net:1080'],
+            '@ in the path' => ['https://example.net:8080/user:password@feed.xml', 'https://example.net:8080/user:password@feed.xml'],
+            '@ in the query' => ['https://example.net/feed.xml?user:password@example.org', 'https://example.net/feed.xml?user:password@example.org'],
+            '@ in a query parameter' => ['https://example.net?a=user:password@example.org', 'https://example.net?a=user:password@example.org'],
+            '@ in the fragment' => ['https://example.net#user:password@example.org', 'https://example.net#user:password@example.org'],
+            'mailto URL' => ['mailto:alice@example.net', 'mailto:alice@example.net'],
+        ];
+    }
+
+    /**
+     * Remove HTTP credentials, i.e. the whole user-info of the authority, whatever its form
+     *
+     * @dataProvider urlRemoveCredentialsDataProvider
+     */
+    public function test_url_remove_credentials(string $url, string $expected): void
+    {
+        self::assertSame($expected, Misc::url_remove_credentials($url));
+    }
 }
