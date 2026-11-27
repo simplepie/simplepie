@@ -78,6 +78,42 @@ To start the demo
 2. Make sure that the cache folder inside of the demo folder is server-writable.
 3. Navigate your browser to the demo folder.
 
+How to run the tests
+-------------------------
+
+To execute the tests, for example during development, [composer](https://getcomposer.org/)
+can be used.
+
+First, install composer as described [in the docs](https://getcomposer.org/download/).
+then install the SimplePie dependencies:
+```shell
+$ php /path/to/composer.phar install
+```
+The tests can be executed like this:
+```shell
+$ php /path/to/composer.phar test
+```
+
+Especially for verification of older PHP versions no longer available in your
+distro's package sources, the official
+[PHP docker container](https://hub.docker.com/_/php) might be useful.
+
+For example:
+```shell
+$ git clone https://github.com/simplepie/simplepie.git
+$ podman run -it -v "./simplepie:/src/simplepie" php:8.1 bash
+```
+At the time of writing, a few additional dependencies need to be installed in
+the container for the tests to work. So in the container, run these commands:
+```shell
+$ cd /src/simplepie
+$ docker-php-ext-configure sockets
+$ docker-php-ext-install sockets
+$ apt update
+$ apt install unzip
+```
+
+Afterwards, all composer commands can be executed in the container as above.
 
 Need support?
 -------------
