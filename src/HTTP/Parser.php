@@ -63,6 +63,8 @@ class Parser
 
     private const STATE_BODY = 'body';
 
+    private const STATE_BODY_OR_STATUS = 'body_or_status';
+
     private const STATE_NAME = 'name';
 
     private const STATE_VALUE = 'value';
@@ -148,7 +150,7 @@ class Parser
             $this->$state();
         }
         $this->data = '';
-        if ($this->state === self::STATE_EMIT || $this->state === self::STATE_BODY) {
+        if (($this->status_code !== 0) && ($this->state === self::STATE_EMIT || $this->state === self::STATE_BODY_OR_STATUS)) {
             return true;
         }
 
@@ -264,6 +266,26 @@ class Parser
         }
     }
 
+   /**
+     * Skip over HTTP Status 103 (Early Hint), and retrieve
+     * the next status code.  103 may appear multiple times.
+     */
+    protected function body_or_status()
+    {
+        if ($this->status_code === 103)
+        {
+	    $this->http_version = 0.0;
+            $this->status_code = 0;
+            $this->reason = '';
+            $this->headers = [];
+            $this->state = self::STATE_HTTP_VERSION;
+        }
+        else
+        {
+            $this->state = self::STATE_BODY;
+        }
+    }
+
     /**
      * Deal with a new line, shifting data around as needed
      * @return void
@@ -284,10 +306,10 @@ class Parser
         $this->value = '';
         if (substr($this->data[$this->position], 0, 2) === "\x0D\x0A") {
             $this->position += 2;
-            $this->state = self::STATE_BODY;
+            $this->state = self::STATE_BODY_OR_STATUS;
         } elseif ($this->data[$this->position] === "\x0A") {
             $this->position++;
-            $this->state = self::STATE_BODY;
+            $this->state = self::STATE_BODY_OR_STATUS;
         } else {
             $this->state = self::STATE_NAME;
         }
