@@ -1427,12 +1427,10 @@ class Misc
                 return 'MSZ_7795.3';
 
             case 'csnatsdano':
-            case 'isoir91':
             case 'natsdano':
                 return 'NATS-DANO';
 
             case 'csnatsdanoadd':
-            case 'isoir92':
             case 'natsdanoadd':
                 return 'NATS-DANO-ADD';
 
