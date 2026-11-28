@@ -2230,12 +2230,14 @@ JS;
     }
 
     /**
-     * Compare the origins (scheme, host, port) of two URLs.
+     * Restrict cURL options given for one URL to what may be sent to another URL:
+     * credentials, cookies, custom HTTP headers, and request body are removed when the origin (scheme, host, port) differs.
+     * @param array<int, mixed> $curl_options the cURL options, as given for $from_url.
      * @param string $from_url the URL for which the cURL options were given.
      * @param string $to_url the URL about to be requested.
-     * @return bool True if the two URLs have the same origin.
+     * @return array<int, mixed> the cURL options to use for $to_url.
      */
-    public static function same_origin(string $from_url, string $to_url): bool
+    public static function curl_options_for_origin(array $curl_options, string $from_url, string $to_url)
     {
         $origins = [];
         foreach ([$from_url, $to_url] as $url) {
@@ -2249,20 +2251,7 @@ JS;
             }
             $origins[] = [$url_parts['scheme'], $url_parts['host'], $url_parts['port']];
         }
-        return $origins[0] !== null && $origins[0] === $origins[1];
-    }
-
-    /**
-     * Restrict cURL options given for one URL to what may be sent to another URL:
-     * credentials, cookies, custom HTTP headers, and request body are removed when the origin (scheme, host, port) differs.
-     * @param array<int, mixed> $curl_options the cURL options, as given for $from_url.
-     * @param string $from_url the URL for which the cURL options were given.
-     * @param string $to_url the URL about to be requested.
-     * @return array<int, mixed> the cURL options to use for $to_url.
-     */
-    public static function curl_options_for_origin(array $curl_options, string $from_url, string $to_url)
-    {
-        if (!self::same_origin($from_url, $to_url)) {
+        if ($origins[0] === null || $origins[0] !== $origins[1]) {
             unset(
                 $curl_options[CURLOPT_USERPWD],
                 $curl_options[CURLOPT_COOKIE],
