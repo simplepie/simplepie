@@ -78,13 +78,6 @@ class File implements Response
     private $permanentUrlMutable = true;
 
     /**
-     * The HTTP headers known not to carry credentials.
-     * Matches either a "Name: value" header line, or just a "Name" header key.
-     */
-    private const SAFE_HEADERS_PATTERN = '/^(Accept|Accept-Charset|Accept-Encoding|Accept-Language|Cache-Control|DNT|Pragma|' .
-        'Sec-[\\w-]+|Upgrade-Insecure-Requests|User-Agent)(\\s*:|$)/i';
-
-    /**
      * @param string $url
      * @param int $timeout
      * @param int $redirects
@@ -151,28 +144,6 @@ class File implements Response
                                 $this->error = "Invalid redirect location, trying to base “{$locationHeader}” onto “{$url}”";
                                 $this->success = false;
                                 return;
-                            }
-                            // Do not leak cURL credentials, cookies, custom HTTP headers, and request body to other origins
-                            if (!\SimplePie\Misc::same_origin($url, $location)) {
-                                if (isset($curl_options[CURLOPT_POSTFIELDS])) {
-                                    // The request body (e.g. an access token) is only meant for the original origin,
-                                    // and a redirection must not change the HTTP method, so do not follow the redirection
-                                    $this->status_code = 0;
-                                    $this->error = 'Refused cross-origin redirect of a request with a body, from “' .
-                                        \SimplePie\Misc::url_remove_credentials($url) . '” to “' . \SimplePie\Misc::url_remove_credentials($location) . '”';
-                                    $this->success = false;
-                                    return;
-                                }
-                                unset($curl_options[CURLOPT_COOKIE]);
-                                unset($curl_options[CURLOPT_USERPWD]);
-                                if (is_array($curl_options[CURLOPT_HTTPHEADER] ?? null)) {
-                                    $curl_options[CURLOPT_HTTPHEADER] = array_filter(
-                                        $curl_options[CURLOPT_HTTPHEADER],
-                                        function ($header) {
-                                            return is_string($header) && preg_match(self::SAFE_HEADERS_PATTERN, $header) === 1;
-                                        }
-                                    );
-                                }
                             }
                             $this->permanentUrlMutable = $this->permanentUrlMutable && ($this->status_code == 301 || $this->status_code == 308);
                             $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
@@ -248,16 +219,6 @@ class File implements Response
                                     $this->error = "Invalid redirect location, trying to base “{$locationHeader}” onto “{$url}”";
                                     $this->success = false;
                                     return;
-                                }
-                                // Do not leak authentication headers to other origins
-                                if (!\SimplePie\Misc::same_origin($url, $location)) {
-                                    $headers = array_filter(
-                                        $headers,
-                                        function ($key) {
-                                            return is_string($key) && preg_match(self::SAFE_HEADERS_PATTERN, $key) === 1;
-                                        },
-                                        ARRAY_FILTER_USE_KEY
-                                    );
                                 }
                                 $this->__construct($location, $timeout, $redirects, $headers, $useragent, $force_fsockopen, $curl_options);
                                 return;
