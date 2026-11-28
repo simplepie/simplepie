@@ -739,4 +739,46 @@ class MiscTest extends TestCase
             Misc::parse_date($data)
         );
     }
+
+    /**
+     * Provider for the curl_options_for_origin() tests
+     *
+     * @return array<string, array{array<int, mixed>, string, string, array<int, mixed>}>
+     */
+    public static function curlOptionsForOriginDataProvider(): array
+    {
+        $curlOptions = [
+            CURLOPT_USERAGENT => 'Example',
+            CURLOPT_USERPWD => 'bob:password',
+            CURLOPT_COOKIE => 'session=secret',
+            CURLOPT_HTTPHEADER => ['X-Api-Key: secret'],
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => 'token=secret',
+        ];
+        $withoutCredentials = [CURLOPT_USERAGENT => 'Example'];
+
+        return [
+            'same origin' => [$curlOptions, 'https://members.example/page', 'https://members.example/feed.xml', $curlOptions],
+            'same origin with explicit port' => [$curlOptions, 'https://members.example:8443/page', 'https://members.example:8443/feed.xml', $curlOptions],
+            'same origin, default vs explicit port' => [$curlOptions, 'http://members.example/page', 'http://members.example:80/feed.xml', $curlOptions],
+            'same origin in other case' => [$curlOptions, 'HTTPS://MEMBERS.EXAMPLE/page', 'https://members.example/feed.xml', $curlOptions],
+            'other host' => [$curlOptions, 'https://members.example/page', 'https://elsewhere.example/feed.xml', $withoutCredentials],
+            'other port' => [$curlOptions, 'https://members.example/page', 'https://members.example:8443/feed.xml', $withoutCredentials],
+            'other scheme, e.g. HTTP downgrade' => [$curlOptions, 'https://members.example/page', 'http://members.example/feed.xml', $withoutCredentials],
+            'no origin in the target URL' => [$curlOptions, 'https://members.example/page', '/feed.xml', $withoutCredentials],
+            'no origin in the source URL' => [$curlOptions, 'feed.xml', 'https://members.example/feed.xml', $withoutCredentials],
+        ];
+    }
+
+    /**
+     * Credentials, cookies, custom headers and request body are only sent to the origin they were given for
+     *
+     * @dataProvider curlOptionsForOriginDataProvider
+     * @param array<int, mixed> $curlOptions
+     * @param array<int, mixed> $expected
+     */
+    public function test_curl_options_for_origin(array $curlOptions, string $fromUrl, string $toUrl, array $expected): void
+    {
+        self::assertSame($expected, Misc::curl_options_for_origin($curlOptions, $fromUrl, $toUrl));
+    }
 }
